@@ -162,9 +162,7 @@
 <h1>Formatting<a class="headerlink" href="#formatting" title="Permalink to this heading"></a></h1>
 <section id="lint-checks">
 <h2>Lint Checks<a class="headerlink" href="#lint-checks" title="Permalink to this heading"></a></h2>
-<p>To ensure that Ivy is always formatted correctly, <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> is used to run
-lint checks on all Python files in the
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml">CI</a>.
+<p>To ensure that Ivy is always formatted correctly, <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> is used to run lint checks on all Python files in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/ff7d40e7f1e6ea5b48b7b460013c011cd7752a0e/.github/workflows/lint.yml">CI</a>.
 Some of the main things which <a class="reference external" href="https://flake8.pycqa.org/en/latest/index.html">flake8</a> checks for are listed below.</p>
 <p><strong>Imports</strong></p>
 <p>Module imports are checked to detect:</p>
@@ -187,8 +185,7 @@ Some examples are:</p>
 <li><p>syntax or length errors in docstrings, comments, or annotations</p></li>
 </ul>
 <p><strong>Literals</strong></p>
-<p>Literals formatting are often used in a string statement; some common checks related to
-this are:</p>
+<p>Literals formatting are often used in a string statement; some common checks related to this are:</p>
 <ul class="simple">
 <li><p>invalid <code class="code docutils literal notranslate"><span class="pre">%</span></code> format</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">%</span></code> format with missing arguments or unsupported character</p></li>
@@ -208,23 +205,20 @@ These include but are not limited to:</p>
 </section>
 <section id="pre-commit-hook">
 <h2>Pre-Commit Hook<a class="headerlink" href="#pre-commit-hook" title="Permalink to this heading"></a></h2>
-<p>In Ivy, we try our best to avoid committing code with lint errors. To achieve this,
-we make use of the pre-commit package. The installation is explained in
-the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#pre-commit">pre-commit guide</a>.</p>
-<p>The pre-commit hook runs the <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> lint checks before each commit. This is
-efficient and useful in preventing errors being pushed to the repository.</p>
-<p>In the case where errors are found, error messages will be raised and committing will
-be unsuccessful until the mistake is corrected. If the errors are related to argument
-formatting, it will be reformatted automatically.</p>
-<p>For example, the line length limit might be exceeded if arguments are all added in a
-single line of code like so:</p>
+<p>In Ivy, we try our best to avoid committing code with lint errors.
+To achieve this, we make use of the pre-commit package.
+The installation is explained in the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#pre-commit">pre-commit guide</a>.</p>
+<p>The pre-commit hook runs the <code class="code docutils literal notranslate"><span class="pre">flake8</span></code> lint checks before each commit.
+This is efficient and useful in preventing errors being pushed to the repository.</p>
+<p>In the case where errors are found, error messages will be raised and committing will be unsuccessful until the mistake is corrected.
+If the errors are related to argument formatting, it will be reformatted automatically.</p>
+<p>For example, the line length limit might be exceeded if arguments are all added in a single line of code like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>When a commit is attempted, <cite>pre-commit</cite> would detect this error by running the lint
-check, and it would then reformat the arguments automatically.</p>
+<p>When a commit is attempted, <cite>pre-commit</cite> would detect this error by running the lint check, and it would then reformat the arguments automatically.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>black....................................................................Failed
 - hook id: black
 - files were modified by this hook
@@ -237,10 +231,8 @@ All done! ✨ 🍰 ✨
 flake8...................................................................Passed
 </pre></div>
 </div>
-<p>The above message indicates that a file disobeying the formatting rules is detected
-and reformatting has taken place successfully. The correctly formatted code, with each
-argument added on a new line, has been saved and the related file(s) can now be staged
-and committed accordingly.</p>
+<p>The above message indicates that a file disobeying the formatting rules is detected and reformatting has taken place successfully.
+The correctly formatted code, with each argument added on a new line, has been saved and the related file(s) can now be staged and committed accordingly.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">argwhere</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">*</span><span class="p">,</span>
@@ -248,23 +240,19 @@ and committed accordingly.</p>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>If the code is all formatted correctly, then in this case <cite>pre-commit</cite> will not modify
-the code. For example, when the line limit is not exceeded by the function arguments,
-then the arguments should indeed be listed on the same line, together with the function
-<code class="code docutils literal notranslate"><span class="pre">def(...)</span></code> syntax, as shown below.</p>
+<p>If the code is all formatted correctly, then in this case <cite>pre-commit</cite> will not modify the code.
+For example, when the line limit is not exceeded by the function arguments, then the arguments should indeed be listed on the same line, together with the function <code class="code docutils literal notranslate"><span class="pre">def(...)</span></code> syntax, as shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="nb">type</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
 </pre></div>
 </div>
-<p>This would pass the lint checks, and <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> would allow the code to be
-committed without error.</p>
+<p>This would pass the lint checks, and <code class="code docutils literal notranslate"><span class="pre">pre-commit</span></code> would allow the code to be committed without error.</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>black....................................................................Passed
 flake8...................................................................Passed
 </pre></div>
 </div>
 <p><strong>Round Up</strong></p>
 <p>This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.</p>
-<p>If you have any questions, please feel free to reach out on <a href="#id1"><span class="problematic" id="id2">`discord`_</span></a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028266706436624456">formatting channel</a>
-or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297504820838480">formatting forum</a>!</p>
+<p>If you have any questions, please feel free to reach out on <a href="#id1"><span class="problematic" id="id2">`discord`_</span></a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028266706436624456">formatting channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297504820838480">formatting forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">

@@ -157,16 +157,12 @@
   <section id="docstrings">
 <h1>Docstrings<a class="headerlink" href="#docstrings" title="Permalink to this heading"></a></h1>
 <p>All functions in the Ivy API at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code> should have full and thorough docstrings.
-In contrast, all backend implementations at
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should not have any docstrings,
-on account that these are effectively just different instantiations of the functions at
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
+In contrast, all backend implementations at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/category_name.py</span></code> should not have any docstrings, on account that these are effectively just different instantiations of the functions at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/category_name.py</span></code>.</p>
 <p>In order to explain how docstrings should be written, we will use <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> as an example.</p>
-<p>Firstly, if the function exists in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, the we start with the corresponding docstring as a
-template. These docstrings can be found under <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api">spec/API_specification/array_api</a>.</p>
+<p>Firstly, if the function exists in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, the we start with the corresponding docstring as a template.
+These docstrings can be found under <a class="reference external" href="https://github.com/data-apis/array-api/tree/main/spec/API_specification/array_api">spec/API_specification/array_api</a>.</p>
 <p>Important: you should open the file in <strong>raw</strong> format.
-If you copy directly from the file preview on GitHub before clicking <strong>raw</strong>,
-then the newlines will <strong>not</strong> be copied over, and the docstring will rendering incorrectly in the online docs.</p>
+If you copy directly from the file preview on GitHub before clicking <strong>raw</strong>, then the newlines will <strong>not</strong> be copied over, and the docstring will rendering incorrectly in the online docs.</p>
 <p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> docstring for <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Calculates an implementation-dependent approximation to the tangent, having domain ``(-infinity, +infinity)`` and codomain ``(-infinity, +infinity)``, for each element ``x_i`` of the input array ``x``. Each element ``x_i`` is assumed to be expressed in radians.
 
@@ -190,9 +186,10 @@ out: array
     an array containing the tangent of each element in ``x``. The returned array must have a floating-point data type determined by :ref:`type-promotion`.
 </pre></div>
 </div>
-<p>This is a good starting point. But we need to make some changes. Firstly, given that we are using type hints, repeating
-all of the types also in the docs would be a needless duplication. Therefore, we simply remove all type info from the
-docstring like so:</p>
+<p>This is a good starting point.
+But we need to make some changes.
+Firstly, given that we are using type hints, repeating all of the types also in the docs would be a needless duplication.
+Therefore, we simply remove all type info from the docstring like so:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-x: array</span><span class="w"></span>
 <span class="gi">+x</span><span class="w"></span>
 <span class="gd">-out: array</span><span class="w"></span>
@@ -201,15 +198,14 @@ docstring like so:</p>
 </div>
 <p>The <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a> defines a subset of behaviour that each function must adhere to.
 Ivy extends many of these functions with additional behaviour and arguments.
-In the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, there is also the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code> which needs to be added to the docstring,
-like so:</p>
+In the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, there is also the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code> which needs to be added to the docstring, like so:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gi">+out</span><span class="w"></span>
 <span class="gi">+    optional output array, for writing the result to. It must have a shape that the inputs</span><span class="w"></span>
 <span class="gi">+    broadcast to.</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Because of this <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the input, we also need to rename the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the return, which
-is the default name used in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. We change this to <code class="code docutils literal notranslate"><span class="pre">ret</span></code>:</p>
+<p>Because of this <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the input, we also need to rename the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in the return, which is the default name used in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.
+We change this to <code class="code docutils literal notranslate"><span class="pre">ret</span></code>:</p>
 <div class="highlight-diff notranslate"><div class="highlight"><pre><span></span><span class="gd">-out</span><span class="w"></span>
 <span class="gi">+ret</span><span class="w"></span>
 </pre></div>
@@ -268,15 +264,9 @@ but this function is *nestable*, and therefore also accepts :class:`ivy.Containe
 instances in place of any of the arguments.
 </pre></div>
 </div>
-<p>If the function that you are writing a docstring for is <strong>not</strong> in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>,
-then you must simply follow this general template as closely as possible,
-but instead you must use your own judgment when adding descriptions for the overall function,
-and also for each of its arguments.</p>
+<p>If the function that you are writing a docstring for is <strong>not</strong> in the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>, then you must simply follow this general template as closely as possible, but instead you must use your own judgment when adding descriptions for the overall function, and also for each of its arguments.</p>
 <p><strong>Classes</strong></p>
-<p>The instance methods in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap
-a function in the functional API do not require thorough docstrings, on account that
-these instance methods require no explanation beyond that provided in the docstring
-for the wrapped function.</p>
+<p>The instance methods in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> which directly wrap a function in the functional API do not require thorough docstrings, on account that these instance methods require no explanation beyond that provided in the docstring for the wrapped function.</p>
 <p>Therefore, these docstrings should all simply contain the following text:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.&lt;</span><span class="n">Array</span><span class="o">|</span><span class="n">Container</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">instance</span><span class="o">|</span><span class="n">static</span><span class="o">|</span><span class="n">special</span><span class="o">|</span><span class="n">reverse</span> <span class="n">special</span><span class="o">&gt;</span> <span class="n">method</span> <span class="n">variant</span> <span class="n">of</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;.</span> <span class="n">This</span> <span class="n">method</span> <span class="n">simply</span> <span class="n">wraps</span> <span class="n">the</span>
 <span class="n">function</span><span class="p">,</span> <span class="ow">and</span> <span class="n">so</span> <span class="n">the</span> <span class="n">docstring</span> <span class="k">for</span> <span class="n">ivy</span><span class="o">.&lt;</span><span class="n">func_name</span><span class="o">&gt;</span> <span class="n">also</span> <span class="n">applies</span> <span class="n">to</span> <span class="n">this</span> <span class="n">method</span>
@@ -309,48 +299,18 @@ Returns
 </pre></div>
 </div>
 <p>Let’s take <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as an example.
-The docstring for
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191">ivy.add</a>
-is thorough, as explained above.
-However, the docstrings for
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36">ivy.Array.add</a>,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209">ivy.Container.add</a>
-and
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125">ivy.Container.static_add</a>
-all follow the succinct pattern outlined above.
-Likewise, the docstrings for the special methods
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310">ivy.Array.__add__</a>,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359">ivy.Array.__radd__</a>,
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106">ivy.Container.__add__</a>,
-and
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171">ivy.Container.__radd__</a>,
-also follow the succinct pattern outlined above.
-Note that these docstrings all <em>also</em> include examples,
-which we will cover in the next section.</p>
-<p>For all other classes, such as the various layers at
-<code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>,
-then we should add full and thorough docstrings for both
-the <strong>contstructor</strong> and also <strong>all methods</strong>.</p>
+The docstring for <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/functional/ivy/elementwise.py#L191">ivy.add</a> is thorough, as explained above.
+However, the docstrings for <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/elementwise.py#L36">ivy.Array.add</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L209">ivy.Container.add</a> and <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/elementwise.py#L125">ivy.Container.static_add</a> all follow the succinct pattern outlined above.
+Likewise, the docstrings for the special methods <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L310">ivy.Array.__add__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/array/array.py#L359">ivy.Array.__radd__</a>, <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L106">ivy.Container.__add__</a>, and <a class="reference external" href="https://github.com/unifyai/ivy/blob/04766790a518ecde380cb6eeb05aa89cf5acdbfd/ivy/container/container.py#L171">ivy.Container.__radd__</a>, also follow the succinct pattern outlined above.
+Note that these docstrings all <em>also</em> include examples, which we will cover in the next section.</p>
+<p>For all other classes, such as the various layers at <code class="code docutils literal notranslate"><span class="pre">ivy/ivy/stateful/layers</span></code>, then we should add full and thorough docstrings for both the <strong>contstructor</strong> and also <strong>all methods</strong>.</p>
 <p>This is the case even when the class directly wraps a function in the functional API.
-For example, the class
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13">ivy.Linear</a>
-wraps the function
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22">ivy.linear</a>,
-but does so in a stateful manner
-with the variables stored internally in the instance of the class.
-Even though the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> in the forward pass
-defined in <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84">ivy.Linear._forward</a>,
-the function signatures of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Linear._forward()</span></code> are still
-quite distinct, with the former including all trainable variables explicitly,
-and the latter having these implicit as internal instance attributes of the class.</p>
-<p>Therefore, with the exception of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-methods which directly wrap functions in the functional API,
-we should always add full and thorough docstrings to all methods of all other classes in Ivy,
-including cases where these also directly wrap functions in the functional API.</p>
+For example, the class <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L13">ivy.Linear</a> wraps the function <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/functional/ivy/layers.py#L22">ivy.linear</a>, but does so in a stateful manner with the variables stored internally in the instance of the class.
+Even though the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Linear</span></code> class wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> in the forward pass defined in <a class="reference external" href="https://github.com/unifyai/ivy/blob/51c23694c2f51e88caef0f382f200b195f8458b5/ivy/stateful/layers.py#L84">ivy.Linear._forward</a>, the function signatures of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.linear()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Linear._forward()</span></code> are still quite distinct, with the former including all trainable variables explicitly, and the latter having these implicit as internal instance attributes of the class.</p>
+<p>Therefore, with the exception of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> methods which directly wrap functions in the functional API, we should always add full and thorough docstrings to all methods of all other classes in Ivy, including cases where these also directly wrap functions in the functional API.</p>
 <p><strong>Round Up</strong></p>
 <p>These examples should hopefully give you a good understanding of what is required when adding docstings.</p>
-<p>If you have any questions,please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738313897197600">docstrings channel</a>
-or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297612408913982">docstrings forum</a>!</p>
+<p>If you have any questions,please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738313897197600">docstrings channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297612408913982">docstrings forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">

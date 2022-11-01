@@ -161,77 +161,37 @@
              
   <section id="docstring-examples">
 <h1>Docstring Examples<a class="headerlink" href="#docstring-examples" title="Permalink to this heading"></a></h1>
-<p>After writing the general docstrings,
-the final step is to add helpful examples to the docstrings.</p>
+<p>After writing the general docstrings, the final step is to add helpful examples to the docstrings.</p>
 <p>There are eight types of examples, which each need to be added:</p>
-<p><strong>Functional</strong> examples show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
-<p><strong>Container static method</strong> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
-<p><strong>Array instance method</strong> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
-and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
-<p><strong>Container instance method</strong> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
-and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
-<p><strong>Array operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
-with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
-<p><strong>Array reverse operator</strong> examples show an operation being performed like so
-<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
-<p><strong>Container operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
-with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
-<p><strong>Container reverse operator</strong> examples show an operation being performed like so
-<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
-<p>The first four example types are very common, while the last four, unsurprisingly,
-are only relevant for <em>operator</em> functions
-such as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code>.</p>
-<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in
-(<code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> etc.) being called on the array class.</p>
-<p><strong>Operator</strong> examples are only relevant for <em>operator</em> functions. These are functions which are called when a
-corresponding operator is applied to an array. For example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>,
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code>
-are used respectively. Under the hood, these operators first call the special methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>,
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> respectively, on either the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-instance upon which the operator is being applied.
+<p><strong>Functional</strong> examples show the function being called like so <code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
+<p><strong>Container static method</strong> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
+<p><strong>Array instance method</strong> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
+<p><strong>Container instance method</strong> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
+<p><strong>Array operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
+<p><strong>Array reverse operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
+<p><strong>Container operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
+<p><strong>Container reverse operator</strong> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
+<p>The first four example types are very common, while the last four, unsurprisingly, are only relevant for <em>operator</em> functions such as <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code>.</p>
+<p>For example, calling any of (<code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code>, <code class="code docutils literal notranslate"><span class="pre">/</span></code> etc.) on the array will result in (<code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> etc.) being called on the array class.</p>
+<p><strong>Operator</strong> examples are only relevant for <em>operator</em> functions. These are functions which are called when a corresponding operator is applied to an array.
+For example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.subtract()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.multiply()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.divide()</span></code> are called when the operators <code class="code docutils literal notranslate"><span class="pre">+</span></code>, <code class="code docutils literal notranslate"><span class="pre">-</span></code>, <code class="code docutils literal notranslate"><span class="pre">*</span></code> and <code class="code docutils literal notranslate"><span class="pre">/</span></code> are used respectively.
+Under the hood, these operators first call the special methods <code class="xref py py-meth docutils literal notranslate"><span class="pre">__add__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__sub__()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">__mul__()</span></code> and <code class="xref py py-meth docutils literal notranslate"><span class="pre">__truediv__()</span></code> respectively, on either the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance upon which the operator is being applied.
 These special methods in turn call the functions in the Ivy API mentioned above.</p>
 <p><strong>Functional Examples</strong></p>
-<p>To recap, <em>functional</em> examples show the function being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function
-in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
+<p>To recap, <em>functional</em> examples show the function being called like so <code class="code docutils literal notranslate"><span class="pre">ivy.func_name(...)</span></code>, and these should be added to docstring of the function in the Ivy API <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code>.</p>
 <p>Firstly, we should include <em>functional</em> examples with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances in the input.</p>
 <p>These should:</p>
 <ol class="arabic simple">
-<li><p>cover all possible variants (explained below) for each of the arguments independently,
-not combinatorially. This means the number of examples should be equal to the maximum number of
-variations for a single argument, and not the entire grid of variations across all arguments
-(further explained in the examples below)</p></li>
+<li><p>cover all possible variants (explained below) for each of the arguments independently, not combinatorially. This means the number of examples should be equal to the maximum number of variations for a single argument, and not the entire grid of variations across all arguments (further explained in the examples below)</p></li>
 <li><p>vary the values and input shapes considerably between examples</p></li>
-<li><p>start with the simplest examples first. For example, this means using the default values for all optional arguments
-in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the
-function in question</p></li>
-<li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>,
-and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code>
-(provided that it shares the same <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">shape</span></code> as the return)</p></li>
+<li><p>start with the simplest examples first. For example, this means using the default values for all optional arguments in the first example, and using small arrays, with a small number of dimensions, and with <em>simple</em> values for the function in question</p></li>
+<li><p>show an example with: (a) <code class="code docutils literal notranslate"><span class="pre">out</span></code> unused, (b) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to update a new array <code class="code docutils literal notranslate"><span class="pre">y</span></code>, and (c) <code class="code docutils literal notranslate"><span class="pre">out</span></code> used to inplace update the input array <code class="code docutils literal notranslate"><span class="pre">x</span></code> (provided that it shares the same <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">shape</span></code> as the return)</p></li>
 <li><p>If broadcasting is relevant for the function, then show examples which highlight this.
 For example, passing in different shapes for two array arguments</p></li>
 </ol>
-<p>For all remaining examples, we can repeat input values from these <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> <em>functional</em>
-examples covered by points 1-5.</p>
-<p>The purpose of the extra examples with different input types in points 6-18 is to
-highlight the different contexts in which the function can be called
-(as an instance method etc.). The purpose is not to provide an excessive number of
-variations of possible function inputs.</p>
+<p>For all remaining examples, we can repeat input values from these <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> <em>functional</em> examples covered by points 1-5.</p>
+<p>The purpose of the extra examples with different input types in points 6-18 is to highlight the different contexts in which the function can be called (as an instance method etc.).
+The purpose is not to provide an excessive number of variations of possible function inputs.</p>
 <p>Next, for <em>nestable</em> functions there should be an example that:</p>
 <ol class="arabic simple" start="6">
 <li><p>passes in an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance in place of one of the arguments</p></li>
@@ -250,94 +210,59 @@ For example, the following container is okay to use for example purposes:</p>
 </pre></div>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
-<p>To recap, <em>container static method</em> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the
-docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
-<p>The static methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are used under the hood when
-supporting the <em>nestable</em> property for all Ivy functions in the API,
-as showcased by the examples for points 6 and 7. We should demonstrate these same
-examples in the static method docstrings also.</p>
+<p>To recap, <em>container static method</em> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">ivy.Container.static_func_name(...)</span></code>, and these should be added to the docstring of the static container method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>.</p>
+<p>The static methods of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class are used under the hood when supporting the <em>nestable</em> property for all Ivy functions in the API, as showcased by the examples for points 6 and 7.
+We should demonstrate these same examples in the static method docstrings also.</p>
 <ol class="arabic simple" start="8">
-<li><p>the example from point 6 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring. With
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>
-in the example.</p></li>
-<li><p>the example from point 7 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring. With
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code>
-in the example.</p></li>
+<li><p>the example from point 6 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring.
+With <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> in the example.</p></li>
+<li><p>the example from point 7 should be replicated, but added to the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> docstring.
+With <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> replaced with <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_func_name()</span></code> in the example.</p></li>
 </ol>
 <p><strong>Array Instance Method Example</strong></p>
-<p>To recap, <em>array instance method</em> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance,
-and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
-<p>These examples are of course only relevant if an instance method for
-the function exists. If so, this example should simply:</p>
+<p>To recap, <em>array instance method</em> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.func_name()</span></code>.</p>
+<p>These examples are of course only relevant if an instance method for the function exists. If so, this example should simply:</p>
 <ol class="arabic simple" start="10">
 <li><p>call this instance method of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class</p></li>
 </ol>
 <p><strong>Container Instance Method Example</strong></p>
-<p>To recap, <em>container instance method</em> examples show the method being called like so
-<code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance,
-and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
-<p>These examples are of course only relevant if an instance method
-for the function exists. If so, this example should simply:</p>
+<p>To recap, <em>container instance method</em> examples show the method being called like so <code class="code docutils literal notranslate"><span class="pre">x.func_name(...)</span></code> on an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.func_name()</span></code>.</p>
+<p>These examples are of course only relevant if an instance method for the function exists.
+If so, this example should simply:</p>
 <ol class="arabic simple" start="11">
 <li><p>call this instance method of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> class</p></li>
 </ol>
 <p><strong>Array Operator Examples</strong></p>
-<p>To recap, <em>array operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
-with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
+<p>To recap, <em>array operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__&lt;op_name&gt;__()</span></code>.</p>
 <p>If the function is an <em>operator</em> function, then the <em>array operator</em> examples should:</p>
 <ol class="arabic simple" start="12">
 <li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances</p></li>
-<li><p>call the operator with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right</p></li>
+<li><p>call the operator with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right</p></li>
 </ol>
 <p><strong>Array Reverse Operator Example</strong></p>
-<p>To recap, <em>array reverse operator</em> examples show an operation being performed like so
-<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
-<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
-should:</p>
+<p>To recap, <em>array reverse operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance. These should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__r&lt;op_name&gt;__()</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example should:</p>
 <ol class="arabic simple" start="14">
-<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code>
-instance on the right</p></li>
+<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the right</p></li>
 </ol>
 <p><strong>Container Operator Examples</strong></p>
-<p>To recap, <em>container operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code>
-with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the
-docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
-<p>If the function is an <em>operator</em> function, then the <em>container operator</em>
-examples should:</p>
+<p>To recap, <em>container operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance, and these should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__&lt;op_name&gt;__()</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>container operator</em> examples should:</p>
 <ol class="arabic simple" start="15">
-<li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
-<code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves</p></li>
-<li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves</p></li>
-<li><p>call the operator with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right</p></li>
+<li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing <code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves</p></li>
+<li><p>call the operator on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves</p></li>
+<li><p>call the operator with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right</p></li>
 </ol>
 <p><strong>Container Reverse Operator Example</strong></p>
-<p>To recap, <em>container reverse operator</em> examples show an operation being performed like so
-<code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance. These should be added to the docstring of the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
-<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example
-should:</p>
+<p>To recap, <em>container reverse operator</em> examples show an operation being performed like so <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> with <code class="code docutils literal notranslate"><span class="pre">x</span></code> being a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> being an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance.
+These should be added to the docstring of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__r&lt;op_name&gt;__()</span></code>.</p>
+<p>If the function is an <em>operator</em> function, then the <em>array reverse operator</em> example should:</p>
 <ol class="arabic simple" start="18">
-<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-instance on the right</p></li>
+<li><p>call the operator with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the right</p></li>
 </ol>
 <p><strong>Note</strong></p>
-<p>All docstrings must run without error for all backend frameworks. If some backends do
-not support some <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> for a function, then we should not include this <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> for any of the examples
-for that particular function in the docstring.</p>
+<p>All docstrings must run without error for all backend frameworks.
+If some backends do not support some <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> for a function, then we should not include this <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> for any of the examples for that particular function in the docstring.</p>
 <p><strong>All Possible Variants</strong></p>
 <p>Point 1 mentions that the examples should cover <em>all possible variations</em>.
 Let’s look at an example to make it more clear what is meant by <em>all possible variants</em> of each argument independently.</p>
@@ -359,19 +284,16 @@ Let’s look at an example to make it more clear what is meant by <em>all possib
 </ul>
 <p>Please note, this does not need to be done with a grid search.
 There are 1 x 3 x 2 x 3 x 3 = 54 possible variations here, and we do not need an example for each one!
-Instead, we only need as many examples as there are variations for the argument with the maximum number of variations,
-in this case jointly being the <code class="code docutils literal notranslate"><span class="pre">mode</span></code>, <code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> arguments, each with 3 variations.</p>
+Instead, we only need as many examples as there are variations for the argument with the maximum number of variations, in this case jointly being the <code class="code docutils literal notranslate"><span class="pre">mode</span></code>, <code class="code docutils literal notranslate"><span class="pre">another_flag</span></code> and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> arguments, each with 3 variations.</p>
 <p>For example, we could have three examples using the following arguments:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_func</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 <span class="n">my_func</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">prod</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
 <span class="n">my_func</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is
-included in the examples. These three examples procedurally go through the variations from left to right for each
-argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.</p>
-<p>You can also add more examples if you think some important use cases are missed, this is just a lower limit on the
-examples that should be included in the docstring!</p>
+<p>It doesn’t matter how the variations are combined for the examples, as long as every variation for every argument is included in the examples.
+These three examples procedurally go through the variations from left to right for each argument, but this doesn’t need to be the case if you think other combinations make more sense for the examples.</p>
+<p>You can also add more examples if you think some important use cases are missed, this is just a lower limit on the examples that should be included in the docstring!</p>
 <p>We’ll next go through some examples to make these 18 points more clear.</p>
 <section id="ivy-tan">
 <h2>ivy.tan<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h2>
@@ -410,22 +332,17 @@ ivy.array([[ 1.9647598, -1.3738229,  0.1597457],
 </pre></div>
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
-<p>Please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
-<p>Point 1 is simple to satisfy. Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by
-points 6 and 7, and ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
-then as far as point 1 is concerned, the input <code class="code docutils literal notranslate"><span class="pre">x</span></code> only has one possible variation. It must be an array.</p>
+<p>Please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
+<p>Point 1 is simple to satisfy.
+Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7, and ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, the input <code class="code docutils literal notranslate"><span class="pre">x</span></code> only has one possible variation.
+It must be an array.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
-and the values and shapes do become increasingly <em>complex</em>.</p>
-<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.
-The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
-making all three examples possible.</p>
+<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant, and the values and shapes do become increasingly <em>complex</em>.</p>
+<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input, making all three examples possible.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
 <p>We then also add an example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input, in order to satisfy point 6.
-Point 7 is not relevant as there is only one input argument
-(excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
+Point 7 is not relevant as there is only one input argument (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output)</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :class:`ivy.Container` input:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
@@ -438,10 +355,8 @@ Point 7 is not relevant as there is only one input argument
 </pre></div>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
-<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example to the docstring of
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code> in order to satisfy point 8.
-Point 9 is not relevant as there is only one input argument
-(excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
+<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_tan()</span></code> in order to satisfy point 8.
+Point 9 is not relevant as there is only one input argument (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code> which does not count, as it essentially acts as an output).</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 With :class:`ivy.Container` input:
@@ -467,8 +382,7 @@ point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.tan()</span></code> in order to satisfy
-point 11.</p>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.tan()</span></code> in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]))</span>
@@ -534,22 +448,16 @@ ivy.array([[[ 9., 3.],
 </pre></div>
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
-<p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
-<p>Point 1 is a bit less trivial to satisfy than it was for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> above. While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one
-variation (for the same reason as explained in the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations
-(<code class="code docutils literal notranslate"><span class="pre">int</span></code> or sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations
-(<code class="code docutils literal notranslate"><span class="pre">int</span></code>, :sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>, or <code class="code docutils literal notranslate"><span class="pre">None</span></code>).</p>
-<p>Therefore, we need at least three examples (equal to the maximum number of variations, in this case <code class="code docutils literal notranslate"><span class="pre">axis</span></code>),
-in order to show all variations for each argument. By going through each of the three examples above, it can be seen
-that each variation for each argument is demonstrated in at least one of the examples. Therefore, point 1 is satisfied.</p>
+<p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
+<p>Point 1 is a bit less trivial to satisfy than it was for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> above.
+While <code class="code docutils literal notranslate"><span class="pre">x</span></code> again only has one variation (for the same reason as explained in the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> example above), <code class="code docutils literal notranslate"><span class="pre">shift</span></code> has two variations (<code class="code docutils literal notranslate"><span class="pre">int</span></code> or sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>), and <code class="code docutils literal notranslate"><span class="pre">axis</span></code> has three variations (<code class="code docutils literal notranslate"><span class="pre">int</span></code>, :sequence of <code class="code docutils literal notranslate"><span class="pre">int</span></code>, or <code class="code docutils literal notranslate"><span class="pre">None</span></code>).</p>
+<p>Therefore, we need at least three examples (equal to the maximum number of variations, in this case <code class="code docutils literal notranslate"><span class="pre">axis</span></code>), in order to show all variations for each argument.
+By going through each of the three examples above, it can be seen that each variation for each argument is demonstrated in at least one of the examples.
+Therefore, point 1 is satisfied.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, as the first example uses the default values for optional arguments,
-and the subsequent examples the non-default values in increasingly <em>complex</em> examples.</p>
-<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.
-The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
-making all three examples possible.</p>
+<p>Point 3 is satisfied, as the first example uses the default values for optional arguments, and the subsequent examples the non-default values in increasingly <em>complex</em> examples.</p>
+<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input, making all three examples possible.</p>
 <p>Point 5 is not relevant, as there is only one array input, and so broadcasting rules do not apply.</p>
 <p>We then also add an example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 6.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With one :class:`ivy.Container` input:
@@ -564,10 +472,8 @@ making all three examples possible.</p>
 }
 </pre></div>
 </div>
-<p>Unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case,
-as there are three function inputs in total (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
-We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
-in order to satisfy point 7.</p>
+<p>Unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case, as there are three function inputs in total (excluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
+We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 7.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -582,9 +488,7 @@ in order to satisfy point 7.</p>
 </pre></div>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
-<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>,
-in order to satisfy point 8.</p>
+<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>, in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 
@@ -600,9 +504,7 @@ With one :class:`ivy.Container` input:
 }
 </pre></div>
 </div>
-<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>,
-in order to satisfy point 9.</p>
+<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_roll()</span></code>, in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -617,8 +519,7 @@ in order to satisfy point 9.</p>
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.roll()</span></code>
-in order to satisfy point 10.</p>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.roll()</span></code> in order to satisfy point 10.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
@@ -628,8 +529,7 @@ in order to satisfy point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.roll()</span></code>
-in order to satisfy point 11.</p>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.roll()</span></code> in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
@@ -695,22 +595,16 @@ ivy.array([[[9.5],
 </pre></div>
 </div>
 <p>These examples cover points 1, 2, 3, 4 and 5.</p>
-<p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input
-to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
+<p>Again, please note that in the above case of <cite>x</cite> having multi-line input, it is necessary for each line of the input to be seperated by a ‘…' so that they can be parsed by the script that tests the examples in the docstrings.</p>
 <p>Point 1 is again trivial to satisfy, as was the case for <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>.
-Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7,
-and also ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9,
-then as far as point 1 is concerned, inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code> both only have one possible variation.
+Ignoring the union over <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> which is covered by points 6 and 7, and also ignoring the <em>nestable</em> nature of the function which is covered by points 8 and 9, then as far as point 1 is concerned, inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code> both only have one possible variation.
 They must both be arrays.</p>
 <p>Point 2 is satisfied, as the shape and values of the inputs are varied between each of the three examples.</p>
-<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant,
-and the values and shapes do become increasingly <em>complex</em>.</p>
-<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as
-explained in point 4.
-The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input,
-making all three examples possible.</p>
-<p>Point 5 is satisfied, as the second example uses different shapes for the inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code>. This causes
-the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.</p>
+<p>Point 3 is satisfied, there are no optional inputs (aside from <code class="code docutils literal notranslate"><span class="pre">out</span></code>) and so this point is irrelevant, and the values and shapes do become increasingly <em>complex</em>.</p>
+<p>Point 4 is clearly satisfied, as each of the three examples shown above use the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument exactly as explained in point 4.
+The return has the same <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> as the input, making all three examples possible.</p>
+<p>Point 5 is satisfied, as the second example uses different shapes for the inputs <code class="code docutils literal notranslate"><span class="pre">x1</span></code> and <code class="code docutils literal notranslate"><span class="pre">x2</span></code>.
+This causes the broadcasting rules to apply, which dictates how the operation is performed and the resultant shape of the output.</p>
 <p>We then also add an example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, in order to satisfy point 6.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With one :class:`ivy.Container` input:
 
@@ -729,10 +623,8 @@ the broadcasting rules to apply, which dictates how the operation is performed a
 }
 </pre></div>
 </div>
-<p>Again, unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case,
-as there are two function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
-We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs,
-in order to satisfy point 7.</p>
+<p>Again, unlike <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, point 7 is relevant in this case, as there are two function inputs in total (exluding <code class="code docutils literal notranslate"><span class="pre">out</span></code>).
+We can therefore add an example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, in order to satisfy point 7.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -748,9 +640,7 @@ in order to satisfy point 7.</p>
 </pre></div>
 </div>
 <p><strong>Container Static Method Examples</strong></p>
-<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>,
-in order to satisfy point 8.</p>
+<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> for one of the inputs, to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>, in order to satisfy point 8.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 
@@ -771,9 +661,7 @@ With one :class:`ivy.Container` input:
 }
 </pre></div>
 </div>
-<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, also to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>,
-in order to satisfy point 9.</p>
+<p>We then add an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method example with multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs, also to the docstring of <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.static_add()</span></code>, in order to satisfy point 9.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With multiple :class:`ivy.Container` inputs:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -789,8 +677,7 @@ in order to satisfy point 9.</p>
 </pre></div>
 </div>
 <p><strong>Array Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.add()</span></code> in order to satisfy
-point 10.</p>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.add()</span></code> in order to satisfy point 10.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
@@ -802,8 +689,7 @@ point 10.</p>
 </pre></div>
 </div>
 <p><strong>Container Instance Method Example</strong></p>
-<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.add()</span></code> in order to satisfy
-point 11.</p>
+<p>We then add an instance method example to <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.add()</span></code> in order to satisfy point 11.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
@@ -820,8 +706,7 @@ point 11.</p>
 </pre></div>
 </div>
 <p><strong>Array Operator Examples</strong></p>
-<p>Point 12 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code>
-docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.</p>
+<p>Point 12 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code> docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 
@@ -834,9 +719,7 @@ With :class:`ivy.Array` instances only:
 ivy.array([5, 7, 9])
 </pre></div>
 </div>
-<p>Point 13 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code>
-docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right.</p>
+<p>Point 13 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__add__()</span></code> docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the left and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
 &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])
@@ -855,9 +738,7 @@ docstring, with the operator called with an <code class="xref py py-class docuti
 </pre></div>
 </div>
 <p><strong>Array Reverse Operator Examples</strong></p>
-<p>Point 14 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__radd__()</span></code>
-docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the right.</p>
+<p>Point 14 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Array.__radd__()</span></code> docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
@@ -869,9 +750,7 @@ docstring, with the operator called with a <code class="code docutils literal no
 </pre></div>
 </div>
 <p><strong>Container Operator Examples</strong></p>
-<p>Point 15 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
-docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
-<code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves.</p>
+<p>Point 15 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code> docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing <code class="code docutils literal notranslate"><span class="pre">Number</span></code> instances at the leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>Examples
 --------
 
@@ -887,9 +766,7 @@ With :code:`Number` instances at the leaves:
 }
 </pre></div>
 </div>
-<p>Point 16 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
-docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves.</p>
+<p>Point 16 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code> docstring, with the operator called on two <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instances containing <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances at the leaves.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With :class:`ivy.Array` instances at the leaves:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2, 3]),
@@ -904,9 +781,7 @@ docstring, with the operator called on two <code class="xref py py-class docutil
 }
 </pre></div>
 </div>
-<p>Point 17 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code>
-docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left
-and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right.</p>
+<p>Point 17 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__add__()</span></code> docstring, with the operator called with an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the left and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
@@ -925,9 +800,7 @@ and <code class="xref py py-class docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p><strong>Container Reverse Operator Example</strong></p>
-<p>Point 18 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__radd__()</span></code>
-docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the right.</p>
+<p>Point 18 is satisfied by the following example in the <code class="xref py py-meth docutils literal notranslate"><span class="pre">ivy.Container.__radd__()</span></code> docstring, with the operator called with a <code class="code docutils literal notranslate"><span class="pre">Number</span></code> on the left and an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance on the right.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Examples</span>
 <span class="o">--------</span>
 
@@ -943,16 +816,15 @@ docstring, with the operator called with a <code class="code docutils literal no
 </div>
 <p><strong>Docstring Tests</strong></p>
 <p>After making a Pull Request, each time you make a commit, then a number of checks are run on it to ensure everything’s working fine.
-One of these checks is the docstring tests named as <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> in the GitHub actions. The docstring
-tests check whether the docstring examples for a given function are valid or not. It basically checks if the output upon
-execution of the examples that are documented match exactly with the ones shown in the docstrings. Therefore each time you
-make a commit, you must ensure that the <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> are working correctly at least for the
-function you are making changes to. To check whether the docstring tests are passing you need to check the logs for <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code>:</p>
+One of these checks is the docstring tests named as <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> in the GitHub actions.
+The docstring tests check whether the docstring examples for a given function are valid or not.
+It basically checks if the output upon execution of the examples that are documented match exactly with the ones shown in the docstrings.
+Therefore each time you make a commit, you must ensure that the <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code> are working correctly at least for the function you are making changes to.
+To check whether the docstring tests are passing you need to check the logs for <code class="code docutils literal notranslate"><span class="pre">test-docstrings</span> <span class="pre">/</span> <span class="pre">run-docstring-tests</span></code>:</p>
 <blockquote>
 <div><a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/docstring_examples/docstring_failing_test_logs.png?raw=true" style="width: 420px;" /></a>
 </div></blockquote>
-<p>You will need to go through the logs and see if the list of functions for which the docstring tests are
-failing also has the function you are working with.</p>
+<p>You will need to go through the logs and see if the list of functions for which the docstring tests are failing also has the function you are working with.</p>
 <p>If the docstring tests are failing the  logs show a list of functions having issues along with a diff message:
 <code class="code docutils literal notranslate"><span class="pre">output</span> <span class="pre">for</span> <span class="pre">failing_fn_name</span> <span class="pre">on</span> <span class="pre">run:</span> <span class="pre">......</span></code>
 <code class="code docutils literal notranslate"><span class="pre">output</span> <span class="pre">in</span> <span class="pre">docs:</span> <span class="pre">........</span></code>
@@ -960,22 +832,17 @@ as shown below:</p>
 <blockquote>
 <div><a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/deep_dive/docstring_examples/docstring_log.png" style="width: 420px;" /></a>
 </div></blockquote>
-<p>It can be quite tedious to go through the output diffs and spot the exact error, so you can
-take help of online tools like <a class="reference external" href="https://text-compare.com/">text compare</a> to spot the minutest
-of differences.</p>
-<p>Once you make the necessary changes and the function you are working on doesn’t cause the docstring
-tests to fail, you should be good to go. However, one of the reviewers might ask you to make additional
-changes involving examples. Passing docstring tests is a necessary but not sufficient condition for
-the completion of docstring formatting.</p>
+<p>It can be quite tedious to go through the output diffs and spot the exact error, so you can take help of online tools like <a class="reference external" href="https://text-compare.com/">text compare</a> to spot the minutest of differences.</p>
+<p>Once you make the necessary changes and the function you are working on doesn’t cause the docstring tests to fail, you should be good to go.
+However, one of the reviewers might ask you to make additional changes involving examples.
+Passing docstring tests is a necessary but not sufficient condition for the completion of docstring formatting.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Docstring examples should not have code that imports ivy or sets a backend, otherwise it leads to segmentation faults.</p>
 </div>
 <p><strong>Round Up</strong></p>
-<p>These three examples should give you a good understanding of what is required when
-adding docstring examples.</p>
-<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738352103129098">docstring examples channel</a>
-or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297703089774705">docstring examples forum</a>!</p>
+<p>These three examples should give you a good understanding of what is required when adding docstring examples.</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/982738352103129098">docstring examples channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297703089774705">docstring examples forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/rtce8XthiKA" class="video">

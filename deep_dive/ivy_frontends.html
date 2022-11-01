@@ -170,55 +170,47 @@
 <h1>Ivy Frontends<a class="headerlink" href="#ivy-frontends" title="Permalink to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
-<p>On top of the Ivy functional API and backend functional APIs, Ivy has another set of
-framework-specific frontend functional APIs, which play an important role in code
-transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
+<p>On top of the Ivy functional API and backend functional APIs, Ivy has another set of framework-specific frontend functional APIs, which play an important role in code transpilations, as explained <a class="reference external" href="https://lets-unify.ai/ivy/design/ivy_as_a_transpiler.html">here</a>.</p>
 <p>Let’s start with some examples to have a better idea on Ivy Frontends!</p>
 </section>
 <section id="the-frontend-basics">
 <h2>The Frontend Basics<a class="headerlink" href="#the-frontend-basics" title="Permalink to this heading"></a></h2>
-<p>When using functions and methods of Ivy Frontends, in addition to importing ivy itself
-like <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span></code> please also import the corresponding Frontend module.
+<p>When using functions and methods of Ivy Frontends, in addition to importing ivy itself like <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy</span></code> please also import the corresponding Frontend module.
 For example, to use ivy’s tensorflow frontend:</p>
 <blockquote>
 <div><p><code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.frontends.tensorflow</span> <span class="pre">as</span> <span class="pre">tf_frontend</span></code></p>
 </div></blockquote>
 <hr class="docutils" />
-<p>When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace. For example, we call <a class="reference external" href="https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109">tensorflow.tan</a> rather than <code class="xref py py-func docutils literal notranslate"><span class="pre">tensorflow.math.tan()</span></code>. In this particular case both are fine, and in fact are <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">aliases</a>.</p>
-<p>However, sometimes an extra namespace path is necessary. Taking JAX as an example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> both exist, while <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> does not exist. In our JAX frontend, if we add both of these to the root namespace, it would be possible to call <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> in our frontend.</p>
-<p>This would result in <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> overwriting the other one in an arbitrary manner. In fact, neither of these should be added to the root namespace, as it does not exist in the native <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax</span></code> framework.</p>
+<p>When testing the frontend functions, we can sometimes call the function directly from the root frontend namespace.
+For example, we call <a class="reference external" href="https://github.com/unifyai/ivy/blob/f52457a7bf3cfafa30a7c1a29a708ade017a735f/ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py#L109">tensorflow.tan</a> rather than <code class="xref py py-func docutils literal notranslate"><span class="pre">tensorflow.math.tan()</span></code>.
+In this particular case both are fine, and in fact are <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">aliases</a>.</p>
+<p>However, sometimes an extra namespace path is necessary.
+Taking JAX as an example, the functions <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> both exist, while <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> does not exist.
+In our JAX frontend, if we add both of these to the root namespace, it would be possible to call <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> in our frontend.</p>
+<p>This would result in <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.numpy.abs()</span></code> or <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.abs()</span></code> overwriting the other one in an arbitrary manner.
+In fact, neither of these should be added to the root namespace, as it does not exist in the native <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax</span></code> framework.</p>
 <p>If you accidentally test a function with <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;func_name&gt;&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;&lt;lax|numpy&gt;.&lt;func_name&gt;&quot;</span></code>, you will see an error since the wrong frontend function is being tested.</p>
 <p>Therefore, in order to avoid this potential conflict:</p>
 <ul class="simple">
-<li><p>All frontend tests should use the full namespace path when calling the frontend function. In the case of TensorFlow, this would mean writing <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;math.tan&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;tan&quot;</span></code> in the frontend test.</p></li>
+<li><p>All frontend tests should use the full namespace path when calling the frontend function.
+In the case of TensorFlow, this would mean writing <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;math.tan&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">fn_tree=&quot;tan&quot;</span></code> in the frontend test.</p></li>
 <li><p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">__init__.py</span></code> file in all frontends should be carefully checked, and you should verify that you are not adding aliases into the frontend which should not exist, such as the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">jax.abs()</span></code> explained above.</p></li>
-<li><p>You should ensure that the tests are passing before merging any frontend PRs. The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.</p></li>
+<li><p>You should ensure that the tests are passing before merging any frontend PRs.
+The only exception to this rule is if the test is failing due to a bug in the Ivy functional API, which does not need to be solved as part of the frontend task.</p></li>
 </ul>
-<p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit
-explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks">open task</a>.</p>
-<p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on
-frontend functions.</p>
+<p>There will be some implicit discussion of the locations of frontend functions in these examples, however an explicit explanation of how to place a frontend function can be found in a sub-section of the Frontend APIs <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks">open task</a>.</p>
+<p><strong>NOTE:</strong> Type hints, docstrings and examples are not required when working on frontend functions.</p>
 <p><strong>Jax</strong></p>
-<p>JAX has two distinct groups of functions, those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and
-those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace. The former set of functions map very closely
-to the API for the Accelerated Linear Algebra (<a class="reference external" href="https://www.tensorflow.org/xla">XLA</a>)
-compiler, which is used under the hood to run high performance JAX code. The latter set
-of functions map very closely to NumPy’s well known API. In general, all functions in
-the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace are themselves implemented as a composition of the
-lower-level functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace.</p>
-<p>When transpiling between frameworks, the first step is to compile the computation graph
-into low level python functions for the source framework using Ivy’s graph
-compiler, before then replacing these nodes with the associated functions in Ivy’s
-frontend API. Given that all jax code can be decomposed into <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code>
-function calls, when transpiling JAX code it should always be possible to
-express the computation graph as a composition of only <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> functions.
-Therefore, arguably these are the <em>only</em> functions we should need to implement in the
-JAX frontend. However, in general we wish to be able to compile a graph in the backend
-framework with varying levels of dynamicism. A graph of only <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> functions
-chained together in general is more <em>static</em> and less <em>dynamic</em> than a graph which
-chains <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> functions together. We wish to enable varying extents of
-dynamicism when compiling a graph with our graph compiler, and therefore we also
-implement the functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace in our frontend API for JAX.</p>
+<p>JAX has two distinct groups of functions, those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace and those in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace.
+The former set of functions map very closely to the API for the Accelerated Linear Algebra (<a class="reference external" href="https://www.tensorflow.org/xla">XLA</a>) compiler, which is used under the hood to run high performance JAX code.
+The latter set of functions map very closely to NumPy’s well known API.
+In general, all functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace are themselves implemented as a composition of the lower-level functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> namespace.</p>
+<p>When transpiling between frameworks, the first step is to compile the computation graph into low level python functions for the source framework using Ivy’s graph compiler, before then replacing these nodes with the associated functions in Ivy’s frontend API.
+Given that all jax code can be decomposed into <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> function calls, when transpiling JAX code it should always be possible to express the computation graph as a composition of only <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> functions.
+Therefore, arguably these are the <em>only</em> functions we should need to implement in the JAX frontend.
+However, in general we wish to be able to compile a graph in the backend framework with varying levels of dynamicism.
+A graph of only <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.lax</span></code> functions chained together in general is more <em>static</em> and less <em>dynamic</em> than a graph which chains <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> functions together.
+We wish to enable varying extents of dynamicism when compiling a graph with our graph compiler, and therefore we also implement the functions in the <code class="xref py py-mod docutils literal notranslate"><span class="pre">jax.numpy</span></code> namespace in our frontend API for JAX.</p>
 <p>Thus, both <code class="xref py py-mod docutils literal notranslate"><span class="pre">lax</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">numpy</span></code> modules are created in the JAX frontend API.
 We start with the function <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code> as an example.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
@@ -226,26 +218,19 @@ We start with the function <code class="xref py py-func docutils literal notrans
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">operators</span></code> as shown in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a>
-package directory. We organize the functions using the same categorizations as the
-original framework, and also mimic the importing behaviour regarding modules and
-namespaces etc.</p>
-<p>For the function arguments, these must be identical to the original function in
-Jax. In this case, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html">jax.lax.add</a> has two arguments,
-and so we will also have the same two arguments in our Jax frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code>.
-In this case, the function will then simply return <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>,
-which in turn will link to the backend-specific implementation <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>
-according to the framework set in the backend.</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code> is categorised under <code class="code docutils literal notranslate"><span class="pre">operators</span></code> as shown in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a> package directory.
+We organize the functions using the same categorizations as the original framework, and also mimic the importing behaviour regarding modules and namespaces etc.</p>
+<p>For the function arguments, these must be identical to the original function in Jax.
+In this case, <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.add.html">jax.lax.add</a> has two arguments, and so we will also have the same two arguments in our Jax frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.add()</span></code>.
+In this case, the function will then simply return <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, which in turn will link to the backend-specific implementation <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> according to the framework set in the backend.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/jax/lax/operators.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Using <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.tan()</span></code> as a second example, we can see that this is placed under
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">operators</span></code>, again in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a> directory.
-By referring to the <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html">jax.lax.tan</a> documentation, we can see that it has only one
-argument. In the same manner as our <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function, we simply link its return
-to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, and again the computation then depends on the backend framework.</p>
+<p>Using <code class="xref py py-func docutils literal notranslate"><span class="pre">lax.tan()</span></code> as a second example, we can see that this is placed under <code class="xref py py-mod docutils literal notranslate"><span class="pre">operators</span></code>, again in the <a class="reference external" href="https://jax.readthedocs.io/en/latest/jax.lax.html">jax.lax</a> directory.
+By referring to the <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.tan.html">jax.lax.tan</a> documentation, we can see that it has only one argument.
+In the same manner as our <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function, we simply link its return to <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, and again the computation then depends on the backend framework.</p>
 <p><strong>NumPy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
@@ -269,30 +254,20 @@ to <code class="xref py py-func docutils literal notranslate"><span class="pre">
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>In NumPy, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a
-sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">arithmetic_operations</span></code> as shown in the
-<a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
-<p>The function arguments for this function are slightly more complex due to the extra
-optional arguments. Additional handling code is added to recover the behaviour
-according to the <a href="#id6"><span class="problematic" id="id7">`numpy.add`_</span></a> documentation. For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified,
-the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
-The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other
-examples.</p>
-<p>However, the arguments <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code> are completely
-unhandled here. This is for two reasons.</p>
-<p>In the case of <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, support will be added for this via the inclusion of a
-decorator at some point in future, and so this is simply being deferred for the time
-being.</p>
-<p>In the case of <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code>, this is because the aspects which these
-arguments seek to control are simply not controllable when using Ivy.
+<p>In NumPy, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">arithmetic_operations</span></code> as shown in the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
+<p>The function arguments for this function are slightly more complex due to the extra optional arguments.
+Additional handling code is added to recover the behaviour according to the <a href="#id6"><span class="problematic" id="id7">`numpy.add`_</span></a> documentation.
+For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified, the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
+The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other examples.</p>
+<p>However, the arguments <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code> are completely unhandled here.
+This is for two reasons.</p>
+<p>In the case of <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, support will be added for this via the inclusion of a decorator at some point in future, and so this is simply being deferred for the time being.</p>
+<p>In the case of <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code>, this is because the aspects which these arguments seek to control are simply not controllable when using Ivy.
 <code class="code docutils literal notranslate"><span class="pre">order</span></code> controls the low-level memory layout of the stored array.
-Similarly, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether or not subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
-should be permitted as inputs to the function.
-Again, this is a very framework-specific argument. All ivy functions by default do
-enable subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will
-be operating with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>
-instances, and so we omit this argument. Again, it has no bearing on input-output
-behaviour and so this is not a problem when transpiling between frameworks.</p>
+Similarly, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> controls whether or not subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> should be permitted as inputs to the function.
+Again, this is a very framework-specific argument.
+All ivy functions by default do enable subclasses of the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> to be passed, and the frontend function will be operating with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances rather than <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> instances, and so we omit this argument.
+Again, it has no bearing on input-output behaviour and so this is not a problem when transpiling between frameworks.</p>
 <p>See the section “Unused Arguments” below for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py</span>
 <span class="nd">@from_zero_dim_arrays_to_float</span>
@@ -315,38 +290,29 @@ behaviour and so this is not a problem when transpiling between frameworks.</p>
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>For the second example, <code class="xref py py-func docutils literal notranslate"><span class="pre">tan()</span></code> has a sub-category of
-<code class="xref py py-mod docutils literal notranslate"><span class="pre">trigonometric_functions</span></code> according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a>
-directory. By referring to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a> documentation, we can see it has the same
-additional arguments as the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function. In the same manner as <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>,
-we handle the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code>, <code class="code docutils literal notranslate"><span class="pre">where</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>,
-but we omit support for <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code>.</p>
+<p>For the second example, <code class="xref py py-func docutils literal notranslate"><span class="pre">tan()</span></code> has a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">trigonometric_functions</span></code> according to the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.
+By referring to the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.tan.html">numpy.tan</a> documentation, we can see it has the same additional arguments as the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function.
+In the same manner as <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>, we handle the argument <code class="code docutils literal notranslate"><span class="pre">out</span></code>, <code class="code docutils literal notranslate"><span class="pre">where</span></code> and <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, but we omit support for <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code>.</p>
 <p><strong>TensorFlow</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is categorised under the <code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code> folder in the TensorFlow
-frontend. There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.math.add</a> documentation, which are
-written accordingly as shown above. Just like the previous examples, the implementation
-wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, which itself defers to backend-specific functions depending on
-which framework is set in Ivy’s backend.</p>
-<p>The arguments <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are both used in the implementation,
-but the argument <code class="code docutils literal notranslate"><span class="pre">name</span></code> is not used. Similar to the omitted arguments in the NumPy
-example above, the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument does not change the input-output behaviour of
-the function. Rather, this argument is added purely for the purpose of operation logging
-and retrieval, and also graph visualization in TensorFlow. Ivy does not support the
-unique naming of individual operations, and so we omit support for this particular
-argument.</p>
+<p>The <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is categorised under the <code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code> folder in the TensorFlow frontend.
+There are three arguments according to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/add">tf.math.add</a> documentation, which are written accordingly as shown above.
+Just like the previous examples, the implementation wraps <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code>, which itself defers to backend-specific functions depending on which framework is set in Ivy’s backend.</p>
+<p>The arguments <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are both used in the implementation, but the argument <code class="code docutils literal notranslate"><span class="pre">name</span></code> is not used.
+Similar to the omitted arguments in the NumPy example above, the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument does not change the input-output behaviour of the function.
+Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
+Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Likewise, <code class="code docutils literal notranslate"><span class="pre">tan</span></code> is also placed under <code class="xref py py-mod docutils literal notranslate"><span class="pre">math</span></code>.
-By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.math.tan</a> documentation, we add the same arguments,
-and simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> in this case.
+By referring to the <a class="reference external" href="https://www.tensorflow.org/api_docs/python/tf/math/tan">tf.math.tan</a> documentation, we add the same arguments, and simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code> in this case.
 Again, we do not support the <code class="code docutils literal notranslate"><span class="pre">name</span></code> argument for the reasons outlined above.</p>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
@@ -354,73 +320,47 @@ Again, we do not support the <code class="code docutils literal notranslate"><sp
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For PyTorch, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in
-the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> framework.</p>
-<p>In this case, the native <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> has both positional and keyword arguments,
-and we therefore use the same for our PyTorch frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
+<p>For PyTorch, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> framework.</p>
+<p>In this case, the native <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.add.html#torch.add">torch.add</a> has both positional and keyword arguments, and we therefore use the same for our PyTorch frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
 We wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> as usual.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/frontends/torch/pointwise_ops.py</span>
 <span class="k">def</span> <span class="nf">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">tan()</span></code> is also placed under <code class="xref py py-mod docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a>
-framework. Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimic the same arguments,
-and again simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>,
-also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">tan()</span></code> is also placed under <code class="xref py py-mod docutils literal notranslate"><span class="pre">pointwise_ops</span></code> as is the case in the <a class="reference external" href="https://pytorch.org/docs/stable/torch.html#math-operations">torch</a> framework.
+Looking at the <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.tan.html#torch.tan">torch.tan</a> documentation, we can mimic the same arguments, and again simply wrap <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.tan()</span></code>, also making use of the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument in this case.</p>
 </section>
 <section id="unused-arguments">
 <h2>Unused Arguments<a class="headerlink" href="#unused-arguments" title="Permalink to this heading"></a></h2>
-<p>As can be seen from the examples above, there are often cases where we do not add
-support for particular arguments in the frontend function. Generally, we can omit
-support for a particular argument only if: the argument <strong>does not</strong> fundamentally
-affect the input-output behaviour of the function in a mathematical sense. The only
-two exceptions to this rule are arguments related to either the data type or the device
-on which the returned array(s) should reside. Examples of arguments which can be
-omitted, on account that they do not change the mathematics of the function are
-arguments which relate to:</p>
+<p>As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
+Generally, we can omit support for a particular argument only if: the argument <strong>does not</strong> fundamentally affect the input-output behaviour of the function in a mathematical sense.
+The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
+Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:</p>
 <ul class="simple">
-<li><p>the layout of the array in memory, such as <code class="code docutils literal notranslate"><span class="pre">order</span></code> in
-<a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
-<li><p>the algorithm or approximations used under the hood, such as <code class="code docutils literal notranslate"><span class="pre">precision</span></code> and
-<code class="code docutils literal notranslate"><span class="pre">preferred_element_type</span></code> in
-<a class="reference external" href="https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57">jax.lax.conv_general_dilated</a>.</p></li>
-<li><p>the specific array class in the original framework, such as <code class="code docutils literal notranslate"><span class="pre">subok</span></code> in
-<a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
-<li><p>the labelling of functions for organizational purposes, such as <code class="code docutils literal notranslate"><span class="pre">name</span></code> in
-<a class="reference external" href="https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004">tf.math.add</a>.</p></li>
+<li><p>the layout of the array in memory, such as <code class="code docutils literal notranslate"><span class="pre">order</span></code> in <a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
+<li><p>the algorithm or approximations used under the hood, such as <code class="code docutils literal notranslate"><span class="pre">precision</span></code> and <code class="code docutils literal notranslate"><span class="pre">preferred_element_type</span></code> in <a class="reference external" href="https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57">jax.lax.conv_general_dilated</a>.</p></li>
+<li><p>the specific array class in the original framework, such as <code class="code docutils literal notranslate"><span class="pre">subok</span></code> in <a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a>.</p></li>
+<li><p>the labelling of functions for organizational purposes, such as <code class="code docutils literal notranslate"><span class="pre">name</span></code> in <a class="reference external" href="https://github.com/tensorflow/tensorflow/blob/v2.10.0/tensorflow/python/ops/math_ops.py#L3926-L4004">tf.math.add</a>.</p></li>
 </ul>
-<p>There are likely to be many other examples of arguments which do not fundamentally
-affect the input-output behaviour of the function in a mathematical sense, and so can
-also be omitted from Ivy’s frontend implementation.</p>
-<p>The reason we omit these arguments in Ivy is because Ivy is not designed to provide
-low-level control to functions that extend beyond the pure mathematics of the function.
-This is a requirement because Ivy abstracts the backend framework,
-and therefore also abstracts everything below the backend framework’s functional API,
-including the backend array class, the low-level language compiled to, the device etc.
-Most ML frameworks do not offer per-array control of the memory layout, and control for
-the finer details of the algorithmic approximations under the hood, and so we cannot
-in general offer this level of control at the Ivy API level, nor the frontend API level
-as a direct result. As explained above, this is not a problem, as the memory layout has
-no bearing at all on the input-output behaviour of the function. In contrast, the
-algorithmic approximation may have a marginal bearing on the final results in some
-cases, but Ivy is only designed to unify to within a reasonable numeric approximation
-in any case, and so omitting these arguments also very much fits within Ivy’s design.</p>
+<p>There are likely to be many other examples of arguments which do not fundamentally affect the input-output behaviour of the function in a mathematical sense, and so can also be omitted from Ivy’s frontend implementation.</p>
+<p>The reason we omit these arguments in Ivy is because Ivy is not designed to provide low-level control to functions that extend beyond the pure mathematics of the function.
+This is a requirement because Ivy abstracts the backend framework, and therefore also abstracts everything below the backend framework’s functional API, including the backend array class, the low-level language compiled to, the device etc.
+Most ML frameworks do not offer per-array control of the memory layout, and control for the finer details of the algorithmic approximations under the hood, and so we cannot in general offer this level of control at the Ivy API level, nor the frontend API level as a direct result.
+As explained above, this is not a problem, as the memory layout has no bearing at all on the input-output behaviour of the function.
+In contrast, the algorithmic approximation may have a marginal bearing on the final results in some cases, but Ivy is only designed to unify to within a reasonable numeric approximation in any case, and so omitting these arguments also very much fits within Ivy’s design.</p>
 </section>
 <section id="compositions">
 <h2>Compositions<a class="headerlink" href="#compositions" title="Permalink to this heading"></a></h2>
 <p>In many cases, frontend functions meet the following criteria:</p>
 <ul class="simple">
-<li><p>the function is unique to a particular frontend framework, and does not exist in the
-other frameworks</p></li>
-<li><p>the function has extra features and/or arguments on top of the most similar ivy
-function that is available</p></li>
+<li><p>the function is unique to a particular frontend framework, and does not exist in the other frameworks</p></li>
+<li><p>the function has extra features and/or arguments on top of the most similar ivy function that is available</p></li>
 </ul>
 <p>In such cases, compositions are required to replicate the function behaviour.</p>
 <p><strong>Examples</strong></p>
-<p>In the native TensorFlow function <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra
-argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if <code class="code docutils literal notranslate"><span class="pre">True</span></code>. However,
-the backend <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not support this argument or behaviour.</p>
+<p>In the native TensorFlow function <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.cumprod()</span></code>, it supports an extra argument - <code class="code docutils literal notranslate"><span class="pre">reverse</span></code>, which returns a flipped result if <code class="code docutils literal notranslate"><span class="pre">True</span></code>.
+However, the backend <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code> does not support this argument or behaviour.</p>
 <p><strong>Ivy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># in ivy/functional/ivy/statistical.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span>
@@ -434,10 +374,8 @@ the backend <code class="xref py py-func docutils literal notranslate"><span cla
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>To enable this behaviour, we need to incorporate other Ivy functions which are
-compositionally able to mimic the required behaviour.
-For example, we can simply reverse the result by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.flip()</span></code> on the
-result of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
+<p>To enable this behaviour, we need to incorporate other Ivy functions which are compositionally able to mimic the required behaviour.
+For example, we can simply reverse the result by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.flip()</span></code> on the result of <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>.</p>
 <p><strong>TensorFlow Frontend</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -447,102 +385,58 @@ result of <code class="xref py py-func docutils literal notranslate"><span class
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>Through compositions, we can easily meet the required input-output behaviour for the
-TensorFlow frontend function.</p>
+<p>Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.</p>
 </section>
 <section id="missing-ivy-functions">
 <h2>Missing Ivy Functions<a class="headerlink" href="#missing-ivy-functions" title="Permalink to this heading"></a></h2>
-<p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend
-implementation much simpler. For example, at the time of writing,
-implementing <code class="xref py py-func docutils literal notranslate"><span class="pre">median()</span></code> for the NumPy frontend would require a very manual and
-heavily compositional implementation.
-However, if the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> was added to Ivy’s functional API, then this
-frontend implementation would become very simple, with some light wrapping around
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code>.</p>
-<p>Adding <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> would be a sensible decision, as many frameworks support this
-function. When you come across such a function which is missing from Ivy, you should
-create a new issue on the Ivy repo, with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> and with the
-labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>.
-A member of our team will then review this issue, and if the proposed addition is deemed
-to be timely and sensible, then we will add this function to the
-“Extend Ivy Functional API”
-<a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>.
-At this point in time, you can reserve the function for yourself and get it implemented
-in a unique PR. Once merged, you can then resume working on the frontend function,
-which will now be a much easier task with the new addition to Ivy.</p>
+<p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
+For example, at the time of writing, implementing <code class="xref py py-func docutils literal notranslate"><span class="pre">median()</span></code> for the NumPy frontend would require a very manual and heavily compositional implementation.
+However, if the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> was added to Ivy’s functional API, then this frontend implementation would become very simple, with some light wrapping around <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code>.</p>
+<p>Adding <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> would be a sensible decision, as many frameworks support this function.
+When you come across such a function which is missing from Ivy, you should create a new issue on the Ivy repo, with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> and with the labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>.
+A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the “Extend Ivy Functional API” <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>.
+At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
+Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.</p>
 </section>
 <section id="temporary-compositions">
 <h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
-<p>Alternatively, if after creating the new issue you would rather not wait around for a
-member of our team to review and possibly add to the “Extend Ivy Functional API”
-<a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>,
-you can instead go straight ahead add the frontend function as a heavy composition of
-the existing Ivy functions, with a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment included, explaining that this
-frontend implementation will be simplified if/when <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> is add to
-Ivy.</p>
-<p>The entire workflow for extending the Ivy Frontends as an external contributor is
-explained in more detail in the
-<a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis">Open Tasks</a>
-section.</p>
+<p>Alternatively, if after creating the new issue you would rather not wait around for a member of our team to review and possibly add to the “Extend Ivy Functional API” <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>, you can instead go straight ahead add the frontend function as a heavy composition of the existing Ivy functions, with a <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment included, explaining that this frontend implementation will be simplified if/when <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.func_name()</span></code> is add to Ivy.</p>
+<p>The entire workflow for extending the Ivy Frontends as an external contributor is explained in more detail in the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis">Open Tasks</a> section.</p>
 </section>
 <section id="supported-data-types-and-devices">
 <h2>Supported Data Types and Devices<a class="headerlink" href="#supported-data-types-and-devices" title="Permalink to this heading"></a></h2>
-<p>Sometimes, the corresponding function in the original framework might only support a
-subset of data types. For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.math.logical_and()</span></code> only supports inputs of
-type <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>. However, Ivy’s
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84">implementation</a>
-is as follows, with direct wrapping around <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code>:</p>
+<p>Sometimes, the corresponding function in the original framework might only support a subset of data types.
+For example, <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.math.logical_and()</span></code> only supports inputs of type <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>.
+However, Ivy’s <a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L84">implementation</a> is as follows, with direct wrapping around <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;LogicalAnd&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code> supports all data types, and so
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and()</span></code> can also easily support all
-data types. However, the primary purpose of these frontend functions is for code
-transpilations, and in such cases it would never be useful to support extra data types
-beyond <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>, as the tensorflow code being transpiled would not support this.
-Additionally, the unit tests for all frontend functions use the original framework
-function as the ground truth, and so we can only test
-<code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and()</span></code> with boolean inputs anyway.</p>
-<p>For these reasons, all frontend functions which correspond to functions with limited
-data type support in the native framework (in other words, which have even more
-restrictions than the data type limitations of the framework itself) should be flagged
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a>
-in a manner like the following:</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.logical_and()</span></code> supports all data types, and so <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and()</span></code> can also easily support all data types.
+However, the primary purpose of these frontend functions is for code transpilations, and in such cases it would never be useful to support extra data types beyond <code class="code docutils literal notranslate"><span class="pre">tf.bool</span></code>, as the tensorflow code being transpiled would not support this.
+Additionally, the unit tests for all frontend functions use the original framework function as the ground truth, and so we can only test <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.functional.frontends.tensorflow.math.logical_and()</span></code> with boolean inputs anyway.</p>
+<p>For these reasons, all frontend functions which correspond to functions with limited data type support in the native framework (in other words, which have even more restrictions than the data type limitations of the framework itself) should be flagged <a class="reference external" href="https://github.com/unifyai/ivy/blob/6089953297b438c58caa71c058ed1599f40a270c/ivy/functional/frontends/tensorflow/math.py#L88">as such</a> in a manner like the following:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">logical_and</span><span class="o">.</span><span class="n">supported_dtypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,)</span>
 </pre></div>
 </div>
-<p>The same logic applies to unsupported devices. Even if the wrapped Ivy function supports
-more devices, we should still flag the frontend function supported devices to be the
-same as those supported by the function in the native framework. Again, this is only
-needed if the limitations go beyond those of the framework itself. For example, it is
-not necessary to uniquely flag every single NumPy function as supporting only CPU,
-as this is a limitation of the entire framework, and this limitation is already
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21">globally flagged</a>.</p>
-<p>It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function
-may not support the data type due to backend limitation. For example, the frontend function <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111">jax.lax.cumprod</a> do support all data types,
-but PyTorch does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> for the function <code class="xref py py-func docutils literal notranslate"><span class="pre">cumprod()</span></code>, even though the framework generally supports handling <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> data type. In that case, we should flag that the backend
-function does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> as this is done <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234">here</a>.</p>
+<p>The same logic applies to unsupported devices.
+Even if the wrapped Ivy function supports more devices, we should still flag the frontend function supported devices to be the same as those supported by the function in the native framework.
+Again, this is only needed if the limitations go beyond those of the framework itself.
+For example, it is not necessary to uniquely flag every single NumPy function as supporting only CPU, as this is a limitation of the entire framework, and this limitation is already <a class="reference external" href="https://github.com/unifyai/ivy/blob/6eb2cadf04f06aace9118804100b0928dc71320c/ivy/functional/backends/numpy/__init__.py#L21">globally flagged</a>.</p>
+<p>It could also be the case that a frontend function supports a data type, but one or more of the backend frameworks does not, and therefore the frontend function may not support the data type due to backend limitation.
+For example, the frontend function <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/frontends/jax/lax/operators.py#L111">jax.lax.cumprod</a> do support all data types, but PyTorch does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> for the function <code class="xref py py-func docutils literal notranslate"><span class="pre">cumprod()</span></code>, even though the framework generally supports handling <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> data type.
+In that case, we should flag that the backend function does not support <code class="code docutils literal notranslate"><span class="pre">bfloat16</span></code> as this is done <a class="reference external" href="https://github.com/unifyai/ivy/blob/6e80b20d27d26b67a3876735c3e4cd9a1d38a0e9/ivy/functional/backends/torch/statistical.py#L234">here</a>.</p>
 </section>
 <section id="classes-and-instance-methods">
 <h2>Classes and Instance Methods<a class="headerlink" href="#classes-and-instance-methods" title="Permalink to this heading"></a></h2>
-<p>Most frameworks include instance methods and special methods on their array class
-for common array processing functions, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">expand_dims()</span></code>
-and <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
-This simple design choice comes with many advantages, some of which are explained
-in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
+<p>Most frameworks include instance methods and special methods on their array class for common array processing functions, such as <code class="xref py py-func docutils literal notranslate"><span class="pre">reshape()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">expand_dims()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code>.
+This simple design choice comes with many advantages, some of which are explained in our <a class="reference internal" href="../design/ivy_as_a_framework/ivy_array.html#ivy-array"><span class="std std-ref">Ivy Array</span></a> section.</p>
 <p><strong>Important Note</strong>
-Before implementing the instance method or special method, make sure that the regular function in the specific
-frontend is already implemented.</p>
-<p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary
-code transpilations, it’s necessary for us to also implement these instance methods
-and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>,
-<code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
+Before implementing the instance method or special method, make sure that the regular function in the specific frontend is already implemented.</p>
+<p>In order to implement Ivy’s frontend APIs to the extent that is required for arbitrary code transpilations, it’s necessary for us to also implement these instance methods and special methods of the framework-specific array classes (<code class="xref py py-class docutils literal notranslate"><span class="pre">tf.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> etc).</p>
 <p><strong>Instance Method</strong></p>
 <p><strong>numpy.ndarray</strong></p>
-<p>For an example of how these are implemented, we first show the instance method for
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.add()</span></code>, which is implemented in the frontend
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23">ndarray class</a>:</p>
+<p>For an example of how these are implemented, we first show the instance method for <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.ndarray.add()</span></code>, which is implemented in the frontend <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/ndarray/ndarray.py#L23">ndarray class</a>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/ndarray/ndarray.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
@@ -554,8 +448,7 @@ and special methods of the framework-specific array classes (<code class="xref p
     <span class="p">)</span>
 </pre></div>
 </div>
-<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.add()</span></code> function,
-which itself is implemented as follows:</p>
+<p>Under the hood, this simply calls the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend.add()</span></code> function, which itself is implemented as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span>
 <span class="n">x1</span><span class="p">,</span>
@@ -579,9 +472,8 @@ which itself is implemented as follows:</p>
 </pre></div>
 </div>
 <p><strong>Special Method</strong></p>
-<p>Some examples referring to the special methods would make things more clear. For
-example lets take a look at how <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__add__()</span></code> is implemented and how
-it’s reverse <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__radd__()</span></code> is implemented.</p>
+<p>Some examples referring to the special methods would make things more clear.
+For example lets take a look at how <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__add__()</span></code> is implemented and how it’s reverse <code class="xref py py-meth docutils literal notranslate"><span class="pre">tf_frontend.tensor.__radd__()</span></code> is implemented.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/tensor.py</span>
 <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
@@ -593,19 +485,16 @@ it’s reverse <code class="xref py py-meth docutils literal notranslate"><span 
     <span class="k">return</span> <span class="n">tf_frontend</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here also, both of them simply call the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.math.add()</span></code> under the
-hood. The functions with reverse operators should call the same frontend function
-as shown in the examples above. The implementation for the <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.math.add()</span></code>
-is shown as follows:</p>
+<p>Here also, both of them simply call the frontend <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.math.add()</span></code> under the hood.
+The functions with reverse operators should call the same frontend function as shown in the examples above.
+The implementation for the <code class="xref py py-func docutils literal notranslate"><span class="pre">tf_frontend.math.add()</span></code> is shown as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p><strong>numpy.matrix</strong></p>
-<p>To support special classes and their instance methods,
-the equivalent classes are created in their respective frontend so that the useful
-instance methods are supported for transpilation.</p>
+<p>To support special classes and their instance methods, the equivalent classes are created in their respective frontend so that the useful instance methods are supported for transpilation.</p>
 <p>For instance, the <code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.matrix</span></code> class is supported in the Ivy NumPy frontend.
 Part of the code is shown below as an example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/matrix/methods.py</span>
@@ -637,23 +526,15 @@ For example, <code class="xref py py-class docutils literal notranslate"><span c
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We need to create these frontend array classes and all of their instance methods and
-also their special methods such that we are able to transpile code which makes use
-of these methods. As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling
-code we first extract the computation graph in the source framework. In the case of
-instance methods, we then replace each of the original instance methods in the
-extracted computation graph with these new instance methods defined in the Ivy
-frontend class.</p>
+<p>We need to create these frontend array classes and all of their instance methods and also their special methods such that we are able to transpile code which makes use of these methods.
+As explained in <a class="reference internal" href="../design/ivy_as_a_transpiler.html#ivy-as-a-transpiler"><span class="std std-ref">Ivy as a Transpiler</span></a>, when transpiling code we first extract the computation graph in the source framework.
+In the case of instance methods, we then replace each of the original instance methods in the extracted computation graph with these new instance methods defined in the Ivy frontend class.</p>
 </section>
 <section id="frontend-data-type-promotion-rules">
 <h2>Frontend Data Type Promotion Rules<a class="headerlink" href="#frontend-data-type-promotion-rules" title="Permalink to this heading"></a></h2>
-<p>Each frontend framework has its own rules governing the common result type for two array
-operands during an arithmetic operation.</p>
-<p>In order to ensure that each frontend framework implemented in Ivy has the same data type
-promotion behaviors as the native framework does, we have implemented data type promotion
-rules according to framework-specific data type promotion tables for these we are currently
-supporting as frontends. The function can be accessed through calling
-<code class="xref py py-func docutils literal notranslate"><span class="pre">promote_types_of_&lt;frontend&gt;_inputs()</span></code> and pass in both array operands.</p>
+<p>Each frontend framework has its own rules governing the common result type for two array operands during an arithmetic operation.</p>
+<p>In order to ensure that each frontend framework implemented in Ivy has the same data type promotion behaviors as the native framework does, we have implemented data type promotion rules according to framework-specific data type promotion tables for these we are currently supporting as frontends.
+The function can be accessed through calling <code class="xref py py-func docutils literal notranslate"><span class="pre">promote_types_of_&lt;frontend&gt;_inputs()</span></code> and pass in both array operands.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="kn">from</span> <span class="nn">ivy.functional.frontends.tensorflow</span> <span class="kn">import</span> <span class="n">promote_types_of_tensorflow_inputs</span>
 <span class="o">...</span>
@@ -662,23 +543,17 @@ supporting as frontends. The function can be accessed through calling
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Although under most cases, array operands being passed into an arithmetic operation function
-should be the same data type, using the data type promotion rules can add a layer of sanity
-check to prevent data precision losses or exceptions from further arithmetic operations.</p>
+<p>Although under most cases, array operands being passed into an arithmetic operation function should be the same data type, using the data type promotion rules can add a layer of sanity check to prevent data precision losses or exceptions from further arithmetic operations.</p>
 </section>
 <section id="numpy-special-argument-casting">
 <h2>NumPy Special Argument - Casting<a class="headerlink" href="#numpy-special-argument-casting" title="Permalink to this heading"></a></h2>
-<p>NumPy supports an additional, special argument - <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, which allows
-user to determine the kind of dtype casting that fits their objectives.
-The <code class="code docutils literal notranslate"><span class="pre">casting</span></code> rules are explained in the
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html">numpy.can_cast documentation</a>.
-While handling this argument, the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is used to state the
-desired return dtype.</p>
-<p>To handle this, a decorator - <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting</span></code> is used to simplify
-the handling logic and reduce code redundancy. It is located in the
-<a class="reference external" href="https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39">ivy/functional/frontends/numpy/func_wrapper.py</a></p>
-<p>This decorator is then added to the numpy frontend functions with the
-<code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument. An example of the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is shown below.</p>
+<p>NumPy supports an additional, special argument - <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, which allows user to determine the kind of dtype casting that fits their objectives.
+The <code class="code docutils literal notranslate"><span class="pre">casting</span></code> rules are explained in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.can_cast.html">numpy.can_cast documentation</a>.
+While handling this argument, the <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> argument is used to state the desired return dtype.</p>
+<p>To handle this, a decorator - <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting</span></code> is used to simplify the handling logic and reduce code redundancy.
+It is located in the <a class="reference external" href="https://github.com/unifyai/ivy/blob/45d443187678b33dd2b156f29a18b84efbc48814/ivy/functional/frontends/numpy/func_wrapper.py#L39">ivy/functional/frontends/numpy/func_wrapper.py</a>.</p>
+<p>This decorator is then added to the numpy frontend functions with the <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument.
+An example of the <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> function is shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py</span>
 <span class="nd">@handle_numpy_casting</span>
 <span class="nd">@to_ivy_arrays_and_back</span>
@@ -700,9 +575,7 @@ the handling logic and reduce code redundancy. It is located in the
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
-<p>There is a special case for the <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument, where the allowed
-dtype must be <code class="code docutils literal notranslate"><span class="pre">bool</span></code>, therefore a <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting_special</span></code> is included
-to handle this.</p>
+<p>There is a special case for the <code class="code docutils literal notranslate"><span class="pre">casting</span></code> argument, where the allowed dtype must be <code class="code docutils literal notranslate"><span class="pre">bool</span></code>, therefore a <code class="code docutils literal notranslate"><span class="pre">handle_numpy_casting_special</span></code> is included to handle this.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/numpy/func_wrapper.py</span>
 <span class="k">def</span> <span class="nf">handle_numpy_casting_special</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
@@ -745,12 +618,9 @@ to handle this.</p>
 </pre></div>
 </div>
 <p><strong>Round Up</strong></p>
-<p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs
-are for, how they should be implemented, and the things to watch out for!
-We also have a short <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this
-as well if you prefer a video explanation!</p>
-<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a>
-or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297849735229540">ivy frontends forum</a>!</p>
+<p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
+We also have a short <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this as well if you prefer a video explanation!</p>
+<p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297849735229540">ivy frontends forum</a>!</p>
 <p><strong>Video</strong></p>
 <iframe width="420" height="315"
 src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
