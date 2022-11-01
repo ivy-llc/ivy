@@ -385,3 +385,30 @@ def dct(
             sf = np.pad(np.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
             dct_out = sf.reshape(scale_dims) * dct_out
         return dct_out
+
+    elif type == 3:
+        cmplx = np.empty(axis_dim, dtype=np.complex64)
+        cmplx.real = real_zero
+        cmplx.imag = np.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+
+        scale_dims = [1] * len(x.shape)
+        scale_dims[axis] = axis_dim
+        scale = 2.0 * np.exp(cmplx).reshape(scale_dims)
+        
+        if norm == "ortho":
+            n1 = np.sqrt(axis_dim_float)
+            n2 = n1 * np.sqrt(0.5)
+            sf = np.pad(np.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
+            x = x * sf.reshape(scale_dims)
+        else:
+            x = x * axis_dim_float
+
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(None, axis_dim)
+
+        x = x.astype(np.complex64)
+        x.imag = real_zero
+        dct_out = np.real(
+            np.fft.irfft(scale * x, n=2 * axis_dim, axis=axis)
+        )[tuple(axis_idx)]
+        return dct_out
