@@ -287,15 +287,27 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
     value = ivy.asarray(value, dtype=input.dtype)
     if len(value.shape) > 1:
         value = ivy.flatten(value)
+    i = 0
+    pre_ind_0 = 0
     for ind in ivy.ndindex(input.shape):
+        if pre_ind_0 != ind[0]:
+            i = 0
         if (ind[0] < end) and (ind[0] >= start):
-            if len(value.shape) >= 1:
-                if len(ind) == 1:
-                    input[ind] = value[0]
-                else:
-                    input[ind] = value[ind[-1]]
-            else:
+            if not hasattr(value, '__len__'):
                 input[ind] = value
+                continue
+            if len(value.shape) == 0:
+                try:
+                    input[ind] = value.item()
+                except:
+                    input[ind] = value.numpy().item()
+                continue
+            if len(ind) == 1:
+                input[ind] = value[0]
+            else:
+                input[ind] = value[i]
+                i = i + 1
+        pre_ind_0 = ind[0]
     return input
 
 

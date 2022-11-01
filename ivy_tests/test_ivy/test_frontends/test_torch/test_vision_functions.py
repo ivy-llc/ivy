@@ -85,7 +85,7 @@ def test_torch_pixel_unshuffle(
 @st.composite
 def _pad_helper(draw):
     # 'constant', 'reflect', 'replicate', 'circular'
-    mode = draw(st.sampled_from(['replicate']))
+    mode = draw(st.sampled_from(['constant', 'replicate', 'reflect', 'circular']))
     min_v = 1
     max_v = 5
     if mode != 'constant':
@@ -94,7 +94,7 @@ def _pad_helper(draw):
             max_v = 4
     dtype, input, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=['float32', 'float64'],
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
@@ -103,17 +103,21 @@ def _pad_helper(draw):
         )
     )
     m = len(shape)
+    max_pad = 9999
+    for i in range(m):
+        if shape[i] < max_pad:
+            max_pad = shape[i] 
     padding = draw(hypothesis_helpers.tuples(
         st.tuples(
-            st.integers(min_value=0, max_value=1),
-            st.integers(min_value=0, max_value=1),
+            st.integers(min_value=0, max_value=max(0,max_pad-1)),
+            st.integers(min_value=0, max_value=max(0,max_pad-1)),
         ),
-        min_size=m,
-        max_size=m,
+        min_size=max(int((m + 1) / 2), 1),
+        max_size=max(int((m + 1) / 2), 1),
     ))
-    if type(padding[0]) is tuple:
-        padding = sum(padding, ())
     if type(padding) is tuple: 
+        if type(padding[0]) is tuple:
+            padding = sum(padding, ())
         if (len(padding) == 1):
             padding = padding[0]
     if mode == 'constant':
