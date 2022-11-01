@@ -486,7 +486,7 @@ def test_torch_full_like(
 # as_tensor and tensor by proxy
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")), 
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_torch_as_tensor(dtype_and_x):
     dtype, input = dtype_and_x
@@ -523,4 +523,3 @@ def test_torch_from_numpy(dtype_and_x):
         fn_tree="from_numpy",
         input=input[0],
     )
-    

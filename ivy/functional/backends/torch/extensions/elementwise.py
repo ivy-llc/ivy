@@ -129,7 +129,7 @@ def gcd(
     x2: Union[torch.Tensor, float, list, tuple],
     /,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
     x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
