@@ -1593,8 +1593,8 @@ class ContainerWithElementwise(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.sin. This method simply wraps the
-        function, and so the docstring for ivy.sin also applies to this method
+        ivy.Container static method variant of ivy.cos. This method simply wraps the
+        function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
         Examples
         --------
@@ -1621,12 +1621,12 @@ class ContainerWithElementwise(ContainerBase):
 
     def cos(
         self: ivy.Container,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
+	*,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.cos. This method simply wraps the
@@ -1644,11 +1644,11 @@ class ContainerWithElementwise(ContainerBase):
         }
         """
         return self.static_cos(
-            self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            x=self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out
         )
 
