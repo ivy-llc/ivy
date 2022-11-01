@@ -1,4 +1,5 @@
 # local
+
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 
@@ -47,6 +48,9 @@ class Tensor:
 
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
+
+    def atan(self, *, out=None):
+        return torch_frontend.atan(self.data, out=out)
 
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
@@ -137,13 +141,74 @@ class Tensor:
         layout=None,
         pin_memory=False
     ):
-        dtype = ivy.dtype(data) if dtype is None else dtype
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
         _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
         return self.view(other.shape)
+
+    def expand(self, *sizes):
+        return ivy.broadcast_to(self.data, shape=sizes)
+
+    def detach(self):
+        return ivy.stop_gradient(self.data, preserve_type=False)
+
+    def unsqueeze(self, dim):
+        return torch_frontend.unsqueeze(self, dim)
+
+    def unsqueeze_(self, dim):
+        self.data = self.unsqueeze(dim)
+        return self.data
+
+    def dim(self):
+        return self.data.ndim
+
+    ndimension = dim
+
+    def new_full(
+        self,
+        size,
+        fill_value,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.full(size, fill_value, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def new_empty(
+        self,
+        size,
+        *,
+        dtype=None,
+        device=None,
+        requires_grad=False,
+        layout=None,
+        pin_memory=False
+    ):
+        dtype = ivy.dtype(self.data) if dtype is None else dtype
+        device = ivy.dev(self.data) if device is None else device
+        _data = ivy.empty(size, dtype=dtype, device=device)
+        _data = ivy.variable(_data) if requires_grad else _data
+        return Tensor(_data)
+
+    def unfold(self, dimension, size, step):
+        slices = []
+        for i in range(0, self.data.shape[dimension] - size + 1, step):
+            slices.append(self.data[i : i + size])
+        return ivy.stack(slices)
+
+    def long(self, memory_format=None):
+        return ivy.astype(self.data, ivy.int64)
 
     # Special Methods #
     # -------------------#
@@ -159,7 +224,7 @@ class Tensor:
         return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
@@ -169,6 +234,9 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def __mod__(self, other):
+        return ivy.remainder(self, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
