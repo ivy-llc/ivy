@@ -143,17 +143,17 @@
              
   <section id="ivy-as-a-transpiler">
 <h1>Ivy as a Transpiler<a class="headerlink" href="#ivy-as-a-transpiler" title="Permalink to this heading"></a></h1>
-<p>On the <a class="reference internal" href="building_blocks.html#building-blocks"><span class="std std-ref">Building Blocks</span></a> page, we explored the role of the backend functional APIs, the Ivy functional API, the
-backend handler and the graph compiler. These parts are labelled (a) in the image below.</p>
-<p>Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions
-between different ML frameworks. This part is labelled as (b) in the image below.</p>
+<p>On the <a class="reference internal" href="building_blocks.html#building-blocks"><span class="std std-ref">Building Blocks</span></a> page, we explored the role of the backend functional APIs, the Ivy functional API, the backend handler and the graph compiler.
+These parts are labelled (a) in the image below.</p>
+<p>Here, we explain the role of the backend-specific frontends in Ivy, and how these enable automatic code conversions between different ML frameworks.
+This part is labelled as (b) in the image below.</p>
 <p>The code conversion tools described on this page are works in progress, as indicated by the the construction signs 🚧.
 This is in keeping with the rest of the documentation.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <section id="frontend-functional-apis">
 <h2>Frontend Functional APIs 🚧<a class="headerlink" href="#frontend-functional-apis" title="Permalink to this heading"></a></h2>
-<p>While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not,
-for example, enable PyTorch code to be framework agnostic. But with frontend APIs, we can also achieve this!</p>
+<p>While the backend API, Ivy API and backend handler enable all Ivy code to be framework-agnostic, they do not, for example, enable PyTorch code to be framework agnostic.
+But with frontend APIs, we can also achieve this!</p>
 <p>Let’s take a look at the how the implementation of <code class="code docutils literal notranslate"><span class="pre">clip</span></code> method would seem like in the frontends:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/jax/lax/functions.py</span>
 <span class="k">def</span> <span class="nf">clamp</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span><span class="n">x</span><span class="p">,</span> <span class="n">x_max</span><span class="p">):</span>
@@ -177,18 +177,15 @@ for example, enable PyTorch code to be framework agnostic. But with frontend API
 </div>
 <p>combined, we have the following situation:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_backends_n_frontends.png?raw=true" style="width: 100%;" /></a>
-<p>Importantly, we can select the backend and frontend <strong>independently</strong> from one another. For example, this means we can
-select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch
-functional API. In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function
-with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:</p>
+<p>Importantly, we can select the backend and frontend <strong>independently</strong> from one another.
+For example, this means we can select a JAX backend, but also select the PyTorch frontend and write Ivy code which fully adheres to the PyTorch functional API.
+In the reverse direction: we can take pre-written pure PyTorch code, replace each PyTorch function with the equivalent function using Ivy’s PyTorch frontend, and then run this PyTorch code using JAX:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/clip_conversion.png?raw=true" style="width: 100%;" /></a>
 <div class="line-block">
 <div class="line"><br /></div>
 </div>
 <p>For this example it’s very simple, the differences are only syntactic, but the above process works for <strong>any</strong> function.
-If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the
-frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy
-functions as compositions of backend methods.</p>
+If there are semantic differences then these will be captured (a) in the wrapped frontend code which expresses the frontend method as a composition of Ivy functions, and (b) in the wrapped backend code which expressed the Ivy functions as compositions of backend methods.</p>
 <p>Let’s take a more complex example and convert PyTorch method <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.nn.functional.one_hot()</span></code> into NumPy code.
 The frontend is implemented by wrapping a single Ivy method <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.one_hot()</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/torch/nn/sparse_functions.py</span>
@@ -215,8 +212,8 @@ The frontend is implemented by wrapping a single Ivy method <code class="xref py
 <span class="n">ret</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Let’s take one more example and convert TensorFlow method <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.cumprod()</span></code> into PyTorch code. This time, the
-frontend is implemented by wrapping two Ivy methods <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>, and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.flip()</span></code> as follows:</p>
+<p>Let’s take one more example and convert TensorFlow method <code class="xref py py-func docutils literal notranslate"><span class="pre">tf.cumprod()</span></code> into PyTorch code.
+This time, the frontend is implemented by wrapping two Ivy methods <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.cumprod()</span></code>, and <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.flip()</span></code> as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/frontends/tensorflow/math.py</span>
 <span class="k">def</span> <span class="nf">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span>
@@ -278,9 +275,8 @@ frontend is implemented by wrapping two Ivy methods <code class="xref py py-func
 </section>
 <section id="role-of-the-graph-compiler">
 <h2>Role of the Graph Compiler 🚧<a class="headerlink" href="#role-of-the-graph-compiler" title="Permalink to this heading"></a></h2>
-<p>The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers,
-and other higher level objects? This is where the graph compiler plays a vital role. The graph compiler can convert any
-code into its constituent functions at the functional API level for any ML framework.</p>
+<p>The very simple example above worked well, but what about even more complex PyTorch code involving Modules, Optimizers, and other higher level objects? This is where the graph compiler plays a vital role.
+The graph compiler can convert any code into its constituent functions at the functional API level for any ML framework.</p>
 <p>For example, let’s take the following PyTorch code and run it using JAX:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 
@@ -299,11 +295,9 @@ code into its constituent functions at the functional API level for any ML frame
 </pre></div>
 </div>
 <p>We cannot simply <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.frontends.torch</span></code> in place of <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">torch</span></code> as we did in the previous examples.
-This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use
-of higher level classes through the use of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">torch.nn</span></code> namespace.</p>
-<p>In general, the way we convert code is by first compiling the code into its constituent functions in the core API using
-Ivy’s graph compiler, and then we convert this executable graph into the new framework. For the example above,
-this would look like:</p>
+This is because the Ivy frontend only supports the functional API for each framework, whereas the code above makes use of higher level classes through the use of the <code class="xref py py-mod docutils literal notranslate"><span class="pre">torch.nn</span></code> namespace.</p>
+<p>In general, the way we convert code is by first compiling the code into its constituent functions in the core API using Ivy’s graph compiler, and then we convert this executable graph into the new framework.
+For the example above, this would look like:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
@@ -312,27 +306,24 @@ this would look like:</p>
 <span class="n">jax_graph</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>However, when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.compile_graph()</span></code> the graph only connects the inputs to the outputs. Any other tensors
-or variables which are not listed in the inputs are treated as constants in the graph. In this case, this means the
-learnable weights in the Module will be treated as constants. This works fine if we only care about running inference
-on our graph post-training, but this won’t enable training of the Module in JAX.</p>
+<p>However, when calling <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.compile_graph()</span></code> the graph only connects the inputs to the outputs.
+Any other tensors or variables which are not listed in the inputs are treated as constants in the graph.
+In this case, this means the learnable weights in the Module will be treated as constants.
+This works fine if we only care about running inference on our graph post-training, but this won’t enable training of the Module in JAX.</p>
 </section>
 <section id="converting-network-models">
 <h2>Converting Network Models 🚧<a class="headerlink" href="#converting-network-models" title="Permalink to this heading"></a></h2>
-<p>In order to convert a model from PyTorch to JAX, we first must convert the <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instance to
-an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance using the method <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.to_ivy_module()</span></code> like so:</p>
+<p>In order to convert a model from PyTorch to JAX, we first must convert the <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instance to an <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance using the method <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.to_ivy_module()</span></code> like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy_module</span><span class="p">(</span><span class="n">net</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>In its current form, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance thinly wraps the PyTorch model into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code>
-interface, whilst preserving the pure PyTorch backend. We can compile this network into a graph using Ivy’s graph
-compiler like so:</p>
+<p>In its current form, the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance thinly wraps the PyTorch model into the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> interface, whilst preserving the pure PyTorch backend.
+We can compile this network into a graph using Ivy’s graph compiler like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>In this case, the learnable weights are treated as inputs to the graph rather than constants.</p>
-<p>Now, with a compiled graph under the hood of our model, we can call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_backend()</span></code> directly on
-the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance to convert it to any backend of our choosing, like so:</p>
+<p>Now, with a compiled graph under the hood of our model, we can call <code class="xref py py-meth docutils literal notranslate"><span class="pre">to_backend()</span></code> directly on the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Module</span></code> instance to convert it to any backend of our choosing, like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">net</span><span class="o">.</span><span class="n">to_backend</span><span class="p">(</span><span class="s1">&#39;jax&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -380,13 +371,11 @@ the <code class="xref py py-class docutils literal notranslate"><span class="pre
 </pre></div>
 </div>
 <p>Other JAX-specific network libraries such as Flax, Trax and Objax are also supported.</p>
-<p>Overall, we have taken a <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instance, which can be trained using PyTorch’s optimizer classes,
-and converted this to a <code class="xref py py-class docutils literal notranslate"><span class="pre">haiku.Module</span></code> instance which can be trained using Haiku’s optimizer classes. The same
-is true for any combination of frameworks, and for any network architecture, regardless of its complexity!</p>
+<p>Overall, we have taken a <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.Module</span></code> instance, which can be trained using PyTorch’s optimizer classes, and converted this to a <code class="xref py py-class docutils literal notranslate"><span class="pre">haiku.Module</span></code> instance which can be trained using Haiku’s optimizer classes.
+The same is true for any combination of frameworks, and for any network architecture, regardless of its complexity!</p>
 <p><strong>Round Up</strong></p>
-<p>Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert
-code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧. This is in
-keeping with the rest of the documentation.</p>
+<p>Hopefully this has explained how, with the addition of backend-specific frontends, Ivy will be able to easily convert code between different ML frameworks 🙂 works in progress, as indicated by the the construction signs 🚧.
+This is in keeping with the rest of the documentation.</p>
 <p>Please reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> if you have any questions!</p>
 </section>
 </section>

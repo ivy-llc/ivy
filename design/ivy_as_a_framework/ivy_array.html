@@ -150,8 +150,8 @@
              
   <section id="ivy-array">
 <h1>Ivy Array<a class="headerlink" href="#ivy-array" title="Permalink to this heading"></a></h1>
-<p>Here, we explain the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which is the class used to represent all arrays in Ivy. Every Ivy method
-returns <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances for all returned arrays.</p>
+<p>Here, we explain the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, which is the class used to represent all arrays in Ivy.
+Every Ivy method returns <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances for all returned arrays.</p>
 <section id="the-array-class">
 <h2>The Array Class<a class="headerlink" href="#the-array-class" title="Permalink to this heading"></a></h2>
 <p>Let’s dive straight in and check out what the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> constructor looks like.</p>
@@ -241,8 +241,7 @@ returns <code class="xref py py-class docutils literal notranslate"><span class=
 <p>This all makes sense, but the first question you might ask is, why do we need a dedicated <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class at all?</p>
 <p>Can’t we just operate with the native arrays directly such as  <code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Tensor</span></code> etc. when calling ivy methods?</p>
 <p>This is a great question, and has a couple of answers with varying importance.
-Perhaps the most important motivation for having a dedicated <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class is the unification of array operators,
-which we discuss next!</p>
+Perhaps the most important motivation for having a dedicated <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class is the unification of array operators, which we discuss next!</p>
 </section>
 <section id="unifying-operators">
 <h2>Unifying Operators<a class="headerlink" href="#unifying-operators" title="Permalink to this heading"></a></h2>
@@ -262,7 +261,8 @@ and we are just returning native arrays from all Ivy methods.</p>
 <code class="code docutils literal notranslate"><span class="pre">x</span></code> would then be a <code class="code docutils literal notranslate"><span class="pre">jax.numpy.ndarray</span></code> instance.</p>
 <p>The code will now throw the error <code class="code docutils literal notranslate"><span class="pre">TypeError:</span> <span class="pre">'&lt;class</span> <span class="pre">'jaxlib.xla_extension.DeviceArray'&gt;'</span> <span class="pre">object</span> <span class="pre">does</span> <span class="pre">not</span> <span class="pre">support</span> <span class="pre">item</span> <span class="pre">assignment.</span></code> <code class="code docutils literal notranslate"><span class="pre">JAX</span> <span class="pre">arrays</span> <span class="pre">are</span> <span class="pre">immutable.</span></code> <code class="code docutils literal notranslate"><span class="pre">Instead</span> <span class="pre">of</span> <span class="pre">x[idx]</span> <span class="pre">=</span> <span class="pre">y,</span> <span class="pre">use</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">x.at[idx].set(y)</span> <span class="pre">or</span> <span class="pre">another</span> <span class="pre">.at[]</span> <span class="pre">method</span></code> when we try to set index 0 to the value 0.</p>
 <p>As can be seen from the error message, the reason for this is that JAX does not support inplace updates for arrays.</p>
-<p>This is a problem. The code written above is <strong>pure Ivy code</strong> which means it should behave identically irrespective of the backend, but as we’ve just seen it behaves <strong>differently</strong> with different backends.
+<p>This is a problem.
+The code written above is <strong>pure Ivy code</strong> which means it should behave identically irrespective of the backend, but as we’ve just seen it behaves <strong>differently</strong> with different backends.
 Therefore, in this case, we could not claim that the Ivy code was truly framework-agnostic.</p>
 <p>For the purposes of explanation, we can re-write the above code as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
@@ -288,8 +288,10 @@ then the <code class="xref py py-meth docutils literal notranslate"><span class=
 </div>
 <p>We can implement inplace updates in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class without requiring inplace updates in the backend array classes.
 If the backend does not support inplace updates, then we can use the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.scatter_nd()</span></code> method to return a new array and store this in the <code class="code docutils literal notranslate"><span class="pre">self._data</span></code> attribute.</p>
-<p>Now, with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, our code will run without error, regardless of which backend is selected. We can genuinely say our code is fully framework-agnostic.</p>
-<p>The same logic applies to all python operators. For example, if <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are both <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances then the following code <strong>might</strong> execute identically for all backend frameworks:</p>
+<p>Now, with <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instances, our code will run without error, regardless of which backend is selected.
+We can genuinely say our code is fully framework-agnostic.</p>
+<p>The same logic applies to all python operators.
+For example, if <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> are both <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> instances then the following code <strong>might</strong> execute identically for all backend frameworks:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">some_method</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">some_method</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
 <span class="n">z</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
@@ -318,7 +320,8 @@ For more detail on wrapping, see the the <a class="reference external" href="htt
 <h2>Instance Methods<a class="headerlink" href="#instance-methods" title="Permalink to this heading"></a></h2>
 <p>Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.</p>
-<p>All methods in the Ivy functional API are implemented as public instance methods in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class via inheritance. For example, a few functions in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ArrayWithGeneral</span></code> are shown below.</p>
+<p>All methods in the Ivy functional API are implemented as public instance methods in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class via inheritance.
+For example, a few functions in <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ArrayWithGeneral</span></code> are shown below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/general.py</span>
 <span class="k">class</span> <span class="nc">ArrayWithGeneral</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
@@ -332,7 +335,8 @@ The only reason the Array class derives from so many different Array classes is 
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>One benefit of these instance methods is that they can help to tidy up code. For example:</p>
+<p>One benefit of these instance methods is that they can help to tidy up code.
+For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 <span class="c1"># without ivy.Array</span>
@@ -343,8 +347,10 @@ The only reason the Array class derives from so many different Array classes is 
 <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">6</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">()</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>In the example above, not only is the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.</p>
-<p>In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, most of which directly wrap a method in Ivy’s functional API. some examples are given below.</p>
+<p>In the example above, not only is the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> approach shorter to write, but more importantly there is much better alignment between each function and the function arguments.
+It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.</p>
+<p>In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> class, most of which directly wrap a method in Ivy’s functional API.
+Some examples are given below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/array/array.py</span>
 <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>

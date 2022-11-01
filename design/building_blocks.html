@@ -144,11 +144,14 @@
              
   <section id="building-blocks">
 <h1>Building Blocks<a class="headerlink" href="#building-blocks" title="Permalink to this heading"></a></h1>
-<p>Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:</p>
+<p>Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
+These are the 4 parts labelled as (a) in the image below:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true" style="width: 100%;" /></a>
 <section id="backend-functional-apis">
 <h2>Backend Functional APIs ✅<a class="headerlink" href="#backend-functional-apis" title="Permalink to this heading"></a></h2>
-<p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.stack()</span></code> as an example.</p>
+<p>The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
+Instead, Ivy <strong>wraps</strong> the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
+Let’s take the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.stack()</span></code> as an example.</p>
 <p>There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the <code class="code docutils literal notranslate"><span class="pre">stack</span></code> method once for each backend, each in separate backend files like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/jax/manipulation.py:</span>
  <span class="k">def</span> <span class="nf">stack</span><span class="p">(</span>
@@ -194,7 +197,10 @@
 </pre></div>
 </div>
 <p>There were no changes required for this function except a minor axis check for JAX.</p>
-<p>For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch and NumPy all have a <code class="code docutils literal notranslate"><span class="pre">logspace</span></code> method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:</p>
+<p>For more complicated functions, we need to do more than simply wrap and maybe change the name.
+For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
+For example, the APIs of JAX, PyTorch and NumPy all have a <code class="code docutils literal notranslate"><span class="pre">logspace</span></code> method, but TensorFlow does not at the time of writing.
+Therefore, we need to construct it using a composition of existing TensorFlow ops like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/creation.py:</span>
  <span class="k">def</span> <span class="nf">logspace</span><span class="p">(</span>
      <span class="n">start</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Variable</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
@@ -213,8 +219,11 @@
 </section>
 <section id="ivy-functional-api">
 <h2>Ivy Functional API ✅<a class="headerlink" href="#ivy-functional-api" title="Permalink to this heading"></a></h2>
-<p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘torch’)</span></code> for example.</p>
-<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function <code class="xref py py-func docutils literal notranslate"><span class="pre">prod()</span></code>  is shown below:</p>
+<p>Calling the different backend files explicitly would work okay, but it would mean we need to <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.torch</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a PyTorch backend or <code class="code docutils literal notranslate"><span class="pre">import</span> <span class="pre">ivy.functional.backends.tensorflow</span> <span class="pre">as</span> <span class="pre">ivy</span></code> to use a TensorFlow backend.
+Instead, we allow these backends to be bound to the single shared namespace ivy.
+The backend can then be changed by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘torch’)</span></code> for example.</p>
+<p><code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy.functional.ivy</span></code> is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
+For example, The function <code class="xref py py-func docutils literal notranslate"><span class="pre">prod()</span></code>  is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/elementwise.py:</span>
  <span class="nd">@to_native_arrays_and_back</span>
  <span class="nd">@handle_out_argument</span>
@@ -283,7 +292,8 @@
 </pre></div>
 </div>
 <p>Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
-until the user explicitly sets a different backend. The examples can be seen below:</p>
+until the user explicitly sets a different backend.
+The examples can be seen below:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 43%" />
@@ -320,7 +330,8 @@ until the user explicitly sets a different backend. The examples can be seen bel
 </section>
 <section id="backend-handler">
 <h2>Backend Handler ✅<a class="headerlink" href="#backend-handler" title="Permalink to this heading"></a></h2>
-<p>All code for setting and unsetting backend resides in the submodule at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/backend_handler.py</span></code>, and the front facing function is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.current_backend()</span></code>. The contents of this function are as follows:</p>
+<p>All code for setting and unsetting backend resides in the submodule at <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/backend_handler.py</span></code>, and the front facing function is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.current_backend()</span></code>.
+The contents of this function are as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/backend_handler.py</span>
  <span class="k">def</span> <span class="nf">current_backend</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
      <span class="k">global</span> <span class="n">implicit_backend</span>
@@ -341,8 +352,10 @@ until the user explicitly sets a different backend. The examples can be seen bel
      <span class="k">return</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_backend_dict</span><span class="p">[</span><span class="n">implicit_backend</span><span class="p">])</span>
 </pre></div>
 </div>
-<p>If a global backend framework has been previously set using for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘tensorflow’)</span></code>, then this globally set backend is returned. Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.</p>
-<p>The functions in this returned module are populated by iterating through the global <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> (or a non-global copy of <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> directly:</p>
+<p>If a global backend framework has been previously set using for example <code class="code docutils literal notranslate"><span class="pre">ivy.set_backend(‘tensorflow’)</span></code>, then this globally set backend is returned.
+Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.</p>
+<p>The functions in this returned module are populated by iterating through the global <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> (or a non-global copy of <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace.
+The following is a slightly simplified version of this code for illustration, which updates the global <code class="xref py py-attr docutils literal notranslate"><span class="pre">ivy.__dict__</span></code> directly:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/backend_handler.py</span>
 <span class="k">def</span> <span class="nf">set_backend</span><span class="p">(</span><span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 
@@ -370,7 +383,10 @@ until the user explicitly sets a different backend. The examples can be seen bel
             <span class="s1">&#39;Backend stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_stack</span><span class="p">))</span>
 </pre></div>
 </div>
-<p>The functions implemented by the backend-specific backend such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.lstm_update()</span></code>, as shown:</p>
+<p>The functions implemented by the backend-specific backend such as <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends.torch</span></code> only constitute a subset of the full Ivy API.
+This is because many higher level functions are written as a composition of lower level Ivy functions.
+These functions therefore do not need to be written independently for each backend framework.
+A good example is <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.lstm_update()</span></code>, as shown:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/ivy/layers.py</span>
 <span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_nestable</span>
@@ -465,12 +481,16 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 </section>
 <section id="graph-compiler">
 <h2>Graph Compiler 🚧<a class="headerlink" href="#graph-compiler" title="Permalink to this heading"></a></h2>
-<p>“What about performance?” I hear you ask. This is a great point to raise!</p>
-<p>With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping. One reason we created the graph compiler was to address this issue.</p>
-<p>The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:</p>
+<p>“What about performance?” I hear you ask.
+This is a great point to raise!</p>
+<p>With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping.
+One reason we created the graph compiler was to address this issue.</p>
+<p>The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
+The dependency graph for this process looks like this:</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true" style="width: 75%;" /></a>
 <p>Let’s look at a few examples, and observe the compiled graph of the Ivy code against the native backend code.
-First, let’s set our desired backend as PyTorch. When we compile the three functions below, despite the fact that each
+First, let’s set our desired backend as PyTorch.
+When we compile the three functions below, despite the fact that each
 has a different mix of Ivy and PyTorch code, they all compile to the same graph:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -549,7 +569,11 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 </tbody>
 </table>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_a.png?raw=true" style="width: 75%;" /></a>
-<p>For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
+<p>For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes.
+This means that under the hood, any code can be expressed as a composition of ops in the functional API.
+The same is true for Ivy.
+Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
+For example, the following 3 pieces of code all compile to the exact same computation graph as shown:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 33%" />
@@ -630,7 +654,8 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 </tbody>
 </table>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_b.png?raw=true" style="width: 75%;" /></a>
-<p>This compilation is not restricted to just PyTorch. Let’s take another example, but compile to Tensorflow, NumPy and JAX:</p>
+<p>This compilation is not restricted to just PyTorch.
+Let’s take another example, but compile to Tensorflow, NumPy and JAX:</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 100%" />
@@ -661,9 +686,13 @@ has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true" style="width: 75%;" /></a>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true" class="align-center" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true" style="width: 75%;" /></a>
 <p>The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
-Specifically, the same Ivy code compiles to different graphs depending on the selected backend. However, when compiling native framework code, we are only able to compile a graph for that same framework.
-For example, we cannot take torch code and compile this into tensorflow code. However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).</p>
-<p>The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.compile()</span></code>, which wraps backend-specific compilation code, for example:</p>
+Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
+However, when compiling native framework code, we are only able to compile a graph for that same framework.
+For example, we cannot take torch code and compile this into tensorflow code.
+However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).</p>
+<p>The graph compiler does not compile to C++, CUDA or any other lower level language.
+It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
+Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.compile()</span></code>, which wraps backend-specific compilation code, for example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy/functional/backends/tensorflow/compilation.py</span>
 <span class="nb">compile</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">fn</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>\
 <span class="n">static_argnums</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">static_argnames</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span>\
