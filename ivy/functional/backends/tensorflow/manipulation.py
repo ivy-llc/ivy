@@ -343,8 +343,10 @@ def fill_diagonal(
         value = tf.concat((value, value), 0)
     indices = []
     if len(x.shape) > 2:
-        ivy.assertions.check_all_dims_equal_length(x,
-                    message="if input array has more than 2 dimensions, ")
+        ivy.assertions.check_all_dims_equal_length(
+            x,
+            message="if input array has more than 2 dimensions, ",
+            )
         for dim in range(x.shape[0]):
             indices.append([dim for _ in range(len(x.shape))])
     else:

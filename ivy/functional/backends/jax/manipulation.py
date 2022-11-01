@@ -266,8 +266,10 @@ def fill_diagonal(
     while x.shape[0] > value.shape[0]:
         value = jnp.concatenate((value, value))
     if len(x.shape) > 2:
-        ivy.assertions.check_all_dims_equal_length(x,
-                    message="if input array has more than 2 dimensions, ")
+        ivy.assertions.check_all_dims_equal_length(
+            x,
+            message="if input array has more than 2 dimensions, ",
+            )
         for dim in range(x.shape[0]):
             idx = tuple([slice(dim, dim + 1)] * len(x.shape))
             x = x.at[idx].set(value[dim])
@@ -277,8 +279,8 @@ def fill_diagonal(
                 if (dim + 1) % (x.shape[1] + 1) == 0:
                     continue
                 idx = tuple([slice(dim, dim + 1)]
-                             + [slice(dim % (x.shape[1] + 1),
-                             dim % (x.shape[1] + 1) + 1)])
+                            + [slice(dim % (x.shape[1] + 1),
+                                     dim % (x.shape[1] + 1) + 1)])
                 x = x.at[idx].set(value[dim - (dim // (x.shape[1] + 1))])
         else:
             for dim in range(x.shape[0]):

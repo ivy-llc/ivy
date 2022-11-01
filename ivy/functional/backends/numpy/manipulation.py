@@ -246,7 +246,9 @@ def fill_diagonal(
     ivy.assertions.check_greater(len(x.shape), 1, allow_equal=False,
                                  message="array must be at least 2-d")
     if len(x.shape) > 2:
-        ivy.assertions.check_all_dims_equal_length(x,
-                    message="if input array has more than 2 dimensions, ")
+        ivy.assertions.check_all_dims_equal_length(
+            x,
+            message="if input array has more than 2 dimensions, ",
+            )
     np.fill_diagonal(x, value, wrap)
     return x
