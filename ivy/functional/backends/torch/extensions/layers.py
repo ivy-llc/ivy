@@ -209,7 +209,7 @@ def dct(
             x = x[local_idx]
         else:
             pad_idx = [0] * 2 * len(x.shape)
-            pad_idx[(len(pad_idx)-1)-(2 * axis)] = n - signal_len
+            pad_idx[(len(pad_idx) - 1) - (2 * axis)] = n - signal_len
             x = torch.nn.functional.pad(x, pad_idx)
     real_zero = torch.tensor(0.0, dtype=x.dtype)
     axis_dim = x.shape[axis]
@@ -236,7 +236,9 @@ def dct(
 
         axis_idx = [slice(None)] * len(x.shape)
         axis_idx[axis] = slice(None, axis_dim)
-        dct_out = torch.real(torch.fft.rfft(x, n=2 * axis_dim, axis=axis)[axis_idx] * scale)
+        dct_out = torch.real(
+            torch.fft.rfft(x, n=2 * axis_dim, axis=axis)[axis_idx] * scale
+        )
         if norm == "ortho":
             n1 = 0.5 * torch.rsqrt(axis_dim_float)
             n2 = n1 * math.sqrt(2.0)
@@ -261,11 +263,13 @@ def dct(
             x = x * sf.view(scale_dims)
         else:
             x = x * axis_dim_float
-            
+
         axis_idx = [slice(None)] * len(x.shape)
         axis_idx[axis] = slice(None, axis_dim)
         dct_out = torch.real(
-            torch.fft.irfft(scale * torch.complex(x, real_zero), n=2 * axis_dim, axis=axis)
+            torch.fft.irfft(
+                scale * torch.complex(x, real_zero), n=2 * axis_dim, axis=axis
+            )
         )[axis_idx]
         return dct_out
 

@@ -376,7 +376,9 @@ def dct(
 
         axis_idx = [slice(None)] * len(x.shape)
         axis_idx[axis] = slice(None, axis_dim)
-        dct_out = np.real(np.fft.rfft(x, n=2 * axis_dim, axis=axis)[tuple(axis_idx)] * scale)
+        dct_out = np.real(
+            np.fft.rfft(x, n=2 * axis_dim, axis=axis)[tuple(axis_idx)] * scale
+        )
 
         if norm == "ortho":
             n1 = 0.5 * np.reciprocal(np.sqrt(axis_dim_float))
@@ -392,7 +394,7 @@ def dct(
         scale_dims = [1] * len(x.shape)
         scale_dims[axis] = axis_dim
         scale = 2.0 * np.exp(cmplx).reshape(scale_dims)
-        
+
         if norm == "ortho":
             n1 = np.sqrt(axis_dim_float)
             n2 = n1 * np.sqrt(0.5)
@@ -406,9 +408,9 @@ def dct(
 
         x = x.astype(np.complex64)
         x.imag = real_zero
-        dct_out = np.real(
-            np.fft.irfft(scale * x, n=2 * axis_dim, axis=axis)
-        )[tuple(axis_idx)]
+        dct_out = np.real(np.fft.irfft(scale * x, n=2 * axis_dim, axis=axis))[
+            tuple(axis_idx)
+        ]
 
     elif type == 4:
         dct_2 = dct(x, type=2, n=2 * axis_dim, axis=axis, norm=None)
@@ -417,5 +419,5 @@ def dct(
         dct_out = dct_2[tuple(axis_idx)]
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
-    
+
     return dct_out.astype(np.float32) if cast_final else dct_out
