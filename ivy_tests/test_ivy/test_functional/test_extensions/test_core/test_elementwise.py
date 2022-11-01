@@ -419,5 +419,5 @@ def test_gcd(
         fw=fw,
         fn_name="gcd",
         x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )

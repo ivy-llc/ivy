@@ -624,7 +624,7 @@ def i0(
         Array input.
     out
         optional output array, for writing the result to.
-    
+
     Returns
     -------
     ret
