@@ -21,4 +21,5 @@ Elementwise
    elementwise/float_power.rst
    elementwise/exp2.rst
    elementwise/nansum.rst
+   elementwise/gcd.rst
 
