@@ -90,4 +90,3 @@ def kron(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.kron(a, b)
-

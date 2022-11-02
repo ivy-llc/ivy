@@ -39,7 +39,6 @@ class ArrayWithLinalgExtensions(abc.ABC):
             num_cols=num_cols,
             out=out,
         )
-        
 
     def kron(
         self: ivy.Array,
@@ -61,4 +60,3 @@ class ArrayWithLinalgExtensions(abc.ABC):
         ivy.array([3, 4, 6, 8])
         """
         return ivy.kron(self._data, b, out=out)
-
