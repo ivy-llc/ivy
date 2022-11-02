@@ -213,6 +213,9 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
 
+    def device(self):
+        return ivy.dev(self.data)
+
     # Special Methods #
     # -------------------#
 

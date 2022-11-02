@@ -359,7 +359,7 @@ def nansum(
     """
     Return the sum of array elements over a given axis treating
     Not a Numbers (NaNs) as zero.
-    
+
     Parameters
     ----------
     x
@@ -376,13 +376,13 @@ def nansum(
     out
         Alternate output array in which to place the result.
         The default is None.
-        
+
     Returns
     -------
     ret
         A new array holding the result is returned unless out is specified,
         in which it is returned.
-    
+
     Examples
     --------
     >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
@@ -403,7 +403,7 @@ def nansum(
 @handle_nestable
 def gcd(
     x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],    
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
