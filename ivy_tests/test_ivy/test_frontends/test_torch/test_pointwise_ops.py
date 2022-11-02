@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -11,13 +11,13 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
-    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
+    alpha=st.integers(min_value=1, max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.add"
     ),
@@ -360,14 +360,13 @@ def test_torch_arccos(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        min_value=-1e04,
-        max_value=1e04,
-        allow_inf=False,
-        shared_dtype=True,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
-    alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
+    alpha=st.integers(min_value=1, max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.subtract"
     ),
@@ -389,7 +388,6 @@ def test_torch_subtract(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="subtract",
-        rtol=1e-04,
         input=x[0],
         other=x[1],
         alpha=alpha,
@@ -713,7 +711,6 @@ def test_torch_square(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.atan2"
@@ -745,7 +742,8 @@ def test_torch_atan2(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.negative"
@@ -776,7 +774,7 @@ def test_torch_negative(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
     ),
     num_positional_args=helpers.num_positional_args(
@@ -799,7 +797,6 @@ def test_torch_bitwise_and(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="bitwise_and",
-        rtol=1e-04,
         input=x[0],
         other=x[1],
         out=None,
@@ -840,9 +837,8 @@ def test_torch_bitwise_not(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_xor"
@@ -873,9 +869,8 @@ def test_torch_bitwise_xor(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
+        available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_or"
@@ -908,7 +903,7 @@ def test_torch_bitwise_or(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_left_shift"
@@ -946,7 +941,7 @@ def test_torch_bitwise_left_shift(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.bitwise_right_shift"
@@ -1074,7 +1069,7 @@ def test_torch_sqrt(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.sign"
@@ -1290,6 +1285,40 @@ def test_torch_ceil(
     )
 
 
+# round
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    decimals=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.round"
+    ),
+)
+def test_torch_round(
+    dtype_and_x,
+    decimals,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="round",
+        input=x[0],
+        decimals=decimals,
+        out=None,
+    )
+
+
 @st.composite
 def _get_clip_inputs(draw):
     shape = draw(
@@ -1388,5 +1417,153 @@ def test_torch_clip(
         input=x[0],
         min=min,
         max=max,
+        out=None,
+    )
+
+
+# mul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.mul"
+    ),
+)
+def test_torch_mul(
+    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["multiply"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="mul",
+        rtol=1e-03,
+        input=x[0],
+        other=x[1],
+        out=None,
+    )
+
+
+# div
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    rounding_mode=st.one_of(
+        st.sampled_from(["floor", "trunc"]),
+        st.none(),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.div"
+    ),
+)
+def test_torch_div(
+    dtype_and_x,
+    rounding_mode,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+
+    # Absolute tolerance is 1,
+    # due to flooring can cause absolute error of 1 due to precision
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="div",
+        atol=1,
+        input=x[0],
+        other=x[1],
+        rounding_mode=rounding_mode,
+        out=None,
+    )
+
+
+# flipud
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.flipud"
+    ),
+)
+def test_torch_flipud(
+    dtype_and_m,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="flipud",
+        input=m[0],
+    )
+
+
+# deg2grad
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.deg2rad"
+    ),
+)
+def test_torch_deg2rad(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="deg2rad",
+        input=x[0],
         out=None,
     )

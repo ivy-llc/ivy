@@ -1,24 +1,9 @@
 # flake8: noqa
 from . import devicearray
 from .devicearray import DeviceArray
-from .lax import operators
-from ivy.functional.frontends.jax.lax.operators import *
-from .lax import control_flow_operators
-from ivy.functional.frontends.jax.lax.control_flow_operators import *
-from .lax import custom_gradient_operators
-from ivy.functional.frontends.jax.lax.custom_gradient_operators import *
-from .lax import parallel_operators
-from ivy.functional.frontends.jax.lax.parallel_operators import *
-from .lax import linalg
-from ivy.functional.frontends.jax.lax.linalg import *
-from .nn import non_linear_activations
-from ivy.functional.frontends.jax.nn.non_linear_activations import *
-from .numpy import name_space_functions
-from ivy.functional.frontends.jax.numpy.name_space_functions import *
-from .numpy import fft
-from ivy.functional.frontends.jax.numpy.fft import *
-from .numpy import linalg
-from ivy.functional.frontends.jax.numpy.linalg import *
+from . import lax
+from . import nn
+from . import numpy
 
 import ivy
 from ivy import (
@@ -243,10 +228,10 @@ def promote_types_jax(
 
 @handle_exceptions
 def promote_types_of_jax_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
     based on type promotion rules. While passing float or integer values or any
@@ -260,13 +245,14 @@ def promote_types_of_jax_inputs(
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_types_jax(x1.dtype, x2.dtype)
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        if x1.dtype != x2.dtype:
+            promoted = promote_types_jax(x1.dtype, x2.dtype)
+            x1 = ivy.asarray(x1, dtype=promoted)
+            x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2, dtype=x1.dtype)
     else:
         x1 = ivy.asarray(x1, dtype=x2.dtype)
         x2 = ivy.asarray(x2)
-    return ivy.to_native(x1), ivy.to_native(x2)
+    return x1, x2

@@ -1,8 +1,8 @@
 Ivy Array
 =========
 
-Here, we explain the :class:`ivy.Array` class, which is the class used to represent all arrays in Ivy. Every Ivy method
-returns :class:`ivy.Array` instances for all returned arrays.
+Here, we explain the :class:`ivy.Array` class, which is the class used to represent all arrays in Ivy.
+Every Ivy method returns :class:`ivy.Array` instances for all returned arrays.
 
 The Array Class
 ---------------
@@ -74,7 +74,6 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
             else:
                 self._post_repr = ")"
             self.framework_str = ivy.current_backend_str()
-            self._is_variable = ivy.is_variable(self._data)
 
         # Properties #
         # -----------#
@@ -100,8 +99,7 @@ This all makes sense, but the first question you might ask is, why do we need a 
 Can't we just operate with the native arrays directly such as  :class:`np.ndarray`, :class:`torch.Tensor` etc. when calling ivy methods?
 
 This is a great question, and has a couple of answers with varying importance.
-Perhaps the most important motivation for having a dedicated :class:`ivy.Array` class is the unification of array operators,
-which we discuss next!
+Perhaps the most important motivation for having a dedicated :class:`ivy.Array` class is the unification of array operators, which we discuss next!
 
 Unifying Operators
 ------------------
@@ -130,7 +128,8 @@ The code will now throw the error :code:`TypeError: '<class 'jaxlib.xla_extensio
 
 As can be seen from the error message, the reason for this is that JAX does not support inplace updates for arrays.
 
-This is a problem. The code written above is **pure Ivy code** which means it should behave identically irrespective of the backend, but as we've just seen it behaves **differently** with different backends.
+This is a problem.
+The code written above is **pure Ivy code** which means it should behave identically irrespective of the backend, but as we've just seen it behaves **differently** with different backends.
 Therefore, in this case, we could not claim that the Ivy code was truly framework-agnostic.
 
 For the purposes of explanation, we can re-write the above code as follows:
@@ -164,9 +163,11 @@ Let's take a look at how that method is implemented in the :class:`ivy.Array` cl
 We can implement inplace updates in the :class:`ivy.Array` class without requiring inplace updates in the backend array classes.
 If the backend does not support inplace updates, then we can use the :func:`ivy.scatter_nd` method to return a new array and store this in the :code:`self._data` attribute.
 
-Now, with :class:`ivy.Array` instances, our code will run without error, regardless of which backend is selected. We can genuinely say our code is fully framework-agnostic.
+Now, with :class:`ivy.Array` instances, our code will run without error, regardless of which backend is selected.
+We can genuinely say our code is fully framework-agnostic.
 
-The same logic applies to all python operators. For example, if :code:`x` and :code:`y` are both :class:`ivy.NativeArray` instances then the following code **might** execute identically for all backend frameworks:
+The same logic applies to all python operators.
+For example, if :code:`x` and :code:`y` are both :class:`ivy.NativeArray` instances then the following code **might** execute identically for all backend frameworks:
 
 .. code-block:: python
 
@@ -205,7 +206,8 @@ Instance Methods
 Taking a look at the class definition, you may wonder why there are so many parent classes!
 The only reason the Array class derives from so many different Array classes is so we can compartmentalize the different array functions into separate classes for better code readability.
 
-All methods in the Ivy functional API are implemented as public instance methods in the :class:`ivy.Array` class via inheritance. For example, a few functions in :class:`ivy.ArrayWithGeneral` are shown below.
+All methods in the Ivy functional API are implemented as public instance methods in the :class:`ivy.Array` class via inheritance.
+For example, a few functions in :class:`ivy.ArrayWithGeneral` are shown below.
 
 .. code-block:: python
 
@@ -221,7 +223,8 @@ All methods in the Ivy functional API are implemented as public instance methods
         def flip(self, axis=None, batch_shape=None):
             return ivy.flip(self, axis, batch_shape)
 
-One benefit of these instance methods is that they can help to tidy up code. For example:
+One benefit of these instance methods is that they can help to tidy up code.
+For example:
 
 .. code-block:: python
 
@@ -234,9 +237,11 @@ One benefit of these instance methods is that they can help to tidy up code. For
     # with ivy.Array
     y = x.reshape((6, 20)).matrix_transpose().flip(axis=0).reshape((2, 10, 6))
 
-In the example above, not only is the :class:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments. It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
+In the example above, not only is the :class:`ivy.Array` approach shorter to write, but more importantly there is much better alignment between each function and the function arguments.
+It’s hard to work out which shape parameters align with which method in the first case, but in the second case this is crystal clear.
 
-In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :class:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API. some examples are given below.
+In addition to the functions in the topic-specific parent classes, there are about 50 builtin methods implemented directly in the :class:`ivy.Array` class, most of which directly wrap a method in Ivy's functional API.
+Some examples are given below.
 
 .. code-block:: python
 
@@ -255,4 +260,4 @@ In addition to the functions in the topic-specific parent classes, there are abo
 
 That should hopefully be enough to get you started with the Ivy Array 😊
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

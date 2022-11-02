@@ -2,18 +2,22 @@
 signature.
 """
 
+from typing import Optional, Union, Sequence
+
 # global
 import tensorflow as tf
 from tensorflow.python.framework.dtypes import DType
-from typing import Optional, Union, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.random import (
     _check_bounds_and_get_shape,
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
+from . import backend_version
+
 
 # Extra #
 # ------#
@@ -26,13 +30,16 @@ def random_uniform(
     shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
     dtype: DType,
     device: str,
+    seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     shape = _check_bounds_and_get_shape(low, high, shape)
     low = tf.cast(low, dtype)
     high = tf.cast(high, dtype)
     with tf.device(device):
-        return tf.random.uniform(shape, low, high, dtype=dtype)
+        if seed:
+            tf.random.set_seed(seed)
+        return tf.random.uniform(shape, low, high, dtype=dtype, seed=seed)
 
 
 def random_normal(
@@ -50,11 +57,12 @@ def random_normal(
     mean = tf.cast(mean, dtype)
     std = tf.cast(std, dtype)
     with tf.device(device):
-        if seed is not None:
+        if seed:
             tf.random.set_seed(seed)
         return tf.random.normal(shape, mean, std, dtype=dtype, seed=seed)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
@@ -81,14 +89,11 @@ def multinomial(
                 )
                 / population_size
             )
-        if seed is not None:
+        if seed:
             tf.random.set_seed(seed)
         if len(probs.numpy().shape) == 1:
             probs = tf.expand_dims(probs, axis=0)
         return tf.random.categorical(tf.math.log(probs), num_samples, seed=seed)
-
-
-multinomial.unsupported_dtypes = ("bfloat16",)
 
 
 def randint(
@@ -110,7 +115,7 @@ def randint(
     low = tf.cast(low, "float32")
     high = tf.cast(high, "float32")
     with tf.device(device):
-        if seed is not None:
+        if seed:
             tf.random.set_seed(seed)
         return tf.cast(tf.random.uniform(shape, low, high, "float32", seed=seed), dtype)
 
@@ -126,6 +131,6 @@ def shuffle(
     seed: Optional[int] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if seed is not None:
+    if seed:
         tf.random.set_seed(seed)
     return tf.random.shuffle(x, seed=seed)

@@ -4,7 +4,10 @@ import ivy
 
 # local
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_casting
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting,
+)
 
 
 def convolve(a, v, mode="full"):
@@ -13,6 +16,7 @@ def convolve(a, v, mode="full"):
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def clip(
     a,
     a_min,
@@ -48,6 +52,7 @@ def clip(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def sqrt(
     x,
     /,
@@ -68,6 +73,7 @@ def sqrt(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def cbrt(
     x,
     /,
@@ -89,6 +95,7 @@ def cbrt(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def square(
     x,
     /,
@@ -108,6 +115,7 @@ def square(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def absolute(
     x,
     /,
@@ -127,6 +135,7 @@ def absolute(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def fabs(
     x,
     /,
@@ -146,6 +155,7 @@ def fabs(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def sign(
     x,
     /,
@@ -167,6 +177,7 @@ def sign(
 
 @from_zero_dim_arrays_to_float
 @handle_numpy_casting
+@to_ivy_arrays_and_back
 def heaviside(
     x1,
     x2,
@@ -192,6 +203,7 @@ def heaviside(
     return ret
 
 
+@to_ivy_arrays_and_back
 def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     ret = ivy.array(x, copy=copy)
     bounds = ivy.finfo(x)
@@ -207,10 +219,12 @@ def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
     return ret
 
 
+@to_ivy_arrays_and_back
 def real_if_close(a, tol=100):
     return ivy.array(a)  # ivy doesn't yet support complex numbers
 
 
+@to_ivy_arrays_and_back
 def interp(x, xp, fp, left=None, right=None, period=None):
     x_arr = ivy.array(x)
     fix_later = False
