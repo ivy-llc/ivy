@@ -2,6 +2,8 @@ import math
 from typing import Optional
 import numpy as np
 
+import ivy
+
 
 def diagflat(
     x: np.ndarray,
@@ -68,4 +70,9 @@ def diagflat(
         ],
         mode="constant",
     )
-    return output_array.astype(x.dtype)
+    ret = output_array.astype(x.dtype)
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret

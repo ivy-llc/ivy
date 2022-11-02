@@ -25,7 +25,7 @@ def diagflat(
     align: Optional[str] = "RIGHT_LEFT",
     num_rows: Optional[int] = -1,
     num_cols: Optional[int] = -1,
-    out: Optional[Union[ivy.Array, ivy.NativeArray]],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with the flattened input as a diagonal.
 
