@@ -188,7 +188,7 @@ def is_frontend_array(x: Any) -> bool:
     return isinstance(
         x,
         (
-            ivy.functional.frontends.torch.Tensor,
+            ivy.functional.frontends.torch.Tensor.tensor,  # TODO temporary fix
             ivy.functional.frontends.tensorflow.Tensor,
             ivy.functional.frontends.numpy.ndarray,
             ivy.functional.frontends.jax.DeviceArray,
