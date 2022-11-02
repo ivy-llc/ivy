@@ -375,30 +375,9 @@ class ArrayWithRandom(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
-        ...                   b=ivy.array([7, 1, 6]))
-        >>> ivy.Array.shuffle(x)
-        {
-            a: ivy.array([2, 9, 5]),
-            b: ivy.array([7, 6, 1])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([7, 2, 0]),
-        ...                   b=ivy.array([8, 1, 6]))
-        >>> ivy.Array.shuffle(x, seed=7)
-        {
-            a: ivy.array([0, 2, 7]),
-            b: ivy.array([6, 1, 8])
-        }
-
-        >>> x = ivy.Container(a=ivy.array([7, 6, 0]),
-        ...                   b=ivy.array([8, 9, 4]))
-        >>> z = ivy.Container(a=ivy.zeros((3,)), b=ivy.zeros((3,)))
-        >>> ivy.Array.shuffle(x, seed=7, out=z)
-        >>> print(z)
-        {
-            a: ivy.array([0, 6, 7]),
-            b: ivy.array([4, 9, 8])
-        }
+        >>> x = ivy.array([5, 2, 9])
+        >>> y = x.shuffle()
+        >>> print(y)
+        ivy.array([2, 5, 9])
         """
         return ivy.shuffle(self, seed=seed, out=out)
