@@ -7,19 +7,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 # split
 @handle_cmd_line_args
 @given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("int8, float16"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.split"
     ),
+    xs_n_input_dtypes_n_unique_idx=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_numpy_split(
-    dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
