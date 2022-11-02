@@ -2276,16 +2276,10 @@ def test_tensorflow_Softplus(dtype_and_x, as_variable, native_array):
     )
 
 
-import tensorflow as tf
-
-
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float32",
-            "float64",
-        ],
+        available_dtypes=["float32", "float64", "complex64", "complex128"],
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
@@ -2294,28 +2288,24 @@ import tensorflow as tf
         and np.linalg.det(np.asarray(x[1][0])) != 0
     ),
     compute_v=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Eig"
-    ),
 )
-def test_tensorflow_Eig(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    compute_v,
-):
+def test_tensorflow_Eig(dtype_and_x, as_variable, native_array, compute_v):
     dtype, x = dtype_and_x
+    Tout = dtype[0]
+    if Tout == "float32":
+        Tout = ivy.as_ivy_dtype("complex64")
+    elif Tout == "float64":
+        Tout = ivy.as_ivy_dtype("complex128")
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
+        with_out=False,
+        num_positional_args=0,
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.Eig",
         input=x[0],
-        Tout=tf.complex64,
+        Tout=Tout,
         compute_v=compute_v,
     )

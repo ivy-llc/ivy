@@ -106,11 +106,17 @@ def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
 
-def Eig(*, input, Tout=None, compute_v=True, name="Eig"):
+@to_ivy_arrays_and_back
+def Eig(*, input, Tout, compute_v=True, name="Eig"):
     if compute_v:
-        return ivy.eigh(input)
+        # TODO make eig function
+        e, v = ivy.eigh(input)
+        return ivy.astype(e, Tout), ivy.astype(v, Tout)
 
-    return ivy.eigvalsh(input)
+    return ivy.astype(ivy.eigvalsh(input), Tout), ivy.empty((), dtype=Tout)
+
+
+Eig.supported_dtypes = ("float32", "float64", "complex64", "complex128")
 
 
 Cumprod = tf_frontend.math.cumprod
