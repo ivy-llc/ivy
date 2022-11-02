@@ -284,6 +284,11 @@ def bitwise_or(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_xor(x1, x2):
+    return ivy.bitwise_xor(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -297,6 +302,11 @@ def flipud(m):
 def power(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def arange(start, stop=None, step=None, dtype=None):
+    return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -315,3 +325,31 @@ def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.uint8
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def trunc(x):
+    return ivy.trunc(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x):
+    return ivy.ceil(x)
+
+@to_ivy_arrays_and_back
+def float_power(x1, x2):
+    return ivy.float_power(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+cumproduct = cumprod
+
+
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)

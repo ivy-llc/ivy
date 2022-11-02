@@ -79,4 +79,15 @@ def diagflat(
     if ivy.exists(out):
         ivy.inplace_update(out, ret)
 
-    return
+    return ret
+
+
+def kron(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.kron(a, b)
+

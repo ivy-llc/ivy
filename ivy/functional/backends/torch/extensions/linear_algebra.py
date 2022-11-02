@@ -87,3 +87,16 @@ def diagflat(
         ivy.inplace_update(out, ret)
 
     return ret
+
+
+def kron(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.tensor:
+    return torch.kron(a, b, out=out)
+
+
+kron.support_native_out = True

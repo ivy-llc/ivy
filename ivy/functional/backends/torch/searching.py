@@ -92,7 +92,7 @@ def where(
     if x1 is None and x2 is None:
         return torch.where(condition)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
+    return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #
