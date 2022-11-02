@@ -284,6 +284,11 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def reciprocal(input, *, out=None):
+    return ivy.reciprocal(input)
+
+
+@to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
 
