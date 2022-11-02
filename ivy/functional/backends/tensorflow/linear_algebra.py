@@ -3,7 +3,6 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 
 # local

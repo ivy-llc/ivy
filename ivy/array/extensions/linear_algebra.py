@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional
+from typing import Optional, Union
 
 # local
 import ivy
@@ -8,11 +8,14 @@ import ivy
 
 class ArrayWithLinalgExtensions(abc.ABC):
     def diagflat(
-        self: ivy.Array,
-        /,
+        self: Union[ivy.Array, ivy.NativeArray],
         *,
-        k: int = 0,
-        out: Optional[ivy.Array] = None,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
+        out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.diagflat.
@@ -27,7 +30,15 @@ class ArrayWithLinalgExtensions(abc.ABC):
                    [0, 0, 2],
                    [0, 0, 0]])
         """
-        return ivy.diagflat(self._data, k=k, out=out)
+        return ivy.diagflat(
+            self._data,
+            offset=offset,
+            padding_value=padding_value,
+            align=align,
+            num_rows=num_rows,
+            num_cols=num_cols,
+            out=out,
+        )
 
     def kron(
         self: ivy.Array,
