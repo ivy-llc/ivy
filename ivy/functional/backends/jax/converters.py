@@ -5,7 +5,6 @@ import haiku as hk
 import jax
 # noinspection PyProtectedMember
 from haiku._src.data_structures import FlatMapping
-import jax.numpy as jnp
 # local
 import ivy
 
@@ -47,7 +46,14 @@ class IvyModule(ivy.Module):
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
-        ivy.Module.__init__(self, build_mode="on_init", device=device, devices=devices, *args, **kwargs)
+        ivy.Module.__init__(
+            self,
+            build_mode="on_init",
+            device=device,
+            devices=devices,
+            *args,
+            **kwargs
+        )
 
     def _create_variables(self, device, dtype):
         return self._hk_params
@@ -114,10 +120,13 @@ def to_haiku_module(ivy_module, args=None, kwargs=None):
 
         def __call__(self, *args, **kwargs):
             self.v = self.v.map(
-                lambda x, kc: hk.get_parameter
-                (
-                name=kc, shape=x.shape, dtype=x.dtype, init=lambda shape, dtype: ivy.to_native(self.v[kc]))
+                lambda x, kc: hk.get_parameter(
+                    name=kc,
+                    shape=x.shape,
+                    dtype=x.dtype,
+                    init=lambda shape, dtype: ivy.to_native(self.v[kc])
                 )
+            )
 
             a, kw = ivy.args_to_native(*args, **kwargs)
             ret = self._forward(*a, **kw)
