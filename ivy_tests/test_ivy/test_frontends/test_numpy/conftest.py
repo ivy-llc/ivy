@@ -2,5 +2,5 @@ import pytest
 
 
 @pytest.fixture(scope="session")
-def fixt_frontend_str():
+def frontend():
     return "numpy"

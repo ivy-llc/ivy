@@ -243,6 +243,9 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
     return test_wrapper
 
 
+possible_fixtures_frontends = ["on_device", "frontend"]
+
+
 def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     fn_tree = "ivy.functional.frontends." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
@@ -258,17 +261,26 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
                 param_names, given_kwargs, fn_tree, callable_fn
             )
 
-            def wrapped_test(on_device, fixt_frontend_str, *args, **kwargs):
+            def wrapped_test(*args, **kwargs):
                 __tracebackhide__ = True
                 wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-                return wrapped_hypothesis_test(
-                    on_device=on_device,
-                    fn_tree=fn_tree,
-                    frontend=fixt_frontend_str,
-                    *args,
-                    **kwargs
-                )
+                if "fn_tree" in param_names:  # TODO find a better way to do this
+                    return wrapped_hypothesis_test(fn_tree=fn_tree, *args, **kwargs)
+                else:
+                    return wrapped_hypothesis_test(*args, **kwargs)
 
+            params_objs = []
+            for param in possible_fixtures_frontends:
+                if param in param_names:
+                    params_objs.append(
+                        inspect.Parameter(
+                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
+                        )
+                    )
+
+            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
+                parameters=params_objs
+            )
         else:
             wrapped_test = test_fn
 
