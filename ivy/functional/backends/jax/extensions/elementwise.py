@@ -74,6 +74,16 @@ def nansum(
     return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
 
 
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.gcd(x1, x2)
+
+
 def isposinf(
     x: Union[JaxArray, float, list, tuple],
     /,
