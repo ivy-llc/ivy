@@ -921,13 +921,12 @@ def default_float_dtype(
     Parameters
     ----------
     input
-       (Default value = None) Number or array for inferring default float
-       dtype.
+        (Default value = None) Number or array for inferring float dtype.
     float_dtype
-       (Default value = None) float type to be returned as default.
+        (Default value = None) float type to be returned.
     as_native
-         (Default value = None) Whether to return the default float dtype as
-         native dtype.
+        (Default value = None) Whether to return the float dtype as native 
+        dtype.
 
     Returns
     -------
@@ -936,19 +935,22 @@ def default_float_dtype(
 
     Examples
     --------
-    >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float32'
+    
+    >>> ivy.set_default_float_dtype(ivy.FloatDtype("float64"))
     >>> ivy.default_float_dtype()
     'float64'
-
-    >>> ivy.default_int_dtype(input=4294.967346)
-    'float32'
 
     >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float16"))
     'float16'
 
-    >>> x = ivy.array([9.8,8.9], dtype="float32")
-    >>> ivy.default_float_dtype(input=x)
+    >>> ivy.default_float_dtype(input=4294.967346)
     'float32'
+    
+    >>> x = ivy.array([9.8,8.9], dtype="float16")
+    >>> ivy.default_float_dtype(input=x)
+    'float16'
     """
     if ivy.exists(float_dtype):
         if as_native is True:
