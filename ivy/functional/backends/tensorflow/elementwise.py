@@ -1,10 +1,11 @@
 # global
 from typing import Union, Optional
-
 import tensorflow as tf
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 def abs(
@@ -134,7 +135,6 @@ def bitwise_left_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.left_shift(x1, x2)
 
 
@@ -160,7 +160,6 @@ def bitwise_right_shift(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2, array_api_promotion=True)
-    ivy.assertions.check_all(x2 >= 0, message="shifts must be non-negative")
     return tf.bitwise.right_shift(x1, x2)
 
 
@@ -392,6 +391,7 @@ def log2(
     return tf.math.log(x) / tf.math.log(tf.constant(2.0, x.dtype))
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def logaddexp(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -406,9 +406,6 @@ def logaddexp(
     x1 = tf.cast(x1, tf.float64)
     x2 = tf.cast(x2, tf.float64)
     return ivy.log(ivy.add(ivy.exp(x1), ivy.exp(x2))).astype(dtype)
-
-
-logaddexp.unsupported_dtypes = ("float16", "bfloat16")
 
 
 def logical_and(
@@ -461,6 +458,9 @@ def multiply(
     return tf.math.multiply(x1, x2)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
 def negative(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -470,9 +470,6 @@ def negative(
     if x.dtype in [tf.uint8, tf.uint16, tf.uint32, tf.uint64]:
         return tf.cast(tf.negative(tf.cast(x, tf.float32)), x.dtype)
     return tf.negative(x)
-
-
-negative.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64")
 
 
 def not_equal(
@@ -495,6 +492,10 @@ def positive(
     return tf.experimental.numpy.positive(x)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64", "float64")},
+    backend_version,
+)
 def pow(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -514,9 +515,7 @@ def pow(
     return tf.experimental.numpy.power(x1, x2)
 
 
-pow.unsupported_dtypes = ("uint8", "uint16", "uint32", "uint64", "float64")
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def remainder(
     x1: Union[float, tf.Tensor, tf.Variable],
     x2: Union[float, tf.Tensor, tf.Variable],
@@ -535,9 +534,7 @@ def remainder(
     return tf.experimental.numpy.remainder(x1, x2)
 
 
-remainder.unsupported_dtypes = ("bfloat16",)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def round(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -548,9 +545,6 @@ def round(
         return x
     else:
         return tf.round(x)
-
-
-round.unsupported_dtypes = ("bfloat16",)
 
 
 def sign(
@@ -588,11 +582,7 @@ def sqrt(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype == "float32":
-        x_64 = tf.cast(x, tf.float64)
-        return tf.cast(tf.sqrt(x_64), x.dtype)
-    else:
-        return tf.math.sqrt(x)
+    return tf.math.sqrt(x)
 
 
 def square(
@@ -648,13 +638,13 @@ def trunc(
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(
-                x, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+                x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )
             ret = tf.tensor_scatter_nd_update(
                 ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
             )
         else:
-            ret = (tf.math.floor if ret > 0 else tf.math.ceil)(ret)
+            ret = (tf.math.floor if ret >= 0 else tf.math.ceil)(ret)
     return ret
 
 
@@ -671,6 +661,17 @@ def erf(
     return tf.math.erf(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
+)
 def maximum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -688,14 +689,17 @@ def maximum(
     return tf.cast((x1 + x2 + tf.math.abs(x1 - x2)) / 2, dtype=dtype)
 
 
-maximum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    backend_version,
 )
-
-
 def minimum(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -713,14 +717,21 @@ def minimum(
     return tf.cast((x1 + x2 - tf.math.abs(x1 - x2)) / 2, dtype)
 
 
-minimum.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
 )
-
-
 def reciprocal(
     x: Union[float, tf.Tensor, tf.Variable],
     /,
@@ -730,18 +741,7 @@ def reciprocal(
     return tf.math.reciprocal(x)
 
 
-reciprocal.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "uint64",
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def deg2rad(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -751,9 +751,6 @@ def deg2rad(
     return tf.experimental.numpy.deg2rad(x)
 
 
-deg2rad.unsupported_dtypes = ("bfloat16",)
-
-
 def rad2deg(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -761,3 +758,12 @@ def rad2deg(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.rad2deg(x)
+
+
+def isreal(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isreal(x)

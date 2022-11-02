@@ -1,12 +1,13 @@
+# global
+
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
 
 
 class DeviceArray:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -18,99 +19,110 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
-    def reshape(self, new_sizes, dimensions=None):
-        return jax_frontend.reshape(self.data, new_sizes, dimensions)
+    def __add__(self, other):
+        return jax_frontend.numpy.add(self, other)
 
-    def add(self, other):
-        return jax_frontend.add(self.data, other)
+    def __radd__(self, other):
+        return jax_frontend.numpy.add(other, self)
 
-    # Special Methods #
-    # --------------- #
+    def __sub__(self, other):
+        return jax_frontend.lax.sub(self, other)
 
-    @to_ivy_arrays_and_back
+    def __rsub__(self, other):
+        return jax_frontend.lax.sub(other, self)
+
+    def __mul__(self, other):
+        return jax_frontend.lax.mul(self, other)
+
+    def __rmul__(self, other):
+        return jax_frontend.lax.mul(other, self)
+
+    def __div__(self, other):
+        return jax_frontend.lax.div(self, other)
+
+    def __rdiv__(self, other):
+        return jax_frontend.lax.div(other, self)
+
+    def __mod__(self, other):
+        return jax_frontend.numpy.mod(self, other)
+
+    def __rmod__(self, other):
+        return jax_frontend.numpy.mod(other, self)
+
+    def __truediv__(self, other):
+        return jax_frontend.lax.div(self, other)
+
+    def __rtruediv__(self, other):
+        return jax_frontend.lax.div(other, self)
+
+    def __matmul__(self, other):
+        return jax_frontend.numpy.dot(self, other)
+
+    def __rmatmul__(self, other):
+        return jax_frontend.numpy.dot(other, self)
+
     def __pos__(self):
-        return ivy.positive(self.data)
+        return ivy.positive(self)
 
-    @to_ivy_arrays_and_back
     def __neg__(self):
-        return jax_frontend.neg(self.data)
+        return jax_frontend.lax.neg(self)
 
-    @to_ivy_arrays_and_back
     def __eq__(self, other):
-        return jax_frontend.eq(self.data, other)
+        return jax_frontend.lax.eq(self, other)
 
-    @to_ivy_arrays_and_back
     def __ne__(self, other):
-        return jax_frontend.ne(self.data, other)
+        return jax_frontend.lax.ne(self, other)
 
-    @to_ivy_arrays_and_back
     def __lt__(self, other):
-        return jax_frontend.lt(self.data, other)
+        return jax_frontend.lax.lt(self, other)
 
-    @to_ivy_arrays_and_back
     def __le__(self, other):
-        return jax_frontend.le(self.data, other)
+        return jax_frontend.lax.le(self, other)
 
-    @to_ivy_arrays_and_back
     def __gt__(self, other):
-        return jax_frontend.gt(self.data, other)
+        return jax_frontend.lax.gt(self, other)
 
-    @to_ivy_arrays_and_back
     def __ge__(self, other):
-        return jax_frontend.ge(self.data, other)
+        return jax_frontend.lax.ge(self, other)
 
-    @to_ivy_arrays_and_back
     def __abs__(self):
-        return jax_frontend.abs(self.data)
+        return jax_frontend.numpy.abs(self)
 
-    @to_ivy_arrays_and_back
     def __pow__(self, other):
-        return jax_frontend.pow(self.data, other)
+        return jax_frontend.lax.pow(self, other)
 
-    @to_ivy_arrays_and_back
     def __rpow__(self, other):
-        return jax_frontend.pow(other, self.data)
+        return jax_frontend.lax.pow(other, self)
 
-    @to_ivy_arrays_and_back
     def __and__(self, other):
-        return jax_frontend.bitwise_and(self.data, other)
+        return jax_frontend.numpy.bitwise_and(self, other)
 
-    @to_ivy_arrays_and_back
     def __rand__(self, other):
-        return jax_frontend.bitwise_and(other, self.data)
+        return jax_frontend.numpy.bitwise_and(other, self)
 
-    @to_ivy_arrays_and_back
     def __or__(self, other):
-        return jax_frontend.bitwise_or(self.data, other)
+        return jax_frontend.numpy.bitwise_or(self, other)
 
-    @to_ivy_arrays_and_back
     def __ror__(self, other):
-        return jax_frontend.bitwise_or(other, self.data)
+        return jax_frontend.numpy.bitwise_or(other, self)
 
-    @to_ivy_arrays_and_back
     def __xor__(self, other):
-        return jax_frontend.bitwise_xor(self.data, other)
+        return jax_frontend.lax.bitwise_xor(self, other)
 
-    @to_ivy_arrays_and_back
     def __rxor__(self, other):
-        return jax_frontend.bitwise_xor(other, self.data)
+        return jax_frontend.lax.bitwise_xor(other, self)
 
-    @to_ivy_arrays_and_back
     def __invert__(self):
-        return jax_frontend.bitwise_not(self.data)
+        return jax_frontend.lax.bitwise_not(self)
 
-    @to_ivy_arrays_and_back
     def __lshift__(self, other):
-        return jax_frontend.shift_left(self.data, other)
+        return jax_frontend.lax.shift_left(self, other)
 
-    @to_ivy_arrays_and_back
     def __rlshift__(self, other):
-        return jax_frontend.shift_left(other, self.data)
+        return jax_frontend.lax.shift_left(other, self)
 
-    @to_ivy_arrays_and_back
     def __rshift__(self, other):
-        return jax_frontend.shift_right_logical(self.data, other)
+        return jax_frontend.lax.shift_right_logical(self, other)
 
-    @to_ivy_arrays_and_back
     def __rrshift__(self, other):
-        return jax_frontend.shift_right_logical(other, self.data)
+        return jax_frontend.lax.shift_right_logical(other, self)

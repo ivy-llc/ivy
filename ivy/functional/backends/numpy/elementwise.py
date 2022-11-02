@@ -50,7 +50,7 @@ def add(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     if alpha not in (1, None):
         x2 = multiply(x2, alpha)
-    return np.add(x1, x2)
+    return np.add(x1, x2, out=out)
 
 
 add.support_native_out = True
@@ -223,7 +223,7 @@ def divide(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    ret = np.divide(x1, x2)
+    ret = np.divide(x1, x2, out=out)
     if ivy.is_float_dtype(x1):
         ret = np.asarray(ret, dtype=x1.dtype)
     else:
@@ -731,3 +731,11 @@ def rad2deg(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 rad2deg.support_native_out = True
+
+
+@_handle_0_dim_output
+def isreal(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.isreal(x)
+
+
+isreal.support_native_out = False

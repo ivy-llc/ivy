@@ -17,9 +17,13 @@ def argmax(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
+    output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
+    ret = torch.argmax(x, dim=axis, keepdim=keepdims, out=out)
+    if output_dtype:
+        ret = ret.to(dtype=output_dtype)
+    return ret
 
 
 argmax.support_native_out = True
@@ -85,8 +89,10 @@ def where(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if x1 is None and x2 is None:
+        return torch.where(condition)
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
+    return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #

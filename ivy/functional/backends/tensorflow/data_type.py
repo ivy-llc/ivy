@@ -1,12 +1,15 @@
 # global
+from typing import Union, Sequence, List
+
 import numpy as np
 import tensorflow as tf
-from typing import Union, Sequence, List
 from tensorflow.python.framework.dtypes import DType
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
+from . import backend_version
 
 ivy_dtype_dict = {
     tf.int8: "int8",
@@ -21,6 +24,8 @@ ivy_dtype_dict = {
     tf.float16: "float16",
     tf.float32: "float32",
     tf.float64: "float64",
+    tf.complex64: "complex64",
+    tf.complex128: "complex128",
     tf.bool: "bool",
 }
 
@@ -37,6 +42,8 @@ native_dtype_dict = {
     "float16": tf.float16,
     "float32": tf.float32,
     "float64": tf.float64,
+    "complex64": tf.complex64,
+    "complex128": tf.complex128,
     "bool": tf.bool,
 }
 
@@ -96,17 +103,8 @@ def astype(
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = tf.experimental.numpy.copy(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = tf.experimental.numpy.copy(x)
-            new_tensor = tf.cast(new_tensor, dtype)
-            return new_tensor
+    if x.dtype == dtype:
+        return tf.experimental.numpy.copy(x) if copy else x
     return tf.cast(x, dtype)
 
 
@@ -138,6 +136,9 @@ def broadcast_to(
     return tf.broadcast_to(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("complex64", "complex128")}, backend_version
+)
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = ivy.as_ivy_dtype(from_.dtype)
@@ -179,6 +180,7 @@ def iinfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> np.iinfo:
     return tf.experimental.numpy.iinfo(ivy.as_ivy_dtype(type))
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def result_type(
     *arrays_and_dtypes: Union[tf.Tensor, tf.Variable, tf.DType],
 ) -> ivy.Dtype:
@@ -191,9 +193,6 @@ def result_type(
     for i in range(2, len(arrays_and_dtypes)):
         result = tf.experimental.numpy.result_type(result, arrays_and_dtypes[i])
     return as_ivy_dtype(result)
-
-
-result_type.unsupported_dtypes = ("bfloat16",)
 
 
 # Extra #
@@ -228,8 +227,10 @@ def dtype_bits(dtype_in: Union[tf.DType, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )
 
 
 # ToDo:
 # 1. result_type: Add support for bfloat16 with int16
+# 2. can_cast : Add support for complex64, complex128
