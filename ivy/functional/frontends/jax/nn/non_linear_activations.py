@@ -308,9 +308,9 @@ def swish(x):
 
 @to_ivy_arrays_and_back
 def hard_silu(x):
-    return x * hard_sigmoid(x)
+    return ivy.multiply(x, hard_sigmoid(x))
 
 
 @to_ivy_arrays_and_back
 def hard_sigmoid(x):
-    return relu6(x + 3) / 6
+    return ivy.divide(relu6(x + 3), 6)
