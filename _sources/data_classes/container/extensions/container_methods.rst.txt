@@ -31,6 +31,8 @@ Container methods
    container_methods/nansum.rst
    container_methods/static_gcd.rst
    container_methods/gcd.rst
+   container_methods/static_isposinf.rst
+   container_methods/isposinf.rst
    container_methods/static_flatten.rst
    container_methods/flatten.rst
    container_methods/static_hann_window.rst

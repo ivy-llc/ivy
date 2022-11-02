@@ -22,4 +22,5 @@ Elementwise
    elementwise/exp2.rst
    elementwise/nansum.rst
    elementwise/gcd.rst
+   elementwise/isposinf.rst
 

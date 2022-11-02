@@ -22,6 +22,7 @@ Array methods
    array_methods/exp2.rst
    array_methods/nansum.rst
    array_methods/gcd.rst
+   array_methods/isposinf.rst
    array_methods/flatten.rst
    array_methods/max_pool2d.rst
    array_methods/max_pool1d.rst
