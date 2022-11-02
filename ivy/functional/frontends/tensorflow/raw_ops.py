@@ -27,15 +27,13 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-Add = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.add, kwargs_to_update={"Add": "name"})
-)
+Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
 ArgMax = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.math.argmax,
-        kwargs_to_update={"dimension": "axis", "ArgMax": "name"},
+        kwargs_to_update={"dimension": "axis"},
     )
 )
 
@@ -110,9 +108,7 @@ def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
 
 
-Div = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.divide, kwargs_to_update={"Div": "name"})
-)
+Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 
 
 @to_ivy_arrays_and_back
@@ -120,9 +116,7 @@ def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
 
-Cumprod = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.cumprod, kwargs_to_update={"Cumprod": "name"})
-)
+Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 
 
 @to_ivy_arrays_and_back
@@ -249,11 +243,7 @@ def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
     return ivy.inv(input, adjoint=adjoint)
 
 
-MatrixDeterminant = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.linalg.det, kwargs_to_update={"MatrixDeterminant": "name"}
-    )
-)
+MatrixDeterminant = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.linalg.det))
 
 
 Max = to_ivy_arrays_and_back(
@@ -262,7 +252,6 @@ Max = to_ivy_arrays_and_back(
         kwargs_to_update={
             "input": "input_tensor",
             "keep_dims": "keepdims",
-            "Max": "name",
         },
     )
 )
@@ -271,7 +260,7 @@ Max = to_ivy_arrays_and_back(
 Maximum = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.math.maximum,
-        kwargs_to_update={"x": "a", "y": "b", "Maximum": "name"},
+        kwargs_to_update={"x": "a", "y": "b"},
     )
 )
 
@@ -282,7 +271,6 @@ Min = to_ivy_arrays_and_back(
         kwargs_to_update={
             "input": "input_tensor",
             "keep_dims": "keepdims",
-            "Min": "name",
         },
     )
 )
@@ -293,14 +281,10 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-Mul = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.multiply, kwargs_to_update={"Mul": "name"})
-)
+Mul = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.multiply))
 
 
-Neg = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.negative, kwargs_to_update={"Neg": "name"})
-)
+Neg = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.negative))
 
 
 @to_ivy_arrays_and_back
@@ -328,7 +312,7 @@ def OnesLike(*, x, name="OnesLike"):
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
-        kwargs_to_update={"features": "x", "Relu": "name"},
+        kwargs_to_update={"features": "x"},
     )
 )
 
@@ -373,9 +357,7 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-Sub = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.subtract, kwargs_to_update={"Sub": "name"})
-)
+Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
 
 
 @to_ivy_arrays_and_back
@@ -383,9 +365,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
     return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-Tan = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.tan, kwargs_to_update={"Tan": "name"})
-)
+Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
 @to_ivy_arrays_and_back
@@ -399,9 +379,7 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
-Cumsum = to_ivy_arrays_and_back(
-    map_raw_ops_alias(tf_frontend.math.cumsum, kwargs_to_update={"Cumsum": "name"})
-)
+Cumsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumsum))
 
 
 @to_ivy_arrays_and_back
@@ -426,7 +404,6 @@ Mean = to_ivy_arrays_and_back(
         kwargs_to_update={
             "input": "input_tensor",
             "keep_dims": "keepdims",
-            "Mean": "name",
         },
     )
 )
@@ -443,7 +420,5 @@ def Relu6(features, name="Relu6"):
 
 
 Sigmoid = to_ivy_arrays_and_back(
-    map_raw_ops_alias(
-        tf_frontend.keras.activations.sigmoid, kwargs_to_update={"Sigmoid": "name"}
-    )
+    map_raw_ops_alias(tf_frontend.keras.activations.sigmoid)
 )
