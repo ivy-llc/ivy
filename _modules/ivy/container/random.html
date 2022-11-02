@@ -1178,6 +1178,16 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            A container object, shuffled along the first dimension.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([7, 6, 0]),</span>
+<span class="sd">        ...                   b=ivy.array([8, 9, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_shuffle(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([7, 0, 6]),</span>
+<span class="sd">            b: ivy.array([8, 4, 9])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;shuffle&quot;</span><span class="p">,</span>
@@ -1230,6 +1240,16 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            A container object, shuffled along the first dimension.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5, 2, 9]),</span>
+<span class="sd">        ...                   b=ivy.array([7, 1, 6]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.shuffle(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([9, 5, 2]),</span>
+<span class="sd">            b: ivy.array([6, 7, 1])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_shuffle</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
