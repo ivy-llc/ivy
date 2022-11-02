@@ -95,3 +95,27 @@ def top_k(
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
+
+
+def fliplr(
+    m: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fliplr(m)
+
+
+fliplr.support_native_out = False
+
+
+def i0(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.i0(x)
+
+
+i0.support_native_out = False

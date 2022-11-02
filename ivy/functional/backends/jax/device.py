@@ -50,7 +50,7 @@ def to_device(
     x: JaxArray, device: jaxlib.xla_extension.Device, /, *, stream: Optional[int] = None
 ):
     if device is not None:
-        cur_dev = as_ivy_dev(dev(x))
+        cur_dev = as_native_dev(dev(x))
         if cur_dev != device:
             x = jax.device_put(x, as_native_dev(device))
     return x
@@ -89,7 +89,7 @@ def as_native_dev(device, /):
     return jax.devices(device)[idx]
 
 
-def clear_mem_on_dev(device, /):
+def clear_mem_on_dev(device: str, /):
     return None
 
 

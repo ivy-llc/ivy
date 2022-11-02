@@ -135,21 +135,29 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    dtype = x.dtype
+    x = ivy.astype(x, "float64").to_native()
     if isinstance(correction, int):
-        return np.asarray(
-            np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        ).astype(x.dtype)
+        return ivy.astype(
+            np.asarray(
+                np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
+            ),
+            dtype,
+        )
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return np.asarray(
-        np.multiply(
-            np.var(x, axis=axis, keepdims=keepdims, out=out),
-            ivy.stable_divide(size, (size - correction)),
-        )
-    ).astype(x.dtype)
+    return ivy.astype(
+        np.asarray(
+            np.multiply(
+                np.var(x, axis=axis, keepdims=keepdims, out=out),
+                ivy.stable_divide(size, (size - correction)),
+            )
+        ),
+        dtype,
+    )
 
 
 var.support_native_out = True

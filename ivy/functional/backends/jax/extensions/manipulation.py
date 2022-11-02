@@ -85,3 +85,21 @@ def top_k(
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
     val = jnp.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
+
+
+def fliplr(
+    m: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fliplr(m)
+
+
+def i0(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.i0(x)

@@ -108,3 +108,28 @@ def count_nonzero(
     return tf.math.count_nonzero(
         a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
     )
+
+
+def nansum(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[tf.DType] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def gcd(
+    x1: Union[tf.Tensor, tf.Variable, int, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.gcd(x1, x2)

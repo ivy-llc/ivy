@@ -91,3 +91,22 @@ def top_k(
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
     indices = tf.dtypes.cast(indices, tf.int64)
     return topk_res(val, indices)
+
+
+def fliplr(
+    m: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.fliplr(m)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+def i0(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.bessel_i0(x, name=None)
