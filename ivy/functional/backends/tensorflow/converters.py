@@ -64,7 +64,13 @@ def to_ivy_module(
         input_shape = args[0].shape
         native_module.build((input_shape[-1],))
 
-    return IvyModule(native_module=native_module, device=device, devices=devices, *args, **kwargs)
+    return IvyModule(
+        native_module=native_module,
+        device=device,
+        devices=devices,
+        *args,
+        **kwargs
+    )
 
 
 def to_keras_module(ivy_module, args=None, kwargs=None):
@@ -76,12 +82,20 @@ def to_keras_module(ivy_module, args=None, kwargs=None):
 
         def _assign_variables(self):
             self.v.map(
-                lambda x, kc: self.add_weight(name=kc, shape=x.shape, dtype=x.dtype, trainable=True))
+                lambda x, kc: self.add_weight(
+                    name=kc,
+                    shape=x.shape,
+                    dtype=x.dtype,
+                    trainable=True
+                )
+            )
             model_weights = list()
             self.v.map(
                 lambda x, kc: model_weights.append(ivy.to_numpy(x)))
             self.set_weights(model_weights)
-            params = {re.sub(":\\d+", '', param.name): param for param in self.variables}
+            params = {
+                re.sub(":\\d+", '', param.name): param for param in self.variables
+            }
             self.v = self.v.map(lambda x, kc: params[kc])
 
         def call(self, *args, **kwargs):
