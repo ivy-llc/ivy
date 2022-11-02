@@ -126,9 +126,7 @@ def to_torch_module(ivy_module, args=None, kwargs=None):
             self.v.map(
             lambda x, kc: self.register_parameter(
             name=kc,
-            param=torch.nn.Parameter(ivy.to_native(x))
-            )
-            )
+            param=torch.nn.Parameter(ivy.to_native(x))))
             self.v = self.v.map(lambda x, kc: self._parameters[kc])
 
         def forward(self, *args, **kwargs):
