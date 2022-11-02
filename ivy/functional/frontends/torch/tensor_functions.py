@@ -16,7 +16,7 @@ def is_tensor(obj):
 
 
 def is_complex(input):
-    arr = ivy.asarray(input)
+    arr = ivy.array(input)
     if (
         ivy.dtype(arr) == ivy.complex64
         or ivy.dtype(arr) == ivy.complex128
