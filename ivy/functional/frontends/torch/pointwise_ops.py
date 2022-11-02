@@ -20,6 +20,9 @@ def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 
 
+arctan = atan
+
+
 @to_ivy_arrays_and_back
 def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
