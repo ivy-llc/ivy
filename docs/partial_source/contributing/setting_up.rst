@@ -540,14 +540,9 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite.
-This will cause the array_api_tests to fail and therefore they must be run via the terminal.
+4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_04.png?raw=true
-   :width: 420
-
-5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
-
+Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
 **Video**
 

@@ -81,7 +81,7 @@ def top_k(
         indices = tf.dtypes.cast(indices, tf.int32)
     else:
         x *= -1
-        indices = tf.experimental.numpy.argsort(x, axis=axis)
+        indices = tf.experimental.numpy.argsort(x, axis=axis)[..., -1:]
         indices = tf.experimental.numpy.take(
             indices, tf.experimental.numpy.arange(k), axis=axis
         )
@@ -100,3 +100,13 @@ def fliplr(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.fliplr(m)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
+def i0(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.bessel_i0(x, name=None)

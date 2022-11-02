@@ -10,3 +10,16 @@ def diagflat(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.diagflat(x, k=k)
+
+
+def kron(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.kron(a, b)
+
+
+kron.support_native_out = False
