@@ -95,3 +95,12 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def isposinf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isposinf(x, out=out)

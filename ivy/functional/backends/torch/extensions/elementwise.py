@@ -153,3 +153,15 @@ def isclose(
 
 
 isclose.support_native_out = False
+
+
+def isposinf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
