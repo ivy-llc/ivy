@@ -20,8 +20,12 @@ def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    k: int = 0,
-    out: Optional[ivy.Array] = None,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = -1,
+    num_cols: Optional[int] = -1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with the flattened input as a diagonal.
 
@@ -71,7 +75,15 @@ def diagflat(
                [0, 0, 2],
                [0, 0, 0]])
     """
-    return current_backend(x).diagflat(x, k=k, out=out)
+    return current_backend(x).diagflat(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+        out=out,
+    )
 
 
 @to_native_arrays_and_back
