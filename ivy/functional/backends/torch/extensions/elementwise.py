@@ -137,3 +137,15 @@ def gcd(
 
 
 gcd.support_native_out = True
+
+
+def isposinf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
