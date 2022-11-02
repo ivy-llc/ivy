@@ -88,5 +88,21 @@ def min(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def max(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
+    elif out is not None:
+        ivy.max(input, axis=dim, keepdims=keepdim, out=out[0])
+        ivy.argmax(input, axis=dim, keepdims=keepdim, out=out[1])
+        return out
+    else:
+        max_tuple = namedtuple("max", ["values", "indices"])
+        return max_tuple(
+            ivy.max(input, axis=dim, keepdims=keepdim),
+            ivy.argmax(input, axis=dim, keepdims=keepdim),
+        )
+
+
+@to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)

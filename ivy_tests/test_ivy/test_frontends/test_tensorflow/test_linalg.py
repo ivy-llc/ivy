@@ -470,3 +470,41 @@ def test_tensorflow_normalize(
         ord=ord,
         axis=axis,
     )
+
+
+# l2_normalize
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.l2_normalize"
+    ),
+)
+def test_tensorflow_l2_normalize(
+    dtype_values_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.l2_normalize",
+        x=x[0],
+        axis=axis,
+    )

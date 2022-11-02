@@ -12,7 +12,11 @@ class ContainerWithLinalgExtensions(ContainerBase):
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
-        k: int = 0,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -22,19 +26,27 @@ class ContainerWithLinalgExtensions(ContainerBase):
         return ContainerBase.multi_map_in_static_method(
             "diagflat",
             x,
-            k=k,
+            offset=offset,
+            padding_value=padding_value,
+            align=align,
+            num_rows=num_rows,
+            num_cols=num_cols,
+            out=out,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def diagflat(
         self: ivy.Container,
         /,
         *,
-        k: int = 0,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -58,7 +70,100 @@ class ContainerWithLinalgExtensions(ContainerBase):
         """
         return self.static_diagflat(
             self,
-            k=k,
+            offset=offset,
+            padding_value=padding_value,
+            align=align,
+            num_rows=num_rows,
+            num_cols=num_cols,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_kron(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        b: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.kron. This method simply wraps
+        the function, and so the docstring for ivy.kron also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        a
+            first container with input arrays.
+        b
+            second container with input arrays
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays corresponding to the Kronecker product of
+            the arrays in the input containers, computed element-wise
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([1,2]), y=ivy.array(50))
+        >>> b = ivy.Container(x=ivy.array([3,4]), y=ivy.array(9))
+        >>> ivy.Container.static_kron(a, b)
+        {
+            a: ivy.array([3, 4, 6, 8])
+            b: ivy.array([450])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "kron",
+            a,
+            b,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def kron(
+        self: ivy.Container,
+        b: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.kron.
+        This method simply wraps the function, and so the docstring for
+        ivy.kron also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> a = ivy.Container(x=ivy.array([1,2]), y=ivy.array([50]))
+        >>> b = ivy.Container(x=ivy.array([3,4]), y=ivy.array(9))
+        >>> a.kron(b)
+        {
+            a: ivy.array([3, 4, 6, 8])
+            b: ivy.array([450])
+        }
+        """
+        return self.static_kron(
+            self,
+            b,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

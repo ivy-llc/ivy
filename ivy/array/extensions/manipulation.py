@@ -267,3 +267,67 @@ class ArrayWithManipulationExtensions(abc.ABC):
         top_k(values=ivy.array([9., 5.]), indices=ivy.array([4, 3]))
         """
         return ivy.top_k(self, k, axis=axis, largest=largest, out=out)
+
+    def fliplr(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fliplr. This method simply
+        wraps the function, and so the docstring for ivy.fliplr also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The array to be flipped. Must be at least 2-D.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array corresponding to input array with elements
+            order reversed along axis 1.
+
+        Examples
+        --------
+        >>> m = ivy.diag([1, 2, 3])
+        >>> m.fliplr()
+        ivy.array([[0, 0, 1],
+               [0, 2, 0],
+               [3, 0, 0]])
+        """
+        return ivy.fliplr(self._data, out=out)
+
+    def i0(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.i0. This method simply
+        wraps the function, and so the docstring for ivy.i0 also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with modified Bessel function of the first kind, order 0.
+
+        Examples
+        --------
+        >>> x = ivy.array([[1, 2, 3]])
+        >>> x.i0()
+        ivy.array([1.26606588, 2.2795853 , 4.88079259])
+        """
+        return ivy.i0(self._data, out=out)
