@@ -28,8 +28,8 @@ def _generate_data_layer_norm(
     allow_nan=False,
     exclude_min=False,
     exclude_max=False,
-    min_value=-1e5,
-    max_value=1e5,
+    min_value=-1e10,
+    max_value=1e10,
     shared_dtype=False,
 ):
     results = draw(
