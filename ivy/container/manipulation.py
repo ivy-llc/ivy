@@ -1295,6 +1295,21 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies to
         this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 1.],
+                               [2., 3.]]),
+                  b=ivy.array([[4., 5.],
+                               [6., 7.]]))
+        >>> y = x.expand_dims(axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([[[0., 1.]],
+                  [[2., 3.]]]),
+            b: ivy.array([[[4., 5.]],
+                  [[6., 7.]]])
+        }
         """
         return self.static_constant_pad(
             self,
