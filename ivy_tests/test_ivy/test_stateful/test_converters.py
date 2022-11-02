@@ -101,7 +101,11 @@ class HaikuModule(hk.Module):
         return jnp.tanh(self._linear2(x))[0]
 
 
-NATIVE_MODULES = {"torch": TorchModule, "jax": HaikuModule, "tensorflow": TensorflowModule}
+NATIVE_MODULES = {
+"torch": TorchModule,
+"jax": HaikuModule,
+"tensorflow": TensorflowModule
+}
 
 
 # to_ivy_module
@@ -133,11 +137,14 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
                 return model(*a)
 
             native_module = hk.transform(forward_fn)
-        elif ivy.current_backend_str() is "tensorflow":
-            native_module = native_module_class(in_size=input_channels, out_size=output_channels)
+        elif ivy.current_backend_str() == "tensorflow":
+            native_module = native_module_class(
+            in_size=input_channels,
+            out_size=output_channels
+            )
             native_module.build((input_channels,))
         else:
-            native_module = native_module_class(in_size=input_channels, out_size=output_channels)
+            native_module = native_module_class(in_size=input_channels, out_size=output_channels)#
 
         ivy_module = ivy.to_ivy_module(
             native_module=native_module,
@@ -179,7 +186,10 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
 def test_to_torch_module(bs_ic_oc):
     ivy.set_backend('torch')
     batch_shape, input_channels, output_channels = bs_ic_oc
-    torch_model = torch_.to_torch_module(IvyModel, kwargs={"in_size": input_channels, "out_size": output_channels})
+    torch_model = torch_.to_torch_module(
+    IvyModel,
+    kwargs={"in_size": input_channels, "out_size": output_channels}
+    )
     optimizer = torch.optim.SGD(torch_model.parameters(), lr=1e-3)
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -211,7 +221,10 @@ def test_to_torch_module(bs_ic_oc):
 def test_to_keras_module(bs_ic_oc):
     ivy.set_backend('tensorflow')
     batch_shape, input_channels, output_channels = bs_ic_oc
-    tf_model = tf_.to_keras_module(IvyModel, kwargs={"in_size": input_channels, "out_size": output_channels})
+    tf_model = tf_.to_keras_module(
+    IvyModel,
+    kwargs={"in_size": input_channels, "out_size": output_channels}
+    )
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -257,7 +270,10 @@ def test_to_haiku_module(bs_ic_oc):
     target = ivy.to_native(y)
     loss_tm1 = 1e12
 
-    haiku_model = jax_.to_haiku_module(IvyModel, kwargs={"in_size": input_channels, "out_size": output_channels})
+    haiku_model = jax_.to_haiku_module(
+    IvyModel,
+    kwargs={"in_size": input_channels, "out_size": output_channels}
+    )
     rng = jax.random.PRNGKey(42)
     lr = 0.001
 
