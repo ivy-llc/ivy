@@ -54,7 +54,7 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
 
     # inputs
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    img = ivy.array(np.load(os.path.join(this_dir, 'img.npy'))[None], dtype='float32', device=device)
+    img = ivy.array(np.load(os.path.join(this_dir, 'ivy_models_tests/img.npy'))[None], dtype='float32', device=device)
     queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], device=device)
 
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
@@ -71,7 +71,7 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
     # maybe load weights
     if load_weights:
         this_dir = os.path.dirname(os.path.realpath(__file__))
-        weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
+        weight_fpath = os.path.join(this_dir, 'ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
         assert os.path.isfile(weight_fpath)
         # noinspection PyBroadException
         try:
