@@ -360,3 +360,8 @@ def heaviside(x1, x2):
 @to_ivy_arrays_and_back
 def deg2rad(x):
     return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
+def exp2(x):
+    return ivy.exp2(x)
