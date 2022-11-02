@@ -361,3 +361,38 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([1.,   2.,  1.])
         """
         return ivy.gcd(self._data, x2, out=out)
+
+    def isposinf(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isposinf. This method simply
+        wraps the function, and so the docstring for ivy.isposinf also applies to
+        this method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            Returns a boolean array with values True where 
+            the corresponding element of the input is positive
+            infinity and values False where the element of the
+            input is not positive infinity.
+        
+        Examples
+        --------
+        >>> a = ivy.array([12.1, -ivy.inf, ivy.inf])
+        >>> ivy.isposinf(a)
+        ivy.array([False, False,  True])
+        """
+        return ivy.isposinf(self._data, out=out)
