@@ -210,6 +210,9 @@ class Tensor:
     def long(self, memory_format=None):
         return ivy.astype(self.data, ivy.int64)
 
+    def max(self, dim=None, keepdim=False):
+        return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
+
     def device(self):
         return ivy.dev(self.data)
 
