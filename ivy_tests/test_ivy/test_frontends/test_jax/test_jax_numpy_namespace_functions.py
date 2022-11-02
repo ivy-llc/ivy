@@ -1904,6 +1904,6 @@ def test_exp2(
         frontend="jax",
         fn_tree="numpy.exp2",
         x=np.asarray(x[0], dtype=input_dtype[0]),
-        rtol=1e-03,
-        atol=1e-03,
+        rtol=1e-02,
+        atol=1e-02,
     )
