@@ -435,3 +435,42 @@ def gcd(
     ivy.array([1.,   2.,  1.])
     """
     return ivy.current_backend().gcd(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def isposinf(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Test element-wise for positive infinity, return result as bool array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array with values True where 
+        the corresponding element of the input is positive
+        infinity and values False where the element of the
+        input is not positive infinity.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, ivy.inf])
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    >>> x = [5, -ivy.inf, ivy.inf]
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    """
+    return ivy.current_backend().isposinf(x, out=out)
