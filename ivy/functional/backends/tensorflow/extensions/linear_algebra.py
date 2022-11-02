@@ -1,6 +1,8 @@
 from typing import Union, Optional
 import tensorflow as tf
 
+import ivy
+
 
 def diagflat(
     x: Union[tf.Tensor, tf.Variable],
@@ -30,4 +32,8 @@ def diagflat(
         padding_value=padding_value,
         align=align,
     )
-    return ret
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return

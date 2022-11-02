@@ -4,6 +4,8 @@ import math
 import torch
 from typing import Optional
 
+import ivy
+
 
 def diagflat(
     x: torch.Tensor,
@@ -79,4 +81,9 @@ def diagflat(
         "constant",
         0,
     ).type(x.dtype)
-    return output_array.type(x.dtype)
+    ret = output_array.type(x.dtype)
+
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return ret

@@ -3,6 +3,8 @@ from typing import Optional
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
 
+import ivy
+
 
 def diagflat(
     x: JaxArray,
@@ -72,4 +74,9 @@ def diagflat(
         ],
         mode="constant",
     )
-    return output_array.astype(x.dtype)
+
+    ret = output_array.astype(x.dtype)
+    if ivy.exists(out):
+        ivy.inplace_update(out, ret)
+
+    return
