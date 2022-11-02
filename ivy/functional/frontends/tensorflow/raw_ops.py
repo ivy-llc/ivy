@@ -422,3 +422,8 @@ def Relu6(features, name="Relu6"):
 Sigmoid = to_ivy_arrays_and_back(
     map_raw_ops_alias(tf_frontend.keras.activations.sigmoid)
 )
+
+
+@to_ivy_arrays_and_back
+def Softplus(features, name="Softplus"):
+    return ivy.softplus(features)
