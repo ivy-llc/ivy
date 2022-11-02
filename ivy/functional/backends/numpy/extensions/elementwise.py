@@ -5,7 +5,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x).astype(x.dtype)
+    return np.sinc(x)
 
 
 @_handle_0_dim_output
@@ -122,6 +122,19 @@ def nansum(
 
 
 nansum.support_native_out = True
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
 
 
 def isclose(

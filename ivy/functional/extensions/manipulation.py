@@ -568,3 +568,73 @@ def top_k(
     }
     """
     return current_backend(x).top_k(x, k, axis=axis, largest=largest, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fliplr(
+    m: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> Union[ivy.Array, ivy.NativeArray]:
+    """Flip array in the left/right direction.
+    Flip the entries in each column in the left/right direction.
+    Columns are preserved, but appear in a different order than before.
+
+    Parameters
+    ----------
+    m
+        The array to be flipped. Must be at least 2-D.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array corresponding to input array with elements
+        order reversed along axis 1.
+
+    Examples
+    --------
+    >>> m = ivy.diag([1, 2, 3])
+    >>> ivy.fliplr(m)
+    ivy.array([[0, 0, 1],
+           [0, 2, 0],
+           [3, 0, 0]])
+    """
+    return ivy.current_backend().fliplr(m, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def i0(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Bessel i0 function of x element-wise.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with the modified Bessel function
+        evaluated at each of the elements of x.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.i0(x)
+    ivy.array([1.26606588, 2.2795853 , 4.88079259])
+    """
+    return ivy.current_backend(x).i0(x, out=out)
