@@ -5,7 +5,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x).astype(x.dtype)
+    return np.sinc(x)
 
 
 @_handle_0_dim_output
