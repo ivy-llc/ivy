@@ -352,5 +352,11 @@ def cumsum(a, axis=0, dtype=None, out=None):
 cumproduct = cumprod
 
 
+@to_ivy_arrays_and_back
 def heaviside(x1, x2):
     return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(x):
+    return ivy.deg2rad(x)
