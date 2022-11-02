@@ -297,9 +297,9 @@ def test_numpy_instance_argsort(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
-        max_axis=5,
+        max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
     ),
@@ -328,7 +328,7 @@ def test_numpy_ndarray_mean(
             "data": x[0],
         },
         all_as_kwargs_np_method={
-            "axis": axis
+            "axis": axis,
         },
         frontend="numpy",
         class_name="ndarray",
