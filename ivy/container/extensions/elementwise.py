@@ -829,3 +829,92 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_gcd(self, x2, out=out)
+
+    @staticmethod
+    def static_isposinf(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isposinf. This method simply wraps
+        the function, and so the docstring for ivy.isposinf also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including a boolean array with values
+            True where the corresponding element of the input
+            is positive infinity and values False where the
+            element of the input is not positive infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                                b=ivy.array([5, ivy.inf, ivy.inf]))
+        >>> ivy.Container.static_isposinf(x)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "isposinf",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def isposinf(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isposinf. This method simply
+        wraps the function, and so the docstring for ivy.isposinf also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns container including a boolean array with values
+            True where the corresponding element of the input
+            is positive infinity and values False where the
+            element of the input is not positive infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                               b=ivy.array([5, ivy.inf, ivy.inf]))
+        >>> x.isposinf()
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return self.static_isposinf(self, out=out)
