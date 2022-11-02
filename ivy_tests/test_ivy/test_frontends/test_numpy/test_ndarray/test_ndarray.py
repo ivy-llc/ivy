@@ -314,8 +314,7 @@ def test_numpy_ndarray_mean(
         native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
-
-    helpers.test_frontend_method(
+    ret, frontend_ret = helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         input_dtypes_method=input_dtype,
         as_variable_flags_init=as_variable,
@@ -333,6 +332,15 @@ def test_numpy_ndarray_mean(
         frontend="numpy",
         class_name="ndarray",
         method_name="mean",
+        test_values=False,
+    )
+    frontend_ret = np.mean(x[0], axis=axis)
+    assert_all_close(
+        ret_np=ret,
+        ret_from_gt_np=frontend_ret,
+        rtol=1e-2,
+        atol=1e-2,
+        ground_truth_backend="numpy",
     )
 
 

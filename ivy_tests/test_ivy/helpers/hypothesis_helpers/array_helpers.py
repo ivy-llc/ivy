@@ -881,7 +881,7 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
         )
     )
     dtype, x = draw(
-        dtype_and_values(
+        dtype_and_valuesdtype_values_axis(
             available_dtypes=dtype_helpers.get_dtypes("float"),
             shape=in_shape,
             num_arrays=1,
