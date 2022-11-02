@@ -155,3 +155,4 @@ def grad(func: Callable):
         return _remove_zeros_and_nones(grad_, grad_)
 
     return callback_fn
+    
