@@ -121,6 +121,8 @@ from . import compilation
 from .compilation import *
 from . import creation
 from .creation import *
+from . import converters
+from .converters import *
 from . import data_type
 from .data_type import *
 from . import device

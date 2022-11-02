@@ -14,7 +14,6 @@ from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 import torch
 
-
 # Base #
 # -----#
 
@@ -25,7 +24,7 @@ class Module(abc.ABC):
     def __init__(
         self,
         /,
-        *,
+        *args,
         device=None,
         v=None,
         build_mode="on_init",
@@ -38,6 +37,7 @@ class Module(abc.ABC):
         with_partial_v=False,
         devices=None,
         dtype=None,
+        **kwargs,
     ):
         """
         Initialize Ivy layer, which is a stateful object consisting of trainable
@@ -118,10 +118,12 @@ class Module(abc.ABC):
             alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self._sub_mods = set()
-        self._dtype = dtype
+        self._dtype_ = dtype
+        self._args = args
+        self._kwargs = kwargs
         if build_mode != "on_init":
             return
-        self.build()
+        self.build_(*args, **kwargs)
 
     # Private #
     # --------#
@@ -398,7 +400,7 @@ class Module(abc.ABC):
             return
         elif isinstance(obj, dict):
             for k, val in obj.items():
-                k = (key + "/" + k) if key != "" else k
+                k = (key + "/" + k) if key != "" and isinstance(k, str) else k
                 self._wrap_call_methods(keychain_mappings, key=k, obj=val)
             return
         if not hasattr(obj, "__dict__"):
@@ -543,7 +545,7 @@ class Module(abc.ABC):
         """
         with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
-            self.build(
+            self.build_(
                 *args,
                 **kwargs,
                 from_call=True,
@@ -997,6 +999,8 @@ class Module(abc.ABC):
             track_submod_call_order,
             expected_submod_rets,
         )
+        # using the convention that constructor parameters must be keyword-only whereas forward pass is position only
+        kwargs.update(self._kwargs)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -1017,7 +1021,7 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build_(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """
         Build the internal layers and variables for this module.
 
@@ -1045,9 +1049,9 @@ class Module(abc.ABC):
         if dtype:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
-            dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
+            dtype = ivy.default_dtype(dtype=self._dtype_, as_native=True)
 
-        kwargs["dtype"] = dtype
+        # kwargs["dtype"] = dtype    TODO: this line causes error when calling consturctor
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
@@ -1141,7 +1145,7 @@ class Module(abc.ABC):
         return self._build_mode
 
     @property
-    def built(self):
+    def built_(self):
         return self._built
 
     # Methods #

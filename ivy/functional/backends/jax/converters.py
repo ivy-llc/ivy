@@ -2,12 +2,14 @@
 
 # global
 import haiku as hk
-
+import jax
 # noinspection PyProtectedMember
 from haiku._src.data_structures import FlatMapping
-
+import jax.numpy as jnp
 # local
 import ivy
+
+RNG = jax.random.PRNGKey(0)
 
 
 def _hk_flat_map_to_dict(hk_flat_map):
@@ -33,11 +35,19 @@ def _dict_to_hk_flat_map(dict_in):
 
 
 class IvyModule(ivy.Module):
-    def __init__(self, native_module, device, devices, *args, **kwargs):
+    def __init__(
+            self,
+            *args,
+            native_module,
+            native_module_class,
+            device,
+            devices,
+            **kwargs
+    ):
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
-        ivy.Module.__init__(self, build_mode="on_call", device=device, devices=devices)
+        ivy.Module.__init__(self, build_mode="on_init", device=device, devices=devices, *args, **kwargs)
 
     def _create_variables(self, device, dtype):
         return self._hk_params
@@ -45,7 +55,7 @@ class IvyModule(ivy.Module):
     def _build(self, *args, **kwargs):
         args, kwargs = ivy.args_to_native(*args, **kwargs)
         # noinspection PyUnresolvedReferences
-        params_hk = self._native_module.init(ivy.RNG, *args, **kwargs)
+        params_hk = self._native_module.init(RNG, *args, **kwargs)
         params_dict = _hk_flat_map_to_dict(params_hk)
         self._hk_params = ivy.Container(params_dict)
         param_iterator = self._hk_params.to_iterator()
@@ -68,7 +78,6 @@ def to_ivy_module(
     kwargs=None,
     device=None,
     devices=None,
-    inplace_update=False,
 ):
 
     args = ivy.default(args, [])
@@ -81,9 +90,43 @@ def to_ivy_module(
         )
 
         def forward_fn(*a, **kw):
-            model = native_module_class(*args, **kwargs)
-            return model(*a, **kw)
+            model = native_module_class(**kw)
+            return model(*a)
 
         native_module = hk.transform(forward_fn)
 
-    return IvyModule(native_module, device, devices, *args, **kwargs)
+    return IvyModule(
+        native_module=native_module,
+        native_module_class=None,
+        device=device,
+        devices=devices,
+        *args,
+        **kwargs
+    )
+
+
+def to_haiku_module(ivy_module, args=None, kwargs=None):
+
+    class HaikuModule(hk.Module, ivy_module):
+        def __init__(self):
+            super(HaikuModule, self).__init__()
+            ivy_module.__init__(self, **kwargs)
+
+        def __call__(self, *args, **kwargs):
+            self.v = self.v.map(
+                lambda x, kc: hk.get_parameter
+                (
+                name=kc, shape=x.shape, dtype=x.dtype, init=lambda shape, dtype: ivy.to_native(self.v[kc]))
+                )
+
+            a, kw = ivy.args_to_native(*args, **kwargs)
+            ret = self._forward(*a, **kw)
+            if isinstance(ret, tuple):
+                return ivy.args_to_native(*ret)
+            return ivy.to_native(ret)
+
+    def forward_fn(*a, **kw):
+        model = HaikuModule()
+        return model(*a, **kw)
+
+    return HaikuModule

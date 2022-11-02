@@ -3,21 +3,20 @@
 # global
 import torch
 from collections import OrderedDict
-
 # local
 import ivy
 
 
 class IvyModule(ivy.Module):
     def __init__(
-        self,
-        native_module_class,
-        native_module,
-        device,
-        devices,
-        inplace_update,
-        *args,
-        **kwargs
+            self,
+            native_module_class,
+            native_module,
+            device,
+            devices,
+            inplace_update,
+            *args,
+            **kwargs
     ):
         self._native_module_class = native_module_class
         self._native_module = native_module
@@ -26,15 +25,15 @@ class IvyModule(ivy.Module):
         self._update_v = (
             self._inplace_update_v if inplace_update else self._replace_update_v
         )
-        ivy.Module.__init__(self, device=device, devices=devices)
+        ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
 
-    def _create_variables(self, device, dtype):
+    def _create_variables(self, device=None, dtype=None):
         return self._native_params
 
     def _build(self, *args, **kwargs):
         self._native_module = ivy.default(
             lambda: self._native_module,
-            lambda: self._native_module_class(*args, **kwargs),
+            lambda: self._native_module_class(**kwargs),
             with_callable=True,
         )
         self._native_params = ivy.Container(
@@ -46,7 +45,7 @@ class IvyModule(ivy.Module):
                     ]
                 )
             )
-        ).map(lambda x, kc: torch.nn.Parameter(x))
+        )
 
     @staticmethod
     def _inplace_update(p, v):
@@ -70,7 +69,7 @@ class IvyModule(ivy.Module):
                     native.__setattr__(k, v)
                 else:
                     # noinspection PyProtectedMember
-                    native.__setattr__(k, v.data)
+                    native.__setattr__(k, torch.nn.Parameter(v.data))
             else:
                 raise ivy.exceptions.IvyException(
                     "found item in variable container {} which was neither a "
@@ -81,22 +80,21 @@ class IvyModule(ivy.Module):
     def _forward(self, *a, **kw):
         a, kw = ivy.args_to_native(*a, **kw)
         self._update_v(self.v)
-        ret = self._native_module(*a, **kw)
+        ret = self._native_module(*a)
         if isinstance(ret, tuple):
             return ivy.args_to_native(*ret)
         return ivy.to_native(ret)
 
 
 def to_ivy_module(
-    native_module=None,
-    native_module_class=None,
-    args=None,
-    kwargs=None,
-    device=None,
-    devices=None,
-    inplace_update=False,
+        native_module=None,
+        native_module_class=None,
+        args=None,
+        kwargs=None,
+        device=None,
+        devices=None,
+        inplace_update=False,
 ):
-
     args = ivy.default(args, [])
     kwargs = ivy.default(kwargs, {})
 
@@ -115,3 +113,23 @@ def to_ivy_module(
         *args,
         **kwargs
     )
+
+
+##############################################################
+
+def to_torch_module(ivy_module, args=None, kwargs=None):
+    class TorchModule(torch.nn.Module, ivy_module):
+        def __init__(self):
+            torch.nn.Module.__init__(self)
+            ivy_module.__init__(self, **kwargs)
+            self._assign_variables()
+
+        def _assign_variables(self):
+            self.v.map(
+                lambda x, kc: self.register_parameter(name=kc, param=torch.nn.Parameter(ivy.to_native(x))))
+            self.v = self.v.map(lambda x, kc: self._parameters[kc])
+
+        def forward(self, *args, **kwargs):
+            return self._forward(*args, **kwargs)
+
+    return TorchModule()
