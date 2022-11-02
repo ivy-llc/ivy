@@ -17,12 +17,12 @@ If the framework can be inferred from the inputs, then this is always used, and 
 numpy will always be the default backend unless it is explicitly set or is inferred.
 When calling `this function`_ for setting the backend, the following steps are performed:
 
-#. store a global copy of the original :attr:`ivy.__dict__` to :code:`ivy_original_dict`, if this is not already stored.
-#. `import the backend module`_, for example :mod:`ivy.functional.backends.torch`, if the backend has been passed in as a string.
+#. Store a global copy of the original :attr:`ivy.__dict__` to :code:`ivy_original_dict`, if this is not already stored.
+#. `Import the backend module`_, for example :mod:`ivy.functional.backends.torch`, if the backend has been passed in as a string.
    All functions in this unmodified backend module are *primary* functions, because only primary functions are stored in :mod:`ivy.functional.backends.backend_name`.
    This backend module does not include any *compositional* functions.
-#. loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
-#. `wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`
+#. Loop through the original :code:`ivy_original_dict` (which has all functions, including compositional), and (a) add the primary function from the backend if it exists, (b) else add the compositional function from :code:`ivy_original_dict`.
+#. `Wrap the functions`_ where necessary, extending them with shared repeated functionality and `writing the function`_ to :attr:`ivy.__dict__`
    Wrapping is used in order to avoid excessive code duplication in every backend function implementation.
    This is explained in more detail in the next section: :ref:`Function Wrapping`.
 
@@ -87,5 +87,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `b
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/ROt5E8aHgww" class="video">
+    src="https://www.youtube.com/embed/ROt5E8aHgww" class="video" allowfullscreen="true">
     </iframe>

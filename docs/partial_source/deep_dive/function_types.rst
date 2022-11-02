@@ -32,7 +32,7 @@ Function Types
 .. _`function types forum`: https://discord.com/channels/799879767196958751/1028296516030451823
 
 Firstly, we explain the difference between *primary*, *compositional*, *mixed* and *standalone* functions.
-These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple Venn diagram below.
+These four function categorizations are all **mutually exclusive**, and combined they constitute the set of **all** functions in Ivy, as outlined in the simple venn diagram below.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/four_function_types.png?raw=true
    :align: center
@@ -138,7 +138,7 @@ Multiple containers can also be passed in for multiple arguments at the same tim
 If an :class:`ivy.Container` is passed, then the function is applied to all of the leaves of the container, with the container leaf values passed into the function at the corresponding arguments.
 In this case, the function will return an :class:`ivy.Container` in the output.
 *Primary*, *compositional*, *mixed*, and *standalone* functions can all *also* be nestable.
-This categorization is **not** mutually exclusive, as outlined by the Venn diagram below:
+This categorization is **not** mutually exclusive, as outlined by the venn diagram below:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/nestable.png?raw=true
    :align: center
@@ -165,7 +165,7 @@ Convenience functions do not form part of the computation graph directly, and th
 However, they can be used to organize and improve the code for other functions which do modify the arrays.
 Convenience functions can be *primary*, *compositional*, *mixed* or *standalone* functions.
 Many are also *nestable*.
-This is another categorization which is **not** mutually exclusive, as outlined by the Venn diagram below:
+This is another categorization which is **not** mutually exclusive, as outlined by the venn diagram below:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/deep_dive/function_types/convenience.png?raw=true
    :align: center
@@ -186,12 +186,12 @@ Feel free to have a look through all of the `submodules`_, you should be able to
 
 This should have hopefully given you a good feel for the different function types.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_  or in the `function types forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `function types channel`_  or in the `function types forum`_!
 
 **Video**
 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video">
+    src="https://www.youtube.com/embed/mWYhQRu1Vuk" class="video" allowfullscreen="true">
     </iframe>

@@ -69,7 +69,7 @@ Ivy API
 -------
 
 All function signatures for the Ivy API are defined in the :mod:`ivy.functional.ivy` submodule.
-Functions written here look something like the following, (explained in much more detail in the following sections):
+Functions written here look something like the following (explained in much more detail in the following sections):
 
 
 .. code-block:: python
@@ -294,7 +294,7 @@ Therefore, all frontend functions (see Ivy Frontends section) added to ivy shoul
 
 This should have hopefully given you a good feel for how to navigate the Ivy codebase.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_  or in the `navigating the code forum`_ !
+If you have any questions, please feel free to reach out on `discord`_ in the `navigating the code channel`_  or in the `navigating the code forum`_!
 
 
 **Video**
@@ -302,5 +302,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `n
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video">
+    src="https://www.youtube.com/embed/67UYuLcAKbY" class="video" allowfullscreen="true">
     </iframe>
