@@ -737,7 +737,6 @@ class ContainerWithElementWiseExtensions(ContainerBase):
             self, axis=axis, dtype=dtype, keepdims=keepdims, out=out
         )
 
-
     @staticmethod
     def static_gcd(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
