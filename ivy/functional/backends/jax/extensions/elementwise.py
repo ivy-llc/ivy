@@ -95,4 +95,3 @@ def isclose(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
-
