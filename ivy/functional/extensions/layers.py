@@ -93,7 +93,7 @@ def hann_window(
     -------------------
     >>> ivy.hann_window(4, True)
     ivy.array([0. , 0.5, 1. , 0.5])
-    
+
     >>> ivy.hann_window(7, False)
     ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])
 
