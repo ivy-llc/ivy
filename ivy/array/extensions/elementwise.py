@@ -326,3 +326,91 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         return ivy.count_nonzero(
             self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )
+
+    def nansum(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+        >>> ivy.nansum(a)
+        10.0
+        >>> ivy.nansum(a, axis=0)
+        ivy.array([2.1, 5.8, 2.1])
+        >>> ivy.nansum(a, axis=1)
+        ivy.array([5.5, 4.5])
+        """
+        return ivy.nansum(
+            self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
+
+    def gcd(
+        self: Union[ivy.Array, int, list, tuple],
+        x2: Union[ivy.Array, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.gcd. This method simply
+        wraps the function, and so the docstring for ivy.gcd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise gcd of |x1| and |x2|.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.gcd(x2)
+        ivy.array([1.,    1.,   3.])
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x1.gcd(10)
+        ivy.array([1.,   2.,  1.])
+        """
+        return ivy.gcd(self._data, x2, out=out)
