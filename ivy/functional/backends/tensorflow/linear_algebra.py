@@ -3,7 +3,6 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 
 # local
@@ -234,7 +233,7 @@ def matmul(
             x2_padded = True
         ret = tf.matmul(x1, x2)
 
-    ret = ivy.astype(ret, dtype_from, copy=False)
+    ret = ivy.astype(ret, dtype_from, copy=False).to_native()
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:

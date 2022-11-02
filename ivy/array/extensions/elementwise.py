@@ -324,3 +324,40 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         return ivy.nansum(
             self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out
         )
+
+    def gcd(
+        self: Union[ivy.Array, int, list, tuple],
+        x2: Union[ivy.Array, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.gcd. This method simply
+        wraps the function, and so the docstring for ivy.gcd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise gcd of |x1| and |x2|.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.gcd(x2)
+        ivy.array([1.,    1.,   3.])
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x1.gcd(10)
+        ivy.array([1.,   2.,  1.])
+        """
+        return ivy.gcd(self._data, x2, out=out)

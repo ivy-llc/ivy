@@ -864,3 +864,87 @@ class ContainerWithManipulationExtensions(ContainerBase):
         }
         """
         return self.static_fliplr(self, out=out)
+
+    @staticmethod
+    def static_i0(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.i0. This method simply wraps
+        the function, and so the docstring for ivy.i0 also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            the container with array inputs.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays with the modified Bessel
+            function evaluated at each of the elements of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
+        >>> ivy.Container.static_i0(x)
+        {
+            a: ivy.array([1.26606588, 2.2795853 , 4.88079259])
+            b: ivy.array(11.30192195)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "i0",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def i0(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.i0. This method simply
+        wraps the function, and so the docstring for ivy.i0 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with array inputs.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays with the modified Bessel
+            function evaluated at each of the elements of x.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array(4))
+        >>> x.i0()
+        {
+            a: ivy.array([1.26606588, 2.2795853 , 4.88079259])
+            b: ivy.array(11.30192195)
+        }
+        """
+        return self.static_i0(self, out=out)
