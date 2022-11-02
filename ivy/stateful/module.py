@@ -999,7 +999,8 @@ class Module(abc.ABC):
             track_submod_call_order,
             expected_submod_rets,
         )
-        # using the convention that constructor parameters must be keyword-only whereas forward pass is position only
+        # using the convention that constructor parameters \
+        # must be keyword-only whereas forward pass is position only
         kwargs.update(self._kwargs)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
@@ -1050,8 +1051,9 @@ class Module(abc.ABC):
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
             dtype = ivy.default_dtype(dtype=self._dtype_, as_native=True)
-
-        # kwargs["dtype"] = dtype    TODO: this line causes error when calling consturctor
+        
+        # TODO: this line causes error when calling consturctor
+        # kwargs["dtype"] = dtype    
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
 
