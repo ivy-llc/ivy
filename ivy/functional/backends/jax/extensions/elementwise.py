@@ -82,3 +82,13 @@ def gcd(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.gcd(x1, x2)
+
+
+def logaddexp2(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:    
+    return jnp.logaddexp2(x1, x2)
