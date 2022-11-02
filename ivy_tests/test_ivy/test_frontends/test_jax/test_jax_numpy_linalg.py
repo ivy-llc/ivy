@@ -483,6 +483,7 @@ def test_jax_norm(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
+
         fn_tree="numpy.linalg.norm",
         x=x[0],
         ord=ord_param,
