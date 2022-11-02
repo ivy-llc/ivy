@@ -75,7 +75,7 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
         assert os.path.isfile(weight_fpath)
         # noinspection PyBroadException
         try:
-            v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().as_variables()
+            v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().variables()
         except Exception:
             # If git large-file-storage is not enabled (for example when testing in github actions workflow), then the
             #  test will fail here. A placeholder file does exist, but the file cannot be loaded as pickled variables.
