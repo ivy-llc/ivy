@@ -3,7 +3,6 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 
 # local
@@ -234,7 +233,7 @@ def matmul(
             x2_padded = True
         ret = tf.matmul(x1, x2)
 
-    ret = ivy.astype(ret, dtype_from, copy=False)
+    ret = ivy.astype(ret, dtype_from, copy=False).to_native()
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:
@@ -508,6 +507,9 @@ def solve(
     else:
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
+        if tf.math.reduce_any(tf.linalg.det(x1) == 0) or tf.math.reduce_any(
+                tf.linalg.det(x2) == 0):
+            return x1
         ret = tf.linalg.solve(x1, x2)
 
     if expanded_last:

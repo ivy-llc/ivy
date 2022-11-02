@@ -296,5 +296,8 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (ivy.astype(operand, torch.float32, copy=False) for operand in operands)
+    operands = (
+        ivy.astype(operand, torch.float32, copy=False).to_native()
+        for operand in operands
+    )
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)

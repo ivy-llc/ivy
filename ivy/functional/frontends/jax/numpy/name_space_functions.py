@@ -333,5 +333,30 @@ def trunc(x):
 
 
 @to_ivy_arrays_and_back
+def ceil(x):
+    return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
 def float_power(x1, x2):
     return ivy.float_power(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+cumproduct = cumprod
+
+
+@to_ivy_arrays_and_back
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(x):
+    return ivy.deg2rad(x)

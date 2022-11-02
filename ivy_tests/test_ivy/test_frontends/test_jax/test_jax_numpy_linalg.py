@@ -483,15 +483,14 @@ def test_jax_norm(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-
         fn_tree="numpy.linalg.norm",
         x=x[0],
         ord=ord_param,
         axis=axis,
         keepdims=keepdims,
     )
-    
-    
+
+
 # matrix_power
 @handle_cmd_line_args
 @given(
@@ -512,10 +511,10 @@ def test_jax_norm(
     ),
 )
 def test_jax_numpy_matrix_power(
-    dtype_and_x, 
-    n, 
-    as_variable, 
-    native_array, 
+    dtype_and_x,
+    n,
+    as_variable,
+    native_array,
     num_positional_args,
 ):
     dtype, x = dtype_and_x
@@ -532,4 +531,3 @@ def test_jax_numpy_matrix_power(
         a=np.asarray(x[0], dtype=dtype[0]),
         n=n,
     )
-    

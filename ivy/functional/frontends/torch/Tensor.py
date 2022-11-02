@@ -210,6 +210,12 @@ class Tensor:
     def long(self, memory_format=None):
         return ivy.astype(self.data, ivy.int64)
 
+    def max(self, dim=None, keepdim=False):
+        return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
+
+    def device(self):
+        return ivy.dev(self.data)
+
     # Special Methods #
     # -------------------#
 
@@ -236,7 +242,7 @@ class Tensor:
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
     def __mod__(self, other):
-        return ivy.remainder(self, other)
+        return ivy.remainder(self.data, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

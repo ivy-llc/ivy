@@ -402,6 +402,10 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+**"Empty Suite" error fix:**
+
+Click on the "green arrow button" from where you run the funcion in PyCharm. Open "Modify Run Configuration...", under "Target:" on the right side click on "..." it'll open a new window, manually add the path to the specific function, For instance, for stateful -> "test_stateful.test_submodule_name.test_function_name" and for functional -> "test_submodule_name.test_function_name", the function will pop up below, select that, click on "Apply" then "OK". Now, do not run the test from the "green arrow button" in the left panel, run it from above where there is a "green arrow button" on the left side of the "debugger button" making sure you've selected the latest modified configuration of that specific test you want to run.
+
 Setting up for Free
 -------------------
 

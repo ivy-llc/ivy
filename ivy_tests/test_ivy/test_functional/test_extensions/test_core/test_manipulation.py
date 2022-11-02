@@ -460,7 +460,7 @@ def test_fliplr(
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
-        max_dim_size=3
+        max_dim_size=3,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="i0"),
 )
