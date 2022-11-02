@@ -595,6 +595,16 @@ def vector_norm(
 # ----- #
 
 
+def diag(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    k: int = 0,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diag(x, k=k)
+
+
 def vander(
     x: Union[tf.Tensor, tf.Variable],
     /,

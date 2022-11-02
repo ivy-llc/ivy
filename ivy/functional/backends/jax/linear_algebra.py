@@ -380,6 +380,16 @@ def vector_norm(
 # ------#
 
 
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.diag(x, k=k)
+
+
 def vander(
     x: JaxArray,
     /,

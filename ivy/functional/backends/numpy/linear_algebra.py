@@ -333,6 +333,16 @@ def vector_norm(
 # ----- #
 
 
+def diag(
+    x: np.ndarray,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.diag(x, k=k)
+
+
 def vander(
     x: np.ndarray,
     /,
