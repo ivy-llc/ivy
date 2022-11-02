@@ -19,6 +19,11 @@ def eig(a):
 
 
 @to_ivy_arrays_and_back
+def eigvals(a):
+    return ivy.eigvals(a)
+
+
+@to_ivy_arrays_and_back
 def eigh(a, UPLO="L", symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added
