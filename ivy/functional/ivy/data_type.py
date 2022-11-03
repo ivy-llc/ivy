@@ -930,8 +930,9 @@ def default_float_dtype(
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global
-        default float dtype.
+        Return the input float dtype as native or ivy dtype if provided, else 
+        if an input is given, return its float dtype, otherwise return the 
+        global default float dtype.
 
     Examples
     --------
