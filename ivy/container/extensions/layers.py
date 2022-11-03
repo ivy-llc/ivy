@@ -930,3 +930,135 @@ class ContainerWithLayersExtensions(ContainerBase):
         return self.static_hamming_window(
             self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
         )
+
+    @staticmethod
+    def static_max_pool3d(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NDHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.max_pool2dd. This method simply
+        wraps the function, and so the docstring for ivy.max_pool2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(ivy.Container.static_max_pool2d(x, (2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "max_pool3d",
+            x,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def max_pool3d(
+        self: ivy.Container,
+        kernel: Union[int, Tuple[int], Tuple[int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NDHWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
+        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input image *[batch_size,h,w,d_in]*.
+        kernel
+            The size of the window to take a max over.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NHWC" or "NCHW". Defaults to "NHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        {
+            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
+            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+        }
+        """
+        return self.static_max_pool3d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
