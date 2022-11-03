@@ -236,10 +236,8 @@ def test_tensorflow_logdet(
 
 # slogdet
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.slogdet",
     dtype_and_x=_get_dtype_and_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.linalg.slogdet"
-    ),
 )
 def test_tensorflow_slogdet(
     *,

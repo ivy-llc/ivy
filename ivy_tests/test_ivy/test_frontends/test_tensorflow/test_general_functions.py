@@ -29,7 +29,6 @@ def _get_clip_inputs(draw):
 
 
 # clip_by_value
-# @handle_cmd_line_args
 @handle_frontend_test(
     fn_tree="tensorflow.clip_by_value",
     input_and_ranges=_get_clip_inputs(),
@@ -44,7 +43,6 @@ def test_tensorflow_clip_by_value(
     num_positional_args,
 ):
     x_dtype, x, min, max = input_and_ranges
-    print(fn_tree)
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
@@ -52,6 +50,7 @@ def test_tensorflow_clip_by_value(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
+        fn_tree=fn_tree,
         t=x[0],
         clip_value_min=min,
         clip_value_max=max,

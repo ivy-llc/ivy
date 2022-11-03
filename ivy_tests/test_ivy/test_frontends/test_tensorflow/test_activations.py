@@ -138,7 +138,7 @@ def test_tensorflow_tanh(
 )
 def test_tensorflow_softmax(
     *,
-    dtype_and_x,
+    dtype_x_and_axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -146,7 +146,7 @@ def test_tensorflow_softmax(
     fn_tree,
     frontend,
 ):
-    input_dtype, x, axis = dtype_and_x
+    input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -353,7 +353,6 @@ def test_tensorflow_elu(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -367,7 +366,7 @@ def test_tensorflow_elu(
 # selu
 @handle_frontend_test(
     fn_tree="tensorflow.keras.activations.selu",
-    dtype_x=helpers.dtype_and_values(
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-3,
         max_value=3,
