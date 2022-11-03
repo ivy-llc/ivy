@@ -14,7 +14,7 @@ Open Tasks
 Here, we explain all tasks which are currently open for contributions from the community!
 
 This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
-The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo list issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
+The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific `ToDo List Issues <https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo>`_.
 
 Please read about `ToDo List Issues <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_ in detail before continuing.
 ALl tasks should be selected and allocated as described in the ToDo List Issues section.
@@ -55,18 +55,18 @@ At the time of writing, many of the functions are not implemented as they should
 You will need to make changes to the current implementations, but you do not need to address *all* sections of the :ref:`Deep Dive` in detail.
 Specifically, you **do not** need to address the following:
 
-#. implement the hypothesis testing for the function
-#. get the tests passing for your function, if they are failing before you start
+#. Implement the hypothesis testing for the function
+#. Get the tests passing for your function, if they are failing before you start
 
 However, everything else covered in the :ref:`Deep Dive` must be addressed.
 Some common important tasks are:
 
-#. remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
-#. implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
+#. Remove all :code:`lambda` and direct bindings for the backend functions (in :code:`ivy.functional.backends`), with each function instead defined using :code:`def`.
+#. Implement the following if they don't exist but should do: :class:`ivy.Array` instance method, :class:`ivy.Container` static method, :class:`ivy.Container` instance method, :class:`ivy.Array` special method, :class:`ivy.Array` reverse special method, :class:`ivy.Container` special method, :class:`ivy.Container` reverse special method.
 #. Make sure that the aforementioned methods are added into the correct category-specific parent class, such as :class:`ivy.ArrayWithElementwise`, :class:`ivy.ContainerWithManipulation` etc.
-#. correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
-#. add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
-#. add thorough :ref:`Docstring Examples` for every function **and** its *relevant methods* and ensure they pass the docstring tests.
+#. Correct all of the :ref:`Function Arguments` and the type hints for every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add the correct :ref:`Docstrings` to every function **and** its *relevant methods*, including those you did not implement yourself.
+#. Add thorough :ref:`Docstring Examples` for every function **and** its *relevant methods* and ensure they pass the docstring tests.
 
 Formatting checklist
 ~~~~~~~~~~~~~~~~~~~~
@@ -116,22 +116,25 @@ Currently, we have many ToDo list issues `open <https://github.com/unifyai/ivy/i
 
 The general workflow for this task is:
 
-#. find the correct location for the function by following the *Where to place a frontend function* subsection below
-#. implement the function by following the `Ivy Frontends`_ guide
-#. write tests for your function by following the `Ivy Frontend Tests`_ guide
-#. verify that the tests for your function are passing
+#. Find the correct location for the function by following the *Where to place a frontend function* subsection below
+#. Implement the function by following the `Ivy Frontends`_ guide
+#. Write tests for your function by following the `Ivy Frontend Tests`_ guide
+#. Verify that the tests for your function are passing
 
-If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you you should first do the following:
+If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
 
-#. create a new issue with the title :func:`ivy.<func_name>`, add the labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release` to it, and then simply leave this issue open.
-   At some point, a member of our team will assess whether it should be added, and if so, they will add it to another appropriate ToDo list issue (see the open task below).
+#. Create a new issue with the title :func:`ivy.<func_name>`
+#. Add the labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release` to it
+#. Then simply leave this issue open.
+
+At some point, a member of our team will assess whether it should be added, and if so, they will add it to another appropriate ToDo list issue (see the open task below).
    You do not need to wait for this in order to proceed.
 
 After this, you then have two options for how to proceed:
 
-#. try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_ guide, and add the :code:`#ToDo` comment in the implementation as explained.
+#. Try to implement the function as a composition of currently present ivy functions, as explained in the "Temporary Compositions" sub-section of the `Ivy Frontends`_ guide, and add the :code:`#ToDo` comment in the implementation as explained.
    Once the PR is merged, your sub-task issue will then be closed as normal.
-#. alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
+#. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
    For example, you might decide to wait for a member of our team to review your suggested addition :func:`ivy.<func_name>`, and potentially add this to an Ivy Extension ToDo list issue (see the open task below).
    In either case, you should add the label "Pending other Issue" to the frontend sub-task issue, and leave it open.
@@ -140,11 +143,11 @@ After this, you then have two options for how to proceed:
 
 There are a few other points to take note of when working on your chosen frontend function:
 
-#. you should only implement **one** frontend function.
-#. the frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.
-#. each frontend function should be tested on all backends to ensure that conversions are working correctly.
-#. type hints, docstrings and examples are not required for frontend functions.
-#. some frontend functions shown in the ToDo list issues are aliases of other functions.
+#. You should only implement **one** frontend function.
+#. The frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.
+#. Each frontend function should be tested on all backends to ensure that conversions are working correctly.
+#. Type hints, docstrings and examples are not required for frontend functions.
+#. Some frontend functions shown in the ToDo list issues are aliases of other functions.
    If you detect that this is the case, then you should add all aliases in your PR, with a single implementation and then simple bindings to this implementation, such as :code:`<alias_name> = <function_name>`.
    If you notice that an alias function has already been implemented and pushed, then you can simply add this one-liner binding and get this very simple PR merged.
 
