@@ -5,7 +5,7 @@ import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
-class Tensor:
+class EagerTensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
@@ -15,7 +15,7 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.tensor("
+            "ivy.functional.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self.data))
             + ")"
         )
@@ -82,7 +82,7 @@ class Tensor:
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
         ret = ivy.get_item(self.data, slice_spec)
-        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return EagerTensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
@@ -161,10 +161,7 @@ class Tensor:
         return y.__rtruediv__(self.data)
 
     def __len__(self):
-        raise ivy.exceptions.IvyError(
-            "len is not well defined for a symbolic Tensor. Please call `x.shape` "
-            "rather than `len(x)` for shape information. "
-        )
+        return len(self.data)
 
     def __xor__(self, y, name="xor"):
         return y.__rxor__(self.data)
