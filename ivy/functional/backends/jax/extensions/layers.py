@@ -217,3 +217,25 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def max_pool3d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if data_format == "NCDHW":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 3
+    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+
+    if data_format == "NCDHW":
+        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+
+    return res
