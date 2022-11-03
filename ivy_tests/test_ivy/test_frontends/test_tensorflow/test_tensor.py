@@ -775,6 +775,12 @@ def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
     )
 
 
+# __len__
+@handle_cmd_line_args
+def test_tensorflow_instance_len():
+    return
+
+
 # __rxor__
 @handle_cmd_line_args
 @given(

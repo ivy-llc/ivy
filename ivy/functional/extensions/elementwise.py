@@ -341,3 +341,175 @@ def exp2(
     ivy.array([32.,   64.,  128.])
     """
     return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nansum(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the sum of array elements over a given axis treating
+    Not a Numbers (NaNs) as zero.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis or axes along which the sum is computed.
+        The default is to compute the sum of the flattened array.
+    dtype
+        The type of the returned array and of the accumulator in
+        which the elements are summed. By default, the dtype of input is used.
+    keepdims
+        If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        A new array holding the result is returned unless out is specified,
+        in which it is returned.
+
+    Examples
+    --------
+    >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+    >>> ivy.nansum(a)
+    10.0
+    >>> ivy.nansum(a, axis=0)
+    ivy.array([2.1, 5.8, 2.1])
+    >>> ivy.nansum(a, axis=1)
+    ivy.array([5.5, 4.5])
+    """
+    return ivy.current_backend().nansum(
+        x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the greatest common divisor of |x1| and |x2|.
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise gcd of |x1| and |x2|.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([1.,    1.,   3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([1.,   2.,  1.])
+    """
+    return ivy.current_backend().gcd(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def isposinf(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Test element-wise for positive infinity, return result as bool array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array with values True where 
+        the corresponding element of the input is positive
+        infinity and values False where the element of the
+        input is not positive infinity.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, ivy.inf])
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    >>> x = [5, -ivy.inf, ivy.inf]
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    """
+    return ivy.current_backend().isposinf(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def isneginf(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Test element-wise for negative infinity, return result as bool array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array with values True where 
+        the corresponding element of the input is negative
+        infinity and values False where the element of the
+        input is not negative infinity.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, -ivy.inf])
+    >>> ivy.isneginf(x)
+    ivy.array([False, False,  True])
+    >>> x = [5, -ivy.inf, ivy.inf]
+    >>> ivy.isneginf(x)
+    ivy.array([False, True,  False])
+    """
+    return ivy.current_backend().isneginf(x, out=out)
