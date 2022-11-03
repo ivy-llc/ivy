@@ -11,11 +11,9 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.split"
     ),
     dtype=helpers.get_dtypes("numeric", full=False, none=True),
-    where=np_frontend_helpers.where(),
 )
 def test_numpy_split(
     as_variable,
-    where,
     dtype,
     num_positional_args,
 ):
