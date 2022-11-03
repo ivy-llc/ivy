@@ -7,9 +7,10 @@ jobs:
       - name: Checkout 🛎️Ivy Models
         uses: actions/checkout@v2
         with:
+          lfs: true
           path: models
           persist-credentials: false
-
+      
       - name: Run Tests
         run: |
           cd models
