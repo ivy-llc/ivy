@@ -2322,13 +2322,14 @@ def vander(
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """Given vector, return the associated skew-symmetric matrix
-    `[reference] <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product>`_
+    """Given vector, return the associated `Skew-symmetric matrix
+        <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
+
 
     Parameters
     ----------
     vector
-        Vector to convert *[batch_shape,3]*.
+        Vector to convert *(batch_shape,3)*.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -2336,7 +2337,7 @@ def vector_to_skew_symmetric_matrix(
     Returns
     -------
     ret
-        Skew-symmetric matrix *[batch_shape,3,3]*.
+        Skew-symmetric matrix *(batch_shape,3,3)*.
 
 
     Both the description and the type hints above assumes an array input for simplicity,
