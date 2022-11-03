@@ -2320,10 +2320,7 @@ def vander(
 @handle_nestable
 @handle_exceptions
 def vector_to_skew_symmetric_matrix(
-    vector: Union[ivy.Array, ivy.NativeArray], 
-    /, 
-    *, 
-    out: Optional[ivy.Array] = None
+    vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Given vector, return the associated `Skew-symmetric matrix
         <https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/>`_.
