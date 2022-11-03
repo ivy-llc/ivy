@@ -2117,7 +2117,10 @@ class ArrayWithElementwise(abc.ABC):
         """
         return ivy.tanh(self._data, out=out)
 
-    def trunc(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def trunc(self: ivy.Array,
+              *,
+              out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.trunc. This method simply wraps the
         function, and so the docstring for ivy.trunc also applies to this method
@@ -2135,7 +2138,14 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the rounded result for each element in ``self``.
-            The returned array must have the same data type as ``self``.
+            The returned array must have the same data type as ``self``
+            
+        Examples
+        --------
+        >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+        >>> y = x.trunc()
+        >>> print(y)
+        ivy.array([-1.,  0.,  3., -0.]).
         """
         return ivy.trunc(self._data, out=out)
 
