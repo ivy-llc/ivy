@@ -130,6 +130,7 @@ def test_tensorflow_binary_accuracy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -140,6 +141,7 @@ def test_tensorflow_binary_accuracy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
         threshold=threshold,
@@ -168,6 +170,7 @@ def test_sparse_categorical_crossentropy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -184,6 +187,7 @@ def test_sparse_categorical_crossentropy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y_true,
         y_pred=y_pred[0],
         from_logits=from_logits,
@@ -210,6 +214,7 @@ def test_tensorflow_log_cosh(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -220,6 +225,7 @@ def test_tensorflow_log_cosh(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -245,6 +251,7 @@ def test_tensorflow_mean_absolute_error(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -256,6 +263,7 @@ def test_tensorflow_mean_absolute_error(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -287,6 +295,7 @@ def test_binary_crossentropy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     y_true = ivy.array(y_true, dtype=ivy.int32)
     dtype, y_pred = dtype_y_pred
@@ -303,6 +312,7 @@ def test_binary_crossentropy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y_true,
         y_pred=y_pred[0],
         from_logits=from_logits,
@@ -336,6 +346,7 @@ def test_categorical_crossentropy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     y_true = ivy.array(y_true, dtype=ivy.float32)
     dtype, y_pred = dtype_y_pred
@@ -352,6 +363,7 @@ def test_categorical_crossentropy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y_true,
         y_pred=y_pred,
         from_logits=from_logits,
@@ -459,6 +471,7 @@ def test_binary_focal_crossentropy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     dtypes, values = binary_focal_args
     helpers.test_frontend_function(
@@ -469,6 +482,7 @@ def test_binary_focal_crossentropy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=values[0],
         y_pred=values[1],
         gamma=values[2],
@@ -499,6 +513,7 @@ def test_sparse_top_k_categorical_accuracy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -509,6 +524,7 @@ def test_sparse_top_k_categorical_accuracy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y_true,
         y_pred=y_pred,
         k=k,
@@ -536,6 +552,7 @@ def test_categorical_accuracy(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, y = dtype_and_y
     helpers.test_frontend_function(
@@ -546,6 +563,7 @@ def test_categorical_accuracy(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y[0],
         y_pred=y[1],
     )
@@ -569,6 +587,7 @@ def test_tensorflow_kl_divergence(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -580,6 +599,7 @@ def test_tensorflow_kl_divergence(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -603,6 +623,7 @@ def test_tensorflow_poisson(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -613,6 +634,7 @@ def test_tensorflow_poisson(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -638,6 +660,7 @@ def test_tensorflow_mean_squared_error(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -649,6 +672,7 @@ def test_tensorflow_mean_squared_error(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -674,6 +698,7 @@ def test_tensorflow_mean_absolute_percentage_error(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -685,6 +710,7 @@ def test_tensorflow_mean_absolute_percentage_error(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -708,6 +734,7 @@ def test_tensorflow_hinge(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -718,6 +745,7 @@ def test_tensorflow_hinge(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_pred=y_pred,
         y_true=y_true,
     )
@@ -741,6 +769,7 @@ def test_tensorflow_squared_hinge(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, y_pred, y_true = dtype_pred_and_labels
     helpers.test_frontend_function(
@@ -751,6 +780,7 @@ def test_tensorflow_squared_hinge(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_pred=y_pred,
         y_true=y_true,
     )
@@ -774,6 +804,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -785,6 +816,7 @@ def test_tensorflow_metrics_mean_squared_logarithmic_error(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=x[0],
         y_pred=x[1],
     )
@@ -813,6 +845,7 @@ def test_tensorflow_cosine_similarity(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
 
     helpers.test_frontend_function(
@@ -823,6 +856,7 @@ def test_tensorflow_cosine_similarity(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         y_true=y_true,
         y_pred=y_pred,
     )

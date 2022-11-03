@@ -40,6 +40,7 @@ def test_tensorflow_clip_by_value(
     native_array,
     frontend,
     fn_tree,
+    on_device,
     num_positional_args,
 ):
     x_dtype, x, min, max = input_and_ranges
@@ -51,6 +52,7 @@ def test_tensorflow_clip_by_value(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         t=x[0],
         clip_value_min=min,
         clip_value_max=max,
@@ -78,6 +80,7 @@ def test_tensorflow_eye(
     with_out,
     frontend,
     fn_tree,
+    on_device,
     num_positional_args,
 ):
     helpers.test_frontend_function(
@@ -88,6 +91,7 @@ def test_tensorflow_eye(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         num_rows=n_rows,
         num_columns=n_cols,
         batch_shape=batch_shape,

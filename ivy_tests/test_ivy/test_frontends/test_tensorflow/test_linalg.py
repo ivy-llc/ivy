@@ -38,6 +38,7 @@ def test_tensorflow_det(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -45,9 +46,9 @@ def test_tensorflow_det(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
     )
 
@@ -64,6 +65,7 @@ def test_tensorflow_eigh(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -71,9 +73,9 @@ def test_tensorflow_eigh(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
     )
 
@@ -90,6 +92,7 @@ def test_tensorflow_eigvalsh(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -97,9 +100,9 @@ def test_tensorflow_eigvalsh(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         tensor=x[0],
     )
 
@@ -123,6 +126,7 @@ def test_matrix_rank(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
@@ -130,9 +134,9 @@ def test_matrix_rank(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         atol=1.0,
         a=x[0],
         validate_args=False,
@@ -191,6 +195,7 @@ def test_tensorflow_solve(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     helpers.test_frontend_function(
@@ -198,9 +203,9 @@ def test_tensorflow_solve(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
         matrix=xs[0],
@@ -247,6 +252,7 @@ def test_tensorflow_slogdet(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -254,9 +260,9 @@ def test_tensorflow_slogdet(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
     )
 
@@ -320,6 +326,7 @@ def test_tensorflow_cholesky_solve(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype1, x1 = x
     input_dtype2, x2 = y
@@ -328,9 +335,9 @@ def test_tensorflow_cholesky_solve(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-3,
         atol=1e-3,
         chol=x1,
@@ -351,6 +358,7 @@ def test_tensorflow_pinv(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
@@ -358,9 +366,9 @@ def test_tensorflow_pinv(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         rcond=1e-15,
     )
@@ -381,6 +389,7 @@ def test_tensorflow_tensordot(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         dtype,
@@ -393,9 +402,9 @@ def test_tensorflow_tensordot(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         a=x,
         b=y,
         axes=axes,
@@ -427,6 +436,7 @@ def test_tensorflow_norm(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
@@ -434,9 +444,9 @@ def test_tensorflow_norm(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         tensor=x[0],
         ord=ord,
         axis=axis,
@@ -467,6 +477,7 @@ def test_tensorflow_normalize(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
@@ -475,9 +486,9 @@ def test_tensorflow_normalize(
         with_out=False,
         with_inplace=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         tensor=x[0],
         ord=ord,
         axis=axis,
@@ -505,6 +516,7 @@ def test_tensorflow_l2_normalize(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
@@ -512,9 +524,9 @@ def test_tensorflow_l2_normalize(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
-        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
     )
