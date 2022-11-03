@@ -303,12 +303,14 @@ def test_numpy_instance_argsort(
         min_num_dims=1,
         force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", full=False, none=False),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.mean"
     ),
 )
 def test_numpy_ndarray_mean(
         dtype_x_axis,
+        dtype,
         as_variable,
         num_positional_args_method,
         native_array,
@@ -328,13 +330,16 @@ def test_numpy_ndarray_mean(
         },
         all_as_kwargs_np_method={
             "axis": axis,
+            "dtype": dtype[0],
+            "out": None,
         },
         frontend="numpy",
         class_name="ndarray",
         method_name="mean",
         test_values=False,
     )
-    frontend_ret = np.mean(x[0], axis=axis)
+
+    frontend_ret = np.mean(x[0], axis=axis, dtype=dtype[0], out=None)
     assert_all_close(
         ret_np=ret,
         ret_from_gt_np=frontend_ret,
