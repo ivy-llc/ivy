@@ -391,6 +391,72 @@
             <span class="n">reflect_type</span><span class="o">=</span><span class="n">reflect_type</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithLayersExtensions.max_pool3d"><a class="viewcode-back" href="../../../../data_classes/array/extensions/layers/ArrayWithLayersExtensions.html#ivy.array.extensions.layers.ArrayWithLayersExtensions.max_pool3d">[docs]</a>    <span class="k">def</span> <span class="nf">max_pool3d</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+        <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes a 3-D max pool given 5-D input x.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input volume *[batch_size,d,h,w,d_in]*.</span>
+<span class="sd">        kernel</span>
+<span class="sd">            Convolution filters *[d,h,w]*.</span>
+<span class="sd">        strides</span>
+<span class="sd">            The stride of the sliding window for each dimension of input.</span>
+<span class="sd">        padding</span>
+<span class="sd">            SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating</span>
+<span class="sd">            the per-dimension paddings.</span>
+<span class="sd">        data_format</span>
+<span class="sd">            NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have</span>
+<span class="sd">            a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The result of the pooling operation.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.max_pool3d(2, 2, &#39;VALID&#39;))</span>
+<span class="sd">        ivy.array([[[[[14., 15.]]]],</span>
+
+
+
+<span class="sd">           [[[[38., 39.]]]]])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.max_pool3d(2, 2, &#39;SAME&#39;))</span>
+<span class="sd">        ivy.array([[[[[14., 15.]]],</span>
+
+
+<span class="sd">            [[[22., 23.]]]],</span>
+
+
+
+<span class="sd">           [[[[38., 39.]]],</span>
+
+
+<span class="sd">            [[[46., 47.]]]]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max_pool3d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">kernel</span><span class="p">,</span>
+            <span class="n">strides</span><span class="p">,</span>
+            <span class="n">padding</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div></div>
 </pre></div>
 
