@@ -5,7 +5,7 @@ import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
-class Tensor:
+class EagerTensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
@@ -15,7 +15,7 @@ class Tensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.tensor("
+            "ivy.functional.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self.data))
             + ")"
         )
@@ -82,7 +82,7 @@ class Tensor:
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
         ret = ivy.get_item(self.data, slice_spec)
-        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return EagerTensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
