@@ -5691,6 +5691,35 @@ def trunc(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    ivy.array([-1.,  0.,  3., -0.])
+
+    >>> x = ivy.array([0.4, -8, 0.55])
+    >>> y = ivy.zeros(3)
+    >>> ivy.trunc(x, out=y)
+    >>> print(y)
+    ivy.array([ 0., -8.,  0.])
+    
+    >>> x = ivy.array([0.56, 7, -23.4, -0.0375])
+    >>> ivy.trunc(x, out=x)
+    >>> print(x)
+    ivy.array([  0.,   7., -23.,  -0.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]), b=ivy.array([12, -3.5, 1.234]))
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0., 4., 1.]),
+        b: ivy.array([12., -3., 1.])
+    }
     """
     return ivy.current_backend(x).trunc(x, out=out)
 
