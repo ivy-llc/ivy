@@ -1,5 +1,7 @@
 from typing import Union, Optional, Tuple
 import tensorflow as tf
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 
 def vorbis_window(
@@ -97,7 +99,11 @@ def kaiser_bessel_derived_window(
         )
 
 
-def max_pool2d(
+@with_unsupported_dtypes({"2.9.1 and below":
+                              ("bfloat16","float64")},
+                         backend_version
+                         )
+def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],

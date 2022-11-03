@@ -208,13 +208,16 @@ def max_pool3d(
         strides = (strides, strides, strides)
     elif len(strides) == 1:
         strides = (strides[0], strides[0], strides[0])
-
+    if isinstance(kernel, int):
+        kernel = (kernel, kernel, kernel)
+    elif len(kernel) == 1:
+        kernel = (kernel[0], kernel[0], kernel[0])
     if data_format == "NDHWC":
         x = x.permute(0, 4, 1, 2, 3)
     x_shape = list(x.shape[2:])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
     x = torch.nn.functional.pad(
         x,
         [
@@ -233,6 +236,6 @@ def max_pool3d(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
     res = torch.nn.functional.max_pool3d(x, kernel, strides, 0)
-    if data_format == "NHWC":
+    if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res

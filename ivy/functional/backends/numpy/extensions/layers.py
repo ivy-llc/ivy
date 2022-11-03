@@ -252,7 +252,7 @@ def pad(
         )
 
 
-def max_pool2d(
+def max_pool3d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
     strides: Union[int, Tuple[int], Tuple[int, int]],
@@ -277,9 +277,9 @@ def max_pool2d(
         x = np.transpose(x, (0, 2, 3, 4, 1))
 
     x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], filter_shape[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], filter_shape[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], filter_shape[2], padding)
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
 
     x = np.pad(
         x,
@@ -296,7 +296,7 @@ def max_pool2d(
     x_shape = x.shape
     new_d = (x_shape[1] - kernel[0]) // strides[0] + 1
     new_h = (x_shape[2] - kernel[1]) // strides[1] + 1
-    new_w = (x_shape[3] - kernel[3]) // strides[3] + 1
+    new_w = (x_shape[3] - kernel[2]) // strides[2] + 1
     new_shape = [x_shape[0], new_d, new_h, new_w] + list(kernel) + [x_shape[-1]]
     new_strides = (
         x.strides[0],
@@ -314,7 +314,7 @@ def max_pool2d(
     )
 
     # B x OH x OW x O
-    res = sub_matrices.max(axis=(4, 5))
+    res = sub_matrices.max(axis=(4,5,6))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res

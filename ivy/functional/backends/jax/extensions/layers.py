@@ -231,7 +231,8 @@ def max_pool3d(
 ) -> JaxArray:
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
-
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 3
     res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
 
     if data_format == "NCDHW":
