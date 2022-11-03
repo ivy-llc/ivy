@@ -5,7 +5,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x).astype(x.dtype)
+    return np.sinc(x)
 
 
 @_handle_0_dim_output
@@ -91,14 +91,59 @@ def float_power(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.asarray(
-        np.float_power(
-            x1,
-            x2,
-            out=out
-        ),
-        dtype=x1.dtype
-    )
+    return np.asarray(np.float_power(x1, x2, out=out), dtype=x1.dtype)
 
 
 float_power.support_native_out = True
+
+
+def exp2(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
+def nansum(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[np.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+nansum.support_native_out = True
+
+
+def gcd(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def isposinf(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
