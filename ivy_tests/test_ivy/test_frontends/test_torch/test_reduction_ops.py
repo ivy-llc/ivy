@@ -600,7 +600,7 @@ def test_torch_max(
     as_variable,
     num_positional_args,
     native_array,
-        keepdim,
+    keepdim,
         with_out,
 ):
     input_dtype, x, axis = dtype_input_axis
