@@ -147,3 +147,15 @@ def isposinf(
 
 
 isposinf.support_native_out = True
+
+
+def isneginf(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True

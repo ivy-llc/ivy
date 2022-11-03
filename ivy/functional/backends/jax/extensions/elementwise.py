@@ -91,3 +91,12 @@ def isposinf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isposinf(x, out=out)
+
+
+def isneginf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isneginf(x, out=out)
