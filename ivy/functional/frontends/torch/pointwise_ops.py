@@ -43,6 +43,9 @@ def acos(input, *, out=None):
     return ivy.acos(input, out=out)
 
 
+arccos = acos
+
+
 @to_ivy_arrays_and_back
 def sinh(input, *, out=None):
     return ivy.sinh(input, out=out)
@@ -53,19 +56,15 @@ def acosh(input, *, out=None):
     return ivy.acosh(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arccosh(input, *, out=None):
-    return ivy.acosh(input, out=out)
-
-
-@to_ivy_arrays_and_back
-def arccos(input, *, out=None):
-    return ivy.acos(input, out=out)
+arccosh = acosh
 
 
 @to_ivy_arrays_and_back
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+absolute = abs
 
 
 @to_ivy_arrays_and_back
@@ -92,9 +91,7 @@ def asin(input, *, out=None):
     return ivy.asin(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arcsin(input, *, out=None):
-    return ivy.asin(input, out=out)
+arcsin = asin
 
 
 @to_ivy_arrays_and_back
@@ -107,9 +104,7 @@ def atanh(input, *, out=None):
     return ivy.atanh(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arctanh(input, *, out=None):
-    return ivy.atanh(input, out=out)
+arctanh = atanh
 
 
 @to_ivy_arrays_and_back
@@ -186,11 +181,6 @@ def sqrt(input, *, out=None):
 @to_ivy_arrays_and_back
 def sign(input, *, out=None):
     return ivy.sign(input, out=out)
-
-
-@to_ivy_arrays_and_back
-def absolute(input, *, out=None):
-    return ivy.abs(input, out=out)
 
 
 @to_ivy_arrays_and_back
