@@ -2,6 +2,7 @@ import ivy
 import functools
 from types import FunctionType
 from typing import Callable
+from cachetools import cached , FIFOCache
 
 
 # for wrapping (sequence matters)
@@ -40,6 +41,9 @@ def _get_first_array(*args, **kwargs):
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
 
+# Just a native python compile function with cache #
+# ---------------#
+@cached(cache=FIFOCache(maxsize=12))
 def compile_function(fn:Callable) -> Callable:
     data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval",0,False,1)
     return eval(data_comp)
