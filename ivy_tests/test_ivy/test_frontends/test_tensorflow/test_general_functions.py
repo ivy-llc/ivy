@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -30,27 +30,28 @@ def _get_clip_inputs(draw):
 
 # clip_by_value
 # @handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.clip_by_value",
     input_and_ranges=_get_clip_inputs(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.clip_by_value"
-    ),
 )
 def test_tensorflow_clip_by_value(
+    *,
     input_and_ranges,
-    num_positional_args,
     as_variable,
     native_array,
+    frontend,
+    fn_tree,
+    num_positional_args,
 ):
     x_dtype, x, min, max = input_and_ranges
+    print(fn_tree)
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="clip_by_value",
+        frontend=frontend,
         t=x[0],
         clip_value_min=min,
         clip_value_max=max,
@@ -68,6 +69,7 @@ def test_tensorflow_clip_by_value(
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_eye(
+    *,
     n_rows,
     n_cols,
     batch_shape,
