@@ -8,7 +8,7 @@ These projects are written in many different frameworks.
    :align: center
    :width: 80%
 
-While this is a wonderful thing for researchers and developers, when we also consider the speed at which the frameworks are evolving, the sharability of code is significantly hindered, with projects and libraries becoming outdated in a matter of months if not rigorously maintained against the newest frameworks and also the newest framework versions.
+While this is a wonderful thing for researchers and developers, when we also consider the speed at which the frameworks are evolving, the shareability of code is significantly hindered, with projects and libraries becoming outdated in a matter of months if not rigorously maintained against the newest frameworks and also the newest framework versions.
 
 For software development pipelines where rapid prototyping and collaboration are vital, this is a significant bottleneck.
 As new future frameworks become available, backend-specific code quickly becomes outdated and obsolete, and users of these frameworks are constantly re-inventing the wheel.
