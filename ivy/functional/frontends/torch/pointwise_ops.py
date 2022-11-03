@@ -298,4 +298,6 @@ arcsinh = asinh
 divide = div
 
 
-true_divide = div
+@to_ivy_arrays_and_back
+def true_divide(input, other, *, out=None):
+    return ivy.divide(input, other, out=out)
