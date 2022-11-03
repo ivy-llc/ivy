@@ -86,5 +86,37 @@ def top_k(
     topk_res = NamedTuple(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
-    indices, vals = torch.topk(x, k, dim=axis, largest=largest)
-    return topk_res(indices, vals)
+    if not largest:
+        indices = torch.argsort(x, dim=axis, stable=True)
+        indices = torch.take(indices, torch.arange(k), dim=axis)
+    else:
+        x *= -1
+        indices = torch.argsort(x, dim=axis, stable=True)
+        indices = torch.take(indices, torch.arange(k), dim=axis)
+        x *= -1
+    val = torch.gather(x, axis, indices)
+    return topk_res(val, indices)
+
+
+def fliplr(
+    m: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.fliplr(m)
+
+
+fliplr.support_native_out = False
+
+
+def i0(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.i0(x, out=out)
+
+
+i0.support_native_out = True

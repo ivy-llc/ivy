@@ -155,7 +155,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -200,7 +200,7 @@ def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=Non
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype)
+    return ret.astype(dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -284,6 +284,11 @@ def bitwise_or(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_xor(x1, x2):
+    return ivy.bitwise_xor(x1, x2)
+
+
+@to_ivy_arrays_and_back
 def moveaxis(a, source, destination):
     return ivy.moveaxis(a, source, destination)
 
@@ -297,6 +302,11 @@ def flipud(m):
 def power(x1, x2):
     x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def arange(start, stop=None, step=None, dtype=None):
+    return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -315,3 +325,48 @@ def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.uint8
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def trunc(x):
+    return ivy.trunc(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x):
+    return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def float_power(x1, x2):
+    return ivy.float_power(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+cumproduct = cumprod
+
+
+@to_ivy_arrays_and_back
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
+def exp2(x):
+    return ivy.exp2(x)
+
+
+@to_ivy_arrays_and_back
+def gcd(x1, x2):
+    return ivy.gcd(x1, x2)

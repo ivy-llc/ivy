@@ -334,3 +334,166 @@ def test_exp2(
         fn_name="exp2",
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
+
+
+# nansum
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        min_value=-100,
+        max_value=100,
+        valid_axis=True,
+        allow_neg_axes=False,
+        min_axes_size=1,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="nansum"),
+    keep_dims=st.booleans(),
+)
+def test_nansum(
+    dtype_x_axis,
+    keep_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="nansum",
+        input=x[0],
+        axis=axis,
+        keepdims=keep_dims,
+    )
+
+
+# gcd
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="gcd"),
+)
+def test_gcd(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="gcd",
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# isposinf
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isposinf"),
+)
+def test_isposinf(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isposinf",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# isneginf
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isneginf"),
+)
+def test_isneginf(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isneginf",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )

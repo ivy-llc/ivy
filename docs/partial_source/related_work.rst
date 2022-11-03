@@ -12,7 +12,8 @@ In order to conceptualize this rather complex hierarchy, we have broken the ML s
 
 Each of these groups within the ML stack has it's own sub-section, linked below, within which we discuss various related projects which operate at that particular level within the stack.
 
-We then compare Ivy to some other ML-unifying companies which are working on very important problems and are helping to unify the lower levels of the ML stack. We see these efforts as being very complimentary to Ivy's vision for high level unification.
+We then compare Ivy to some other ML-unifying companies which are working on very important problems and are helping to unify the lower levels of the ML stack.
+We see these efforts as being very complimentary to Ivy's vision for high level unification.
 
 Finally, we discuss how Ivy compares to each of these important works at all levels within the ML stack.
 
