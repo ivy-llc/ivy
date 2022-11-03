@@ -57,6 +57,7 @@ def mean(input, dim, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def median(input):
     return ivy.median(input)
 
