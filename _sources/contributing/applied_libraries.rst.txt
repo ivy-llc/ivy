@@ -73,14 +73,14 @@ Example - Ivy Robot
 2. Activate the environment:
 
     (on Windows)
-    .. code-block:: none
+        .. code-block:: none
 
-        ivy_dev\Scripts\activate.bat
+            ivy_dev\Scripts\activate.bat
 
     (on Mac/Linux)
-    .. code-block:: none
+        .. code-block:: none
 
-        source ivy_dev/bin/activate
+            source ivy_dev/bin/activate
 
 3. Go into each directory and install packages in develop/editable mode:
 
@@ -118,9 +118,9 @@ Example - Ivy Robot
 3. To use, first mount the local directories, then start up :code:`python3` with Docker:
 
     (in the folder containing all repositories)
-    .. code-block:: none
+        .. code-block:: none
 
-        docker run --rm -it -v `pwd`/ivy:/ivy -v `pwd`/mech:/mech -v `pwd`/vision:/vision -v `pwd`/robot:/robot -v `pwd`/demo-utils:/demo-utils my-robot python3
+            docker run --rm -it -v `pwd`/ivy:/ivy -v `pwd`/mech:/mech -v `pwd`/vision:/vision -v `pwd`/robot:/robot -v `pwd`/demo-utils:/demo-utils my-robot python3
 
     **NOTE:** Mounting allows the docker container to use local folder as volumes, thus reflecting the local changes or edits made.
     Users are not required to rebuild the docker image after every change.

@@ -155,7 +155,7 @@
 <h1>Open Tasks<a class="headerlink" href="#open-tasks" title="Permalink to this heading"></a></h1>
 <p>Here, we explain all tasks which are currently open for contributions from the community!</p>
 <p>This section of the docs will be updated frequently, whereby new tasks will be added and completed tasks will be removed.
-The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>.</p>
+The tasks outlined here are generally broad high-level tasks, each of which is made up of many individual sub-tasks, distributed across task-specific <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo List Issues</a>.</p>
 <p>Please read about <a class="reference external" href="https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues">ToDo List Issues</a> in detail before continuing.
 ALl tasks should be selected and allocated as described in the ToDo List Issues section.
 We make no mention of task selection and allocation in the explanations below, which instead focus on the steps to complete only once a sub-task has been allocated to you.</p>
@@ -189,18 +189,18 @@ Before starting any contribution task, you should go through the <a class="refer
 You will need to make changes to the current implementations, but you do not need to address <em>all</em> sections of the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> in detail.
 Specifically, you <strong>do not</strong> need to address the following:</p>
 <ol class="arabic simple">
-<li><p>implement the hypothesis testing for the function</p></li>
-<li><p>get the tests passing for your function, if they are failing before you start</p></li>
+<li><p>Implement the hypothesis testing for the function</p></li>
+<li><p>Get the tests passing for your function, if they are failing before you start</p></li>
 </ol>
 <p>However, everything else covered in the <a class="reference internal" href="../deep_dive.html#deep-dive"><span class="std std-ref">Deep Dive</span></a> must be addressed.
 Some common important tasks are:</p>
 <ol class="arabic simple">
-<li><p>remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions (in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends</span></code>), with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
-<li><p>implement the following if they don’t exist but should do: <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method.</p></li>
+<li><p>Remove all <code class="code docutils literal notranslate"><span class="pre">lambda</span></code> and direct bindings for the backend functions (in <code class="code docutils literal notranslate"><span class="pre">ivy.functional.backends</span></code>), with each function instead defined using <code class="code docutils literal notranslate"><span class="pre">def</span></code>.</p></li>
+<li><p>Implement the following if they don’t exist but should do: <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> instance method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> static method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> instance method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> reverse special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> special method, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> reverse special method.</p></li>
 <li><p>Make sure that the aforementioned methods are added into the correct category-specific parent class, such as <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ArrayWithElementwise</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.ContainerWithManipulation</span></code> etc.</p></li>
-<li><p>correct all of the <a class="reference internal" href="../deep_dive/function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement yourself.</p></li>
-<li><p>add the correct <a class="reference internal" href="../deep_dive/docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement yourself.</p></li>
-<li><p>add thorough <a class="reference internal" href="../deep_dive/docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its <em>relevant methods</em> and ensure they pass the docstring tests.</p></li>
+<li><p>Correct all of the <a class="reference internal" href="../deep_dive/function_arguments.html#function-arguments"><span class="std std-ref">Function Arguments</span></a> and the type hints for every function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement yourself.</p></li>
+<li><p>Add the correct <a class="reference internal" href="../deep_dive/docstrings.html#docstrings"><span class="std std-ref">Docstrings</span></a> to every function <strong>and</strong> its <em>relevant methods</em>, including those you did not implement yourself.</p></li>
+<li><p>Add thorough <a class="reference internal" href="../deep_dive/docstring_examples.html#docstring-examples"><span class="std std-ref">Docstring Examples</span></a> for every function <strong>and</strong> its <em>relevant methods</em> and ensure they pass the docstring tests.</p></li>
 </ol>
 <section id="formatting-checklist">
 <h3>Formatting checklist<a class="headerlink" href="#formatting-checklist" title="Permalink to this heading"></a></h3>
@@ -239,22 +239,26 @@ It does not automatically run any tests to update them!</p></li>
 <p>Currently, we have many ToDo list issues <a class="reference external" href="https://github.com/unifyai/ivy/issues?page=1&amp;q=is%3Aopen+is%3Aissue+label%3AToDo+label%3A%22JAX+Frontend%22%2C%22TensorFlow+Frontend%22%2C%22PyTorch+Frontend%22%2C%22NumPy+Frontend%22">open</a> for this task.</p>
 <p>The general workflow for this task is:</p>
 <ol class="arabic simple">
-<li><p>find the correct location for the function by following the <em>Where to place a frontend function</em> subsection below</p></li>
-<li><p>implement the function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a> guide</p></li>
-<li><p>write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
-<li><p>verify that the tests for your function are passing</p></li>
+<li><p>Find the correct location for the function by following the <em>Where to place a frontend function</em> subsection below</p></li>
+<li><p>Implement the function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a> guide</p></li>
+<li><p>Write tests for your function by following the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends_tests.html">Ivy Frontend Tests</a> guide</p></li>
+<li><p>Verify that the tests for your function are passing</p></li>
 </ol>
-<p>If you feel as though there is an ivy function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> clearly missing, which would make your frontend function much simpler to implement, then you you should first do the following:</p>
+<p>If you feel as though there is an ivy function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:</p>
 <ol class="arabic simple">
-<li><p>create a new issue with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, add the labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> to it, and then simply leave this issue open.
-At some point, a member of our team will assess whether it should be added, and if so, they will add it to another appropriate ToDo list issue (see the open task below).
-You do not need to wait for this in order to proceed.</p></li>
+<li><p>Create a new issue with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code></p></li>
+<li><p>Add the labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> to it</p></li>
+<li><p>Then simply leave this issue open.</p></li>
 </ol>
+<dl class="simple">
+<dt>At some point, a member of our team will assess whether it should be added, and if so, they will add it to another appropriate ToDo list issue (see the open task below).</dt><dd><p>You do not need to wait for this in order to proceed.</p>
+</dd>
+</dl>
 <p>After this, you then have two options for how to proceed:</p>
 <ol class="arabic simple">
-<li><p>try to implement the function as a composition of currently present ivy functions, as explained in the “Temporary Compositions” sub-section of the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a> guide, and add the <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation as explained.
+<li><p>Try to implement the function as a composition of currently present ivy functions, as explained in the “Temporary Compositions” sub-section of the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/ivy_frontends.html">Ivy Frontends</a> guide, and add the <code class="code docutils literal notranslate"><span class="pre">#ToDo</span></code> comment in the implementation as explained.
 Once the PR is merged, your sub-task issue will then be closed as normal.</p></li>
-<li><p>alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
+<li><p>Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
 You could also choose to work on another open task entirely at this point if you wanted to.
 For example, you might decide to wait for a member of our team to review your suggested addition <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, and potentially add this to an Ivy Extension ToDo list issue (see the open task below).
 In either case, you should add the label “Pending other Issue” to the frontend sub-task issue, and leave it open.
@@ -263,11 +267,11 @@ Finally, you should add a comment to the issue with the contents: <code class="c
 </ol>
 <p>There are a few other points to take note of when working on your chosen frontend function:</p>
 <ol class="arabic simple">
-<li><p>you should only implement <strong>one</strong> frontend function.</p></li>
-<li><p>the frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.</p></li>
-<li><p>each frontend function should be tested on all backends to ensure that conversions are working correctly.</p></li>
-<li><p>type hints, docstrings and examples are not required for frontend functions.</p></li>
-<li><p>some frontend functions shown in the ToDo list issues are aliases of other functions.
+<li><p>You should only implement <strong>one</strong> frontend function.</p></li>
+<li><p>The frontend function is framework-specific, thus it should be implemented in its respective frontend framework only.</p></li>
+<li><p>Each frontend function should be tested on all backends to ensure that conversions are working correctly.</p></li>
+<li><p>Type hints, docstrings and examples are not required for frontend functions.</p></li>
+<li><p>Some frontend functions shown in the ToDo list issues are aliases of other functions.
 If you detect that this is the case, then you should add all aliases in your PR, with a single implementation and then simple bindings to this implementation, such as <code class="code docutils literal notranslate"><span class="pre">&lt;alias_name&gt;</span> <span class="pre">=</span> <span class="pre">&lt;function_name&gt;</span></code>.
 If you notice that an alias function has already been implemented and pushed, then you can simply add this one-liner binding and get this very simple PR merged.</p></li>
 </ol>

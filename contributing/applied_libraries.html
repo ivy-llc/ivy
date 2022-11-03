@@ -200,16 +200,16 @@ Thus, the related repositories have to be pulled into the same local folder, and
 </li>
 <li><p>Activate the environment:</p>
 <blockquote>
-<div><p>(on Windows)
-.. code-block:: none</p>
-<blockquote>
-<div><p>ivy_devScriptsactivate.bat</p>
-</div></blockquote>
-<p>(on Mac/Linux)
-.. code-block:: none</p>
-<blockquote>
-<div><p>source ivy_dev/bin/activate</p>
-</div></blockquote>
+<div><dl>
+<dt>(on Windows)</dt><dd><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>ivy_dev\Scripts\activate.bat
+</pre></div>
+</div>
+</dd>
+<dt>(on Mac/Linux)</dt><dd><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>source ivy_dev/bin/activate
+</pre></div>
+</div>
+</dd>
+</dl>
 </div></blockquote>
 </li>
 <li><p>Go into each directory and install packages in develop/editable mode:</p>
@@ -247,11 +247,12 @@ docker build -t my-robot .
 </li>
 <li><p>To use, first mount the local directories, then start up <code class="code docutils literal notranslate"><span class="pre">python3</span></code> with Docker:</p>
 <blockquote>
-<div><p>(in the folder containing all repositories)
-.. code-block:: none</p>
-<blockquote>
-<div><p>docker run –rm -it -v <cite>pwd</cite>/ivy:/ivy -v <cite>pwd</cite>/mech:/mech -v <cite>pwd</cite>/vision:/vision -v <cite>pwd</cite>/robot:/robot -v <cite>pwd</cite>/demo-utils:/demo-utils my-robot python3</p>
-</div></blockquote>
+<div><dl>
+<dt>(in the folder containing all repositories)</dt><dd><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>docker run --rm -it -v `pwd`/ivy:/ivy -v `pwd`/mech:/mech -v `pwd`/vision:/vision -v `pwd`/robot:/robot -v `pwd`/demo-utils:/demo-utils my-robot python3
+</pre></div>
+</div>
+</dd>
+</dl>
 <p><strong>NOTE:</strong> Mounting allows the docker container to use local folder as volumes, thus reflecting the local changes or edits made.
 Users are not required to rebuild the docker image after every change.</p>
 </div></blockquote>
