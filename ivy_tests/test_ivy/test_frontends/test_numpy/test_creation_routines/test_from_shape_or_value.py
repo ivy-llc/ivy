@@ -1,5 +1,6 @@
 # global
 import ivy
+import random
 from hypothesis import strategies as st
 
 # local
@@ -17,11 +18,11 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_empty(
     shape,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -29,8 +30,9 @@ def test_numpy_empty(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -40,7 +42,7 @@ def test_numpy_empty(
         on_device=on_device,
         test_values=False,
         shape=shape,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -57,12 +59,12 @@ def test_numpy_empty(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_empty_like(
     dtype_and_x,
     shape,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -70,6 +72,7 @@ def test_numpy_empty_like(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -82,7 +85,7 @@ def test_numpy_empty_like(
         on_device=on_device,
         test_values=False,
         prototype=x[0],
-        dtype=dtype[0],
+        dtype=dtype,
         order="K",
         subok=True,
         shape=shape,
@@ -95,13 +98,13 @@ def test_numpy_empty_like(
     rows=helpers.ints(min_value=3, max_value=10),
     cols=helpers.ints(min_value=3, max_value=10),
     k=helpers.ints(min_value=0, max_value=2),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_eye(
     rows,
     cols,
     k,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -109,8 +112,9 @@ def test_numpy_eye(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -121,7 +125,7 @@ def test_numpy_eye(
         N=rows,
         M=cols,
         k=k,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -129,11 +133,11 @@ def test_numpy_eye(
 @handle_frontend_test(
     fn_tree="numpy.identity",
     n=helpers.ints(min_value=1, max_value=10),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_identity(
     n,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -141,8 +145,9 @@ def test_numpy_identity(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -151,7 +156,7 @@ def test_numpy_identity(
         fn_tree=fn_tree,
         on_device=on_device,
         n=n,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -165,11 +170,11 @@ def test_numpy_identity(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_ones(
     shape,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -177,8 +182,9 @@ def test_numpy_ones(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -187,7 +193,7 @@ def test_numpy_ones(
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -204,12 +210,12 @@ def test_numpy_ones(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_ones_like(
     dtype_and_x,
     shape,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -217,6 +223,7 @@ def test_numpy_ones_like(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -228,7 +235,7 @@ def test_numpy_ones_like(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        dtype=dtype[0],
+        dtype=dtype,
         order="K",
         subok=True,
         shape=shape,
@@ -245,11 +252,11 @@ def test_numpy_ones_like(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_zeros(
     shape,
-    dtype,
+    dtypes,
     as_variable,
     num_positional_args,
     native_array,
@@ -257,8 +264,9 @@ def test_numpy_zeros(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -267,7 +275,7 @@ def test_numpy_zeros(
         fn_tree=fn_tree,
         on_device=on_device,
         shape=shape,
-        dtype=dtype[0],
+        dtype=dtype,
     )
 
 
@@ -284,11 +292,11 @@ def test_numpy_zeros(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtype=helpers.get_dtypes("valid", full=False),
+    dtypes=helpers.get_dtypes("valid"),
 )
 def test_numpy_zeros_like(
     dtype_and_x,
-    dtype,
+    dtypes,
     shape,
     as_variable,
     num_positional_args,
@@ -297,6 +305,7 @@ def test_numpy_zeros_like(
     fn_tree,
     on_device,
 ):
+    dtype = random.choice(dtypes)
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -308,7 +317,7 @@ def test_numpy_zeros_like(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
-        dtype=dtype[0],
+        dtype=dtype,
         order="K",
         subok=True,
         shape=shape,
@@ -318,16 +327,16 @@ def test_numpy_zeros_like(
 # full and full_like helper
 @st.composite
 def _input_fill_and_dtype(draw):
-    dtype = draw(helpers.get_dtypes("float", full=False))
-    dtype_and_input = draw(helpers.dtype_and_values(dtype=dtype))
-    if ivy.is_uint_dtype(dtype[0]):
+    dtype = random.choice(draw(helpers.get_dtypes("float")))
+    dtype_and_input = draw(helpers.dtype_and_values(dtype=[dtype]))
+    if ivy.is_uint_dtype(dtype):
         fill_values = draw(st.integers(min_value=0, max_value=5))
-    elif ivy.is_int_dtype(dtype[0]):
+    elif ivy.is_int_dtype(dtype):
         fill_values = draw(st.integers(min_value=-5, max_value=5))
     else:
         fill_values = draw(st.floats(min_value=-5, max_value=5))
-    dtype_to_cast = draw(helpers.get_dtypes("float", full=False))
-    return dtype, dtype_and_input[1], fill_values, dtype_to_cast[0]
+    dtype_to_cast = random.choice(draw(helpers.get_dtypes("float")))
+    return [dtype], dtype_and_input[1], fill_values, dtype_to_cast
 
 
 # full
