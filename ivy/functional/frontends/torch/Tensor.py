@@ -4,6 +4,7 @@ import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
 
+
 class Tensor:
     def __init__(self, data):
         self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
