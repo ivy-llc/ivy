@@ -196,24 +196,29 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
 
         # No Hypothesis @given is used
         if is_hypothesis_test:
-            __given_kwargs = _generate_shared_test_flags(
+            _given_kwargs = _generate_shared_test_flags(
                 param_names, given_kwargs, fn_tree, callable_fn
             )
             for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
                 if flag in param_names:
-                    __given_kwargs[flag] = st.lists(
+                    _given_kwargs[flag] = st.lists(
                         st.booleans(), min_size=1, max_size=1
                     )
             for flag in cfg.UNSET_TEST_API_CONFIG["flag"]:
                 if flag in param_names:
-                    __given_kwargs[flag] = st.booleans()
+                    _given_kwargs[flag] = st.booleans()
 
-            def wrapped_test(*args, **kwargs):
-                __tracebackhide__ = True
-                wrapped_hypothesis_test = given(**__given_kwargs)(test_fn)
-                if "fn_name" in param_names:  # TODO find a better way to do this
+            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            if "fn_name" in param_names:
+
+                def wrapped_test(fn_name=fn_name, *args, **kwargs):
+                    __tracebackhide__ = True
                     return wrapped_hypothesis_test(fn_name=fn_name, *args, **kwargs)
-                else:
+
+            else:
+
+                def wrapped_test(*args, **kwargs):
+                    __tracebackhide__ = True
                     return wrapped_hypothesis_test(*args, **kwargs)
 
             params_objs = []
@@ -225,6 +230,8 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
                         )
                     )
 
+            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
+            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
             wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
                 parameters=params_objs
             )
@@ -261,12 +268,17 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
                 param_names, given_kwargs, fn_tree, callable_fn
             )
 
-            def wrapped_test(*args, **kwargs):
-                __tracebackhide__ = True
-                wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-                if "fn_tree" in param_names:  # TODO find a better way to do this
+            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            if "fn_tree" in param_names:
+
+                def wrapped_test(fn_tree=fn_tree, *args, **kwargs):
+                    __tracebackhide__ = True
                     return wrapped_hypothesis_test(fn_tree=fn_tree, *args, **kwargs)
-                else:
+
+            else:
+
+                def wrapped_test(*args, **kwargs):
+                    __tracebackhide__ = True
                     return wrapped_hypothesis_test(*args, **kwargs)
 
             params_objs = []
@@ -278,6 +290,8 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
                         )
                     )
 
+            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
+            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
             wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
                 parameters=params_objs
             )
