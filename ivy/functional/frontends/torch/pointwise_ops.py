@@ -290,3 +290,14 @@ def deg2rad(input, *, out=None):
     if "int" in input.dtype:
         input = input.astype("float32")
     return ivy.array(input * 3.1416 / 180, out=out)
+
+
+arcsinh = asinh
+
+
+divide = div
+
+
+@to_ivy_arrays_and_back
+def true_divide(input, other, *, out=None):
+    return ivy.divide(input, other, out=out)
