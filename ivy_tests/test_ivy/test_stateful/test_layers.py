@@ -169,8 +169,9 @@ def test_dropout_layer(
 # ----------#
 @st.composite
 def x_and_mha(draw):
-    dtype = draw(helpers.get_dtypes("float",
-                                    full=False).filter(lambda x : x != ['float16']))
+    dtype = draw(
+        helpers.get_dtypes("float", full=False).filter(lambda x: x != ["float16"])
+    )
     with_to_q_fn = draw(st.booleans())
     with_to_kv_fn = draw(st.booleans())
     with_to_out_fn = draw(st.booleans())
@@ -363,7 +364,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
             shape=x_shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,
-        )
+        ).filter(lambda x : x[0] != ['float16'])
     )
     if transpose:
         return (

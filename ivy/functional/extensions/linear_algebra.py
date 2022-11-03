@@ -20,8 +20,12 @@ def diagflat(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    k: int = 0,
-    out: Optional[ivy.Array] = None,
+    offset: Optional[int] = 0,
+    padding_value: Optional[float] = 0,
+    align: Optional[str] = "RIGHT_LEFT",
+    num_rows: Optional[int] = -1,
+    num_cols: Optional[int] = -1,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a two-dimensional array with the flattened input as a diagonal.
 
@@ -71,4 +75,51 @@ def diagflat(
                [0, 0, 2],
                [0, 0, 0]])
     """
-    return current_backend(x).diagflat(x, k=k, out=out)
+    return current_backend(x).diagflat(
+        x,
+        offset=offset,
+        padding_value=padding_value,
+        align=align,
+        num_rows=num_rows,
+        num_cols=num_cols,
+        out=out,
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def kron(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the Kronecker product, a composite array
+    made of blocks of the second array scaled by the first.
+
+    Parameters
+    ----------
+    a
+        First input array.
+    b
+        Second input array
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        Array representing the Kronecker product of the input arrays.
+
+    Examples
+    --------
+    >>> a = ivy.array([1,2])
+    >>> b = ivy.array([3,4])
+    >>> ivy.kron(a, b)
+    ivy.array([3, 4, 6, 8])
+    """
+    return current_backend(a, b).kron(a, b, out=out)
