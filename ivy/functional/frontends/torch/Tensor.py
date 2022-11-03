@@ -166,8 +166,6 @@ class Tensor:
     def dim(self):
         return self.data.ndim
 
-    ndimension = dim
-
     def new_full(
         self,
         size,
@@ -230,7 +228,7 @@ class Tensor:
         return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self.data, other)
+        return torch_frontend.mul(self, other)
 
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
@@ -246,6 +244,7 @@ class Tensor:
 
     # Method aliases
     absolute, absolute_ = abs, abs_
+    ndimension = dim
 
 
 # Tensor (alias)
