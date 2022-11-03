@@ -54,7 +54,7 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
 
     # inputs
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    img = ivy.array(np.load(os.path.join(this_dir, 'ivy_models_tests/img.npy'))[None], dtype='float32', device=device)
+    img = ivy.array(np.load(os.path.join(this_dir, 'img.npy'))[None], dtype='float32', device=device)
     queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], device=device)
 
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
@@ -71,11 +71,12 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
     # maybe load weights
     if load_weights:
         this_dir = os.path.dirname(os.path.realpath(__file__))
-        weight_fpath = os.path.join(this_dir, 'ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
+        weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
         assert os.path.isfile(weight_fpath)
         # noinspection PyBroadException
         try:
-            v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().variables()
+            v = ivy.Container.from_disk_as_pickled(weight_fpath)
+            v = ivy.asarray(v) # convert numpy weights to ivy arrays
         except Exception:
             # If git large-file-storage is not enabled (for example when testing in github actions workflow), then the
             #  test will fail here. A placeholder file does exist, but the file cannot be loaded as pickled variables.
@@ -103,15 +104,16 @@ def test_perceiver_io_img_classification(device, f, fw, batch_shape, img_dims, q
 
     # value test
     if load_weights:
-
-        true_logits = np.array([2.3227594, 3.2260594, 4.682901, 9.067165])
+        
+        true_logits = np.array([4.9020147, 4.9349823, 8.04229, 8.167497])
         calc_logits = ivy.to_numpy(output[0, 0])
 
         def np_softmax(x):
             return np.exp(x) / np.sum(np.exp(x))
 
-        true_indices = np.array([676, 212, 246, 251])
+        true_indices = np.array([6, 5, 251, 246])
         calc_indices = np.argsort(calc_logits)[-4:]
+
         assert np.array_equal(true_indices, calc_indices)
 
         true_probs = np_softmax(true_logits)
