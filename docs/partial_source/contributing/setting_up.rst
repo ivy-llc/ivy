@@ -205,7 +205,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video">
+    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -239,7 +239,7 @@ If Docker's latest version causes error, try using an earlier version by visitin
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -311,7 +311,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
 Setting Up Testing
@@ -401,6 +401,10 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
+
+**"Empty Suite" error fix:**
+
+Click on the "green arrow button" from where you run the funcion in PyCharm. Open "Modify Run Configuration...", under "Target:" on the right side click on "..." it'll open a new window, manually add the path to the specific function, For instance, for stateful -> "test_stateful.test_submodule_name.test_function_name" and for functional -> "test_submodule_name.test_function_name", the function will pop up below, select that, click on "Apply" then "OK". Now, do not run the test from the "green arrow button" in the left panel, run it from above where there is a "green arrow button" on the left side of the "debugger button" making sure you've selected the latest modified configuration of that specific test you want to run.
 
 Setting up for Free
 -------------------
@@ -540,21 +544,16 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite.
-This will cause the array_api_tests to fail and therefore they must be run via the terminal.
+4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_04.png?raw=true
-   :width: 420
-
-5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
-
+Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
 **Video**
 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video">
+    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
 
