@@ -221,8 +221,8 @@ def pad(
 
 def max_pool3d(
     x: JaxArray,
-        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
