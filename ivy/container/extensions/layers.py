@@ -946,26 +946,26 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool2dd. This method simply
-        wraps the function, and so the docstring for ivy.max_pool2d also applies
+        """ivy.Container static method variant of ivy.max_pool3d. This method simply
+        wraps the function, and so the docstring for ivy.max_pool3d also applies
         to this method with minimal changes.
 
         Parameters
         ----------
         x
-            Input image *[batch_size,h,w,d_in]*.
+            Input volume *[batch_size,d,h,w,d_in]*.
         kernel
-            The size of the window to take a max over.
+            Convolution filters *[d,h,w]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating
-            the per-dimension paddings.
+            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+            paddings.
         data_format
-            "NHWC" or "NCHW". Defaults to "NHWC".
+            NDHWC" or "NCDHW". Defaults to "NDHWC".
         out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------
@@ -974,13 +974,16 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(ivy.Container.static_max_pool2d(x, (2, 2), (1, 1), "SAME"))
+        >>> print(ivy.Container.static_max_pool3d(x, 2, 1, "VALID"))
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
+            b: ivy.array([[[[[20, 21],
+                             [22, 23]]]],
+                       [[[[44, 45],
+                             [46, 47]]]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1011,28 +1014,26 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of `ivy.max_pool2d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool2d` also applies
+        """ivy.Container static method variant of ivy.max_pool3d. This method simply
+        wraps the function, and so the docstring for ivy.max_pool3d also applies
         to this method with minimal changes.
 
         Parameters
         ----------
         x
-            Input image *[batch_size,h,w,d_in]*.
+            Input volume *[batch_size,d,h,w,d_in]*.
         kernel
-            The size of the window to take a max over.
+            Convolution filters *[d,h,w]*.
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            "SAME" or "VALID" indicating the algorithm, or list indicating
-            the per-dimension paddings.
+            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+            paddings.
         data_format
-            "NHWC" or "NCHW". Defaults to "NHWC".
-        dilations
-            The dilation factor for each dimension of input. (Default value = 1)
+            NDHWC" or "NCDHW". Defaults to "NDHWC".
         out
-            optional output array, for writing the result to. It must have a shape
-            that the inputs broadcast to.
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
 
         Returns
         -------
@@ -1041,13 +1042,16 @@ class ContainerWithLayersExtensions(ContainerBase):
 
         Examples
         --------
-        >>> a = ivy.arange(12).reshape((2, 1, 3, 2))
-        >>> b = ivy.arange(48).reshape((2, 4, 3, 2))
+        >>> a = ivy.arange(12).reshape((1, 2, 1, 3, 2))
+        >>> b = ivy.arange(48).reshape((2, 2, 2, 3, 2))
         >>> x = ivy.Container({'a': a, 'b': b})
-        >>> print(x.max_pool2d(2, 2), (1, 1), "SAME"))
+        >>> print(x.max_pool3d(2, 1, "VALID"))
         {
-            a: (<class ivy.array.array.Array> shape=[2, 1, 3, 2]),
-            b: (<class ivy.array.array.Array> shape=[2, 4, 3, 2])
+            a: ivy.array([], shape=(1, 1, 0, 2, 2)),
+            b: ivy.array([[[[[20, 21],
+                             [22, 23]]]],
+                       [[[[44, 45],
+                             [46, 47]]]]])
         }
         """
         return self.static_max_pool3d(

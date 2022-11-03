@@ -314,7 +314,7 @@ def max_pool3d(
     )
 
     # B x OH x OW x O
-    res = sub_matrices.max(axis=(4,5,6))
+    res = sub_matrices.max(axis=(4, 5, 6))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
