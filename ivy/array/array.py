@@ -18,7 +18,7 @@ from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
 from .layers import ArrayWithLayers
-from .linear_algebra import ArrayWithLinearAlgebra
+from .linalg import ArrayWithLinalg
 from .losses import ArrayWithLosses
 from .manipulation import ArrayWithManipulation
 from .norms import ArrayWithNorms
@@ -41,7 +41,7 @@ class Array(
     ArrayWithGradients,
     ArrayWithImage,
     ArrayWithLayers,
-    ArrayWithLinearAlgebra,
+    ArrayWithLinalg,
     ArrayWithLosses,
     ArrayWithManipulation,
     ArrayWithNorms,
@@ -82,7 +82,7 @@ class Array(
         ArrayWithGradients.__init__(self)
         ArrayWithImage.__init__(self)
         ArrayWithLayers.__init__(self)
-        ArrayWithLinearAlgebra.__init__(self)
+        ArrayWithLinalg.__init__(self)
         ArrayWithLosses.__init__(self)
         ArrayWithManipulation.__init__(self)
         ArrayWithNorms.__init__(self)
