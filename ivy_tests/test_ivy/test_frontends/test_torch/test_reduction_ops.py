@@ -597,7 +597,7 @@ def test_torch_moveaxis(
 )
 def test_torch_max(
     dtype_input_axis,
-        as_variable,
+    as_variable,
         num_positional_args,
         native_array,
         keepdim,
