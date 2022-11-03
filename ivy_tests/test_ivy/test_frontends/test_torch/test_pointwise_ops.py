@@ -100,6 +100,7 @@ def test_torch_atan(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["arctan"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -161,6 +162,7 @@ def test_torch_abs(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["absolute"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -254,6 +256,7 @@ def test_torch_acos(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["arccos"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -325,37 +328,6 @@ def test_torch_acosh(
     )
 
 
-# arccos
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.arccos"
-    ),
-)
-def test_torch_arccos(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="arccos",
-        input=x[0],
-        out=None,
-    )
-
-
 # subtract
 @handle_cmd_line_args
 @given(
@@ -384,6 +356,7 @@ def test_torch_subtract(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["sub"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
@@ -448,72 +421,11 @@ def test_torch_asin(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["arcsin"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="asin",
-        input=x[0],
-        out=None,
-    )
-
-
-# arccosh
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.arccosh"
-    ),
-)
-def test_torch_arccosh(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="arccosh",
-        input=x[0],
-        out=None,
-    )
-
-
-# arcsin
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.arcsin"
-    ),
-)
-def test_torch_arcsin(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="arcsin",
         input=x[0],
         out=None,
     )
@@ -603,41 +515,11 @@ def test_torch_atanh(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["arctanh"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="atanh",
-        input=x[0],
-        out=None,
-    )
-
-
-# arctanh
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.arctanh"
-    ),
-)
-def test_torch_arctanh(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="arctanh",
         input=x[0],
         out=None,
     )
@@ -1096,37 +978,6 @@ def test_torch_sign(
     )
 
 
-# absolute
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.absolute"
-    ),
-)
-def test_torch_absolute(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, input = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="absolute",
-        input=input[0],
-        out=None,
-    )
-
-
 # logical not
 @handle_cmd_line_args
 @given(
@@ -1281,6 +1132,40 @@ def test_torch_ceil(
         frontend="torch",
         fn_tree="ceil",
         input=x[0],
+        out=None,
+    )
+
+
+# round
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    decimals=st.integers(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.round"
+    ),
+)
+def test_torch_round(
+    dtype_and_x,
+    decimals,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="round",
+        input=x[0],
+        decimals=decimals,
         out=None,
     )
 
@@ -1501,4 +1386,35 @@ def test_torch_flipud(
         frontend="torch",
         fn_tree="flipud",
         input=m[0],
+    )
+
+
+# deg2grad
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.deg2rad"
+    ),
+)
+def test_torch_deg2rad(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="deg2rad",
+        input=x[0],
+        out=None,
     )
