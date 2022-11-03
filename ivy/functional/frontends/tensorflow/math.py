@@ -347,8 +347,3 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
-
-
-@to_ivy_arrays_and_back
-def lbeta(x, name="lbeta"):
-    return ivy.log(ivy.beta(0, 1, shape=x.shape))
