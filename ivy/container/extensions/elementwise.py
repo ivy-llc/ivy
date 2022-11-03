@@ -603,3 +603,407 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_nansum(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nansum. This method simply wraps
+        the function, and so the docstring for ivy.nansum also applies to this method
+        with minimal changes.
+        
+        Parameters
+        ----------
+        x
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> ivy.Container.static_nansum(x)
+        {
+            a: 27,
+            b: 7.0
+        }
+        >>> ivy.Container.static_nansum(x, axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> ivy.Container.static_nansum(x, axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nansum",
+            x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nansum(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to this
+        method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input container including arrays.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+        
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([[10, 7, 4], [3, 2, 1]]),\
+                b=ivy.array([[1, 4, 2], [ivy.nan, ivy.nan, 0]]))
+        >>> x.nansum(axis=0)
+        {
+            a: ivy.array([13, 9, 5]),
+            b: ivy.array([1., 4., 2.])
+        }
+        >>> x.nansum(axis=1)
+        {
+            a: ivy.array([21, 6]),
+            b: ivy.array([7., 0.])
+        }
+        """
+        return self.static_nansum(
+            self, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
+
+    @staticmethod
+    def static_gcd(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.gcd. This method simply wraps
+        the function, and so the docstring for ivy.gcd also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise gcd of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6, 7]),\
+                               b=10)
+        >>> ivy.Container.static_gcd(x1, x2)
+        {
+            a: ivy.array([1.,  1.,  3.])
+            b: ivy.array([1., 2., 1.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "gcd",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def gcd(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.gcd. This method simply
+        wraps the function, and so the docstring for ivy.gcd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise gcd of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6, 7]),\
+                               b=10)
+        >>> x1.gcd(x2)
+        {
+            a: ivy.array([1.,  1.,  3.])
+            b: ivy.array([1., 2., 1.])
+        }
+        """
+        return self.static_gcd(self, x2, out=out)
+
+    @staticmethod
+    def static_isposinf(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isposinf. This method simply wraps
+        the function, and so the docstring for ivy.isposinf also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including a boolean array with values
+            True where the corresponding element of the input
+            is positive infinity and values False where the
+            element of the input is not positive infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                                b=ivy.array([5, ivy.inf, ivy.inf]))
+        >>> ivy.Container.static_isposinf(x)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "isposinf",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def isposinf(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isposinf. This method simply
+        wraps the function, and so the docstring for ivy.isposinf also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns container including a boolean array with values
+            True where the corresponding element of the input
+            is positive infinity and values False where the
+            element of the input is not positive infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                               b=ivy.array([5, ivy.inf, ivy.inf]))
+        >>> x.isposinf()
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return self.static_isposinf(self, out=out)
+
+    @staticmethod
+    def static_isneginf(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isneginf. This method simply wraps
+        the function, and so the docstring for ivy.isneginf also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including a boolean array with values
+            True where the corresponding element of the input
+            is negative infinity and values False where the
+            element of the input is not negative infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                                b=ivy.array([5, -ivy.inf, -ivy.inf]))
+        >>> ivy.Container.static_isneginf(x)
+        {
+            a: ivy.array([False, False, True]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "isneginf",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def isneginf(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isneginf. This method simply
+        wraps the function, and so the docstring for ivy.isneginf also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns container including a boolean array with values
+            True where the corresponding element of the input
+            is negative infinity and values False where the
+            element of the input is not negative infinity.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, ivy.inf, -ivy.inf]),\
+                               b=ivy.array([5, -ivy.inf, -ivy.inf]))
+        >>> x.isneginf()
+        {
+            a: ivy.array([False, False, True]),
+            b: ivy.array([False, True, True])
+        }
+        """
+        return self.static_isneginf(self, out=out)

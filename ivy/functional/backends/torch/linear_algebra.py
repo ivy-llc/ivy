@@ -375,6 +375,8 @@ def trace(
     axis2: int = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if len(x) == 0:
+        return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
     ret = torch.sum(ret)
     return ret

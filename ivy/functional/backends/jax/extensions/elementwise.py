@@ -60,3 +60,43 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def nansum(
+    x: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[jnp.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nansum(x, axis=axis, dtype=dtype, keepdims=keepdims, out=out)
+
+
+def gcd(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.gcd(x1, x2)
+
+
+def isposinf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isposinf(x, out=out)
+
+
+def isneginf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isneginf(x, out=out)

@@ -372,5 +372,12 @@ class ArrayWithRandom(abc.ABC):
         -------
         ret
             An array object, shuffled along the first dimension.
+
+        Examples
+        --------
+        >>> x = ivy.array([5, 2, 9])
+        >>> y = x.shuffle()
+        >>> print(y)
+        ivy.array([2, 5, 9])
         """
         return ivy.shuffle(self, seed=seed, out=out)
