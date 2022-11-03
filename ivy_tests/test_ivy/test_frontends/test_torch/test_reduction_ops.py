@@ -601,7 +601,7 @@ def test_torch_max(
     num_positional_args,
     native_array,
     keepdim,
-        with_out,
+   with_out,
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
