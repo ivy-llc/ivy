@@ -9,7 +9,15 @@ from .. import backend_version
 
 
 # dirichlet
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16",)}, backend_version)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "bfloat16",
+            "float16",
+        )
+    },
+    backend_version,
+)
 def dirichlet(
     alpha: Union[torch.tensor, float, Sequence[float]],
     /,

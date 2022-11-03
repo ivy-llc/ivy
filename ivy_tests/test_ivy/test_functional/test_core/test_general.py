@@ -43,9 +43,7 @@ def _get_shape_of_list(lst, shape=()):
 # ------#
 
 
-@given(
-    fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"])
-)
+@given(fw_str=st.sampled_from(["numpy", "jax", "torch", "tensorflow"]))
 def test_set_framework(fw_str):
     ivy.set_backend(fw_str)
     ivy.unset_backend()
@@ -1830,9 +1828,7 @@ def test_function_unsupported_devices(func, expected):
 # ---------------#
 
 
-@given(
-    fw=st.sampled_from(["torch", "tensorflow", "numpy", "jax"])
-)
+@given(fw=st.sampled_from(["torch", "tensorflow", "numpy", "jax"]))
 def test_current_backend_str(fw):
     ivy.set_backend(fw)
     assert ivy.current_backend_str() == fw

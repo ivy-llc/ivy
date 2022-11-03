@@ -107,3 +107,15 @@ def fliplr(
 
 
 fliplr.support_native_out = False
+
+
+def i0(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.i0(x)
+
+
+i0.support_native_out = False

@@ -5,12 +5,10 @@ from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(
-    request, on_device, backend_fw, fixt_frontend_str, compile_graph, implicit
-):
+def run_around_tests(request, on_device, backend_fw, frontend, compile_graph, implicit):
     try:
         test_globals.setup_frontend_test(
-            request.function.test_data, fixt_frontend_str, backend_fw.backend
+            request.function.test_data, frontend, backend_fw.backend
         )
     except Exception as e:
         test_globals.teardown_frontend_test()

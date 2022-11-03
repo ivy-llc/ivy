@@ -1003,16 +1003,16 @@ def test_method(
 
 def test_frontend_method(
     *,
-    input_dtypes_init: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    as_variable_flags_init: Union[bool, List[bool]] = None,
-    num_positional_args_init: int = 0,
-    native_array_flags_init: Union[bool, List[bool]] = None,
-    all_as_kwargs_np_init: dict = None,
-    input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags_method: Union[bool, List[bool]],
-    num_positional_args_method: int,
-    native_array_flags_method: Union[bool, List[bool]],
-    all_as_kwargs_np_method: dict,
+    init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
+    init_as_variable_flags: Union[bool, List[bool]] = None,
+    init_num_positional_args: int = 0,
+    init_native_array_flags: Union[bool, List[bool]] = None,
+    init_all_as_kwargs_np: dict = None,
+    method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
+    method_as_variable_flags: Union[bool, List[bool]],
+    method_num_positional_args: int,
+    method_native_array_flags: Union[bool, List[bool]],
+    method_all_as_kwargs_np: dict,
     frontend: str,
     class_name: str,
     method_name: str = "__init__",
@@ -1025,31 +1025,31 @@ def test_frontend_method(
 
     Parameters
     ----------
-    input_dtypes_init
+    init_input_dtypes
         data types of the input arguments to the constructor in order.
-    as_variable_flags_init
+    init_as_variable_flags
         dictates whether the corresponding input argument passed to the constructor
         should be treated as an ivy.Variable.
-    num_positional_args_init
+    init_num_positional_args
         number of input arguments that must be passed as positional arguments to the
         constructor.
-    native_array_flags_init
+    init_native_array_flags
         dictates whether the corresponding input argument passed to the constructor
         should be treated as a native array.
-    all_as_kwargs_np_init:
+    init_all_as_kwargs_np:
         input arguments to the constructor as keyword arguments.
-    input_dtypes_method
+    method_input_dtypes
         data types of the input arguments to the method in order.
-    as_variable_flags_method
+    method_as_variable_flags
         dictates whether the corresponding input argument passed to the method should
         be treated as an ivy.Variable.
-    num_positional_args_method
+    method_num_positional_args
         number of input arguments that must be passed as positional arguments to the
         method.
-    native_array_flags_method
+    method_native_array_flags
         dictates whether the corresponding input argument passed to the method should
         be treated as a native array.
-    all_as_kwargs_np_method:
+    method_all_as_kwargs_np:
         input arguments to the method as keyword arguments.
     frontend
         current frontend (framework).
@@ -1072,8 +1072,8 @@ def test_frontend_method(
     ret_gt
         optional, return value from the Ground Truth function
     """
-    _assert_dtypes_are_valid(input_dtypes_init)
-    _assert_dtypes_are_valid(input_dtypes_method)
+    _assert_dtypes_are_valid(init_input_dtypes)
+    _assert_dtypes_are_valid(method_input_dtypes)
     ARR_INS_METHOD = {
         "DeviceArray": jax.numpy.array,
         "ndarray": np.array,
@@ -1083,25 +1083,25 @@ def test_frontend_method(
 
     # Constructor arguments #
     # convert single values to length 1 lists
-    (input_dtypes_init, as_variable_flags_init, native_array_flags_init,) = as_lists(
-        ivy.default(input_dtypes_init, []),
-        ivy.default(as_variable_flags_init, []),
-        ivy.default(native_array_flags_init, []),
+    (init_input_dtypes, init_as_variable_flags, init_native_array_flags,) = as_lists(
+        ivy.default(init_input_dtypes, []),
+        ivy.default(init_as_variable_flags, []),
+        ivy.default(init_native_array_flags, []),
     )
-    all_as_kwargs_np_init = ivy.default(all_as_kwargs_np_init, dict())
+    init_all_as_kwargs_np = ivy.default(init_all_as_kwargs_np, dict())
     (
-        input_dtypes_method,
-        as_variable_flags_method,
-        native_array_flags_method,
+        method_input_dtypes,
+        method_as_variable_flags,
+        method_native_array_flags,
     ) = as_lists(
-        input_dtypes_method,
-        as_variable_flags_method,
-        native_array_flags_method,
+        method_input_dtypes,
+        method_as_variable_flags,
+        method_native_array_flags,
     )
 
     args_np_constructor, kwargs_np_constructor = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_init,
-        kwargs=all_as_kwargs_np_init,
+        num_positional_args=init_num_positional_args,
+        kwargs=init_all_as_kwargs_np,
     )
 
     # extract all arrays from the arguments and keyword arguments
@@ -1114,23 +1114,23 @@ def test_frontend_method(
 
     # make all lists equal in length
     num_arrays_constructor = con_c_arg_vals + con_c_kwarg_vals
-    if len(input_dtypes_init) < num_arrays_constructor:
-        input_dtypes_init = [
-            input_dtypes_init[0] for _ in range(num_arrays_constructor)
+    if len(init_input_dtypes) < num_arrays_constructor:
+        init_input_dtypes = [
+            init_input_dtypes[0] for _ in range(num_arrays_constructor)
         ]
-    if len(as_variable_flags_init) < num_arrays_constructor:
-        as_variable_flags_init = [
-            as_variable_flags_init[0] for _ in range(num_arrays_constructor)
+    if len(init_as_variable_flags) < num_arrays_constructor:
+        init_as_variable_flags = [
+            init_as_variable_flags[0] for _ in range(num_arrays_constructor)
         ]
-    if len(native_array_flags_init) < num_arrays_constructor:
-        native_array_flags_init = [
-            native_array_flags_init[0] for _ in range(num_arrays_constructor)
+    if len(init_native_array_flags) < num_arrays_constructor:
+        init_native_array_flags = [
+            init_native_array_flags[0] for _ in range(num_arrays_constructor)
         ]
 
     # update variable flags to be compatible with float dtype
-    as_variable_flags_init = [
+    init_as_variable_flags = [
         v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags_init, input_dtypes_init)
+        for v, d in zip(init_as_variable_flags, init_input_dtypes)
     ]
 
     # Create Args
@@ -1141,15 +1141,15 @@ def test_frontend_method(
         kwargs_np=kwargs_np_constructor,
         kwarg_np_vals=con_kwarg_np_vals,
         kwargs_idxs=con_kwargs_idxs,
-        input_dtypes=input_dtypes_init,
-        as_variable_flags=as_variable_flags_init,
-        native_array_flags=native_array_flags_init,
+        input_dtypes=init_input_dtypes,
+        as_variable_flags=init_as_variable_flags,
+        native_array_flags=init_native_array_flags,
     )
     # End constructor #
 
     # Method arguments #
     args_np_method, kwargs_np_method = kwargs_to_args_n_kwargs(
-        num_positional_args=num_positional_args_method, kwargs=all_as_kwargs_np_method
+        num_positional_args=method_num_positional_args, kwargs=method_all_as_kwargs_np
     )
 
     # extract all arrays from the arguments and keyword arguments
@@ -1162,20 +1162,20 @@ def test_frontend_method(
 
     # make all lists equal in length
     num_arrays_method = met_c_arg_vals + met_c_kwarg_vals
-    if len(input_dtypes_method) < num_arrays_method:
-        input_dtypes_method = [input_dtypes_method[0] for _ in range(num_arrays_method)]
-    if len(as_variable_flags_method) < num_arrays_method:
-        as_variable_flags_method = [
-            as_variable_flags_method[0] for _ in range(num_arrays_method)
+    if len(method_input_dtypes) < num_arrays_method:
+        method_input_dtypes = [method_input_dtypes[0] for _ in range(num_arrays_method)]
+    if len(method_as_variable_flags) < num_arrays_method:
+        method_as_variable_flags = [
+            method_as_variable_flags[0] for _ in range(num_arrays_method)
         ]
-    if len(native_array_flags_method) < num_arrays_method:
-        native_array_flags_method = [
-            native_array_flags_method[0] for _ in range(num_arrays_method)
+    if len(method_native_array_flags) < num_arrays_method:
+        method_native_array_flags = [
+            method_native_array_flags[0] for _ in range(num_arrays_method)
         ]
 
-    as_variable_flags_method = [
+    method_as_variable_flags = [
         v if ivy.is_float_dtype(d) else False
-        for v, d in zip(as_variable_flags_method, input_dtypes_method)
+        for v, d in zip(method_as_variable_flags, method_input_dtypes)
     ]
 
     # Create Args
@@ -1186,9 +1186,9 @@ def test_frontend_method(
         kwargs_np=kwargs_np_method,
         kwarg_np_vals=met_kwarg_np_vals,
         kwargs_idxs=met_kwargs_idxs,
-        input_dtypes=input_dtypes_method,
-        as_variable_flags=as_variable_flags_method,
-        native_array_flags=native_array_flags_method,
+        input_dtypes=method_input_dtypes,
+        as_variable_flags=method_as_variable_flags,
+        native_array_flags=method_native_array_flags,
     )
     # End Method #
 
