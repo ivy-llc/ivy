@@ -34,7 +34,7 @@ Array
    array/gradients.rst
    array/image.rst
    array/layers.rst
-   array/linear_algebra.rst
+   array/linalg.rst
    array/losses.rst
    array/manipulation.rst
    array/norms.rst

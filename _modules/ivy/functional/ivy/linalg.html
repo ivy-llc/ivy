@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy.functional.ivy.linalg &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy.functional.ivy.linalg</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy.functional.ivy.linalg</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+
+
+<span class="n">inf</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Array API Standard #</span>
+<span class="c1"># -------------------#</span>
+
+
+<div class="viewcode-block" id="cholesky"><a class="viewcode-back" href="../../../../functional/ivy/linalg/cholesky/cholesky_functional.html#ivy.functional.ivy.linalg.cholesky">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">cholesky</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">upper</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the cholesky decomposition of the x matrix.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
+<span class="sd">        square symmetric positive-definite matrices. Should have a floating-point data</span>
+<span class="sd">        type.</span>
+<span class="sd">    upper</span>
+<span class="sd">        If True, the result must be the upper-triangular Cholesky factor U. If False,</span>
+<span class="sd">        the result must be the lower-triangular Cholesky factor L. Default: ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the Cholesky factors for each square matrix. If upper is</span>
+<span class="sd">        False, the returned array must contain lower-triangular matrices; otherwise, the</span>
+<span class="sd">        returned array must contain upper-triangular matrices. The returned array must</span>
+<span class="sd">        have a floating-point data type determined by Type Promotion Rules and must have</span>
+<span class="sd">        the same shape as x.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cholesky.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],</span>
+<span class="sd">    ...                [1.0, 0.5, 0.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 3.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [0.5, 0.0, 0.0, 0.625, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; l = ivy.cholesky(x, upper=&#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(l)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],</span>
+<span class="sd">    ...                [1.0, 0.5, 0.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 3.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [0.5, 0.0, 0.0, 0.625, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros([5,5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.cholesky(x, upper=&#39;false&#39;, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[4.0, 1.0, 2.0, 0.5, 2.0],</span>
+<span class="sd">    ...                [1.0, 0.5, 0.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 3.0, 0.0, 0.0],</span>
+<span class="sd">    ...                [0.5, 0.0, 0.0, 0.625, 0.0],</span>
+<span class="sd">    ...                [2.0, 0.0, 0.0, 0.0, 16.0]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.cholesky(x, upper=&#39;false&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[ 2.  ,  0.5 ,  1.  ,  0.25,  1.  ],</span>
+<span class="sd">               [ 0.  ,  0.5 , -1.  , -0.25, -1.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  1.  , -0.5 , -2.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.5 , -3.  ],</span>
+<span class="sd">               [ 0.  ,  0.  ,  0.  ,  0.  ,  1.  ]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; u = ivy.cholesky(x, upper=&#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(u)</span>
+<span class="sd">    ivy.array([[ 1., -2.],</span>
+<span class="sd">               [ 0.,  1.]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[2., 1.],[1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, upper=&#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[1.73, -0.577],</span>
+<span class="sd">                      [0., 1.63]]),</span>
+<span class="sd">        b: ivy.array([[1.41, 0.707],</span>
+<span class="sd">                      [0., 0.707]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[3., -1],[-1., 3.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[2., 1.],[1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, upper=&#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[1.73, -0.577],</span>
+<span class="sd">                      [0., 1.63]]),</span>
+<span class="sd">        b: ivy.array([[1.41, 0.707],</span>
+<span class="sd">                      [0., 0.707]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., -2.], [2., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; upper = ivy.Container(a=1, b=-1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.cholesky(x, upper=&#39;false&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 1., -2.],</span>
+<span class="sd">               [ 0.,  1.]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">cholesky</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="n">upper</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../../functional/ivy/linalg/cross/cross_functional.html#ivy.functional.ivy.linalg.cross">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">cross</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axisa</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">axisb</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">axisc</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;The cross product of 3-element vectors. If x1 and x2 are multi-dimensional</span>
+<span class="sd">    arrays (i.e., both have a rank greater than 1), then the cross- product of each pair</span>
+<span class="sd">    of corresponding 3-element vectors is independently computed.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. Should have a numeric data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must have the same shape as x1. Should have a numeric data</span>
+<span class="sd">        type.</span>
+<span class="sd">    axis</span>
+<span class="sd">        the axis (dimension) of x1 and x2 containing the vectors for which to compute</span>
+<span class="sd">        the cross product.vIf set to -1, the function computes the cross product for</span>
+<span class="sd">        vectors defined by the last axis (dimension). Default: ``-1``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">         an array containing the cross products. The returned array must have a data</span>
+<span class="sd">         type determined by Type Promotion Rules.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.cross.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([0., 1., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.cross(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([0., 0., 1.])</span>
+
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 0., 0.]),</span>
+<span class="sd">    ...                   b=ivy.array([0., 0., 2.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 7., 0.]),</span>
+<span class="sd">    ...                   b=ivy.array([3., 0., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.cross(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0., 0., 35.]),</span>
+<span class="sd">        b: ivy.array([0., 6., 0.])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a combination of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([9., 0., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1., 1., 0.]),</span>
+<span class="sd">    ...                   b=ivy.array([1., 0., 1.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.cross(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-3., 3., 9.]),</span>
+<span class="sd">        b: ivy.array([0., -6., 0.])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axisa</span><span class="o">=</span><span class="n">axisa</span><span class="p">,</span> <span class="n">axisb</span><span class="o">=</span><span class="n">axisb</span><span class="p">,</span> <span class="n">axisc</span><span class="o">=</span><span class="n">axisc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="det"><a class="viewcode-back" href="../../../../functional/ivy/linalg/det/det_functional.html#ivy.functional.ivy.linalg.det">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">det</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the determinant of a square matrix (or a stack of square matrices)``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions</span>
+<span class="sd">        form square matrices. Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        if ``x`` is a two-dimensional array, a zero-dimensional array containing the</span>
+<span class="sd">        determinant; otherwise,a non-zero dimensional array containing the determinant</span>
+<span class="sd">        for each square matrix. The returned array must have the same data type as</span>
+<span class="sd">        ``x``.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.det.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2.,4.],[6.,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(-10.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(293.46997)</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(293.46997)</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[3., -1.], [-1., 3.]]) ,</span>
+<span class="sd">    ...                   b = ivy.array([[2., 1.], [1., 1.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.det(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {a:ivy.array(8.),b:ivy.array(1.)}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="diagonal"><a class="viewcode-back" href="../../../../functional/ivy/linalg/diagonal/diagonal_functional.html#ivy.functional.ivy.linalg.diagonal">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">diagonal</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of a matrix (or a stack of matrices) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        ``MxN`` matrices.</span>
+<span class="sd">    offset</span>
+<span class="sd">        offset specifying the off-diagonal relative to the main diagonal.</span>
+<span class="sd">        - ``offset = 0``: the main diagonal.</span>
+<span class="sd">        - ``offset &gt; 0``: off-diagonal above the main diagonal.</span>
+<span class="sd">        - ``offset &lt; 0``: off-diagonal below the main diagonal.</span>
+<span class="sd">        Default: `0`.</span>
+<span class="sd">    axis1</span>
+<span class="sd">        axis to be used as the first axis of the 2-D sub-arrays from which the diagonals</span>
+<span class="sd">        should be taken.</span>
+<span class="sd">        Defaults to first axis (-2).</span>
+<span class="sd">    axis2</span>
+<span class="sd">        axis to be used as the second axis of the 2-D sub-arrays from which the</span>
+<span class="sd">        diagonals should be taken. Defaults to second axis (-1).</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    out</span>
+<span class="sd">        optional output array to write the result in. Must have the same number</span>
+<span class="sd">        of dimensions as the function output.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the diagonals and whose shape is determined by removing the</span>
+<span class="sd">        last two dimensions and appending a dimension equal to the size of the resulting</span>
+<span class="sd">        diagonals. The returned array must have the same data type as ``x``.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],</span>
+<span class="sd">    ...                [3., 4.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([1., 4.])</span>
+
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],</span>
+<span class="sd">    ...                 [3., 4.]],</span>
+<span class="sd">    ...                [[5., 6.],</span>
+<span class="sd">    ...                 [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1., 4.],</span>
+<span class="sd">               [5., 8.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],</span>
+<span class="sd">    ...                [3., 4.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([2.])</span>
+
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    ...                   [3, 4, 5],</span>
+<span class="sd">    ...                   [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=-1, axis1=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([3, 7])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[ 0,  1,  2],</span>
+<span class="sd">    ...                 [ 3,  4,  5],</span>
+<span class="sd">    ...                 [ 6,  7,  8]],</span>
+<span class="sd">    ...                [[ 9, 10, 11],</span>
+<span class="sd">    ...                 [12, 13, 14],</span>
+<span class="sd">    ...                 [15, 16, 17]],</span>
+<span class="sd">    ...                [[18, 19, 20],</span>
+<span class="sd">    ...                 [21, 22, 23],</span>
+<span class="sd">    ...                 [24, 25, 26]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=1, axis1=-3)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1, 11],</span>
+<span class="sd">               [4, 14],</span>
+<span class="sd">               [7, 17]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[0, 1],</span>
+<span class="sd">    ...                 [2, 3]],</span>
+<span class="sd">    ...                [[4, 5],</span>
+<span class="sd">    ...                 [6, 7]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=0, axis1=0, axis2=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[0, 6],</span>
+<span class="sd">               [1, 7]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],</span>
+<span class="sd">    ...                 [3., 4.]],</span>
+<span class="sd">    ...                [[5., 6.],</span>
+<span class="sd">    ...                 [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=1, axis1=0, axis2=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[3.],</span>
+<span class="sd">               [4.]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.],</span>
+<span class="sd">    ...                       [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([1., 4.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[[ 0,  1,  2],</span>
+<span class="sd">    ...                        [ 3,  4,  5],</span>
+<span class="sd">    ...                        [ 6,  7,  8]],</span>
+<span class="sd">    ...                       [[ 9, 10, 11],</span>
+<span class="sd">    ...                        [12, 13, 14],</span>
+<span class="sd">    ...                        [15, 16, 17]],</span>
+<span class="sd">    ...                       [[18, 19, 20],</span>
+<span class="sd">    ...                        [21, 22, 23],</span>
+<span class="sd">    ...                        [24, 25, 26]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x, offset=1, axis1=1, axis2=-1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[ 1,  5],</span>
+<span class="sd">               [10, 14],</span>
+<span class="sd">               [19, 23]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2],</span>
+<span class="sd">    ...                       [3, 4, 5],</span>
+<span class="sd">    ...                       [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([0, 4, 8])</span>
+
+
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(</span>
+<span class="sd">    ...        a = ivy.array([[7, 1, 2],</span>
+<span class="sd">    ...                       [1, 3, 5],</span>
+<span class="sd">    ...                       [0, 7, 4]]),</span>
+<span class="sd">    ...        b = ivy.array([[4, 3, 2],</span>
+<span class="sd">    ...                       [1, 9, 5],</span>
+<span class="sd">    ...                       [7, 0, 6]])</span>
+<span class="sd">    ...    )</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.diagonal(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([7, 3, 4]),</span>
+<span class="sd">        b: ivy.array([4, 9, 6])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagonal</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="eigh"><a class="viewcode-back" href="../../../../functional/ivy/linalg/eigh/eigh_functional.html#ivy.functional.ivy.linalg.eigh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">eigh</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">UPLO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
+<span class="sd">    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of</span>
+<span class="sd">    matrices) and ``L`` is a vector (or a stack of vectors).</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       The function ``eig`` will be added in a future version of the specification, as</span>
+<span class="sd">       it requires complex number support, once complex numbers are supported,</span>
+<span class="sd">       each square matrix must be Hermitian.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Whether an array library explicitly checks whether an input array is a symmetric</span>
+<span class="sd">       matrix (or a stack of symmetric matrices) is implementation-defined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
+<span class="sd">        square matrices. Must have a floating-point data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a namedtuple (``eigenvalues``, ``eigenvectors``) whose</span>
+
+<span class="sd">        -   first element must have the field name ``eigenvalues`` (corresponding to</span>
+<span class="sd">            ``L`` above) and must be an array consisting of computed eigenvalues. The</span>
+<span class="sd">            array containing the eigenvalues must have shape ``(..., M)``.</span>
+<span class="sd">        -   second element have have the field name ``eigenvectors`` (corresponding to</span>
+<span class="sd">            ``Q`` above) and must be an array where the columns of the inner most</span>
+<span class="sd">            matrices contain the computed eigenvectors. These matrices must be</span>
+<span class="sd">            orthogonal. The array containing the eigenvectors must have shape</span>
+<span class="sd">            ``(..., M, M)``.</span>
+
+<span class="sd">        -   Each returned array must have the same floating-point data type as ``x``.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Eigenvalue sort order is left unspecified and is thus implementation-dependent.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">UPLO</span><span class="o">=</span><span class="n">UPLO</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="eigvalsh"><a class="viewcode-back" href="../../../../functional/ivy/linalg/eigvalsh/eigvalsh_functional.html#ivy.functional.ivy.linalg.eigvalsh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">eigvalsh</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">UPLO</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;L&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return the eigenvalues of a symmetric matrix (or a stack of symmetric matrices) x.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       The function ``eig`` will be added in a future version of the specification, as</span>
+<span class="sd">       it requires complex number support, once complex numbers are supported,</span>
+<span class="sd">       each square matrix must be Hermitian.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Whether an array library explicitly checks whether an input array is a symmetric</span>
+<span class="sd">       matrix (or a stack of symmetric matrices) is implementation-defined.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
+<span class="sd">        square matrices. Must have floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the computed eigenvalues. The returned array must have shape</span>
+<span class="sd">        (..., M) and have the same data type as x.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">UPLO</span><span class="o">=</span><span class="n">UPLO</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inner"><a class="viewcode-back" href="../../../../functional/ivy/linalg/inner/inner_functional.html#ivy.functional.ivy.linalg.inner">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">inner</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the inner product of two vectors ``x1`` and ``x2``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first one-dimensional input array of size N. Should have a numeric data type.</span>
+<span class="sd">        a(N,) array_like</span>
+<span class="sd">        First input vector. Input is flattened if not already 1-dimensional.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second one-dimensional input array of size M. Should have a numeric data type.</span>
+<span class="sd">        b(M,) array_like</span>
+<span class="sd">        Second input vector. Input is flattened if not already 1-dimensional.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a two-dimensional array containing the inner product and whose shape is (N, M).</span>
+<span class="sd">        The returned array must have a data type determined by Type Promotion Rules.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="inv"><a class="viewcode-back" href="../../../../functional/ivy/linalg/inv/inv_functional.html#ivy.functional.ivy.linalg.inv">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">inv</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">adjoint</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the multiplicative inverse of a square matrix (or a stack of square</span>
+<span class="sd">    matrices) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
+<span class="sd">        square matrices. Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the multiplicative inverses. The returned array must have a</span>
+<span class="sd">        floating-point data type determined by :ref:`type-promotion` and must have the</span>
+<span class="sd">        same shape as ``x``.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.inv.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.inv(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+
+<span class="sd">    Using inplace</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0], [5.0, 5.0]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.inv(x, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[-1., 0.4],[1., -0.2]])</span>
+
+<span class="sd">    Inverses of several matrices can be computed at once:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.0, 2.0],[3.0, 4.0]],</span>
+<span class="sd">    ...                [[1.0, 3.0], [3.0, 5.0]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.inv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[[-2., 1.],[1.5, -0.5]],</span>
+<span class="sd">               [[-1.25, 0.75],[0.75, -0.25]]])</span>
+
+<span class="sd">    With :class:`ivy.Container` inputs</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[11., 100., 10.],</span>
+<span class="sd">    ...                                [300., 40., 20.], [25., 30, 100.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[4., 400., 50.], [10., 10., 15.],</span>
+<span class="sd">    ...                               [50., 5000., 40.]]), c=ivy.array([[25., 22., 100.],</span>
+<span class="sd">    ...                               [55, 20., 20.], [55., 50., 100.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_inv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[-0.0012, 0.00342, -0.000565],</span>
+<span class="sd">                      [0.0104, -0.0003, -0.000981],</span>
+<span class="sd">                      [-0.00282, -0.000766, 0.0104]]),</span>
+<span class="sd">        b: ivy.array([[-0.0322, 0.101, 0.00237],</span>
+<span class="sd">                      [0.000151, -0.00101, 0.00019],</span>
+<span class="sd">                      [0.0214, 0., -0.00171]]),</span>
+<span class="sd">        c: ivy.array([[0.0107, 0.03, -0.0167],</span>
+<span class="sd">                      [-0.0472, -0.0322, 0.0536],</span>
+<span class="sd">                      [0.0177, -0.000429, -0.00762]])</span>
+
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">adjoint</span><span class="o">=</span><span class="n">adjoint</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../../functional/ivy/linalg/matmul/matmul_functional.html#ivy.functional.ivy.linalg.matmul">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">transpose_a</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">transpose_b</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the matrix product.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. Should have a numeric data type. Must have at least one</span>
+<span class="sd">        dimension.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Should have a numeric data type. Must have at least one</span>
+<span class="sd">        dimension.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        -   if both x1 and x2 are one-dimensional arrays having shape (N,), a</span>
+<span class="sd">            zero-dimensional array containing the inner product as its only element.</span>
+
+<span class="sd">        -   if x1 is a two-dimensional array having shape (M, K) and x2 is a</span>
+<span class="sd">            two-dimensional array having shape (K, N), a two-dimensional array</span>
+
+<span class="sd">            containing the conventional matrix product and having shape (M, N).</span>
+<span class="sd">        -   if x1 is a one-dimensional array having shape (K,) and x2 is an array having</span>
+<span class="sd">            shape (..., K, N), an array having shape (..., N) (i.e., prepended</span>
+<span class="sd">            dimensions during vector-to-matrix promotion must be removed) and containing</span>
+<span class="sd">            the conventional matrix product.</span>
+
+<span class="sd">        -   if x1 is an array having shape (..., M, K) and x2 is a one-dimensional array</span>
+<span class="sd">            having shape (K,), an array having shape (..., M) (i.e., appended dimensions</span>
+<span class="sd">            during vector-to-matrix promotion must be removed) and containing the</span>
+<span class="sd">            conventional matrix product.</span>
+
+<span class="sd">        -   if x1 is a two-dimensional array having shape (M, K) and x2 is an array</span>
+<span class="sd">            having shape (..., K, N), an array having shape (..., M, N) and containing</span>
+<span class="sd">            the conventional matrix product for each stacked matrix.</span>
+
+<span class="sd">        -   if x1 is an array having shape (..., M, K) and x2 is a two-dimensional array</span>
+<span class="sd">            having shape (K, N), an array having shape (..., M, N) and containing the</span>
+<span class="sd">            conventional matrix product for each stacked matrix.</span>
+
+<span class="sd">        -   if either x1 or x2 has more than two dimensions, an array having a shape</span>
+<span class="sd">            determined by Broadcasting shape(x1)[:-2] against shape(x2)[:-2] and</span>
+<span class="sd">            containing the conventional matrix product for each stacked matrix.</span>
+
+
+<span class="sd">    **Raises**</span>
+
+<span class="sd">        -   if either x1 or x2 is a zero-dimensional array.</span>
+
+<span class="sd">        -   if x1 is a one-dimensional array having shape (K,), x2 is a one-dimensional</span>
+
+<span class="sd">            array having shape (L,), and K != L.</span>
+
+<span class="sd">        -   if x1 is a one-dimensional array having shape (K,), x2 is an array having shape</span>
+<span class="sd">            (..., L, N), and K != L.</span>
+
+<span class="sd">        -   if x1 is an array having shape (..., M, K), x2 is a one-dimensional array having</span>
+<span class="sd">            shape (L,), and K != L.</span>
+
+<span class="sd">        -   if x1 is an array having shape (..., M, K), x2 is an array having shape</span>
+<span class="sd">            (..., L, N), and K != L.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matmul.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 0., 3.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4., 1., 8.])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array(32.)</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [0., 1.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([[2., 0.], [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[2., 6.],[0., 3.]])</span>
+
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 1.]), b=ivy.array([1., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([4., 7.]), b=ivy.array([3., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(27.),</span>
+<span class="sd">        b: ivy.array(3.)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a combination of :class:`ivy.Array`</span>
+<span class="sd">    and :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([9., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([2., 1.]), b=ivy.array([1., 0.]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(18.),</span>
+<span class="sd">        b: ivy.array(9.)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a combination of :class:`ivy.NativeArray` and :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [0., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[1.], [3.]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.matmul(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[7.],[9.]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">transpose_a</span><span class="o">=</span><span class="n">transpose_a</span><span class="p">,</span> <span class="n">transpose_b</span><span class="o">=</span><span class="n">transpose_b</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matrix_norm"><a class="viewcode-back" href="../../../../functional/ivy/linalg/matrix_norm/matrix_norm_functional.html#ivy.functional.ivy.linalg.matrix_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matrix_norm</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">ord</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">,</span> <span class="s2">&quot;fro&quot;</span><span class="p">,</span> <span class="s2">&quot;nuc&quot;</span><span class="p">]]]</span> <span class="o">=</span> <span class="s2">&quot;fro&quot;</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Compute the matrix p-norm.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input array having shape (..., M, N) and whose innermost two dimensions</span>
+<span class="sd">        form MxN matrices. Should have a floating-point data type.</span>
+<span class="sd">    ord</span>
+<span class="sd">        order of the norm. The following mathematical norms must be supported:</span>
+
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | ord              | description                     |</span>
+<span class="sd">        +==================+=================================+</span>
+<span class="sd">        | &#39;fro&#39;            | Frobenius norm                  |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | &#39;nuc&#39;            | nuclear norm                    |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | 1                | max(sum(abs(x), axis=0))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | 2                | largest singular value          |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | inf              | max(sum(abs(x), axis=1))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+
+<span class="sd">        The following non-mathematical &quot;norms&quot; must be supported:</span>
+
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | ord              | description                     |</span>
+<span class="sd">        +==================+=================================+</span>
+<span class="sd">        | -1               | min(sum(abs(x), axis=0))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | -2               | smallest singular value         |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+<span class="sd">        | -inf             | min(sum(abs(x), axis=1))        |</span>
+<span class="sd">        +------------------+---------------------------------+</span>
+
+<span class="sd">        If ``ord=1``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=1`` (i.e., the maximum absolute value column sum).</span>
+
+<span class="sd">        If ``ord=2``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=inf`` (i.e., the maximum absolute value row sum).</span>
+
+<span class="sd">        If ``ord=inf``, the norm corresponds to the induced matrix norm where </span>
+<span class="sd">        ``p=2`` (i.e., the largest singular value).</span>
+
+<span class="sd">        Default: &quot;fro&quot;.</span>
+<span class="sd">    axis</span>
+<span class="sd">        specifies the axes that hold 2-D matrices. Default: (-2, -1).</span>
+<span class="sd">    keepdims</span>
+<span class="sd">        If this is set to True, the axes which are normed over are left in the result as</span>
+<span class="sd">        dimensions with size one. With this option the result will broadcast correctly</span>
+<span class="sd">        against the original x. Default is ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Matrix norm of the array at specified axes.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_norm.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:&#39;ivy.Array&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(5.47722558)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(8, dtype=float).reshape((2, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(2)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=1, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 4., 12.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12, dtype=float).reshape((3, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=ivy.inf, axis=(2, 1), out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([ 4., 12., 20.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2], [3.3, 4.4], [5.5, 6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=&#39;nuc&#39;, keepdims=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[11.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1, 2.2, 3.3], [4.4, 5.5, 6.6]], \</span>
+<span class="sd">                        [[1., 0., 1.1], [1., 1., 0.]]])   </span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_norm(x, ord=&#39;fro&#39;, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([10.5 ,  2.05])</span>
+
+<span class="sd">    With :class:&#39;ivy.Container&#39; input:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0.666, 9.11], \</span>
+<span class="sd">                                       [42.69, 9.23]]), \</span>
+<span class="sd">                          b=ivy.array([[1.1, 2.2, 3.3], \</span>
+<span class="sd">                                       [4.4, 5.5, 6.6]]))   </span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=-ivy.inf)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(9.776),</span>
+<span class="sd">        b: ivy.array(6.6000004)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:&#39;ivy:Container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.arange(12, dtype=float).reshape((3, 2, 2)), \</span>
+<span class="sd">                          b=ivy.arange(8, dtype=float).reshape((2, 2, 2))) </span>
+<span class="sd">    &gt;&gt;&gt; ord = ivy.Container(a=1, b=float(&#39;inf&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; axis = ivy.Container(a=(1, 2), b=(2, 1))</span>
+<span class="sd">    &gt;&gt;&gt; k = ivy.Container(a=False, b=True)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=k)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([4., 12., 20.]),</span>
+<span class="sd">        b: ivy.array([[[4.]], </span>
+<span class="sd">                      [[12.]]])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_norm</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="nb">ord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matrix_power"><a class="viewcode-back" href="../../../../functional/ivy/linalg/matrix_power/matrix_power_functional.html#ivy.functional.ivy.linalg.matrix_power">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matrix_power</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Raises a square matrix (or a stack of square matrices) x to an integer power n.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input array having shape (..., M, M) and whose innermost two dimensions form square matrices.</span>
+<span class="sd">            Should have a floating-point data type.</span>
+<span class="sd">        n</span>
+<span class="sd">            integer exponent.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            if n is equal to zero, an array containing the identity matrix for each square matrix.</span>
+<span class="sd">            If n is less than zero, an array containing the inverse of each square matrix raised to the absolute value of n,</span>
+<span class="sd">            provided that each square matrix is invertible.</span>
+<span class="sd">            If n is greater than zero, an array containing the result of raising each square matrix to the power n.</span>
+<span class="sd">            The returned array must have the same shape as x and a floating-point data type determined by Type Promotion Rules.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_power.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_power</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matrix_rank"><a class="viewcode-back" href="../../../../functional/ivy/linalg/matrix_rank/matrix_rank_functional.html#ivy.functional.ivy.linalg.matrix_rank">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matrix_rank</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">atol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the rank (i.e., number of non-zero singular values) of a matrix (or a</span>
+<span class="sd">    stack of matrices).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        ``MxN`` matrices. Should have a floating-point data type.</span>
+
+<span class="sd">    atol</span>
+<span class="sd">        absolute tolerance. When None it’s considered to be zero.</span>
+
+<span class="sd">    rtol</span>
+<span class="sd">        relative tolerance for small singular values. Singular values approximately less</span>
+<span class="sd">        than or equal to ``rtol * largest_singular_value`` are set to zero. If a</span>
+<span class="sd">        ``float``, the value is equivalent to a zero-dimensional array having a</span>
+<span class="sd">        floating-point data type determined by :ref:`type-promotion` (as applied to</span>
+<span class="sd">        ``x``) and must be broadcast against each matrix. If an ``array``, must have a</span>
+<span class="sd">        floating-point data type and must be compatible with ``shape(x)[:-2]`` (see</span>
+<span class="sd">        :ref:`broadcasting`). If ``None``, the default value is ``max(M, N) * eps``,</span>
+<span class="sd">        where ``eps`` must be the machine epsilon associated with the floating-point</span>
+<span class="sd">        data type determined by :ref:`type-promotion` (as applied to ``x``).</span>
+<span class="sd">        Default: ``None``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the ranks. The returned array must have a floating-point</span>
+<span class="sd">        data type determined by :ref:`type-promotion` and must have shape ``(...)``</span>
+<span class="sd">        (i.e., must have a shape equal to ``shape(x)[:-2]``).</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.matrix_rank.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code: &#39;ivy.Array&#39; inputs:</span>
+
+<span class="sd">    1. Full Matrix</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(2.)</span>
+
+<span class="sd">    2. Rank Deficient Matrix</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 0.], [0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    3. 1 Dimension - rank 1 unless all 0</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(1.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 0.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array(0)</span>
+
+<span class="sd">    With :code: &#39;ivy.NativeArray&#39; inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1., 2.], [3., 4.]], [[1., 0.], [0., 0.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    ivy.array([2., 1.])</span>
+
+<span class="sd">    With :code: &#39;ivy.Container&#39; inputs:</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]), \</span>
+<span class="sd">                          b = ivy.array([[1., 0.], [0., 0.]]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_rank(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array(2.),</span>
+<span class="sd">        b:ivy.array(1.)</span>
+<span class="sd">    }</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matrix_transpose"><a class="viewcode-back" href="../../../../functional/ivy/linalg/matrix_transpose/matrix_transpose_functional.html#ivy.functional.ivy.linalg.matrix_transpose">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">matrix_transpose</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Transposes a matrix (or a stack of matrices) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two</span>
+<span class="sd">        dimensions form ``MxN`` matrices.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a</span>
+<span class="sd">        shape that the inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the transpose for each matrix and having shape</span>
+<span class="sd">        ``(..., N, M)``. The returned array must have the same data</span>
+<span class="sd">        type as ``x``.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.matrix_transpose.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code: &#39;ivy.Array&#39; inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 2.], [1., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_transpose(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0., 1.],</span>
+<span class="sd">               [2., 3.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 4.], [2., 5.], [3., 1.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_transpose(x, out=y)</span>
+<span class="sd">    ivy.array([[1., 2., 3.],</span>
+<span class="sd">               [4., 5., 1.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2., 3.], [1., 2.]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.matrix_transpose(x, out=x)</span>
+<span class="sd">    ivy.array([[2., 1.],</span>
+<span class="sd">       [3., 2.]])</span>
+
+<span class="sd">    With :code:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0., 1., 2.], [1., 2., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_transpose(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0., 1.],</span>
+<span class="sd">               [1., 2.],</span>
+<span class="sd">               [2., 3.]])</span>
+
+<span class="sd">    With :code: &#39;ivy.Container&#39; inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1.], [0., 2.]]), \</span>
+<span class="sd">                          b=ivy.array([[3., 4.], [3., 5.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.matrix_transpose(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[0., 0.],</span>
+<span class="sd">                      [1., 2.]]),</span>
+<span class="sd">        b: ivy.array([[3., 3.],</span>
+<span class="sd">                      [4., 5.]])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="outer"><a class="viewcode-back" href="../../../../functional/ivy/linalg/outer/outer_functional.html#ivy.functional.ivy.linalg.outer">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">outer</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the outer product of two vectors ``x1`` and ``x2``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first one-dimensional input array of size N. Should have a numeric data type.</span>
+<span class="sd">        a(N,) array_like</span>
+<span class="sd">        First input vector. Input is flattened if not already 1-dimensional.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second one-dimensional input array of size M. Should have a numeric data type.</span>
+<span class="sd">        b(M,) array_like</span>
+<span class="sd">        Second input vector. Input is flattened if not already 1-dimensional.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a two-dimensional array containing the outer product and whose shape is (N, M).</span>
+<span class="sd">        The returned array must have a data type determined by Type Promotion Rules.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.outer.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],[3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[5., 6.],[7., 8.]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x,y)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[ 5.,  6.,  7.,  8.],</span>
+<span class="sd">                [10., 12., 14., 16.],</span>
+<span class="sd">                [15., 18., 21., 24.],</span>
+<span class="sd">                [20., 24., 28., 32.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x, 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[1.],</span>
+<span class="sd">                [2.],</span>
+<span class="sd">                [3.],</span>
+<span class="sd">                [4.]])</span>
+
+<span class="sd">    A 3-D Example</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],</span>
+<span class="sd">                        [3., 4.]],</span>
+<span class="sd">                       [[5., 6.],</span>
+<span class="sd">                        [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[[9., 10.],</span>
+<span class="sd">                        [11., 12.]],</span>
+<span class="sd">                       [[13., 14.],</span>
+<span class="sd">                        [15., 16.]]])</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.outer(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    ivy.array([[  9.,  10.,  11.,  12.,  13.,  14.,  15.,  16.],</span>
+<span class="sd">                [ 18.,  20.,  22.,  24.,  26.,  28.,  30.,  32.],</span>
+<span class="sd">                [ 27.,  30.,  33.,  36.,  39.,  42.,  45.,  48.],</span>
+<span class="sd">                [ 36.,  40.,  44.,  48.,  52.,  56.,  60.,  64.],</span>
+<span class="sd">                [ 45.,  50.,  55.,  60.,  65.,  70.,  75.,  80.],</span>
+<span class="sd">                [ 54.,  60.,  66.,  72.,  78.,  84.,  90.,  96.],</span>
+<span class="sd">                [ 63.,  70.,  77.,  84.,  91.,  98., 105., 112.],</span>
+<span class="sd">                [ 72.,  80.,  88.,  96., 104., 112., 120., 128.]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="pinv"><a class="viewcode-back" href="../../../../functional/ivy/linalg/pinv/pinv_functional.html#ivy.functional.ivy.linalg.pinv">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">pinv</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)</span>
+<span class="sd">    ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        ``MxN`` matrices. Should have a floating-point data type.</span>
+<span class="sd">    rtol</span>
+<span class="sd">        relative tolerance for small singular values. Singular values approximately less</span>
+<span class="sd">        than or equal to ``rtol * largest_singular_value`` are set to zero. If a</span>
+<span class="sd">        ``float``, the value is equivalent to a zero-dimensional array having a</span>
+<span class="sd">        floating-point data type determined by :ref:`type-promotion` (as applied to</span>
+<span class="sd">        ``x``) and must be broadcast against each matrix. If an ``array``, must have a</span>
+<span class="sd">        floating-point data type and must be compatible with ``shape(x)[:-2]``</span>
+<span class="sd">        (see :ref:`broadcasting`). If ``None``, the default value is</span>
+<span class="sd">        ``max(M, N) * eps``, where ``eps`` must be the machine epsilon associated with</span>
+<span class="sd">        the floating-point data type determined by :ref:`type-promotion` (as applied to</span>
+<span class="sd">        ``x``). Default: ``None``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the pseudo-inverses. The returned array must have a</span>
+<span class="sd">        floating-point data type determined by :ref:`type-promotion` and must have shape</span>
+<span class="sd">        ``(..., N, M)`` (i.e., must have the same shape as ``x``, except the innermost</span>
+<span class="sd">        two dimensions must be transposed).</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],[3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pinv(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],[3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; out = ivy.zeros(x.shape)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.pinv(x, out=out)</span>
+<span class="sd">    &gt;&gt;&gt; print(out)</span>
+<span class="sd">    ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="qr"><a class="viewcode-back" href="../../../../functional/ivy/linalg/qr/qr_functional.html#ivy.functional.ivy.linalg.qr">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">qr</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;reduced&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the qr decomposition x = QR of a full column rank matrix (or a stack of</span>
+<span class="sd">    matrices), where Q is an orthonormal matrix (or a stack of matrices) and R is an</span>
+<span class="sd">    upper-triangular matrix (or a stack of matrices).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape (..., M, N) and whose innermost two dimensions form MxN</span>
+<span class="sd">        matrices of rank N. Should have a floating-point data type.</span>
+<span class="sd">    mode</span>
+<span class="sd">        decomposition mode. Should be one of the following modes:</span>
+<span class="sd">        - &#39;reduced&#39;: compute only the leading K columns of q, such that q and r have</span>
+<span class="sd">          dimensions (..., M, K) and (..., K, N), respectively, and where K = min(M, N).</span>
+<span class="sd">        - &#39;complete&#39;: compute q and r with dimensions (..., M, M) and (..., M, N),</span>
+<span class="sd">          respectively.</span>
+<span class="sd">        Default: &#39;reduced&#39;.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a namedtuple (Q, R) whose</span>
+<span class="sd">        - first element must have the field name Q and must be an array whose shape</span>
+<span class="sd">          depends on the value of mode and contain matrices with orthonormal columns.</span>
+<span class="sd">          If mode is &#39;complete&#39;, the array must have shape (..., M, M). If mode is</span>
+<span class="sd">          &#39;reduced&#39;, the array must have shape (..., M, K), where K = min(M, N). The</span>
+<span class="sd">          first x.ndim-2 dimensions must have the same size as those of the input array</span>
+<span class="sd">          x.</span>
+<span class="sd">        - second element must have the field name R and must be an array whose shape</span>
+<span class="sd">          depends on the value of mode and contain upper-triangular matrices. If mode is</span>
+<span class="sd">          &#39;complete&#39;, the array must have shape (..., M, N). If mode is &#39;reduced&#39;, the</span>
+<span class="sd">          array must have shape (..., K, N), where K = min(M, N). The first x.ndim-2</span>
+<span class="sd">          dimensions must have the same size as those of the input x.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.qr.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">qr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="slogdet"><a class="viewcode-back" href="../../../../functional/ivy/linalg/slogdet/slogdet_functional.html#ivy.functional.ivy.linalg.slogdet">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">slogdet</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the sign and natural logarithm of the determinant of an array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
+<span class="sd">        square matrices. Should have a floating-point data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        This function returns NamedTuple with two values -</span>
+<span class="sd">            sign:</span>
+<span class="sd">            An array containing a number representing the sign of the determinant</span>
+<span class="sd">            for each square matrix.</span>
+
+<span class="sd">            logabsdet:</span>
+<span class="sd">            An array containing natural log of the absolute determinant of each</span>
+<span class="sd">            square matrix.</span>
+
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],</span>
+<span class="sd">    ...                [3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],</span>
+<span class="sd">    ...                                [3.0, 4.0]]),</span>
+<span class="sd">    ...                   b=ivy.array([[1.0, 2.0],</span>
+<span class="sd">    ...                                [2.0, 1.0]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
+<span class="sd">        b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="sd">    }</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/\</span>
+<span class="sd">        signatures.linalg.slogdet.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="solve"><a class="viewcode-back" href="../../../../functional/ivy/linalg/solve/solve_functional.html#ivy.functional.ivy.linalg.solve">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">solve</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the solution to the system of linear equations represented by the well-</span>
+<span class="sd">    determined (i.e., full rank) linear matrix equation AX = B.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        coefficient array A having shape (..., M, M) and whose innermost two dimensions</span>
+<span class="sd">        form square matrices. Must be of full rank (i.e., all rows or, equivalently,</span>
+<span class="sd">        columns must be linearly independent). Should have a floating-point data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        ordinate (or “dependent variable”) array B. If x2 has shape (M,), x2 is</span>
+<span class="sd">        equivalent to an array having shape (..., M, 1). If x2 has shape (..., M, K),</span>
+<span class="sd">        each column k defines a set of ordinate values for which to compute a solution,</span>
+<span class="sd">        and shape(x2)[:-1] must be compatible with shape(x1)[:-1] (see Broadcasting).</span>
+<span class="sd">        Should have a floating-point data type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the solution to the system AX = B for each square matrix.</span>
+<span class="sd">        The returned array must have the same shape as x2 (i.e., the array corresponding</span>
+<span class="sd">        to B) and must have a floating-point data type determined by Type Promotion</span>
+<span class="sd">        Rules.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.solve.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="svd"><a class="viewcode-back" href="../../../../functional/ivy/linalg/svd/svd_functional.html#ivy.functional.ivy.linalg.svd">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">svd</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">compute_uv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">full_matrices</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns a singular value decomposition A = USVh of a matrix (or a stack of</span>
+<span class="sd">    matrices) ``x``, where ``U`` is a matrix (or a stack of matrices) with orthonormal</span>
+<span class="sd">    columns, ``S`` is a vector of non-negative numbers (or stack of vectors), and ``Vh``</span>
+<span class="sd">    is a matrix (or a stack of matrices) with orthonormal rows.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        matrices on which to perform singular value decomposition. Should have a</span>
+<span class="sd">        floating-point data type.</span>
+<span class="sd">    full_matrices</span>
+<span class="sd">        If ``True``, compute full-sized ``U`` and ``Vh``, such that ``U`` has shape</span>
+<span class="sd">        ``(..., M, M)`` and ``Vh`` has shape ``(..., N, N)``. If ``False``, compute on</span>
+<span class="sd">        the leading ``K`` singular vectors, such that ``U`` has shape ``(..., M, K)``</span>
+<span class="sd">        and ``Vh`` has shape ``(..., K, N)`` and where ``K = min(M, N)``.</span>
+<span class="sd">        Default: ``True``.</span>
+<span class="sd">    compute_uv</span>
+<span class="sd">        If ``True`` then left and right singular vectors will be computed and returned</span>
+<span class="sd">        in ``U`` and ``Vh``, respectively. Otherwise, only the singular values will be computed,</span>
+<span class="sd">        which can be significantly faster.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        with backend set as torch, svd with still compute left and right singular vectors irrespective</span>
+<span class="sd">        of the value of compute_uv, however Ivy will still only return the singular values.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    .. note::</span>
+<span class="sd">        once complex numbers are supported, each square matrix must be Hermitian.</span>
+
+<span class="sd">    ret</span>
+<span class="sd">        a namedtuple ``(U, S, Vh)`` whose</span>
+
+<span class="sd">        -   first element must have the field name ``U`` and must be an array whose</span>
+<span class="sd">            shape depends on the value of ``full_matrices`` and contain matrices with</span>
+<span class="sd">            orthonormal columns (i.e., the columns are left singular vectors). If</span>
+<span class="sd">            ``full_matrices`` is ``True``, the array must have shape ``(..., M, M)``.</span>
+<span class="sd">            If ``full_matrices`` is ``False``, the array must have shape</span>
+<span class="sd">            ``(..., M, K)``, where ``K = min(M, N)``. The first ``x.ndim-2`` dimensions</span>
+<span class="sd">            must have the same shape as those of the input ``x``.</span>
+<span class="sd">        -   second element must have the field name ``S`` and must be an array with</span>
+<span class="sd">            shape ``(..., K)`` that contains the vector(s) of singular values of length</span>
+<span class="sd">            ``K``, where ``K = min(M, N)``. For each vector, the singular values must be</span>
+<span class="sd">            sorted in descending order by magnitude, such that ``s[..., 0]`` is the</span>
+<span class="sd">            largest value, ``s[..., 1]`` is the second largest value, et cetera. The</span>
+<span class="sd">            first ``x.ndim-2`` dimensions must have the same shape as those of the input</span>
+<span class="sd">            ``x``.</span>
+<span class="sd">        -   third element must have the field name ``Vh`` and must be an array whose</span>
+<span class="sd">            shape depends on the value of ``full_matrices`` and contain orthonormal rows</span>
+<span class="sd">            (i.e., the rows are the right singular vectors and the array is the</span>
+<span class="sd">            adjoint). If ``full_matrices`` is ``True``, the array must have shape</span>
+<span class="sd">            ``(..., N, N)``. If ``full_matrices`` is ``False``, the array must have</span>
+<span class="sd">            shape ``(..., K, N)`` where ``K = min(M, N)``. The first ``x.ndim-2``</span>
+<span class="sd">            dimensions must have the same shape as those of the input ``x``.</span>
+
+<span class="sd">        Each returned array must have the same floating-point data type as ``x``.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svd.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
+<span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(U.shape, S.shape, Vh.shape)</span>
+<span class="sd">    (9, 9) (6,) (6, 6)</span>
+
+<span class="sd">    Reconstruction from SVD, result is numerically close to x</span>
+
+<span class="sd">    &gt;&gt;&gt; reconstructed_x = ivy.matmul(U[:,:6] * S, Vh)</span>
+<span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &gt; 1e-3).sum())</span>
+<span class="sd">    ivy.array(0)</span>
+
+<span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &lt; -1e-3).sum())</span>
+<span class="sd">    ivy.array(0)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
+<span class="sd">    &gt;&gt;&gt; S = ivy.svd(x, compute_uv = False)</span>
+<span class="sd">    print(S)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="n">compute_uv</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="svdvals"><a class="viewcode-back" href="../../../../functional/ivy/linalg/svdvals/svdvals_functional.html#ivy.functional.ivy.linalg.svdvals">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">svdvals</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the singular values of a matrix (or a stack of matrices) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        ``MxN`` matrices.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        array with shape ``(..., K)`` that contains the vector(s) of singular values of</span>
+<span class="sd">        length ``K``, where K = min(M, N). The values are sorted in descending order by</span>
+<span class="sd">        magnitude.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.svdvals.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[5.0, 7.0], [4.0, 3.0]])</span>
+<span class="sd">    &gt;&gt;&gt; S = ivy.svdvals(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(S.shape)</span>
+<span class="sd">    (2,)</span>
+
+<span class="sd">    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().</span>
+
+<span class="sd">    &gt;&gt;&gt; _, SS, _ = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(SS.shape)</span>
+<span class="sd">    (2,)</span>
+
+<span class="sd">    &gt;&gt;&gt; error = (SS - S).abs()</span>
+<span class="sd">    &gt;&gt;&gt; print(error)</span>
+<span class="sd">    ivy.array([0.,0.])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1.0, 2.0, 3.0], [2.0, 3.0, 4.0],</span>
+<span class="sd">    ...                       [2.0, 1.0, 3.0], [3.0, 4.0, 5.0]])</span>
+<span class="sd">    &gt;&gt;&gt; print(x.shape)</span>
+<span class="sd">    (4, 3)</span>
+
+<span class="sd">    &gt;&gt;&gt; S = ivy.svdvals(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(S)</span>
+<span class="sd">    ivy.array([10.3, 1.16, 0.615])</span>
+
+<span class="sd">    &gt;&gt;&gt; _, SS, _ = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(SS)</span>
+<span class="sd">    ivy.array([10.3, 1.16, 0.615])</span>
+
+<span class="sd">    Compare the singular value S by ivy.svdvals() with the result by ivy.svd().</span>
+
+<span class="sd">    &gt;&gt;&gt; error = (SS - S).abs()</span>
+<span class="sd">    &gt;&gt;&gt; print(error)</span>
+<span class="sd">    ivy.array([0., 0., 0.])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2.0, 3.0], [3.0, 4.0],</span>
+<span class="sd">    ...                                [1.0, 3.0], [3.0, 5.0]]),</span>
+<span class="sd">    ...                   b=ivy.array([[7.0, 1.0, 2.0, 3.0],</span>
+<span class="sd">    ...                                [2.0, 5.0, 3.0, 4.0],</span>
+<span class="sd">    ...                                [2.0, 6.0, 1.0, 3.0],</span>
+<span class="sd">    ...                                [3.0, 4.0, 5.0, 9.0]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.svdvals(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([9.01, 0.866]),</span>
+<span class="sd">        b: ivy.array([15.8, 5.56, 4.17, 0.864])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[8.0, 3.0], [2.0, 3.0],</span>
+<span class="sd">    ...                [2.0, 1.0], [3.0, 4.0],</span>
+<span class="sd">    ...                [4.0, 1.0], [5.0, 6.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.svdvals()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([13.4, 3.88])</span>
+
+<span class="sd">    Using :class:`ivy.Container` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],</span>
+<span class="sd">    ...                                [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),</span>
+<span class="sd">    ...                   b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],</span>
+<span class="sd">    ...                                [2.0, 5.0, 3.0, 4.0, 10.0],</span>
+<span class="sd">    ...                                [2.0, 11.0, 6.0, 1.0, 3.0],</span>
+<span class="sd">    ...                                [8.0, 3.0, 4.0, 5.0, 9.0]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.svdvals()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([13., 4.64, 2.55]),</span>
+<span class="sd">        b: ivy.array([23.2, 10.4, 4.31, 1.36])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svdvals</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tensordot"><a class="viewcode-back" href="../../../../functional/ivy/linalg/tensordot/tensordot_functional.html#ivy.functional.ivy.linalg.tensordot">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">tensordot</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tensor contraction of x1 and x2 over specific axes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        First input array. Should have a numeric data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with x1 for all non-contracted axes.</span>
+<span class="sd">        Should have a numeric data type.</span>
+<span class="sd">    axes</span>
+<span class="sd">        The axes to contract over.</span>
+<span class="sd">        Default is 2.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The tensor contraction of x1 and x2 over the specified axes.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.tensordot.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.], [2., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[3., 4.], [4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.tensordot(x, y, axes =0)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    ivy.array([[[[3.,4.],[4.,5.]],[[6.,8.],[8.,10.]]],[[[6.,8.],[8.,10.]],[[9.,12.],[12.,15.]]]])</span>
+
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 0., 1.], [2., 3., 6.], [0., 7., 2.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([[1.], [2.], [3.]])</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.tensordot(x, y, axes = 1)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    ivy.array([[ 4.],</span>
+<span class="sd">                [26.],</span>
+<span class="sd">                [20.]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 0., 3.], [2., 3., 4.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[5., 6., 7.], [3., 4., 8.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[2., 4., 5.], [9., 10., 6.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[1., 0., 3.], [2., 3., 4.]]))</span>
+<span class="sd">    &gt;&gt;&gt; res = ivy.tensordot(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(res)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(89.),</span>
+<span class="sd">        b: ivy.array(76.)</span>
+<span class="sd">    }</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linalg/trace/trace_functional.html#ivy.functional.ivy.linalg.trace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">trace</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">axis1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">axis2</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the sum along the specified diagonals of a matrix (or a stack of</span>
+<span class="sd">    matrices) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
+<span class="sd">        ``MxN`` matrices. Should have a numeric data type.</span>
+<span class="sd">    offset</span>
+<span class="sd">        offset specifying the off-diagonal relative to the main diagonal.</span>
+<span class="sd">        -   ``offset = 0``: the main diagonal.</span>
+<span class="sd">        -   ``offset &gt; 0``: off-diagonal above the main diagonal.</span>
+<span class="sd">        -   ``offset &lt; 0``: off-diagonal below the main diagonal.</span>
+
+<span class="sd">        Default: ``0``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">         an array containing the traces and whose shape is determined by removing the</span>
+<span class="sd">         last two dimensions and storing the traces in the last array dimension. For</span>
+<span class="sd">         example, if ``x`` has rank ``k`` and shape ``(I, J, K, ..., L, M, N)``, then an</span>
+<span class="sd">         output array has rank ``k-2`` and shape ``(I, J, K, ..., L)`` where</span>
+
+<span class="sd">         ::</span>
+
+<span class="sd">           out[i, j, k, ..., l] = trace(a[i, j, k, ..., l, :, :])</span>
+
+<span class="sd">         The returned array must have the same data type as ``x``.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2., 0., 3.],</span>
+<span class="sd">    ...                [3., 5., 6.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(7.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1., 2.],</span>
+<span class="sd">    ...                 [3., 4.]],</span>
+<span class="sd">    ...                [[5., 6.],</span>
+<span class="sd">    ...                 [7., 8.]]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([3., 4.])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[2., 0., 3.],[3., 5., 6.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(7.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[0, 1, 2],</span>
+<span class="sd">    ...                       [3, 4, 5],</span>
+<span class="sd">    ...                       [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(12)</span>
+
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(</span>
+<span class="sd">    ...        a = ivy.array([[7, 1, 2],</span>
+<span class="sd">    ...                       [1, 3, 5],</span>
+<span class="sd">    ...                       [0, 7, 4]]),</span>
+<span class="sd">    ...        b = ivy.array([[4, 3, 2],</span>
+<span class="sd">    ...                       [1, 9, 5],</span>
+<span class="sd">    ...                       [7, 0, 6]])</span>
+<span class="sd">    ...    )</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(14),</span>
+<span class="sd">        b: ivy.array(19)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(</span>
+<span class="sd">    ...        a = ivy.array([[7, 1, 2],</span>
+<span class="sd">    ...                       [1, 3, 5],</span>
+<span class="sd">    ...                       [0, 7, 4]]),</span>
+<span class="sd">    ...        b = ivy.array([[4, 3, 2],</span>
+<span class="sd">    ...                       [1, 9, 5],</span>
+<span class="sd">    ...                       [7, 0, 6]])</span>
+<span class="sd">    ...    )</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trace(x, offset=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(6),</span>
+<span class="sd">        b: ivy.array(8)</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">axis1</span><span class="o">=</span><span class="n">axis1</span><span class="p">,</span> <span class="n">axis2</span><span class="o">=</span><span class="n">axis2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vecdot"><a class="viewcode-back" href="../../../../functional/ivy/linalg/vecdot/vecdot_functional.html#ivy.functional.ivy.linalg.vecdot">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vecdot</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the (vector) dot product of two arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        first input array. Should have a numeric data type.</span>
+<span class="sd">    x2</span>
+<span class="sd">        second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).</span>
+<span class="sd">        Should have a numeric data type.</span>
+<span class="sd">    axis</span>
+<span class="sd">        axis over which to compute the dot product. Must be an integer on the interval</span>
+<span class="sd">        ``[-N, N)``, where ``N`` is the rank (number of dimensions) of the shape</span>
+<span class="sd">        determined according to :ref:`broadcasting`. If specified as a negative integer,</span>
+<span class="sd">        the function must determine the axis along which to compute the dot product by</span>
+<span class="sd">        counting backward from the last dimension (where ``-1`` refers to the last</span>
+<span class="sd">        dimension). By default, the function must compute the dot product over the last</span>
+<span class="sd">        axis. Default: ``-1``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        if ``x1`` and ``x2`` are both one-dimensional arrays, a zero-dimensional</span>
+<span class="sd">        containing the dot product; otherwise, a non-zero-dimensional array containing</span>
+<span class="sd">        the dot products and having rank ``N-1``, where ``N`` is the rank (number of</span>
+<span class="sd">        dimensions) of the shape determined according to :ref:`broadcasting`. The</span>
+<span class="sd">        returned array must have a data type determined by :ref:`type-promotion`.</span>
+
+
+<span class="sd">    **Raises**</span>
+
+<span class="sd">        -   if provided an invalid ``axis``.</span>
+
+<span class="sd">        -   if the size of the axis over which to compute the dot product is not the same</span>
+<span class="sd">            for both ``x1`` and ``x2``.</span>
+
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/API_specification/generated/signatures.linear_algebra_functions.vecdot.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">vecdot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vector_norm"><a class="viewcode-back" href="../../../../functional/ivy/linalg/vector_norm/vector_norm_functional.html#ivy.functional.ivy.linalg.vector_norm">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vector_norm</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="nb">ord</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Literal</span><span class="p">[</span><span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Computes the vector norm of a vector (or batch of vectors) ``x``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array. Should have a floating-point data type.</span>
+<span class="sd">    axis</span>
+<span class="sd">        If an integer, ``axis`` specifies the axis (dimension) along which to compute</span>
+<span class="sd">        vector norms. If an n-tuple, ``axis`` specifies the axes (dimensions) along</span>
+<span class="sd">        which to compute batched vector norms. If ``None``, the vector norm must be</span>
+<span class="sd">        computed over all array values (i.e., equivalent to computing the vector norm of</span>
+<span class="sd">        a flattened array). Negative indices must be supported. Default: ``None``.</span>
+<span class="sd">    keepdims</span>
+<span class="sd">        If ``True``, the axes (dimensions) specified by ``axis`` must be included in the</span>
+<span class="sd">        result as singleton dimensions, and, accordingly, the result must be compatible</span>
+<span class="sd">        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the</span>
+<span class="sd">        axes (dimensions) specified by ``axis`` must not be included in the result.</span>
+<span class="sd">        Default: ``False``.</span>
+<span class="sd">    ord</span>
+<span class="sd">        order of the norm. The following mathematical norms must be supported:</span>
+
+<span class="sd">        +------------------+----------------------------+</span>
+<span class="sd">        | ord              | description                |</span>
+<span class="sd">        +==================+============================+</span>
+<span class="sd">        | 1                | L1-norm (Manhattan)        |</span>
+<span class="sd">        +------------------+----------------------------+</span>
+<span class="sd">        | 2                | L2-norm (Euclidean)        |</span>
+<span class="sd">        +------------------+----------------------------+</span>
+<span class="sd">        | inf              | infinity norm              |</span>
+<span class="sd">        +------------------+----------------------------+</span>
+<span class="sd">        | (int,float &gt;= 1) | p-norm                     |</span>
+<span class="sd">        +------------------+----------------------------+</span>
+
+<span class="sd">        The following non-mathematical &quot;norms&quot; must be supported:</span>
+
+<span class="sd">        +------------------+--------------------------------+</span>
+<span class="sd">        | ord              | description                    |</span>
+<span class="sd">        +==================+================================+</span>
+<span class="sd">        | 0                | sum(a != 0)                    |</span>
+<span class="sd">        +------------------+--------------------------------+</span>
+<span class="sd">        | -1               | 1./sum(1./abs(a))              |</span>
+<span class="sd">        +------------------+--------------------------------+</span>
+<span class="sd">        | -2               | 1./sqrt(sum(1./abs(a)\*\*2))   |</span>
+<span class="sd">        +------------------+--------------------------------+</span>
+<span class="sd">        | -inf             | min(abs(a))                    |</span>
+<span class="sd">        +------------------+--------------------------------+</span>
+<span class="sd">        | (int,float &lt; 1)  | sum(abs(a)\*\*ord)\*\*(1./ord) |</span>
+<span class="sd">        +------------------+--------------------------------+</span>
+
+<span class="sd">        Default: ``2``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an array containing the vector norms. If ``axis`` is ``None``, the returned</span>
+<span class="sd">        array must be a zero-dimensional array containing a vector norm. If ``axis`` is</span>
+<span class="sd">        a scalar value (``int`` or ``float``), the returned array must have a rank which</span>
+<span class="sd">        is one less than the rank of ``x``. If ``axis`` is a ``n``-tuple, the returned</span>
+<span class="sd">        array must have a rank which is ``n`` less than the rank of ``x``. The returned</span>
+<span class="sd">        array must have a floating-point data type determined by :ref:`type-promotion`.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.vector_norm.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="nb">ord</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<span class="c1"># Extra #</span>
+<span class="c1"># ------#</span>
+
+
+<div class="viewcode-block" id="diag"><a class="viewcode-back" href="../../../../functional/ivy/linalg/diag/diag_functional.html#ivy.functional.ivy.linalg.diag">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">diag</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the specified diagonals of the input array,</span>
+<span class="sd">    or an array with the input array&#39;s elements as diagonals.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        An array with rank &gt;= 1.</span>
+<span class="sd">    k</span>
+<span class="sd">        An integer that controls which diagonal to consider.</span>
+<span class="sd">        Positive value means superdiagonal,</span>
+<span class="sd">        0 refers to the main diagonal,</span>
+<span class="sd">        and negative value means subdiagonal.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        If x is a 1-D array, the function returns a 2-D square array with the elements</span>
+<span class="sd">        of input as diagonals.</span>
+<span class="sd">        If x is a 2-D array, the function returns a 1-D array with the diagonal elements</span>
+<span class="sd">        of x.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x)</span>
+<span class="sd">    ivy.array([0, 4, 8])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x, k=1)</span>
+<span class="sd">    ivy.array([1, 5])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(x, k=-1)</span>
+<span class="sd">    ivy.array([3, 7])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],</span>
+<span class="sd">    &gt;&gt;&gt;                [3, 4, 5],</span>
+<span class="sd">    &gt;&gt;&gt;                [6, 7, 8]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diag(ivy.diag(x))</span>
+<span class="sd">    ivy.array([[0, 0, 0],</span>
+<span class="sd">               [0, 4, 0],</span>
+<span class="sd">               [0, 0, 8]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vander"><a class="viewcode-back" href="../../../../functional/ivy/linalg/vander/vander_functional.html#ivy.functional.ivy.linalg.vander">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vander</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">N</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">increasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generates a Vandermonde matrix.</span>
+<span class="sd">    The columns of the output matrix are elementwise powers</span>
+<span class="sd">    of the input vector x^{(N-1)}, x^{(N-2)}, ..., x^0x.</span>
+<span class="sd">    If increasing is True, the order of the columns is reversed</span>
+<span class="sd">    x^0, x^1, ..., x^{(N-1)}. Such a matrix with a geometric progression</span>
+<span class="sd">    in each row is named for Alexandre-Theophile Vandermonde.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        1-D input array.</span>
+<span class="sd">    N</span>
+<span class="sd">         Number of columns in the output. If N is not specified,</span>
+<span class="sd">         a square array is returned (N = len(x))</span>
+<span class="sd">    increasing</span>
+<span class="sd">        Order of the powers of the columns. If True, the powers increase</span>
+<span class="sd">        from left to right, if False (the default) they are reversed.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Vandermonde matrix.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vander(x)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">       [[  1,   1,   1,   1],</span>
+<span class="sd">        [  8,   4,   2,   1],</span>
+<span class="sd">        [ 27,   9,   3,   1],</span>
+<span class="sd">        [125,  25,   5,   1]]</span>
+<span class="sd">        )</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vander(x, N=3)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">       [[ 1,  1,  1],</span>
+<span class="sd">        [ 4,  2,  1],</span>
+<span class="sd">        [ 9,  3,  1],</span>
+<span class="sd">        [25,  5,  1]]</span>
+<span class="sd">        )</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, 5])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vander(x, N=3, increasing=True)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">       [[ 1,  1,  1],</span>
+<span class="sd">        [ 1,  2,  4],</span>
+<span class="sd">        [ 1,  3,  9],</span>
+<span class="sd">        [ 1,  5, 25]]</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vander</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span> <span class="n">increasing</span><span class="o">=</span><span class="n">increasing</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vector_to_skew_symmetric_matrix"><a class="viewcode-back" href="../../../../functional/ivy/linalg/vector_to_skew_symmetric_matrix/vector_to_skew_symmetric_matrix_functional.html#ivy.functional.ivy.linalg.vector_to_skew_symmetric_matrix">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vector_to_skew_symmetric_matrix</span><span class="p">(</span>
+    <span class="n">vector</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Given vector, return the associated `Skew-symmetric matrix</span>
+<span class="sd">        &lt;https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product/&gt;`_.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vector</span>
+<span class="sd">        Vector to convert *(batch_shape,3)*.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Skew-symmetric matrix *(batch_shape,3,3)*.</span>
+
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">.</span><span class="n">vector_to_skew_symmetric_matrix</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

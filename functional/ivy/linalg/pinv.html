@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pinv &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="ivy.pinv" href="pinv/pinv_functional.html" />
+    <link rel="prev" title="ivy.Container.static_outer" href="outer/static_outer_container.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../linalg.html">Linalg</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="cholesky.html">cholesky</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="det.html">det</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagonal.html">diagonal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigh.html">eigh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eigvalsh.html">eigvalsh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inner.html">inner</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inv.html">inv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_norm.html">matrix_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_power.html">matrix_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_rank.html">matrix_rank</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matrix_transpose.html">matrix_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outer.html">outer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">pinv</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pinv/pinv_functional.html">ivy.pinv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pinv/pinv_array.html">ivy.Array.pinv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pinv/pinv_container.html">ivy.Container.pinv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pinv/static_pinv_container.html">ivy.Container.static_pinv</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="qr.html">qr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="slogdet.html">slogdet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solve.html">solve</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="svdvals.html">svdvals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensordot.html">tensordot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trace.html">trace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vecdot.html">vecdot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector_norm.html">vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diag.html">diag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vander.html">vander</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+                    <li><a href="../linalg.html">Linalg</a> &raquo;</li>
+      <li>pinv</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/functional/ivy/linalg/pinv.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pinv">
+<h1>pinv<a class="headerlink" href="#pinv" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.linalg.pinv">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linalg.html#pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linalg.pinv" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the (Moore-Penrose) pseudo-inverse of a matrix (or a stack of matrices)
+<code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions form
+<code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values. Singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero. If a
+<code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to
+<code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix. If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a
+floating-point data type and must be compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>
+(see <span class="xref std std-ref">broadcasting</span>). If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is
+<code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must be the machine epsilon associated with
+the floating-point data type determined by <span class="xref std std-ref">type-promotion</span> (as applied to
+<code class="docutils literal notranslate"><span class="pre">x</span></code>). Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that the (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and must have shape
+<code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as <code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost
+two dimensions must be transposed).</p>
+</dd>
+</dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
+<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.pinv.html">docstring</a> 
+in the standard.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="go">ivy.array([[-2., 1.],[1.5, -0.5]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.pinv">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/array/linalg.html#ArrayWithLinalg.pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.pinv" title="Permalink to this definition"></a></dt>
+<dd><p class="rubric">Examples</p>
+<p>x = ivy.array([[1., 2.],
+…            [3., 4.]])
+y = pinv(x, None, None)
+print(y)
+ivy.array([[-2., 1.],
+…        [1.5, -0.5]])</p>
+<p>x = ivy.array([[1., 2.],
+…            [3., 4.]])
+out = ivy.array()
+pinv(x, 0, out)
+print(out)
+ivy.array([[0.0426, 0.0964],
+…       [0.0605, 0.1368]])</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_pinv">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/linalg.html#ContainerWithLinalg.static_pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_pinv" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container special method variant of <a href="./pinv/pinv_functional.html">ivy.pinv</a>.
+This method simply wraps the function, and so the docstring
+for <a href="./pinv/pinv_functional.html">ivy.pinv</a> also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – </p></li>
+<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – </p></li>
+<li><p><strong>M</strong> – </p></li>
+<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – </p></li>
+<li><p><strong>type.</strong> (<em>MxN matrices. Should have a floating-point data</em>) – </p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and
+must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>x = ivy.Container(a= ivy.array([[1., 2.],
+…                             [3., 4.]]))
+y = pinv(x, None, None)
+print(y)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[-2., 1.],</p>
+</div></blockquote>
+<p>…               [1.5, -0.5]])
+}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],
+…                            [3., 4.]]))
+out = ivy.Container(a=ivy.array())
+pinv(x, 0, out)
+print(out)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[0.0426, 0.0964],</p>
+</div></blockquote>
+<p>…               [0.0605, 0.1368]])
+}</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.pinv">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/linalg.html#ContainerWithLinalg.pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.pinv" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.pinv.
+This method simply wraps the function, and so the docstring
+for ivy.pinv also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – </p></li>
+<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – <p><code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p>
+</p></li>
+<li><p><strong>M</strong> – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to</strong> (<em>relative tolerance for small singular values approximately less than</em><em> or </em><em>equal</em>) – <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – an array containing the pseudo-inverses. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and
+must have shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">N,</span> <span class="pre">M)</span></code> (i.e., must have the same shape as
+<code class="docutils literal notranslate"><span class="pre">x</span></code>, except the innermost two dimensions must be transposed).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>x = ivy.Container(a= ivy.array([[1., 2.],
+…                             [3., 4.]]))
+y = pinv(x, None, None)
+print(y)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[-2., 1.],</p>
+</div></blockquote>
+<p>…               [1.5, -0.5]])
+}</p>
+<p>x = ivy.Container(a=ivy.array([[1., 2.],
+…                            [3., 4.]]))
+out = ivy.Container(a=ivy.array())
+pinv(x, 0, out)
+print(out)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([[0.0426, 0.0964],</p>
+</div></blockquote>
+<p>…               [0.0605, 0.1368]])
+}</p>
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p class=supported_frameworks><a class="reference external logo" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" /></a> <a class="reference external logo" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" /></a> <a class="reference external logo" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" /></a> <a class="reference external logo" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" /></a> <a class="reference external logo" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" /></a></p>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="outer/static_outer_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_outer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pinv/pinv_functional.html" class="btn btn-neutral float-right" title="ivy.pinv" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

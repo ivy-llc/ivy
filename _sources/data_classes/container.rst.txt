@@ -35,7 +35,7 @@ Container
    container/gradients.rst
    container/image.rst
    container/layers.rst
-   container/linear_algebra.rst
+   container/linalg.rst
    container/losses.rst
    container/manipulation.rst
    container/norms.rst

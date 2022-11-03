@@ -1,0 +1,18 @@
+Linalg
+======
+
+.. automodule:: ivy.functional.extensions.linalg
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Linalg
+
+   linalg/diagflat.rst
+   linalg/kron.rst
+

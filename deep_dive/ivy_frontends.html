@@ -98,7 +98,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linear_algebra.html">Linear algebra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/ivy/linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/manipulation.html">Manipulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/meta.html">Meta</a></li>
@@ -256,7 +256,7 @@ In the same manner as our <code class="xref py py-func docutils literal notransl
 </div>
 <p>In NumPy, <code class="xref py py-func docutils literal notranslate"><span class="pre">add()</span></code> is categorised under <code class="xref py py-mod docutils literal notranslate"><span class="pre">mathematical_functions</span></code> with a sub-category of <code class="xref py py-mod docutils literal notranslate"><span class="pre">arithmetic_operations</span></code> as shown in the <a class="reference external" href="https://numpy.org/doc/stable/reference/index.html">numpy mathematical functions</a> directory.</p>
 <p>The function arguments for this function are slightly more complex due to the extra optional arguments.
-Additional handling code is added to recover the behaviour according to the <a href="#id6"><span class="problematic" id="id7">`numpy.add`_</span></a> documentation.
+Additional handling code is added to recover the behaviour according to the <a class="reference external" href="https://numpy.org/doc/1.23/reference/generated/numpy.add.html">numpy.add</a> documentation.
 For example, if <code class="code docutils literal notranslate"><span class="pre">dtype</span></code> is specified, the arguments will be cast to the desired type through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.astype()</span></code>.
 The returned result is then obtained through <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.add()</span></code> just like the other examples.</p>
 <p>However, the arguments <code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code> and <code class="code docutils literal notranslate"><span class="pre">subok</span></code> are completely unhandled here.

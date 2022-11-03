@@ -1,0 +1,43 @@
+Linalg
+======
+
+.. automodule:: ivy.functional.ivy.linalg
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Linalg
+
+   linalg/cholesky.rst
+   linalg/cross.rst
+   linalg/det.rst
+   linalg/diagonal.rst
+   linalg/eigh.rst
+   linalg/eigvalsh.rst
+   linalg/inner.rst
+   linalg/inv.rst
+   linalg/matmul.rst
+   linalg/matrix_norm.rst
+   linalg/matrix_power.rst
+   linalg/matrix_rank.rst
+   linalg/matrix_transpose.rst
+   linalg/outer.rst
+   linalg/pinv.rst
+   linalg/qr.rst
+   linalg/slogdet.rst
+   linalg/solve.rst
+   linalg/svd.rst
+   linalg/svdvals.rst
+   linalg/tensordot.rst
+   linalg/trace.rst
+   linalg/vecdot.rst
+   linalg/vector_norm.rst
+   linalg/diag.rst
+   linalg/vander.rst
+   linalg/vector_to_skew_symmetric_matrix.rst
+
