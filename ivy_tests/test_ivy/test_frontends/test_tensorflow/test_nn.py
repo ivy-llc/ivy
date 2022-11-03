@@ -233,6 +233,7 @@ def test_tensorflow_atrous_conv2d(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
@@ -243,6 +244,7 @@ def test_tensorflow_atrous_conv2d(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         value=x,
         filters=filters,
         rate=dilations,
@@ -272,6 +274,7 @@ def test_tensorflow_atrous_conv2d_transpose(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -291,6 +294,7 @@ def test_tensorflow_atrous_conv2d_transpose(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         value=x,
         filters=filters,
         output_shape=output_shape,
@@ -318,6 +322,7 @@ def test_tensorflow_conv1d(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
@@ -328,6 +333,7 @@ def test_tensorflow_conv1d(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         stride=stride,
@@ -358,6 +364,7 @@ def test_tensorflow_conv1d_transpose(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -377,6 +384,7 @@ def test_tensorflow_conv1d_transpose(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         output_shape=output_shape,
@@ -403,6 +411,7 @@ def test_tensorflow_gelu(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -413,6 +422,7 @@ def test_tensorflow_gelu(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         features=x[0],
         approximate=approximate,
     )
@@ -435,6 +445,7 @@ def test_tensorflow_conv2d(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
@@ -445,6 +456,7 @@ def test_tensorflow_conv2d(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         strides=stride,
@@ -472,6 +484,7 @@ def test_tensorflow_conv2d_transpose(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -491,6 +504,7 @@ def test_tensorflow_conv2d_transpose(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         output_shape=output_shape,
@@ -518,6 +532,7 @@ def test_tensorflow_conv3d(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     x = x[0]
@@ -530,6 +545,7 @@ def test_tensorflow_conv3d(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters.reshape(
             filters.shape[:-2] + (x.shape[-1],) + (filters.shape[-1],)
@@ -559,6 +575,7 @@ def test_tensorflow_conv3d_transpose(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -578,6 +595,7 @@ def test_tensorflow_conv3d_transpose(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         output_shape=output_shape,
@@ -613,6 +631,7 @@ def test_tensorflow_batch_normalization(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -623,6 +642,7 @@ def test_tensorflow_batch_normalization(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         mean=mean[0],
         variance=variance[0],
@@ -652,6 +672,7 @@ def test_tensorflow_dropout(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -662,6 +683,7 @@ def test_tensorflow_dropout(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         prob=prob,
         scale=scale,
@@ -696,6 +718,7 @@ def test_tensorflow_silu(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, features = dtype_features
     helpers.test_frontend_function(
@@ -706,6 +729,7 @@ def test_tensorflow_silu(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         features=features[0],
         beta=beta,
     )
@@ -734,6 +758,7 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values
@@ -746,6 +771,7 @@ def test_tensorflow_sigmoid_cross_entropy_with_logits(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         labels=labels,
         logits=logits,
     )
@@ -781,6 +807,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, input_values = dtype_labels_logits
     labels, logits = input_values
@@ -792,6 +819,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         labels=labels,
         logits=logits,
         pos_weight=pos_weight,

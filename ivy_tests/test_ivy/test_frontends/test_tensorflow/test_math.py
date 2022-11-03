@@ -28,6 +28,7 @@ def test_tensorflow_add(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -38,6 +39,7 @@ def test_tensorflow_add(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -56,6 +58,7 @@ def test_tensorflow_tan(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -66,6 +69,7 @@ def test_tensorflow_tan(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -87,6 +91,7 @@ def test_tensorflow_multiply(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -97,6 +102,7 @@ def test_tensorflow_multiply(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -119,6 +125,7 @@ def test_tensorflow_maximum(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -129,6 +136,7 @@ def test_tensorflow_maximum(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -151,6 +159,7 @@ def test_tensorflow_subtract(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -161,6 +170,7 @@ def test_tensorflow_subtract(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -183,6 +193,7 @@ def test_tensorflow_logical_xor(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -193,6 +204,7 @@ def test_tensorflow_logical_xor(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -215,6 +227,7 @@ def test_tensorflow_divide(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -225,6 +238,7 @@ def test_tensorflow_divide(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -245,6 +259,7 @@ def test_tensorflow_negative(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -255,6 +270,7 @@ def test_tensorflow_negative(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -276,6 +292,7 @@ def test_tensorflow_logical_and(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -286,6 +303,7 @@ def test_tensorflow_logical_and(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )
@@ -309,6 +327,7 @@ def test_tensorflow_log_sigmoid(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -319,6 +338,7 @@ def test_tensorflow_log_sigmoid(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -338,6 +358,7 @@ def test_tensorflow_reciprocal_no_nan(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -348,6 +369,7 @@ def test_tensorflow_reciprocal_no_nan(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -367,6 +389,7 @@ def test_tensorflow_reduce_all(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -377,6 +400,7 @@ def test_tensorflow_reduce_all(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -396,6 +420,7 @@ def test_tensorflow_reduce_any(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -409,6 +434,7 @@ def test_tensorflow_reduce_any(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -428,6 +454,7 @@ def test_tensorflow_reduce_euclidean_norm(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     (
         input_dtype,
@@ -441,6 +468,7 @@ def test_tensorflow_reduce_euclidean_norm(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -460,6 +488,7 @@ def test_tensorflow_reduce_logsumexp(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -470,6 +499,7 @@ def test_tensorflow_reduce_logsumexp(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -487,6 +517,7 @@ def test_tensorflow_argmax(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -499,6 +530,7 @@ def test_tensorflow_argmax(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         axis=axis,
         output_type="int64",
@@ -543,6 +575,7 @@ def test_tensorflow_reduce_min(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -553,6 +586,7 @@ def test_tensorflow_reduce_min(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -572,6 +606,7 @@ def test_tensorflow_reduce_prod(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -582,6 +617,7 @@ def test_tensorflow_reduce_prod(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -601,6 +637,7 @@ def test_tensorflow_reduce_std(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -611,6 +648,7 @@ def test_tensorflow_reduce_std(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -630,6 +668,7 @@ def test_tensorflow_asinh(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -640,6 +679,7 @@ def test_tensorflow_asinh(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -659,6 +699,7 @@ def test_tensorflow_reduce_sum(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -669,6 +710,7 @@ def test_tensorflow_reduce_sum(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -688,6 +730,7 @@ def test_tensorflow_reduce_mean(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -698,6 +741,7 @@ def test_tensorflow_reduce_mean(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -717,6 +761,7 @@ def test_tensorflow_reduce_variance(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -727,6 +772,7 @@ def test_tensorflow_reduce_variance(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -750,6 +796,7 @@ def test_tensorflow_scalar_mul(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -760,6 +807,7 @@ def test_tensorflow_scalar_mul(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         scalar=scalar_val[0],
         x=x[0],
     )
@@ -782,6 +830,7 @@ def test_tensorflow_divide_no_nan(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -792,6 +841,7 @@ def test_tensorflow_divide_no_nan(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=xy[0],
         y=xy[1],
     )
@@ -814,6 +864,7 @@ def test_tensorflow_multiply_no_nan(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtypes, xy = dtype_and_x
     helpers.test_frontend_function(
@@ -824,6 +875,7 @@ def test_tensorflow_multiply_no_nan(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=xy[0],
         y=xy[1],
     )
@@ -844,6 +896,7 @@ def test_tensorflow_erfcinv(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -854,6 +907,7 @@ def test_tensorflow_erfcinv(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -873,6 +927,7 @@ def test_tensorflow_is_non_decreasing(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -883,6 +938,7 @@ def test_tensorflow_is_non_decreasing(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -902,6 +958,7 @@ def test_tensorflow_is_strictly_increasing(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -912,6 +969,7 @@ def test_tensorflow_is_strictly_increasing(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -935,6 +993,7 @@ def test_tensorflow_count_nonzero(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -945,6 +1004,7 @@ def test_tensorflow_count_nonzero(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         axis=axis,
         keepdims=keepdims,
@@ -975,6 +1035,7 @@ def test_tensorflow_confusion_matrix(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -985,6 +1046,7 @@ def test_tensorflow_confusion_matrix(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         labels=x[0],
         predictions=x[1],
         num_classes=num_classes,
@@ -1015,6 +1077,7 @@ def test_tensorflow_polyval(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     dtype_x, x = dtype_and_x
     dtype_coeffs, coeffs = dtype_and_coeffs
@@ -1026,6 +1089,7 @@ def test_tensorflow_polyval(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         coeffs=coeffs,
         x=x,
     )
@@ -1048,6 +1112,7 @@ def test_tensorflow_unsorted_segment_mean(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1057,6 +1122,7 @@ def test_tensorflow_unsorted_segment_mean(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         data=data,
         segment_ids=segment_ids,
         num_segments=np.max(segment_ids) + 1,
@@ -1080,6 +1146,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=[ivy.float32, ivy.int32],
@@ -1089,6 +1156,7 @@ def test_tensorflow_unsorted_segment_sqrt_n(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         data=data,
         segment_ids=segment_ids,
         num_segments=np.max(segment_ids) + 1,
@@ -1111,6 +1179,7 @@ def test_tensorflow_zero_fraction(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1121,6 +1190,7 @@ def test_tensorflow_zero_fraction(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         value=x[0],
     )
 
@@ -1142,6 +1212,7 @@ def test_tensorflow_truediv(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1152,6 +1223,7 @@ def test_tensorflow_truediv(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         y=x[1],
     )

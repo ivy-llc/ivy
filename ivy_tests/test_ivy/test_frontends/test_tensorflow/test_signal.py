@@ -22,6 +22,7 @@ def test_tensorflow_kaiser_window(
     native_array,
     frontend,
     fn_tree,
+    on_device,
     num_positional_args,
 ):
     window_length_dtype, window_length = dtype_and_window_length
@@ -34,6 +35,7 @@ def test_tensorflow_kaiser_window(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         window_length=window_length,
         beta=beta,
         dtype=dtype,

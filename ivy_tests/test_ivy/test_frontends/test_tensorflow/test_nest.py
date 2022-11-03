@@ -23,6 +23,7 @@ def test_tensorflow_flatten(
     native_array,
     frontend,
     fn_tree,
+    on_device,
     num_positional_args,
 ):
     input_dtype, x = dtype_and_x
@@ -34,6 +35,7 @@ def test_tensorflow_flatten(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         structure=x[0] if use_array else x[0].tolist(),
         expand_composites=expand_composite,
     )
