@@ -632,7 +632,11 @@ tanh.support_native_out = True
 
 
 @_handle_0_dim_output
-def trunc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def trunc(x: np.ndarray,
+          /,
+          *,
+          out: Optional[np.ndarray] = None
+) -> np.ndarray:
     if "int" in str(x.dtype):
         ret = np.copy(x)
     else:

@@ -478,7 +478,11 @@ round.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def trunc(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def trunc(x: torch.Tensor,
+          /,
+          *,
+          out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
     x = _cast_for_unary_op(x)
     if "int" not in str(x.dtype):
         return torch.trunc(x, out=out)
