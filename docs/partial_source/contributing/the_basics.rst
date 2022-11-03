@@ -16,8 +16,8 @@ Getting Help
 
 There are a few different communication channels that you can make use of in order to ask for help:
 
-#. `discord server <https://discord.gg/sXyFF8tDtm>`_
-#. `issues <https://github.com/unifyai/ivy/issues>`_
+#. `Discord server <https://discord.gg/sXyFF8tDtm>`_
+#. `Issues <https://github.com/unifyai/ivy/issues>`_
 
 We'll quickly outline how each of these should be used, and also which question is most appropriate for which context.
 
@@ -40,7 +40,7 @@ It can also serve as a useful place to ask questions, but only if you suspect th
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video">
+    src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="true">
     </iframe>
 
 |
@@ -86,7 +86,7 @@ Even if you do not make code changes, you should request a new code review to fl
 The purpose of this is to ensure our ToDo lists remain accessible for all in the community to engage with, where priority is given to those who can engage on a more short-term basis.
 We want to avoid the situation where tasks are allocated but then are not acted upon for long periods of time, while preventing others in the community from working on these instead.
 
-Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close these just so we can keep our community engaged with these tasks :)
+Starting an issue and then being unable to complete it is not a problem from our side at all, we automatically close these just so we can keep our community engaged with these tasks 🙂
 
 Our automatic closing is obviously never a reflection on the quality of the PR or the developer who made it, or any reflection of hypothetical frustration we have for more delayed response times etc.
 Developers are of course very busy people, and sometimes there is not as much free time available as initially thought.
@@ -105,7 +105,7 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video">
+    src="https://www.youtube.com/embed/wBKTOGmwfbo" class="video" allowfullscreen="true">
     </iframe>
 
 |
@@ -156,7 +156,7 @@ For a comprehensive explanation of git stashing, check out this `Atlassian tutor
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/TFMPihytg9U" class="video">
+    src="https://www.youtube.com/embed/TFMPihytg9U" class="video" allowfullscreen="true">
     </iframe>
 
 |
@@ -251,7 +251,7 @@ The code review process is explained in more detail in the following video.
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video">
+    src="https://www.youtube.com/embed/9G4d-CvlT2g" class="video" allowfullscreen="true">
     </iframe>
 
 |

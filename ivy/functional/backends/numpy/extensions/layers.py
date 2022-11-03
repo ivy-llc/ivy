@@ -250,3 +250,71 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def max_pool3d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if isinstance(kernel, int):
+        kernel = [kernel] * 3
+    elif len(kernel) == 1:
+        kernel = [kernel[0]] * 3
+
+    if isinstance(strides, int):
+        strides = [strides] * 3
+    elif len(strides) == 1:
+        strides = [strides[0]] * 3
+
+    if data_format == "NCDHW":
+        x = np.transpose(x, (0, 2, 3, 4, 1))
+
+    x_shape = list(x.shape[1:4])
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_d // 2, pad_d - pad_d // 2),
+            (pad_h // 2, pad_h - pad_h // 2),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_d = (x_shape[1] - kernel[0]) // strides[0] + 1
+    new_h = (x_shape[2] - kernel[1]) // strides[1] + 1
+    new_w = (x_shape[3] - kernel[2]) // strides[2] + 1
+    new_shape = [x_shape[0], new_d, new_h, new_w] + list(kernel) + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
+        x.strides[3] * strides[2],
+        x.strides[1],
+        x.strides[2],
+        x.strides[3],
+        x.strides[4],
+    )
+    # B x OH x OW x KH x KW x I
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OH x OW x O
+    res = sub_matrices.max(axis=(4, 5, 6))
+    if data_format == "NCDHW":
+        return np.transpose(res, (0, 4, 1, 2, 3))
+    return res
