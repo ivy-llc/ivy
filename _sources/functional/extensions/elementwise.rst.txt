@@ -23,4 +23,5 @@ Elementwise
    elementwise/nansum.rst
    elementwise/gcd.rst
    elementwise/isposinf.rst
+   elementwise/isneginf.rst
 

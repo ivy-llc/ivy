@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="activations/softmax.html">softmax</a></li>
 <li class="toctree-l2"><a class="reference internal" href="activations/softplus.html">softplus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="activations/log_softmax.html">log_softmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="activations/deserialize.html">deserialize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="compilation.html">Compilation</a></li>
@@ -142,6 +143,42 @@
   <section id="module-ivy.functional.ivy.activations">
 <span id="activations"></span><h1>Activations<a class="headerlink" href="#module-ivy.functional.ivy.activations" title="Permalink to this heading"></a></h1>
 <p>Collection of Ivy activation functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.activations.deserialize">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">deserialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_objects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">typing.Union[typing.Dict,</span> <span class="pre">NoneType]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#deserialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.activations.deserialize" title="Permalink to this definition"></a></dt>
+<dd><p>Returns activation function given a string identifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The name of the activation function.</p></li>
+<li><p><strong>custom_objects</strong> – Optional dictionary listing user-provided activation functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Corresponding activation function.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With :str: input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;sigmoid&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">)</span>
+<span class="go">&lt;function sigmoid at XXXXXXXXXXXXXX&gt;</span>
+</pre></div>
+</div>
+<p>With :str and dict: input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;custom_fn&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">objects</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;custom_fn&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">custom_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">custom_objects</span><span class="o">=</span><span class="n">objects</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">custom_fn</span><span class="p">)</span>
+<span class="go">&lt;function custom_fn at XXXXXXXXXXXXXX&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.activations.gelu">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">gelu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">approximate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/activations.html#gelu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.activations.gelu" title="Permalink to this definition"></a></dt>

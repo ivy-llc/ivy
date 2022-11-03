@@ -130,7 +130,8 @@
   <h1>Source code for ivy.functional.ivy.activations</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Collection of Ivy activation functions.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -579,6 +580,80 @@
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="deserialize"><a class="viewcode-back" href="../../../../functional/ivy/activations/deserialize.html#ivy.functional.ivy.activations.deserialize">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">deserialize</span><span class="p">(</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">],</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">custom_objects</span><span class="o">=</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dict</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Callable</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns activation function given a string identifier.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name</span>
+<span class="sd">        The name of the activation function.</span>
+<span class="sd">    custom_objects</span>
+<span class="sd">        Optional dictionary listing user-provided activation functions.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Corresponding activation function.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :str: input:</span>
+
+<span class="sd">    &gt;&gt;&gt; name = &quot;sigmoid&quot;</span>
+<span class="sd">    &gt;&gt;&gt; sigmoid = ivy.deserialize(name)</span>
+<span class="sd">    &gt;&gt;&gt; print(sigmoid)</span>
+<span class="sd">    &lt;function sigmoid at XXXXXXXXXXXXXX&gt;</span>
+
+<span class="sd">    With :str and dict: input:</span>
+
+<span class="sd">    &gt;&gt;&gt; name = &quot;custom_fn&quot;</span>
+<span class="sd">    &gt;&gt;&gt; objects = {&quot;custom_fn&quot;: lambda x: x}</span>
+<span class="sd">    &gt;&gt;&gt; custom_fn = ivy.deserialize(name, custom_objects=objects)</span>
+<span class="sd">    &gt;&gt;&gt; print(custom_fn)</span>
+<span class="sd">    &lt;function custom_fn at XXXXXXXXXXXXXX&gt;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;tensorflow&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">custom_objects</span><span class="o">=</span><span class="n">custom_objects</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="n">module_name</span> <span class="o">=</span> <span class="s2">&quot;ivy.functional.ivy.activations&quot;</span>
+    <span class="n">activation_functions</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module_name</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">fn_name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">fn_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn_name</span> <span class="ow">in</span> <span class="n">ACTIVATION_FUNCTIONS</span><span class="p">:</span>
+            <span class="n">activation_functions</span><span class="p">[</span><span class="n">fn_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">custom_objects</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">custom_objects</span><span class="p">:</span>
+            <span class="n">fn_obj</span> <span class="o">=</span> <span class="n">custom_objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fn_obj</span> <span class="o">=</span> <span class="n">activation_functions</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fn_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown activation function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fn_obj</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not interpret serialized activation function: </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+<span class="n">ACTIVATION_FUNCTIONS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;gelu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;leaky_relu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;log_softmax&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;relu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;sigmoid&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;softmax&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;softplus&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 </pre></div>
 
            </div>
