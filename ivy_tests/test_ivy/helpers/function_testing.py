@@ -51,14 +51,30 @@ def _assert_dtypes_are_valid(input_dtypes: Union[List[ivy.Dtype], List[str]]):
 # Function testing
 
 
+class ContainerFlags:
+    pass
+
+
+class NumPositionalArg:
+    pass
+
+
+class NativeArrayFlags:
+    pass
+
+
+class AsVariableFlags:
+    pass
+
+
 def test_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: Union[bool, List[bool]],
+    as_variable_flags: Union[AsVariableFlags],
     with_out: bool,
-    num_positional_args: int,
-    native_array_flags: Union[bool, List[bool]],
-    container_flags: Union[bool, List[bool]],
+    num_positional_args: NumPositionalArg,
+    native_array_flags: Union[NativeArrayFlags],
+    container_flags: Union[ContainerFlags],
     instance_method: bool,
     fw: str,
     fn_name: str,
@@ -323,12 +339,12 @@ def test_function(
 def test_frontend_function(
     *,
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags: Union[bool, List[bool]],
+    as_variable_flags: AsVariableFlags,
     with_out: bool,
     with_inplace: bool = False,
     all_aliases: List[str] = None,
-    num_positional_args: int,
-    native_array_flags: Union[bool, List[bool]],
+    num_positional_args: NumPositionalArg,
+    native_array_flags: NativeArrayFlags,
     on_device="cpu",
     frontend: str,
     fn_tree: str,
@@ -731,15 +747,15 @@ def gradient_test(
 def test_method(
     *,
     input_dtypes_init: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    as_variable_flags_init: Union[bool, List[bool]] = None,
-    num_positional_args_init: int = 0,
-    native_array_flags_init: Union[bool, List[bool]] = None,
+    as_variable_flags_init: AsVariableFlags = None,
+    num_positional_args_init: NumPositionalArg = 0,
+    native_array_flags_init: NativeArrayFlags = None,
     all_as_kwargs_np_init: dict = None,
     input_dtypes_method: Union[ivy.Dtype, List[ivy.Dtype]],
-    as_variable_flags_method: Union[bool, List[bool]],
-    num_positional_args_method: int,
-    native_array_flags_method: Union[bool, List[bool]],
-    container_flags_method: Union[bool, List[bool]],
+    as_variable_flags_method: AsVariableFlags,
+    num_positional_args_method: NumPositionalArg,
+    native_array_flags_method: NativeArrayFlags,
+    container_flags_method: ContainerFlags,
     all_as_kwargs_np_method: dict,
     class_name: str,
     method_name: str = "__call__",
@@ -1004,14 +1020,14 @@ def test_method(
 def test_frontend_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    init_as_variable_flags: Union[bool, List[bool]] = None,
-    init_num_positional_args: int = 0,
-    init_native_array_flags: Union[bool, List[bool]] = None,
+    init_as_variable_flags: AsVariableFlags = None,
+    init_num_positional_args: NumPositionalArg = 0,
+    init_native_array_flags: NativeArrayFlags = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_as_variable_flags: Union[bool, List[bool]],
-    method_num_positional_args: int,
-    method_native_array_flags: Union[bool, List[bool]],
+    method_as_variable_flags: AsVariableFlags,
+    method_num_positional_args: NumPositionalArg,
+    method_native_array_flags: NativeArrayFlags,
     method_all_as_kwargs_np: dict,
     frontend: str,
     class_name: str,

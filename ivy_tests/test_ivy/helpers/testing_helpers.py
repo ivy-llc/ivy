@@ -310,6 +310,14 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     return test_wrapper
 
 
+def handle_method(*, method_tree, **_given_kwargs):
+    pass
+
+
+def handle_frontend_method(*, method_tree, **_given_kwargs):
+    pass
+
+
 @st.composite
 def seed(draw):
     return draw(st.integers(min_value=0, max_value=2**8 - 1))
