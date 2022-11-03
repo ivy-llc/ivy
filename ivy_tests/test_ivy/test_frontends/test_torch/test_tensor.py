@@ -1211,14 +1211,14 @@ def test_torch_instance_arctan_(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        input_dtypes_method=["float64"] + input_dtype,
+        input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
         num_positional_args_method=0,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
         class_name="tensor",
-        method_name=" arctan_",
+        method_name="arctan_",
     )
 
 
