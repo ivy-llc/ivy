@@ -596,7 +596,7 @@ def test_torch_moveaxis(
     keepdim=st.booleans(),
 )
 def test_torch_max(
-        dtype_input_axis,
+    dtype_input_axis,
         as_variable,
         num_positional_args,
         native_array,
