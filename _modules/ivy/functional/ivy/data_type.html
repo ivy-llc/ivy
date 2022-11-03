@@ -1047,21 +1047,41 @@
     <span class="n">float_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">FloatDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Summary.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">        (Default value = None) Number or array for inferring float dtype.</span>
 <span class="sd">    float_dtype</span>
-
+<span class="sd">        (Default value = None) float type to be returned.</span>
 <span class="sd">    as_native</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">        (Default value = None) Whether to return the float dtype as native </span>
+<span class="sd">        dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input float dtype if provided, otherwise return the global default</span>
-<span class="sd">        float dtype.</span>
+<span class="sd">        Return the input float dtype as native or ivy dtype if provided, else </span>
+<span class="sd">        if an input is given, return its float dtype, otherwise return the </span>
+<span class="sd">        global default float dtype.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype()</span>
+<span class="sd">    &#39;float32&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_float_dtype(ivy.FloatDtype(&quot;float64&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype()</span>
+<span class="sd">    &#39;float64&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(float_dtype=ivy.FloatDtype(&quot;float16&quot;))</span>
+<span class="sd">    &#39;float16&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(input=4294.967346)</span>
+<span class="sd">    &#39;float32&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([9.8,8.9], dtype=&quot;float16&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(input=x)</span>
+<span class="sd">    &#39;float16&#39;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">float_dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
