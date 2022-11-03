@@ -365,3 +365,8 @@ def deg2rad(x):
 @to_ivy_arrays_and_back
 def exp2(x):
     return ivy.exp2(x)
+
+
+@to_ivy_arrays_and_back
+def gcd(x1, x2):
+    return ivy.gcd(x1, x2)
