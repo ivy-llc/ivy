@@ -100,7 +100,7 @@ def kaiser_bessel_derived_window(
 
 
 @with_unsupported_dtypes({"2.9.1 and below":
-                              ("bfloat16","float64")},
+                         ("bfloat16", "float64")},
                          backend_version
                          )
 def max_pool3d(
