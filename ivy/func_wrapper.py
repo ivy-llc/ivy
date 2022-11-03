@@ -2,7 +2,7 @@ import ivy
 import functools
 from types import FunctionType
 from typing import Callable
-from cachetools import cached , FIFOCache
+from cachetools import cached , MRUCache
 
 
 # for wrapping (sequence matters)
@@ -43,7 +43,7 @@ def _get_first_array(*args, **kwargs):
 
 # Just a native python compile function with cache #
 # ---------------#
-@cached(cache=FIFOCache(maxsize=12))
+@cached(cache=MRUCache(maxsize=12))
 def compile_function(fn:Callable) -> Callable:
     data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval",0,False,1)
     return eval(data_comp)
