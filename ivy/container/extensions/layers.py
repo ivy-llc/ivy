@@ -934,8 +934,8 @@ class ContainerWithLayersExtensions(ContainerBase):
     @staticmethod
     def static_max_pool3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int, int]],
         padding: str,
         /,
         *,
@@ -959,13 +959,13 @@ class ContainerWithLayersExtensions(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------
@@ -1002,8 +1002,8 @@ class ContainerWithLayersExtensions(ContainerBase):
 
     def max_pool3d(
         self: ivy.Container,
-        kernel: Union[int, Tuple[int], Tuple[int, int]],
-        strides: Union[int, Tuple[int], Tuple[int, int]],
+        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int, int]],
         padding: str,
         /,
         *,
@@ -1027,13 +1027,13 @@ class ContainerWithLayersExtensions(ContainerBase):
         strides
             The stride of the sliding window for each dimension of input.
         padding
-            SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
-            paddings.
+            SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
         data_format
             NDHWC" or "NCDHW". Defaults to "NDHWC".
         out
-            optional output array, for writing the result to. It must have a shape that the
-            inputs broadcast to.
+            optional output array, for writing the result to. It must
+            have a shape that the inputs broadcast to.
 
         Returns
         -------

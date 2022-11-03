@@ -105,8 +105,8 @@ def kaiser_bessel_derived_window(
                          )
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
     padding: str,
     /,
     *,

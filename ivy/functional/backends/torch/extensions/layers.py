@@ -196,8 +196,8 @@ def hamming_window(
 )
 def max_pool3d(
     x: torch.Tensor,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
     padding: str,
     /,
     *,

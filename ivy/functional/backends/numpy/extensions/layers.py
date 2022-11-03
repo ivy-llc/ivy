@@ -254,8 +254,8 @@ def pad(
 
 def max_pool3d(
     x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
     padding: str,
     /,
     *,
