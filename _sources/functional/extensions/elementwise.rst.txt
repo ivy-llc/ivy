@@ -24,4 +24,6 @@ Elementwise
    elementwise/gcd.rst
    elementwise/isposinf.rst
    elementwise/isneginf.rst
+   elementwise/nan_to_num.rst
+   elementwise/logaddexp2.rst
 

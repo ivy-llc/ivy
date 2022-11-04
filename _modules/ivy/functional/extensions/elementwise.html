@@ -643,6 +643,105 @@
 <span class="sd">    ivy.array([False, True,  False])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isneginf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="nan_to_num"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/nan_to_num.html#ivy.functional.extensions.elementwise.nan_to_num">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">nan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">posinf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">neginf</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Replace NaN with zero and infinity with large finite numbers</span>
+<span class="sd">    (default behaviour) or with the numbers defined by the user using</span>
+<span class="sd">    the nan, posinf and/or neginf keywords.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Array input.</span>
+<span class="sd">    copy</span>
+<span class="sd">        Whether to create a copy of x (True) or to replace values in-place (False).</span>
+<span class="sd">        The in-place operation only occurs if casting to an array does not require</span>
+<span class="sd">        a copy. Default is True.</span>
+<span class="sd">    nan</span>
+<span class="sd">        Value to be used to fill NaN values. If no value is passed then NaN values</span>
+<span class="sd">        will be replaced with 0.0.</span>
+<span class="sd">    posinf</span>
+<span class="sd">        Value to be used to fill positive infinity values. If no value is passed</span>
+<span class="sd">        then positive infinity values will be replaced with a very large number.</span>
+<span class="sd">    neginf</span>
+<span class="sd">        Value to be used to fill negative infinity values.</span>
+<span class="sd">        If no value is passed then negative infinity values</span>
+<span class="sd">        will be replaced with a very small (or negative) number.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Array with the non-finite values replaced.</span>
+<span class="sd">        If copy is False, this may be x itself.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, nan])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.nan_to_num(x)</span>
+<span class="sd">    ivy.array([1.,    1.,   3.,   0.0])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3, inf])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.nan_to_num(x, posinf=5e+100)</span>
+<span class="sd">    ivy.array([1.,   2.,   3.,   5e+100])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
+        <span class="n">nan</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
+        <span class="n">posinf</span><span class="o">=</span><span class="n">posinf</span><span class="p">,</span>
+        <span class="n">neginf</span><span class="o">=</span><span class="n">neginf</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="logaddexp2"><a class="viewcode-back" href="../../../../functional/extensions/elementwise/logaddexp2.html#ivy.functional.extensions.elementwise.logaddexp2">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>    
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Calculates log2(2**x1 + 2**x2).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        First array-like input.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Second array-input.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Element-wise logaddexp2 of x1 and x2.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.logaddexp2(x1, x2)</span>
+<span class="sd">    ivy.array([4.169925, 5.169925, 6.169925])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">logaddexp2</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
