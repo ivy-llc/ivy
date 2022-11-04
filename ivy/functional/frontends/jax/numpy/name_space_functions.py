@@ -390,3 +390,8 @@ def isneginf(x, out=None):
 @to_ivy_arrays_and_back
 def isposinf(x, out=None):
     return ivy.isposinf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def kron(a, b):
+    return ivy.kron(a, b)
