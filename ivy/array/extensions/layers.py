@@ -270,7 +270,7 @@ class ArrayWithLayersExtensions(abc.ABC):
         padding: str,
         /,
         *,
-        data_format: str = "NHWC",
+        data_format: str = "NDHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -336,7 +336,7 @@ class ArrayWithLayersExtensions(abc.ABC):
         padding: str,
         /,
         *,
-        data_format: str = "NHWC",
+        data_format: str = "NDHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
