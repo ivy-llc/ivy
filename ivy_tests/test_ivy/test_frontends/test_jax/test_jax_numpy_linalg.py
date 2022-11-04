@@ -483,7 +483,6 @@ def test_jax_norm(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-
         fn_tree="numpy.linalg.norm",
         x=x[0],
         ord=ord_param,
@@ -531,4 +530,38 @@ def test_jax_numpy_matrix_power(
         fn_tree="numpy.linalg.matrix_power",
         a=np.asarray(x[0], dtype=dtype[0]),
         n=n,
+    )
+
+
+# tensorsolve
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.tensorsolve"
+    ),
+)
+def test_jax_numpy_tensorsolve(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    dtype, inputs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.tensorsolve",
+        a=inputs[0],
+        b=inputs[1],
     )

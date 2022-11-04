@@ -81,3 +81,8 @@ norm.supported_dtypes = (
 @to_ivy_arrays_and_back
 def matrix_power(a, n):
     return ivy.matrix_power(a, n)
+
+
+@to_ivy_arrays_and_back
+def tensorsolve(a, b, axes=None):
+    return ivy.solve(a, b)
