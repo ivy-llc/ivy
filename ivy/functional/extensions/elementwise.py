@@ -479,11 +479,9 @@ def isposinf(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def diff(
-    x1: Union[ivy.Array, ivy.NativeArray],
-    x2: Union[ivy.Array, ivy.NativeArray],
-def isneginf(
-    x: Union[ivy.Array, float, list, tuple],
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
