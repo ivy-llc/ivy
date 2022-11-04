@@ -918,3 +918,113 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_isposinf(self, out=out)
+
+
+    @staticmethod
+    def static_diff(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.diff. This method simply wraps the
+        function, and so the docstring for ivy.diff also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise difference of the arrays contained
+            in x1 and x2.
+
+        Examples
+        --------
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
+        ...                  b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
+        ...                  b=ivy.array([32, 40, 25, 13]))
+        >>> ivy.Container.diff(x1, x2)
+        {
+            a: ivy.array([-3, -5, -11]),
+            b: ivy.array([-26, 14, 37, -3])
+        }
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "diff",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diff(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.diff. This method simply wraps the
+        function, and so the docstring for ivy.diff also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container.
+        x2
+            second input container.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise difference of the arrays contained
+            in x1 and x2.
+
+        Examples
+        --------
+        >>> x1=ivy.Container(a=ivy.array([2, 3, 4]),
+        ...                  b=ivy.array([6, 54, 62, 10]))
+        >>> x2=ivy.Container(a=ivy.array([5, 8, 15]),
+        ...                  b=ivy.array([32, 40, 25, 13]))
+        >>> x1.lcm(x2)
+        {
+            a: ivy.array([-3, -5, -11]),
+            b: ivy.array([-26, 14, 37, -3])
+        }
+
+        """
+        return self.static_diff(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

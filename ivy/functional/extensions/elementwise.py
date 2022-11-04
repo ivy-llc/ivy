@@ -474,3 +474,37 @@ def isposinf(
     ivy.array([False, False,  True])
     """
     return ivy.current_backend().isposinf(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def diff(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the element-wise difference of x1 and x2.
+    Parameters
+    ----------
+    x1
+        first input array.
+    x2
+        second input array
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        an array that includes the element-wise difference of x1 and x2
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x1=ivy.array([10, 3, 15])
+    >>> x2=ivy.array([5, 8, 15])
+    >>> x1.diff(x1, x2)
+    ivy.array([5, -5, 0])
+    """
+    return ivy.current_backend().diff(x1, x2, out=out)

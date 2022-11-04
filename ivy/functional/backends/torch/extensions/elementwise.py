@@ -149,3 +149,17 @@ def isposinf(
 
 
 isposinf.support_native_out = True
+
+
+def diff(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.sub(x1, x2, out=out)
+
+
+diff.support_native_out = True

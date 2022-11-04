@@ -396,3 +396,41 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([False, False,  True])
         """
         return ivy.isposinf(self._data, out=out)
+
+
+    def diff(
+        self: Union[ivy.Array, int, list, tuple],
+        x2: Union[ivy.Array, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise difference of x1 and x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([10, 3, 15])
+        >>> x2 = ivy.array([5, 8, 15])
+        >>> x1.diff(x2)
+        ivy.array([5.,    -5.,   0.])
+        >>> x1 = ivy.array([10, 3, 15])
+        >>> x1.diff(10)
+        ivy.array([0.,   -7.,  5.])
+        """
+        return ivy.diff(self._data, x2, out=out)

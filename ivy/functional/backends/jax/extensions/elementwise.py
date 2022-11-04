@@ -91,3 +91,6 @@ def isposinf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isposinf(x, out=out)
+
+def diff(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+    return jnp.diff(x1, x2)
