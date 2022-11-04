@@ -126,3 +126,52 @@ def isposinf(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.isposinf(x)
+
+
+def isneginf(
+    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isneginf(x)
+
+
+def nan_to_num(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    posinf = posinf if posinf is not None else 1.79769313e+308
+    neginf = neginf if neginf is not None else -1.79769313e+308
+    ret = tf.where(tf.math.is_nan(x), nan, x)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
+    if copy:
+        return ret
+    else:
+        x = ret
+        return x
+
+    
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64",
+                         "int8", "int16", "int32", "int64",)},
+    backend_version
+)
+def logaddexp2(
+    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = 2**x1 + 2**x2
+    numerator = tf.math.log(x)
+    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
+    return numerator / denominator

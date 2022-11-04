@@ -5,7 +5,7 @@ from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
 
 @_handle_0_dim_output
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x)
+    return np.sinc(x).astype(x.dtype)
 
 
 @_handle_0_dim_output
@@ -153,6 +153,8 @@ isposinf.support_native_out = True
 def diff(
     x1: np.ndarray,
     x2: np.ndarray,
+def isneginf(
+    x: Union[np.ndarray, float, list, tuple],
     /,
     *,
     out: Optional[np.ndarray] = None,
@@ -165,3 +167,36 @@ def diff(
 
 
 diff.support_native_out = True
+    return np.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True
+
+
+def nan_to_num(
+    x: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+nan_to_num.support_native_out = False
+
+
+def logaddexp2(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:    
+    return np.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True
