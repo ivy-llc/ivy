@@ -80,9 +80,9 @@ def get(
     identifier: Union[str, ivy.Callable, None],
     /,
     *,
-    custom_objects=Union[ivy.Dict, None]
+    custom_objects=Union[ivy.Dict, None],
 ) -> Union[ivy.Callable, None]:
-    
+
     if identifier is None:
         return tf.keras.activations.linear
 
@@ -94,5 +94,5 @@ def get(
         return identifier
     else:
         raise TypeError(
-              f"Could not interpret activation function identifier: 
-              {identifier}")
+            f"Could not interpret activation function identifier: {identifier}"
+        )
