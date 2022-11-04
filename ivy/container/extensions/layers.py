@@ -1218,7 +1218,7 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.avg_pool2dd. This method simply
+        """ivy.Container static method variant of ivy.avg_pool2d. This method simply
         wraps the function, and so the docstring for ivy.avg_pool2d also applies
         to this method with minimal changes.
 
