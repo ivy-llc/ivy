@@ -32,13 +32,13 @@ Some examples are:
 * :code:`yield` or :code:`yield from` statement outside a function
 * :code:`return` statement used with arguments in a generator, or outside a function or method
 * :code:`except:` block not being the last exception handler
-* syntax or length errors in docstrings, comments, or annotations
+* Syntax or length errors in docstrings, comments, or annotations
 
 **Literals**
 
 Literals formatting are often used in a string statement; some common checks related to this are:
 
-* invalid :code:`%` format
+* Invalid :code:`%` format
 * :code:`%` format with missing arguments or unsupported character
 * :code:`.format(...)` with invalid format, missing or unused arguments
 * f-string without placeholders
@@ -48,10 +48,10 @@ Literals formatting are often used in a string statement; some common checks rel
 There are many more types of checks which :code:`flake8` can perform.
 These include but are not limited to:
 
-* repeated :code:`dict` key or variable assigned to different values
-* star-unpacking assignment with too many expressions
-* assertion test is a :code:`tuple`, which is always :code:`true`
-* use of :code:`==` or :code:`!=` to compare :code:`str`, :code:`bytes` or :code:`int` literals
+* Repeated :code:`dict` key or variable assigned to different values
+* Star-unpacking assignment with too many expressions
+* Assertion test is a :code:`tuple`, which is always :code:`true`
+* Use of :code:`==` or :code:`!=` to compare :code:`str`, :code:`bytes` or :code:`int` literals
 * :code:`raise NotImplemented` should be :code:`raise NotImplementedError`
 
 Pre-Commit Hook
@@ -128,5 +128,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `f
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/zfO1l71GZuM" class="video">
+    src="https://www.youtube.com/embed/zfO1l71GZuM" class="video" allowfullscreen="true">
     </iframe>

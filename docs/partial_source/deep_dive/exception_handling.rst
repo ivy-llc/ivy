@@ -7,8 +7,8 @@ Exception Handling
 
 As Ivy is unifying multiple backends, various issues are seen during exception handling:
 
-#. each backend throws their own exceptions
-#. exceptions thrown are backend-specific, therefore inconsistent
+#. Each backend throws their own exceptions
+#. Exceptions thrown are backend-specific, therefore inconsistent
 
 To unify the handling of exceptions and assertions, Ivy includes a custom exception class and decorator, which are explained further in the following sub-sections.
 
@@ -101,7 +101,7 @@ This ensures that all exceptions are consistent.
 
 Let's look at the comparison of before and after adding the decorator.
 
-**without decorator**
+**Without decorator**
 
 In NumPy,
 
@@ -123,7 +123,7 @@ In PyTorch,
 
 The errors raised are different across backends, therefore confusing and inconsistent.
 
-**with decorator**
+**With decorator**
 
 In NumPy,
 
@@ -151,8 +151,8 @@ There are often conditions or limitations needed to ensure that a function is wo
 
 Inconsistency is observed such as some functions:
 
-#. use :code:`assert` for checks and throw :code:`AssertionError`, or
-#. use :code:`if/elif/else` blocks and raise :code:`Exception`, :code:`ValueError`, etc.
+#. Use :code:`assert` for checks and throw :code:`AssertionError`, or
+#. Use :code:`if/elif/else` blocks and raise :code:`Exception`, :code:`ValueError`, etc.
 
 To unify the behaviours, our policy is to use conditional blocks and raise :code:`IvyException` whenever a check is required.
 Moreover, to reduce code redundancy, conditions which are commonly used are collected as helper functions with custom parameters in :mod:`ivy/assertions.py`.

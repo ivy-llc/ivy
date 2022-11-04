@@ -17,7 +17,7 @@ In order to explain how docstrings should be written, we will use :func:`ivy.tan
 Firstly, if the function exists in the `Array API Standard`_, the we start with the corresponding docstring as a template.
 These docstrings can be found under `spec/API_specification/array_api`_.
 
-Important: you should open the file in **raw** format.
+**Important**: you should open the file in **raw** format.
 If you copy directly from the file preview on GitHub before clicking **raw**, then the newlines will **not** be copied over, and the docstring will rendering incorrectly in the online docs.
 
 The `Array API Standard`_ docstring for :code:`tan` is as follows:
@@ -192,7 +192,7 @@ Therefore, with the exception of the :class:`ivy.Array` and :class:`ivy.Containe
 
 **Round Up**
 
-These examples should hopefully give you a good understanding of what is required when adding docstings.
+These examples should hopefully give you a good understanding of what is required when adding docstrings.
 
 If you have any questions,please feel free to reach out on `discord`_ in the `docstrings channel`_ or in the `docstrings forum`_!
 
@@ -202,5 +202,5 @@ If you have any questions,please feel free to reach out on `discord`_ in the `do
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/TnshJ8swuJM" class="video">
+    src="https://www.youtube.com/embed/TnshJ8swuJM" class="video" allowfullscreen="true">
     </iframe>

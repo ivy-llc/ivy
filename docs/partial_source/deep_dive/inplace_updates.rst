@@ -238,12 +238,12 @@ This is why we need to call :func:`ivy.inplace_update` explicitly here, to ensur
 For *compositional* functions, the :code:`out` argument should **always** be handled in the compositional implementation, with no wrapping applied at all.
 This is for a few reasons:
 
-#. we need to show the :code:`out` argument in the compositional function signature, as this is the only function implementation in the codebase.
+#. We need to show the :code:`out` argument in the compositional function signature, as this is the only function implementation in the codebase.
    Adding an argument unused in the implementation could cause some confusion.
-#. generally, inplace updates are performed because memory management is an area of concern for the user.
+#. Generally, inplace updates are performed because memory management is an area of concern for the user.
    By handling the :code:`out` argument in the compositional implementation itself.
    We can maximize the memory efficiency of the function, using inplace updates in as many of the inner Ivy functions as possible.
-#. this enables us to make use of backend-specific :code:`out` argument handling.
+#. This enables us to make use of backend-specific :code:`out` argument handling.
 
 The second and third points are the most important points.
 
@@ -319,5 +319,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video">
+    src="https://www.youtube.com/embed/n8ko-Ig2eZ0" class="video" allowfullscreen="true">
     </iframe>

@@ -232,7 +232,7 @@ Unused Arguments
 ----------------
 
 As can be seen from the examples above, there are often cases where we do not add support for particular arguments in the frontend function.
-Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
+Generally, we can omit support for a particular argument only if the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
 The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
 Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
 
@@ -594,5 +594,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `i
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video">
+    src="https://www.youtube.com/embed/_9KeK-idaFs" class="video" allowfullscreen="true">
     </iframe>

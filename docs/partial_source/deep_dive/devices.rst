@@ -57,10 +57,10 @@ As discussed in the :ref:`Function Wrapping` section, this is applied to all app
 
 Overall, `ivy.default_device`_ infers the device as follows:
 
-#. if the :code:`device` argument is provided, use this directly
-#. otherwise, if an array is present in the arguments (very rare if the :code:`device` argument is present), set :code:`arr` to this array.
+#. If the :code:`device` argument is provided, use this directly
+#. Otherwise, if an array is present in the arguments (very rare if the :code:`device` argument is present), set :code:`arr` to this array.
    This will then be used to infer the device by calling :func:`ivy.dev` on the array
-#. otherwise, if no arrays are present in the arguments (by far the most common case if the :code:`device` argument is present), then use the global default device, which currently can either be :code:`cpu`, :code:`gpu:idx` or :code:`tpu:idx`.
+#. Otherwise, if no arrays are present in the arguments (by far the most common case if the :code:`device` argument is present), then use the global default device, which currently can either be :code:`cpu`, :code:`gpu:idx` or :code:`tpu:idx`.
    The default device is settable via :func:`ivy.set_default_device`.
 
 For the majority of functions which defer to `infer_device`_ for handling the device, these steps will have been followed and the :code:`device` argument will be populated with the correct value before the backend-specific implementation is even entered into.
@@ -147,5 +147,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/-Y1Ofk72TLY" class="video">
+    src="https://www.youtube.com/embed/-Y1Ofk72TLY" class="video" allowfullscreen="true">
     </iframe>

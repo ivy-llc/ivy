@@ -99,10 +99,10 @@ Test Skipping
 Certain tests may need to be skipped when running the array-api test suite.
 This could be due to a variety of reasons:
 
-#. the test function has a known issue which the `array-api test repository`_ developers are working on (e.g. :code:`test_asarray_arrays`)
-#. the function itself deviates from the standard (e.g. :code:`test_floor_divide`)
-#. there is an issue with the hypothesis test data generation i.e. a failed 'health check' (e.g. :code:`test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]`)
-#. tolerance issues when asserting output :code:`isequal()` (e.g. :code:`test_matrix_norm`)
+#. The test function has a known issue which the `array-api test repository`_ developers are working on (e.g. :code:`test_asarray_arrays`)
+#. The function itself deviates from the standard (e.g. :code:`test_floor_divide`)
+#. There is an issue with the hypothesis test data generation i.e. a failed 'health check' (e.g. :code:`test_iop[__imod__(x1_i < 0 and x2_i is +0) -> NaN]`)
+#. Tolerance issues when asserting output :code:`isequal()` (e.g. :code:`test_matrix_norm`)
 
 All the examples in this list except point 3 (which only occurs with tensorflow) refer to numpy functions, and the first two are skipped in the `array-api test repository`_ also.
 The data generation and tolerance issues are not skipped in the array-api repo and are difficult for Ivy developers to solve as we cannot alter the tests directly.
@@ -144,5 +144,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `a
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video">
+    src="https://www.youtube.com/embed/R1XuYwzhxWw" class="video" allowfullscreen="true">
     </iframe>

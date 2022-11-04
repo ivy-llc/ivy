@@ -81,9 +81,9 @@ Given that all Ivy functions return :class:`ivy.Array` instances, all Ivy functi
 
 Therefore, most functions in Ivy must adopt the following pipeline:
 
-#. convert all :class:`ivy.Array` instances in the input arguments to :class:`ivy.NativeArray` instances
-#. call the backend-specific function, passing in these :class:`ivy.NativeArray` instances
-#. convert all of the :class:`ivy.NativeArray` instances which are returned from the backend function back into :class:`ivy.Array` instances, and return
+#. Convert all :class:`ivy.Array` instances in the input arguments to :class:`ivy.NativeArray` instances
+#. Call the backend-specific function, passing in these :class:`ivy.NativeArray` instances
+#. Convert all of the :class:`ivy.NativeArray` instances which are returned from the backend function back into :class:`ivy.Array` instances, and return
 
 Given the repeating nature of these steps, this is all entirely handled in the `inputs_to_native_arrays`_ and `outputs_to_ivy_arrays`_ wrappers, as explained in the :ref:`Function Wrapping` section.
 
@@ -117,5 +117,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `a
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/tAlDPnWcLDE" class="video">
+    src="https://www.youtube.com/embed/tAlDPnWcLDE" class="video" allowfullscreen="true">
     </iframe>

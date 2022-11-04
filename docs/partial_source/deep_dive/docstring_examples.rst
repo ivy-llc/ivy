@@ -51,7 +51,7 @@ These should:
 
 4. show an example with: (a) :code:`out` unused, (b) :code:`out` used to update a new array :code:`y`, and (c) :code:`out` used to inplace update the input array :code:`x` (provided that it shares the same :code:`dtype` and :code:`shape` as the return)
 
-5. If broadcasting is relevant for the function, then show examples which highlight this.
+5. show examples which highlight broadcasting (if it is relevant for the function).
    For example, passing in different shapes for two array arguments
 
 For all remaining examples, we can repeat input values from these :class:`ivy.Array` *functional* examples covered by points 1-5.
@@ -65,7 +65,7 @@ Next, for *nestable* functions there should be an example that:
 
 For *nestable* functions which accept more than one argument, there should also be an example that:
 
-7. passes in :class:`ivy.Container` instances for multiple arguments
+7. passes in an :class:`ivy.Container` instances for multiple arguments
 
 In all cases, the containers should have at least two leaves.
 For example, the following container is okay to use for example purposes:
@@ -869,5 +869,5 @@ If you have any questions, please feel free to reach out on `discord`_ in the `d
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/rtce8XthiKA" class="video">
+    src="https://www.youtube.com/embed/rtce8XthiKA" class="video" allowfullscreen="true">
     </iframe>
