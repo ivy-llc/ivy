@@ -1981,7 +1981,7 @@ def test_jax_numpy_gcd(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
