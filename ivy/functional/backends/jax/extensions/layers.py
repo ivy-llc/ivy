@@ -291,3 +291,52 @@ def avg_pool3d(
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
 
     return res
+
+
+def avg_pool2d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 2
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * 2
+
+    if isinstance(strides, int):
+        strides = (strides,) * 2
+    elif len(strides) == 1:
+        strides = (strides[0],) * 2
+
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    x_shape = list(x.shape[1:3])
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    x = jnp.pad(
+        x,
+        [
+            (0, 0),
+            (pad_h // 2, pad_h - pad_h // 2),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    div_shape = res.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / _pool(jnp.ones(div_shape), 0., jlax.add, kernel, strides, padding)
+
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
+    return res
