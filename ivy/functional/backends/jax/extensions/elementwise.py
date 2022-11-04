@@ -114,3 +114,12 @@ def nan_to_num(
 ) -> JaxArray:
     return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
 
+
+def logaddexp2(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:    
+    return jnp.logaddexp2(x1, x2)
