@@ -385,3 +385,8 @@ def i0(x):
 @to_ivy_arrays_and_back
 def isneginf(x, out=None):
     return ivy.isneginf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def isposinf(x, out=None):
+    return ivy.isposinf(x, out=out)
