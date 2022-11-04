@@ -252,7 +252,6 @@ def avg_pool3d(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 
-
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
     elif len(kernel) == 1:

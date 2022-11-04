@@ -320,7 +320,6 @@ def max_pool3d(
     return res
 
 
-
 def avg_pool3d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
