@@ -534,34 +534,70 @@ def test_jax_numpy_matrix_power(
 
 
 # tensorsolve
+@st.composite
+def _get_first_matrix(draw):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+
+    # print('shared_size', shared_size)
+    first_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+    )
+
+    second_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, 1]),
+            min_value=2,
+            max_value=5,
+        )
+    )
+
+    return input_dtype, first_matrix, second_matrix
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=-100,
-        max_value=100,
-        num_arrays=2,
-        shared_dtype=True,
-    ),
+    a_and_b=_get_first_matrix(),
+    # y=_get_second_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.tensorsolve"
     ),
 )
 def test_jax_numpy_tensorsolve(
-    dtype_and_x,
+    a_and_b,
+    # y,
     as_variable,
     native_array,
     num_positional_args,
 ):
-    dtype, inputs = dtype_and_x
+    input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
         fn_tree="numpy.linalg.tensorsolve",
-        a=inputs[0],
-        b=inputs[1],
+        a=x,
+        b=y,
     )
