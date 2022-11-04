@@ -76,7 +76,9 @@ def deserialize(
     return tf.keras.activations.deserialize(name, custom_objects)
 
 
-def get(identifier: Union[str, ivy.Callable, None], /, *, custom_objects=Union[ivy.Dict, None]) -> Union[ivy.Callable, None]:
+def get(identifier: Union[str, ivy.Callable, None], /, *,
+        custom_objects=Union[ivy.Dict, None]
+) -> Union[ivy.Callable, None]:
     
     if identifier is None:
         return tf.keras.activations.linear
