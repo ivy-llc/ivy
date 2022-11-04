@@ -108,7 +108,9 @@ def test_tensorflow_eigvalsh(
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
-def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, tolr):
+def test_tensorflow_matrix_rank(
+    dtype_x, as_variable, num_positional_args, native_array, tolr
+):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
