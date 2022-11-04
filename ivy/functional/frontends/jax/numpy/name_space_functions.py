@@ -380,3 +380,8 @@ def gcd(x1, x2):
 @to_ivy_arrays_and_back
 def i0(x):
     return ivy.i0(x)
+
+
+@to_ivy_arrays_and_back
+def isneginf(x, out=None):
+    return ivy.isneginf(x, out=out)
