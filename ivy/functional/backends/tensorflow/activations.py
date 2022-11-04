@@ -76,8 +76,11 @@ def deserialize(
     return tf.keras.activations.deserialize(name, custom_objects)
 
 
-def get(identifier: Union[str, ivy.Callable, None], /, *,
-        custom_objects=Union[ivy.Dict, None]
+def get(
+    identifier: Union[str, ivy.Callable, None],
+    /,
+    *,
+    custom_objects=Union[ivy.Dict, None]
 ) -> Union[ivy.Callable, None]:
     
     if identifier is None:
@@ -90,4 +93,6 @@ def get(identifier: Union[str, ivy.Callable, None], /, *,
     elif callable(identifier):
         return identifier
     else:
-        raise TypeError(f"Could not interpret activation function identifier: {identifier}")
+        raise TypeError(
+              f"Could not interpret activation function identifier: 
+              {identifier}")
