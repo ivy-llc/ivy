@@ -632,7 +632,7 @@ This test runs for every backend, and the output is shown below
 
 
 It can be seen that the function doesn’t fail for **Jax**, **Numpy** and **Torch**, which is clearly not the case with **Tensorflow**, wherein 7 examples failed the test.
-One important thing to note is the number of values for which **Shrinking**(discussed in brief above) happened.
+One important thing to note is the number of values for which **Shrinking** (discussed in brief above) happened.
 Statistics for both *generate phase*, and *shrink phase* if the test fails are printed in the output.
 If the tests are re-run, *reuse phase* statistics are printed as well where notable examples from previous runs are displayed.
 
