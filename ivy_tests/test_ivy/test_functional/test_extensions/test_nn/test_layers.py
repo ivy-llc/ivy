@@ -556,7 +556,7 @@ def test_avg_pool2d(
         fn_name="avg_pool2d",
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="jax",
+        ground_truth_backend="tensorflow",
         x=x[0],
         kernel=kernel,
         strides=stride,
