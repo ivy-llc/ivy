@@ -554,7 +554,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         >>> x1.diff(x2)
         ivy.array([-3.,    -3.,   -3.])
         >>> x1 = ivy.array([1, 2, 3])
-        >>> x1.gcd(10)
+        >>> x1.diff(10)
         ivy.array([-9.,   -8.,  -7.])
         """
         return ivy.diff(self._data, x2, out=out)
