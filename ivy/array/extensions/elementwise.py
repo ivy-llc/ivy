@@ -408,33 +408,6 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         """ivy.Array instance method variant of ivy.diff. This method simply
         wraps the function, and so the docstring for ivy.diff also applies to
         
-    def isneginf(
-        self: Union[ivy.Array, float, list, tuple],
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.isneginf. This method simply
-        wraps the function, and so the docstring for ivy.isneginf also applies to
-        this method with minimal changes.
-        
-        Parameters
-        ----------
-        self
-            Input array.
-        out
-            Alternate output array in which to place the result.
-            The default is None.
-        
-        Returns
-        -------
-        ret
-            Returns a boolean array with values True where 
-            the corresponding element of the input is negative
-            infinity and values False where the element of the
-            input is not negative infinity.
-        
         Examples
         --------
         >>> x = ivy.array([12.1, -ivy.inf, ivy.inf])
