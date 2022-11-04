@@ -1,4 +1,6 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 import torch
 
 
@@ -110,6 +112,7 @@ def fliplr(
 fliplr.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def i0(
     x: torch.Tensor,
     /,
