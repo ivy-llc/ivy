@@ -524,3 +524,37 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([4.169925, 5.169925, 6.169925])
         """
         return ivy.logaddexp2(self._data, x2, out=out)
+
+    def diff(
+        self: Union[ivy.Array, int, float, list, tuple],
+        x2: Union[ivy.Array, int, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.gcd also applies to
+        this method with minimal changes.
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+        Returns
+        -------
+        ret
+            Element-wise gcd of |x1| and |x2|.
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.diff(x2)
+        ivy.array([-3.,    -3.,   -3.])
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x1.gcd(10)
+        ivy.array([-9.,   -8.,  -7.])
+        """
+        return ivy.diff(self._data, x2, out=out)
