@@ -612,3 +612,39 @@ def logaddexp2(
     ivy.array([4.169925, 5.169925, 6.169925])
     """
     return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def diff(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],    
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the difference of x1 and x2.
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        Element-wise difference of x1 and x2.
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([-3.,    -3.,   -3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([-9.,   -8.,  -7.])
+    """
+    return ivy.current_backend().diff(x1, x2, out=out)
