@@ -100,7 +100,7 @@ def kaiser_bessel_derived_window(
 
 
 @with_unsupported_dtypes({"2.9.1 and below":
-                         ("bfloat16", "float64")},
+                         ("bfloat16", "float64", "float16")},
                          backend_version
                          )
 def max_pool3d(
@@ -116,6 +116,28 @@ def max_pool3d(
     if data_format == "NCDHW":
         x = tf.transpose(x, (0, 2, 3, 4, 1))
     res = tf.nn.max_pool3d(x, kernel, strides, padding)
+    if data_format == "NCDHW":
+        return tf.transpose(res, (0, 4, 1, 2, 3))
+    return res
+
+
+@with_unsupported_dtypes({"2.9.1 and below":
+                         ("bfloat16", "float64")},
+                         backend_version
+                         )
+def avg_pool3d(
+    x: Union[tf.Tensor, tf.Variable],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if data_format == "NCDHW":
+        x = tf.transpose(x, (0, 2, 3, 4, 1))
+    res = tf.nn.avg_pool3d(x, kernel, strides, padding)
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
