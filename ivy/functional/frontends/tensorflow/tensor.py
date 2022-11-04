@@ -175,7 +175,8 @@ class EagerTensor:
 
     def __setitem__(self, key, value):
         raise ivy.exceptions.IvyException(
-            "ivy.functional.frontends.tensorflow.EagerTensor object doesn't support assignment"
+            "ivy.functional.frontends.tensorflow.EagerTensor object "
+            "doesn't support assignment"
         )
 
 
