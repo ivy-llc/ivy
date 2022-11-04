@@ -1141,7 +1141,7 @@ def test_tensorflow_AddN(dtype_and_x, as_variable, num_positional_args, native_a
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.AddN",
-        inputs=x,
+        inputs=x[0],
     )
 
 

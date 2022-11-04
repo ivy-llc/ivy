@@ -13,8 +13,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
-    inputs = ivy.array(inputs)
-    return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
+    return ivy.sum(inputs, dtype=inputs.dtype)
 
 
 @to_ivy_arrays_and_back
