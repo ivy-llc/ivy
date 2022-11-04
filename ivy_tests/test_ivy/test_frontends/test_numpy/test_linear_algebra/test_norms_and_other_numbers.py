@@ -1,6 +1,5 @@
 # global
 import numpy as np
-import random
 from hypothesis import strategies as st
 
 # local
@@ -24,10 +23,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         max_axis=1,
     ),
     keepdims=st.booleans(),
+    ord=st.sampled_from([None, 'fro', 'nuc', 'inf', '-inf', 0, 1, -1, 2, -2])
 )
 def test_numpy_norm(
         dtype_values_axis,
         keepdims,
+        ord,
         as_variable,
         num_positional_args,
         native_array,
@@ -35,7 +36,6 @@ def test_numpy_norm(
         fn_tree,
         on_device,
 ):
-    ord = random.choice([None, 'fro', 'nuc', 'inf', '-inf', 0, 1, -1, 2, -2])
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
         axis = None
