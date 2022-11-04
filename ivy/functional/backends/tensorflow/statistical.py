@@ -129,18 +129,13 @@ def var(
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     dtype = x.dtype
-    x = ivy.astype(x, "float64").to_native()
     if correction == 0:
-        return ivy.astype(
-            tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims), dtype
-        )
+        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = ivy.astype(
-            tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims), dtype
-        )
+        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
