@@ -427,3 +427,24 @@ Sigmoid = to_ivy_arrays_and_back(
 @to_ivy_arrays_and_back
 def Softplus(features, name="Softplus"):
     return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
+def Xdivy(*, x, y, name="Xdivy"):
+    if x == 0:
+        return 0.0
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def Xlog1py(*, x, y, name="Xlog1py"):
+    if x == 0:
+        return 0.0
+    return ivy.multiply(x, ivy.log1p(y))
+
+
+@to_ivy_arrays_and_back
+def Xlogy(*, x, y, name="Xlogy"):
+    if x == 0:
+        return 0.0
+    return ivy.multiply(x, ivy.log(y))
