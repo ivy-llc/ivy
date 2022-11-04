@@ -548,26 +548,27 @@ def _get_solve_matrices(draw):
     )
     input_dtype = draw(input_dtype_strategy)
 
-    shared_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    first_size = draw(helpers.ints(min_value=2, max_value=3))
+
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=3), key="random_size")
     )
 
     first_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, shared_size]),
-            min_value=2,
+            shape=(random_size, first_size, first_size, random_size),
+            min_value=1.2,
             max_value=5,
-        ).filter(lambda x: np.linalg.cond(x) < 1 / sys.float_info.epsilon)
+        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
     )
-
     second_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple([shared_size, 1]),
-            min_value=2,
-            max_value=5,
-        )
+            shape=(random_size, first_size),
+            min_value=1.2,
+            max_value=3,
+        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
     )
 
     return input_dtype, first_matrix, second_matrix
