@@ -902,3 +902,76 @@ def max_pool3d(
                                              padding,
                                              data_format=data_format,
                                              out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def avg_pool3d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 3-D avg pool given 5-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[batch_size,d,h,w,d_in]*.
+    kernel
+        Convolution filters *[d,h,w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension
+        paddings.
+    data_format
+        NDHWC" or "NCDHW". Defaults to "NDHWC".
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
+    >>> print(ivy.avg_pool3d(x,2,2,'VALID'))
+    ivy.array([[[[[ 7.,  8.]]]],
+
+
+
+           [[[[31., 32.]]]]])
+    >>> print(ivy.avg_pool3d(x,2,2,'SAME'))
+    ivy.array([[[[[ 7.,  8.]]],
+
+
+            [[[19., 20.]]]],
+
+
+
+           [[[[31., 32.]]],
+
+
+            [[[43., 44.]]]]])
+
+    """
+    return ivy.current_backend(x).avg_pool3d(x,
+                                             kernel,
+                                             strides,
+                                             padding,
+                                             data_format=data_format,
+                                             out=out)
