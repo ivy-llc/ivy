@@ -2,7 +2,6 @@
 import numpy as np
 from hypothesis import given, strategies as st
 import sys
-import os; print("\n\nCurrent workdir is: " + os.getcwd() + "\n\n")
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
