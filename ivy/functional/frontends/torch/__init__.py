@@ -1,8 +1,8 @@
 # flake8: noqa
 
 from . import nn
-from . import Tensor
-from .Tensor import tensor
+from . import tensor
+from .tensor import Tensor
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
 from . import comparison_ops
