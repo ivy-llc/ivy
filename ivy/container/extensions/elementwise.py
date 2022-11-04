@@ -1136,3 +1136,96 @@ class ContainerWithElementWiseExtensions(ContainerBase):
             neginf=neginf,
             out=out
         )
+
+    @staticmethod
+    def static_logaddexp2(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.logaddexp2. This method simply wraps
+        the function, and so the docstring for ivy.logaddexp2 also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise logaddexp2 of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]),\
+                               b=5)
+        >>> ivy.Container.static_logaddexp2(x1, x2)
+        {
+            a: ivy.array([4.169925, 5.169925, 6.169925])
+            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "logaddexp2",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def logaddexp2(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.logaddexp2. This method simply
+        wraps the function, and so the docstring for ivy.logaddexp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input container with array-like items.
+        x2
+            second input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise logaddexp2 of input arrays.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([4, 5, 6]),\
+                               b=5)
+        >>> x1.logaddexp2(x2)
+        {
+            a: ivy.array([4.169925, 5.169925, 6.169925])
+            b: ivy.array([5.08746284, 5.169925  , 5.32192809])
+        }
+        """
+        return self.static_logaddexp2(self, x2, out=out)
