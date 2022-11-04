@@ -422,6 +422,133 @@ def test_gcd(
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
+
+# isposinf
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isposinf"),
+)
+def test_isposinf(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isposinf",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# isneginf
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="isneginf"),
+)
+def test_isneginf(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="isneginf",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+    
+# nan_to_num
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=True,
+        allow_inf=True
+    ),
+    copy=st.booleans(),
+    nan=st.floats(min_value=0.0, max_value=100),
+    posinf=st.floats(min_value=5e+100, max_value=5e+100),
+    neginf=st.floats(min_value=-5e+100, max_value=-5e+100),
+    num_positional_args=helpers.num_positional_args(fn_name="nan_to_num"),
+)
+def test_nan_to_num(
+    dtype_and_x,
+    copy,
+    nan,
+    posinf,
+    neginf,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="nan_to_num",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+        copy=copy,
+        nan=nan,
+        posinf=posinf,
+        neginf=neginf
+    )
+
     
 # logaddexp2
 @handle_cmd_line_args

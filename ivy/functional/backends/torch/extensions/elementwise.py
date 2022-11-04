@@ -139,6 +139,47 @@ def gcd(
 gcd.support_native_out = True
 
 
+def isposinf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
+
+
+def isneginf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True
+
+
+def nan_to_num(
+    x: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if copy:
+        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
+    else:
+        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+        return x
+
+    
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
     x2: Union[torch.Tensor, float, list, tuple],
