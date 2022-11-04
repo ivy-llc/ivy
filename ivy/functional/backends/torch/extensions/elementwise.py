@@ -149,3 +149,15 @@ def isposinf(
 
 
 isposinf.support_native_out = True
+
+
+def isneginf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True
