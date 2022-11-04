@@ -576,3 +576,39 @@ def nan_to_num(
         neginf=neginf,
         out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def logaddexp2(
+    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],    
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates log2(2**x1 + 2**x2).
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise logaddexp2 of x1 and x2.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.logaddexp2(x1, x2)
+    ivy.array([4.169925, 5.169925, 6.169925])
+    """
+    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)

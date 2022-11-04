@@ -490,3 +490,37 @@ class ArrayWithElementWiseExtensions(abc.ABC):
             neginf=neginf,
             out=out
         )
+
+    def logaddexp2(
+        self: Union[ivy.Array, float, list, tuple],
+        x2: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.logaddexp2. This method
+        simply wraps the function, and so the docstring for ivy.logaddexp2 also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise logaddexp2 of x1 and x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.logaddexp2(x2)
+        ivy.array([4.169925, 5.169925, 6.169925])
+        """
+        return ivy.logaddexp2(self._data, x2, out=out)

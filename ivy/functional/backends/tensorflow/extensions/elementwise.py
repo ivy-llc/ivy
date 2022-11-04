@@ -157,3 +157,21 @@ def nan_to_num(
     else:
         x = ret
         return x
+
+    
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64",
+                         "int8", "int16", "int32", "int64",)},
+    backend_version
+)
+def logaddexp2(
+    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = 2**x1 + 2**x2
+    numerator = tf.math.log(x)
+    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
+    return numerator / denominator
