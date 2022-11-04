@@ -111,3 +111,8 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
     return ivy.multiply(x, x_inv_norm)
+
+
+@to_ivy_arrays_and_back
+def sqrtm(input, name=None):
+    return ivy.sqrtm(input)
