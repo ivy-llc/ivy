@@ -128,7 +128,6 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    dtype = x.dtype
     if correction == 0:
         return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
     size = 1
@@ -144,7 +143,7 @@ def var(
                 tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
                 size / (size - correction),
             ),
-            dtype,
+            x.dtype,
             copy=False,
         )
 

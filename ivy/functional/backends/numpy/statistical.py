@@ -135,11 +135,10 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    dtype = x.dtype
     if isinstance(correction, int):
         return np.asarray(
             np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-        ).astype(dtype)
+        ).astype(x.dtype)
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
@@ -150,7 +149,7 @@ def var(
             np.var(x, axis=axis, keepdims=keepdims, out=out),
             ivy.stable_divide(size, (size - correction)),
         )
-    ).astype(dtype)
+    ).astype(x.dtype)
 
 
 var.support_native_out = True
