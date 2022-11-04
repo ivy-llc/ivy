@@ -123,3 +123,13 @@ def logaddexp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:    
     return jnp.logaddexp2(x1, x2)
+
+
+def diff(
+    x1: Union[JaxArray, int, float, list, tuple],
+    x2: Union[JaxArray, int, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
+    return jnp.diff(x1, x2)
