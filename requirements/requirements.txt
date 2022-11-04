@@ -1,4 +1,5 @@
 numpy==1.23.0
+cachetools==5.2.0
 einops==0.4.1
 psutil==5.9.1
 termcolor==1.1.0

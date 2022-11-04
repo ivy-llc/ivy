@@ -43,6 +43,7 @@ def _get_first_array(*args, **kwargs):
 
 # Just a native python compile function with cache #
 # ---------------#
+
 @cached(cache=MRUCache(maxsize=12))
 def compile_function(fn:Callable) -> Callable:
     data_comp = compile("functools.wraps(fn)","func_wrapper.py","eval",0,False,1)
