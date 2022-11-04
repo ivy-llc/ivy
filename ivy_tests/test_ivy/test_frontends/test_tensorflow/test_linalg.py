@@ -118,9 +118,7 @@ def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, to
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
-        atol=1.0,
         a=x[0],
-        validate_args=False,
         tol=tolr,
     )
 
