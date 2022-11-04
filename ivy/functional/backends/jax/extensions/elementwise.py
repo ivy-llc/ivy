@@ -84,6 +84,24 @@ def gcd(
     return jnp.gcd(x1, x2)
 
 
+def isposinf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isposinf(x, out=out)
+
+
+def isneginf(
+    x: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isneginf(x, out=out)
+
+
 def nan_to_num(
     x: JaxArray,
     /,
@@ -95,3 +113,4 @@ def nan_to_num(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
