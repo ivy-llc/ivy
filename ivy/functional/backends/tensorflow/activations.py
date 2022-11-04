@@ -90,4 +90,4 @@ def get(identifier: Union[str, ivy.Callable, None], /, *,
     elif callable(identifier):
         return identifier
     else:
-        raise TypeError('Could not interpret activation function identifier: {}'.format(identifier))
+        raise TypeError(f"Could not interpret activation function identifier: {identifier}")
