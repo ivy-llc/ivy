@@ -42,6 +42,7 @@ def max_pool2d(
         return tf.transpose(res, (0, 3, 1, 2))
     return res
 
+
 @with_unsupported_dtypes({"2.9.1 and below":
                          ("bfloat16", "float64", "float16")},
                          backend_version
