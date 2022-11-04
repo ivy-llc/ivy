@@ -37,7 +37,7 @@ def test_sinc(
         as_variable_flags=as_variable,
         with_out=with_out,
         rtol_=1e-03,
-        atol_=1e-06,
+        atol_=1e-03,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
