@@ -364,7 +364,7 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
             shape=x_shape,
             large_abs_safety_factor=20,
             small_abs_safety_factor=20,
-        )
+        ).filter(lambda x : x[0] != ['float16'])
     )
     if transpose:
         return (

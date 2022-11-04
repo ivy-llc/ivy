@@ -279,6 +279,11 @@ def bitwise_and(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_not(x):
+    return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
 def bitwise_or(x1, x2):
     return ivy.bitwise_or(x1, x2)
 
@@ -365,3 +370,8 @@ def deg2rad(x):
 @to_ivy_arrays_and_back
 def exp2(x):
     return ivy.exp2(x)
+
+
+@to_ivy_arrays_and_back
+def gcd(x1, x2):
+    return ivy.gcd(x1, x2)

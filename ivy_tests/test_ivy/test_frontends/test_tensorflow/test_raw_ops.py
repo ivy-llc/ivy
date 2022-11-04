@@ -1316,7 +1316,7 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, native_array):
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
 )
-def test_tensroflow_MatMul(
+def test_tensorflow_MatMul(
     dtype_and_x,
     transpose_a,
     transpose_b,
@@ -1332,6 +1332,7 @@ def test_tensroflow_MatMul(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.MatMul",
+        atol=1e-2,
         a=x[0],
         b=x[1],
         transpose_a=transpose_a,
@@ -1959,7 +1960,7 @@ def test_tensorflow_Ceil(
         max_value=1e30,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Diag"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Diag"
     ),
 )
 def test_tensorflow_Diag(
@@ -2079,7 +2080,7 @@ def test_tensorflow_Pow(
     ),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Sum"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Sum"
     ),
 )
 def test_tensorflow_Sum(
