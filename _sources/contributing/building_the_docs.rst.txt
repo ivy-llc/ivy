@@ -12,6 +12,12 @@ Building the Docs with Docker
 
 #. Build the docker image using the doc-builder Dockerfile
 #. Clone or pull the :code:`unifyai/doc-builder` repository
+#. Change to the doc-builder folder
+
+    .. code-block:: none
+
+        cd doc-builder
+
 #. Build the docker image using the following command
 
     #. For Windows and MacOS users:
@@ -33,7 +39,7 @@ Building the Docs with Docker
 
         .. code-block:: none
 
-            cd docs
+            cd ivy\docs
 
     #. Build the docs using :code:`make_docs.sh`
         
@@ -81,7 +87,7 @@ Using miniconda
 Using venv
 ****
 
-This is a builtin package and doesn't require explicit installation.
+This is a built-in package and doesn't require explicit installation.
 
 #. Open your terminal/cmd in the directory where you would like to have the folder with the environment files
 #. Create the environment by running the command below with a new environment name. We named it :code:`ivy_dev` like above.
@@ -109,7 +115,7 @@ This is a builtin package and doesn't require explicit installation.
     (on Mac/Linux)
 
 After setting up the virtual environment, we can build the documentation locally.
-Move to the `ivy/docs` folder in a terminal and execute the following command to build the docs from inside the virtual environment.
+Move to the :code:`ivy/docs` folder in a terminal and execute the following command to build the docs from inside the virtual environment.
 
 1. For Windows users
 
@@ -129,7 +135,7 @@ Move to the `ivy/docs` folder in a terminal and execute the following command to
 
         bash make_docs_without_docker.sh <path to doc-builder folder relative to current folder i.e. ivy/docs>
 
-Assuming that we cloned the `doc-builder` and `ivy` repositories in the same folder, we can run `make_docs_without_docker.sh` as follows:
+Assuming that we cloned the :code:`doc-builder` and :code:`ivy` repositories in the same folder, we can run :code:`make_docs_without_docker.sh` as follows:
 
 .. code-block:: none
 

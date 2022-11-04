@@ -165,6 +165,13 @@
 <ol class="arabic">
 <li><p>Build the docker image using the doc-builder Dockerfile</p></li>
 <li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/doc-builder</span></code> repository</p></li>
+<li><p>Change to the doc-builder folder</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd doc-builder
+</pre></div>
+</div>
+</div></blockquote>
+</li>
 <li><p>Build the docker image using the following command</p>
 <blockquote>
 <div><ol class="arabic">
@@ -191,7 +198,7 @@
 <li><p>Clone or pull the <code class="code docutils literal notranslate"><span class="pre">unifyai/ivy</span></code> repository.</p></li>
 <li><p>Change to the docs folder</p>
 <blockquote>
-<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd docs
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>cd ivy\docs
 </pre></div>
 </div>
 </div></blockquote>
@@ -255,7 +262,7 @@ After cloning repos, we need to create a virtual environment using either <a cla
 </section>
 <section id="using-venv">
 <h3>Using venv<a class="headerlink" href="#using-venv" title="Permalink to this heading"></a></h3>
-<p>This is a builtin package and doesn’t require explicit installation.</p>
+<p>This is a built-in package and doesn’t require explicit installation.</p>
 <ol class="arabic">
 <li><p>Open your terminal/cmd in the directory where you would like to have the folder with the environment files</p></li>
 <li><p>Create the environment by running the command below with a new environment name. We named it <code class="code docutils literal notranslate"><span class="pre">ivy_dev</span></code> like above.</p>
@@ -281,7 +288,7 @@ After cloning repos, we need to create a virtual environment using either <a cla
 </li>
 </ol>
 <p>After setting up the virtual environment, we can build the documentation locally.
-Move to the <cite>ivy/docs</cite> folder in a terminal and execute the following command to build the docs from inside the virtual environment.</p>
+Move to the <code class="code docutils literal notranslate"><span class="pre">ivy/docs</span></code> folder in a terminal and execute the following command to build the docs from inside the virtual environment.</p>
 <ol class="arabic">
 <li><p>For Windows users</p>
 <blockquote>
@@ -305,7 +312,7 @@ Move to the <cite>ivy/docs</cite> folder in a terminal and execute the following
 </div></blockquote>
 </li>
 </ol>
-<p>Assuming that we cloned the <cite>doc-builder</cite> and <cite>ivy</cite> repositories in the same folder, we can run <cite>make_docs_without_docker.sh</cite> as follows:</p>
+<p>Assuming that we cloned the <code class="code docutils literal notranslate"><span class="pre">doc-builder</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> repositories in the same folder, we can run <code class="code docutils literal notranslate"><span class="pre">make_docs_without_docker.sh</span></code> as follows:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>bash make_docs_without_docker.sh ../../doc-builder/
 </pre></div>
 </div>
