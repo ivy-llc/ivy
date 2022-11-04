@@ -135,7 +135,7 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a sub-category of :mod:`arithmetic_operations` as shown in the `numpy mathematical functions`_ directory.
 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
-Additional handling code is added to recover the behaviour according to the `numpy.add`_ documentation.
+Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
 For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 

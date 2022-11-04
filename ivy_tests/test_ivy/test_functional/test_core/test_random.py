@@ -371,3 +371,108 @@ def test_shuffle(
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))
+
+
+# beta
+@handle_cmd_line_args
+@given(
+    dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=2,
+        num_arrays=2,
+        exclude_min=True,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    num_positional_args=helpers.num_positional_args(fn_name="beta"),
+)
+def test_beta(
+    dtype_and_alpha_beta,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+
+    dtype, alpha_beta = dtype_and_alpha_beta
+    if "float16" in dtype:
+        return
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        test_values=False,
+        fw=fw,
+        fn_name="beta",
+        alpha=alpha_beta[0],
+        beta=alpha_beta[1],
+        shape=None,
+        dtype=dtype[0],
+        seed=seed,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(u >= 0) and ivy.all(u <= 1)
+        assert ivy.all(v >= 0) and ivy.all(v <= 1)
+
+
+# gamma
+@handle_cmd_line_args
+@given(
+    dtype_and_alpha_beta=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=1,
+        max_num_dims=2,
+        num_arrays=2,
+        exclude_min=True,
+    ),
+    seed=helpers.ints(min_value=0, max_value=100),
+    num_positional_args=helpers.num_positional_args(fn_name="gamma"),
+)
+def test_gamma(
+    dtype_and_alpha_beta,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, alpha_beta = dtype_and_alpha_beta
+    if "float16" in dtype:
+        return
+    ret, ret_gt = helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        test_values=False,
+        fw=fw,
+        fn_name="gamma",
+        alpha=alpha_beta[0],
+        beta=alpha_beta[1],
+        shape=None,
+        dtype=dtype[0],
+        seed=seed,
+    )
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(u >= 0)
+        assert ivy.all(v >= 0)
