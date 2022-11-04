@@ -239,3 +239,27 @@ def max_pool3d(
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
 
     return res
+
+
+def avg_pool3d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if data_format == "NCDHW":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 3
+    res = _pool(x, 0, jlax.add, kernel, strides, padding)
+    res = res / jnp.prod(kernel)
+    return res
+
+    if data_format == "NCDHW":
+        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+
+    return res
