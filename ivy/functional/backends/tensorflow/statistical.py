@@ -128,13 +128,19 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
+    dtype = x.dtype
+    x = ivy.astype(x, "float64").to_native()
     if correction == 0:
-        return tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+        return ivy.astype(
+            tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims), dtype
+        )
     size = 1
     for a in axis:
         size *= x.shape[a]
     if size - correction <= 0:
-        ret = tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims)
+        ret = ivy.astype(
+            tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims), dtype
+        )
         ret = ivy.full(ret.shape, float("nan"), dtype=ret.dtype)
         return ret
     else:
@@ -143,7 +149,7 @@ def var(
                 tf.experimental.numpy.var(x, axis=axis, out=out, keepdims=keepdims),
                 size / (size - correction),
             ),
-            x.dtype,
+            dtype,
             copy=False,
         )
 
@@ -196,5 +202,7 @@ def einsum(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (ivy.astype(operand, tf.float32, copy=False) for operand in operands)
+    operands = (
+        ivy.astype(operand, tf.float32, copy=False).to_native() for operand in operands
+    )
     return ivy.astype(tf.einsum(equation, *operands), dtype, copy=False)
