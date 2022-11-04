@@ -8,7 +8,7 @@ import ivy
 inf = float("inf")
 
 
-class ArrayWithLinearAlgebra(abc.ABC):
+class ArrayWithLinalg(abc.ABC):
     def matmul(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],

@@ -414,15 +414,17 @@ def test_nansum(
     ),
 )
 def test_gcd(
+    *,
     dtype_and_x,
     with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
     native_array,
     container_flags,
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -435,14 +437,15 @@ def test_gcd(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
 
 
 # isposinf
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.extensions.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
@@ -451,17 +454,19 @@ def test_gcd(
         max_dim_size=3,
         allow_inf=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isposinf"),
 )
 def test_isposinf(
+    *,
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -470,9 +475,51 @@ def test_isposinf(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="isposinf",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# isneginf
+@handle_test(
+    fn_tree="functional.extensions.isneginf",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        allow_inf=True,
+    ),
+)
+def test_isneginf(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
