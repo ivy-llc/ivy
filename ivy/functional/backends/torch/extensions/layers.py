@@ -284,7 +284,7 @@ def avg_pool3d(
             pad_d // 2,
             pad_d - pad_d // 2,
         ],
-        value=0,
+        mode="replicate",
     )
     if padding != "VALID" and padding != "SAME":
         raise ivy.exceptions.IvyException(

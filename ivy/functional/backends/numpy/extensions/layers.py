@@ -383,7 +383,7 @@ def avg_pool3d(
     )
 
     # B x OH x OW x O
-    res = np.mean(axis=(4, 5, 6))
+    res = np.mean(sub_matrices, axis=(4, 5, 6))
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
