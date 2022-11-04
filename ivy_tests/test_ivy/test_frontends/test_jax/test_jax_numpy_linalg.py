@@ -535,7 +535,7 @@ def test_jax_numpy_matrix_power(
 
 # tensorsolve
 @st.composite
-def _get_first_matrix(draw):
+def _get_solve_matrices(draw):
     # batch_shape, random_size, shared
 
     # float16 causes a crash when filtering out matrices
@@ -552,7 +552,6 @@ def _get_first_matrix(draw):
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
 
-    # print('shared_size', shared_size)
     first_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
@@ -576,15 +575,13 @@ def _get_first_matrix(draw):
 
 @handle_cmd_line_args
 @given(
-    a_and_b=_get_first_matrix(),
-    # y=_get_second_matrix(),
+    a_and_b=_get_solve_matrices(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.jax.numpy.linalg.tensorsolve"
     ),
 )
 def test_jax_numpy_tensorsolve(
     a_and_b,
-    # y,
     as_variable,
     native_array,
     num_positional_args,
