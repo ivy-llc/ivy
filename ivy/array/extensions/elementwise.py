@@ -431,3 +431,62 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([False, True,  False])
         """
         return ivy.isneginf(self._data, out=out)
+
+    def nan_to_num(
+        self: ivy.Array,
+        /,
+        *,
+        copy: Optional[bool] = True,
+        nan: Optional[Union[float, int]] = 0.0,
+        posinf: Optional[Union[float, int]] = None,
+        neginf: Optional[Union[float, int]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.nan_to_num. This method simply
+        wraps the function, and so the docstring for ivy.nan_to_num also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        copy
+            Whether to create a copy of x (True) or to replace values in-place (False).
+            The in-place operation only occurs if casting to an array does not require
+            a copy. Default is True.
+        nan
+            Value to be used to fill NaN values. If no value is passed then NaN values
+            will be replaced with 0.0.
+        posinf
+            Value to be used to fill positive infinity values. If no value is passed
+            then positive infinity values will be replaced with a very large number.
+        neginf
+            Value to be used to fill negative infinity values.
+            If no value is passed then negative infinity values
+            will be replaced with a very small (or negative) number.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array with the non-finite values replaced.
+            If copy is False, this may be x itself.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3, nan])
+        >>> x.nan_to_num()
+        ivy.array([1.,    1.,   3.,   0.0])
+        >>> x = ivy.array([1, 2, 3, inf])
+        >>> x.nan_to_num(posinf=5e+100)
+        ivy.array([1.,   2.,   3.,   5e+100])
+        """
+        return ivy.nan_to_num(
+            self._data, 
+            copy=copy,
+            nan=nan,
+            posinf=posinf,
+            neginf=neginf,
+            out=out
+        )
