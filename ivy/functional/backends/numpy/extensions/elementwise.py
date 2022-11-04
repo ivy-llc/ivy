@@ -188,3 +188,16 @@ def logaddexp2(
 
 
 logaddexp2.support_native_out = True
+
+
+def diff(
+    x1: Union[np.ndarray, int, float, list, tuple],
+    x2: Union[np.ndarray, int, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    return np.diff(x1, x2, out=out)
+
+
+diff.support_native_out = True
