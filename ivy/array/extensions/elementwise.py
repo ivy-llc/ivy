@@ -558,4 +558,3 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         ivy.array([-9.,   -8.,  -7.])
         """
         return ivy.diff(self._data, x2, out=out)
-
