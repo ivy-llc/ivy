@@ -1007,3 +1007,132 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         }
         """
         return self.static_isneginf(self, out=out)
+
+    @staticmethod
+    def static_nan_to_num(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        copy: Optional[bool] = True,
+        nan: Optional[Union[float, int]] = 0.0,
+        posinf: Optional[Union[float, int]] = None,
+        neginf: Optional[Union[float, int]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nan_to_num. This method simply wraps
+        the function, and so the docstring for ivy.nan_to_num also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container with array items.
+        copy
+            Whether to create a copy of x (True) or to replace values in-place (False).
+            The in-place operation only occurs if casting to an array does not require
+            a copy. Default is True.
+        nan
+            Value to be used to fill NaN values. If no value is passed then NaN values
+            will be replaced with 0.0.
+        posinf
+            Value to be used to fill positive infinity values. If no value is passed
+            then positive infinity values will be replaced with a very large number.
+        neginf
+            Value to be used to fill negative infinity values.
+            If no value is passed then negative infinity values
+            will be replaced with a very small (or negative) number.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with replaced non-finite elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, nan]),\
+                               b=ivy.array([1, 2, 3, inf]))
+        >>> ivy.Container.static_nan_to_num(x, posinf=5e+100)
+        {
+            a: ivy.array([1.,  1.,  3.,  0.0])
+            b: ivy.array([1., 2., 1.,  5e+100])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nan_to_num",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            copy=copy,
+            nan=nan,
+            posinf=posinf,
+            neginf=neginf,
+            out=out,
+        )
+
+    def nan_to_num(
+        self: ivy.Container,
+        /,
+        *,
+        copy: Optional[bool] = True,
+        nan: Optional[Union[float, int]] = 0.0,
+        posinf: Optional[Union[float, int]] = None,
+        neginf: Optional[Union[float, int]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.nan_to_num. This method simply
+        wraps the function, and so the docstring for ivy.nan_to_num also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container with array items.
+        copy
+            Whether to create a copy of x (True) or to replace values in-place (False).
+            The in-place operation only occurs if casting to an array does not require
+            a copy. Default is True.
+        nan
+            Value to be used to fill NaN values. If no value is passed then NaN values
+            will be replaced with 0.0.
+        posinf
+            Value to be used to fill positive infinity values. If no value is passed
+            then positive infinity values will be replaced with a very large number.
+        neginf
+            Value to be used to fill negative infinity values.
+            If no value is passed then negative infinity values
+            will be replaced with a very small (or negative) number.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with replaced non-finite elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3, nan]),\
+                               b=ivy.array([1, 2, 3, inf]))
+        >>> x.nan_to_num(posinf=5e+100)
+        {
+            a: ivy.array([1.,  1.,  3.,  0.0])
+            b: ivy.array([1., 2., 1.,  5e+100])
+        }
+        """
+        return self.static_nan_to_num(
+            self,
+            copy=copy,
+            nan=nan,
+            posinf=posinf,
+            neginf=neginf,
+            out=out
+        )
