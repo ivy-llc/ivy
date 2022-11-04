@@ -175,3 +175,16 @@ def logaddexp2(
     numerator = tf.math.log(x)
     denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
     return numerator / denominator
+
+
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
+)
+def diff(
+    x1: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.subtract(x1, x2)
