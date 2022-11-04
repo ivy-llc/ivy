@@ -1082,8 +1082,8 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.max_pool3d also applies
+        """ivy.Container static method variant of ivy.avg_pool3d. This method simply
+        wraps the function, and so the docstring for ivy.avg_pool3d also applies
         to this method with minimal changes.
 
         Parameters
@@ -1150,8 +1150,8 @@ class ContainerWithLayersExtensions(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container static method variant of ivy.max_pool3d. This method simply
-        wraps the function, and so the docstring for ivy.max_pool3d also applies
+        """ivy.Container static method variant of ivy.avg_pool3d. This method simply
+        wraps the function, and so the docstring for ivy.avg_pool3d also applies
         to this method with minimal changes.
 
         Parameters
