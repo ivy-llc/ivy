@@ -367,24 +367,24 @@ class ArrayWithLayersExtensions(abc.ABC):
         Examples
         --------
         >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
-        >>> print(x.max_pool3d(2, 2, 'VALID'))
-        ivy.array([[[[[14., 15.]]]],
+        >>> print(x.avg_pool3d(2, 2, 'VALID'))
+        ivy.array([[[[[ 7.,  8.]]]],
 
 
 
-           [[[[38., 39.]]]]])
-        >>> print(x.max_pool3d(2, 2, 'SAME'))
-        ivy.array([[[[[14., 15.]]],
+               [[[[31., 32.]]]]])
+        >>> print(x.avg_pool3d(2, 2, 'SAME'))
+        ivy.array([[[[[ 7.,  8.]]],
 
 
-            [[[22., 23.]]]],
+                [[[19., 20.]]]],
 
 
 
-           [[[[38., 39.]]],
+               [[[[31., 32.]]],
 
 
-            [[[46., 47.]]]]])
+                [[[43., 44.]]]]])
         """
         return ivy.avg_pool3d(
             self,

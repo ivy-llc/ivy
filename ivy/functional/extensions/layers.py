@@ -917,7 +917,7 @@ def avg_pool3d(
     data_format: str = "NDHWC",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D max pool given 5-D input x.
+    """Computes a 3-D avg pool given 5-D input x.
 
     Parameters
     ----------
@@ -950,23 +950,23 @@ def avg_pool3d(
     --------
     >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
     >>> print(ivy.avg_pool3d(x,2,2,'VALID'))
-    ivy.array([[[[[14., 15.]]]],
+    ivy.array([[[[[ 7.,  8.]]]],
 
 
 
-       [[[[38., 39.]]]]])
+           [[[[31., 32.]]]]])
     >>> print(ivy.avg_pool3d(x,2,2,'SAME'))
-    ivy.array([[[[[14., 15.]]],
+    ivy.array([[[[[ 7.,  8.]]],
 
 
-        [[[22., 23.]]]],
+            [[[19., 20.]]]],
 
 
 
-       [[[[38., 39.]]],
+           [[[[31., 32.]]],
 
 
-        [[[46., 47.]]]]])
+            [[[43., 44.]]]]])
 
     """
     return ivy.current_backend(x).avg_pool3d(x,
