@@ -200,7 +200,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         8.0
         """
         return ivy.trapz(self._data, x=x, dx=dx, axis=axis, out=out)
-    
+
     def float_power(
         self: Union[ivy.Array, float, list, tuple],
         x2: Union[ivy.Array, float, list, tuple],
@@ -219,7 +219,7 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         x2
             Array-like of exponents. If x1.shape != x2.shape,
             they must be broadcastable to a common shape
-            (which becomes the shape of the output).            
+            (which becomes the shape of the output).
         out
             optional output array, for writing the result to.
 
@@ -231,12 +231,203 @@ class ArrayWithElementWiseExtensions(abc.ABC):
 
         Examples
         --------
-        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x1.float_power(3)
         ivy.array([1.,    8.,   27.,   64.,  125.])
-        >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+        >>> x1 = ivy.array([1, 2, 3, 4, 5])
         >>> x2 = ivy.array([2, 3, 3, 2, 1])
         >>> x1.float_power(x2)
         ivy.array([1.,   8.,  27.,  16.,   5.])
         """
         return ivy.float_power(self._data, x2, out=out)
+
+    def exp2(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.exp2. This method simply
+        wraps the function, and so the docstring for ivy.exp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.exp2()
+        ivy.array([2.,    4.,   8.])
+        >>> x = [5, 6, 7]
+        >>> x.exp2()
+        ivy.array([32.,   64.,  128.])
+        """
+        return ivy.exp2(self._data, out=out)
+
+    def nansum(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[tuple, int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.nansum. This method simply
+        wraps the function, and so the docstring for ivy.nansum also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        axis
+            Axis or axes along which the sum is computed.
+            The default is to compute the sum of the flattened array.
+        dtype
+            The type of the returned array and of the accumulator in
+            which the elements are summed. By default, the dtype of input is used.
+        keepdims
+            If this is set to True, the axes which are reduced are left
+            in the result as dimensions with size one.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+        >>> ivy.nansum(a)
+        10.0
+        >>> ivy.nansum(a, axis=0)
+        ivy.array([2.1, 5.8, 2.1])
+        >>> ivy.nansum(a, axis=1)
+        ivy.array([5.5, 4.5])
+        """
+        return ivy.nansum(
+            self._data, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+        )
+
+    def gcd(
+        self: Union[ivy.Array, int, list, tuple],
+        x2: Union[ivy.Array, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.gcd. This method simply
+        wraps the function, and so the docstring for ivy.gcd also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First array-like input.
+        x2
+            Second array-like input
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise gcd of |x1| and |x2|.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x2 = ivy.array([4, 5, 6])
+        >>> x1.gcd(x2)
+        ivy.array([1.,    1.,   3.])
+        >>> x1 = ivy.array([1, 2, 3])
+        >>> x1.gcd(10)
+        ivy.array([1.,   2.,  1.])
+        """
+        return ivy.gcd(self._data, x2, out=out)
+
+    def isposinf(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isposinf. This method simply
+        wraps the function, and so the docstring for ivy.isposinf also applies to
+        this method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            Returns a boolean array with values True where 
+            the corresponding element of the input is positive
+            infinity and values False where the element of the
+            input is not positive infinity.
+        
+        Examples
+        --------
+        >>> a = ivy.array([12.1, -ivy.inf, ivy.inf])
+        >>> ivy.isposinf(a)
+        ivy.array([False, False,  True])
+        """
+        return ivy.isposinf(self._data, out=out)
+
+    def isneginf(
+        self: Union[ivy.Array, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isneginf. This method simply
+        wraps the function, and so the docstring for ivy.isneginf also applies to
+        this method with minimal changes.
+        
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+        
+        Returns
+        -------
+        ret
+            Returns a boolean array with values True where 
+            the corresponding element of the input is negative
+            infinity and values False where the element of the
+            input is not negative infinity.
+        
+        Examples
+        --------
+        >>> x = ivy.array([12.1, -ivy.inf, ivy.inf])
+        >>> x.isneginf()
+        ivy.array([False, True,  False])
+        """
+        return ivy.isneginf(self._data, out=out)

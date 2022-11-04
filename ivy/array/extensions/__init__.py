@@ -9,7 +9,7 @@ from .general import ArrayWithGeneralExtensions
 from .gradients import ArrayWithGradientsExtensions
 from .image import ArrayWithImageExtension
 from .layers import ArrayWithLayersExtensions
-from .linear_algebra import ArrayWithLinalgExtensions
+from .linalg import ArrayWithLinalgExtensions
 from .losses import ArrayWithLossesExtensions
 from .manipulation import ArrayWithManipulationExtensions
 from .norms import ArrayWithNormsExtensions

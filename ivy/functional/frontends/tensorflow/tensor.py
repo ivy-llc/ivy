@@ -5,26 +5,43 @@ import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
 
-class Tensor:
+class EagerTensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
-        elif isinstance(data, list):
-            data = ivy.asarray(data)
+        else:
+            data = ivy.array(data) if not isinstance(data, ivy.Array) else data
         self.data = data
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.tensor("
+            "ivy.functional.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self.data))
             + ")"
         )
 
     # Instance Methods #
-    # -------------------#
+    # ---------------- #
 
     def get_shape(self):
         return tf_frontend.raw_ops.Shape(input=self.data)
+
+    def set_shape(self, shape):
+        if shape is None:
+            return
+
+        x_shape = self.data.shape
+        if len(x_shape) != len(shape):
+            raise ValueError(
+                f"Tensor's shape {x_shape} is not compatible with supplied shape "
+                f"{shape}."
+            )
+        for i, v in enumerate(x_shape):
+            if v != shape[i] and (shape[i] is not None):
+                raise ValueError(
+                    f"Tensor's shape {x_shape} is not compatible with supplied shape "
+                    f"{shape}."
+                )
 
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
@@ -45,7 +62,7 @@ class Tensor:
         temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
         shape = ivy.shape(temp)
         if shape:
-            raise ivy.exceptions.IvyError(
+            raise ValueError(
                 "The truth value of an array with more than one element is ambiguous. "
                 "Use a.any() or a.all()"
             )
@@ -64,7 +81,8 @@ class Tensor:
         return tf_frontend.raw_ops.GreaterEqual(x=self.data, y=y.data, name=name)
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
-        return Tensor(self.data.__getitem__(slice_spec))
+        ret = ivy.get_item(self.data, slice_spec)
+        return EagerTensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
@@ -115,6 +133,9 @@ class Tensor:
     def __ror__(self, x, name="ror"):
         return tf_frontend.raw_ops.LogicalOr(x=x, y=self.data, name=name)
 
+    def __rpow__(self, x, name="rpow"):
+        return tf_frontend.raw_ops.Pow(x=x, y=self.data, name=name)
+
     def __rsub__(self, x, name="rsub"):
         return tf_frontend.math.subtract(x, self.data, name=name)
 
@@ -138,6 +159,9 @@ class Tensor:
                 ivy.astype(self.data, ivy.float64)
             )
         return y.__rtruediv__(self.data)
+
+    def __len__(self):
+        return len(self.data)
 
     def __xor__(self, y, name="xor"):
         return y.__rxor__(self.data)

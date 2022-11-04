@@ -53,7 +53,7 @@ class Device(str):
         if dev_str != "":
             ivy.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                ivy.assertions.check_equal(dev_str[3], ":")
+                # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
@@ -506,6 +506,10 @@ from .backend_handler import (
     current_backend,
     get_backend,
     set_backend,
+    set_numpy_backend,
+    set_jax_backend,
+    set_tensorflow_backend,
+    set_torch_backend,
     unset_backend,
     backend_stack,
     choose_random_backend,
@@ -531,7 +535,7 @@ from ivy.functional.ivy import (
     general,
     gradients,
     layers,
-    linear_algebra,
+    linalg,
     losses,
     manipulation,
     norms,
@@ -555,7 +559,7 @@ add_ivy_array_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -580,7 +584,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -606,7 +610,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
