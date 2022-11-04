@@ -42,7 +42,7 @@ def test_numpy_ndarray_argmax(
             "value": x[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="argmax",
     )
 
@@ -92,7 +92,7 @@ def test_numpy_ndarray_reshape(
             "shape": shape,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="reshape",
     )
 
@@ -133,7 +133,7 @@ def test_numpy_ndarray_transpose(
             "axes": axes,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="transpose",
     )
 
@@ -192,7 +192,7 @@ def test_numpy_ndarray_any(
             "where": where,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="any",
     )
 
@@ -251,7 +251,7 @@ def test_numpy_ndarray_all(
             "where": where,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="all",
     )
 
@@ -332,7 +332,7 @@ def test_numpy_instance_min(
             "keepdims": keepdims,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="min",
     )
 
@@ -422,7 +422,7 @@ def test_numpy_instance_max(
             "keepdims": keepdims,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="max",
     )
 
@@ -468,7 +468,7 @@ def test_numpy_instance_cumprod(
             "out": None,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="cumprod",
     )
 
@@ -514,7 +514,7 @@ def test_numpy_instance_cumsum(
             "out": None,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="cumsum",
     )
 
@@ -556,7 +556,7 @@ def test_numpy_instance_sort(
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="sort",
         test_values=False,
     )
@@ -602,7 +602,7 @@ def test_numpy_instance_copy(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="copy",
     )
 
@@ -638,7 +638,7 @@ def test_numpy_instance_nonzero(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="nonzero",
     )
 
@@ -674,7 +674,7 @@ def test_numpy_instance_ravel(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="ravel",
     )
 
@@ -719,7 +719,7 @@ def test_numpy_instance_repeat(
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="repeat",
     )
 
@@ -764,7 +764,7 @@ def test_numpy_instance_searchsorted(
             "sorter": np.argsort(xs[0]),
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="searchsorted",
     )
 
@@ -806,7 +806,7 @@ def test_numpy_instance_squeeze(
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="squeeze",
     )
 
@@ -844,7 +844,7 @@ def test_numpy_instance_add__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__add__",
     )
 
@@ -882,7 +882,7 @@ def test_numpy_instance_sub__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__sub__",
     )
 
@@ -921,7 +921,7 @@ def test_numpy_instance_mul__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__mul__",
     )
 
@@ -960,7 +960,7 @@ def test_numpy_instance_and__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__and__",
     )
 
@@ -999,7 +999,7 @@ def test_numpy_instance_or__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__or__",
     )
 
@@ -1038,7 +1038,7 @@ def test_numpy_instance_xor__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__xor__",
     )
 
@@ -1078,7 +1078,7 @@ def test_numpy_instance_matmul__(
             "value": x2,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__matmul__",
     )
 
@@ -1115,7 +1115,7 @@ def test_numpy_instance_copy__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__copy__",
     )
 
@@ -1152,7 +1152,7 @@ def test_numpy_instance_neg__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__neg__",
     )
 
@@ -1189,7 +1189,7 @@ def test_numpy_instance_pos__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__pos__",
     )
 
@@ -1226,7 +1226,7 @@ def test_numpy_instance_bool__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__bool__",
     )
 
@@ -1265,7 +1265,7 @@ def test_numpy_instance_ne__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__ne__",
     )
 
@@ -1304,7 +1304,7 @@ def test_numpy_instance_eq__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__eq__",
     )
 
@@ -1343,7 +1343,7 @@ def test_numpy_instance_ge__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__ge__",
     )
 
@@ -1382,7 +1382,7 @@ def test_numpy_instance_gt__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__gt__",
     )
 
@@ -1421,7 +1421,7 @@ def test_numpy_instance_le__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__le__",
     )
 
@@ -1460,6 +1460,6 @@ def test_numpy_instance_lt__(
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__lt__",
     )

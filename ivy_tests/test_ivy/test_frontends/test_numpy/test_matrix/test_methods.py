@@ -44,7 +44,7 @@ def test_numpy_matrix_argmax(
             "axis": axis,
         },
         frontend="numpy",
-        class_name="matrix",
+        class_="matrix",
         method_name="argmax",
     )
 
@@ -87,6 +87,6 @@ def test_numpy_matrix_any(
             "axis": axis,
         },
         frontend="numpy",
-        class_name="matrix",
+        class_="matrix",
         method_name="any",
     )

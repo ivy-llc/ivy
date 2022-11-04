@@ -66,7 +66,7 @@ def test_torch_instance_add(
             "alpha": alpha,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="add",
     )
 
@@ -114,7 +114,7 @@ def test_torch_instance_new_ones(
             "device": device,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="new_ones",
     )
 
@@ -152,7 +152,7 @@ def test_torch_instance_reshape(
             "shape": shape,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="reshape",
     )
 
@@ -185,7 +185,7 @@ def test_torch_instance_sin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="sin",
     )
 
@@ -218,7 +218,7 @@ def test_torch_instance_arcsin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="arcsin",
     )
 
@@ -251,7 +251,7 @@ def test_torch_instance_atan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="atan",
     )
 
@@ -284,7 +284,7 @@ def test_torch_instance_sin_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="sin_",
     )
 
@@ -317,7 +317,7 @@ def test_torch_instance_cos(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="cos",
     )
 
@@ -351,7 +351,7 @@ def test_torch_instance_cos_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="cos_",
     )
 
@@ -384,7 +384,7 @@ def test_torch_instance_sinh(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="sinh",
     )
 
@@ -417,7 +417,7 @@ def test_torch_instance_sinh_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="sinh_",
     )
 
@@ -456,7 +456,7 @@ def test_torch_instance_view(
             "shape": shape,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="view",
     )
 
@@ -489,7 +489,7 @@ def test_torch_instance_float(
             "memory_format": torch.preserve_format,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="float",
     )
 
@@ -522,7 +522,7 @@ def test_torch_instance_asinh(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="asinh",
         rtol_=1e-2,
         atol_=1e-2,
@@ -557,7 +557,7 @@ def test_torch_instance_asinh_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="asinh_",
         rtol_=1e-2,
         atol_=1e-2,
@@ -592,7 +592,7 @@ def test_torch_instance_tan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="tan",
     )
 
@@ -625,7 +625,7 @@ def test_torch_instance_asin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="asin",
     )
 
@@ -657,7 +657,7 @@ def test_torch_instance_amax(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="amax",
     )
 
@@ -689,7 +689,7 @@ def test_torch_instance_abs(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="abs",
     )
 
@@ -721,7 +721,7 @@ def test_torch_instance_abs_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="abs_",
     )
 
@@ -753,7 +753,7 @@ def test_torch_instance_amin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="amin",
     )
 
@@ -788,7 +788,7 @@ def test_torch_instance_contiguous(
             "memory_format": torch.contiguous_format,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="contiguous",
     )
 
@@ -822,7 +822,7 @@ def test_torch_instance_log(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="log",
     )
 
@@ -866,7 +866,7 @@ def test_torch_special_add(
             "alpha": alpha,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__add__",
     )
 
@@ -910,7 +910,7 @@ def test_torch_special_radd(
             "alpha": alpha,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__radd__",
     )
 
@@ -954,7 +954,7 @@ def test_torch_special_sub(
             "alpha": alpha,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__sub__",
     )
 
@@ -992,7 +992,7 @@ def test_torch_special_mul(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__mul__",
     )
 
@@ -1030,7 +1030,7 @@ def test_torch_special_rmul(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__rmul__",
     )
 
@@ -1072,7 +1072,7 @@ def test_torch_special_truediv(
             "rounding_mode": rounding_mode,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__truediv__",
     )
 
@@ -1112,7 +1112,7 @@ def test_torch_instance_to_with_device(
             "memory_format": torch.preserve_format,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="to",
     )
 
@@ -1151,7 +1151,7 @@ def test_torch_instance_to_with_dtype(
             "memory_format": torch.preserve_format,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="to",
     )
 
@@ -1184,7 +1184,7 @@ def test_torch_instance_arctan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="arctan",
     )
 
@@ -1217,7 +1217,7 @@ def test_torch_instance_acos(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="acos",
     )
 
@@ -1249,7 +1249,7 @@ def test_torch_instance_new_tensor(dtype_and_x, as_variable, native_array):
             "dtype": input_dtype[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="new_tensor",
     )
 
@@ -1330,7 +1330,7 @@ def test_torch_instance_getitem(dtype_and_x, as_variable, native_array, fw):
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"query": index},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__getitem__",
     )
 
@@ -1366,7 +1366,7 @@ def test_torch_instance_view_as(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="view_as",
     )
 
@@ -1407,7 +1407,7 @@ def test_torch_instance_unsqueeze(
             "dim": dim,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="unsqueeze",
     )
 
@@ -1448,7 +1448,7 @@ def test_torch_instance_unsqueeze_(
             "dim": dim,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="unsqueeze_",
     )
 
@@ -1477,7 +1477,7 @@ def test_torch_instance_detach(dtype_and_x, as_variable, native_array):
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="detach",
     )
 
@@ -1505,7 +1505,7 @@ def test_torch_instance_dim(dtype_and_x, as_variable, native_array):
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="dim",
     )
 
@@ -1533,7 +1533,7 @@ def test_torch_instance_ndimension(dtype_and_x, as_variable, native_array):
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="ndimension",
     )
 
@@ -1604,7 +1604,7 @@ def test_torch_instance_new_full(dtype_and_x, as_variable, native_array):
             "fill_value": x[2],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="new_full",
     )
 
@@ -1638,7 +1638,7 @@ def test_torch_instance_new_empty(dtype_and_x, size, as_variable, native_array):
             "size": size,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="new_empty",
     )
 
@@ -1681,7 +1681,7 @@ def test_torch_instance_expand(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={str(i): s for i, s in enumerate(shape)},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="expand",
     )
 
@@ -1745,7 +1745,7 @@ def test_torch_instance_unfold(
             "step": step,
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="unfold",
     )
 
@@ -1781,7 +1781,7 @@ def test_torch_special_mod(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="__mod__",
     )
 
@@ -1814,7 +1814,7 @@ def test_torch_instance_long(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="long",
     )
 
@@ -1846,7 +1846,7 @@ def test_torch_instance_max(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="max",
     )
 
@@ -1874,6 +1874,6 @@ def test_torch_instance_device(dtype_and_x, as_variable, native_array):
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="device",
     )

@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
-from ivy.functional.frontends.torch.Tensor import tensor as torch_tensor
+from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
 from ivy.functional.frontends.tensorflow.tensor import Tensor as tf_tensor
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
@@ -1030,7 +1030,7 @@ def test_frontend_method(
     method_native_array_flags: NativeArrayFlags,
     method_all_as_kwargs_np: dict,
     frontend: str,
-    class_name: str,
+    class_: str,
     method_name: str = "__init__",
     rtol_: float = None,
     atol_: float = 1e-06,
@@ -1069,7 +1069,7 @@ def test_frontend_method(
         input arguments to the method as keyword arguments.
     frontend
         current frontend (framework).
-    class_name
+    class_
         name of the class to test.
     method_name
         name of the method to test.
@@ -1230,15 +1230,15 @@ def test_frontend_method(
     )
 
     # Run testing
-    class_name = class_name.split(".")
+    class_ = class_.split(".")
     ins_class = ivy.functional.frontends.__dict__[frontend]
-    if class_name[-1] in ARR_INS_METHOD and frontend != "torch":
-        frontend_class = ARR_INS_METHOD[class_name[-1]]
-        for c_n in class_name:
+    if class_[-1] in ARR_INS_METHOD and frontend != "torch":
+        frontend_class = ARR_INS_METHOD[class_[-1]]
+        for c_n in class_:
             ins_class = getattr(ins_class, c_n)
     else:
         frontend_class = importlib.import_module(frontend)
-        for c_n in class_name:
+        for c_n in class_:
             ins_class = getattr(ins_class, c_n)
             frontend_class = getattr(frontend_class, c_n)
     ins = ins_class(*args_constructor, **kwargs_constructor)

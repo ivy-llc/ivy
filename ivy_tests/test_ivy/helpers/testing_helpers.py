@@ -1,6 +1,8 @@
 # general
 import importlib
 import inspect
+import typing
+
 from hypothesis import given, strategies as st
 
 # local
@@ -8,7 +10,12 @@ import ivy
 from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
-
+from .function_testing import (
+    ContainerFlags,
+    NativeArrayFlags,
+    AsVariableFlags,
+    NumPositionalArg,
+)
 
 cmd_line_args = (
     "with_out",
@@ -167,6 +174,18 @@ def _generate_shared_test_flags(
     return _given_kwargs
 
 
+def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_name: str):
+    supported_device_dtypes = {}
+    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
+    for b in backends:  # ToDo can optimize this ?
+        ivy.set_backend(b)
+        _tmp_mod = importlib.import_module(fn_module)
+        _fn = _tmp_mod.__dict__[class_name].__dict__[fn_name]
+        supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
+        ivy.unset_backend()
+    return supported_device_dtypes
+
+
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     supported_device_dtypes = {}
     backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
@@ -310,12 +329,78 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
     return test_wrapper
 
 
+def _import_method(method_tree: str):
+    split_index = method_tree.rfind(".")
+    class_tree, method_name = method_tree[:split_index], method_tree[split_index + 1 :]
+    split_index = class_tree.rfind(".")
+    mod_to_import, class_name = class_tree[:split_index], class_tree[split_index + 1 :]
+    _mod = importlib.import_module(mod_to_import)
+    _class = _mod.__dict__[class_name]
+    _method = _class.__dict__[method_name]
+    return _method, method_name, _class, class_name, _mod
+
+
 def handle_method(*, method_tree, **_given_kwargs):
     pass
 
 
 def handle_frontend_method(*, method_tree, **_given_kwargs):
-    pass
+    method_tree = "ivy.functional.frontends." + method_tree
+    is_hypothesis_test = len(_given_kwargs) != 0
+
+    def test_wrapper(test_fn):
+        callable_method, method_name, class_, class_name, method_mod = _import_method(
+            method_tree
+        )
+        supported_device_dtypes = _get_method_supported_devices_dtypes(
+            method_name, callable_method.__module__, class_name
+        )
+
+        if is_hypothesis_test:
+            param_names = inspect.signature(test_fn).parameters.keys()
+            fn_args = typing.get_type_hints(test_fn)
+
+            for k, v in fn_args.items():
+                if v is NativeArrayFlags or v is ContainerFlags or v is AsVariableFlags:
+                    _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
+                elif v is NumPositionalArg:
+                    _given_kwargs[k] = st.just(0)
+
+            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+
+            def wrapped_test(class_=class_, method_name=method_name, *args, **kwargs):
+                __tracebackhide__ = True
+                return wrapped_hypothesis_test(
+                    class_=class_, method_name=method_name, *args, **kwargs
+                )
+
+            params_objs = []
+            for param in possible_fixtures_frontends:
+                if param in param_names:
+                    params_objs.append(
+                        inspect.Parameter(
+                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
+                        )
+                    )
+
+            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
+            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
+            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
+                parameters=params_objs
+            )
+        else:
+            wrapped_test = test_fn
+
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            fn_tree=method_tree,
+            fn_name=method_name,
+            supported_device_dtypes=supported_device_dtypes,
+        )
+
+        return wrapped_test
+
+    return test_wrapper
 
 
 @st.composite
