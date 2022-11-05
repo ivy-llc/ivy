@@ -100,3 +100,26 @@ def isneginf(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.isneginf(x, out=out)
+
+
+def nan_to_num(
+    x: JaxArray,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+def logaddexp2(
+    x1: Union[JaxArray, float, list, tuple],
+    x2: Union[JaxArray, float, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:    
+    return jnp.logaddexp2(x1, x2)

@@ -76,13 +76,11 @@ def _generate_data_layer_norm(
 
     results_weight = draw(helpers.dtype_and_values(shape=weight_shape, **arg_dict))
     results_bias = draw(helpers.dtype_and_values(shape=bias_shape, **arg_dict))
-    results_new_std = draw(helpers.dtype_and_values(shape=shape, **arg_dict))
 
     _, weight_values = results_weight
     _, bias_values = results_bias
-    _, new_std_values = results_new_std
 
-    return dtype, values, axis, weight_values, bias_values, new_std_values
+    return dtype, values, axis, weight_values, bias_values
 
 
 @handle_cmd_line_args
@@ -90,12 +88,14 @@ def _generate_data_layer_norm(
     values_tuple=_generate_data_layer_norm(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    new_std=st.floats(min_value=0.01, max_value=0.1),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
 )
 def test_layer_norm(
     *,
     values_tuple,
+    new_std,
     epsilon,
     num_positional_args,
     as_variable,
@@ -105,7 +105,7 @@ def test_layer_norm(
     instance_method,
     fw,
 ):
-    dtype, x, normalize_axis, weight, bias, new_std = values_tuple
+    dtype, x, normalize_axis, weight, bias = values_tuple
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,

@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
 from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
 from ivy_tests.test_ivy.test_frontends.test_jax import convjax
 from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
-from ivy.functional.frontends.torch.Tensor import tensor as torch_tensor
+from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
