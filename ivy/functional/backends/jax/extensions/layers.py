@@ -307,7 +307,6 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-
     res = _pool(x, 0., jlax.add, kernel, strides, padding)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
