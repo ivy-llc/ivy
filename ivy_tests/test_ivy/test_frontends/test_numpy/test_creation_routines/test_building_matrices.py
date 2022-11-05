@@ -63,6 +63,6 @@ def test_numpy_diag(dtype_and_x, k, num_positional_args, native_array):
         native_array_flags=native_array,
         frontend="numpy",
         fn_tree="diag",
-        m=x[0],
+        v=x[0],
         k=k,
     )
