@@ -436,7 +436,6 @@ def test_numpy_floor_divide(
     )
 
 
-# mod
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
