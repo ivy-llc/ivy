@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from typing import Any
 
 
 class EagerTensor:
@@ -12,11 +13,17 @@ class EagerTensor:
         else:
             data = ivy.array(data) if not isinstance(data, ivy.Array) else data
         self.data = data
+        self.dtype = data.dtype
 
     def __repr__(self):
         return (
             "ivy.functional.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self.data))
+            + ",shape="
+            + str(self.data.shape)
+            + ","
+            + "dtype="
+            + str(self.data.dtype)
             + ")"
         )
 
@@ -165,3 +172,33 @@ class EagerTensor:
 
     def __xor__(self, y, name="xor"):
         return y.__rxor__(self.data)
+
+    def __setitem__(self, key, value):
+        raise ivy.exceptions.IvyException(
+            "ivy.functional.frontends.tensorflow.EagerTensor object "
+            "doesn't support assignment"
+        )
+
+
+def constant(
+    value: Any,
+    dtype: Any = None,
+    shape: Any = None,
+) -> EagerTensor:
+    if shape:
+        value = ivy.reshape(ivy.array(value, dtype=dtype), shape=shape)
+        return EagerTensor(value)
+
+    return EagerTensor(ivy.array(value, dtype=dtype))
+
+
+def convert_to_tensor(
+    value: Any,
+    dtype: Any = None,
+    dtype_hint: Any = None,
+) -> Any:
+    if dtype:
+        return EagerTensor(ivy.array(value, dtype=dtype))
+    elif dtype_hint:
+        return EagerTensor(ivy.array(value, dtype=dtype_hint))
+    return EagerTensor(ivy.array(value))
