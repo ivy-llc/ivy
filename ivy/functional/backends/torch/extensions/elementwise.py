@@ -179,7 +179,8 @@ def nan_to_num(
         x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
         return x
 
-    
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def logaddexp2(
     x1: Union[torch.Tensor, float, list, tuple],
     x2: Union[torch.Tensor, float, list, tuple],

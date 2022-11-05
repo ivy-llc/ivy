@@ -588,6 +588,8 @@ def test_logaddexp2(
         instance_method=instance_method,
         fw=fw,
         fn_name="logaddexp2",
+        rtol_=1e-03,
+        atol_=1e-03,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1])
     )
