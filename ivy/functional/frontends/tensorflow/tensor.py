@@ -3,20 +3,27 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from typing import Any
 
 
-class Tensor:
+class EagerTensor:
     def __init__(self, data):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         else:
             data = ivy.array(data) if not isinstance(data, ivy.Array) else data
         self.data = data
+        self.dtype = data.dtype
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.tensor("
+            "ivy.functional.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self.data))
+            + ",shape="
+            + str(self.data.shape)
+            + ","
+            + "dtype="
+            + str(self.data.dtype)
             + ")"
         )
 
@@ -82,7 +89,7 @@ class Tensor:
 
     def __getitem__(self, slice_spec, var=None, name="getitem"):
         ret = ivy.get_item(self.data, slice_spec)
-        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return EagerTensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __gt__(self, y, name="gt"):
         return tf_frontend.raw_ops.Greater(x=self.data, y=y.data, name=name)
@@ -161,10 +168,37 @@ class Tensor:
         return y.__rtruediv__(self.data)
 
     def __len__(self):
-        raise ivy.exceptions.IvyError(
-            "len is not well defined for a symbolic Tensor. Please call `x.shape` "
-            "rather than `len(x)` for shape information. "
-        )
+        return len(self.data)
 
     def __xor__(self, y, name="xor"):
         return y.__rxor__(self.data)
+
+    def __setitem__(self, key, value):
+        raise ivy.exceptions.IvyException(
+            "ivy.functional.frontends.tensorflow.EagerTensor object "
+            "doesn't support assignment"
+        )
+
+
+def constant(
+    value: Any,
+    dtype: Any = None,
+    shape: Any = None,
+) -> EagerTensor:
+    if shape:
+        value = ivy.reshape(ivy.array(value, dtype=dtype), shape=shape)
+        return EagerTensor(value)
+
+    return EagerTensor(ivy.array(value, dtype=dtype))
+
+
+def convert_to_tensor(
+    value: Any,
+    dtype: Any = None,
+    dtype_hint: Any = None,
+) -> Any:
+    if dtype:
+        return EagerTensor(ivy.array(value, dtype=dtype))
+    elif dtype_hint:
+        return EagerTensor(ivy.array(value, dtype=dtype_hint))
+    return EagerTensor(ivy.array(value))
