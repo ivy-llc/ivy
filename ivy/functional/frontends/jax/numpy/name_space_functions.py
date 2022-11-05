@@ -405,3 +405,8 @@ def lcm(x1, x2):
 @to_ivy_arrays_and_back
 def logaddexp2(x1, x2):
     return ivy.logaddexp2(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def trapz(y, x=None, dx=1.0, axis=-1, out=None):
+    return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
