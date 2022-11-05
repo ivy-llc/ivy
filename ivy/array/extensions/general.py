@@ -51,4 +51,4 @@ class ArrayWithGeneralExtensions(abc.ABC):
         ivy.array([False, False, False,  True])
         """
         return ivy.isin(self._data, test_elements, 
-                assume_unique=assume_unique, invert=invert)
+                        assume_unique=assume_unique, invert=invert)
