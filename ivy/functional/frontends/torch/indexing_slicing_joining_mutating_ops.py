@@ -3,6 +3,7 @@ import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # global
+import logging
 import math
 
 
@@ -30,6 +31,11 @@ def concat(tensors, dim=0, *, out=None):
 
 @to_ivy_arrays_and_back
 def gather(input, dim, index, *, sparse_grad=False, out=None):
+    if sparse_grad:
+        logging.warning(
+            "Ivy does not yet support the sparse tensor functionality."
+        )
+
     dim = dim % len(input.shape)
     all_indices = ivy.argwhere(ivy.full(index.shape, True))
     gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
