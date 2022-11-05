@@ -395,3 +395,8 @@ def isposinf(x, out=None):
 @to_ivy_arrays_and_back
 def kron(a, b):
     return ivy.kron(a, b)
+
+
+@to_ivy_arrays_and_back
+def lcm(x1, x2):
+    return ivy.lcm(x1, x2)
