@@ -61,16 +61,6 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
         is_single_input = True
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
-    if not isinstance(padding, str):
-        padding = tuple(map(tuple, padding))
-        assert len(padding) == len(window_shape), (
-            f"padding {padding} must specify pads for same number of dims as "
-            f"window_shape {window_shape}"
-        )
-        assert all(
-            [len(x) == 2 for x in padding]
-        ), f"each entry in padding {padding} must be length 2"
-        padding = ((0, 0),) + padding + ((0, 0),)
     y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
@@ -290,4 +280,44 @@ def avg_pool3d(
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
 
+    return res
+
+
+def avg_pool2d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 2
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * 2
+
+    if isinstance(strides, int):
+        strides = (strides,) * 2
+    elif len(strides) == 1:
+        strides = (strides[0],) * 2
+
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    div_shape = x.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / _pool(jnp.ones(div_shape,
+                               dtype=res.dtype),
+                      0.,
+                      jlax.add,
+                      kernel,
+                      strides,
+                      padding)
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
     return res
