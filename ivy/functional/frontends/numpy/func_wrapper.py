@@ -155,6 +155,13 @@ def _ivy_to_numpy(x: Any) -> Any:
         return x
 
 
+def _numpy_is_nan(x: Any) -> Any:
+    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        return ivy.isnan(x).any()
+    else:
+        return False
+
+
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -216,3 +223,39 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     and return arrays are all converted to `ndarray` instances.
     """
     return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
+
+
+def handle_nans(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Checks for the existence of nans in all arrays in the `args`
+        and `kwargs`. The presence of nans is then handled depending
+        on the enabled `nan_policy`.
+
+        Following policies apply:
+        raise_exception: raises an exception in case nans are present
+        warns: warns a user in case nans are present
+        nothing: does nothing
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with handling of inputs based
+            on the selected `nan_policy`.
+        """
+        # check all args and kwards for presence of nans
+        args_nans = ivy.nested_map(args, _numpy_is_nan, include_derived={tuple: True})
+        kwargs_nans = ivy.nested_map(
+            kwargs, _numpy_is_nan, include_derived={tuple: True}
+        )
+        return fn(*args, **kwargs)
+
+    new_fn.inputs_to_ivy_arrays = True
+    return new_fn

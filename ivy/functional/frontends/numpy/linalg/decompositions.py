@@ -1,6 +1,6 @@
 # local
 import ivy
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back, handle_nans
 
 
 @to_ivy_arrays_and_back
@@ -9,6 +9,7 @@ def cholesky(a):
 
 
 @to_ivy_arrays_and_back
+@handle_nans
 def qr(a, mode="reduced"):
     return ivy.qr(a, mode=mode)
 
