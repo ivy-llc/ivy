@@ -400,3 +400,8 @@ def kron(a, b):
 @to_ivy_arrays_and_back
 def lcm(x1, x2):
     return ivy.lcm(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def logaddexp2(x1, x2):
+    return ivy.logaddexp2(x1, x2)
