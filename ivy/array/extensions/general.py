@@ -26,17 +26,17 @@ class ArrayWithGeneralExtensions(abc.ABC):
         test_elements
             values against which to test for each input element
         assume_unique
-            If True, assumes both elements and test_elements contain unique elements, which can speed up the calculation.
-            by default is False
+            If True, assumes both elements and test_elements contain unique elements, 
+            which can speed up the calculation. Default value is False.
         invert
-            If True, inverts the boolean return array, resulting in True values for elements not in test_elements.
-            by default is False
+            If True, inverts the boolean return array, resulting in True values for 
+            elements not in test_elements. Default value is False.
 
         Returns
         -------
         ret
-            output a boolean array of the same shape as elements that is True for elements in test_elements
-            and False otherwise.
+            output a boolean array of the same shape as elements that is True for 
+            elements in test_elements and False otherwise.
 
         Examples
         --------
@@ -50,4 +50,5 @@ class ArrayWithGeneralExtensions(abc.ABC):
         >>> x.isin(y, invert=True)
         ivy.array([False, False, False,  True])
         """
-        return ivy.isin(self._data, test_elements, assume_unique=assume_unique, invert=invert)
+        return ivy.isin(self._data, test_elements, 
+                assume_unique=assume_unique, invert=invert)
