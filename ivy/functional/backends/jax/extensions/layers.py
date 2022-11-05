@@ -61,16 +61,6 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
         is_single_input = True
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
-    if not isinstance(padding, str):
-        padding = tuple(map(tuple, padding))
-        assert len(padding) == len(window_shape), (
-            f"padding {padding} must specify pads for same number of dims as "
-            f"window_shape {window_shape}"
-        )
-        assert all(
-            [len(x) == 2 for x in padding]
-        ), f"each entry in padding {padding} must be length 2"
-        padding = ((0, 0),) + padding + ((0, 0),)
     y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
@@ -317,22 +307,9 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    x = jnp.pad(
-        x,
-        [
-            (0, 0),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
-    )
 
     res = _pool(x, 0., jlax.add, kernel, strides, padding)
-    div_shape = res.shape[:-1] + (1,)
+    div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / _pool(jnp.ones(div_shape,
@@ -342,7 +319,6 @@ def avg_pool2d(
                       kernel,
                       strides,
                       padding)
-
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
     return res
