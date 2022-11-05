@@ -2192,3 +2192,50 @@ def test_jax_numpy_logaddexp2(
         x1=x[0],
         x2=x[1],
     )
+
+
+# nan_to_num
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=True,
+        allow_inf=True
+    ),
+    copy=st.booleans(),
+    nan=st.floats(min_value=0.0, max_value=100),
+    posinf=st.floats(min_value=5e+100, max_value=5e+100),
+    neginf=st.floats(min_value=-5e+100, max_value=-5e+100),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.nan_to_num"
+    ),
+)
+def test_jax_numpy_nan_to_num(
+    dtype_and_x,
+    copy,
+    nan,
+    posinf,
+    neginf,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.nan_to_num",
+        x=x[0],
+        copy=copy,
+        nan=nan,
+        posinf=posinf,
+        neginf=neginf
+    )

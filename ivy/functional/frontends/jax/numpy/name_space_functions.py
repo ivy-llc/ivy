@@ -405,3 +405,8 @@ def lcm(x1, x2):
 @to_ivy_arrays_and_back
 def logaddexp2(x1, x2):
     return ivy.logaddexp2(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def nan_to_num(x, copy=True, nan=0.0, posinf=None, neginf=None):
+    return ivy.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
