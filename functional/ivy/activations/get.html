@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>reptile_step &mdash; Ivy 1.0 documentation</title>
+  <title>get &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="maml_step" href="maml_step.html" />
-    <link rel="prev" title="fomaml_step" href="fomaml_step.html" /> 
+    <link rel="next" title="Compilation" href="../compilation.html" />
+    <link rel="prev" title="deserialize" href="deserialize.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,7 +54,18 @@
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../extensions.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../activations.html">Activations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="relu.html">relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="leaky_relu.html">leaky_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gelu.html">gelu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sigmoid.html">sigmoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="softmax.html">softmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="softplus.html">softplus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_softmax.html">log_softmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="deserialize.html">deserialize</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">get</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../creation.html">Creation</a></li>
@@ -67,12 +78,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manipulation.html">Manipulation</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../meta.html">Meta</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="fomaml_step.html">fomaml_step</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">reptile_step</a></li>
-<li class="toctree-l2"><a class="reference internal" href="maml_step.html">maml_step</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
@@ -125,10 +131,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-                    <li><a href="../meta.html">Meta</a> &raquo;</li>
-      <li>reptile_step</li>
+                    <li><a href="../activations.html">Activations</a> &raquo;</li>
+      <li>get</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/meta/reptile_step.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/activations/get.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -136,40 +142,48 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="reptile-step">
-<h1>reptile_step<a class="headerlink" href="#reptile-step" title="Permalink to this heading"></a></h1>
+  <section id="get">
+<h1>get<a class="headerlink" href="#get" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.meta.reptile_step">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">reptile_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cost_fn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_grad_steps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_learning_rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_optimization_step=&lt;function</span> <span class="pre">gradient_descent_update&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batched=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_inner_v=False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_tasks=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_gradients=True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/meta.html#reptile_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.meta.reptile_step" title="Permalink to this definition"></a></dt>
-<dd><p>Perform step of Reptile.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.activations.get">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">custom_objects</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">typing.Union[typing.Dict,</span> <span class="pre">NoneType]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/activations.html#get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.activations.get" title="Permalink to this definition"></a></dt>
+<dd><p>Returns activation function given a string identifier.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>batch</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – The input batch</p></li>
-<li><p><strong>cost_fn</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – callable for the cost function, receivng the task-specific sub-batch and
-variables</p></li>
-<li><p><strong>variables</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Variables to be optimized</p></li>
-<li><p><strong>inner_grad_steps</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Number of gradient steps to perform during the inner loop.</p></li>
-<li><p><strong>inner_learning_rate</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The learning rate of the inner loop.</p></li>
-<li><p><strong>inner_optimization_step</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>) – The function used for the inner loop optimization. (default: <code class="docutils literal notranslate"><span class="pre">&lt;function</span> <span class="pre">gradient_descent_update</span> <span class="pre">at</span> <span class="pre">0x7fdd956a0ee0&gt;</span></code>)
-Default is ivy.gradient_descent_update.</p></li>
-<li><p><strong>batched</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to batch along the time dimension, and run the meta steps in batch. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>return_inner_v</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-inner loop will also be returned. variables for all tasks will be returned with
-‘all’. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>num_tasks</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – Number of unique tasks to inner-loop optimize for the meta step. Determined from (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-batch by default.</p></li>
-<li><p><strong>stop_gradients</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to stop the gradients of the cost. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)</p></li>
+<li><p><strong>name</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The name of the activation function.</p></li>
+<li><p><strong>custom_objects</strong> – Optional dictionary listing user-provided activation functions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The cost and the gradients with respect to the outer loop variables.</p>
+<dd class="field-odd"><p><em>ret</em> – Corresponding activation function.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With :str: input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;sigmoid&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sigmoid</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">sigmoid</span><span class="p">)</span>
+<span class="go">&lt;function sigmoid at XXXXXXXXXXXXXX&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">linear</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">linear</span><span class="p">)</span>
+<span class="go">&lt;function linear at XXXXXXXXXXXXXX&gt;</span>
+</pre></div>
+</div>
+<p>With :str and dict: input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;custom_fn&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">objects</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;custom_fn&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">custom_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">custom_objects</span><span class="o">=</span><span class="n">objects</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">custom_fn</span><span class="p">)</span>
+<span class="go">&lt;function custom_fn at XXXXXXXXXXXXXX&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <div class="line-block">
@@ -183,8 +197,8 @@ batch by default.</p></li>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fomaml_step.html" class="btn btn-neutral float-left" title="fomaml_step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="maml_step.html" class="btn btn-neutral float-right" title="maml_step" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="deserialize.html" class="btn btn-neutral float-left" title="deserialize" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../compilation.html" class="btn btn-neutral float-right" title="Compilation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

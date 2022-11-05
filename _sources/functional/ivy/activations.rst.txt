@@ -21,6 +21,7 @@ Activations
    activations/softplus.rst
    activations/log_softmax.rst
    activations/deserialize.rst
+   activations/get.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`activations forum`: https://discord.com/channels/799879767196958751/1028298682614947850
