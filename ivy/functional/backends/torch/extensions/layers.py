@@ -295,3 +295,53 @@ def avg_pool3d(
     if data_format == "NDHWC":
         res = res.permute(0, 2, 3, 4, 1)
     return res
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
+def avg_pool2d(
+    x: torch.Tensor,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(strides, int):
+        strides = (strides, strides)
+    elif len(strides) == 1:
+        strides = (strides[0], strides[0])
+
+    if isinstance(kernel, int):
+        kernel = (kernel, kernel)
+    elif len(strides) == 1:
+        kernel = (kernel[0], kernel[0])
+
+    if data_format == "NHWC":
+        x = x.permute(0, 3, 1, 2)
+    x_shape = list(x.shape[2:])
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    x = torch.nn.functional.pad(
+        x,
+        [pad_w // 2, pad_w - pad_w // 2, pad_h // 2, pad_h - pad_h // 2],
+        mode="replicate",
+    )
+    if padding != "VALID" and padding != "SAME":
+        raise ivy.exceptions.IvyException(
+            "Invalid padding arg {}\n"
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+    res = torch.nn.functional.avg_pool2d(x, kernel, strides, 0)
+    if data_format == "NHWC":
+        return res.permute(0, 2, 3, 1)
+    return res
