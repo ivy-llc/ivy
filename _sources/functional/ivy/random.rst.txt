@@ -19,8 +19,6 @@ Random
    random/randint.rst
    random/seed.rst
    random/shuffle.rst
-   random/beta.rst
-   random/gamma.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
