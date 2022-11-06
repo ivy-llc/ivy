@@ -215,6 +215,8 @@ def test_get_item(
         instance_method=False,
         fw=fw,
         fn_name="get_item",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         x=x,
         query=indices,
     )
