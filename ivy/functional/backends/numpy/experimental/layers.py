@@ -1,48 +1,10 @@
 # global
-import math
-from numbers import Number
+
 import numpy as np
-from typing import Optional, Union, Tuple, Sequence, Callable, Literal, Any
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
-
-
-def vorbis_window(
-    window_length: np.ndarray,
-    *,
-    dtype: Optional[np.dtype] = np.float32,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.array(
-        [
-            round(
-                math.sin(
-                    (ivy.pi / 2) * (math.sin(ivy.pi * (i) / (window_length * 2)) ** 2)
-                ),
-                8,
-            )
-            for i in range(1, window_length * 2)[0::2]
-        ],
-        dtype=dtype,
-    )
-
-
-vorbis_window.support_native_out = False
-
-
-def hann_window(
-    window_length: int,
-    periodic: Optional[bool] = True,
-    dtype: Optional[np.dtype] = None,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    window_length = window_length + 1 if periodic is True else window_length
-    return np.array(np.hanning(window_length), dtype=dtype)
-
-
-hann_window.support_native_out = False
 
 
 def max_pool2d(
@@ -217,100 +179,6 @@ def max_pool1d(
     if data_format == "NCW":
         return res.permute(0, 2, 1)
     return res
-
-
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
-    *,
-    dtype: Optional[np.dtype] = None,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if periodic is False:
-        return np.array(np.kaiser(M=window_length, beta=beta), dtype=dtype)
-    else:
-        return np.array(np.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
-
-
-kaiser_window.support_native_out = False
-
-
-def _flat_array_to_1_dim_array(x):
-    return x.reshape((1,)) if x.shape == () else x
-
-
-def pad(
-    input: np.ndarray,
-    pad_width: Union[Sequence[Sequence[int]], np.ndarray, int],
-    /,
-    *,
-    mode: Optional[
-        Union[
-            Literal[
-                "constant",
-                "edge",
-                "linear_ramp",
-                "maximum",
-                "mean",
-                "median",
-                "minimum",
-                "reflect",
-                "symmetric",
-                "wrap",
-                "empty",
-            ],
-            Callable,
-        ]
-    ] = "constant",
-    stat_length: Optional[Union[Sequence[Sequence[int]], int]] = None,
-    constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
-    reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[np.ndarray] = None,
-    **kwargs: Optional[Any],
-) -> np.ndarray:
-    if callable(mode):
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-            **kwargs,
-        )
-    if mode in ["maximum", "mean", "median", "minimum"]:
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-            stat_length=stat_length,
-        )
-    elif mode == "constant":
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-            constant_values=constant_values,
-        )
-    elif mode == "linear_ramp":
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-            end_values=end_values,
-        )
-    elif mode in ["reflect", "symmetric"]:
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-            reflect_type=reflect_type,
-        )
-    else:
-        return np.pad(
-            _flat_array_to_1_dim_array(input),
-            pad_width,
-            mode=mode,
-        )
 
 
 def max_pool3d(
