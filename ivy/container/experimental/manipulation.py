@@ -6,8 +6,12 @@ from typing import (
     Dict,
     Sequence,
     Tuple,
+    Literal,
+    Any,
+    Callable,
+    Iterable
 )
-
+from numbers import Number
 
 # local
 import ivy
@@ -948,3 +952,210 @@ class ContainerWithManipulationExperimental(ContainerBase):
         }
         """
         return self.static_i0(self, out=out)
+
+    @staticmethod
+    def static_flatten(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        start_dim: Optional[int] = 0,
+        end_dim: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.flatten. This method simply wraps the
+        function, and so the docstring for ivy.flatten also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container to flatten at leaves.
+        start_dim
+            first dim to flatten. If not set, defaults to 0.
+        end_dim
+            last dim to flatten. If not set, defaults to -1.
+
+        Returns
+        -------
+        ret
+            Container with arrays flattened at leaves.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> ivy.flatten(x)
+        [{
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+            b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
+        }]
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "flatten",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            start_dim=start_dim,
+            end_dim=end_dim,
+            out=out,
+        )
+
+    def flatten(
+        self: ivy.Container,
+        *,
+        start_dim: Optional[int] = 0,
+        end_dim: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.flatten. This method simply
+        wraps the function, and so the docstring for ivy.flatten also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container to flatten at leaves.
+        start_dim
+            first dim to flatten. If not set, defaults to 0.
+        end_dim
+            last dim to flatten. If not set, defaults to -1.
+
+        Returns
+        -------
+        ret
+            Container with arrays flattened at leaves.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> ivy.flatten(x)
+        [{
+            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+            b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
+        }]
+        """
+        return self.static_flatten(self, start_dim=start_dim, end_dim=end_dim, out=out)
+
+    @staticmethod
+    def static_pad(
+        input: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        /,
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies to
+        this method with minimal changes.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "pad",
+            input,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            **kwargs,
+        )
+
+    def pad(
+        self: ivy.Container,
+        pad_width: Union[Iterable[Tuple[int]], int],
+        /,
+        *,
+        mode: Optional[
+            Union[
+                Literal[
+                    "constant",
+                    "edge",
+                    "linear_ramp",
+                    "maximum",
+                    "mean",
+                    "median",
+                    "minimum",
+                    "reflect",
+                    "symmetric",
+                    "wrap",
+                    "empty",
+                ],
+                Callable,
+            ]
+        ] = "constant",
+        stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
+        constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+        reflect_type: Optional[Literal["even", "odd"]] = "even",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+        **kwargs: Optional[Any],
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.pad. This method simply
+        wraps the function, and so the docstring for ivy.pad also applies to
+        this method with minimal changes.
+        """
+        return self.static_pad(
+            self,
+            pad_width,
+            mode=mode,
+            stat_length=stat_length,
+            constant_values=constant_values,
+            end_values=end_values,
+            reflect_type=reflect_type,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+            **kwargs,
+        )
