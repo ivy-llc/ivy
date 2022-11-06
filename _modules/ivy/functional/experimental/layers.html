@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ivy.functional.experimental.layers &mdash; Ivy 1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> Ivy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Overview</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../background.html">Background</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design.html">Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../related_work.html">Related Work</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../deep_dive.html">Deep Dive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../glossary.html">Glossary</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Functions</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/creation.html">Creation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/manipulation.html">Manipulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/searching.html">Searching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/set.html">Set</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/sorting.html">Sorting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/statistical.html">Statistical</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/utility.html">Utility</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../data_classes/array.html">Array</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../mech"">Ivy mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../vision"">Ivy vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../robot"">Ivy robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../gym"">Ivy gym</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../memory"">Ivy memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../builder"">Ivy builder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../models"">Ivy models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../ecosystem"">Ivy ecosystem</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Ivy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>ivy.functional.experimental.layers</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ivy.functional.experimental.layers</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">Callable</span><span class="p">,</span>
+    <span class="n">Literal</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">outputs_to_ivy_arrays</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span>
+
+
+<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../functional/experimental/layers/vorbis_window.html#ivy.functional.experimental.layers.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns an array that contains a vorbis power complementary window</span>
+<span class="sd">    of size window_length.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        the length of the vorbis window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array. By default float32.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Input array with the vorbis window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(3)</span>
+<span class="sd">    ivy.array([0.38268346, 1. , 0.38268352])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(5)</span>
+<span class="sd">    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vorbis_window</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/experimental/layers/hann_window.html#ivy.functional.experimental.layers.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generate a Hann window. The Hanning window</span>
+<span class="sd">    is a taper formed by using a weighted cosine.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        the size of the returned window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a window to be used as periodic function.</span>
+<span class="sd">        If False, return a symmetric window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The data type to produce. Must be a floating point type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(4, True)</span>
+<span class="sd">    ivy.array([0. , 0.5, 1. , 0.5])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(7, False)</span>
+<span class="sd">    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">hann_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool2d"><a class="viewcode-back" href="../../../../functional/experimental/layers/max_pool2d.html#ivy.functional.experimental.layers.max_pool2d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">max_pool2d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 2-D max pool given 4-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_size,h,w,d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Size of the kernel i.e., the sliding window for each</span>
+<span class="sd">        dimension of input. *[h,w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">        indicating the per-dimensio paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool2d(x, (2, 2), (1, 1), &#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[[ 2,  3],</span>
+<span class="sd">     [ 4,  5],</span>
+<span class="sd">     [ 4,  5]]],</span>
+<span class="sd">    [[[ 8,  9],</span>
+<span class="sd">     [10, 11],</span>
+<span class="sd">     [10, 11]]]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool2d(x, 3, 1, &#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[[16, 17]],</span>
+<span class="sd">    [[22, 23]]],</span>
+<span class="sd">    [[[40, 41]],</span>
+<span class="sd">    [[46, 47]]]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="avg_pool2d"><a class="viewcode-back" href="../../../../functional/experimental/layers/avg_pool2d.html#ivy.functional.experimental.layers.avg_pool2d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">avg_pool2d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NHWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 2-D average pool given 4-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_size,h,w,d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Size of the kernel i.e., the sliding window for each</span>
+<span class="sd">        dimension of input. *[h,w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">        indicating the per-dimensio paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool2d(x, (2, 2), (1, 1), &#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[[ 1.,  2.],</span>
+<span class="sd">             [ 3.,  4.],</span>
+<span class="sd">             [ 4.,  5.]]],</span>
+
+
+<span class="sd">           [[[ 7.,  8.],</span>
+<span class="sd">             [ 9., 10.],</span>
+<span class="sd">             [10., 11.]]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool2d(x, 3, 1, &#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[[ 8.,  9.]],</span>
+
+<span class="sd">        [[14., 15.]]],</span>
+
+
+<span class="sd">       [[[32., 33.]],</span>
+
+<span class="sd">        [[38., 39.]]]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                             <span class="n">kernel</span><span class="p">,</span>
+                                             <span class="n">strides</span><span class="p">,</span>
+                                             <span class="n">padding</span><span class="p">,</span>
+                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool1d"><a class="viewcode-back" href="../../../../functional/experimental/layers/max_pool1d.html#ivy.functional.experimental.layers.max_pool1d">[docs]</a><span class="nd">@handle_out_argument</span>
+<span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="k">def</span> <span class="nf">max_pool1d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 1-D max pool given 3-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input image *[batch_size, w, d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Size of the kernel i.e., the sliding window for each</span>
+<span class="sd">        dimension of input. *[w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list</span>
+<span class="sd">        indicating the per-dimension paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool1d(x, 2, 2, &#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[ 4.,  5.,  6.,  7.],</span>
+<span class="sd">            [ 8.,  9., 10., 11.]],</span>
+
+<span class="sd">           [[16., 17., 18., 19.],</span>
+<span class="sd">            [20., 21., 22., 23.]]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(0, 24.).reshape((2, 3, 4))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool1d(x, 2, 2, &#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[ 4.,  5.,  6.,  7.]],</span>
+
+<span class="sd">       [[16., 17., 18., 19.]]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool1d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/experimental/layers/kaiser_window.html#ivy.functional.experimental.layers.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kaiser window with window length window_length and shape beta</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
+<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
+<span class="sd">    beta</span>
+<span class="sd">        a float used as shape parameter for the window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5)</span>
+<span class="sd">    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, True, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, False, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">_scatter_at_0_axis</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">dim_length</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">start</span> <span class="o">+=</span> <span class="n">dim_length</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">dim_length</span>
+    <span class="k">elif</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">end</span> <span class="o">+=</span> <span class="n">dim_length</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">input</span>
+
+
+<span class="k">def</span> <span class="nf">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">value_pair</span><span class="p">):</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">value_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">width_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span>
+        <span class="n">padded</span><span class="p">,</span> <span class="n">value_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="o">=</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">width_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">padded</span>
+
+
+<span class="k">def</span> <span class="nf">_get_edges</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">):</span>
+    <span class="n">left_index</span> <span class="o">=</span> <span class="n">width_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">left_edge</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span><span class="n">left_index</span> <span class="p">:</span> <span class="n">left_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">right_index</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">width_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">right_edge</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span><span class="n">right_index</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">right_index</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">left_edge</span><span class="p">,</span> <span class="n">right_edge</span>
+
+
+<span class="k">def</span> <span class="nf">_get_linear_ramps</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">end_value_pair</span><span class="p">):</span>
+    <span class="n">edge_pair</span> <span class="o">=</span> <span class="n">_get_edges</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">)</span>
+    <span class="n">left_ramp</span><span class="p">,</span> <span class="n">right_ramp</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="n">end_value</span><span class="p">,</span>
+            <span class="n">edge</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+            <span class="n">num</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">endpoint</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">padded</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">end_value</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="n">width</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">end_value_pair</span><span class="p">,</span> <span class="n">edge_pair</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">right_ramp</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">right_ramp</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">left_ramp</span><span class="p">,</span> <span class="n">right_ramp</span>
+
+
+<span class="k">def</span> <span class="nf">_get_stats</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">length_pair</span><span class="p">,</span> <span class="n">stat_func</span><span class="p">):</span>
+    <span class="n">left_index</span> <span class="o">=</span> <span class="n">width_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">right_index</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">width_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">max_length</span> <span class="o">=</span> <span class="n">right_index</span> <span class="o">-</span> <span class="n">left_index</span>
+    <span class="n">left_length</span><span class="p">,</span> <span class="n">right_length</span> <span class="o">=</span> <span class="n">length_pair</span>
+    <span class="k">if</span> <span class="n">left_length</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_length</span> <span class="o">&lt;</span> <span class="n">left_length</span><span class="p">:</span>
+        <span class="n">left_length</span> <span class="o">=</span> <span class="n">max_length</span>
+    <span class="k">if</span> <span class="n">right_length</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">max_length</span> <span class="o">&lt;</span> <span class="n">right_length</span><span class="p">:</span>
+        <span class="n">right_length</span> <span class="o">=</span> <span class="n">max_length</span>
+    <span class="n">left_chunk</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span><span class="n">left_index</span> <span class="p">:</span> <span class="n">left_index</span> <span class="o">+</span> <span class="n">left_length</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">left_stat</span> <span class="o">=</span> <span class="n">stat_func</span><span class="p">(</span><span class="n">left_chunk</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">left_length</span> <span class="o">==</span> <span class="n">right_length</span> <span class="o">==</span> <span class="n">max_length</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">left_stat</span><span class="p">,</span> <span class="n">left_stat</span>
+    <span class="n">right_chunk</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span><span class="n">right_index</span> <span class="o">-</span> <span class="n">right_length</span> <span class="p">:</span> <span class="n">right_index</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">right_stat</span> <span class="o">=</span> <span class="n">stat_func</span><span class="p">(</span><span class="n">right_chunk</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">left_stat</span><span class="p">,</span> <span class="n">right_stat</span>
+
+
+<span class="k">def</span> <span class="nf">_set_reflect_both</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">include_edge</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">left_pad</span><span class="p">,</span> <span class="n">right_pad</span> <span class="o">=</span> <span class="n">width_pair</span>
+    <span class="n">old_length</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_pad</span> <span class="o">-</span> <span class="n">left_pad</span>
+    <span class="k">if</span> <span class="n">include_edge</span><span class="p">:</span>
+        <span class="n">edge_offset</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">edge_offset</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">old_length</span> <span class="o">-=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">left_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">chunk_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_length</span><span class="p">,</span> <span class="n">left_pad</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">left_pad</span> <span class="o">-</span> <span class="n">edge_offset</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="n">chunk_length</span>
+        <span class="n">left_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">stop</span><span class="p">:</span><span class="n">start</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;odd&quot;</span><span class="p">:</span>
+            <span class="n">left_chunk</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padded</span><span class="p">[</span><span class="n">left_pad</span> <span class="p">:</span> <span class="n">left_pad</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">-</span> <span class="n">left_chunk</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">left_pad</span> <span class="o">-</span> <span class="n">chunk_length</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">left_pad</span>
+        <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">left_chunk</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">left_pad</span> <span class="o">-=</span> <span class="n">chunk_length</span>
+    <span class="k">if</span> <span class="n">right_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">chunk_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_length</span><span class="p">,</span> <span class="n">right_pad</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="n">right_pad</span> <span class="o">+</span> <span class="n">edge_offset</span> <span class="o">-</span> <span class="mi">2</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">-</span> <span class="n">chunk_length</span>
+        <span class="n">right_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">stop</span><span class="p">:</span><span class="n">start</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;odd&quot;</span><span class="p">:</span>
+            <span class="n">right_chunk</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padded</span><span class="p">[</span><span class="o">-</span><span class="n">right_pad</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">:</span> <span class="o">-</span><span class="n">right_pad</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_chunk</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_pad</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">chunk_length</span>
+        <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">right_chunk</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">right_pad</span> <span class="o">-=</span> <span class="n">chunk_length</span>
+    <span class="k">return</span> <span class="n">left_pad</span><span class="p">,</span> <span class="n">right_pad</span><span class="p">,</span> <span class="n">padded</span>
+
+
+<span class="k">def</span> <span class="nf">_set_wrap_both</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">):</span>
+    <span class="n">left_pad</span><span class="p">,</span> <span class="n">right_pad</span> <span class="o">=</span> <span class="n">width_pair</span>
+    <span class="n">period</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_pad</span> <span class="o">-</span> <span class="n">left_pad</span>
+    <span class="n">new_left_pad</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">new_right_pad</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">left_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">right_chunk</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span>
+            <span class="o">-</span><span class="n">right_pad</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">left_pad</span><span class="p">)</span> <span class="p">:</span> <span class="o">-</span><span class="n">right_pad</span> <span class="k">if</span> <span class="n">right_pad</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="o">...</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">left_pad</span> <span class="o">&gt;</span> <span class="n">period</span><span class="p">:</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span>
+                <span class="n">padded</span><span class="p">,</span> <span class="n">right_chunk</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">left_pad</span> <span class="o">-</span> <span class="n">period</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">left_pad</span>
+            <span class="p">)</span>
+            <span class="n">new_left_pad</span> <span class="o">=</span> <span class="n">left_pad</span> <span class="o">-</span> <span class="n">period</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">right_chunk</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">left_pad</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">right_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">left_chunk</span> <span class="o">=</span> <span class="n">padded</span><span class="p">[</span><span class="n">left_pad</span> <span class="p">:</span> <span class="n">left_pad</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">period</span><span class="p">,</span> <span class="n">right_pad</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">right_pad</span> <span class="o">&gt;</span> <span class="n">period</span><span class="p">:</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span>
+                <span class="n">padded</span><span class="p">,</span> <span class="n">left_chunk</span><span class="p">,</span> <span class="n">start</span><span class="o">=-</span><span class="n">right_pad</span><span class="p">,</span> <span class="n">end</span><span class="o">=-</span><span class="n">right_pad</span> <span class="o">+</span> <span class="n">period</span>
+            <span class="p">)</span>
+            <span class="n">new_right_pad</span> <span class="o">=</span> <span class="n">right_pad</span> <span class="o">-</span> <span class="n">period</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_scatter_at_0_axis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">left_chunk</span><span class="p">,</span> <span class="n">start</span><span class="o">=-</span><span class="n">right_pad</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">new_left_pad</span><span class="p">,</span> <span class="n">new_right_pad</span><span class="p">,</span> <span class="n">padded</span>
+
+
+<span class="k">def</span> <span class="nf">_to_pairs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">),)</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),)</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+        <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values should be an integer or an iterable &quot;</span>
+        <span class="s2">&quot;of ndim pairs where ndim is the number of &quot;</span>
+        <span class="s2">&quot;the input&#39;s dimensions&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_pad_simple</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">new_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="n">left</span> <span class="o">+</span> <span class="n">size</span> <span class="o">+</span> <span class="n">right</span> <span class="k">for</span> <span class="n">size</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">new_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">array</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fill_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">padded</span><span class="p">)</span> <span class="o">*</span> <span class="n">fill_value</span>
+    <span class="n">sl</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">size</span><span class="p">,</span> <span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">):</span>
+        <span class="n">sl</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">left</span> <span class="o">+</span> <span class="n">size</span><span class="p">))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">array</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ind</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">argwhere</span><span class="p">(</span><span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+            <span class="n">padded</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">padded</span>
+
+
+<div class="viewcode-block" id="pad"><a class="viewcode-back" href="../../../../functional/experimental/layers/pad.html#ivy.functional.experimental.layers.pad">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">pad</span><span class="p">(</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pad_width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span>
+        <span class="n">Union</span><span class="p">[</span>
+            <span class="n">Literal</span><span class="p">[</span>
+                <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;edge&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;linear_ramp&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;median&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;minimum&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reflect&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;symmetric&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;wrap&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;empty&quot;</span><span class="p">,</span>
+            <span class="p">],</span>
+            <span class="n">Callable</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+    <span class="n">stat_length</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">constant_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span> <span class="n">Number</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">end_values</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Number</span><span class="p">]],</span> <span class="n">Number</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">reflect_type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;even&quot;</span><span class="p">,</span> <span class="s2">&quot;odd&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="s2">&quot;even&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Pads an array.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input</span>
+<span class="sd">        Input array to pad.</span>
+<span class="sd">    pad_width</span>
+<span class="sd">        Number of values padded to the edges of each axis.</span>
+<span class="sd">             - ((before_1, after_1), … (before_N, after_N)) yields unique pad widths</span>
+<span class="sd">               for each axis.</span>
+<span class="sd">             - ((before, after),) yields same before and after pad for each axis.</span>
+<span class="sd">             - pad (integer) is shortcut for before = after = pad width for all axes.</span>
+<span class="sd">    mode</span>
+<span class="sd">        One of the following string values or a user-supplied function.</span>
+<span class="sd">             - &quot;constant&quot;: Pads with a constant value.</span>
+<span class="sd">             - &quot;edge&quot;: Pads with the input&#39;s edge values.</span>
+<span class="sd">             - &quot;linear_ramp&quot;: Pads with the linear ramp between end_value</span>
+<span class="sd">               and the input&#39;s edge value.</span>
+<span class="sd">             - &quot;maximum&quot;: Pads with the maximum value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;mean&quot;: Pads with the mean value of all or part of the vector along</span>
+<span class="sd">               each axis.</span>
+<span class="sd">             - &quot;median&quot;: Pads with the median value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;minimum&quot;: Pads with the minimum value of all or part of the vector</span>
+<span class="sd">               along each axis.</span>
+<span class="sd">             - &quot;reflect&quot;: Pads with the reflection mirrored on the first and last</span>
+<span class="sd">               values of the vector along each axis.</span>
+<span class="sd">             - &quot;symmetric&quot;: Pads with the reflection of the vector mirrored along</span>
+<span class="sd">               the edge of the input.</span>
+<span class="sd">             - &quot;wrap&quot;: Pads with the wrap of the vector along the axis.</span>
+<span class="sd">               The first values are used to pad the end and the end values are used</span>
+<span class="sd">               to pad the beginning.</span>
+<span class="sd">             - &quot;empty&quot;: Pads with undefined values.</span>
+<span class="sd">             - &lt;function&gt;: Pads with a user-defined padding function. The padding</span>
+<span class="sd">               function should modify a rank 1 array in-place following a signature</span>
+<span class="sd">               like `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:</span>
+<span class="sd">                    - `vector` is a rank 1 array already padded with zeros. Padded</span>
+<span class="sd">                      values are `vector[:iaxis_pad_width[0]]` and</span>
+<span class="sd">                      `vector[-iaxis_pad_width[1]:]`.</span>
+<span class="sd">                    - `iaxis_pad_width` is a 2-tuple of ints, where</span>
+<span class="sd">                      `iaxis_pad_width[0]` represents the number of values padded at</span>
+<span class="sd">                      the beginning of `vector` and `iaxis_pad_width[1]` represents</span>
+<span class="sd">                      the number of values padded at the end of `vector`.</span>
+<span class="sd">                    - `iaxis` is the axis currently being calculated.</span>
+<span class="sd">                    - `kwargs` is a dict of keyword arguments the function requires.</span>
+<span class="sd">    stat_length</span>
+<span class="sd">        Used in &quot;maximum&quot;, &quot;mean&quot;, &quot;median&quot;, and &quot;minimum&quot;. Number of values at edge</span>
+<span class="sd">        of each axis used to calculate the statistic value.</span>
+<span class="sd">             - ((before_1, after_1), … (before_N, after_N)) yields unique statistic</span>
+<span class="sd">               lengths for each axis.</span>
+<span class="sd">             - ((before, after),) yields same before and after statistic lengths for</span>
+<span class="sd">               each axis.</span>
+<span class="sd">             - stat_length (integer) is a shortcut for before = after = stat_length</span>
+<span class="sd">               length for all axes.</span>
+<span class="sd">             - None uses the entire axis.</span>
+<span class="sd">    constant_values</span>
+<span class="sd">        Used in &quot;constant&quot;. The values to set the padded values for each axis.</span>
+<span class="sd">             - ((before_1, after_1), ... (before_N, after_N)) yields unique pad</span>
+<span class="sd">               constants for each axis.</span>
+<span class="sd">             - ((before, after),) yields same before and after constants for each axis.</span>
+<span class="sd">             - constant (integer) is a shortcut for before = after = constant for</span>
+<span class="sd">               all axes.</span>
+<span class="sd">    end_values</span>
+<span class="sd">        Used in &quot;linear_ramp&quot;. The values used for the ending value of the linear_ramp</span>
+<span class="sd">        and that will form the edge of the padded array.</span>
+<span class="sd">             - ((before_1, after_1), ... (before_N, after_N)) yields unique end values</span>
+<span class="sd">               for each axis.</span>
+<span class="sd">             - ((before, after),) yields same before and after end values for each axis</span>
+<span class="sd">             - end (integer) is a shortcut for before = after = end for all axes.</span>
+<span class="sd">    reflect_type</span>
+<span class="sd">        Used in &quot;reflect&quot;, and &quot;symmetric&quot;. The &quot;even&quot; style is the default with an</span>
+<span class="sd">        unaltered reflection around the edge value. For the &quot;odd&quot; style, the extended</span>
+<span class="sd">        part of the array is created by subtracting the reflected values from two</span>
+<span class="sd">        times the edge value.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that</span>
+<span class="sd">        the input broadcasts to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Padded array of the same rank as the input but with shape increased according</span>
+<span class="sd">        to pad_width.</span>
+
+
+<span class="sd">    Both the description and the type hints above assume an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ((1, 1), (2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0, 0, 0, 0, 0, 0, 0],</span>
+<span class="sd">               [0, 0, 1, 2, 3, 0, 0],</span>
+<span class="sd">               [0, 0, 4, 5, 6, 0, 0],</span>
+<span class="sd">               [0, 0, 0, 0, 0, 0, 0]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ((1, 1), (2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;reflect&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[6, 5, 4, 5, 6, 5, 4],</span>
+<span class="sd">               [3, 2, 1, 2, 3, 2, 1],</span>
+<span class="sd">               [6, 5, 4, 5, 6, 5, 4],</span>
+<span class="sd">               [3, 2, 1, 2, 3, 2, 1]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ((1, 1), (2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;symmetric&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[2, 1, 1, 2, 3, 3, 2],</span>
+<span class="sd">               [2, 1, 1, 2, 3, 3, 2],</span>
+<span class="sd">               [5, 4, 4, 5, 6, 6, 5],</span>
+<span class="sd">               [5, 4, 4, 5, 6, 6, 5]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">    &gt;&gt;&gt; padding = ((1, 1), (2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;, constant_values=7)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[7, 7, 7, 7, 7, 7, 7],</span>
+<span class="sd">               [7, 7, 1, 2, 3, 7, 7],</span>
+<span class="sd">               [7, 7, 4, 5, 6, 7, 7],</span>
+<span class="sd">               [7, 7, 7, 7, 7, 7, 7]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([4, 5, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; padding = (1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pad(x, padding, mode=&quot;constant&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0, 0, 1, 2, 0]),</span>
+<span class="sd">        b: ivy.array([0, 4, 5, 6, 0])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    <span class="n">pad_width</span> <span class="o">=</span> <span class="n">_to_pairs</span><span class="p">(</span><span class="n">pad_width</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">mode</span><span class="p">):</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="n">padded</span> <span class="o">=</span> <span class="n">_pad_simple</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">):</span>
+            <span class="n">view</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">inds</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">inds</span><span class="p">:</span>
+                <span class="n">view</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">view</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="n">pad_width</span><span class="p">[</span><span class="n">axis</span><span class="p">],</span> <span class="n">axis</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">padded</span>
+    <span class="n">padded</span> <span class="o">=</span> <span class="n">_pad_simple</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">)</span>
+    <span class="n">axes</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+    <span class="n">stat_functions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;maximum&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max</span><span class="p">,</span>
+        <span class="s2">&quot;minimum&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">min</span><span class="p">,</span>
+        <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
+        <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">median</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;constant&quot;</span><span class="p">:</span>
+        <span class="n">constant_values</span> <span class="o">=</span> <span class="n">_to_pairs</span><span class="p">(</span><span class="n">constant_values</span><span class="p">,</span> <span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">value_pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">constant_values</span><span class="p">):</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">value_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;empty&quot;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;edge&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">width_pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">):</span>
+            <span class="n">edge_pair</span> <span class="o">=</span> <span class="n">_get_edges</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">edge_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;linear_ramp&quot;</span><span class="p">:</span>
+        <span class="n">end_values</span> <span class="o">=</span> <span class="n">_to_pairs</span><span class="p">(</span><span class="n">end_values</span><span class="p">,</span> <span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">value_pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">end_values</span><span class="p">):</span>
+            <span class="n">ramp_pair</span> <span class="o">=</span> <span class="n">_get_linear_ramps</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">value_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">ramp_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="n">stat_functions</span><span class="p">:</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">stat_functions</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span>
+        <span class="n">stat_length</span> <span class="o">=</span> <span class="n">_to_pairs</span><span class="p">(</span><span class="n">stat_length</span><span class="p">,</span> <span class="n">padded</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">length_pair</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">stat_length</span><span class="p">):</span>
+            <span class="n">stat_pair</span> <span class="o">=</span> <span class="n">_get_stats</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">length_pair</span><span class="p">,</span> <span class="n">func</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="n">width_pair</span><span class="p">,</span> <span class="n">stat_pair</span><span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;reflect&quot;</span><span class="p">,</span> <span class="s2">&quot;symmetric&quot;</span><span class="p">}:</span>
+        <span class="n">include_edge</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;symmetric&quot;</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">left_index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">right_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="n">edge_pair</span> <span class="o">=</span> <span class="n">_get_edges</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">))</span>
+                <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_pad_area</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">),</span> <span class="n">edge_pair</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="k">while</span> <span class="n">left_index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">right_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">,</span> <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_reflect_both</span><span class="p">(</span>
+                    <span class="n">padded</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">),</span> <span class="n">reflect_type</span><span class="p">,</span> <span class="n">include_edge</span>
+                <span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;wrap&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">axis</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">left_index</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">right_index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">,</span> <span class="n">padded</span> <span class="o">=</span> <span class="n">_set_wrap_both</span><span class="p">(</span>
+                    <span class="n">padded</span><span class="p">,</span> <span class="p">(</span><span class="n">left_index</span><span class="p">,</span> <span class="n">right_index</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">padded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">padded</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">padded</span></div>
+
+
+<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../functional/experimental/layers/kaiser_bessel_derived_window.html#ivy.functional.experimental.layers.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kaiser bessel derived window with</span>
+<span class="sd">    window length window_length and shape beta</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
+<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
+<span class="sd">    beta</span>
+<span class="sd">        a float used as shape parameter for the window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_bessel_derived_window(5)</span>
+<span class="sd">    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False)</span>
+<span class="sd">    ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False, 5)</span>
+<span class="sd">    ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+
+    <span class="n">sum_i_N</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">sum_i_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+
+    <span class="n">dn_low</span> <span class="o">=</span> <span class="p">[</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_i_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">sum_2N_1_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span> <span class="o">-</span> <span class="n">n</span><span class="p">)])</span>
+
+    <span class="n">dn_mid</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sqrt</span><span class="p">(</span><span class="n">sum_2N_1_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dn_low</span> <span class="o">+</span> <span class="n">dn_mid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hamming_window"><a class="viewcode-back" href="../../../../functional/experimental/layers/hamming_window.html#ivy.functional.experimental.layers.hamming_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">hamming_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.54</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.46</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Hamming window with window length window_length</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">         If True, returns a window to be used as periodic function.</span>
+<span class="sd">         If False, return a symmetric window.</span>
+<span class="sd">    alpha</span>
+<span class="sd">        The coefficient alpha in the hamming window equation</span>
+<span class="sd">    beta</span>
+<span class="sd">        The coefficient beta in the hamming window equation</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5)</span>
+<span class="sd">    ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False)</span>
+<span class="sd">    ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)</span>
+<span class="sd">    ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="k">elif</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="max_pool3d"><a class="viewcode-back" href="../../../../functional/experimental/layers/max_pool3d.html#ivy.functional.experimental.layers.max_pool3d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">max_pool3d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 3-D max pool given 5-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input volume *[batch_size,d,h,w,d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Convolution filters *[d,h,w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool3d(x, 2, 2, &#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[[[14., 15.]]]],</span>
+
+
+
+<span class="sd">       [[[[38., 39.]]]]])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.max_pool3d(x, 2, 2, &#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[[[14., 15.]]],</span>
+
+
+<span class="sd">        [[[22., 23.]]]],</span>
+
+
+
+<span class="sd">       [[[[38., 39.]]],</span>
+
+
+<span class="sd">        [[[46., 47.]]]]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                             <span class="n">kernel</span><span class="p">,</span>
+                                             <span class="n">strides</span><span class="p">,</span>
+                                             <span class="n">padding</span><span class="p">,</span>
+                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="avg_pool3d"><a class="viewcode-back" href="../../../../functional/experimental/layers/avg_pool3d.html#ivy.functional.experimental.layers.avg_pool3d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="k">def</span> <span class="nf">avg_pool3d</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">kernel</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">strides</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span>
+    <span class="n">padding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NDHWC&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes a 3-D avg pool given 5-D input x.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Input volume *[batch_size,d,h,w,d_in]*.</span>
+<span class="sd">    kernel</span>
+<span class="sd">        Convolution filters *[d,h,w]*.</span>
+<span class="sd">    strides</span>
+<span class="sd">        The stride of the sliding window for each dimension of input.</span>
+<span class="sd">    padding</span>
+<span class="sd">        SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension</span>
+<span class="sd">        paddings.</span>
+<span class="sd">    data_format</span>
+<span class="sd">        NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result of the pooling operation.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input</span>
+<span class="sd">    for simplicity, but this function is *nestable*, and therefore</span>
+<span class="sd">    also accepts :class:`ivy.Container` instances in place of any of</span>
+<span class="sd">    the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool3d(x,2,2,&#39;VALID&#39;))</span>
+<span class="sd">    ivy.array([[[[[ 7.,  8.]]]],</span>
+
+
+
+<span class="sd">           [[[[31., 32.]]]]])</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool3d(x,2,2,&#39;SAME&#39;))</span>
+<span class="sd">    ivy.array([[[[[ 7.,  8.]]],</span>
+
+
+<span class="sd">            [[[19., 20.]]]],</span>
+
+
+
+<span class="sd">           [[[[31., 32.]]],</span>
+
+
+<span class="sd">            [[[43., 44.]]]]])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
+                                             <span class="n">kernel</span><span class="p">,</span>
+                                             <span class="n">strides</span><span class="p">,</span>
+                                             <span class="n">padding</span><span class="p">,</span>
+                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, Ivy Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

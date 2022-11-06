@@ -112,16 +112,16 @@ For example, a sequence of comments like this :code:`- [ ] #Issue_number` will r
 
 For questions, please reach out on `discord`_ in the `todo list issues channel`_!
 
-Extensions
+Ivy Experimental API
 ----------
 
 We primarily invite contributors to contribute to the tasks listed as :ref:`Open Tasks` as they are on our roadmap currently.
 As a result of this we mainly recommend contributions which fall under the :ref:`Open Tasks`.
 However, if a contributor would like to extend Ivy's functionality with new functions, submodules, etc. then the workflow should ideally be the following:
 
-#. Such contributors need to create a PR with the label :code:`Extension`.
+#. Such contributors need to create a PR with the label :code:`Experimental`.
 #. They should also describe what they're adding, as it makes it easier for us to understand its purpose and use from your point of view.
-#. After regular intervals of time, the team would go through all PRs with the :code:`Extension` label and take a call on it's use.
+#. After regular intervals of time, the team would go through all PRs with the :code:`Experimental` label and take a call on it's use.
 #. If the functionality added is useful in the short-term, then we would get the PR merged to master, either directly or after some back-and-forth with suggestions, if necessary.
    This is a rare scenario as most of what we need to work on before a release would generally be either already present or being worked on by someone on the team.
 #. If the functionality added could be potentially useful in a future release or is something that aligns with our future roadmap, then we would add the :code:`Future Release` label to it, and take a look at it again after the next release.

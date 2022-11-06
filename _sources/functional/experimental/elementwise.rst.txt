@@ -1,0 +1,30 @@
+Elementwise
+===========
+
+.. automodule:: ivy.functional.experimental.elementwise
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Elementwise
+
+   elementwise/sinc.rst
+   elementwise/lcm.rst
+   elementwise/fmod.rst
+   elementwise/fmax.rst
+   elementwise/trapz.rst
+   elementwise/float_power.rst
+   elementwise/exp2.rst
+   elementwise/nansum.rst
+   elementwise/gcd.rst
+   elementwise/isclose.rst
+   elementwise/isposinf.rst
+   elementwise/isneginf.rst
+   elementwise/nan_to_num.rst
+   elementwise/logaddexp2.rst
+

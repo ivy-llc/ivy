@@ -1,0 +1,27 @@
+Sparse array
+============
+
+.. automodule:: ivy.functional.experimental.sparse_array
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Sparse array
+
+   sparse_array/is_ivy_sparse_array.rst
+   sparse_array/is_native_sparse_array.rst
+   sparse_array/native_sparse_array.rst
+   sparse_array/native_sparse_array_to_indices_values_and_shape.rst
+   sparse_array/SparseArray:
+    def __init__.rst
+   sparse_array/NativeSparseArray:
+    pass
+
+
+def is_ivy_sparse_array.rst
+

@@ -60,7 +60,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#where-to-place-a-frontend-function">Where to place a frontend function</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#ivy-api-extensions">Ivy API Extensions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-experimental-api">Ivy Experimental API</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="applied_libraries.html">Applied Libraries</a></li>
@@ -73,7 +73,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../functional/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../functional/ivy/constants.html">Constants</a></li>
@@ -163,7 +163,7 @@ We make no mention of task selection and allocation in the explanations below, w
 <ol class="arabic simple">
 <li><p>Function Formatting</p></li>
 <li><p>Frontend APIs</p></li>
-<li><p>Ivy API Extensions</p></li>
+<li><p>Ivy Experimental API</p></li>
 </ol>
 <p>We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/985156466963021854">open tasks channel</a>!</p>
 <p>Please always use the latest commit on GitHub when working on any of these tasks, <strong>DO NOT</strong> develop your code using the latest PyPI release of <code class="code docutils literal notranslate"><span class="pre">ivy-core</span></code>.</p>
@@ -247,7 +247,7 @@ It does not automatically run any tests to update them!</p></li>
 <p>If you feel as though there is an ivy function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:</p>
 <ol class="arabic simple">
 <li><p>Create a new issue with the title <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code></p></li>
-<li><p>Add the labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Extension</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> to it</p></li>
+<li><p>Add the labels <code class="code docutils literal notranslate"><span class="pre">Suggestion</span></code>, <code class="code docutils literal notranslate"><span class="pre">Experimental</span></code>, <code class="code docutils literal notranslate"><span class="pre">Ivy</span> <span class="pre">API</span></code> and <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code> to it</p></li>
 <li><p>Then simply leave this issue open.</p></li>
 </ol>
 <dl class="simple">
@@ -260,7 +260,7 @@ It does not automatically run any tests to update them!</p></li>
 Once the PR is merged, your sub-task issue will then be closed as normal.</p></li>
 <li><p>Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
 You could also choose to work on another open task entirely at this point if you wanted to.
-For example, you might decide to wait for a member of our team to review your suggested addition <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, and potentially add this to an Ivy Extension ToDo list issue (see the open task below).
+For example, you might decide to wait for a member of our team to review your suggested addition <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>, and potentially add this to an Ivy Experimental ToDo list issue (see the open task below).
 In either case, you should add the label “Pending other Issue” to the frontend sub-task issue, and leave it open.
 This issue will then still show up as open in the original frontend ToDo list, helpfully preventing others from working on this problematic frontend function, which depends on the unimplemented <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code>.
 Finally, you should add a comment to the issue with the contents: <code class="code docutils literal notranslate"><span class="pre">pending</span> <span class="pre">&lt;issue_link&gt;</span></code>, which links to the <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.</span></code> issue, making the “Pending other Issue” label more informative.</p></li>
@@ -324,18 +324,18 @@ This is confirmation that we’ve found the correct place!
 If many of the files are empty and you’re unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.</p>
 </section>
 </section>
-<section id="ivy-api-extensions">
-<h2>Ivy API Extensions<a class="headerlink" href="#ivy-api-extensions" title="Permalink to this heading"></a></h2>
+<section id="ivy-experimental-api">
+<h2>Ivy Experimental API<a class="headerlink" href="#ivy-experimental-api" title="Permalink to this heading"></a></h2>
 <p>The goal of this task is to add functions to the existing Ivy API which would help with the implementation for many of the functions in the frontend.</p>
 <p>Your task is to implement these functions in Ivy, along with their Implementation in the respective backends which are <code class="code docutils literal notranslate"><span class="pre">Jax</span></code>, <code class="code docutils literal notranslate"><span class="pre">PyTorch</span></code>, <code class="code docutils literal notranslate"><span class="pre">TensorFlow</span></code> and <code class="code docutils literal notranslate"><span class="pre">NumPy</span></code>.
 You must also implement tests for these functions.</p>
 <p>There is only one central ToDo list <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">issue</a> for this task.</p>
 <p>A general workflow for these tasks would be:</p>
 <ol class="arabic simple">
-<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/extensions/[relevant_submodule].py</span></code>, sometimes as a composition if the respective backends do not behave in a similar way.
+<li><p>Implement the functions in each of the backend files <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/backends/backend_name/experimental/[relevant_submodule].py</span></code>, sometimes as a composition if the respective backends do not behave in a similar way.
 You may also use submodule-specific helper functions to recreate the behaviour.
 Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api">Backend API Guide</a> on how this can be done.</p></li>
-<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/extensions/[relevant_submodule].py</span></code> simply deferring to their backend-specific implementation.
+<li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/experimental/[relevant_submodule].py</span></code> simply deferring to their backend-specific implementation.
 Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api">Ivy API Guide</a> to get a clearer picture of how this must be done.</p></li>
 <li><p>Write tests for the function using the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html">Ivy Tests</a> guide, and make sure they are passing.</p></li>
 </ol>
