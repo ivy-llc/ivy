@@ -11,6 +11,10 @@ def is_tensor(obj):
     return Tensor(ivy.is_array(obj))
 
 
+def is_cuda(obj):
+    return Tensor(ivy.is_array(obj)).device() in ["gpu", "cuda"]
+
+
 # def is_storage(obj):
 # 	return ivy.is_storage(obj)
 
