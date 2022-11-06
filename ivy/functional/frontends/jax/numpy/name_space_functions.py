@@ -428,3 +428,8 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def flip(m, axis=None):
     return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m)
