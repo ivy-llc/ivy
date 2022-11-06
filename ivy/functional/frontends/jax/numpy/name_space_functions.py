@@ -423,3 +423,8 @@ def any(a, axis=None, out=None, keepdims=False, *, where=True):
 @to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def flip(m, axis=None):
+    return ivy.flip(m, axis=axis)
