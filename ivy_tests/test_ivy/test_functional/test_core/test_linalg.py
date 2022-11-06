@@ -1449,22 +1449,37 @@ def test_diagonal(
     )
 
 
+@st.composite
+def _diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    return dtype, x, k
+
+
 # diag
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=50,
-    ),
-    k=helpers.ints(min_value=-49, max_value=49),
+    dtype_x_k=_diag_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="diag"),
 )
 def test_diag(
     *,
-    dtype_x,
+    dtype_x_k,
     as_variable,
     with_out,
     num_positional_args,
@@ -1472,9 +1487,8 @@ def test_diag(
     container,
     instance_method,
     fw,
-    k,
 ):
-    dtype, x = dtype_x
+    dtype, x, k = dtype_x_k
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
