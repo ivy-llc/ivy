@@ -6,8 +6,12 @@ from typing import (
     Dict,
     Sequence,
     Tuple,
+    Literal,
+    Any,
+    Callable,
+    Iterable
 )
-
+from numbers import Number
 
 # local
 import ivy

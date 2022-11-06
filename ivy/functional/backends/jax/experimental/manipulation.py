@@ -1,6 +1,14 @@
 # local
-from typing import Optional, Union, Sequence, Tuple, NamedTuple
+from typing import (Optional,
+                    Union,
+                    Sequence,
+                    Tuple,
+                    NamedTuple,
+                    Literal,
+                    Callable,
+                    Any)
 import jax.numpy as jnp
+from numbers import Number
 
 # local
 from ivy.functional.backends.jax import JaxArray

@@ -94,4 +94,3 @@ def hann_window(
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
     )
-

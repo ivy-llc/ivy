@@ -1,6 +1,15 @@
 # global
 import abc
-from typing import Optional, Union, Sequence, Tuple, List
+from typing import (Optional,
+                    Union,
+                    Sequence,
+                    Tuple,
+                    List,
+                    Iterable,
+                    Callable,
+                    Literal,
+                    Any)
+from numbers import Number
 
 # local
 import ivy

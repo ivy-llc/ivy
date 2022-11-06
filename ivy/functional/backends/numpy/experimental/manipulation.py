@@ -1,5 +1,13 @@
 # global
-from typing import Optional, Union, Sequence, Tuple, NamedTuple
+from typing import (Optional,
+                    Union,
+                    Sequence,
+                    Tuple,
+                    NamedTuple,
+                    Literal,
+                    Callable,
+                    Any)
+from numbers import Number
 import numpy as np
 
 
@@ -196,4 +204,3 @@ def pad(
             pad_width,
             mode=mode,
         )
-

@@ -1,10 +1,8 @@
-from typing import Optional, Union, Tuple, Callable, Literal, Sequence, Any
-from numbers import Number
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.functional.backends.jax import JaxArray
 import jax.lax as jlax
 import jax.numpy as jnp
-import math
 
 
 def _pool(inputs, init, reduce_fn, window_shape, strides, padding):

@@ -4,11 +4,7 @@ from typing import (
     Union,
     List,
     Dict,
-    Tuple,
-    Callable,
-    Literal,
-    Iterable,
-    Any,
+    Tuple
 )
 from numbers import Number
 
@@ -18,7 +14,6 @@ from ivy.container.base import ContainerBase
 
 
 class ContainerWithLayersExperimental(ContainerBase):
-
 
     @staticmethod
     def static_max_pool2d(

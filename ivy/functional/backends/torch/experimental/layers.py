@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple
 import torch
-import math
 
 # local
 import ivy
