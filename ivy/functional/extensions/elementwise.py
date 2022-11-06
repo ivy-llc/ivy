@@ -440,6 +440,69 @@ def gcd(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_exceptions
+def isclose(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns a boolean array where two arrays are element-wise equal
+    within a tolerance.
+    The tolerance values are positive, typically very small numbers.
+    The relative difference (rtol * abs(b)) and the absolute difference
+    atol are added together to compare against the absolute difference
+    between a and b.
+    The default atol is not appropriate for comparing numbers that are
+    much smaller than one
+
+    Parameters
+    ----------
+    a
+        First input array.
+    b
+        Second input array.
+    rtol
+        The relative tolerance parameter.
+    atol
+        The absolute tolerance parameter.
+    equal_nan
+        Whether to compare NaN's as equal. If True, NaN's in a will be
+        considered equal to NaN's in b in the output array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array of where a and b are equal within the given
+        tolerance. If both a and b are scalars, returns a single boolean value.
+
+    Examples
+    --------
+    >>> ivy.isclose([1e10,1e-7], [1.00001e10,1e-8])
+    ivy.array([True, False])
+    >>> ivy.isclose([1.0, ivy.nan], [1.0, ivy.nan], equal_nan=True)
+    ivy.array([True, True])
+    >>> ivy.isclose([1e-100, 1e-7], [0.0, 0.0], atol=0.0)
+    ivy.array([False, False])
+    >>> ivy.isclose([1e-10, 1e-10], [1e-20, 0.999999e-10], rtol=0.005, atol=0.0)
+    ivy.array([False, True])
+    """
+    return ivy.current_backend().isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def isposinf(
     x: Union[ivy.Array, float, list, tuple],
     /,

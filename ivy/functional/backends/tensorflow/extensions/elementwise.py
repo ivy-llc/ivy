@@ -119,6 +119,21 @@ def gcd(
     return tf.experimental.numpy.gcd(x1, x2)
 
 
+def isclose(
+    a: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
+
+
 def isposinf(
     x: Union[tf.Tensor, tf.Variable, float, list, tuple],
     /,

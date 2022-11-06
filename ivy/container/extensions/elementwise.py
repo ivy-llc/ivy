@@ -831,6 +831,204 @@ class ContainerWithElementWiseExtensions(ContainerBase):
         return self.static_gcd(self, x2, out=out)
 
     @staticmethod
+    def static_isclose(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        b: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isclose. This method simply wraps
+        the function, and so the docstring for ivy.isclose also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        a
+            Input container containing first input array.
+        b
+            Input container containing second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1.0, ivy.nan]),\
+                b=ivy.array([1.0, ivy.nan]))
+        >>> y = ivy.Container(a=ivy.array([1.0, ivy.nan]),\
+                b=ivy.array([1.0, ivy.nan]))
+        >>> ivy.Container.static_isclose(x, y)
+        {
+            a: ivy.array([True, False]),
+            b: ivy.array([True, False])
+        }
+        >>> ivy.Container.static_isclose(x, y, equal_nan=True)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, True])
+        }
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.0]),\
+                b=ivy.array([1.0, 2.0]))
+        >>> y = ivy.Container(a=ivy.array([1.0, 2.001]),\
+                b=ivy.array([1.0, 2.0]))
+        >>> ivy.Container.static_isclose(x, y, atol=0.0)
+        {
+            a: ivy.array([True, False]),
+            b: ivy.array([True, True])
+        }
+        >>> ivy.Container.static_isclose(x, y, rtol=0.01, atol=0.0)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, True])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "isclose",
+            a,
+            b,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def isclose(
+        self: ivy.Container,
+        b: ivy.Container,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isclose. This method simply
+        wraps the function, and so the docstring for ivy.isclose also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        b
+            Input container containing second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> x = ivy.Container(a=ivy.array([1.0, ivy.nan]),\
+                b=ivy.array([1.0, ivy.nan]))
+        >>> y = ivy.Container(a=ivy.array([1.0, ivy.nan]),\
+                b=ivy.array([1.0, ivy.nan]))
+        >>> x.isclose(y)
+        {
+            a: ivy.array([True, False]),
+            b: ivy.array([True, False])
+        }
+        >>> x.isclose(y, equal_nan=True)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, True])
+        }
+        >>> x = ivy.Container(a=ivy.array([1.0, 2.0]),\
+                b=ivy.array([1.0, 2.0]))
+        >>> y = ivy.Container(a=ivy.array([1.0, 2.001]),\
+                b=ivy.array([1.0, 2.0]))
+        >>> x.isclose(y, atol=0.0)
+        {
+            a: ivy.array([True, False]),
+            b: ivy.array([True, True])
+        }
+        >>> x.isclose(y, rtol=0.01, atol=0.0)
+        {
+            a: ivy.array([True, True]),
+            b: ivy.array([True, True])
+        }
+        """
+        return self.static_isclose(
+            self,
+            b,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_isposinf(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, list, tuple],
         /,

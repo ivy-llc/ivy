@@ -362,6 +362,65 @@ class ArrayWithElementWiseExtensions(abc.ABC):
         """
         return ivy.gcd(self._data, x2, out=out)
 
+    def isclose(
+        self: ivy.Array,
+        b: ivy.Array,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.isclose. This method simply
+        wraps the function, and so the docstring for ivy.isclose also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        b
+            Second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+        >>> b = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+        >>> a.isclose(b)
+        ivy.array([[True, True, False],
+               [False, True, True]])
+        >>> a.isclose(b, equal_nan=True)
+        ivy.array([[True, True, True],
+               [True, True, True]])
+        >>> a=ivy.array([1.0, 2.0])
+        >>> b=ivy.array([1.0, 2.001])
+        >>> a.isclose(b, atol=0.0)
+        ivy.array([True, False])
+        >>> a.isclose(b, rtol=0.01, atol=0.0)
+        ivy.array([True, True])
+        """
+        return ivy.isclose(
+            self._data, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+        )
+
     def isposinf(
         self: Union[ivy.Array, float, list, tuple],
         /,
