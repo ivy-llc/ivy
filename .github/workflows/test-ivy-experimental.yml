@@ -1,4 +1,4 @@
-name: test-extensions-ivy
+name: test-experimental-ivy
 on:
   push:
   pull_request:
@@ -7,7 +7,7 @@ permissions:
   actions: read
 jobs:
    run-nightly-tests:
-     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Extensions')}}
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Experimental')}}
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
@@ -27,10 +27,10 @@ jobs:
          if: github.event_name == 'pull_request'
          with:
            github_token: ${{secrets.GITHUB_TOKEN}}
-           workflow: test-ivy-extensions.yml
+           workflow: test-ivy-experimental.yml
            workflow_conclusion: ""
            search_artifacts: true
-           name: hypothesis_${{ matrix.backends }}_test_extensions_zip
+           name: hypothesis_${{ matrix.backends }}_test_experimental_zip
            path: |
              ivy/.hypothesis/
          continue-on-error: true
@@ -53,11 +53,11 @@ jobs:
            mkdir -p examples
          continue-on-error: true
 
-       - name: Run Extensions Test
+       - name: Run Experimental Test
          id: tests
          run: |
            cd ivy
-           docker run --rm --env REDIS_URL=${{secrets.REDIS_CONNECTION_URL}} --env REDIS_PASSWD=${{secrets.REDIS_PASSWORD}} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{matrix.backends}} ivy_tests/test_ivy/test_functional/test_extensions --tb=short
+           docker run --rm --env REDIS_URL=${{secrets.REDIS_CONNECTION_URL}} --env REDIS_PASSWD=${{secrets.REDIS_PASSWORD}} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend ${{matrix.backends}} ivy_tests/test_ivy/test_functional/test_experimental --tb=short
          continue-on-error: true
 
        - name: Zip Hypothesis Examples
@@ -89,7 +89,7 @@ jobs:
              MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
          run: |
              cd ivy/automation_tools/dashboard_automation/
-             python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} "${{ matrix.backends }}-extensions" ${{ steps.tests.outcome }} ${{ github.run_id }}
+             python3 update_db.py "$MONGODB_PASSWORD" ${{ github.workflow }} "${{ matrix.backends }}-experimental" ${{ steps.tests.outcome }} ${{ github.run_id }}
          continue-on-error: true
 
 
