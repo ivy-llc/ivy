@@ -11,10 +11,9 @@ class ndarray:
             data = ivy.Array(data)
         self.data = data
 
-    # Instance Methoods #
-    # -------------------#
+    # Instance Methods #
+    # ---------------- #
 
-    # Add argmax #
     def argmax(
         self,
         /,
@@ -23,7 +22,6 @@ class ndarray:
         out=None,
         keepdims=False,
     ):
-
         return np_frontend.argmax(
             self.data,
             axis=axis,
@@ -37,15 +35,6 @@ class ndarray:
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
-    def add(
-        self,
-        value,
-    ):
-        return np_frontend.add(
-            self.data,
-            value,
-        )
-
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
 
@@ -55,6 +44,16 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self.data, axis, kind, order)
 
+    def mean(self, * , axis=None, dtype=None, out=None, keepdims=False, where=True):
+        return np_frontend.mean(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            keepdims=keepdims,
+            where=where
+        )
+
     def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amin(
             self.data,
@@ -62,7 +61,7 @@ class ndarray:
             out=out,
             keepdims=keepdims,
             initial=initial,
-            where=where
+            where=where,
         )
 
     def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
@@ -72,20 +71,20 @@ class ndarray:
             out=out,
             keepdims=keepdims,
             initial=initial,
-            where=where
+            where=where,
         )
-    
+
     @property
     def dtype(self):
         return self.data.dtype
 
     def argmin(
-            self,
-            /,
-            *,
-            axis=None,
-            keepdims=False,
-            out=None,
+        self,
+        /,
+        *,
+        axis=None,
+        keepdims=False,
+        out=None,
     ):
 
         return np_frontend.argmin(
@@ -114,10 +113,12 @@ class ndarray:
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self.data, axis=axis, kind=kind, order=order)
 
-    def copy(self, order='C'):
+    def copy(self, order="C"):
         return np_frontend.copy(self.data, order=order)
 
-    def nonzero(self,):
+    def nonzero(
+        self,
+    ):
         return np_frontend.nonzero(self.data)[0]
 
     def ravel(self, order="C"):
@@ -126,8 +127,78 @@ class ndarray:
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
 
-    def searchsorted(self, v, side='left', sorter=None):
+    def searchsorted(self, v, side="left", sorter=None):
         return np_frontend.searchsorted(self.data, v, side=side, sorter=sorter)
 
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
+
+    def __add__(self, value, /):
+        return np_frontend.add(self.data, value)
+
+    def __sub__(self, value, /):
+        return np_frontend.subtract(self.data, value)
+
+    def __mul__(self, value, /):
+        return np_frontend.multiply(self.data, value)
+
+    def __and__(self, value, /):
+        return np_frontend.logical_and(self.data, value)
+
+    def __or__(self, value, /):
+        return np_frontend.logical_or(self.data, value)
+
+    def __xor__(self, value, /):
+        return np_frontend.logical_xor(self.data, value)
+
+    def __matmul__(self, value, /):
+        return np_frontend.matmul(self.data, value)
+
+    def __copy__(
+        self,
+    ):
+        return np_frontend.copy(self.data)
+
+    def __neg__(
+        self,
+    ):
+        return np_frontend.negative(self.data)
+
+    def __pos__(
+        self,
+    ):
+        return np_frontend.positive(self.data)
+
+    def __bool__(
+        self,
+    ):
+        if isinstance(self.data, int):
+            return self.data != 0
+
+        temp = ivy.squeeze(ivy.asarray(self.data), axis=None)
+        shape = ivy.shape(temp)
+        if shape:
+            raise ValueError(
+                "The truth value of an array with more than one element is ambiguous. "
+                "Use a.any() or a.all()"
+            )
+
+        return temp != 0
+
+    def __ne__(self, value, /):
+        return np_frontend.not_equal(self.data, value)
+
+    def __eq__(self, value, /):
+        return ivy.array(np_frontend.equal(self.data, value), dtype=ivy.bool)
+
+    def __ge__(self, value, /):
+        return np_frontend.greater_equal(self.data, value)
+
+    def __gt__(self, value, /):
+        return np_frontend.greater(self.data, value)
+
+    def __le__(self, value, /):
+        return np_frontend.less_equal(self.data, value)
+
+    def __lt__(self, value, /):
+        return np_frontend.less(self.data, value)

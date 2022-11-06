@@ -35,7 +35,11 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 def softmax(
-    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
+    x: Tensor, 
+    /, 
+    *, 
+    axis: Optional[int] = None, 
+    out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.softmax(x, axis)
 
@@ -64,3 +68,31 @@ def log_softmax(
     x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ):
     return tf.nn.log_softmax(x, axis)
+
+
+def deserialize(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[ivy.Callable, None]:
+    return tf.keras.activations.deserialize(name, custom_objects)
+
+
+def get(
+    identifier: Union[str, ivy.Callable, None],
+    /,
+    *,
+    custom_objects=Union[ivy.Dict, None],
+) -> Union[ivy.Callable, None]:
+
+    if identifier is None:
+        return tf.keras.activations.linear
+
+    if isinstance(identifier, str):
+        identifier = str(identifier)
+        return ivy.deserialize(identifier, custom_objects=custom_objects)
+
+    elif callable(identifier):
+        return identifier
+    else:
+        raise TypeError(
+            f"Could not interpret activation function identifier: {identifier}"
+        )

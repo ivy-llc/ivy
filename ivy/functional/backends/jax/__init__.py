@@ -50,9 +50,9 @@ NativeSparseArray = None
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
@@ -160,16 +160,14 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
 from .gradients import *
 from . import layers
 from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
+from . import linalg
+from .linalg import *
 from . import manipulation
 from .manipulation import *
 from . import random
@@ -184,3 +182,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *

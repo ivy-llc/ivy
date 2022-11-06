@@ -22,15 +22,23 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _arrays_to_float_variables(xs):
+def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
         if ivy.is_array(x, exclusive=True):
             if ivy.is_int_dtype(x.dtype):
                 x = x.astype(ivy.default_float_dtype())
+            else:
+                x = ivy.stop_gradient(x)
             return ivy.variable(x)
         return x
 
-    return ivy.nested_map(xs, map_fn, include_derived=True)
+    if xs_grad_idxs is not None:
+        xs = xs.to_dict()
+        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+        xs = ivy.Container(xs)
+        return xs
+    else:
+        return ivy.nested_map(xs, map_fn, include_derived=True)
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
@@ -60,7 +68,7 @@ def _check_if_empty(idxs):
 def _remove_zeros_and_nones(grads, x, idx=[]):
     if ivy.is_array(x):
         abs_val = ivy.abs(x)
-        if ivy.all(abs_val.astype("float64") < 1e-10):
+        if ivy.all(abs_val.astype("float64") < 1e-10) and len(idx):
             ivy.prune_nest_at_index(grads, idx)
         return grads
     if x is None:
