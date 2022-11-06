@@ -171,20 +171,24 @@ def get_dtype_and_values_and_casting(
         dtype = input_dtype[0]
         input_dtype = [dtype for x in input_dtype]
         return input_dtype, [dtype], x, casting
-    dtype = draw(helpers.get_dtypes(
-        get_dtypes_kind,
-        index=get_dtypes_index,
-        full=False,
-        none=get_dtypes_none,
-        key=get_dtypes_key,
-    ))
+    dtype = draw(
+        helpers.get_dtypes(
+            get_dtypes_kind,
+            index=get_dtypes_index,
+            full=False,
+            none=get_dtypes_none,
+            key=get_dtypes_key,
+        )
+    )
     if casting in ["safe", "same_kind"]:
         while not ivy.all([ivy.can_cast(x, dtype[0]) for x in input_dtype]):
-            dtype = draw(helpers.get_dtypes(
-                get_dtypes_kind,
-                index=get_dtypes_index,
-                full=False,
-                none=get_dtypes_none,
-                key=get_dtypes_key,
-            ))
+            dtype = draw(
+                helpers.get_dtypes(
+                    get_dtypes_kind,
+                    index=get_dtypes_index,
+                    full=False,
+                    none=get_dtypes_none,
+                    key=get_dtypes_key,
+                )
+            )
     return input_dtype, dtype, x, casting

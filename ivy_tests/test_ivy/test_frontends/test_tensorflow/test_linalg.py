@@ -123,7 +123,6 @@ def test_matrix_rank(
     tolr,
     num_positional_args,
     as_variable,
-    native_array,
     frontend,
     fn_tree,
     on_device,
@@ -139,7 +138,6 @@ def test_matrix_rank(
         on_device=on_device,
         atol=1.0,
         a=x[0],
-        validate_args=False,
         tol=tolr,
     )
 
