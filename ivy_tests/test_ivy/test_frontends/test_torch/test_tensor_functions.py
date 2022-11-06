@@ -32,7 +32,6 @@ def test_torch_is_tensor(
     )
 
 
-
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),

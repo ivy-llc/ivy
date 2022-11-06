@@ -8,7 +8,7 @@ from ivy.functional.frontends.torch.Tensor import Tensor
 
 
 def is_tensor(obj):
-    return Tensor(ivy.is_storage(obj))
+    return Tensor(ivy.is_array(obj))
 
 
 def is_storage(obj):

@@ -51,3 +51,9 @@ def any(
 
 
 any.support_native_out = True
+
+
+def is_storage(x: Any) -> bool:
+    return torch.is_storage(x)
+
+any.support_native_out = True
