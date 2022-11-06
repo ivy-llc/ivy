@@ -6,7 +6,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 2:
         redis_url = sys.argv[1]
         redis_pass = sys.argv[2]
-    failed = False
+    failed = True
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
