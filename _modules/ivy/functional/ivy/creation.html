@@ -642,8 +642,8 @@
     <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ones and having the same shape as an input array</span>
-<span class="sd">    ``x``.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a new array filled with ones and having the same shape as an input </span>
+<span class="sd">    array ``x``.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -651,10 +651,10 @@
 <span class="sd">        input array from which to derive the output array shape.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        output array data type. If ``dtype`` is ``None``, the output array data type</span>
-<span class="sd">        must be inferred from x. Default  ``None``.</span>
+<span class="sd">        must be inferred from ``x``. Default  ``None``.</span>
 <span class="sd">    device</span>
 <span class="sd">        device on which to place the created array. If device is ``None``, the output</span>
-<span class="sd">        array device must be inferred from x. Default: ``None``.</span>
+<span class="sd">        array device must be inferred from ``x``. Default: ``None``.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
@@ -662,7 +662,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array having the same shape as x and filled with ones.</span>
+<span class="sd">        an array having the same shape as ``x`` and filled with ``ones``.</span>
 
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
@@ -674,13 +674,72 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 2],[3, 4, 5]])</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3, 4, 5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; y1 = ivy.ones_like(x1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y1)</span>
+<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1])</span>
+
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)</span>
+<span class="sd">    &gt;&gt;&gt; y2 = ivy.ones_like(x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y2)</span>
+<span class="sd">    ivy.array([[1., 1., 1.],</span>
+<span class="sd">            [1., 1., 1.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x3 = ivy.array([3., 2., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; y3 = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.ones_like(x3, out=y3)</span>
+<span class="sd">    ivy.array([1., 1., 1.])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])</span>
+<span class="sd">    &gt;&gt;&gt; y1 = ivy.ones_like(x1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y1)</span>
+<span class="sd">    ivy.array([[1, 1, 1],[1, 1, 1]])</span>
+
+
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([3, 8, 2, 0, 0, 2])</span>
+<span class="sd">    &gt;&gt;&gt; y2 = ivy.ones_like(x2, dtype=ivy.IntDtype(&#39;int32&#39;), device=ivy.Device(&#39;cpu&#39;))</span>
+<span class="sd">    &gt;&gt;&gt; print(y2)</span>
+<span class="sd">    ivy.array([1, 1, 1, 1, 1, 1])</span>
+
+<span class="sd">    # Array ``y2`` is now stored on the CPU.</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones_like(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[1, 1, 1],</span>
-<span class="sd">           [1, 1, 1]])</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1, 1, 1]),</span>
+<span class="sd">        b: ivy.array([1, 1, 1])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2, 3, 8, 2, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.ones_like()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1, 1, 1, 1, 1])</span>
+
+<span class="sd">    With :class:&#39;ivy.Container&#39; input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))</span>
+<span class="sd">    &gt;&gt;&gt; y = x.ones_like()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([1., 1.]),</span>
+<span class="sd">        b: ivy.array([1., 1.])</span>
+<span class="sd">    }</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
