@@ -2356,3 +2356,41 @@ def test_jax_numpy_diag(
         v=x[0],
         k=k,
     )
+
+
+# flip
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.flip"
+    ),
+)
+def test_jax_numpy_flip(
+    dtype_value,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.flip",
+        m=value[0],
+        axis=axis,
+    )
