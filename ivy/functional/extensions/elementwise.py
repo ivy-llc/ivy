@@ -285,7 +285,7 @@ def float_power(
     x2
         Array-like of exponents. If x1.shape != x2.shape,
         they must be broadcastable to a common shape
-        (which becomes the shape of the output).            
+        (which becomes the shape of the output).
     out
         optional output array, for writing the result to.
 
@@ -297,12 +297,381 @@ def float_power(
 
     Examples
     --------
-    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> ivy.float_power(x1, 3)
     ivy.array([1.,    8.,   27.,   64.,  125.])
-    >>> x1 = ivy.array([1, 2, 3, 4, 5]) 
+    >>> x1 = ivy.array([1, 2, 3, 4, 5])
     >>> x2 = ivy.array([2, 3, 3, 2, 1])
     >>> ivy.float_power(x1, x2)
     ivy.array([1.,   8.,  27.,  16.,   5.])
     """
     return ivy.current_backend().float_power(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def exp2(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculate 2**p for all p in the input array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise 2 to the power x. This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> ivy.exp2(x)
+    ivy.array([2.,    4.,   8.])
+    >>> x = [5, 6, 7]
+    >>> ivy.exp2(x)
+    ivy.array([32.,   64.,  128.])
+    """
+    return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nansum(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Return the sum of array elements over a given axis treating
+    Not a Numbers (NaNs) as zero.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    axis
+        Axis or axes along which the sum is computed.
+        The default is to compute the sum of the flattened array.
+    dtype
+        The type of the returned array and of the accumulator in
+        which the elements are summed. By default, the dtype of input is used.
+    keepdims
+        If this is set to True, the axes which are reduced are left
+        in the result as dimensions with size one.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        A new array holding the result is returned unless out is specified,
+        in which it is returned.
+
+    Examples
+    --------
+    >>> a = ivy.array([[ 2.1,  3.4,  ivy.nan], [ivy.nan, 2.4, 2.1]])
+    >>> ivy.nansum(a)
+    10.0
+    >>> ivy.nansum(a, axis=0)
+    ivy.array([2.1, 5.8, 2.1])
+    >>> ivy.nansum(a, axis=1)
+    ivy.array([5.5, 4.5])
+    """
+    return ivy.current_backend().nansum(
+        x, axis=axis, dtype=dtype, keepdims=keepdims, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def gcd(
+    x1: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the greatest common divisor of |x1| and |x2|.
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise gcd of |x1| and |x2|.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.gcd(x1, x2)
+    ivy.array([1.,    1.,   3.])
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> ivy.gcd(x1, 10)
+    ivy.array([1.,   2.,  1.])
+    """
+    return ivy.current_backend().gcd(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def isclose(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Returns a boolean array where two arrays are element-wise equal
+    within a tolerance.
+    The tolerance values are positive, typically very small numbers.
+    The relative difference (rtol * abs(b)) and the absolute difference
+    atol are added together to compare against the absolute difference
+    between a and b.
+    The default atol is not appropriate for comparing numbers that are
+    much smaller than one
+
+    Parameters
+    ----------
+    a
+        First input array.
+    b
+        Second input array.
+    rtol
+        The relative tolerance parameter.
+    atol
+        The absolute tolerance parameter.
+    equal_nan
+        Whether to compare NaN's as equal. If True, NaN's in a will be
+        considered equal to NaN's in b in the output array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array of where a and b are equal within the given
+        tolerance. If both a and b are scalars, returns a single boolean value.
+
+    Examples
+    --------
+    >>> ivy.isclose([1e10,1e-7], [1.00001e10,1e-8])
+    ivy.array([True, False])
+    >>> ivy.isclose([1.0, ivy.nan], [1.0, ivy.nan], equal_nan=True)
+    ivy.array([True, True])
+    >>> ivy.isclose([1e-100, 1e-7], [0.0, 0.0], atol=0.0)
+    ivy.array([False, False])
+    >>> ivy.isclose([1e-10, 1e-10], [1e-20, 0.999999e-10], rtol=0.005, atol=0.0)
+    ivy.array([False, True])
+    """
+    return ivy.current_backend().isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def isposinf(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Test element-wise for positive infinity, return result as bool array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array with values True where 
+        the corresponding element of the input is positive
+        infinity and values False where the element of the
+        input is not positive infinity.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, ivy.inf])
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    >>> x = [5, -ivy.inf, ivy.inf]
+    >>> ivy.isposinf(x)
+    ivy.array([False, False,  True])
+    """
+    return ivy.current_backend().isposinf(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def isneginf(
+    x: Union[ivy.Array, float, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    Test element-wise for negative infinity, return result as bool array.
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Returns a boolean array with values True where 
+        the corresponding element of the input is negative
+        infinity and values False where the element of the
+        input is not negative infinity.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, -ivy.inf])
+    >>> ivy.isneginf(x)
+    ivy.array([False, False,  True])
+    >>> x = [5, -ivy.inf, ivy.inf]
+    >>> ivy.isneginf(x)
+    ivy.array([False, True,  False])
+    """
+    return ivy.current_backend().isneginf(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def nan_to_num(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Replace NaN with zero and infinity with large finite numbers
+    (default behaviour) or with the numbers defined by the user using
+    the nan, posinf and/or neginf keywords.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    copy
+        Whether to create a copy of x (True) or to replace values in-place (False).
+        The in-place operation only occurs if casting to an array does not require
+        a copy. Default is True.
+    nan
+        Value to be used to fill NaN values. If no value is passed then NaN values
+        will be replaced with 0.0.
+    posinf
+        Value to be used to fill positive infinity values. If no value is passed
+        then positive infinity values will be replaced with a very large number.
+    neginf
+        Value to be used to fill negative infinity values.
+        If no value is passed then negative infinity values
+        will be replaced with a very small (or negative) number.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array with the non-finite values replaced.
+        If copy is False, this may be x itself.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3, nan])
+    >>> ivy.nan_to_num(x)
+    ivy.array([1.,    1.,   3.,   0.0])
+    >>> x = ivy.array([1, 2, 3, inf])
+    >>> ivy.nan_to_num(x, posinf=5e+100)
+    ivy.array([1.,   2.,   3.,   5e+100])
+    """
+    return ivy.current_backend(x).nan_to_num(
+        x,
+        copy=copy,
+        nan=nan,
+        posinf=posinf,
+        neginf=neginf,
+        out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def logaddexp2(
+    x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
+    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],    
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Calculates log2(2**x1 + 2**x2).
+
+    Parameters
+    ----------
+    x1
+        First array-like input.
+    x2
+        Second array-input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Element-wise logaddexp2 of x1 and x2.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1, 2, 3])
+    >>> x2 = ivy.array([4, 5, 6])
+    >>> ivy.logaddexp2(x1, x2)
+    ivy.array([4.169925, 5.169925, 6.169925])
+    """
+    return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)

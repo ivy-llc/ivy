@@ -2,6 +2,7 @@
 
 # global
 import time
+import math
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
@@ -215,6 +216,8 @@ def test_get_item(
         instance_method=False,
         fw=fw,
         fn_name="get_item",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         x=x,
         query=indices,
     )
@@ -406,29 +409,51 @@ def test_get_num_dims(
     )
 
 
+@st.composite
+def _vector_norm_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+            min_num_dims=1,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
+    )
+    if ivy.is_int_dtype(dtype[0]):
+        max_val = ivy.iinfo(dtype[0]).max
+    else:
+        max_val = ivy.finfo(dtype[0]).max
+    max_x = np.abs(x[0]).max()
+    if max_x > 1:
+        max_p = math.log(max_val) / math.log(max_x)
+    else:
+        max_p = math.log(max_val)
+    p = draw(
+        helpers.floats(
+            small_abs_safety_factor=2, safety_factor_scale="log", max_value=max_p
+        )
+    )
+    max_norm_val = math.log(max_val / max_x)
+    max_norm = draw(
+        helpers.floats(
+            small_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_value=0,
+            max_value=max_norm_val,
+        )
+    )
+    return dtype, x, max_norm, p
+
+
 # clip_vector_norm
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
-        min_num_dims=1,
-        large_abs_safety_factor=16,
-        small_abs_safety_factor=64,
-        safety_factor_scale="log",
-    ),
-    max_norm_n_p=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
-        num_arrays=2,
-        large_abs_safety_factor=16,
-        small_abs_safety_factor=64,
-        safety_factor_scale="log",
-        shape=(),
-    ),
+    dtype_x_max_norm_p=_vector_norm_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
 )
 def test_clip_vector_norm(
-    dtype_x,
-    max_norm_n_p,
+    dtype_x_max_norm_p,
     as_variable,
     num_positional_args,
     with_out,
@@ -438,8 +463,7 @@ def test_clip_vector_norm(
     device,
     fw,
 ):
-    dtype, x = dtype_x
-    max_norm, p = max_norm_n_p[1]
+    dtype, x, max_norm, p = dtype_x_max_norm_p
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -452,9 +476,10 @@ def test_clip_vector_norm(
         fn_name="clip_vector_norm",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
-        max_norm=float(max_norm),
-        p=float(p),
+        max_norm=max_norm,
+        p=p,
     )
 
 
@@ -1123,9 +1148,12 @@ def test_explicit_ivy_framework_handles(device):
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
         lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
         and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
@@ -1180,9 +1208,12 @@ def test_einops_rearrange(
         max_num_dims=4,
         min_dim_size=2,
         max_dim_size=2,
+        min_value=-1e05,
+        max_value=1e05,
     ).filter(
-        lambda x: ivy.array([x[1][0].tolist()]).shape[2] % 2 == 0
-        and ivy.array([x[1][0].tolist()]).shape[3] % 2 == 0
+        lambda x: (ivy.array([x[1][0]], dtype="float32").shape[2] % 2 == 0)
+        and (ivy.array([x[1][0]], dtype="float32").shape[3] % 2 == 0)
+        and (x[0][0] not in ["float16", "bfloat16"])
     ),
     pattern_and_axes_lengths=st.sampled_from(
         [
@@ -1347,11 +1378,14 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e05,
+        max_value=1e05,
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x - val
@@ -1374,11 +1408,14 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, device):
         min_dim_size=2,
         num_arrays=2,
         shared_dtype=True,
+        min_value=-1e05,
+        max_value=1e05,
     ),
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_increment(x_val_and_dtypes, tensor_fn, device):
     x, val = x_val_and_dtypes[1]
+    x, val = x.tolist(), val.tolist()
     x = tensor_fn(x, dtype="float32", device=device)
     val = tensor_fn(val, dtype="float32", device=device)
     new_val = x + val

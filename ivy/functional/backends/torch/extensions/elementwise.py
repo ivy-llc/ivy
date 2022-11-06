@@ -91,10 +91,122 @@ def float_power(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.tensor(
-        torch.float_power(x1, x2, out=out),
-        dtype=x1.dtype
-    )
+    return torch.tensor(torch.float_power(x1, x2, out=out), dtype=x1.dtype)
 
 
 float_power.support_native_out = True
+
+
+def exp2(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.exp2(x, out=out)
+
+
+exp2.support_native_out = True
+
+
+def nansum(
+    x: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[tuple, int]] = None,
+    dtype: Optional[torch.dtype] = None,
+    keepdims: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nansum(x, dim=axis, keepdim=keepdims, dtype=dtype)
+
+
+nansum.support_native_out = False
+
+
+def gcd(
+    x1: Union[torch.Tensor, int, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
+    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    return torch.gcd(x1, x2, out=out)
+
+
+gcd.support_native_out = True
+
+
+def isclose(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+isclose.support_native_out = False
+
+
+def isposinf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
+
+
+def isneginf(
+    x: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True
+
+
+def nan_to_num(
+    x: torch.Tensor,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if copy:
+        return torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf, out=out)
+    else:
+        x = torch.nan_to_num(x, nan=nan, posinf=posinf, neginf=neginf)
+        return x
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def logaddexp2(
+    x1: Union[torch.Tensor, float, list, tuple],
+    x2: Union[torch.Tensor, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:    
+    x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
+    x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
+    return torch.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True

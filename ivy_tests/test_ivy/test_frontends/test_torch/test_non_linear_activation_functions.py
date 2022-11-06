@@ -476,6 +476,39 @@ def test_torch_celu(
     )
 
 
+# mish
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.mish"
+    ),
+    with_inplace=st.booleans(),
+)
+def test_torch_mish(
+    dtype_and_input,
+    with_inplace,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=with_inplace,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.mish",
+        input=input[0],
+    )
+
+
 # selu
 @handle_cmd_line_args
 @given(
@@ -1180,4 +1213,40 @@ def test_torch_layer_norm(
         weight=weight[0],
         bias=bias[0],
         eps=1e-12,
+    )
+
+
+# softplus
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.softplus"
+    ),
+    beta=st.integers(min_value=1, max_value=20),
+    threshold=st.integers(min_value=0, max_value=40),
+)
+def test_torch_softplus(
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    beta,
+    threshold,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.softplus",
+        input=x[0],
+        beta=beta,
+        threshold=threshold,
     )

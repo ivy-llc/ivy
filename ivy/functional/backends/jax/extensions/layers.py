@@ -61,16 +61,6 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
         is_single_input = True
 
     assert inputs.ndim == len(dims), f"len({inputs.shape}) != len({dims})"
-    if not isinstance(padding, str):
-        padding = tuple(map(tuple, padding))
-        assert len(padding) == len(window_shape), (
-            f"padding {padding} must specify pads for same number of dims as "
-            f"window_shape {window_shape}"
-        )
-        assert all(
-            [len(x) == 2 for x in padding]
-        ), f"each entry in padding {padding} must be length 2"
-        padding = ((0, 0),) + padding + ((0, 0),)
     y = jlax.reduce_window(inputs, init, reduce_fn, dims, strides, padding)
     if is_single_input:
         y = jnp.squeeze(y, axis=0)
@@ -217,3 +207,117 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def max_pool3d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if data_format == "NCDHW":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 3
+    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+
+    if data_format == "NCDHW":
+        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+
+    return res
+
+
+def avg_pool3d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NDHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 3
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * 3
+
+    if isinstance(strides, int):
+        strides = (strides,) * 3
+    elif len(strides) == 1:
+        strides = (strides[0],) * 3
+
+    if data_format == "NCDHW":
+        x = jnp.transpose(x, (0, 2, 3, 4, 1))
+
+    x_shape = list(x.shape[1:4])
+    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
+
+    x = jnp.pad(
+        x,
+        [
+            (0, 0),
+            (pad_d // 2, pad_d - pad_d // 2),
+            (pad_h // 2, pad_h - pad_h // 2),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    div_shape = res.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / _pool(jnp.ones(div_shape), 0., jlax.add, kernel, strides, padding)
+
+    if data_format == "NCDHW":
+        res = jnp.transpose(x, (0, 2, 3, 4, 1))
+
+    return res
+
+
+def avg_pool2d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 2
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * 2
+
+    if isinstance(strides, int):
+        strides = (strides,) * 2
+    elif len(strides) == 1:
+        strides = (strides[0],) * 2
+
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    div_shape = x.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / _pool(jnp.ones(div_shape,
+                               dtype=res.dtype),
+                      0.,
+                      jlax.add,
+                      kernel,
+                      strides,
+                      padding)
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
+    return res

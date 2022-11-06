@@ -13,8 +13,8 @@ def _generate_data_layer_norm(
     draw,
     *,
     available_dtypes,
-    large_abs_safety_factor=40,
-    small_abs_safety_factor=40,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
     safety_factor_scale="log",
     min_num_dims=1,
     max_num_dims=5,
@@ -23,21 +23,24 @@ def _generate_data_layer_norm(
     max_axes_size=1,
     force_int_axis=True,
     ret_shape=True,
-    abs_smallest_val=None,
+    abs_smallest_val=0.1,
     allow_inf=False,
     allow_nan=False,
     exclude_min=False,
     exclude_max=False,
-    min_value=None,
-    max_value=None,
+    min_value=-1e20,
+    max_value=1e20,
     shared_dtype=False,
 ):
     results = draw(
         helpers.dtype_values_axis(
             available_dtypes=available_dtypes,
+            min_value=min_value,
+            max_value=max_value,
             large_abs_safety_factor=large_abs_safety_factor,
             small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale=safety_factor_scale,
+            abs_smallest_val=abs_smallest_val,
             min_num_dims=min_num_dims,
             max_num_dims=max_num_dims,
             valid_axis=valid_axis,
@@ -60,6 +63,7 @@ def _generate_data_layer_norm(
         "max_value": max_value,
         "large_abs_safety_factor": large_abs_safety_factor,
         "small_abs_safety_factor": small_abs_safety_factor,
+        "safety_factor_scale": safety_factor_scale,
         "allow_inf": allow_inf,
         "allow_nan": allow_nan,
         "exclude_min": exclude_min,
@@ -72,26 +76,26 @@ def _generate_data_layer_norm(
 
     results_weight = draw(helpers.dtype_and_values(shape=weight_shape, **arg_dict))
     results_bias = draw(helpers.dtype_and_values(shape=bias_shape, **arg_dict))
-    results_new_std = draw(helpers.dtype_and_values(shape=shape, **arg_dict))
 
     _, weight_values = results_weight
     _, bias_values = results_bias
-    _, new_std_values = results_new_std
 
-    return dtype, values, axis, weight_values, bias_values, new_std_values
+    return dtype, values, axis, weight_values, bias_values
 
 
 @handle_cmd_line_args
 @given(
     values_tuple=_generate_data_layer_norm(
-        available_dtypes=helpers.get_dtypes("float")
+        available_dtypes=helpers.get_dtypes("float"),
     ),
+    new_std=st.floats(min_value=0.01, max_value=0.1),
     epsilon=st.floats(min_value=0.01, max_value=0.1),
     num_positional_args=helpers.num_positional_args(fn_name="layer_norm"),
 )
 def test_layer_norm(
     *,
     values_tuple,
+    new_std,
     epsilon,
     num_positional_args,
     as_variable,
@@ -101,7 +105,7 @@ def test_layer_norm(
     instance_method,
     fw,
 ):
-    dtype, x, normalize_axis, weight, bias, new_std = values_tuple
+    dtype, x, normalize_axis, weight, bias = values_tuple
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -112,8 +116,9 @@ def test_layer_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="layer_norm",
-        rtol_=0.1,
+        rtol_=0.5,
         atol_=0.5,
+        test_gradients=True,
         x=x[0],
         normalize_axis=normalize_axis,
         epsilon=epsilon,
