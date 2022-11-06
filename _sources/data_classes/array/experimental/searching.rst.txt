@@ -1,0 +1,17 @@
+Searching
+=========
+
+.. automodule:: ivy.array.experimental.searching
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Searching
+
+   searching/ArrayWithSearchingExperimental.rst
+

@@ -1,0 +1,17 @@
+Image
+=====
+
+.. automodule:: ivy.container.experimental.image
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Image
+
+   image/ContainerWithImageExperimental.rst
+

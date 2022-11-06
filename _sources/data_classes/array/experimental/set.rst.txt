@@ -1,0 +1,17 @@
+Set
+===
+
+.. automodule:: ivy.array.experimental.set
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Set
+
+   set/ArrayWithSetExperimental.rst
+

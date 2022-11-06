@@ -29,7 +29,7 @@ Array
    array/data_type.rst
    array/device.rst
    array/elementwise.rst
-   array/extensions.rst
+   array/experimental.rst
    array/general.rst
    array/gradients.rst
    array/image.rst

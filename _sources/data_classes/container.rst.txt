@@ -30,7 +30,7 @@ Container
    container/data_type.rst
    container/device.rst
    container/elementwise.rst
-   container/extensions.rst
+   container/experimental.rst
    container/general.rst
    container/gradients.rst
    container/image.rst
