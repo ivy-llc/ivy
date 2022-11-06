@@ -22,6 +22,7 @@ Elementwise
    elementwise/exp2.rst
    elementwise/nansum.rst
    elementwise/gcd.rst
+   elementwise/isclose.rst
    elementwise/isposinf.rst
    elementwise/isneginf.rst
    elementwise/nan_to_num.rst
