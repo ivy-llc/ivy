@@ -1,4 +1,4 @@
-name: test-extensions-ivy
+name: test-experimental-ivy
 on:
   push:
   pull_request:
@@ -27,7 +27,7 @@ jobs:
          if: github.event_name == 'pull_request'
          with:
            github_token: ${{secrets.GITHUB_TOKEN}}
-           workflow: test-ivy-extensions.yml
+           workflow: test-ivy-experimental.yml
            workflow_conclusion: ""
            search_artifacts: true
            name: hypothesis_${{ matrix.backends }}_test_extensions_zip
