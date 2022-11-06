@@ -2,5 +2,5 @@
 import abc
 
 
-class ArrayWithImageExtension(abc.ABC):
+class ArrayWithImageExperimental(abc.ABC):
     pass

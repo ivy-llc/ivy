@@ -7,7 +7,7 @@ from .device import ArrayWithDeviceExperimental
 from .elementwise import ArrayWithElementWiseExperimental
 from .general import ArrayWithGeneralExperimental
 from .gradients import ArrayWithGradientsExperimental
-from .image import ArrayWithImageExtension
+from .image import ArrayWithImageExperimental
 from .layers import ArrayWithLayersExperimental
 from .linalg import ArrayWithLinalgExperimental
 from .losses import ArrayWithLossesExperimental
