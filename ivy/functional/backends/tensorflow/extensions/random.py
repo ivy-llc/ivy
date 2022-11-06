@@ -1,11 +1,15 @@
+# global
 from typing import Union, Optional, Sequence
 import tensorflow as tf
-import ivy
-from .. import backend_version
+import tensorflow_probability as tfp
 from tensorflow_probability import distributions as tfd
+from tensorflow.python.framework.dtypes import DType
 
 # local
+import ivy
+from .. import backend_version
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.random import _check_bounds_and_get_shape
 
 
 # dirichlet
@@ -37,3 +41,45 @@ def dirichlet(
         ).sample(size),
         dtype=dtype,
     )
+
+
+def beta(
+    alpha: Union[float, tf.Tensor, tf.Variable],
+    beta: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str = None,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    alpha = tf.cast(alpha, dtype)
+    beta = tf.cast(beta, dtype)
+    with tf.device(device):
+        return tfp.distributions.Beta(alpha, beta).sample(shape, seed=seed)
+
+
+def gamma(
+    alpha: Union[float, tf.Tensor, tf.Variable],
+    beta: Union[float, tf.Tensor, tf.Variable],
+    /,
+    *,
+    shape: Optional[Union[ivy.NativeShape, Sequence[int]]] = None,
+    device: str = None,
+    dtype: Optional[Union[DType, ivy.Dtype]] = None,
+    seed: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if not dtype:
+        dtype = ivy.default_float_dtype()
+    dtype = ivy.as_native_dtype(dtype)
+    shape = _check_bounds_and_get_shape(alpha, beta, shape)
+    alpha = tf.cast(alpha, dtype)
+    beta = tf.cast(beta, dtype)
+    with tf.device(device):
+        return tfp.distributions.Gamma(alpha, beta).sample(shape, seed=seed)
