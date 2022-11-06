@@ -139,6 +139,22 @@ def gcd(
 gcd.support_native_out = True
 
 
+def isclose(
+    a: torch.Tensor,
+    b: torch.Tensor,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+isclose.support_native_out = False
+
+
 def isposinf(
     x: Union[torch.Tensor, float, list, tuple],
     /,
