@@ -25,4 +25,5 @@ Manipulation
    manipulation/top_k.rst
    manipulation/fliplr.rst
    manipulation/i0.rst
+   manipulation/pad.rst
 
