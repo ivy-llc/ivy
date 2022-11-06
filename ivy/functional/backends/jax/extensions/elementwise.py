@@ -84,6 +84,19 @@ def gcd(
     return jnp.gcd(x1, x2)
 
 
+def isclose(
+    a: JaxArray,
+    b: JaxArray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
 def isposinf(
     x: Union[JaxArray, float, list, tuple],
     /,
