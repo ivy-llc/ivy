@@ -418,3 +418,8 @@ def any(a, axis=None, out=None, keepdims=False, *, where=True):
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
     return ret
+
+
+@to_ivy_arrays_and_back
+def diag(v, k=0):
+    return ivy.diag(v, k=k)
