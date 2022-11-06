@@ -2306,3 +2306,53 @@ def test_jax_numpy_any(
         axis=axis,
         keepdims=keepdims,
     )
+
+
+# diag
+@st.composite
+def _diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    return dtype, x, k
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_k=_diag_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.diag"
+    ),
+)
+def test_jax_numpy_diag(
+    dtype_x_k,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x, k = dtype_x_k
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.diag",
+        v=x[0],
+        k=k,
+    )
