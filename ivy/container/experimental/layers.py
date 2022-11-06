@@ -6,7 +6,6 @@ from typing import (
     Dict,
     Tuple
 )
-from numbers import Number
 
 # local
 import ivy

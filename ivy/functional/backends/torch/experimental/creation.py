@@ -71,7 +71,6 @@ def hamming_window(
     )
 
 
-
 def vorbis_window(
     window_length: torch.tensor,
     *,

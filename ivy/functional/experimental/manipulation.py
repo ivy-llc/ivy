@@ -5,7 +5,11 @@ from typing import (
     Iterable,
     Sequence,
     Generator,
+    Callable,
+    Any,
+    Literal
 )
+from numbers import Number
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,

@@ -1,22 +1,15 @@
 from typing import (
     Optional,
     Union,
-    Tuple,
-    Iterable,
-    Callable,
-    Literal,
-    Any,
+    Tuple
 )
-from numbers import Number
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
-    handle_nestable,
-    outputs_to_ivy_arrays,
+    handle_nestable
 )
-from ivy.exceptions import handle_exceptions
-from math import sqrt, pi, cos
+
 
 @handle_out_argument
 @to_native_arrays_and_back
@@ -78,7 +71,6 @@ def max_pool1d(
     return ivy.current_backend(x).max_pool1d(
         x, kernel, strides, padding, data_format=data_format, out=out
     )
-
 
 
 @to_native_arrays_and_back
