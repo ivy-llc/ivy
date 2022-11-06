@@ -270,7 +270,7 @@ class ArrayWithLayersExtensions(abc.ABC):
         padding: str,
         /,
         *,
-        data_format: str = "NHWC",
+        data_format: str = "NDHWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -321,6 +321,72 @@ class ArrayWithLayersExtensions(abc.ABC):
             [[[46., 47.]]]]])
         """
         return ivy.max_pool3d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )
+
+    def avg_pool3d(
+        self: ivy.Array,
+        kernel: Union[int, Tuple[int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int], Tuple[int, int, int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NDHWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        Computes a 3-D max pool given 5-D input x.
+
+        Parameters
+        ----------
+        self
+            Input volume *[batch_size,d,h,w,d_in]*.
+        kernel
+            Convolution filters *[d,h,w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            NDHWC" or "NCDHW". Defaults to "NDHWC".
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> x = ivy.arange(48.).reshape((2, 3, 2, 2, 2))
+        >>> print(x.avg_pool3d(2, 2, 'VALID'))
+        ivy.array([[[[[ 7.,  8.]]]],
+
+
+
+               [[[[31., 32.]]]]])
+        >>> print(x.avg_pool3d(2, 2, 'SAME'))
+        ivy.array([[[[[ 7.,  8.]]],
+
+
+                [[[19., 20.]]]],
+
+
+
+               [[[[31., 32.]]],
+
+
+                [[[43., 44.]]]]])
+        """
+        return ivy.avg_pool3d(
             self,
             kernel,
             strides,
