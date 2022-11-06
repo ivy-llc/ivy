@@ -123,3 +123,14 @@ def i0(
 
 
 i0.support_native_out = True
+
+
+def flatten(
+    x: torch.Tensor,
+    /,
+    *,
+    start_dim: Optional[int] = 0,
+    end_dim: Optional[int] = -1,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
