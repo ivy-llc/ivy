@@ -1266,6 +1266,17 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies to
         this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.static_constant_pad(pad_width = (2, 3), value = (4, 3))
+        >>> print(y)
+        {
+            a: ivy.array([4, 4, 1, 2, 3, 3, 3, 3])
+            b: ivy.array([4, 4, 4, 5, 6, 3, 3, 3])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "constant_pad",
@@ -1298,17 +1309,12 @@ class ContainerWithManipulation(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([[0., 1.],
-                               [2., 3.]]),
-                  b=ivy.array([[4., 5.],
-                               [6., 7.]]))
-        >>> y = x.expand_dims(axis=1)
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.constant_pad(pad_width = (2, 3), value = (4, 3))
         >>> print(y)
         {
-            a: ivy.array([[[0., 1.]],
-                  [[2., 3.]]]),
-            b: ivy.array([[[4., 5.]],
-                  [[6., 7.]]])
+            a: ivy.array([4, 4, 1, 2, 3, 3, 3, 3])
+            b: ivy.array([4, 4, 4, 5, 6, 3, 3, 3])
         }
         """
         return self.static_constant_pad(
