@@ -44,13 +44,13 @@ class Tensor:
                 )
     
     def __abs__(self, name="abs"):
-        return ivy.abs(x=self.data, name=name)
+        return ivy.abs(self.data)
 
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
 
-    def __div__(self, x, name="div"):
-        return tf_frontend.math.divide(x, self.data, name=name)
+    def __div__(self, y, name="div"):
+        return tf_frontend.math.divide(self.data, y, name=name)
 
     def __and__(self, y, name="and"):
         return y.__rand__(self.data)
@@ -125,7 +125,7 @@ class Tensor:
         return tf_frontend.math.logical_and(x, self.data, name=name)
 
     def __rdiv__(self, x, name="rdiv"):
-        return tf_frontend.divide(x, self.data, name=name)
+        return tf_frontend.math.divide(x, self.data, name=name)
 
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.raw_ops.FloorDiv(x=x, y=self.data, name=name)
@@ -133,8 +133,8 @@ class Tensor:
     def __rmatmul__(self, x, name="rmatmul"):
         return tf_frontend.raw_ops.MatMul(a=x, b=self.data, name=name)
 
-    def __rmod__(self, name="rmod"):
-        return ivy.abs(x=self.data, name=name)
+    def __rmod__(self, x, name="rmod"):
+        return ivy.remainder(x, self.data)
 
     def __rmul__(self, x, name="rmul"):
         return tf_frontend.raw_ops.Mul(x=x, y=self.data, name=name)

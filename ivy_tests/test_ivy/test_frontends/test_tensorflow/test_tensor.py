@@ -529,14 +529,9 @@ def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float32",
-            "float64",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        ],
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
@@ -549,15 +544,17 @@ def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=[],
-        num_positional_args_method=0,
-        native_array_flags_method=[],
-        all_as_kwargs_np_method={},
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "x": x[1],
+        },
         frontend="tensorflow",
         class_name="Tensor",
         method_name="__rmod__",
-    )
+   )
 
 
 # __rsub__
