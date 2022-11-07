@@ -583,3 +583,34 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([4.169925, 5.169925, 6.169925])
         """
         return ivy.logaddexp2(self._data, x2, out=out)
+
+    def signbit(
+        self: Union[ivy.Array, float, int, list, tuple],
+        x2: Union[ivy.Array, float, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.signbit. This method
+        simply wraps the function, and so the docstring for ivy.signbit also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise signbit of x.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, -2, 3])
+        >>> x.signbit()
+        ivy.array([False, True, False])
+        """
+        return ivy.signbit(self._data, out=out)
