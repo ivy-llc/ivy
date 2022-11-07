@@ -561,7 +561,7 @@
 <span class="sd">        ivy.Array instance method variant of ivy.isposinf. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.isposinf also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -569,15 +569,15 @@
 <span class="sd">        out</span>
 <span class="sd">            Alternate output array in which to place the result.</span>
 <span class="sd">            The default is None.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            Returns a boolean array with values True where </span>
+<span class="sd">            Returns a boolean array with values True where</span>
 <span class="sd">            the corresponding element of the input is positive</span>
 <span class="sd">            infinity and values False where the element of the</span>
 <span class="sd">            input is not positive infinity.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; a = ivy.array([12.1, -ivy.inf, ivy.inf])</span>
@@ -596,7 +596,7 @@
 <span class="sd">        ivy.Array instance method variant of ivy.isneginf. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.isneginf also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -604,15 +604,15 @@
 <span class="sd">        out</span>
 <span class="sd">            Alternate output array in which to place the result.</span>
 <span class="sd">            The default is None.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
-<span class="sd">            Returns a boolean array with values True where </span>
+<span class="sd">            Returns a boolean array with values True where</span>
 <span class="sd">            the corresponding element of the input is negative</span>
 <span class="sd">            infinity and values False where the element of the</span>
 <span class="sd">            input is not negative infinity.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([12.1, -ivy.inf, ivy.inf])</span>
@@ -672,12 +672,7 @@
 <span class="sd">        ivy.array([1.,   2.,   3.,   5e+100])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nan_to_num</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> 
-            <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
-            <span class="n">nan</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span>
-            <span class="n">posinf</span><span class="o">=</span><span class="n">posinf</span><span class="p">,</span>
-            <span class="n">neginf</span><span class="o">=</span><span class="n">neginf</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=</span><span class="n">neginf</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithElementWiseExperimental.logaddexp2"><a class="viewcode-back" href="../../../../data_classes/array/experimental/elementwise/ArrayWithElementWiseExperimental.html#ivy.array.experimental.elementwise.ArrayWithElementWiseExperimental.logaddexp2">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>

@@ -1055,20 +1055,20 @@
 <span class="sd">    float_dtype</span>
 <span class="sd">        (Default value = None) float type to be returned.</span>
 <span class="sd">    as_native</span>
-<span class="sd">        (Default value = None) Whether to return the float dtype as native </span>
+<span class="sd">        (Default value = None) Whether to return the float dtype as native</span>
 <span class="sd">        dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input float dtype as native or ivy dtype if provided, else </span>
-<span class="sd">        if an input is given, return its float dtype, otherwise return the </span>
+<span class="sd">        Return the input float dtype as native or ivy dtype if provided, else</span>
+<span class="sd">        if an input is given, return its float dtype, otherwise return the</span>
 <span class="sd">        global default float dtype.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype()</span>
 <span class="sd">    &#39;float32&#39;</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.set_default_float_dtype(ivy.FloatDtype(&quot;float64&quot;))</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype()</span>
 <span class="sd">    &#39;float64&#39;</span>
@@ -1078,7 +1078,7 @@
 
 <span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(input=4294.967346)</span>
 <span class="sd">    &#39;float32&#39;</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([9.8,8.9], dtype=&quot;float16&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_float_dtype(input=x)</span>
 <span class="sd">    &#39;float16&#39;</span>

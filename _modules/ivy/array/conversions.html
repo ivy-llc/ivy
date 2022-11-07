@@ -143,7 +143,6 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-
 <span class="c1"># Helpers #</span>
 <span class="c1"># --------#</span>
 
@@ -167,8 +166,9 @@
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
 
+
 <span class="k">def</span> <span class="nf">_to_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">jnp</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">x</span>
 
@@ -209,7 +209,7 @@
 
 
 <div class="viewcode-block" id="to_ivy_array"><a class="viewcode-back" href="../../../data_classes/array/conversions/to_ivy_array.html#ivy.array.conversions.to_ivy_array">[docs]</a><span class="k">def</span> <span class="nf">to_ivy_array</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span><span class="n">jnp</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">,</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">tf</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
     <span class="n">nested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
@@ -237,6 +237,7 @@
     <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_to_ivy_array</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_to_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="args_to_ivy"><a class="viewcode-back" href="../../../data_classes/array/conversions/args_to_ivy.html#ivy.array.conversions.args_to_ivy">[docs]</a><span class="k">def</span> <span class="nf">args_to_ivy</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>

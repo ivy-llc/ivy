@@ -128,16 +128,12 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.functional.experimental.layers</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-    <span class="n">Tuple</span>
-<span class="p">)</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
-    <span class="n">handle_nestable</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -331,12 +327,9 @@
 <span class="sd">        [[[46., 47.]]]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                                             <span class="n">kernel</span><span class="p">,</span>
-                                             <span class="n">strides</span><span class="p">,</span>
-                                             <span class="n">padding</span><span class="p">,</span>
-                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
-                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">max_pool3d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="avg_pool2d"><a class="viewcode-back" href="../../../../functional/experimental/layers/avg_pool2d.html#ivy.functional.experimental.layers.avg_pool2d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -405,12 +398,9 @@
 <span class="sd">        [[38., 39.]]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                                             <span class="n">kernel</span><span class="p">,</span>
-                                             <span class="n">strides</span><span class="p">,</span>
-                                             <span class="n">padding</span><span class="p">,</span>
-                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
-                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool2d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="avg_pool3d"><a class="viewcode-back" href="../../../../functional/experimental/layers/avg_pool3d.html#ivy.functional.experimental.layers.avg_pool3d">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
@@ -478,12 +468,9 @@
 <span class="sd">            [[[43., 44.]]]]])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span>
-                                             <span class="n">kernel</span><span class="p">,</span>
-                                             <span class="n">strides</span><span class="p">,</span>
-                                             <span class="n">padding</span><span class="p">,</span>
-                                             <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
-                                             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool3d</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>
