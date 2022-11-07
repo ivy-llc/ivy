@@ -204,3 +204,15 @@ def logaddexp2(
 
 
 logaddexp2.support_native_out = True
+
+
+def signbit(
+    x: Union[np.ndarray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:    
+    return np.signbit(x, out=out)
+
+
+signbit.support_native_out = True
