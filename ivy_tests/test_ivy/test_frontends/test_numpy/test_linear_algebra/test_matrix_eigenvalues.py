@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=_get_dtype_and_matrix(),
@@ -16,7 +17,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         fn_name="ivy.functional.frontends.numpy.linalg.eig"
     ),
 )
-def test_numpy_eig(dtype_and_x, as_variable, native_array, num_positional_args):
+def test_numpy_eig(
+    dtype_and_x, as_variable, native_array, num_positional_args
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -25,6 +28,6 @@ def test_numpy_eig(dtype_and_x, as_variable, native_array, num_positional_args):
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="numpy",
-        fn_tree="linalg.inv",
+        fn_tree="linalg.eig",
         a=x[0],
     )
