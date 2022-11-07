@@ -129,6 +129,8 @@ class Tensor:
     def arctan(self, *, out=None):
         return torch_frontend.atan(self, out=out)
 
+
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
         self.data = self.arctan()
@@ -172,6 +174,8 @@ class Tensor:
     def dim(self):
         return self.data.ndim
 
+    ndimension = dim
+
     def new_full(
         self,
         size,
@@ -214,12 +218,6 @@ class Tensor:
     def long(self, memory_format=None):
         return ivy.astype(self.data, ivy.int64)
 
-    def max(self, dim=None, keepdim=False):
-        return torch_frontend.max(self.data, dim=dim, keepdim=keepdim)
-
-    def device(self):
-        return ivy.dev(self.data)
-
     # Special Methods #
     # -------------------#
 
@@ -234,7 +232,7 @@ class Tensor:
         return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
         return torch_frontend.mul(other, self)
@@ -246,11 +244,10 @@ class Tensor:
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
     def __mod__(self, other):
-        return ivy.remainder(self.data, other)
+        return ivy.remainder(self, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
-    ndimension = dim
 
 
 # Tensor (alias)
