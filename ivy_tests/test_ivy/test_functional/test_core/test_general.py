@@ -861,6 +861,8 @@ def test_gather_nd(
         instance_method=instance_method,
         fw=fw,
         fn_name="gather_nd",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
