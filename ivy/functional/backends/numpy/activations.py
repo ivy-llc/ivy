@@ -6,7 +6,7 @@ from typing import Optional, Union
 import numpy as np
 
 import ivy
-from ivy.functional.backends.numpy.helpers import scalar_output_to_0d_array
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 try:
     from scipy.special import erf
@@ -58,7 +58,7 @@ def softmax(
 softmax.support_native_out = True
 
 
-@scalar_output_to_0d_array
+@_scalar_output_to_0d_array
 def softplus(
     x: np.ndarray,
     /,
@@ -92,7 +92,7 @@ def softplus(
 softplus.support_native_out = True
 
 
-@scalar_output_to_0d_array
+@_scalar_output_to_0d_array
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
