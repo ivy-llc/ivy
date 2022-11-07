@@ -48,7 +48,7 @@ def fmod(
 
 
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("blfoat16", "float16", "float32", "float64")}, backend_version
+    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
 )
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
