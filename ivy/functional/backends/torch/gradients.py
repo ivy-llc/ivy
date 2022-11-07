@@ -54,7 +54,7 @@ def _forward_fn(xs, func):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    xs = _arrays_to_float_variables(xs)
+    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
