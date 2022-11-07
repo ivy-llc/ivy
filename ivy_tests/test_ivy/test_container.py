@@ -2550,36 +2550,6 @@ def test_container_to_and_from_disk_as_json(device):
     os.remove(save_filepath)
 
 
-def test_container_shape(device):
-    dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
-        "b": {
-            "c": ivy.array([[[2.0], [4.0], [6.0]]], device=device),
-            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=device),
-        },
-    }
-    container = Container(dict_in)
-    assert container.shape == [1, 3, 1]
-    dict_in = {
-        "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
-        "b": {
-            "c": ivy.array([[[2.0, 3.0], [4.0, 5.0], [6.0, 7.0]]], device=device),
-            "d": ivy.array([[[3.0], [6.0], [9.0]]], device=device),
-        },
-    }
-    container = Container(dict_in)
-    assert container.shape == [1, 3, None]
-    dict_in = {
-        "a": ivy.array([[[1.0, 2.0], [2.0, 3.0], [3.0, 4.0]]], device=device),
-        "b": {
-            "c": ivy.array([[[2.0, 3.0], [4.0, 5.0], [6.0, 7.0]]], device=device),
-            "d": ivy.array([[[3.0, 4.0], [6.0, 7.0], [9.0, 10.0]]], device=device),
-        },
-    }
-    container = Container(dict_in)
-    assert container.shape == [1, 3, 2]
-
-
 def test_container_shapes(device):
     dict_in = {
         "a": ivy.array([[[1.0], [2.0], [3.0]]], device=device),
