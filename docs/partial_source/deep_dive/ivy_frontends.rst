@@ -429,6 +429,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @to_ivy_arrays_and_back
     def add(
     x1,
     x2,
@@ -476,6 +477,7 @@ The implementation for the :func:`tf_frontend.math.add` is shown as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
     return ivy.add(x, y)
 
@@ -535,6 +537,7 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
     # ivy/functional/frontends/tensorflow/math.py
     from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
     ...
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         x, y = promote_types_of_tensorflow_inputs(x, y)
         return ivy.add(x, y)
