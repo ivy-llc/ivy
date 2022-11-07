@@ -306,3 +306,8 @@ divide = div
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def log1p(input, *, out=None):
+    return ivy.log1p(input, out=out)
