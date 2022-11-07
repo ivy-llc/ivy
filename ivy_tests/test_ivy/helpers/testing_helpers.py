@@ -2,6 +2,7 @@
 import importlib
 import inspect
 import typing
+from functools import partial
 
 from hypothesis import given, strategies as st
 
@@ -227,33 +228,11 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
                 if flag in param_names:
                     _given_kwargs[flag] = st.booleans()
 
-            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            wrapped_test = given(**_given_kwargs)(test_fn)
             if "fn_name" in param_names:
-
-                def wrapped_test(fn_name=fn_name, *args, **kwargs):
-                    __tracebackhide__ = True
-                    return wrapped_hypothesis_test(fn_name=fn_name, *args, **kwargs)
-
-            else:
-
-                def wrapped_test(*args, **kwargs):
-                    __tracebackhide__ = True
-                    return wrapped_hypothesis_test(*args, **kwargs)
-
-            params_objs = []
-            for param in possible_fixtures:
-                if param in param_names:
-                    params_objs.append(
-                        inspect.Parameter(
-                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
-                        )
-                    )
-
-            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
-            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
-            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
-                parameters=params_objs
-            )
+                _name = wrapped_test.__name__
+                wrapped_test = partial(wrapped_test, fn_name=fn_name)
+                wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 
@@ -286,34 +265,11 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
             _given_kwargs = _generate_shared_test_flags(
                 param_names, given_kwargs, fn_tree, callable_fn
             )
-
-            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
+            wrapped_test = given(**_given_kwargs)(test_fn)
             if "fn_tree" in param_names:
-
-                def wrapped_test(fn_tree=fn_tree, *args, **kwargs):
-                    __tracebackhide__ = True
-                    return wrapped_hypothesis_test(fn_tree=fn_tree, *args, **kwargs)
-
-            else:
-
-                def wrapped_test(*args, **kwargs):
-                    __tracebackhide__ = True
-                    return wrapped_hypothesis_test(*args, **kwargs)
-
-            params_objs = []
-            for param in possible_fixtures_frontends:
-                if param in param_names:
-                    params_objs.append(
-                        inspect.Parameter(
-                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
-                        )
-                    )
-
-            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
-            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
-            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
-                parameters=params_objs
-            )
+                _name = wrapped_test.__name__
+                wrapped_test = partial(wrapped_test, fn_tree=fn_tree)
+                wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 
@@ -357,7 +313,6 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
         )
 
         if is_hypothesis_test:
-            param_names = inspect.signature(test_fn).parameters.keys()
             fn_args = typing.get_type_hints(test_fn)
 
             for k, v in fn_args.items():
@@ -366,28 +321,10 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
                 elif v is NumPositionalArg:
                     _given_kwargs[k] = st.just(0)
 
-            wrapped_hypothesis_test = given(**_given_kwargs)(test_fn)
-
-            def wrapped_test(class_=class_, method_name=method_name, *args, **kwargs):
-                __tracebackhide__ = True
-                return wrapped_hypothesis_test(
-                    class_=class_, method_name=method_name, *args, **kwargs
-                )
-
-            params_objs = []
-            for param in possible_fixtures_frontends:
-                if param in param_names:
-                    params_objs.append(
-                        inspect.Parameter(
-                            name=param, kind=inspect.Parameter.POSITIONAL_OR_KEYWORD
-                        )
-                    )
-
-            params_objs.extend(inspect.signature(wrapped_test).parameters.values())
-            wrapped_test.__dict__ = wrapped_hypothesis_test.__dict__
-            wrapped_test.__signature__ = inspect.signature(wrapped_test).replace(
-                parameters=params_objs
-            )
+            wrapped_test = given(**_given_kwargs)(test_fn)
+            _name = wrapped_test.__name__
+            wrapped_test = partial(wrapped_test, class_=class_, method_name=method_name)
+            wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 

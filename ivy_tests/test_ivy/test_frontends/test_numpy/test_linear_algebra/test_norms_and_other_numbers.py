@@ -23,18 +23,18 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
         max_axis=1,
     ),
     keepdims=st.booleans(),
-    ord=st.sampled_from([None, 'fro', 'nuc', 'inf', '-inf', 0, 1, -1, 2, -2])
+    ord=st.sampled_from([None, "fro", "nuc", "inf", "-inf", 0, 1, -1, 2, -2]),
 )
 def test_numpy_norm(
-        dtype_values_axis,
-        keepdims,
-        ord,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_values_axis,
+    keepdims,
+    ord,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x, axis = dtype_values_axis
     if len(np.shape(x)) == 1:
@@ -67,14 +67,14 @@ def test_numpy_norm(
     rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_numpy_matrix_rank(
-        dtype_and_x,
-        rtol,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    rtol,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -97,13 +97,13 @@ def test_numpy_matrix_rank(
     dtype_and_x=_get_dtype_and_matrix(),
 )
 def test_numpy_det(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -130,13 +130,13 @@ def test_numpy_det(
     ),
 )
 def test_numpy_slogdet(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(

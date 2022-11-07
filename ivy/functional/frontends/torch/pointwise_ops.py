@@ -277,6 +277,11 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def floor(input, *, out=None):
+    return ivy.floor(input, out=out)
+
+
+@to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
 

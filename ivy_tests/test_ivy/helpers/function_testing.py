@@ -2,7 +2,6 @@
 import copy
 from typing import Union, List
 import numpy as np
-import jax
 import tensorflow as tf
 import importlib
 import inspect
@@ -82,6 +81,8 @@ def test_function(
     atol_: float = 1e-06,
     test_values: bool = True,
     test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str = "tensorflow",
     on_device: str = "cpu",
     return_flat_np_arrays: bool = False,
@@ -306,7 +307,12 @@ def test_function(
         raise e
     ivy.unset_backend()
     # gradient test
-    if test_gradients and not fw == "numpy" and not instance_method:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and not instance_method
+        and "bool" not in input_dtypes
+    ):
         gradient_test(
             fn_name=fn_name,
             all_as_kwargs_np=all_as_kwargs_np,
@@ -318,6 +324,8 @@ def test_function(
             container_flags=container_flags,
             rtol_=rtol_,
             atol_=atol_,
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
             ground_truth_backend=ground_truth_backend,
         )
 
@@ -660,6 +668,8 @@ def gradient_test(
     container_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str = "tensorflow",
 ):
     def grad_fn(xs):
@@ -694,7 +704,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, grads = ivy.execute_with_gradients(grad_fn, xs)
+    _, grads = ivy.execute_with_gradients(
+        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+    )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
     # compute the return with a Ground Truth backend
@@ -721,7 +733,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, grads_from_gt = ivy.execute_with_gradients(grad_fn, xs)
+    _, grads_from_gt = ivy.execute_with_gradients(
+        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+    )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
 
@@ -1090,11 +1104,6 @@ def test_frontend_method(
     """
     _assert_dtypes_are_valid(init_input_dtypes)
     _assert_dtypes_are_valid(method_input_dtypes)
-    ARR_INS_METHOD = {
-        "DeviceArray": jax.numpy.array,
-        "ndarray": np.array,
-        "Tensor": tf.constant,
-    }
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1230,18 +1239,7 @@ def test_frontend_method(
     )
 
     # Run testing
-    class_ = class_.split(".")
-    ins_class = ivy.functional.frontends.__dict__[frontend]
-    if class_[-1] in ARR_INS_METHOD and frontend != "torch":
-        frontend_class = ARR_INS_METHOD[class_[-1]]
-        for c_n in class_:
-            ins_class = getattr(ins_class, c_n)
-    else:
-        frontend_class = importlib.import_module(frontend)
-        for c_n in class_:
-            ins_class = getattr(ins_class, c_n)
-            frontend_class = getattr(frontend_class, c_n)
-    ins = ins_class(*args_constructor, **kwargs_constructor)
+    ins = class_(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
@@ -1283,6 +1281,7 @@ def test_frontend_method(
             kwargs_method_frontend["device"]
         )
 
+    frontend_class = importlib.import_module(frontend).__getattribute__(class_.__name__)
     ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend

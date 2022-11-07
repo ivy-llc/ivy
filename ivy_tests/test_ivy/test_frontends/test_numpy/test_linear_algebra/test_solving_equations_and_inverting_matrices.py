@@ -17,14 +17,14 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     y=_get_second_matrix(),
 )
 def test_numpy_solve(
-        x,
-        y,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    x,
+    y,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype1, x1 = x
     dtype2, x2 = y
@@ -54,13 +54,13 @@ def test_numpy_solve(
     ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
 )
 def test_numpy_inv(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -86,13 +86,13 @@ def test_numpy_inv(
     ),
 )
 def test_numpy_pinv(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(

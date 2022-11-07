@@ -21,14 +21,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     k=helpers.ints(min_value=-10, max_value=10),
 )
 def test_numpy_tril(
-        dtype_and_x,
-        k,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    dtype_and_x,
+    k,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
