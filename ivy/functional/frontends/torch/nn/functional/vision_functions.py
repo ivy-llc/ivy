@@ -85,7 +85,7 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
-def _pad_handle_padding_shape(padding, n):
+def _pad_handle_padding_shape(padding, n, mode):
     if type(padding) is tuple:
         if type(padding[0]) is tuple:  # case nested tuples
             padding = ivy.flip(ivy.array(list(padding)), axis=0)
@@ -94,23 +94,28 @@ def _pad_handle_padding_shape(padding, n):
             padding = (padding[0], padding[0])  
         else:  # case flat tuple like torch input
             padding = tuple([(padding[i * 2], padding[i * 2 + 1])
-                             for i in range(int(len(padding) / 2) - 1, -1, -1)])
+                            for i in range(int(len(padding) / 2) - 1, -1, -1)])
     while len(padding) < n:
-        padding = ((0, 0),) + padding
+        if mode == 'circular':
+            padding = padding + ((0, 0),) 
+        else:
+            padding = ((0, 0),) + padding
+    if mode == 'circular':
+        padding = tuple([tuple(i) for i in ivy.flip(ivy.array(list(padding)), axis=0)])
     return padding
 
 
 @to_ivy_arrays_and_back
 def pad(input, padding, mode='constant' , value=0):
     ivy.assertions.check_torch_pad_input_valid(padding)   
-    padding = _pad_handle_padding_shape(padding, len(input.shape))
-    if mode is 'constant':
+    padding = _pad_handle_padding_shape(padding, len(input.shape), mode)
+    if mode == 'constant':
         return ivy.pad(input, padding, mode='constant', constant_values=value) 
-    elif mode is 'reflect':
+    elif mode == 'reflect':
         return ivy.pad(input, padding, mode='reflect', reflect_type='even')
-    elif mode is 'replicate':
+    elif mode == 'replicate':
         return ivy.pad(input, padding, mode='edge')
-    elif mode is 'circular':
+    elif mode == 'circular':
         return ivy.pad(input, padding, mode='wrap')
     else:
         raise ivy.exceptions.IvyException(
