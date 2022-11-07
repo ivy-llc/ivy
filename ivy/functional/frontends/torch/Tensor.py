@@ -129,6 +129,7 @@ class Tensor:
     def arctan(self, *, out=None):
         return torch_frontend.atan(self, out=out)
 
+
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
         self.data = self.arctan()
