@@ -372,9 +372,13 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         old_length -= 1
     if left_pad > 0:
         chunk_length = min(old_length, left_pad)
-        stop = left_pad - edge_offset
-        start = stop + chunk_length
-        left_chunk = ivy.flip(padded[stop:start, ...])
+        stop = (left_pad - edge_offset) % len(padded.shape)
+        start = (stop + chunk_length) % len(padded.shape)
+        if stop < start:
+            tmp = start
+            start = stop
+            stop = tmp
+        left_chunk = ivy.flip(padded[start:stop, ...])
         if method == "odd":
             left_chunk = 2 * padded[left_pad : left_pad + 1, ...] - left_chunk
         start = left_pad - chunk_length
@@ -383,9 +387,13 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         left_pad -= chunk_length
     if right_pad > 0:
         chunk_length = min(old_length, right_pad)
-        start = -right_pad + edge_offset - 2
-        stop = start - chunk_length
-        right_chunk = ivy.flip(padded[stop:start, ...])
+        start = (-right_pad + edge_offset - 2) % len(padded.shape)
+        stop = (start - chunk_length) % len(padded.shape)
+        if stop > start:
+            tmp = start
+            start = stop
+            stop = tmp
+        right_chunk = ivy.flip(padded[start:stop, ...])
         if method == "odd":
             right_chunk = 2 * padded[-right_pad - 1 : -right_pad, ...] - right_chunk
         start = padded.shape[0] - right_pad
