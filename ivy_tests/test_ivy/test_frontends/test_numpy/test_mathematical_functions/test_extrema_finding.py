@@ -228,6 +228,7 @@ def test_numpy_nanmin(
         on_device=on_device,
         a=x[0],
         axis=axis,
+        out=None,
         keepdims=keepdims,
         initial=initial,
         where=where,
