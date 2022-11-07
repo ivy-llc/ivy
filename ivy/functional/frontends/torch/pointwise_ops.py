@@ -20,6 +20,9 @@ def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 
 
+arctan = atan
+
+
 @to_ivy_arrays_and_back
 def tanh(input, *, out=None):
     return ivy.tanh(input, out=out)
@@ -40,6 +43,9 @@ def acos(input, *, out=None):
     return ivy.acos(input, out=out)
 
 
+arccos = acos
+
+
 @to_ivy_arrays_and_back
 def sinh(input, *, out=None):
     return ivy.sinh(input, out=out)
@@ -50,19 +56,15 @@ def acosh(input, *, out=None):
     return ivy.acosh(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arccosh(input, *, out=None):
-    return ivy.acosh(input, out=out)
-
-
-@to_ivy_arrays_and_back
-def arccos(input, *, out=None):
-    return ivy.acos(input, out=out)
+arccosh = acosh
 
 
 @to_ivy_arrays_and_back
 def abs(input, *, out=None):
     return ivy.abs(input, out=out)
+
+
+absolute = abs
 
 
 @to_ivy_arrays_and_back
@@ -75,7 +77,9 @@ def subtract(input, other, *, alpha=1, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.subtract(input, other * alpha, out=out)
 
+
 sub = subtract
+
 
 @to_ivy_arrays_and_back
 def exp(input, *, out=None):
@@ -87,9 +91,7 @@ def asin(input, *, out=None):
     return ivy.asin(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arcsin(input, *, out=None):
-    return ivy.asin(input, out=out)
+arcsin = asin
 
 
 @to_ivy_arrays_and_back
@@ -102,9 +104,7 @@ def atanh(input, *, out=None):
     return ivy.atanh(input, out=out)
 
 
-@to_ivy_arrays_and_back
-def arctanh(input, *, out=None):
-    return ivy.atanh(input, out=out)
+arctanh = atanh
 
 
 @to_ivy_arrays_and_back
@@ -184,11 +184,6 @@ def sign(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def absolute(input, *, out=None):
-    return ivy.abs(input, out=out)
-
-
-@to_ivy_arrays_and_back
 def logical_not(input, *, out=None):
     return ivy.logical_not(input, out=out)
 
@@ -209,6 +204,14 @@ def logical_or(input, other, *, out=None):
 def logical_xor(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.logical_xor(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def round(input, *, decimals=0, out=None):
+    m = ivy.full(input.shape, 10**decimals)
+    upscale = ivy.multiply(input, m, out=out)
+    rounded = ivy.round(upscale, out=out)
+    return ivy.divide(rounded, m, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -274,5 +277,32 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def floor(input, *, out=None):
+    return ivy.floor(input, out=out)
+
+
+@to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(input, *, out=None):
+    """If all element of array is integer, dtype of array becomes integer,
+    so the result returns integer number. That's why the input array is converted
+    into float if the dtype of the array is integer.
+    """
+    if "int" in input.dtype:
+        input = input.astype("float32")
+    return ivy.array(input * 3.1416 / 180, out=out)
+
+
+arcsinh = asinh
+
+
+divide = div
+
+
+@to_ivy_arrays_and_back
+def true_divide(input, other, *, out=None):
+    return ivy.divide(input, other, out=out)

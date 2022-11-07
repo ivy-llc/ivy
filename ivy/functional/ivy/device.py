@@ -421,6 +421,13 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     device
         The device string to convert to native device handle.
 
+    Examples
+    --------
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.clear_mem_on_dev(device)
+
     """
     ivy.current_backend(None).clear_mem_on_dev(device)
 

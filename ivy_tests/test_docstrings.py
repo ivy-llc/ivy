@@ -228,6 +228,8 @@ def test_docstrings(backend):
         "random_uniform",
         "randint",
         "shuffle",
+        "beta",
+        "gamma",
         "dev",
         "num_gpus",
         "current_backend",

@@ -53,7 +53,7 @@ class Device(str):
         if dev_str != "":
             ivy.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                ivy.assertions.check_equal(dev_str[3], ":")
+                # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
@@ -535,7 +535,7 @@ from ivy.functional.ivy import (
     general,
     gradients,
     layers,
-    linear_algebra,
+    linalg,
     losses,
     manipulation,
     norms,
@@ -559,7 +559,7 @@ add_ivy_array_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -584,7 +584,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -610,7 +610,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -629,6 +629,7 @@ class GlobalsDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+    __name__ = dict.__name__
 
 
 # defines ivy.globals attribute

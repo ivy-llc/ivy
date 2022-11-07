@@ -582,11 +582,7 @@ def sqrt(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype == "float32":
-        x_64 = tf.cast(x, tf.float64)
-        return tf.cast(tf.sqrt(x_64), x.dtype)
-    else:
-        return tf.math.sqrt(x)
+    return tf.math.sqrt(x)
 
 
 def square(
