@@ -190,3 +190,12 @@ def logaddexp2(
     numerator = tf.math.log(x)
     denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
     return numerator / denominator
+
+
+def signbit(
+    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:    
+    return tf.experimental.numpy.signbit(x)
