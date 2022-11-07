@@ -64,7 +64,7 @@ def asarray(
         else:
             return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = ivy.default_dtype(dtype=dtype, item=obj)
+        dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
     if copy is True:
         return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
     else:

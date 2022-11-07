@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     factor=st.integers(min_value=1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.pixel_shuffle"
+        fn_name="ivy.functional.frontends.torch.nn.functional.pixel_shuffle"
     ),
 )
 def test_torch_pixel_shuffle(
@@ -55,7 +55,7 @@ def test_torch_pixel_shuffle(
     ),
     factor=st.integers(min_value=1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.pixel_unshuffle"
+        fn_name="ivy.functional.frontends.torch.nn.functional.pixel_unshuffle"
     ),
 )
 def test_torch_pixel_unshuffle(
