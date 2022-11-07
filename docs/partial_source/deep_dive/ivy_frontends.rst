@@ -112,6 +112,8 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
     def add(
         x1,
         x2,
@@ -184,6 +186,7 @@ In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`wh
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         return ivy.add(x, y)
 
@@ -199,6 +202,7 @@ Ivy does not support the unique naming of individual operations, and so we omit 
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def tan(x, name=None):
         return ivy.tan(x)
 
@@ -206,11 +210,39 @@ Likewise, :code:`tan` is also placed under :mod:`math`.
 By referring to the `tf.math.tan`_ documentation, we add the same arguments, and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
+**NOTE:** For The :module:`tf.raw_ops` many functions posses the same behavior as those of :module:`tf` namespace except that only the functions from :mudule:`tf.raw_ops` takes key-word only arguments.
+For this we have a designed decorator to wrap the :module:`tf` namespace function to satisfy this behavior. Let's take an example of :func:`tf.math.argmax` and :func:`tf.raw_ops.ArgMax`.
+
+.. code-block:: python
+    # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
+    def argmax(input, axis, output_type=None, name=None):
+        if output_type in ["uint16", "int16", "int32", "int64"]:
+            return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+        else:
+            return ivy.astype(ivy.argmax(input, axis=axis), "int64")
+
+This function is a frontend ivy implementation of :func:`tf.math.argmax`, the similar function in :module:`tf.raw_ops` has similar inputs and outputs except the :func:`tf.raw_ops.ArgMax` takes all inputs as key-word only.
+Let's take a look on how we can handle such case.
+
+.. code-block:: python
+    # in ivy/functional/frontends/tensorflow/raw_ops.py
+    ArgMax = to_ivy_arrays_and_back(
+        map_raw_ops_alias(
+            tf_frontend.math.argmax,
+            kwargs_to_update={"dimension": "axis"},
+        )
+    )
+
+The :func:`tf_frontend.func_wrapper.map_raw_ops_alias` is the one that is wrapping the behavior of :func:`tf_frontend.math.argmax`, change it behavior to receive key-word only arguments.
+In case you are curious to know more about this function wrapper you can find it here: `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_ 
+
 **PyTorch**
 
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def add(input, other, *, alpha=None, out=None):
         return ivy.add(input, other, alpha=alpha, out=out)
 
@@ -222,6 +254,7 @@ We wrap :func:`ivy.add` as usual.
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def tan(input, *, out=None):
         return ivy.tan(input, out=out)
 
@@ -291,6 +324,7 @@ For example, we can simply reverse the result by calling :func:`ivy.flip` on the
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
         ret = ivy.cumprod(x, axis, exclusive)
         if reverse:
@@ -329,6 +363,7 @@ However, Ivy's `implementation <https://github.com/unifyai/ivy/blob/6089953297b4
 
 .. code-block:: python
 
+    @to_ivy_arrays_and_back
     def logical_and(x, y, name="LogicalAnd"):
         return ivy.logical_and(x, y)
 
