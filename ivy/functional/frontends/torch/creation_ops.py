@@ -220,9 +220,7 @@ def as_tensor(
     return ivy.asarray(data, dtype=dtype, device=device)
 
 
-def from_numpy(
-    data
-):
+def from_numpy(data):
     return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
 
 
