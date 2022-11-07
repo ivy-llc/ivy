@@ -337,6 +337,8 @@ You may also use submodule-specific helper functions to recreate the behaviour.
 Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api">Backend API Guide</a> on how this can be done.</p></li>
 <li><p>Implement the functions in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/functional/ivy/experimental/[relevant_submodule].py</span></code> simply deferring to their backend-specific implementation.
 Refer the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api">Ivy API Guide</a> to get a clearer picture of how this must be done.</p></li>
+<li><p>Implement the container instance method in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/container/experimental/[relevant_submodule].py</span></code> and the array instance method
+in <code class="xref py py-mod docutils literal notranslate"><span class="pre">ivy/array/experimental/[relevant_submodule].py</span></code></p></li>
 <li><p>Write tests for the function using the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/14_ivy_tests.html">Ivy Tests</a> guide, and make sure they are passing.</p></li>
 </ol>
 <p>A few points to keep in mind while doing this:</p>
