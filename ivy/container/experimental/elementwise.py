@@ -1427,3 +1427,85 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_logaddexp2(self, x2, out=out)
+
+    @staticmethod
+    def static_signbit(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, float, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.signbit. This method simply wraps
+        the function, and so the docstring for ivy.signbit also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise signbit of input arrays.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, -2, 3]),\
+                               b=-5)
+        >>> ivy.Container.static_signbit(x)
+        {
+            a: ivy.array([False, True, False])
+            b: ivy.array([True])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "signbit",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def signbit(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.signbit. This method simply
+        wraps the function, and so the docstring for ivy.signbit also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array-like items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise signbit of input arrays.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, -2, 3]),\
+                               b=-5)
+        >>> x.signbit()
+        {
+            a: ivy.array([False, True, False])
+            b: ivy.array([True])
+        }
+        """
+        return self.static_signbit(self, out=out)
