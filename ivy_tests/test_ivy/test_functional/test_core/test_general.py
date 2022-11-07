@@ -739,6 +739,8 @@ def test_gather(
         instance_method=instance_method,
         fw=fw,
         fn_name="gather",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=indices,
         axis=axis,
