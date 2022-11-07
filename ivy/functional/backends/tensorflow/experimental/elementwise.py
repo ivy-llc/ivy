@@ -47,9 +47,6 @@ def fmod(
     return tf.math.floormod(x1, x2, name=None)
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
-)
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -57,10 +54,12 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
-    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
-    ret = tf.math.maximum(x1, x2, name=None)
-    return tf.where(tf.math.is_inf(ret), float("nan"))
+    temp = tf.constant(float("nan"))
+    x1 = tf.where(tf.math.equal(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.equal(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.maximum(x1, x2)
+    return ret
 
 
 def trapz(
