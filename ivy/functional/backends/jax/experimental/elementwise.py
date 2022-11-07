@@ -134,5 +134,14 @@ def logaddexp2(
     /,
     *,
     out: Optional[JaxArray] = None,
-) -> JaxArray:    
+) -> JaxArray:
     return jnp.logaddexp2(x1, x2)
+
+
+def signbit(
+    x: Union[JaxArray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.signbit(x)

@@ -5705,7 +5705,7 @@ def trunc(
     >>> ivy.trunc(x, out=y)
     >>> print(y)
     ivy.array([ 0., -8.,  0.])
-    
+
     >>> x = ivy.array([0.56, 7, -23.4, -0.0375])
     >>> ivy.trunc(x, out=x)
     >>> print(x)

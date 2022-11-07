@@ -7188,7 +7188,8 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]), b=ivy.array([12, -3.5, 1.234]))
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+        ...                   b=ivy.array([12, -3.5, 1.234]))
         >>> y = ivy.Container.static_trunc(x)
         >>> print(y)
         {
@@ -7247,7 +7248,8 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]), b=ivy.array([12, -3.5, 1.234]))
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+                              b=ivy.array([12, -3.5, 1.234]))
         >>> y = x.trunc()
         >>> print(y)
         {

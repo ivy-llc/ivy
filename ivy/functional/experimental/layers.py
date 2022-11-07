@@ -1,13 +1,9 @@
-from typing import (
-    Optional,
-    Union,
-    Tuple
-)
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
-    handle_nestable
+    handle_nestable,
 )
 
 
@@ -201,12 +197,9 @@ def max_pool3d(
         [[[46., 47.]]]]])
 
     """
-    return ivy.current_backend(x).max_pool3d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).max_pool3d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -275,12 +268,9 @@ def avg_pool2d(
         [[38., 39.]]]])
 
     """
-    return ivy.current_backend(x).avg_pool2d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).avg_pool2d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -348,9 +338,6 @@ def avg_pool3d(
             [[[43., 44.]]]]])
 
     """
-    return ivy.current_backend(x).avg_pool3d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).avg_pool3d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )

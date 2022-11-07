@@ -398,11 +398,7 @@ def tanh(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.tanh(x)
 
 
-def trunc(x: JaxArray,
-          /,
-          *,
-          out: Optional[JaxArray] = None
-) -> JaxArray:
+def trunc(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     if "int" in str(x.dtype):
         return x
     else:
