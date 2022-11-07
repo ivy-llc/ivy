@@ -125,10 +125,14 @@ def var(
         size *= x.shape[a]
     if size == correction:
         size += 0.0001  # to avoid division by zero in return
-    return jnp.multiply(
-        jnp.var(x, axis=axis, keepdims=keepdims, out=out),
-        size / jnp.abs(size - correction),
-    ).astype(x.dtype)
+    return ivy.astype(
+        jnp.multiply(
+            jnp.var(x, axis=axis, keepdims=keepdims, out=out),
+            size / jnp.abs(size - correction),
+        ),
+        x.dtype,
+        copy=False,
+    )
 
 
 # Extra #

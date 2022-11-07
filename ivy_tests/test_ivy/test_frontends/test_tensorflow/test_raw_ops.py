@@ -1141,7 +1141,7 @@ def test_tensorflow_AddN(dtype_and_x, as_variable, num_positional_args, native_a
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.AddN",
-        inputs=x,
+        inputs=x[0],
     )
 
 
@@ -1316,7 +1316,7 @@ def test_tensorflow_Relu(dtype_and_x, as_variable, native_array):
     transpose_a=st.booleans(),
     transpose_b=st.booleans(),
 )
-def test_tensroflow_MatMul(
+def test_tensorflow_MatMul(
     dtype_and_x,
     transpose_a,
     transpose_b,
@@ -1332,6 +1332,7 @@ def test_tensroflow_MatMul(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="raw_ops.MatMul",
+        atol=1e-2,
         a=x[0],
         b=x[1],
         transpose_a=transpose_a,
@@ -1959,7 +1960,7 @@ def test_tensorflow_Ceil(
         max_value=1e30,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Diag"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Diag"
     ),
 )
 def test_tensorflow_Diag(
@@ -2079,7 +2080,7 @@ def test_tensorflow_Pow(
     ),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.Sum"
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Sum"
     ),
 )
 def test_tensorflow_Sum(
@@ -2252,4 +2253,106 @@ def test_tensorflow_Sigmoid(dtype_and_x, as_variable, native_array):
         frontend="tensorflow",
         fn_tree="raw_ops.Sigmoid",
         x=x[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Softplus(dtype_and_x, as_variable, native_array):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Softplus",
+        features=x[0],
+    )
+
+    @handle_cmd_line_args
+    @given(
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            num_arrays=2,
+            shared_dtype=True,
+        ),
+        num_positional_args=helpers.num_positional_args(
+            fn_name="ivy.functional.frontends.tensorflow.raw_ops.Xdivy"
+        ),
+    )
+    def test_tensorflow_Xdivy(
+        dtype_and_x, as_variable, num_positional_args, native_array
+    ):
+        input_dtype, xs = dtype_and_x
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            frontend="tensorflow",
+            fn_tree="raw_ops.Xdivy",
+            x=xs[0],
+            y=xs[1],
+        )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Xlog1py"
+    ),
+)
+def test_tensorflow_Xlog1py(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Xlog1py",
+        x=xs[0],
+        y=xs[1],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Xlogy"
+    ),
+)
+def test_tensorflow_Xlogy(dtype_and_x, as_variable, num_positional_args, native_array):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Xlogy",
+        x=xs[0],
+        y=xs[1],
     )

@@ -2,15 +2,15 @@
 import ivy
 
 
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(a, tol=None, valiate_args=False, name=None):
-    return ivy.matrix_rank(a, tol)
+def matrix_rank(a, tol=None, validate_args=False, name=None):
+    return ivy.astype(ivy.matrix_rank(a, atol=tol), ivy.int32)
 
 
 @to_ivy_arrays_and_back
@@ -103,3 +103,11 @@ normalize.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+@with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
+def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
+    square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
+    x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
+    return ivy.multiply(x, x_inv_norm)
