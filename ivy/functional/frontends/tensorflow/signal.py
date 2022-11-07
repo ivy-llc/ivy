@@ -9,6 +9,4 @@ def kaiser_window(window_length, beta=12.0, dtype=ivy.float32, name=None):
     return ivy.kaiser_window(window_length, periodic=False, beta=beta, dtype=dtype)
 
 
-kaiser_window.supported_dtypes = (
-    "float32", "float64", "float16", "bfloat16"
-)
+kaiser_window.supported_dtypes = ("float32", "float64", "float16", "bfloat16")

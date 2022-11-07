@@ -15,7 +15,7 @@ from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
 from .layers import ContainerWithLayers
-from .linear_algebra import ContainerWithLinearAlgebra
+from .linalg import ContainerWithLinalg
 from .losses import ContainerWithLosses
 from .manipulation import ContainerWithManipulation
 from .norms import ContainerWithNorms
@@ -25,27 +25,27 @@ from .set import ContainerWithSet
 from .sorting import ContainerWithSorting
 from .statistical import ContainerWithStatistical
 from .utility import ContainerWithUtility
-from ivy.container.extensions import (
-    ContainerWithActivationExtensions,
-    ContainerWithConversionExtensions,
-    ContainerWithCreationExtensions,
-    ContainerWithData_typeExtensions,
-    ContainerWithDeviceExtensions,
-    ContainerWithElementWiseExtensions,
-    ContainerWithGeneralExtensions,
-    ContainerWithGradientsExtensions,
-    ContainerWithImageExtensions,
-    ContainerWithLayersExtensions,
-    ContainerWithLinalgExtensions,
-    ContainerWithLossesExtensions,
-    ContainerWithManipulationExtensions,
-    ContainerWithNormsExtensions,
-    ContainerWithRandomExtensions,
-    ContainerWithSearchingExtensions,
-    ContainerWithSetExtensions,
-    ContainerWithSortingExtensions,
-    ContainerWithStatisticalExtensions,
-    ContainerWithUtilityExtensions,
+from ivy.container.experimental import (
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinalgExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
 )
 
 
@@ -60,7 +60,7 @@ class Container(
     ContainerWithGradients,
     ContainerWithImage,
     ContainerWithLayers,
-    ContainerWithLinearAlgebra,
+    ContainerWithLinalg,
     ContainerWithLosses,
     ContainerWithManipulation,
     ContainerWithNorms,
@@ -70,26 +70,26 @@ class Container(
     ContainerWithSorting,
     ContainerWithStatistical,
     ContainerWithUtility,
-    ContainerWithActivationExtensions,
-    ContainerWithConversionExtensions,
-    ContainerWithCreationExtensions,
-    ContainerWithData_typeExtensions,
-    ContainerWithDeviceExtensions,
-    ContainerWithElementWiseExtensions,
-    ContainerWithGeneralExtensions,
-    ContainerWithGradientsExtensions,
-    ContainerWithImageExtensions,
-    ContainerWithLayersExtensions,
-    ContainerWithLinalgExtensions,
-    ContainerWithLossesExtensions,
-    ContainerWithManipulationExtensions,
-    ContainerWithNormsExtensions,
-    ContainerWithRandomExtensions,
-    ContainerWithSearchingExtensions,
-    ContainerWithSetExtensions,
-    ContainerWithSortingExtensions,
-    ContainerWithStatisticalExtensions,
-    ContainerWithUtilityExtensions,
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinalgExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
 ):
     def __init__(
         self,

@@ -59,15 +59,9 @@ def array_equal(x0: JaxArray, x1: JaxArray, /) -> bool:
 
 
 def to_numpy(x: JaxArray, /, *, copy: bool = True) -> np.ndarray:
-    native_dtype = ivy.as_native_dtype(x.dtype)
-    default_float_dtype_str = ivy.default_float_dtype(as_native=False)
     if copy:
-        if native_dtype is jnp.dtype("bfloat16"):
-            return np.array(_to_array(x)).astype(default_float_dtype_str)
         return np.array(_to_array(x))
     else:
-        if native_dtype is jnp.dtype("bfloat16"):
-            return np.asarray(_to_array(x)).astype(default_float_dtype_str)
         return np.asarray(_to_array(x))
 
 
