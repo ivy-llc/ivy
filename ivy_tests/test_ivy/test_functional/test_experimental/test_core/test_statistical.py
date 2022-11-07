@@ -54,7 +54,7 @@ def statistical_dtype_values(draw, *, function):
 
 
 @handle_test(
-    fn_tree="functional.extensions.median",
+    fn_tree="functional.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
 )

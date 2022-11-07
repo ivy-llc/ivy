@@ -12,7 +12,7 @@ import numpy as np
 
 # sinc
 @handle_test(
-    fn_tree="functional.extensions.sinc",
+    fn_tree="functional.experimental.sinc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
@@ -52,7 +52,7 @@ def test_sinc(
 
 # lcm
 @handle_test(
-    fn_tree="functional.extensions.lcm",
+    fn_tree="functional.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -97,7 +97,7 @@ def test_lcm(
 
 # fmod
 @handle_test(
-    fn_tree="functional.extensions.fmod",
+    fn_tree="functional.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -141,7 +141,7 @@ def test_fmod(
 
 # fmax
 @handle_test(
-    fn_tree="functional.extensions.fmax",
+    fn_tree="functional.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=-10,
@@ -212,7 +212,7 @@ def _either_x_dx(draw):
 
 
 @handle_test(
-    fn_tree="functional.extensions.trapz",
+    fn_tree="functional.experimental.trapz",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
         min_value=-100,
@@ -269,7 +269,7 @@ def test_trapz(
 
 # float_power
 @handle_test(
-    fn_tree="functional.extensions.float_power",
+    fn_tree="functional.experimental.float_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -313,7 +313,7 @@ def test_float_power(
 
 # exp2
 @handle_test(
-    fn_tree="functional.extensions.exp2",
+    fn_tree="functional.experimental.exp2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -354,7 +354,7 @@ def test_exp2(
 
 # nansum
 @handle_test(
-    fn_tree="functional.extensions.nansum",
+    fn_tree="functional.experimental.nansum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -403,7 +403,7 @@ def test_nansum(
 
 # gcd
 @handle_test(
-    fn_tree="functional.extensions.nansum",
+    fn_tree="functional.experimental.nansum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -447,7 +447,7 @@ def test_gcd(
 
 # isclose
 @handle_test(
-    fn_tree="functional.extensions.isclose",
+    fn_tree="functional.experimental.isclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -501,7 +501,7 @@ def test_isclose(
 
 # isposinf
 @handle_test(
-    fn_tree="functional.extensions.isposinf",
+    fn_tree="functional.experimental.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=1,
@@ -542,7 +542,7 @@ def test_isposinf(
 
 # isneginf
 @handle_test(
-    fn_tree="functional.extensions.isneginf",
+    fn_tree="functional.experimental.isneginf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -583,7 +583,7 @@ def test_isneginf(
 
 # nan_to_num
 @handle_test(
-    fn_tree="functional.extensions.nan_to_num",
+    fn_tree="functional.experimental.nan_to_num",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -637,7 +637,7 @@ def test_nan_to_num(
 
 # logaddexp2
 @handle_test(
-    fn_tree="functional.extensions.logaddexp2",
+    fn_tree="functional.experimental.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,

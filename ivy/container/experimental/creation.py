@@ -381,7 +381,15 @@ class ContainerWithCreationExperimental(ContainerBase):
         }
         """
         return self.static_kaiser_bessel_derived_window(
-            self, periodic, beta, dtype=dtype, out=out
+            self,
+            periodic,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
         )
 
     @staticmethod

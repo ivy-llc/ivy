@@ -134,7 +134,7 @@ def _generate_diag_args(draw):
 
 
 @handle_test(
-    fn_tree="functional.extensions.diagflat",
+    fn_tree="functional.experimental.diagflat",
     args_packet=_generate_diag_args(),
 )
 def test_diagflat(
@@ -177,7 +177,7 @@ def test_diagflat(
 
 
 @handle_test(
-    fn_tree="functional.extensions.kron",
+    fn_tree="functional.experimental.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,

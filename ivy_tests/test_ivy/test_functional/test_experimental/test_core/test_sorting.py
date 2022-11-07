@@ -5,7 +5,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 # msort
 @handle_test(
-    fn_tree="functional.extensions.msort",
+    fn_tree="functional.experimental.msort",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
