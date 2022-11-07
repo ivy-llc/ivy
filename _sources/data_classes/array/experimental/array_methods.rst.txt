@@ -48,4 +48,5 @@ Array methods
    array_methods/dirichlet.rst
    array_methods/msort.rst
    array_methods/median.rst
+   array_methods/nanmean.rst
 

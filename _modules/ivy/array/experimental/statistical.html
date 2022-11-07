@@ -175,7 +175,60 @@
 <span class="sd">        &gt;&gt;&gt; a.median(axis=0)</span>
 <span class="sd">        ivy.array([6.5, 4.5, 2.5])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithStatisticalExperimental.nanmean"><a class="viewcode-back" href="../../../../data_classes/array/experimental/statistical/ArrayWithStatisticalExperimental.html#ivy.array.experimental.statistical.ArrayWithStatisticalExperimental.nanmean">[docs]</a>    <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.nanmean. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.nanmean also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array.</span>
+<span class="sd">        axis</span>
+<span class="sd">            Axis or axes along which the means are computed.</span>
+<span class="sd">            The default is to compute the mean of the flattened array.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are reduced are left in the result</span>
+<span class="sd">            as dimensions with size one. With this option, the result will broadcast</span>
+<span class="sd">            correctly against the original a. If the value is anything but the default,</span>
+<span class="sd">            then keepdims will be passed through to the mean or sum methods of </span>
+<span class="sd">            sub-classes of ndarray. If the sub-classes methods does not implement </span>
+<span class="sd">            keepdims any exceptions will be raised.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            The desired data type of returned tensor. Default is None.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The nanmean of the array elements.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([[1, ivy.nan], [3, 4]])</span>
+<span class="sd">        &gt;&gt;&gt; a.nanmean()</span>
+<span class="sd">        2.6666666666666665</span>
+<span class="sd">        &gt;&gt;&gt; a.nanmean(axis=0)</span>
+<span class="sd">        ivy.array([2.,  4.])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

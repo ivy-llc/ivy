@@ -93,4 +93,6 @@ Container methods
    container_methods/msort.rst
    container_methods/static_median.rst
    container_methods/median.rst
+   container_methods/static_nanmean.rst
+   container_methods/nanmean.rst
 
