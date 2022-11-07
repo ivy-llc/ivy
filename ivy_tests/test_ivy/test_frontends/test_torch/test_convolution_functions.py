@@ -92,7 +92,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 @given(
     dtype_vals=x_and_filters(dim=1),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv1d"
+        fn_name="ivy.functional.frontends.torch.conv1d"
     ),
 )
 def test_torch_conv1d(
@@ -109,7 +109,7 @@ def test_torch_conv1d(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
-        fn_tree="nn.functional.conv1d",
+        fn_tree="conv1d",
         input=vals,
         weight=weight,
         bias=bias,
@@ -124,7 +124,7 @@ def test_torch_conv1d(
 @given(
     dtype_vals=x_and_filters(dim=2),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv2d"
+        fn_name="ivy.functional.frontends.torch.conv2d"
     ),
 )
 def test_torch_conv2d(
@@ -141,7 +141,7 @@ def test_torch_conv2d(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
-        fn_tree="nn.functional.conv2d",
+        fn_tree="conv2d",
         input=vals,
         weight=weight,
         bias=bias,
@@ -156,7 +156,7 @@ def test_torch_conv2d(
 @given(
     dtype_vals=x_and_filters(dim=3),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv3d"
+        fn_name="ivy.functional.frontends.torch.conv3d"
     ),
 )
 def test_torch_conv3d(
@@ -173,7 +173,7 @@ def test_torch_conv3d(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
-        fn_tree="nn.functional.conv3d",
+        fn_tree="conv3d",
         input=vals,
         weight=weight,
         bias=bias,

@@ -189,7 +189,7 @@ def is_frontend_array(x: Any) -> bool:
         x,
         (
             ivy.functional.frontends.torch.Tensor,
-            ivy.functional.frontends.tensorflow.Tensor,
+            ivy.functional.frontends.tensorflow.EagerTensor,
             ivy.functional.frontends.numpy.ndarray,
             ivy.functional.frontends.jax.DeviceArray,
         ),

@@ -38,6 +38,30 @@ def test_jax_numpy_det(dtype_and_x, as_variable, native_array, num_positional_ar
     )
 
 
+# eig
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.eig"
+    ),
+)
+def test_jax_numpy_eig(dtype_and_x, as_variable, native_array, num_positional_args):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.eig",
+        rtol=1e-04,
+        atol=1e-04,
+        a=x[0],
+    )
+
+
 # eigh
 @handle_cmd_line_args
 @given(
@@ -464,4 +488,114 @@ def test_jax_norm(
         ord=ord_param,
         axis=axis,
         keepdims=keepdims,
+    )
+
+
+# matrix_power
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=helpers.ints(min_value=1, max_value=10).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    n=helpers.ints(min_value=1, max_value=8),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.matrix_power"
+    ),
+)
+def test_jax_numpy_matrix_power(
+    dtype_and_x,
+    n,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend="jax",
+        fn_tree="numpy.linalg.matrix_power",
+        a=np.asarray(x[0], dtype=dtype[0]),
+        n=n,
+    )
+
+
+# tensorsolve
+@st.composite
+def _get_solve_matrices(draw):
+    # batch_shape, random_size, shared
+
+    # float16 causes a crash when filtering out matrices
+    # for which `np.linalg.cond` is large.
+    input_dtype_strategy = st.shared(
+        st.sampled_from(draw(helpers.get_dtypes("float"))).filter(
+            lambda x: "float16" not in x
+        ),
+        key="shared_dtype",
+    )
+    input_dtype = draw(input_dtype_strategy)
+
+    first_size = draw(helpers.ints(min_value=2, max_value=3))
+
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=3), key="random_size")
+    )
+
+    first_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(random_size, first_size, first_size, random_size),
+            min_value=1.2,
+            max_value=5,
+        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+    )
+    second_matrix = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=(random_size, first_size),
+            min_value=1.2,
+            max_value=3,
+        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+    )
+
+    return input_dtype, first_matrix, second_matrix
+
+
+@handle_cmd_line_args
+@given(
+    a_and_b=_get_solve_matrices(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.linalg.tensorsolve"
+    ),
+)
+def test_jax_numpy_tensorsolve(
+    a_and_b,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    input_dtype, x, y = a_and_b
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.linalg.tensorsolve",
+        a=x,
+        b=y,
     )

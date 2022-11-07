@@ -108,7 +108,9 @@ def test_tensorflow_eigvalsh(
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
-def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, tolr):
+def test_tensorflow_matrix_rank(
+    dtype_x, as_variable, num_positional_args, native_array, tolr
+):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -118,9 +120,7 @@ def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, to
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
-        atol=1.0,
         a=x[0],
-        validate_args=False,
         tol=tolr,
     )
 
@@ -468,5 +468,43 @@ def test_tensorflow_normalize(
         fn_tree="linalg.normalize",
         tensor=x[0],
         ord=ord,
+        axis=axis,
+    )
+
+
+# l2_normalize
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.l2_normalize"
+    ),
+)
+def test_tensorflow_l2_normalize(
+    dtype_values_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.l2_normalize",
+        x=x[0],
         axis=axis,
     )
