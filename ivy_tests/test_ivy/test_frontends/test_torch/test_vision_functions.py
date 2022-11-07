@@ -83,9 +83,26 @@ def test_torch_pixel_unshuffle(
 
 
 @st.composite
+def _pad_generator(draw, shape, mode): 
+    pad = ()
+    m = max(int((len(shape) + 1) / 2), 1)
+    for i in range(m):
+        if mode != 'constant':
+            if i < 2:
+                max_pad_value = 0
+        else:
+            max_pad_value = shape[i] - 1
+        tmp = draw(st.tuples(
+            st.integers(min_value=0, max_value=max(0, max_pad_value)),
+            st.integers(min_value=0, max_value=max(0, max_pad_value)),
+        ))
+        pad = pad + (tmp,)
+    return pad
+
+
+@ st.composite
 def _pad_helper(draw):
-    # 'constant', 'reflect', 'replicate', 'circular'
-    mode = draw(st.sampled_from(['constant', 'replicate', 'reflect', 'circular']))
+    mode = draw(st.sampled_from(['constant', 'reflect', 'replicate', 'circular']))
     min_v = 1
     max_v = 5
     if mode != 'constant':
@@ -98,23 +115,12 @@ def _pad_helper(draw):
             ret_shape=True,
             min_num_dims=min_v,
             max_num_dims=max_v,
+            min_dim_size=2,
             min_value=-1e05,
             max_value=1e05
         )
-    )
-    m = len(shape)
-    max_pad = 9999
-    for i in range(m):
-        if shape[i] < max_pad:
-            max_pad = shape[i] 
-    padding = draw(hypothesis_helpers.tuples(
-        st.tuples(
-            st.integers(min_value=0, max_value=max(0,max_pad-1)),
-            st.integers(min_value=0, max_value=max(0,max_pad-1)),
-        ),
-        min_size=max(int((m + 1) / 2), 1),
-        max_size=max(int((m + 1) / 2), 1),
-    ))
+    ) 
+    padding = draw(_pad_generator(shape, mode))
     if type(padding) is tuple: 
         if type(padding[0]) is tuple:
             padding = sum(padding, ())
@@ -123,7 +129,7 @@ def _pad_helper(draw):
     if mode == 'constant':
         value = draw(helpers.ints(min_value=0, max_value=4))
     else:
-        value = None
+        value = 0.0
     return dtype, input[0], padding, value, mode
 
 
@@ -139,30 +145,16 @@ def test_torch_pad(
     native_array,
 ):
     dtype, input, padding, value, mode = dtype_and_input_and_other
-    if mode == 'constant':
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=2,
-            native_array_flags=native_array,
-            frontend="torch",
-            fn_tree="nn.functional.pad",
-            input=input,
-            padding=padding,
-            mode=mode,
-            value=value,
-        )
-    else:
-        helpers.test_frontend_function(
-            input_dtypes=dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=2,
-            native_array_flags=native_array,
-            frontend="torch",
-            fn_tree="nn.functional.pad",
-            input=input,
-            padding=padding,
-            mode=mode,
-        )
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=2,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.pad",
+        input=input,
+        padding=padding,
+        mode=mode,
+        value=value,
+    )
