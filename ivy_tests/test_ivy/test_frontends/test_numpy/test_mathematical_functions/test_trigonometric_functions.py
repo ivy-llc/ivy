@@ -1,22 +1,19 @@
 # global
-from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # cos
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
+@handle_frontend_test(
+    fn_tree="numpy.cos",
+    dtypes_x_casting=np_frontend_helpers.get_dtype_and_values_and_casting(
+        get_dtypes_kind="numeric",
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cos"
-    ),
 )
 def test_numpy_cos(
     dtype_and_x,
@@ -25,6 +22,9 @@ def test_numpy_cos(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -43,8 +43,9 @@ def test_numpy_cos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="cos",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -56,15 +57,12 @@ def test_numpy_cos(
 
 
 # tan
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.tan"
-    ),
 )
 def test_numpy_tan(
     dtype_and_x,
@@ -73,6 +71,9 @@ def test_numpy_tan(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -91,8 +92,9 @@ def test_numpy_tan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="tan",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -104,15 +106,12 @@ def test_numpy_tan(
 
 
 # arcsin
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.arcsin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arcsin"
-    ),
 )
 def test_numpy_arcsin(
     dtype_and_x,
@@ -121,6 +120,9 @@ def test_numpy_arcsin(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -139,8 +141,9 @@ def test_numpy_arcsin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="arcsin",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -152,15 +155,12 @@ def test_numpy_arcsin(
 
 
 # arccos
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.arccos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arccos"
-    ),
 )
 def test_numpy_arccos(
     dtype_and_x,
@@ -169,6 +169,9 @@ def test_numpy_arccos(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -187,8 +190,9 @@ def test_numpy_arccos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="arccos",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -200,15 +204,12 @@ def test_numpy_arccos(
 
 
 # arctan
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.arctan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.arctan"
-    ),
 )
 def test_numpy_arctan(
     dtype_and_x,
@@ -217,6 +218,9 @@ def test_numpy_arctan(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -235,8 +239,9 @@ def test_numpy_arctan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="arctan",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -248,15 +253,12 @@ def test_numpy_arctan(
 
 
 # rad2deg
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.rad2deg",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.rad2deg"
-    ),
 )
 def test_numpy_rad2deg(
     dtype_and_x,
@@ -265,6 +267,9 @@ def test_numpy_rad2deg(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -283,8 +288,9 @@ def test_numpy_rad2deg(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="rad2deg",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -295,15 +301,13 @@ def test_numpy_rad2deg(
     )
 
 
-@handle_cmd_line_args
-@given(
+# deg2rad
+@handle_frontend_test(
+    fn_tree="numpy.deg2rad",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.deg2rad"
-    ),
 )
 def test_numpy_deg2rad(
     dtype_and_x,
@@ -312,6 +316,9 @@ def test_numpy_deg2rad(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -330,8 +337,9 @@ def test_numpy_deg2rad(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="deg2rad",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
