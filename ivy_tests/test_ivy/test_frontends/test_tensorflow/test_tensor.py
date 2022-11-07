@@ -554,7 +554,7 @@ def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
         frontend="tensorflow",
         class_name="Tensor",
         method_name="__rmod__",
-   )
+    )
 
 
 # __rsub__
