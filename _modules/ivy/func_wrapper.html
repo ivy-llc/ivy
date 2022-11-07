@@ -571,7 +571,7 @@
 <span class="sd">        `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the</span>
 <span class="sd">        input is returned.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;linalg&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;linear_algebra&quot;</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">linalg_k</span><span class="p">,</span> <span class="n">linalg_v</span> <span class="ow">in</span> <span class="n">to_wrap</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="nb">isinstance</span><span class="p">(</span><span class="n">linalg_v</span><span class="p">,</span> <span class="n">FunctionType</span><span class="p">)</span>
