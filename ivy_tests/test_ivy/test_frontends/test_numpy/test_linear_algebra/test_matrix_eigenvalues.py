@@ -4,6 +4,7 @@ from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @handle_cmd_line_args
