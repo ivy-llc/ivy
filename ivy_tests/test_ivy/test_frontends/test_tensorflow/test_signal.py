@@ -18,8 +18,12 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype=helpers.get_dtypes("numeric"),
 )
 def test_tensorflow_kaiser_window(
-    dtype_and_window_length, dtype_and_beta, dtype,
-    as_variable, num_positional_args, native_array
+    dtype_and_window_length,
+    dtype_and_beta,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
 ):
     window_length_dtype, window_length = dtype_and_window_length
     beta_dtype, beta = dtype_and_beta

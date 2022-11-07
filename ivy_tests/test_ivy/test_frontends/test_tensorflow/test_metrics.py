@@ -320,7 +320,7 @@ def test_binary_crossentropy(
     label_smoothing=helpers.floats(min_value=0.0, max_value=1.0),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.keras.metrics.categorical"
-                "_crossentropy"
+        "_crossentropy"
     ),
 )
 def test_categorical_crossentropy(

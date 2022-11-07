@@ -166,8 +166,8 @@ from . import gradients
 from .gradients import *
 from . import layers
 from .layers import *
-from . import linear_algebra as linalg
-from .linear_algebra import *
+from . import linalg
+from .linalg import *
 from . import manipulation
 from .manipulation import *
 from . import random
@@ -182,5 +182,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-from . import extensions
-from .extensions import *
+from . import experimental
+from .experimental import *
