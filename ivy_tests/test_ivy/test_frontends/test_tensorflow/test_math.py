@@ -666,7 +666,9 @@ def test_tensorflow_reduce_variance(
         min_num_dims=1,
         min_dim_size=2,
     ),
-    scalar_val=helpers.list_of_length(x=st.floats(), length=1),
+    scalar_val=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"), shape=(1,)
+    ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.scalar_mul"
     ),
@@ -675,6 +677,7 @@ def test_tensorflow_scalar_mul(
     dtype_and_x, scalar_val, as_variable, num_positional_args, native_array
 ):
     input_dtype, x = dtype_and_x
+    scalar_dtype, scalar = scalar_val
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -683,7 +686,7 @@ def test_tensorflow_scalar_mul(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="math.scalar_mul",
-        scalar=scalar_val[0],
+        scalar=scalar[0][0],
         x=x[0],
     )
 

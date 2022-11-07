@@ -18,7 +18,7 @@ from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
 from .layers import ArrayWithLayers
-from .linear_algebra import ArrayWithLinearAlgebra
+from .linalg import ArrayWithLinalg
 from .losses import ArrayWithLosses
 from .manipulation import ArrayWithManipulation
 from .norms import ArrayWithNorms
@@ -28,7 +28,7 @@ from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
-from .extensions import *
+from .experimental import *
 
 
 class Array(
@@ -41,7 +41,7 @@ class Array(
     ArrayWithGradients,
     ArrayWithImage,
     ArrayWithLayers,
-    ArrayWithLinearAlgebra,
+    ArrayWithLinalg,
     ArrayWithLosses,
     ArrayWithManipulation,
     ArrayWithNorms,
@@ -51,26 +51,26 @@ class Array(
     ArrayWithSorting,
     ArrayWithStatistical,
     ArrayWithUtility,
-    ArrayWithActivationsExtensions,
-    ArrayWithConversionsExtensions,
-    ArrayWithCreationExtensions,
-    ArrayWithData_typeExtensions,
-    ArrayWithDeviceExtensions,
-    ArrayWithElementWiseExtensions,
-    ArrayWithGeneralExtensions,
-    ArrayWithGradientsExtensions,
-    ArrayWithImageExtension,
-    ArrayWithLayersExtensions,
-    ArrayWithLinalgExtensions,
-    ArrayWithLossesExtensions,
-    ArrayWithManipulationExtensions,
-    ArrayWithNormsExtensions,
-    ArrayWithRandomExtensions,
-    ArrayWithSearchingExtensions,
-    ArrayWithSetExtensions,
-    ArrayWithSortingExtensions,
-    ArrayWithStatisticalExtensions,
-    ArrayWithUtilityExtensions,
+    ArrayWithActivationsExperimental,
+    ArrayWithConversionsExperimental,
+    ArrayWithCreationExperimental,
+    ArrayWithData_typeExperimental,
+    ArrayWithDeviceExperimental,
+    ArrayWithElementWiseExperimental,
+    ArrayWithGeneralExperimental,
+    ArrayWithGradientsExperimental,
+    ArrayWithImageExperimental,
+    ArrayWithLayersExperimental,
+    ArrayWithLinalgExperimental,
+    ArrayWithLossesExperimental,
+    ArrayWithManipulationExperimental,
+    ArrayWithNormsExperimental,
+    ArrayWithRandomExperimental,
+    ArrayWithSearchingExperimental,
+    ArrayWithSetExperimental,
+    ArrayWithSortingExperimental,
+    ArrayWithStatisticalExperimental,
+    ArrayWithUtilityExperimental,
 ):
     def __init__(self, data):
         ArrayWithActivations.__init__(self)
@@ -82,7 +82,7 @@ class Array(
         ArrayWithGradients.__init__(self)
         ArrayWithImage.__init__(self)
         ArrayWithLayers.__init__(self)
-        ArrayWithLinearAlgebra.__init__(self)
+        ArrayWithLinalg.__init__(self)
         ArrayWithLosses.__init__(self)
         ArrayWithManipulation.__init__(self)
         ArrayWithNorms.__init__(self)
@@ -92,26 +92,26 @@ class Array(
         ArrayWithSorting.__init__(self)
         ArrayWithStatistical.__init__(self)
         ArrayWithUtility.__init__(self)
-        ArrayWithActivationsExtensions.__init__(self),
-        ArrayWithConversionsExtensions.__init__(self),
-        ArrayWithCreationExtensions.__init__(self),
-        ArrayWithData_typeExtensions.__init__(self),
-        ArrayWithDeviceExtensions.__init__(self),
-        ArrayWithElementWiseExtensions.__init__(self),
-        ArrayWithGeneralExtensions.__init__(self),
-        ArrayWithGradientsExtensions.__init__(self),
-        ArrayWithImageExtension.__init__(self),
-        ArrayWithLayersExtensions.__init__(self),
-        ArrayWithLinalgExtensions.__init__(self),
-        ArrayWithLossesExtensions.__init__(self),
-        ArrayWithManipulationExtensions.__init__(self),
-        ArrayWithNormsExtensions.__init__(self),
-        ArrayWithRandomExtensions.__init__(self),
-        ArrayWithSearchingExtensions.__init__(self),
-        ArrayWithSetExtensions.__init__(self),
-        ArrayWithSortingExtensions.__init__(self),
-        ArrayWithStatisticalExtensions.__init__(self),
-        ArrayWithUtilityExtensions.__init__(self),
+        ArrayWithActivationsExperimental.__init__(self),
+        ArrayWithConversionsExperimental.__init__(self),
+        ArrayWithCreationExperimental.__init__(self),
+        ArrayWithData_typeExperimental.__init__(self),
+        ArrayWithDeviceExperimental.__init__(self),
+        ArrayWithElementWiseExperimental.__init__(self),
+        ArrayWithGeneralExperimental.__init__(self),
+        ArrayWithGradientsExperimental.__init__(self),
+        ArrayWithImageExperimental.__init__(self),
+        ArrayWithLayersExperimental.__init__(self),
+        ArrayWithLinalgExperimental.__init__(self),
+        ArrayWithLossesExperimental.__init__(self),
+        ArrayWithManipulationExperimental.__init__(self),
+        ArrayWithNormsExperimental.__init__(self),
+        ArrayWithRandomExperimental.__init__(self),
+        ArrayWithSearchingExperimental.__init__(self),
+        ArrayWithSetExperimental.__init__(self),
+        ArrayWithSortingExperimental.__init__(self),
+        ArrayWithStatisticalExperimental.__init__(self),
+        ArrayWithUtilityExperimental.__init__(self),
         self._init(data)
 
     def _init(self, data):
