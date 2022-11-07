@@ -1327,12 +1327,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_nan_to_num(
-            self,
-            copy=copy,
-            nan=nan,
-            posinf=posinf,
-            neginf=neginf,
-            out=out
+            self, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
         )
 
     @staticmethod

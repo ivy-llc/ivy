@@ -162,8 +162,8 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    posinf = posinf if posinf is not None else 1.79769313e+308
-    neginf = neginf if neginf is not None else -1.79769313e+308
+    posinf = posinf if posinf is not None else 1.79769313e308
+    neginf = neginf if neginf is not None else -1.79769313e308
     ret = tf.where(tf.math.is_nan(x), nan, x)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
@@ -173,11 +173,21 @@ def nan_to_num(
         x = ret
         return x
 
-    
+
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64",
-                         "int8", "int16", "int32", "int64",)},
-    backend_version
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
 )
 def logaddexp2(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -197,5 +207,5 @@ def signbit(
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:    
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.signbit(x)

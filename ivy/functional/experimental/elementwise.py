@@ -522,7 +522,7 @@ def isposinf(
     Returns
     -------
     ret
-        Returns a boolean array with values True where 
+        Returns a boolean array with values True where
         the corresponding element of the input is positive
         infinity and values False where the element of the
         input is not positive infinity.
@@ -561,7 +561,7 @@ def isneginf(
     Returns
     -------
     ret
-        Returns a boolean array with values True where 
+        Returns a boolean array with values True where
         the corresponding element of the input is negative
         infinity and values False where the element of the
         input is not negative infinity.
@@ -632,12 +632,7 @@ def nan_to_num(
     ivy.array([1.,   2.,   3.,   5e+100])
     """
     return ivy.current_backend(x).nan_to_num(
-        x,
-        copy=copy,
-        nan=nan,
-        posinf=posinf,
-        neginf=neginf,
-        out=out
+        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
     )
 
 
@@ -646,7 +641,7 @@ def nan_to_num(
 @handle_nestable
 def logaddexp2(
     x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],    
+    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,

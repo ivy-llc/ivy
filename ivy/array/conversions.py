@@ -13,7 +13,6 @@ import tensorflow as tf
 import ivy
 
 
-
 # Helpers #
 # --------#
 
@@ -37,8 +36,9 @@ def _to_ivy(x: Any) -> Any:
         return x.to_ivy()
     return ivy.Array(x) if ivy.is_native_array(x) else x
 
+
 def _to_ivy_array(x: Any) -> ivy.Array:
-    if isinstance(x,(torch.Tensor,tf.Tensor,jnp.numpy.DeviceArray,numpy.ndarray)):
+    if isinstance(x, (torch.Tensor, tf.Tensor, jnp.numpy.DeviceArray, numpy.ndarray)):
         return ivy.array(numpy.array(x))
     return x
 
@@ -79,7 +79,7 @@ def to_ivy(
 
 
 def to_ivy_array(
-    x: Union[torch.Tensor,tf.Tensor,jnp.DeviceArray,numpy.ndarray],
+    x: Union[torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray],
     nested: bool = False,
     include_derived: Optional[Dict[type, bool]] = None,
 ) -> ivy.Array:
@@ -107,6 +107,7 @@ def to_ivy_array(
     if nested:
         return ivy.nested_map(x, _to_ivy_array, include_derived)
     return _to_ivy_array(x)
+
 
 def args_to_ivy(
     *args: Iterable[Any],

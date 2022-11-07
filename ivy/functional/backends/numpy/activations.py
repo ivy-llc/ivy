@@ -6,7 +6,7 @@ from typing import Optional, Union
 import numpy as np
 
 import ivy
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import scalar_output_to_0d_array
 
 try:
     from scipy.special import erf
@@ -49,11 +49,7 @@ def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray
 
 
 def softmax(
-    x: np.ndarray, 
-    /, 
-    *, 
-    axis: Optional[int] = None, 
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     exp_x = np.exp(x - np.max(x, axis=axis, keepdims=True))
     return np.divide(exp_x, np.sum(exp_x, axis=axis, keepdims=True), out=out)
@@ -62,7 +58,7 @@ def softmax(
 softmax.support_native_out = True
 
 
-@_handle_0_dim_output
+@scalar_output_to_0d_array
 def softplus(
     x: np.ndarray,
     /,
@@ -96,7 +92,7 @@ def softplus(
 softplus.support_native_out = True
 
 
-@_handle_0_dim_output
+@scalar_output_to_0d_array
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

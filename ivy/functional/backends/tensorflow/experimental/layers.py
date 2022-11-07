@@ -22,10 +22,9 @@ def max_pool2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below":
-                         ("bfloat16", "float64", "float16")},
-                         backend_version
-                         )
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+)
 def avg_pool2d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -64,10 +63,9 @@ def max_pool1d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below":
-                         ("bfloat16", "float64", "float16")},
-                         backend_version
-                         )
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+)
 def max_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -86,10 +84,7 @@ def max_pool3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below":
-                         ("bfloat16", "float64")},
-                         backend_version
-                         )
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
