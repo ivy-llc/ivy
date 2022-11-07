@@ -1,10 +1,10 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Union
-
 # global
+from typing import Optional, Union
 import numpy as np
 
+# local
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
@@ -14,8 +14,9 @@ except (ImportError, ModuleNotFoundError):
     erf = None
 
 
+@_scalar_output_to_0d_array
 def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.asarray(np.maximum(x, 0, out=out, dtype=x.dtype))
+    return np.maximum(x, 0, out=out, dtype=x.dtype)
 
 
 relu.support_native_out = True
@@ -27,6 +28,7 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
+@_scalar_output_to_0d_array
 def gelu(
     x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -39,7 +41,7 @@ def gelu(
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:
         ret = 0.5 * x * (1 + erf(x / np.sqrt(2)))
-    return np.asarray(ret.astype(x.dtype))
+    return ret.astype(x.dtype)
 
 
 def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
