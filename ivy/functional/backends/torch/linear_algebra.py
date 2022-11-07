@@ -375,6 +375,8 @@ def trace(
     axis2: int = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if len(x) == 0:
+        return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
     ret = torch.sum(ret)
     return ret
@@ -419,6 +421,7 @@ vector_norm.support_native_out = True
 # ----- #
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def diag(
     x: torch.Tensor,
     /,
