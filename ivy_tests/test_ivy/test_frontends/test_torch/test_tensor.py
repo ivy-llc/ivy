@@ -1156,7 +1156,7 @@ def test_torch_instance_to_with_dtype(
     )
 
 
-#  arctan
+# arctan
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
