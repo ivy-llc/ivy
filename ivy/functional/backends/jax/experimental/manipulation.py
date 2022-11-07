@@ -1,12 +1,5 @@
 # local
-from typing import (Optional,
-                    Union,
-                    Sequence,
-                    Tuple,
-                    NamedTuple,
-                    Literal,
-                    Callable,
-                    Any)
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
 import jax.numpy as jnp
 from numbers import Number
 
