@@ -524,3 +524,52 @@ ACTIVATION_FUNCTIONS = [
     "softmax",
     "softplus",
 ]
+
+
+@handle_exceptions
+def get(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
+
+    Parameters
+    ----------
+    name
+        The name of the activation function.
+    custom_objects
+        Optional dictionary listing user-provided activation functions.
+
+    Returns
+    -------
+    ret
+        Corresponding activation function.
+
+    Examples
+    --------
+    With :str: input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.get(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+    
+    >>> name = None
+    >>> linear = ivy.get(name)
+    >>> print(linear)
+    <function linear at XXXXXXXXXXXXXX>
+
+    With :str and dict: input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.get(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().get(name, custom_objects=custom_objects)
+
+    if name is None:
+        return ivy.linear
+
+    return ivy.deserialize(name, custom_objects=custom_objects)
