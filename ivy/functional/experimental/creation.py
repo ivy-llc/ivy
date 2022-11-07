@@ -12,7 +12,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     handle_nestable,
     to_native_arrays_and_back,
-    handle_out_argument
+    handle_out_argument,
 )
 
 

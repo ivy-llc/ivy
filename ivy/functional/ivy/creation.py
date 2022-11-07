@@ -512,7 +512,7 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input 
+    """Returns a new array filled with ones and having the same shape as an input
     array ``x``.
 
     Parameters
