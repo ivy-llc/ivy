@@ -1196,6 +1196,7 @@ def test_einops_rearrange(
         instance_method=instance_method,
         fw=fw,
         fn_name="einops_rearrange",
+        test_gradients=True,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
