@@ -165,6 +165,7 @@ def negative(
     return ret
 
 
+@to_ivy_arrays_and_back
 def floor_divide(
     x1,
     x2,
