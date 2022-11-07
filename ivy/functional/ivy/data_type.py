@@ -1873,7 +1873,13 @@ def unset_default_float_dtype():
     >>> ivy.default_float_dtype()
     'float32'
     
-    
+    >>> ivy.set_default_float_dtype(ivy.float26)
+    >>> ivy.default_float_dtype()
+    'float16'
+
+    >>> ivy.unset_default_float_dtype()
+    >>> ivy.default_float_dtype()
+    'float32'
     """
     global default_float_dtype_stack
     if default_float_dtype_stack:
