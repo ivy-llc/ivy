@@ -454,6 +454,7 @@ def test_torch_instance_cosh(
         method_name="cosh",
     )
 
+
 # cosh_
 @handle_cmd_line_args
 @given(
