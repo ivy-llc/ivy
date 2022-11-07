@@ -552,7 +552,7 @@ def test_isneginf(
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
 
-    
+
 # nan_to_num
 @handle_cmd_line_args
 @given(
@@ -563,12 +563,12 @@ def test_isneginf(
         min_value=-100,
         max_value=100,
         allow_nan=True,
-        allow_inf=True
+        allow_inf=True,
     ),
     copy=st.booleans(),
     nan=st.floats(min_value=0.0, max_value=100),
-    posinf=st.floats(min_value=5e+100, max_value=5e+100),
-    neginf=st.floats(min_value=-5e+100, max_value=-5e+100),
+    posinf=st.floats(min_value=5e100, max_value=5e100),
+    neginf=st.floats(min_value=-5e100, max_value=-5e100),
     num_positional_args=helpers.num_positional_args(fn_name="nan_to_num"),
 )
 def test_nan_to_num(
@@ -600,10 +600,10 @@ def test_nan_to_num(
         copy=copy,
         nan=nan,
         posinf=posinf,
-        neginf=neginf
+        neginf=neginf,
     )
 
-    
+
 # logaddexp2
 @handle_cmd_line_args
 @given(
@@ -643,7 +643,7 @@ def test_logaddexp2(
         rtol_=1e-03,
         atol_=1e-03,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
