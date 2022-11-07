@@ -7,6 +7,7 @@ import numpy
 # local
 import ivy
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+import logging
 
 
 def _is_same_kind_or_safe(t1, t2):
@@ -169,7 +170,7 @@ def _to_ivy_array(x):
 
 def _numpy_is_nan(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return ivy.isnan(x).any()
+        return ivy.isnan(x).any().item()
     else:
         return False
 
@@ -267,6 +268,23 @@ def handle_nans(fn: Callable) -> Callable:
         kwargs_nans = ivy.nested_map(
             kwargs, _numpy_is_nan, include_derived={tuple: True}
         )
+        if type(args_nans) is dict:
+            args_result = any(list(args_nans.values()))
+        else:
+            args_result = any(list(args_nans))
+        
+        if type(kwargs_nans) is dict:
+            kwargs_result = any(list(kwargs_nans.values()))
+        else:
+            kwargs_result = any(list(kwargs_nans))
+
+        if args_result or kwargs_result:
+            # handle nans based on the selected policy
+            if ivy.get_nan_policy() == "raise_exception":
+                raise ivy.exceptions.IvyException("Nans are not allowed in `raise_exception` policy.")
+            elif ivy.get_nan_policy() == "warns":
+                logging.warning("Nans are present in the input.")
+        
         return fn(*args, **kwargs)
 
     new_fn.inputs_to_ivy_arrays = True
