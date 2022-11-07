@@ -1357,8 +1357,8 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
     # ToDo: Ask Daniel about tensor_fn, we use it here since
     #  we don't use helpers.test_function
     x, val = x_val_and_dtypes[1]
-    x = tensor_fn(x, dtype="float32", device=device)
-    val = tensor_fn(val, dtype="float32", device=device)
+    x = tensor_fn(x.tolist(), dtype="float32", device=device)
+    val = tensor_fn(val.tolist(), dtype="float32", device=device)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
