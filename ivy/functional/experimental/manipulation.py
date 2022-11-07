@@ -7,7 +7,7 @@ from typing import (
     Generator,
     Callable,
     Any,
-    Literal
+    Literal,
 )
 from numbers import Number
 import ivy

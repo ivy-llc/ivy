@@ -29,15 +29,13 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
 
 
 def _jax_array_to_ivy_array(x):
-    if (isinstance(x,jax.numpy.DeviceArray)):
+    if isinstance(x, jax.numpy.DeviceArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _from_jax_frontend_array_to_ivy_array(
-        _jax_array_to_ivy_array(x)
-    )
+    return _from_jax_frontend_array_to_ivy_array(_jax_array_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -51,9 +49,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             del kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
-        new_args = ivy.nested_map(
-            args, _to_ivy_array, include_derived={tuple: True}
-        )
+        new_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
         new_kwargs = ivy.nested_map(
             kwargs, _to_ivy_array, include_derived={tuple: True}
         )
