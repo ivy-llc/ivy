@@ -9,8 +9,8 @@ from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inpu
 
 
 @to_ivy_arrays_and_back
-def matrix_rank(a, tol=None, valiate_args=False, name=None):
-    return ivy.matrix_rank(a, tol)
+def matrix_rank(a, tol=None, validate_args=False, name=None):
+    return ivy.astype(ivy.matrix_rank(a, atol=tol), ivy.int32)
 
 
 @to_ivy_arrays_and_back
