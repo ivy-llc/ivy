@@ -87,6 +87,7 @@ We start with the function :func:`lax.add` as an example.
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def add(x, y):
         return ivy.add(x, y)
 
@@ -100,6 +101,7 @@ In this case, the function will then simply return :func:`ivy.add`, which in tur
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def tan(x):
         return ivy.tan(x)
 
@@ -159,6 +161,7 @@ See the section "Unused Arguments" below for more details.
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
     @from_zero_dim_arrays_to_float
+    @to_ivy_arrays_and_back
     def tan(
         x,
         /,
@@ -210,10 +213,13 @@ Likewise, :code:`tan` is also placed under :mod:`math`.
 By referring to the `tf.math.tan`_ documentation, we add the same arguments, and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
-**NOTE:** For The :module:`tf.raw_ops` many functions posses the same behavior as those of :module:`tf` namespace except that only the functions from :mudule:`tf.raw_ops` takes key-word only arguments.
-For this we have a designed decorator to wrap the :module:`tf` namespace function to satisfy this behavior. Let's take an example of :func:`tf.math.argmax` and :func:`tf.raw_ops.ArgMax`.
+**NOTE**
+
+For The :mod:`tf.raw_ops` many functions posses the same behavior as those of :mod:`tf` namespace except that only the functions from :mod:`tf.raw_ops` takes key-word only arguments.
+For this we have a designed decorator to wrap the :mod:`tf` namespace function to satisfy this behavior. Let's take an example of :func:`tf.math.argmax` and :func:`tf.raw_ops.ArgMax`.
 
 .. code-block:: python
+    
     # in ivy/functional/frontends/tensorflow/math.py
     @to_ivy_arrays_and_back
     def argmax(input, axis, output_type=None, name=None):
@@ -222,10 +228,11 @@ For this we have a designed decorator to wrap the :module:`tf` namespace functio
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function is a frontend ivy implementation of :func:`tf.math.argmax`, the similar function in :module:`tf.raw_ops` has similar inputs and outputs except the :func:`tf.raw_ops.ArgMax` takes all inputs as key-word only.
+This function is a frontend ivy implementation of :func:`tf.math.argmax`, the similar function in :mod:`tf.raw_ops` has similar inputs and outputs except the :func:`tf.raw_ops.ArgMax` takes all inputs as key-word only.
 Let's take a look on how we can handle such case.
 
 .. code-block:: python
+
     # in ivy/functional/frontends/tensorflow/raw_ops.py
     ArgMax = to_ivy_arrays_and_back(
         map_raw_ops_alias(
