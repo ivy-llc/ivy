@@ -17,7 +17,7 @@ import ivy.functional.backends.jax as jax_
 
 
 class IvyModel(ivy.Module):
-    def __init__(self, *, in_size, out_size, hidden_units=64):
+    def __init__(self, in_size, out_size, hidden_units=64):
         self.linear0 = ivy.Linear(in_size, hidden_units)
         self.linear1 = ivy.Linear(hidden_units, 64)
         self.linear2 = ivy.Linear(hidden_units, out_size)
@@ -42,7 +42,7 @@ class TensorflowLinear(tf.keras.Model):
 
 
 class TensorflowModule(tf.keras.Model):
-    def __init__(self, *, in_size, out_size, device=None, hidden_size=64):
+    def __init__(self,  in_size, out_size, device=None, hidden_size=64):
         super(TensorflowModule, self).__init__()
         self._linear0 = TensorflowLinear(hidden_size)
         self._linear1 = TensorflowLinear(hidden_size)
@@ -65,7 +65,7 @@ class TorchLinearModule(nn.Module):
 
 
 class TorchModule(nn.Module):
-    def __init__(self, *, in_size, out_size, device=None, hidden_size=64):
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(TorchModule, self).__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
         self._linear1 = TorchLinearModule(hidden_size, hidden_size)
@@ -88,7 +88,7 @@ class HaikuLinear(hk.Module):
 
 
 class HaikuModule(hk.Module):
-    def __init__(self, *, in_size, out_size, device=None, hidden_size=64):
+    def __init__(self, in_size, out_size, device=None, hidden_size=64):
         super(HaikuModule, self).__init__()
         self._linear0 = HaikuLinear(hidden_size)
         self._linear1 = HaikuLinear(hidden_size)
@@ -107,11 +107,15 @@ NATIVE_MODULES = {
 "tensorflow": TensorflowModule
 }
 
+FROM_CONVERTERS = {
+"torch": ivy.Module.from_torch_module,
+"jax": ivy.Module.from_haiku_module,
+"tensorflow": ivy.Module.from_keras_module
+}
 
-# to_ivy_module
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
-def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
+def test_from_backend_module(bs_ic_oc, from_class_and_args, device):
     # smoke test
     if ivy.current_backend_str() in "numpy":
         # Converters not implemented in numpy
@@ -122,9 +126,11 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
         "float32",
     )
     native_module_class = NATIVE_MODULES[ivy.current_backend_str()]
+    module_converter = FROM_CONVERTERS[ivy.current_backend_str()]
+
     if from_class_and_args:
-        ivy_module = ivy.to_ivy_module(
-            native_module_class=native_module_class,
+        ivy_module = module_converter(
+            native_module_class,
             args=[x],
             kwargs={"in_size": input_channels, "out_size": output_channels},
             device=device,
@@ -133,25 +139,20 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
         if ivy.current_backend_str() == "jax":
 
             def forward_fn(*a, **kw):
-                model = native_module_class(**kw)
-                return model(*a)
+                model = native_module_class(input_channels, output_channels)
+                return model(ivy.to_native(x))
 
             native_module = hk.transform(forward_fn)
         elif ivy.current_backend_str() == "tensorflow":
             native_module = native_module_class(
-            in_size=input_channels,
-            out_size=output_channels
+                in_size=input_channels,
+                out_size=output_channels
             )
             native_module.build((input_channels,))
         else:
-            native_module = native_module_class(in_size=input_channels, out_size=output_channels)#
+            native_module = native_module_class(in_size=input_channels, out_size=output_channels)
 
-        ivy_module = ivy.to_ivy_module(
-            native_module=native_module,
-            args=[x],
-            kwargs={"in_size": input_channels, "out_size": output_channels},
-            device=device
-        )
+        ivy_module = module_converter(native_module)
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)
@@ -186,10 +187,8 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, device):
 def test_to_torch_module(bs_ic_oc):
     ivy.set_backend('torch')
     batch_shape, input_channels, output_channels = bs_ic_oc
-    torch_model = torch_.to_torch_module(
-    IvyModel,
-    kwargs={"in_size": input_channels, "out_size": output_channels}
-    )
+    ivy_model = IvyModel(input_channels, output_channels)
+    torch_model = ivy_model.to_torch_module()
     optimizer = torch.optim.SGD(torch_model.parameters(), lr=1e-3)
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
@@ -221,10 +220,8 @@ def test_to_torch_module(bs_ic_oc):
 def test_to_keras_module(bs_ic_oc):
     ivy.set_backend('tensorflow')
     batch_shape, input_channels, output_channels = bs_ic_oc
-    tf_model = tf_.to_keras_module(
-    IvyModel,
-    kwargs={"in_size": input_channels, "out_size": output_channels}
-    )
+    ivy_model = IvyModel(input_channels, output_channels)
+    tf_model = ivy_model.to_keras_module()
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
@@ -270,10 +267,8 @@ def test_to_haiku_module(bs_ic_oc):
     target = ivy.to_native(y)
     loss_tm1 = 1e12
 
-    haiku_model = jax_.to_haiku_module(
-    IvyModel,
-    kwargs={"in_size": input_channels, "out_size": output_channels}
-    )
+    ivy_model = IvyModel(input_channels, output_channels)
+    haiku_model = ivy_model.to_haiku_module()
     rng = jax.random.PRNGKey(42)
     lr = 0.001
 
@@ -299,3 +294,4 @@ def test_to_haiku_module(bs_ic_oc):
 
         assert loss < loss_tm1
         loss_tm1 = loss
+        
