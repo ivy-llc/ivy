@@ -203,7 +203,7 @@ def logaddexp2(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:    
+) -> torch.Tensor:
     x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
     x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
     return torch.logaddexp2(x1, x2, out=out)
@@ -217,7 +217,7 @@ def signbit(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:    
+) -> torch.Tensor:
     return torch.signbit(x, out=out)
 
 

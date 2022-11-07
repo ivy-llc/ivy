@@ -1,14 +1,16 @@
 # global
 import abc
-from typing import (Optional,
-                    Union,
-                    Sequence,
-                    Tuple,
-                    List,
-                    Iterable,
-                    Callable,
-                    Literal,
-                    Any)
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    List,
+    Iterable,
+    Callable,
+    Literal,
+    Any,
+)
 from numbers import Number
 
 # local

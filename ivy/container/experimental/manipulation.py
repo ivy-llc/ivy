@@ -9,7 +9,7 @@ from typing import (
     Literal,
     Any,
     Callable,
-    Iterable
+    Iterable,
 )
 from numbers import Number
 

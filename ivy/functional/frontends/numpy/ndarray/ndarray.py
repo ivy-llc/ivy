@@ -44,14 +44,9 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self.data, axis, kind, order)
 
-    def mean(self, * , axis=None, dtype=None, out=None, keepdims=False, where=True):
+    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
-            self.data,
-            axis=axis,
-            dtype=dtype,
-            out=out,
-            keepdims=keepdims,
-            where=where
+            self.data, axis=axis, dtype=dtype, out=out, keepdims=keepdims, where=where
         )
 
     def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
