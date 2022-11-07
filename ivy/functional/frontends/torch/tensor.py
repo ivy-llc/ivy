@@ -127,6 +127,7 @@ class Tensor:
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
     def arctan(self, *, out=None):
+
         return torch_frontend.atan(self, out=out)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
