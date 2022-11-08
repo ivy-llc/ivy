@@ -11,7 +11,11 @@ def is_tensor(obj):
     return Tensor(ivy.is_array(obj))
 
 
-def is_cuda(obj):
+def is_cuda(obj) -> bool:
+    ivy.assertions.check_true(
+        is_tensor(obj),
+        message="input must be a tensor",
+    )
     return Tensor(ivy.is_array(obj)).device() in ["gpu", "cuda"]
 
 
