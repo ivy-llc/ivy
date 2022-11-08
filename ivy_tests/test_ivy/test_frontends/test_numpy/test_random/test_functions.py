@@ -13,14 +13,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     size=helpers.get_shape(allow_none=True),
 )
 def test_numpy_random_sample(
-        input_dtypes,
-        size,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    input_dtypes,
+    size,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,

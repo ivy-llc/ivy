@@ -34,7 +34,11 @@ def test_numpy_sum(
 ):
     input_dtype, x, axis = dtype_x_axis
     if initial is not None:
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        (
+            where,
+            as_variable,
+            native_array,
+        ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtype,
             as_variable=as_variable,
@@ -87,7 +91,11 @@ def test_numpy_prod(
 ):
     input_dtype, x, axis = dtype_x_axis
     if initial is not None:
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        (
+            where,
+            as_variable,
+            native_array,
+        ) = np_frontend_helpers.handle_where_and_array_bools(
             where=where,
             input_dtype=input_dtype,
             as_variable=as_variable,

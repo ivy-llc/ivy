@@ -10,8 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 @handle_frontend_test(
     fn_tree="numpy.cos",
     dtypes_x_casting=np_frontend_helpers.get_dtype_and_values_and_casting(
-        get_dtypes_kind="numeric",
-        available_dtypes=helpers.get_dtypes("numeric")
+        get_dtypes_kind="numeric", available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
 )

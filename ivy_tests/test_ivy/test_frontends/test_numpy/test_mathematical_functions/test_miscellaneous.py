@@ -394,7 +394,7 @@ def test_numpy_nan_to_num(
     fn_tree,
     on_device,
     posinf,
-    neginf
+    neginf,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(

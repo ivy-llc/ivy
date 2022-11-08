@@ -76,17 +76,17 @@ def test_numpy_minimum(
     where=np_frontend_helpers.where(),
 )
 def test_numpy_amin(
-        dtype_x_axis,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
-        where,
-        initial,
-        keepdims,
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    where,
+    initial,
+    keepdims,
 ):
     if initial is None and np.all(where) is not True:
         assume(initial is inf)
@@ -134,17 +134,17 @@ def test_numpy_amin(
     where=np_frontend_helpers.where(),
 )
 def test_numpy_amax(
-        dtype_x_axis,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
-        where,
-        initial,
-        keepdims,
+    dtype_x_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    where,
+    initial,
+    keepdims,
 ):
     if initial is None and np.all(where) is not True:
         assume(initial is inf)

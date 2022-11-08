@@ -225,7 +225,7 @@ class Tensor:
 
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
-    
+
     def __mod__(self, other):
         return torch_frontend.remainder(self, other)
 
