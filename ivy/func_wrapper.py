@@ -2,10 +2,13 @@ import ivy
 import functools
 from types import FunctionType
 from typing import Callable
+import typing
+import inspect
 
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
+    "handle_array_like",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -43,6 +46,35 @@ def _get_first_array(*args, **kwargs):
 
 # Array Handling #
 # ---------------#
+
+
+def handle_array_like(fn: Callable) -> Callable:
+
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        args = list(args)
+        sig = inspect.signature(fn)
+        for i in range(len(sig.parameters)):
+            param = sig.parameters[list(sig.parameters)[i]]
+            if param.name == 'out':
+                continue
+            ann = param.annotation
+            if any([ann is ivy.Array, ivy.Array in typing.get_args(ann)]) \
+                    and all([ann is not typing.Tuple,
+                             ann is not typing.List,
+                             ann is not typing.Sequence,
+                             typing.Tuple not in typing.get_args(ann),
+                             typing.List not in typing.get_args(ann),
+                             typing.Sequence not in typing.get_args(ann)]):
+                try:
+                    args[i] = ivy.native_array(args[i])
+                except IndexError:
+                    kwargs[param.name] = ivy.native_array(kwargs[param.name])
+
+        return fn(*args, **kwargs)
+
+    new_fn.handle_array_like = True
+    return new_fn
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
