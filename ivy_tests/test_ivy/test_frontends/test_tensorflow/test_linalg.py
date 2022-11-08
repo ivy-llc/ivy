@@ -559,3 +559,33 @@ def test_tensorflow_trace(
         fn_tree="linalg.trace",
         x=x[0],
     )
+
+
+# matrix_transpose
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.matrix_transpose"
+    ),
+)
+def test_tensorflow_matrix_transpose(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.matrix_transpose",
+        a=x[0],
+    )
