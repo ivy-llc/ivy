@@ -645,8 +645,8 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Returns
         -------
         ret
-            A new array holding the result is returned unless out is specified,
-            in which it is returned.
+            Returns True if the two arrays are equal within the given tolerance;
+            False otherwise.
 
         """
         return ivy.allclose(

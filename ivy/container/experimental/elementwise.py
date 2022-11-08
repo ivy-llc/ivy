@@ -1536,8 +1536,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         atol
             The absolute tolerance parameter.
         equal_nan
-            Whether to compare NaN's as equal. If True, NaN's in a will be
-            considered equal to NaN's in b in the output array.
+            Whether to compare NaN's as equal. If True, NaN's in x1 will be
+            considered equal to NaN's in x2 in the output array.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
@@ -1604,8 +1604,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         atol
             The absolute tolerance parameter.
         equal_nan
-            Whether to compare NaN's as equal. If True, NaN's in a will be
-            considered equal to NaN's in b in the output array.
+            Whether to compare NaN's as equal. If True, NaN's in x1 will be
+            considered equal to NaN's in x2 in the output array.
         key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply

@@ -720,12 +720,12 @@ def allclose(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Returns a boolean array where two arrays are element-wise equal
+    Returns a boolean if the two arrays are element-wise equal
     within a tolerance.
     The tolerance values are positive, typically very small numbers.
-    The relative difference (rtol * abs(b)) and the absolute difference
+    The relative difference (rtol * abs(x2)) and the absolute difference
     atol are added together to compare against the absolute difference
-    between a and b.
+    between x1 and x2.
     The default atol is not appropriate for comparing numbers that are
     much smaller than one
 
