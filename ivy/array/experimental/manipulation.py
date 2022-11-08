@@ -472,3 +472,52 @@ class ArrayWithManipulationExperimental(abc.ABC):
             out=out,
             **kwargs,
         )
+
+    def vsplit(
+        self: ivy.Array,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.vsplit. This method simply
+        wraps the function, and so the docstring for ivy.vsplit also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n vertically, each section will be of equal
+            size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple. 
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            input array split vertically.
+
+        Examples
+        --------
+        >>> ary = ivy.array(
+            [[[0.,  1.],
+              [2.,  3.]],
+             [[4.,  5.],
+              [6.,  7.]]]
+            )
+        >>> ary.vsplit(2)
+        [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
+        """
+        return ivy.vsplit(
+            self._data,
+            indices_or_sections=indices_or_sections,
+            out=out
+        )
