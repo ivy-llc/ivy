@@ -33,9 +33,6 @@ def eigh(tensor,name=None):
     return e, v
 
 
-
-
-
 @to_ivy_arrays_and_back
 def eigvalsh(tensor, name=None):
     return ivy.eigvalsh(tensor)
