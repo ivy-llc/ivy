@@ -18,3 +18,15 @@ def median(
         interpolation="midpoint",
         keepdims=keepdims,
     )
+
+
+def nanmean(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype)
