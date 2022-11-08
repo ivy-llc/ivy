@@ -2,7 +2,7 @@
 
 from . import nn
 from . import tensor
-from .tensor import tensor
+from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
 from . import comparison_ops
