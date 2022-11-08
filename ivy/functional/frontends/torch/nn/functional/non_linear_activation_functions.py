@@ -164,6 +164,18 @@ def celu(input, alpha=1.0, inplace=False):
 
 
 @to_ivy_arrays_and_back
+def mish(input, inplace=False):
+    ret = ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
 
@@ -292,3 +304,8 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
     return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)
+
+
+@to_ivy_arrays_and_back
+def softplus(input, beta=1, threshold=20):
+    return ivy.softplus(input, beta=beta, threshold=threshold)

@@ -78,6 +78,22 @@ def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
 
 
 @to_ivy_arrays_and_back
+def zeros_like(
+    input,
+    *,
+    dtype=None,
+    layout=None,
+    device=None,
+    requires_grad=False,
+    memory_format=None,
+):
+    ret = ivy.zeros_like(input, dtype=dtype, device=device)
+    if requires_grad:
+        return ivy.variable(ret)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def arange(
     end,  # torch doesn't have a default for this.
     start=0,
@@ -202,3 +218,10 @@ def as_tensor(
     device=None,
 ):
     return ivy.asarray(data, dtype=dtype, device=device)
+
+
+def from_numpy(data):
+    return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
+
+
+from_numpy.supported_dtypes = ("ndarray",)

@@ -14,6 +14,11 @@ def det(a):
 
 
 @to_ivy_arrays_and_back
+def eig(a):
+    return ivy.eig(a)
+
+
+@to_ivy_arrays_and_back
 def eigh(a, UPLO="L", symmetrize_input=True):
     def symmetrize(x):
         # TODO : Take Hermitian transpose after complex numbers added
@@ -71,3 +76,30 @@ norm.supported_dtypes = (
     "float32",
     "float64",
 )
+
+
+@to_ivy_arrays_and_back
+def matrix_power(a, n):
+    return ivy.matrix_power(a, n)
+
+
+@to_ivy_arrays_and_back
+def tensorsolve(a, b, axes=None):
+    a_ndim = a.ndim
+    if axes is not None:
+        all_axes = list(range(0, a_ndim))
+        for axis in axes:
+            all_axes.remove(axis)
+            all_axes.insert(a_ndim, axis)
+        a = ivy.matrix_transpose(a, all_axes)
+    ret_shape = ivy.shape(a)[-(a_ndim - b.ndim) :]
+    a_reshape = 1
+    for k in ret_shape:
+        a_reshape *= k
+
+    a = ivy.reshape(a, shape=(-1, a_reshape))
+    b = ivy.flatten(b)
+
+    res = ivy.solve(a, b)
+    res = ivy.reshape(res, shape=ret_shape)
+    return res
