@@ -215,7 +215,7 @@ def _get_hermitian_pos_def_matrix(draw):
         ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
     )
     hpd = np.matmul(np.matrix(gen).getH(), np.matrix(gen)) + np.identity(gen.shape[0])
-    return input_dtype, hpd
+    return [input_dtype], hpd
 
 
 @handle_cmd_line_args
