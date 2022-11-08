@@ -856,6 +856,7 @@ def warn(warning_message, stacklevel=0):
 
 # nan policy #
 
+
 def get_nan_policy():
     """Summary.
 

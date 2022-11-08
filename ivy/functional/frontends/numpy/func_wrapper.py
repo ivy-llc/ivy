@@ -281,7 +281,8 @@ def handle_nans(fn: Callable) -> Callable:
         if args_result or kwargs_result:
             # handle nans based on the selected policy
             if ivy.get_nan_policy() == "raise_exception":
-                raise ivy.exceptions.IvyException("Nans are not allowed in `raise_exception` policy.")
+                raise ivy.exceptions.IvyException(
+                    "Nans are not allowed in `raise_exception` policy.")
             elif ivy.get_nan_policy() == "warns":
                 logging.warning("Nans are present in the input.")
         
