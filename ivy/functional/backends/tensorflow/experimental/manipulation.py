@@ -110,3 +110,13 @@ def i0(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.bessel_i0(x, name=None)
+
+
+def vsplit(
+    ary: Union[tf.Tensor, tf.Variable],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.vsplit(ary, indices_or_sections)
