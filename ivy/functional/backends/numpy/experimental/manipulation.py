@@ -207,3 +207,13 @@ def vsplit(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dsplit(ary, indices_or_sections)
