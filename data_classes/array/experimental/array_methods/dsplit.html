@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>vsplit array &mdash; Ivy 1.0 documentation</title>
+  <title>dsplit array &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -118,9 +118,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>vsplit array</li>
+      <li>dsplit array</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/data_classes/array/experimental/array_methods/vsplit.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/data_classes/array/experimental/array_methods/dsplit.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -128,13 +128,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="vsplit-array">
-<h1>vsplit array<a class="headerlink" href="#vsplit-array" title="Permalink to this heading"></a></h1>
+  <section id="dsplit-array">
+<h1>dsplit array<a class="headerlink" href="#dsplit-array" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.experimental.array_methods.vsplit">
-<span class="sig-prename descclassname"><span class="pre">ivy.array.experimental.array_methods.</span></span><span class="sig-name descname"><span class="pre">vsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_or_sections</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/experimental/array_methods.html#vsplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental.array_methods.vsplit" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of ivy.vsplit. This method simply
-wraps the function, and so the docstring for ivy.vsplit also applies
+<dt class="sig sig-object py" id="ivy.array.experimental.array_methods.dsplit">
+<span class="sig-prename descclassname"><span class="pre">ivy.array.experimental.array_methods.</span></span><span class="sig-name descname"><span class="pre">dsplit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_or_sections</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/experimental/array_methods.html#dsplit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.experimental.array_methods.dsplit" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of ivy.dsplit. This method simply
+wraps the function, and so the docstring for ivy.dsplit also applies
 to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -159,13 +159,14 @@ the indices in the tuple.</p></li>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ary</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-<span class="go">    [[[0.,  1.],</span>
-<span class="go">      [2.,  3.]],</span>
-<span class="go">     [[4.,  5.],</span>
-<span class="go">      [6.,  7.]]]</span>
-<span class="go">    )</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ary</span><span class="o">.</span><span class="n">vsplit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-<span class="go">[ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])</span>
+<span class="go">    [[[ 0.,   1.,   2.,   3.],</span>
+<span class="go">      [ 4.,   5.,   6.,   7.]],</span>
+<span class="go">     [[ 8.,   9.,  10.,  11.],</span>
+<span class="go">      [12.,  13.,  14.,  15.]]]</span>
+<span class="go">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ary</span><span class="o">.</span><span class="n">dsplit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="go">[ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),</span>
+<span class="go">ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]</span>
 </pre></div>
 </div>
 </dd></dl>

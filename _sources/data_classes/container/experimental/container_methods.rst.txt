@@ -89,6 +89,8 @@ Container methods
    container_methods/pad.rst
    container_methods/static_vsplit.rst
    container_methods/vsplit.rst
+   container_methods/static_dsplit.rst
+   container_methods/dsplit.rst
    container_methods/static_dirichlet.rst
    container_methods/dirichlet.rst
    container_methods/static_msort.rst
