@@ -58,7 +58,7 @@ def cholesky_solve(chol, rhs, name=None):
 
 @to_ivy_arrays_and_back
 def pinv(a, rcond=None, validate_args=False, name=None):
-    return ivy.pinv(a, rcond)
+    return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back
