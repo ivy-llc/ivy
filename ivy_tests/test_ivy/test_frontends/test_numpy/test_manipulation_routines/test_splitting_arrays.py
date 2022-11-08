@@ -12,9 +12,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     ),
     dtype_and_x=helpers.dtype_and_values(
         dtype=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype=helpers.get_dtypes("numeric", full=False, none=True),
     ),
 )
 def test_numpy_split(
