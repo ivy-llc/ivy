@@ -761,6 +761,8 @@ def test_gather(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=indices,
         axis=axis,
@@ -883,6 +885,8 @@ def test_gather_nd(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
@@ -1210,6 +1214,7 @@ def test_einops_rearrange(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        test_gradients=True,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1326,6 +1331,7 @@ def test_einops_repeat(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        test_gradients=True,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1375,8 +1381,8 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
     # ToDo: Ask Daniel about tensor_fn, we use it here since
     #  we don't use helpers.test_function
     x, val = x_val_and_dtypes[1]
-    x = tensor_fn(x, dtype="float32", device=on_device)
-    val = tensor_fn(val, dtype="float32", device=on_device)
+    x = tensor_fn(x.tolist(), dtype="float32", device=on_device)
+    val = tensor_fn(val.tolist(), dtype="float32", device=on_device)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
@@ -1609,6 +1615,7 @@ def test_all_equal(
         max_dim_size=5,
         min_value=-10,
         max_value=10,
+        abs_smallest_val=1e-4,
     ),
     max_norm=st.floats(min_value=0.137, max_value=1e05),
     p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
@@ -1641,6 +1648,7 @@ def test_clip_matrix_norm(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -1889,7 +1897,12 @@ def test_set_min_base(x):
 @handle_test(
     fn_tree="functional.ivy.stable_divide",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=3, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=3,
+        shared_dtype=True,
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
 )
 def test_stable_divide(
@@ -1916,6 +1929,7 @@ def test_stable_divide(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
+        test_gradients=True,
         numerator=x[0],
         denominator=x[1],
         min_denominator=x[2],
@@ -1973,6 +1987,7 @@ def test_stable_pow(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],

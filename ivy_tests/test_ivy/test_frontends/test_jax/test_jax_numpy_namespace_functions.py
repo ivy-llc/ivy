@@ -2360,3 +2360,75 @@ def test_jax_numpy_diag(
         v=x[0],
         k=k,
     )
+
+
+# flip
+@handle_frontend_test(
+    fn_tree="jax.numpy.flip",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+    ),
+)
+def test_jax_numpy_flip(
+    *,
+    dtype_value,
+    axis,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=fn_tree,
+        fn_tree=frontend,
+        on_device=on_device,
+        m=value[0],
+        axis=axis,
+    )
+
+
+# fliplr
+@handle_frontend_test(
+    fn_tree="jax.numpy.fliplr",
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+)
+def test_jax_numpy_fliplr(
+    *,
+    dtype_and_m,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        m=m[0],
+    )

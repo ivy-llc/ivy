@@ -31,4 +31,19 @@ def median(
             dim=axis,
             keepdim=keepdims,
             out=out,
-        )[0]
+        )
+
+
+def nanmean(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nanmean(a, axis=axis, keepdim=keepdims, dtype=dtype, out=out)
+
+
+nanmean_support_native_out = True

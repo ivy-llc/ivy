@@ -54,7 +54,12 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.maximum(x1, x2, name=None)
+    temp = tf.constant(float("nan"))
+    x1 = tf.where(tf.math.equal(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.equal(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.maximum(x1, x2)
+    return ret
 
 
 def trapz(
@@ -194,3 +199,12 @@ def logaddexp2(
     numerator = tf.math.log(x)
     denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
     return numerator / denominator
+
+
+def signbit(
+    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.signbit(x)
