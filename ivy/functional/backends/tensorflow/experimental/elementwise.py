@@ -221,7 +221,7 @@ def allclose(
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
+) -> bool:
     return tf.experimental.numpy.allclose(
         x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
     )

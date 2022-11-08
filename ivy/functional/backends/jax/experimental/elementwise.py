@@ -156,5 +156,5 @@ def allclose(
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
     out: Optional[JaxArray] = None,
-) -> JaxArray:
+) -> bool:
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)

@@ -233,5 +233,5 @@ def allclose(
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+) -> bool:
     return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)

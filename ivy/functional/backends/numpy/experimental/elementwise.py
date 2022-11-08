@@ -227,7 +227,7 @@ def allclose(
     atol: Optional[float] = 1e-08,
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+) -> bool:
     return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
