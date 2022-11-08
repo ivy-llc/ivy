@@ -197,7 +197,6 @@ def array_and_boolean_mask(
         ),
         array_and_boolean_mask(array_dtypes=helpers.get_dtypes("valid")),
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="get_item"),
 )
 def test_get_item(
     dtype_x_indices,
@@ -210,6 +209,7 @@ def test_get_item(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtypes, x, indices = dtype_x_indices
     helpers.test_function(
@@ -223,7 +223,7 @@ def test_get_item(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         xs_grad_idxs=[["0"]],
         x=x,
         query=indices,
@@ -239,6 +239,7 @@ def test_get_item(
     copy=st.booleans(),
 )
 def test_to_numpy(
+    *,
     dtype_x,
     copy,
     num_positional_args,
@@ -253,8 +254,8 @@ def test_to_numpy(
 ):
     dtype, x = dtype_x
     # torch throws an exception
-    if backend_fw == "torch":
-        assume(not copy)
+    if ivy.current_backend_str() == "torch" and not copy:
+        return
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -478,6 +479,7 @@ def test_clip_vector_norm(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x, max_norm, p = dtype_x_max_norm_p
     helpers.test_function(
@@ -493,7 +495,7 @@ def test_clip_vector_norm(
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -748,6 +750,7 @@ def test_gather(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtypes, params, indices, axis, batch_dims = params_indices_others
     helpers.test_function(
@@ -761,7 +764,7 @@ def test_gather(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         xs_grad_idxs=[["0"]],
         params=params,
         indices=indices,
@@ -872,6 +875,7 @@ def test_gather_nd(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtypes, params, ndindices, batch_dims = params_n_ndindices_batch_dims
     helpers.test_function(
@@ -885,7 +889,7 @@ def test_gather_nd(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         xs_grad_idxs=[["0"]],
         params=params,
         indices=ndindices,
@@ -894,7 +898,8 @@ def test_gather_nd(
 
 
 # exists
-@given(
+@handle_test(
+    fn_tree="functional.ivy.exists",
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
@@ -904,7 +909,7 @@ def test_gather_nd(
             min_dim_size=1,
         ),
         st.sampled_from([ivy.array]),
-    )
+    ),
 )
 def test_exists(x):
     if x is not None:
@@ -917,7 +922,8 @@ def test_exists(x):
 
 
 # default
-@given(
+@handle_test(
+    fn_tree="functional.ivy.default",
     x=st.one_of(
         st.none(),
         helpers.dtype_and_values(
@@ -1200,6 +1206,7 @@ def test_einops_rearrange(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
@@ -1214,7 +1221,7 @@ def test_einops_rearrange(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1247,6 +1254,7 @@ def test_einops_rearrange(
     reduction=st.sampled_from(["min", "max", "sum", "mean", "prod"]),
 )
 def test_einops_reduce(
+    *,
     dtype_x,
     pattern_and_axes_lengths,
     floattypes,
@@ -1306,6 +1314,7 @@ def test_einops_reduce(
     ),
 )
 def test_einops_repeat(
+    *,
     dtype_x,
     pattern_and_axes_lengths,
     num_positional_args,
@@ -1317,9 +1326,11 @@ def test_einops_repeat(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     pattern, axes_lengths = pattern_and_axes_lengths
     dtype, x = dtype_x
+    assume("uint16" not in dtype)
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1331,7 +1342,7 @@ def test_einops_repeat(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1369,7 +1380,8 @@ def test_inplace_variables_supported():
 
 
 # inplace_update
-@given(
+@handle_test(
+    fn_tree="functional.ivy.inplace_update",
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1378,8 +1390,6 @@ def test_inplace_variables_supported():
     tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
 def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
-    # ToDo: Ask Daniel about tensor_fn, we use it here since
-    #  we don't use helpers.test_function
     x, val = x_val_and_dtypes[1]
     x = tensor_fn(x.tolist(), dtype="float32", device=on_device)
     val = tensor_fn(val.tolist(), dtype="float32", device=on_device)
@@ -1393,7 +1403,8 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, on_device):
 
 
 # inplace_decrement
-@given(
+@handle_test(
+    fn_tree="functional.ivy.inplace_decrement",
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
@@ -1421,7 +1432,8 @@ def test_inplace_decrement(x_val_and_dtypes, tensor_fn, on_device):
 
 
 # inplace_increment
-@given(
+@handle_test(
+    fn_tree="functional.ivy.inplace_increment",
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         allow_inf=False,
@@ -1457,6 +1469,7 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
     exclusive=st.booleans(),
 )
 def test_is_ivy_array(
+    *,
     x_val_and_dtypes,
     exclusive,
     num_positional_args,
@@ -1471,6 +1484,46 @@ def test_is_ivy_array(
 ):
     dtype, x = x_val_and_dtypes
     helpers.test_function(
+        input_dtypes=dtype,
+        num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        ground_truth_backend="numpy",
+        x=x[0],
+        exclusive=exclusive,
+    )
+
+
+# is_native_array
+@handle_test(
+    fn_tree="functional.ivy.is_native_array",
+    x_val_and_dtypes=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ),
+    exclusive=st.booleans(),
+)
+def test_is_native_array(
+    *,
+    x_val_and_dtypes,
+    exclusive,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtype, x = x_val_and_dtypes
+    helpers.test_funtion(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -1572,7 +1625,6 @@ def test_is_ivy_container(
 def test_all_equal(
     dtypes_and_xs,
     equality_matrix,
-    num_positional_args,
     as_variable,
     with_out,
     native_array,
@@ -1588,6 +1640,7 @@ def test_all_equal(
     for x_ in arrays:
         kw["x{}".format(i)] = x_
         i += 1
+    num_positional_args = len(arrays)
     helpers.test_function(
         input_dtypes=dtypes,
         num_positional_args=num_positional_args,
@@ -1633,6 +1686,7 @@ def test_clip_matrix_norm(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -1648,7 +1702,7 @@ def test_clip_matrix_norm(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -1660,7 +1714,7 @@ def test_clip_matrix_norm(
     fn_tree="functional.ivy.value_is_nan",
     val_dtype=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        max_dim_size=1,
         max_num_dims=1,
         allow_nan=True,
         allow_inf=True,
@@ -1668,6 +1722,7 @@ def test_clip_matrix_norm(
     include_infs=st.booleans(),
 )
 def test_value_is_nan(
+    *,
     val_dtype,
     include_infs,
     num_positional_args,
@@ -1692,7 +1747,7 @@ def test_value_is_nan(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        x=val,
+        x=val[0],
         include_infs=include_infs,
     )
 
@@ -1708,6 +1763,7 @@ def test_value_is_nan(
     include_infs=st.booleans(),
 )
 def test_has_nans(
+    *,
     x_val_and_dtypes,
     include_infs,
     num_positional_args,
@@ -1906,6 +1962,7 @@ def test_set_min_base(x):
     ),
 )
 def test_stable_divide(
+    *,
     dtype_and_x,
     num_positional_args,
     as_variable,
@@ -1916,6 +1973,7 @@ def test_stable_divide(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -1929,7 +1987,7 @@ def test_stable_divide(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=True,
+        test_gradients=test_gradients,
         numerator=x[0],
         denominator=x[1],
         min_denominator=x[2],
@@ -1959,6 +2017,7 @@ def _get_valid_numeric_no_unsigned(draw):
     ),
 )
 def test_stable_pow(
+    *,
     dtypes_and_xs,
     dtype_and_min_base,
     num_positional_args,
@@ -1970,6 +2029,7 @@ def test_stable_pow(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
 ):
     dtypes, xs = dtypes_and_xs
     input_dtype_min_base, min_base = dtype_and_min_base
@@ -1987,7 +2047,7 @@ def test_stable_pow(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        test_gradients=True,
+        test_gradients=test_gradients,
         base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],
@@ -2093,7 +2153,9 @@ def test_assert_supports_inplace(
     on_device,
 ):
     dtype, x = x_val_and_dtypes
-    assume(backend_fw not in ["tensorflow", "jax"])
+    if ivy.current_backend_str() in ["tensorflow", "jax"]:
+        return
+    assume("bfloat16" not in dtype)
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
