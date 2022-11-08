@@ -73,7 +73,7 @@ def nanmedian(
     dtype=None,
     where=True,
 ):
-    is_nan=ivy.isnan(x)
+    is_nan = ivy.isnan(x)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     if not any(is_nan):

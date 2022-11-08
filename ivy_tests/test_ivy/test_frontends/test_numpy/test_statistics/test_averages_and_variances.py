@@ -136,7 +136,7 @@ def test_numpy_nanmean(
     ),
     keep_dims=st.booleans(),
 )
-def test_numpy_nanmean(
+def test_numpy_nanmedian(
     dtype_and_x,
     dtype,
     where,
