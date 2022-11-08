@@ -1143,7 +1143,7 @@ def test_torch_ceil(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    decimals=st.integers(),
+    decimals=st.integers(min_value=0, max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.round"
     ),
