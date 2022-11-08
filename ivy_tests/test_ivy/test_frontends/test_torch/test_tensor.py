@@ -871,7 +871,7 @@ def test_torch_special_add(
     )
 
 
-# long
+# __long__
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
