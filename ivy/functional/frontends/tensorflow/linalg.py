@@ -20,7 +20,7 @@ def det(input, name=None):
 
 @to_ivy_arrays_and_back
 @with_supported_dtypes(
-    {"2.9.0 and below": ("float32","float64","double","half","float16","bfloat16")},
+    {"2.9.0 and below": ("float32", "float64", "double", "half", "float16", "bfloat16")},
     "tensorflow",
 )
 def eigh(tensor,name=None):
