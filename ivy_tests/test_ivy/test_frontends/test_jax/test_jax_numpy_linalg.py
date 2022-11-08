@@ -469,22 +469,27 @@ def test_jax_numpy_solve(
 
 @st.composite
 def norm_helper(draw):
-    dtype, x, axis = draw(
-        helpers.dtype_values_axis(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=2,
-            max_num_dims=4,
-            min_dim_size=2,
-            max_dim_size=4,
-            min_axis=-1,
-            max_axis=2,
-            force_int_axis=False,
-            max_axes_size=2,
-            safety_factor_scale="log",
-            valid_axis=True,
-            large_abs_safety_factor=2,
+    while 1:
+        dtype, x, axis = draw(
+            helpers.dtype_values_axis(
+                available_dtypes=helpers.get_dtypes("valid"),
+                min_num_dims=1,
+                force_int_axis=True,
+                max_axes_size=2,
+                safety_factor_scale="log",
+                valid_axis=True,
+                large_abs_safety_factor=2,
+            )
         )
-    )
+        # avoid duplicate axes
+        if type(axis) in [tuple, list]:
+            if len(axis) == 2:
+                if len(x[0].shape) + axis[0] != axis[1] and \
+                        len(x[0].shape) + axis[1] != axis[0] and \
+                        axis[0] != axis[1]:
+                    break
+        else:
+            break
     if type(axis) in [tuple, list]:
         if len(axis) == 2:
             ord_param = draw(
