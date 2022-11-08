@@ -441,5 +441,5 @@ def dct(
     }
     """
     return ivy.current_backend(x).dct(
-      x, type=type, n=n, axis=axis, norm=norm, out=out
+        x, type=type, n=n, axis=axis, norm=norm, out=out
     )
