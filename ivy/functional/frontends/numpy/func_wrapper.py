@@ -287,5 +287,5 @@ def handle_nans(fn: Callable) -> Callable:
         
         return fn(*args, **kwargs)
 
-    new_fn.inputs_to_ivy_arrays = True
+    new_fn.handle_nans = True
     return new_fn
