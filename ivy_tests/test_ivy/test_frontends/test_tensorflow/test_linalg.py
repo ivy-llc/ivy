@@ -194,9 +194,33 @@ def test_tensorflow_solve(
 
 
 # logdet
+@st.composite
+def _get_hermitian_pos_def_matrix(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    gen = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
+    )
+    hpd = np.matmul(np.matrix(gen).getH(), np.matrix(gen)) + np.identity(gen.shape[0])
+    return [input_dtype], hpd
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_hermitian_pos_def_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.linalg.logdet"
     ),
