@@ -71,6 +71,10 @@ class Tensor:
     
     def tanh(self, *, out=None):
         return torch_frontend.tanh(self.data, out=out)
+    
+    def tanh_(self):
+        self.data = self.tanh()
+        return self.data
 
     def log(self):
         return ivy.log(self.data)
