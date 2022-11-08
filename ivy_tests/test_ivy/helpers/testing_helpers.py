@@ -133,6 +133,7 @@ def _import_fn(fn_tree: str):
     fn_tree
         Full function tree without "ivy" root
         example: "functional.backends.jax.creation.arange".
+
     Returns
     -------
     Returns fn_name, imported module, callable function
@@ -150,9 +151,10 @@ def _generate_shared_test_flags(
 ):
     """
     Generates flags that all tests use.
+
     Returns
     -------
-
+    shared flags that all tests use.
     """
     if "num_positional_args" in param_names:
         _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
