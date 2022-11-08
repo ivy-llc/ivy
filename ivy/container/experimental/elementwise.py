@@ -1559,6 +1559,29 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             A new container holding the result is returned unless out is specified,
             in which it is returned.
 
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> y = ivy.Container.static_allclose(x1, x2)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.0003]),\
+        ...                         b=ivy.array([1.0006, 2., 3.]))
+        >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "allclose",
@@ -1627,6 +1650,29 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             A new container holding the result is returned unless out is specified,
             in which it is returned.
 
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> y = x1.allclose(x2)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.0003]),\
+        ...                         b=ivy.array([1.0006, 2., 3.]))
+        >>> y = x1.allclose(x2, rtol=1e-3)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
         """
         return self.static_allclose(
             self,

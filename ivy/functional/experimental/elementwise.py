@@ -720,8 +720,8 @@ def allclose(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Returns a boolean if the two arrays are element-wise equal
-    within a tolerance.
+    Returns a True if the two arrays are element-wise equal
+    within given tolerance; otherwise False.
     The tolerance values are positive, typically very small numbers.
     The relative difference (rtol * abs(x2)) and the absolute difference
     atol are added together to compare against the absolute difference
@@ -751,6 +751,26 @@ def allclose(
     ret
         Returns True if the two arrays are equal within the given tolerance;
         False otherwise.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1e10, 1e-7])
+    >>> x2 = ivy.array([1.00001e10, 1e-8])
+    >>> y = ivy.allclose(x1, x2)
+    >>> print(y)
+    False
+
+    >>> x1 = ivy.array([1.0, ivy.nan])
+    >>> x2 = ivy.array([1.0, ivy.nan])
+    >>> y = ivy.allclose(x1, x2, equal_nan=True)
+    >>> print(y)
+    True
+
+    >>> x1 = ivy.array([1e-10, 1e-10])
+    >>> x2 = ivy.array([1.00001e-10, 1e-10])
+    >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
+    >>> print(y)
+    True
 
     """
     return ivy.current_backend().allclose(
