@@ -26,4 +26,5 @@ Manipulation
    manipulation/fliplr.rst
    manipulation/i0.rst
    manipulation/pad.rst
+   manipulation/vsplit.rst
 
