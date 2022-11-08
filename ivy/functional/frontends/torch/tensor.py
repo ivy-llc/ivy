@@ -2,6 +2,7 @@
 
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
@@ -126,7 +127,13 @@ class Tensor:
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
     def arctan(self, *, out=None):
-        return torch_frontend.arctan(self, out=out)
+
+        return torch_frontend.atan(self, out=out)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
+    def arctan_(self):
+        self.data = self.arctan()
+        return self.data
 
     def acos(self, *, out=None):
         return torch_frontend.acos(self.data, out=out)
