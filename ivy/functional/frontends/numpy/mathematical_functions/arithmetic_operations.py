@@ -188,16 +188,17 @@ def floor_divide(
 
 @to_ivy_arrays_and_back
 def mod(
-        x1,
-        x2,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting='same_kind',
-        order='K',
-        dtype=None,
-        subok=True):
+    x1,
+    x2,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
         x2 = ivy.astype(ivy.array(x2), ivy.as_ivy_dtype(dtype))

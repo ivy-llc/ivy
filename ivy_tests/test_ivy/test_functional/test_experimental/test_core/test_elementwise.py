@@ -552,7 +552,7 @@ def test_isneginf(
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
 
-    
+
 # nan_to_num
 @handle_cmd_line_args
 @given(
@@ -563,12 +563,12 @@ def test_isneginf(
         min_value=-100,
         max_value=100,
         allow_nan=True,
-        allow_inf=True
+        allow_inf=True,
     ),
     copy=st.booleans(),
     nan=st.floats(min_value=0.0, max_value=100),
-    posinf=st.floats(min_value=5e+100, max_value=5e+100),
-    neginf=st.floats(min_value=-5e+100, max_value=-5e+100),
+    posinf=st.floats(min_value=5e100, max_value=5e100),
+    neginf=st.floats(min_value=-5e100, max_value=-5e100),
     num_positional_args=helpers.num_positional_args(fn_name="nan_to_num"),
 )
 def test_nan_to_num(
@@ -600,10 +600,10 @@ def test_nan_to_num(
         copy=copy,
         nan=nan,
         posinf=posinf,
-        neginf=neginf
+        neginf=neginf,
     )
 
-    
+
 # logaddexp2
 @handle_cmd_line_args
 @given(
@@ -643,5 +643,42 @@ def test_logaddexp2(
         rtol_=1e-03,
         atol_=1e-03,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x2=np.asarray(x[1], dtype=input_dtype[1]),
+    )
+
+
+# signbit
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="signbit"),
+)
+def test_signbit(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="signbit",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
     )

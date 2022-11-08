@@ -161,11 +161,11 @@ def avg_pool3d(
         ],
         "edge",
     )
-    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    res = _pool(x, 0.0, jlax.add, kernel, strides, padding)
     div_shape = res.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / _pool(jnp.ones(div_shape), 0., jlax.add, kernel, strides, padding)
+    res = res / _pool(jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding)
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
@@ -197,17 +197,13 @@ def avg_pool2d(
     if data_format == "NCHW":
         x = jnp.transpose(x, (0, 2, 3, 1))
 
-    res = _pool(x, 0., jlax.add, kernel, strides, padding)
+    res = _pool(x, 0.0, jlax.add, kernel, strides, padding)
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / _pool(jnp.ones(div_shape,
-                               dtype=res.dtype),
-                      0.,
-                      jlax.add,
-                      kernel,
-                      strides,
-                      padding)
+    res = res / _pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
     return res

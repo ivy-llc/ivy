@@ -925,20 +925,20 @@ def default_float_dtype(
     float_dtype
         (Default value = None) float type to be returned.
     as_native
-        (Default value = None) Whether to return the float dtype as native 
+        (Default value = None) Whether to return the float dtype as native
         dtype.
 
     Returns
     -------
-        Return the input float dtype as native or ivy dtype if provided, else 
-        if an input is given, return its float dtype, otherwise return the 
+        Return the input float dtype as native or ivy dtype if provided, else
+        if an input is given, return its float dtype, otherwise return the
         global default float dtype.
 
     Examples
     --------
     >>> ivy.default_float_dtype()
     'float32'
-    
+
     >>> ivy.set_default_float_dtype(ivy.FloatDtype("float64"))
     >>> ivy.default_float_dtype()
     'float64'
@@ -948,7 +948,7 @@ def default_float_dtype(
 
     >>> ivy.default_float_dtype(input=4294.967346)
     'float32'
-    
+
     >>> x = ivy.array([9.8,8.9], dtype="float16")
     >>> ivy.default_float_dtype(input=x)
     'float16'

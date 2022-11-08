@@ -1,14 +1,14 @@
 from typing import Optional, Union
 import numpy as np
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def lcm(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -28,7 +28,7 @@ def lcm(
 lcm.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -46,7 +46,7 @@ def fmod(
 fmod.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def fmax(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -199,8 +199,20 @@ def logaddexp2(
     /,
     *,
     out: Optional[np.ndarray] = None,
-) -> np.ndarray:    
+) -> np.ndarray:
     return np.logaddexp2(x1, x2, out=out)
 
 
 logaddexp2.support_native_out = True
+
+
+def signbit(
+    x: Union[np.ndarray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.signbit(x, out=out)
+
+
+signbit.support_native_out = True
