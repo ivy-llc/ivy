@@ -16,7 +16,6 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
 
@@ -226,6 +225,9 @@ class Tensor:
 
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
+    
+    def __mod__(self, other):
+        return torch_frontend.remainder(self, other)
 
     def __getitem__(self, query):
         ret = ivy.get_item(self.data, query)
