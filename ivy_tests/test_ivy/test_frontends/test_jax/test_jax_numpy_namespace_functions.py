@@ -275,6 +275,8 @@ def _get_clip_inputs(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             shape=shape,
+            min_value=-1e10,
+            max_value=1e10,
         )
     )
     min = draw(st.booleans())
@@ -1582,7 +1584,6 @@ def test_jax_numpy_arange(
         start=start,
         stop=stop,
         step=step,
-        dtype=dtype[0],
     )
 
 
