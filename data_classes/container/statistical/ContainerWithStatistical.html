@@ -479,7 +479,19 @@ means. The returned array must have the same data type as <code class="docutils 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.statistical.ContainerWithStatistical.min">
 <span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/statistical.html#ContainerWithStatistical.min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.statistical.ContainerWithStatistical.min" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p class="rubric">Examples</p>
+<p>With: code:<cite>ivy.Container</cite>
+input:</p>
+<p>&gt;&gt; &gt; x = ivy.Container(a=ivy.array([1, 2, 3]),                                b=ivy.array([2, 3, 4]))
+&gt;&gt; &gt; z = x.min()
+&gt;&gt; &gt; print(z)
+{</p>
+<blockquote>
+<div><p>a: ivy.array(3),
+b: ivy.array(4)</p>
+</div></blockquote>
+<p>}</p>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
 </dd>
