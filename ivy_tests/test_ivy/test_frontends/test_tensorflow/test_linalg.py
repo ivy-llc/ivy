@@ -68,7 +68,7 @@ def test_tensorflow_eigh(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.eigh",
-        input=x[0],
+        tensor=x[0],
     )
 
 
