@@ -1,13 +1,13 @@
 # global
 import functools
-from typing import Callable, Any
+import logging
+from typing import Callable
 
 import numpy
 
 # local
 import ivy
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
-import logging
 
 
 def _is_same_kind_or_safe(t1, t2):
@@ -168,7 +168,7 @@ def _to_ivy_array(x):
     return _numpy_frontend_to_ivy(_numpy_array_to_ivy_array(x))
 
 
-def _numpy_is_nan(x: Any) -> Any:
+def _is_nan(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return ivy.isnan(x).any().item()
     else:
@@ -264,9 +264,9 @@ def handle_nans(fn: Callable) -> Callable:
             on the selected `nan_policy`.
         """
         # check all args and kwards for presence of nans
-        args_nans = ivy.nested_map(args, _numpy_is_nan, include_derived={tuple: True})
+        args_nans = ivy.nested_map(args, _is_nan, include_derived={tuple: True})
         kwargs_nans = ivy.nested_map(
-            kwargs, _numpy_is_nan, include_derived={tuple: True}
+            kwargs, _is_nan, include_derived={tuple: True}
         )
         if type(args_nans) is dict:
             args_result = any(list(args_nans.values()))
