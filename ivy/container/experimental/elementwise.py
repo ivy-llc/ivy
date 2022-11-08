@@ -6,7 +6,7 @@ import ivy
 from ivy.container.base import ContainerBase
 
 
-class ContainerWithElementWiseExtensions(ContainerBase):
+class ContainerWithElementWiseExperimental(ContainerBase):
     @staticmethod
     def static_sinc(
         x: ivy.Container,
