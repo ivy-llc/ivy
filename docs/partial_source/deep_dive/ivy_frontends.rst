@@ -215,8 +215,8 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 
 **NOTE**
 
-Many of the functions in the :mod:`tf.raw_ops` has identical behaviuor to the functions that are generally in the TensorFlow namespace e.g :func:`tf.argmax`, with exception that the functions in the function in the :mod:`tf.raw_ops` are specified to have key-word only arguments and in some case there is a naming difference of arguments.
-In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exissts in the TensorFlow namespace, thus reducing unnecessary re-implementations.
+Many of the functions in the :mod:`tf.raw_ops` module have identical behaviuor to the functions that are generally in the TensorFlow namespace e.g :func:`tf.argmax`, with exception that the functions in the function in the :mod:`tf.raw_ops` module are specified to have key-word only arguments and in some case there is a naming difference of arguments.
+In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
     
