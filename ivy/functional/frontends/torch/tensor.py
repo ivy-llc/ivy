@@ -84,7 +84,7 @@ class Tensor:
     def abs_(self):
         self.data = self.abs()
         return self.data
-    
+
     def bitwise_and(self, other,*, out=None):
         return torch_frontend.bitwise_and(self.data, other, out=out)
 
