@@ -11,10 +11,10 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.split"
     ),
     dtype_and_x=helpers.dtype_and_values(
-        dtype_i=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype_ar=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype_ax=helpers.get_dtypes("numeric", full=False, none=True),
-        dtype_id=helpers.get_dtypes("numeric", full=False, none=True),
+        dtype=helpers.get_dtypes("numeric", full=False, none=True),
+        dtype=helpers.get_dtypes("numeric", full=False, none=True),
+        dtype=helpers.get_dtypes("numeric", full=False, none=True),
+        dtype=helpers.get_dtypes("numeric", full=False, none=True),
     ),
 )
 def test_numpy_split(
