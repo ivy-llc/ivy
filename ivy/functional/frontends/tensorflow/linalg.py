@@ -19,8 +19,21 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
-def eigh(tensor, name=None):
-    return ivy.eigh(tensor)
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float32","float64","double","half","float16","bfloat16")},
+    "tensorflow",
+)
+def eigh(tensor,name=None):
+    input_dtype = tensor.dtype
+    input_tensor = ivy.astype(tensor, ivy.float32)
+    output_tensor = ivy.eigh(input_tensor)
+    output_tensor = ivy.astype(output_tensor, input_dtype)
+    e = output_tensor[0]
+    v = output_tensor[1]
+    return e, v
+
+
+
 
 
 @to_ivy_arrays_and_back
