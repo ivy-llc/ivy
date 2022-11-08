@@ -116,7 +116,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         res = _get_functions_from_string(fl, __import__(fn.__module__))
         to_visit.extend(res)
 
-    return out
+    return ret
 
 
 # Get the list of dtypes supported by the function
@@ -268,7 +268,7 @@ def astype(
     }
 
     """
-    return current_backend(x).astype(x, dtype, copy=copy, out=out)
+    return current_backend(x).astype(x, dtype, copy=copy, out = out )
 
 
 @to_native_arrays_and_back
@@ -1866,22 +1866,6 @@ def unset_default_float_dtype():
     Examples
     --------
     >>> ivy.set_default_float_dtype(ivy.float64)
-    >>> ivy.default_float_dtype()
-    'float64'
-    >>> ivy.unset_default_float_dtype()
-    >>> ivy.default_float_dtype()
-    'float32'
-
-
-    >>> ivy.set_default_int_dtype(ivy.floatDtype("float16"))
-    >>> ivy.default_float_dtype()
-    'float16'
-    >>> ivy.unset_default_float_dtype()
-    >>> ivy.default_float_dtype()
-    'float32'
-
-
-    >>> ivy.set_default_float_dtype(ivy.native_float64)
     >>> ivy.default_float_dtype()
     'float64'
     >>> ivy.unset_default_float_dtype()
