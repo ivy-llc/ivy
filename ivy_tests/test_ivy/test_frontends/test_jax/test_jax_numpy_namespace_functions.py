@@ -1094,11 +1094,7 @@ def test_jax_numpy_array_equiv(
         min_dim_size=1,
         max_dim_size=10,
     ),
-    dtypes=helpers.get_dtypes(
-        "numeric",
-        full=False,
-        none=True,
-    ),
+    dtypes=helpers.get_dtypes("numeric", full=False),
 )
 def test_jax_numpy_zeros(
     *,
@@ -1602,16 +1598,6 @@ def test_jax_numpy_arange(
             key="a_s_d",
         ),
     ),
-    dtype_and_w=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(
-            helpers.get_shape(
-                min_num_dims=1,
-                max_num_dims=1,
-            ),
-            key="a_s_d",
-        ),
-    ),
 )
 def test_jax_numpy_bincount(
     *,
@@ -1784,6 +1770,8 @@ def test_jax_numpy_float_power(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
