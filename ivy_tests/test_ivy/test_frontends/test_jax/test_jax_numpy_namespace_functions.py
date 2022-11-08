@@ -105,6 +105,7 @@ def test_jax_numpy_argmax(
         on_device=on_device,
         a=x[0],
         axis=axis,
+        out=None,
         keepdims=keepdims,
     )
 
@@ -425,12 +426,10 @@ def _arrays_idx_n_dtypes(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.concatenate",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_jax_numpy_concat(
     *,
     xs_n_input_dtypes_n_unique_idx,
-    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -450,7 +449,6 @@ def test_jax_numpy_concat(
         on_device=on_device,
         arrays=xs,
         axis=unique_idx,
-        dtype=dtype,
     )
 
 
@@ -503,7 +501,7 @@ def test_jax_numpy_mean(
         axis=axis,
         dtype=dtype[0],
         keepdims=keepdims,
-        where=where,
+        where=where[0],
     )
 
 
@@ -588,10 +586,10 @@ def test_jax_numpy_var(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         ddof=ddof,
         keepdims=keepdims,
-        where=where,
+        where=where[0],
     )
 
 
@@ -835,8 +833,9 @@ def test_jax_numpy_cos(
     )
 
 
+# cosh
 @handle_frontend_test(
-    fn_tree="jax.numpy.sin",
+    fn_tree="jax.numpy.cosh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_cosh(
@@ -863,8 +862,9 @@ def test_jax_numpy_cosh(
     )
 
 
+# tanh
 @handle_frontend_test(
-    fn_tree="jax.numpy.sinh",
+    fn_tree="jax.numpy.tanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_tanh(
@@ -891,8 +891,9 @@ def test_jax_numpy_tanh(
     )
 
 
+# sinh
 @handle_frontend_test(
-    fn_tree="jax.numpy.tan",
+    fn_tree="jax.numpy.sinh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_sinh(
@@ -1581,7 +1582,7 @@ def test_jax_numpy_arange(
         start=start,
         stop=stop,
         step=step,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -1638,8 +1639,9 @@ def test_jax_numpy_bincount(
     )
 
 
+# cumprod
 @handle_frontend_test(
-    fn_tree="jax.numpy.bincount",
+    fn_tree="jax.numpy.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1677,8 +1679,9 @@ def test_jax_numpy_cumprod(
     )
 
 
+# trunc
 @handle_frontend_test(
-    fn_tree="jax.numpy.cumsum",
+    fn_tree="jax.numpy.trunc",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_trunc(
@@ -1774,7 +1777,6 @@ def test_jax_numpy_float_power(
 
 
 # cumsum
-# TODO: dtype argument should be independent of input dtype
 @handle_frontend_test(
     fn_tree="jax.numpy.cumsum",
     dtype_x_axis=helpers.dtype_values_axis(
@@ -1786,10 +1788,12 @@ def test_jax_numpy_float_power(
         max_axes_size=1,
         force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_jax_numpy_cumsum(
     *,
     dtype_x_axis,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1809,7 +1813,7 @@ def test_jax_numpy_cumsum(
         on_device=on_device,
         a=x[0],
         axis=axis,
-        dtype=input_dtype[0],
+        dtype=dtype[0],
     )
 
 

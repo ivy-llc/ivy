@@ -36,7 +36,7 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def argmax(a, axis=None, out=None, keepdims=None):
+def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
@@ -188,6 +188,7 @@ def tanh(x):
     return ivy.tanh(x)
 
 
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.uint16)
 
@@ -413,10 +414,10 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, out=None, keepdims=False, *, where=True):
+def any(a, axis=None, keepdims=False, *, where=True):
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
+        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
     return ret
 
 
