@@ -17,6 +17,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
+    "handle_nans",
 ]
 
 
@@ -618,6 +619,10 @@ def handle_nans(fn: Callable) -> Callable:
             kwargs_result = any(list(kwargs_nans.values()))
         else:
             kwargs_result = any(list(kwargs_nans))
+
+        # working on alternative solution
+        inputs = ivy.Container(args=args, kwargs=kwargs)
+        inputs_nans = ivy.nested_map(inputs, _is_nan, include_derived={tuple: True})
 
         if args_result or kwargs_result:
             # handle nans based on the selected policy
