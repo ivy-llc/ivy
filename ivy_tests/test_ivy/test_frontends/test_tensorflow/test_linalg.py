@@ -73,10 +73,11 @@ def test_tensorflow_eigh(
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
+        native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        tensor=x[0],
     )
 
 
