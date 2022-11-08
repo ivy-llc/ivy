@@ -7,7 +7,6 @@ import ivy
 
 
 class ArrayWithLayersExperimental(abc.ABC):
-
     def max_pool2d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int], Tuple[int, int]],

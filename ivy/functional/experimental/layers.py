@@ -1,9 +1,4 @@
-from typing import (
-    Optional,
-    Union,
-    Tuple,
-    Literal,
-)
+from typing import Optional, Union, Tuple, Literal
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -204,12 +199,9 @@ def max_pool3d(
         [[[46., 47.]]]]])
 
     """
-    return ivy.current_backend(x).max_pool3d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).max_pool3d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -278,12 +270,9 @@ def avg_pool2d(
         [[38., 39.]]]])
 
     """
-    return ivy.current_backend(x).avg_pool2d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).avg_pool2d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -351,12 +340,9 @@ def avg_pool3d(
             [[[43., 44.]]]]])
 
     """
-    return ivy.current_backend(x).avg_pool3d(x,
-                                             kernel,
-                                             strides,
-                                             padding,
-                                             data_format=data_format,
-                                             out=out)
+    return ivy.current_backend(x).avg_pool3d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -454,9 +440,6 @@ def dct(
         b: ivy.array([15., -4., 0., -1.])
     }
     """
-    return ivy.current_backend().dct(x, 
-                                     type=type, 
-                                     n=n, 
-                                     axis=axis, 
-                                     norm=norm, 
-                                     out=out)
+    return ivy.current_backend(x).dct(
+      x, type=type, n=n, axis=axis, norm=norm, out=out
+    )

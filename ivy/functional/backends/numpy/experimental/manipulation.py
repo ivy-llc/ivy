@@ -1,12 +1,5 @@
 # global
-from typing import (Optional,
-                    Union,
-                    Sequence,
-                    Tuple,
-                    NamedTuple,
-                    Literal,
-                    Callable,
-                    Any)
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
 from numbers import Number
 import numpy as np
 

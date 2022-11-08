@@ -1900,7 +1900,7 @@ def test_jax_numpy_deg2rad(
         x=x[0],
     )
 
-    
+
 # exp2
 @handle_cmd_line_args
 @given(

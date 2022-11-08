@@ -1,12 +1,5 @@
 # global
-from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Tuple,
-    Literal,
-)
+from typing import Optional, Union, List, Dict, Tuple, Literal
 
 # local
 import ivy
@@ -14,7 +7,6 @@ from ivy.container.base import ContainerBase
 
 
 class ContainerWithLayersExperimental(ContainerBase):
-
     @staticmethod
     def static_max_pool2d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
