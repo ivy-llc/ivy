@@ -144,3 +144,13 @@ def vsplit(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dsplit(ary, indices_or_sections)
