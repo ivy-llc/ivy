@@ -1,14 +1,14 @@
 from typing import Optional, Union, Tuple
 import numpy as np
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.sinc(x)
+    return np.sinc(x).astype(x.dtype)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def lcm(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -28,7 +28,7 @@ def lcm(
 lcm.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def fmod(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -46,7 +46,7 @@ def fmod(
 fmod.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def fmax(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -109,7 +109,7 @@ def exp2(
 exp2.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def count_nonzero(
     x: np.ndarray,
     /,
@@ -155,3 +155,84 @@ def gcd(
 
 
 gcd.support_native_out = True
+
+
+def isclose(
+    a: np.ndarray,
+    b: np.ndarray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+isclose.support_native_out = False
+
+
+def isposinf(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isposinf(x, out=out)
+
+
+isposinf.support_native_out = True
+
+
+def isneginf(
+    x: Union[np.ndarray, float, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.isneginf(x, out=out)
+
+
+isneginf.support_native_out = True
+
+
+def nan_to_num(
+    x: np.ndarray,
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nan_to_num(x, copy=copy, nan=nan, posinf=posinf, neginf=neginf)
+
+
+nan_to_num.support_native_out = False
+
+
+def logaddexp2(
+    x1: Union[np.ndarray, int, list, tuple],
+    x2: Union[np.ndarray, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.logaddexp2(x1, x2, out=out)
+
+
+logaddexp2.support_native_out = True
+
+
+def signbit(
+    x: Union[np.ndarray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.signbit(x, out=out)
+
+
+signbit.support_native_out = True

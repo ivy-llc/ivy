@@ -47,9 +47,6 @@ def fmod(
     return tf.math.floormod(x1, x2, name=None)
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("blfoat16", "float16", "float32", "float64")}, backend_version
-)
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -57,10 +54,14 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
-    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
-    ret = tf.math.maximum(x1, x2, name=None)
-    return tf.where(tf.math.is_inf(ret), float("nan"))
+    temp = tf.constant(float("nan"))
+    tf.dtypes.cast(x1, tf.float64)
+    tf.dtypes.cast(x2, tf.float64)
+    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.maximum(x1, x2)
+    return ret
 
 
 def trapz(
@@ -133,3 +134,95 @@ def gcd(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.gcd(x1, x2)
+
+
+def isclose(
+    a: Union[tf.Tensor, tf.Variable],
+    b: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
+
+
+def isposinf(
+    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isposinf(x)
+
+
+def isneginf(
+    x: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.isneginf(x)
+
+
+def nan_to_num(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    copy: Optional[bool] = True,
+    nan: Optional[Union[float, int]] = 0.0,
+    posinf: Optional[Union[float, int]] = None,
+    neginf: Optional[Union[float, int]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    posinf = posinf if posinf is not None else 1.79769313e308
+    neginf = neginf if neginf is not None else -1.79769313e308
+    ret = tf.where(tf.math.is_nan(x), nan, x)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
+    ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
+    if copy:
+        return ret
+    else:
+        x = ret
+        return x
+
+
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
+)
+def logaddexp2(
+    x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    x2: Union[tf.Tensor, tf.Variable, float, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    x = 2**x1 + 2**x2
+    numerator = tf.math.log(x)
+    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
+    return numerator / denominator
+
+
+def signbit(
+    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.signbit(x)

@@ -31,9 +31,7 @@ def concat(tensors, dim=0, *, out=None):
 @to_ivy_arrays_and_back
 def gather(input, dim, index, *, sparse_grad=False, out=None):
     dim = dim % len(input.shape)
-    all_indices = ivy.array(
-        list(ivy.where(ivy.full(index.shape, True), None, None)), dtype=index.dtype
-    )
+    all_indices = ivy.argwhere(ivy.full(index.shape, True))
     gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
 
     gather_indices = []
@@ -41,7 +39,7 @@ def gather(input, dim, index, *, sparse_grad=False, out=None):
         if axis == dim:
             gather_indices.append(ivy.array(gather_locations, dtype=index.dtype))
         else:
-            gather_indices.append(ivy.array(all_indices[axis], dtype=index.dtype))
+            gather_indices.append(ivy.array(all_indices[:, axis], dtype=index.dtype))
 
     gather_indices = ivy.stack(gather_indices, axis=-1)
     gathered = ivy.gather_nd(input, gather_indices)
