@@ -134,3 +134,13 @@ def flatten(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+
+
+def vsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.vsplit(ary, indices_or_sections)

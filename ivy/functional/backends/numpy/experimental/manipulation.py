@@ -197,3 +197,13 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def vsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vsplit(ary, indices_or_sections)
