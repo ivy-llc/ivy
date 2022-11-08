@@ -60,3 +60,38 @@ def nanmean(
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
     return ret
+
+
+@from_zero_dim_arrays_to_float
+def nanmedian(
+    x,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
+):
+    is_nan=ivy.isnan(x)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not any(is_nan):
+        if dtype:
+            x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+        ret = ivy.median(x, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        x = [i for i in x if ivy.isnan(i) is False]
+
+        if dtype:
+            x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+        ret = ivy.median(x, axis=axis, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
