@@ -1504,3 +1504,139 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_signbit(self, out=out)
+
+    @staticmethod
+    def static_allclose(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.isclose. This method simply wraps
+        the function, and so the docstring for ivy.isclose also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "allclose",
+            x1,
+            x2,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def allclose(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.isclose. This method simply
+        wraps the function, and so the docstring for ivy.isclose also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container.
+        x2
+            Input container.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A container with booleans holding the result is returned
+            unless out is specified, in which it is returned.
+
+        """
+        return self.static_allclose(
+            self,
+            x2,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
