@@ -68,6 +68,9 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
+    
+    def tanh(self, *, out=None):
+        return torch_frontend.tanh(self.data, out=out)
 
     def log(self):
         return ivy.log(self.data)
