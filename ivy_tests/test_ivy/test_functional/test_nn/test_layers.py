@@ -187,7 +187,7 @@ def test_dropout1d(
         x=x[0],
         prob=prob,
         training=training,
-        data_format = data_format,
+        data_format=data_format,
         return_flat_np_arrays=True,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
