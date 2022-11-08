@@ -282,6 +282,7 @@ def test_numpy_power(
         subok=True,
     )
 
+
 # float_power
 @handle_cmd_line_args
 @given(
@@ -329,6 +330,7 @@ def test_numpy_float_power(
         dtype=dtype,
         subok=True,
     )
+
 
 # positive
 @handle_cmd_line_args

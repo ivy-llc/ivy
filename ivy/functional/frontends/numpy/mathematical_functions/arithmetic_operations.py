@@ -116,6 +116,7 @@ def power(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
+
 @handle_numpy_casting
 @to_ivy_arrays_and_back
 def float_power(
@@ -136,6 +137,7 @@ def float_power(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
+
 
 @to_ivy_arrays_and_back
 def vdot(
