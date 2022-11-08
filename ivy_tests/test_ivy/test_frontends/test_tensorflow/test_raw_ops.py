@@ -1098,8 +1098,8 @@ def test_tensorflow_Expm1(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend=fn_tree,
-        fn_tree=frontend,
+        frontend=frontend,
+        fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
     )
