@@ -1521,8 +1521,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.isclose. This method simply wraps
-        the function, and so the docstring for ivy.isclose also applies to this method
+        ivy.Container static method variant of ivy.allclose. This method simply wraps
+        the function, and so the docstring for ivy.allclose also applies to this method
         with minimal changes.
 
         Parameters
@@ -1556,7 +1556,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            A new array holding the result is returned unless out is specified,
+            A new container holding the result is returned unless out is specified,
             in which it is returned.
 
         """
@@ -1589,16 +1589,16 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.isclose. This method simply
-        wraps the function, and so the docstring for ivy.isclose also applies to this
+        ivy.Container instance method variant of ivy.allclose. This method simply
+        wraps the function, and so the docstring for ivy.allclose also applies to this
         method with minimal changes.
 
         Parameters
         ----------
         self
-            Input container.
+            Input container containing first input array.
         x2
-            Input container.
+            Input container containing second input array.
         rtol
             The relative tolerance parameter.
         atol
@@ -1624,8 +1624,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            A container with booleans holding the result is returned
-            unless out is specified, in which it is returned.
+            A new container holding the result is returned unless out is specified,
+            in which it is returned.
 
         """
         return self.static_allclose(

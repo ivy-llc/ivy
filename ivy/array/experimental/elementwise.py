@@ -609,3 +609,46 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([False, True, False])
         """
         return ivy.signbit(self._data, out=out)
+
+    def allclose(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.allclose. This method simply
+        wraps the function, and so the docstring for ivy.allclose also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new array holding the result is returned unless out is specified,
+            in which it is returned.
+
+        """
+        return ivy.allclose(
+            self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+        )
