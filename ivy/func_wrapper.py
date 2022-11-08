@@ -3,7 +3,6 @@ import functools
 from types import FunctionType
 from typing import Callable
 import typing
-import inspect
 
 
 # for wrapping (sequence matters)
@@ -53,23 +52,22 @@ def handle_array_like(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
-        sig = inspect.signature(fn)
-        for i in range(len(sig.parameters)):
-            param = sig.parameters[list(sig.parameters)[i]]
-            if param.name == 'out':
-                continue
-            ann = param.annotation
-            if any([ann is ivy.Array, ivy.Array in typing.get_args(ann)]) \
-                    and all([ann is not typing.Tuple,
-                             ann is not typing.List,
-                             ann is not typing.Sequence,
-                             typing.Tuple not in typing.get_args(ann),
-                             typing.List not in typing.get_args(ann),
-                             typing.Sequence not in typing.get_args(ann)]):
-                try:
-                    args[i] = ivy.native_array(args[i])
-                except IndexError:
-                    kwargs[param.name] = ivy.native_array(kwargs[param.name])
+        parameters = list(typing.get_type_hints(fn))
+        annotations = list(typing.get_type_hints(fn).values())
+
+        for i in range(len(annotations)):
+
+            if "Array" in str(annotations[i]) and all(
+                    sq not in str(annotations[i])
+                    for sq in ["Sequence", "List", "Tuple"]):
+
+                if i < len(args):
+                    if isinstance(args[i], (list, tuple)):
+                        args[i] = ivy.to_native(ivy.array(args[i]))
+                elif parameters[i] in kwargs:
+                    if isinstance(kwargs[parameters[i]], (list, tuple)):
+                        kwargs[parameters[i]] = ivy.to_native(
+                            ivy.array(kwargs[parameters[i]]))
 
         return fn(*args, **kwargs)
 
