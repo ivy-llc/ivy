@@ -590,8 +590,8 @@ def _pad_helper(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
-        )
-    )
+        ).filter(
+            lambda x: x[0][0] not in ['bfloat16']))
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
     stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
@@ -630,7 +630,7 @@ def test_pad(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
