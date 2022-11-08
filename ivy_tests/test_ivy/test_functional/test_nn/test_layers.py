@@ -186,9 +186,7 @@ def x_and_scaled_attention(draw, dtypes):
         dtypes=helpers.get_dtypes("float", full=False),
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="scaled_dot_product_attention"
-    ),
-)
+        fn_name="scaled_dot_product_attention"),)
 def test_scaled_dot_product_attention(
     *,
     dtype_q_k_v_mask_scale,
