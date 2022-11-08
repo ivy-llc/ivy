@@ -225,6 +225,8 @@ def diff(
 
 
 gcd.support_native_out = True
+
+
 def signbit(
     x: Union[torch.Tensor, float, int, list, tuple],
     /,
