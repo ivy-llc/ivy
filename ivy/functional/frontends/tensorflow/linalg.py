@@ -36,11 +36,12 @@ def solve(matrix, rhs):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
 def logdet(matrix, name=None):
     return ivy.det(matrix).log()
-
-
-logdet.supported_dtypes = ("float16", "float32", "float64")
 
 
 @to_ivy_arrays_and_back
