@@ -366,6 +366,58 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="ContainerWithLayers.static_dropout1d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_dropout1d">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_dropout1d</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="o">/</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;dropout1d&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">,</span>
+            <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="ContainerWithLayers.dropout1d"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.dropout1d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout1d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="o">/</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_dropout1d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">,</span>
+            <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="ContainerWithLayers.static_scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/container/layers/ContainerWithLayers.html#ivy.container.layers.ContainerWithLayers.static_scaled_dot_product_attention">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_scaled_dot_product_attention</span><span class="p">(</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>

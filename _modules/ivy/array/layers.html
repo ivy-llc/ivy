@@ -211,6 +211,23 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="ArrayWithLayers.dropout1d"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.dropout1d">[docs]</a>    <span class="k">def</span> <span class="nf">dropout1d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+            <span class="o">/</span><span class="p">,</span>
+            <span class="o">*</span><span class="p">,</span>
+            <span class="n">training</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;NWC&quot;</span><span class="p">,</span>
+            <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dropout1d</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">prob</span><span class="p">,</span>
+            <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span>
+            <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithLayers.scaled_dot_product_attention"><a class="viewcode-back" href="../../../data_classes/array/layers/ArrayWithLayers.html#ivy.array.layers.ArrayWithLayers.scaled_dot_product_attention">[docs]</a>    <span class="k">def</span> <span class="nf">scaled_dot_product_attention</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>

@@ -66,6 +66,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="layers/linear.html">linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/dropout.html">dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/dropout1d.html">dropout1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/multi_head_attention.html">multi_head_attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/conv1d.html">conv1d</a></li>
@@ -727,6 +728,41 @@ inputs broadcast to.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.layers.dropout1d">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">dropout1d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">training</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/layers.html#dropout1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.layers.dropout1d" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Randomly zero out entire channels with probability prob using samples from</dt><dd><p>a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+In this case, dropout1d performs a channel-wise dropout but assumes
+a channel is a 1D feature map.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – a 2D or 3D input array. Should have a floating-point data type.</p></li>
+<li><p><strong>prob</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – probability of a channel to be zero-ed.</p></li>
+<li><p><strong>training</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – controls whether dropout1d is performed during training or ignored (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+during testing.</p></li>
+<li><p><strong>data_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – “NWC” or “NCW”. Defaults to “NWC”. (default: <code class="docutils literal notranslate"><span class="pre">'NWC'</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+It must have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><em>ret</em> –</p>
+<dl class="simple">
+<dt>an array with some channels zero-ed and the rest of channels are</dt><dd><p>scaled by (1/1-prob).</p>
+</dd>
+</dl>
+</p>
 </dd>
 </dl>
 </dd></dl>
