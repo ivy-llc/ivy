@@ -23,7 +23,7 @@ def test_numpy_split(
     dtype4,
     num_positional_args,
 ):
-    indices_or_sections, ary, axis, input_dtypes = dtype1,dtype2,dtype3,dtype4
+    indices_or_sections, ary, axis, input_dtypes = dtype1, dtype2, dtype3, dtype4
     helpers.test_frontend_function(
         as_variable_flags=as_variable,
         input_dtypes=input_dtypes,
