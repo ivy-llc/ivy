@@ -101,3 +101,55 @@ def test_numpy_swapaxes(
         axis1=axis1,
         axis2=axis2,
     )
+
+
+@st.composite
+def st_dtype_arr_and_shape(draw):
+    dtypes, xs, x_shape = draw(
+        helpers.dtype_and_values(
+            num_arrays=1,
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=st.shared(
+                helpers.get_shape(
+                    allow_none=False,
+                    min_num_dims=2,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                )
+            ),
+            ret_shape=True,
+        )
+    )
+
+    return dtypes[0], xs[0], x_shape
+
+
+# reshape
+@handle_cmd_line_args
+@given(
+    dtype_arr_and_axes=st_dtype_arr_and_shape(),
+    as_variable=helpers.array_bools(num_arrays=1),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.reshape"
+    ),
+    native_array=helpers.array_bools(num_arrays=1),
+)
+def test_numpy_reshape(
+    dtype_arr_and_axes,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x, newshape = dtype_arr_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="reshape",
+        a=np.asarray(x, dtype=input_dtype),
+        newshape=newshape,
+    )

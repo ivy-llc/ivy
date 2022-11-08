@@ -15,3 +15,8 @@ def transpose(array, /, *, axes=None):
 @to_ivy_arrays_and_back
 def swapaxes(a, axis1, axis2):
     return ivy.swapaxes(a, axis1, axis2)
+
+
+@to_ivy_arrays_and_back
+def reshape(a, newshape, order="C"):
+    return ivy.reshape(a, newshape)
