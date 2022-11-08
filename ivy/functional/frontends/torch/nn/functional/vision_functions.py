@@ -1,6 +1,8 @@
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def pixel_shuffle(input, upscale_factor):
 
     input_shape = ivy.shape(input)
@@ -39,6 +41,7 @@ def pixel_shuffle(input, upscale_factor):
     )
 
 
+@to_ivy_arrays_and_back
 def pixel_unshuffle(input, downscale_factor):
 
     input_shape = ivy.shape(input)

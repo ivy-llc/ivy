@@ -426,6 +426,57 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.flip. This method simply
         wraps the function, and so the docstring for ivy.flip also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            axis (or axes) along which to flip. If axis is None,
+            all input array axes are flipped. If axis is negative,
+            axis is counted from the last dimension. If provided more
+            than one axis, only the specified axes. Default: None.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type and
+            shape as ``x`` and whose elements, relative to ``x``, are reordered.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container.static_flip(x)
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container.static_flip(x, axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "flip",
@@ -453,6 +504,57 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.flip. This method simply wraps the
         function, and so the docstring for ivy.flip also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            axis (or axes) along which to flip. If axis is None,
+            all input array axes are flipped. If axis is negative,
+            axis is counted from the last dimension. If provided
+            more than one axis, only the specified axes. Default: None.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container having the same data type and
+            shape as ``self`` and whose elements, relative to ``self``, are reordered.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = x.flip()
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = x.flip(axis=0)
+        >>> print(y)
+        {
+            a: ivy.array([1, 0, -1]),
+            b: ivy.array([4, 3, 2])
+        }
         """
         return self.static_flip(
             self,

@@ -4248,8 +4248,8 @@ def negative(
 @handle_nestable
 @handle_exceptions
 def not_equal(
-    x1: Union[float, ivy.Array, ivy.NativeArray],
-    x2: Union[float, ivy.Array, ivy.NativeArray],
+    x1: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
+    x2: Union[float, ivy.Array, ivy.NativeArray, ivy.Container],
     /,
     *,
     out: Optional[ivy.Array] = None,

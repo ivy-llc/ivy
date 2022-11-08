@@ -12,6 +12,7 @@ import numpy as np
 import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
+import torch
 
 
 # Base #
@@ -1142,3 +1143,46 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
+
+    # Methods #
+    # ------- #
+
+    def to_torch_module(self):
+        """
+        Convert a trainable ivy.Module instance to an instance of a trainable torch
+        module.
+
+        Parameters
+        ----------
+        self
+            trainable ivy.Module instance
+
+        Returns
+        -------
+        ret
+            The new trainable torch module instance.
+
+        """
+        return NewTorchModule(self)
+
+
+class NewTorchModule(torch.nn.Module):
+    def __init__(self, ivy_module, *args, **kwargs):
+        super().__init__()
+        self._ivy_module = ivy_module
+        self._set_variables()
+
+    def _set_variables(self):
+        self._parameters = {
+            kc: v
+            for kc, v in self._ivy_module.v.map(
+                lambda x, kc: torch.nn.Parameter(ivy.to_native(x))
+            ).to_iterator()
+        }
+
+    def forward(self, *a, **kw):
+        if ivy.current_backend_str() != "torch":
+            raise ivy.exceptions.IvyException(
+                "Backend must be torch when converting Ivy Module to Torch Module."
+            )
+        return self._ivy_module(*a, **kw).to_native()

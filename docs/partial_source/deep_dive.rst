@@ -4,25 +4,22 @@ Deep Dive
 .. _`issues`: https://github.com/unifyai/ivy/issues
 .. _`pull-requests`: https://github.com/unifyai/ivy/pulls
 
-For general users of the framework, who are mainly concerned with learning how to *use* Ivy,
-then the :ref:`Design` section is the best place to start 🙂
+For general users of the framework, who are mainly concerned with learning how to *use* Ivy, then the :ref:`Design` section is the best place to start 🙂
 
-This *deep dive* section is more targeted at people who would like to dive deeper into
-how Ivy actually works under the hood 🔧
+This *deep dive* section is more targeted at people who would like to dive deeper into how Ivy actually works under the hood 🔧
 
-Going through the sections outlined below will get you right into the weeds of the framework 🌱,
-and hopefully give you a better understanding of what is actually going on behind the scenes 🎬
+Going through the sections outlined below will get you right into the weeds of the framework 🌱, and hopefully give you a better understanding of what is actually going on behind the scenes 🎬
 
 It's best to go through the sub-sections from start to finish, but you can also dive in at any stage!
-We're excited for you to get involved!  🦾
+We're excited for you to get involved! 🦾
 
-| (a) :ref:`Navigating the Code` 🔍
+| (a) :ref:`Navigating the Code` 🧭
 | A quick tour through the codebase
 |
 | (b) :ref:`Function Types` 🧮
 | Primary, compositional, mixed and nestable functions
 |
-| (c) :ref:`Superset Behaviour` ⭕
+| (c) :ref:`Superset Behaviour` ⊃
 | Ivy goes for the superset when unifying the backend functions
 |
 | (d) :ref:`Backend Setting` ⚙
@@ -37,7 +34,7 @@ We're excited for you to get involved!  🦾
 | (g) :ref:`Data Types` 💾
 | How functions infer the correct data type
 |
-| (h) :ref:`Devices` 💽
+| (h) :ref:`Devices` 📱
 | How functions infer the correct device
 |
 | (i) :ref:`Inplace Updates` 🎯

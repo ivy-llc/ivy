@@ -1,7 +1,7 @@
 """Collection of tests for unified neural network activation functions."""
 
 # global
-from hypothesis import given, strategies as st
+from hypothesis import given, strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -243,6 +243,8 @@ def test_softplus(
     native_array,
     fw,
 ):
+    assume(beta != 0)
+    assume(threshold != 0)
     dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=dtype,

@@ -2,6 +2,8 @@
 import functools
 from typing import Callable
 
+import torch
+
 
 # local
 import ivy
@@ -9,9 +11,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
-    if len(ivy.backend_stack) != 0 and isinstance(x, ivy.NativeArray):
-        raise ivy.exceptions.IvyException("input must be Ivy Torch Tensor")
-    elif isinstance(x, torch_frontend.Tensor):
+    if isinstance(x, torch_frontend.Tensor):
         return x.data
     return x
 
@@ -19,13 +19,21 @@ def _from_torch_frontend_tensor_to_ivy_array(x):
 def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, 
-            _from_ivy_array_to_torch_frontend_tensor, 
-            include_derived
+            x, _from_ivy_array_to_torch_frontend_tensor, include_derived
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
         return torch_frontend.Tensor(x)
     return x
+
+
+def _from_torch_tensor_to_ivy_array(x):
+    if isinstance(x, torch.Tensor):
+        return ivy.array(x)
+    return x
+
+
+def _to_ivy_array(x):
+    return _from_torch_frontend_tensor_to_ivy_array(_from_torch_tensor_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -45,19 +53,20 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args, 
-            _from_torch_frontend_tensor_to_ivy_array, 
-            include_derived={tuple: True}
+            args,
+            _to_ivy_array,
+            include_derived={tuple: True},
         )
         new_kwargs = ivy.nested_map(
-            kwargs, 
-            _from_torch_frontend_tensor_to_ivy_array, 
-            include_derived={tuple: True}
+            kwargs,
+            _to_ivy_array,
+            include_derived={tuple: True},
         )
         # add the original out argument back to the keyword arguments
         if has_out:
             new_kwargs["out"] = out
         return fn(*new_args, **new_kwargs)
+
     return new_fn
 
 
@@ -74,6 +83,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
         return _from_ivy_array_to_torch_frontend_tensor(
             ret, nested=True, include_derived={tuple: True}
         )
+
     return new_fn
 
 

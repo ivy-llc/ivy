@@ -442,7 +442,7 @@ def test_print_all_ivy_arrays_on_dev(num, device, attr_only):
     captured_output = io.StringIO()
     sys.stdout = captured_output
 
-    ivy.print_all_ivy_arrays_on_dev(device, attr_only=attr_only)
+    ivy.print_all_ivy_arrays_on_dev(device=device, attr_only=attr_only)
     # Flush again to make sure all data is printed
     sys.stdout.flush()
     written = captured_output.getvalue().splitlines()

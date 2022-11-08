@@ -137,6 +137,49 @@ def binary_crossentropy(
 
 
 @to_ivy_arrays_and_back
+def categorical_crossentropy(y_true, y_pred, from_logits=False, label_smoothing=0.0):
+    if from_logits:
+        y_pred = ivy.softmax(y_pred)
+    return ivy.mean(ivy.categorical_cross_entropy(y_true, y_pred, label_smoothing))
+
+
+@to_ivy_arrays_and_back
+def binary_focal_crossentropy(
+    y_true, y_pred, gamma=2.0, from_logits=False, label_smoothing=0.0, axis=-1
+):
+    y_pred = ivy.asarray(y_pred)
+    y_true = ivy.asarray(y_true, dtype=y_pred.dtype)
+    label_smoothing = ivy.asarray(label_smoothing, dtype=y_pred.dtype)
+    gamma = ivy.asarray(gamma, dtype=y_pred.dtype)
+
+    if label_smoothing > 0.0:
+        y_true = y_true * (1.0 - label_smoothing) + 0.5 * label_smoothing
+
+    if from_logits:
+        sigmoidal = ivy.sigmoid(y_pred)
+    else:
+        sigmoidal = y_pred
+
+    p_t = (y_true * sigmoidal) + ((1 - y_true) * (1 - sigmoidal))
+    focal_factor = ivy.pow(1.0 - p_t, gamma)
+
+    if from_logits:
+        zeros = ivy.zeros_like(y_pred, dtype=y_pred.dtype)
+        cond = y_pred >= zeros
+        relu_logits = ivy.where(cond, y_pred, zeros)
+        neg_abs_logits = ivy.where(cond, -y_pred, y_pred)
+        bce = ivy.add(relu_logits - y_pred * y_true, ivy.log1p(ivy.exp(neg_abs_logits)))
+    else:
+        epsilon_ = 1e-7
+        y_pred = ivy.clip(y_pred, epsilon_, 1.0 - epsilon_)
+        bce = y_true * ivy.log(y_pred + epsilon_)
+        bce += (1 - y_true) * ivy.log(1 - y_pred + epsilon_)
+        bce = -bce
+    bfce = focal_factor * bce
+    return ivy.mean(bfce, axis=ivy.to_scalar(axis))
+
+
+@to_ivy_arrays_and_back
 def categorical_accuracy(y_true, y_pred):
     return _sparse_categorical_matches(ivy.argmax(y_true, axis=-1), y_pred)
 
@@ -160,6 +203,14 @@ kld = kl_divergence
 
 
 kullback_leibler_divergence = kl_divergence
+
+
+@to_ivy_arrays_and_back
+def log_cosh(y_true, y_pred):
+    y_true = ivy.astype(y_true, y_pred.dtype)
+    diff = y_pred - y_true
+    log_val = ivy.astype(ivy.log(2.0), diff.dtype)
+    return ivy.mean(diff + ivy.softplus(-2.0 * diff) - log_val, axis=-1)
 
 
 @to_ivy_arrays_and_back

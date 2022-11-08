@@ -196,6 +196,7 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
+        x_native.data = val_native
         if ivy.is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
@@ -209,9 +210,7 @@ def inplace_update(
         elif ivy.is_ivy_array(x):
             x.data = val_native
         else:
-            raise ivy.exceptions.IvyException(
-                "TensorFlow does not support inplace updates of the tf.Tensor"
-            )
+            x = ivy.to_ivy(x_native)
         return x
     else:
         return val
@@ -352,7 +351,8 @@ def scatter_nd(
         indices = tf.constant(indices)
         if len(indices.shape) < 2:
             indices = tf.expand_dims(indices, 0)
-        if tf.reduce_any(indices == -1):
+        if tf.reduce_any(indices < 0):
+            shape = list(shape) if ivy.exists(shape) else list(out.shape)
             indices = _parse_index(indices, len(shape))
             indices = [
                 tf.stack(

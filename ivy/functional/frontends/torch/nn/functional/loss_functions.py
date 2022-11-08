@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
 def _get_reduction_func(reduction):
@@ -73,6 +74,7 @@ def _apply_reduction(reduction, size_average, reduce, to_reduce):
         return _get_reduction_method(reduction, to_reduce)
 
 
+@to_ivy_arrays_and_back
 def cross_entropy(
     input,
     target,
@@ -91,6 +93,7 @@ def cross_entropy(
     return ret
 
 
+@to_ivy_arrays_and_back
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
@@ -103,6 +106,7 @@ def binary_cross_entropy(
     return result
 
 
+@to_ivy_arrays_and_back
 def smooth_l1_loss(
     input,
     target,

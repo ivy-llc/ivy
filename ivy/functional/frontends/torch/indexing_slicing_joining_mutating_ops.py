@@ -29,6 +29,25 @@ def concat(tensors, dim=0, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def gather(input, dim, index, *, sparse_grad=False, out=None):
+    dim = dim % len(input.shape)
+    all_indices = ivy.argwhere(ivy.full(index.shape, True))
+    gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
+
+    gather_indices = []
+    for axis in range(len(index.shape)):
+        if axis == dim:
+            gather_indices.append(ivy.array(gather_locations, dtype=index.dtype))
+        else:
+            gather_indices.append(ivy.array(all_indices[:, axis], dtype=index.dtype))
+
+    gather_indices = ivy.stack(gather_indices, axis=-1)
+    gathered = ivy.gather_nd(input, gather_indices)
+    reshaped = ivy.reshape(gathered, index.shape)
+    return reshaped
+
+
+@to_ivy_arrays_and_back
 def nonzero(input, *, out=None, as_tuple=False):
     ret = ivy.nonzero(input)
     if as_tuple is False:
@@ -94,3 +113,8 @@ def tile(input, dims):
     else:
         res = ivy.tile(input, reps=dims, out=None)
     return res
+
+
+@to_ivy_arrays_and_back
+def unsqueeze(input, dim=0):
+    return ivy.expand_dims(input, axis=dim)
