@@ -1,5 +1,7 @@
 # local
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
+from typing import (
+    Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any, List
+)
 import jax.numpy as jnp
 from numbers import Number
 
@@ -201,3 +203,12 @@ def dsplit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(
+    arys: Union[JaxArray, List[JaxArray], int, float],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.atleast_1d(*arys)

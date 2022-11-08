@@ -571,3 +571,45 @@ class ArrayWithManipulationExperimental(abc.ABC):
             indices_or_sections=indices_or_sections,
             out=out
         )
+
+    def atleast_1d(
+        self: Union[ivy.Array, List[ivy.Array]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.atleast_1d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            One or more input arrays.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            An array, or list of arrays, each with ndim >= 1.
+
+        Examples
+        --------
+        >>> arys = ivy.array(
+            [[0., 1., 2.],
+             [3., 4., 5.],
+             [6., 7., 8.]]
+            )
+        >>> arys.atleast_1d()
+        ivy.array(
+            [[0., 1., 2.],
+             [3., 4., 5.],
+             [6., 7., 8.]]
+            )
+        """
+        return ivy.atleast_1d(
+            self._data,
+            out=out
+        )

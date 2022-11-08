@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Any,
     Literal,
+    List,
 )
 from numbers import Number
 import ivy
@@ -1161,5 +1162,52 @@ def dsplit(
     return ivy.current_backend(ary).dsplit(
         ary,
         indices_or_sections=indices_or_sections,
+        out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_1d(
+    arys: Union[ivy.Array, ivy.NativeArray, List[ivy.Array], List[ivy.NativeArray]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Convert inputs to arrays with at least one dimension.
+    Scalar inputs are converted to 1-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more input arrays.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with ndim >= 1.
+
+    Examples
+    --------
+    >>> ivy.atleast_1d(1.0)
+    ivy.array([1.])
+    >>> arys = ivy.array(
+        [[0., 1., 2.],
+         [3., 4., 5.],
+         [6., 7., 8.]]
+        )
+    >>> ivy.atleast_1d(arys)
+    ivy.array(
+        [[0., 1., 2.],
+         [3., 4., 5.],
+         [6., 7., 8.]]
+        )
+    """
+    return ivy.current_backend(*arys).atleast_1d(
+        *arys,
         out=out
     )

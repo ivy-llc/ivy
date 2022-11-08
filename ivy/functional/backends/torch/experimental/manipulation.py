@@ -1,4 +1,6 @@
-from typing import Optional, Union, Sequence, Tuple, NamedTuple
+from typing import (
+    Optional, Union, Sequence, Tuple, NamedTuple, List
+)
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -154,3 +156,12 @@ def dsplit(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(
+    arys: Union[torch.Tensor, List[torch.Tensor], int, float],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.atleast_1d(*arys)

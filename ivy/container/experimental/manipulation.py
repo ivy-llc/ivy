@@ -1427,3 +1427,112 @@ class ContainerWithManipulationExperimental(ContainerBase):
             indices_or_sections=indices_or_sections,
             out=out
         )
+
+    @staticmethod
+    def static_atleast_1d(
+        arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.atleast_1d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_1d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        arys
+            the container with array inputs.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays each with dim >= 1.
+
+        Examples
+        --------
+        >>> arys = ivy.Container(
+            a = ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ), 
+            b=1.0
+            )
+        >>> ivy.Container.static_atleast_1d(arys)
+        {
+            a: ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b: ivy.array([1.0])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "atleast_1d",
+            arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def atleast_1d(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.atleast_1d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_1d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with array inputs.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays with dimensions >= 1.
+
+        Examples
+        --------
+        >>> arys = ivy.Container(
+            a = ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ), 
+            b=1.0
+            )
+        >>> arys.atleast_1d()
+        {
+            a: ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b: ivy.array([1.0])
+        }
+        """
+        return self.static_atleast_1d(
+            self,
+            out=out
+        )
