@@ -215,8 +215,8 @@ Again, we do not support the :code:`name` argument for the reasons outlined abov
 
 **NOTE**
 
-For The :mod:`tf.raw_ops` many functions posses the same behavior as those of :mod:`tf` namespace except that only the functions from :mod:`tf.raw_ops` takes key-word only arguments.
-For this we have a designed decorator to wrap the :mod:`tf` namespace function to satisfy this behavior. Let's take an example of :func:`tf.math.argmax` and :func:`tf.raw_ops.ArgMax`.
+Many of the functions in the :mod:`tf.raw_ops` has identical behaviuor to the functions that are generally in the TensorFlow namespace e.g :func:`tf.argmax`, with exception that the functions in the function in the :mod:`tf.raw_ops` are specified to have key-word only arguments and in some case there is a naming difference of arguments.
+In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exissts in the TensorFlow namespace, thus reducing unnecessary re-implementations.
 
 .. code-block:: python
     
@@ -228,8 +228,8 @@ For this we have a designed decorator to wrap the :mod:`tf` namespace function t
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function is a frontend ivy implementation of :func:`tf.math.argmax`, the similar function in :mod:`tf.raw_ops` has similar inputs and outputs except the :func:`tf.raw_ops.ArgMax` takes all inputs as key-word only.
-Let's take a look on how we can handle such case.
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensoFlow framework, there exists identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax` and in some corner cases, arguments are renamed where :code:`dimension` argument replaces :code:`axis` in case of the :func:`tf.math.argmax` function.
+Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
 
 .. code-block:: python
 
@@ -241,8 +241,8 @@ Let's take a look on how we can handle such case.
         )
     )
 
-The :func:`tf_frontend.func_wrapper.map_raw_ops_alias` is the one that is wrapping the behavior of :func:`tf_frontend.math.argmax`, change it behavior to receive key-word only arguments.
-In case you are curious to know more about this function wrapper you can find it here: `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_ 
+The decorator :code:`map_raw_ops_alias` here takes the existing behaviour of :func:`tf_frontend.math.argmax` as it's first parameter, and changes all it's arguments to key-word only, with consideration of the argument :code:`kwargs_to_update` passed to it as a dictionary indicating all updates in arguments names to be made, as for the case of :code:`dimension` replacing to :code:`axis` in the :func:`tf.raw_ops.ArgMax` function.
+The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  int the ivy codebase.
 
 **PyTorch**
 
