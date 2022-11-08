@@ -314,7 +314,7 @@
 <span class="sd">    x1</span>
 <span class="sd">        First input array.</span>
 <span class="sd">    x2</span>
-<span class="sd">        Second input array</span>
+<span class="sd">        Second input array.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
 
@@ -333,7 +333,7 @@
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([ivy.nan, 0, ivy.nan])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0, ivy.nan, ivy.nan])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.fmax(x1, x2)</span>
-<span class="sd">    ivy.array([ 0,  0,  nan])</span>
+<span class="sd">    ivy.array([ 0.,  0.,  nan])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">fmax</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
