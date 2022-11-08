@@ -120,3 +120,10 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
 @to_ivy_arrays_and_back
 def trace(x, name=None):
     return ivy.trace(x)
+
+
+@to_ivy_arrays_and_back
+def matrix_transpose(a, name="matrix_transpose", conjugate=False):
+    # Conjugate is ignored - Should be added as an argument
+    # if complex numbers become supported
+    return ivy.matrix_transpose(a)
