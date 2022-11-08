@@ -62,9 +62,12 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float32", "float64", "int32")}, "tensorflow"
+)
 def tensordot(a, b, axes, name=None):
     a, b = promote_types_of_tensorflow_inputs(a, b)
-    return ivy.tensordot(a, b, axes)
+    return ivy.tensordot(a, b, axes=axes)
 
 
 @to_ivy_arrays_and_back
