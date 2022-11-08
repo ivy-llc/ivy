@@ -3,7 +3,7 @@ import sys
 from jax.config import config
 import jaxlib
 import jax
-import jax.numpy as jnp
+
 from typing import Union
 
 # noinspection PyPackageRequirements
