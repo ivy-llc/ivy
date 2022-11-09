@@ -1112,8 +1112,8 @@ def _generate_data_layer_norm(
     draw,
     *,
     available_dtypes,
-    large_abs_safety_factor=40,
-    small_abs_safety_factor=40,
+    large_abs_safety_factor=50,
+    small_abs_safety_factor=50,
     safety_factor_scale="log",
     min_num_dims=1,
     max_num_dims=5,
@@ -1130,8 +1130,8 @@ def _generate_data_layer_norm(
     min_value=None,
     max_value=None,
     shared_dtype=False,
-    min_axis=None,
-    max_axis=None,
+    min_dim_size=None,
+    max_dim_size=None,
     group=False
 ):
     results = draw(
@@ -1142,14 +1142,12 @@ def _generate_data_layer_norm(
             safety_factor_scale=safety_factor_scale,
             min_num_dims=min_num_dims,
             max_num_dims=max_num_dims,
-            min_dim_size=min_axis,
-            max_dim_size=max_axis,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
             valid_axis=valid_axis,
             allow_neg_axes=allow_neg_axes,
             max_axes_size=max_axes_size,
             force_int_axis=force_int_axis,
-            # min_axis=min_axis,
-            # max_axis=max_axis,
             ret_shape=ret_shape,
         )
     )
@@ -1158,7 +1156,7 @@ def _generate_data_layer_norm(
 
     if group:
         channel_size = shape[1]
-        group_list = [*range(1, max_axis)]
+        group_list = [*range(1, max_dim_size)]
         group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
         group_size = draw(st.sampled_from(group_list))
         weight_shape = [shape[1]]
@@ -1275,8 +1273,8 @@ def test_torch_softplus(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=3,
-        min_axis=2,
-        max_axis=4,
+        min_dim_size=2,
+        max_dim_size=4,
         group=True,
     ),
     num_positional_args=helpers.num_positional_args(
