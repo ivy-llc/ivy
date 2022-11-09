@@ -45,3 +45,17 @@ def nanmean(
 
 
 nanmean_support_native_out = True
+
+
+def unravel_index(
+    indices: torch.Tensor,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    output = []
+    for dim in reversed(shape):
+        output.append(indices % dim)
+        indices = indices // dim
+    return tuple(reversed(output))
