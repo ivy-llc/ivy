@@ -7353,7 +7353,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7381,7 +7381,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7412,7 +7412,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7441,7 +7441,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7472,7 +7472,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7500,7 +7500,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7534,7 +7534,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7562,7 +7562,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.

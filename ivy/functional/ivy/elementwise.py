@@ -5737,7 +5737,7 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
@@ -5750,7 +5750,7 @@ def maximum(
         Tensor containing maximum values, must be broadcastable to x1.
     use_where
         Whether to use :func:`where` to calculate the maximum. If ``False``, the maximum
-        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``False``.
+        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5824,7 +5824,7 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
@@ -5837,7 +5837,7 @@ def minimum(
         Tensor containing minimum values, must be broadcastable to x1.
     use_where
         Whether to use :func:`where` to calculate the minimum. If ``False``, the minimum
-        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``False``.
+        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

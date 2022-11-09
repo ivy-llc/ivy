@@ -80,7 +80,7 @@ def execute_with_gradients(
             grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
     grads = ivy.nested_map(
         grads,
-        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
