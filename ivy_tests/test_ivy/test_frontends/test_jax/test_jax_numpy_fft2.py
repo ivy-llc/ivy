@@ -30,6 +30,6 @@ def test_jax_numpy_fft2(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-        fn_tree="numpy.fft.ff2",
+        fn_tree="numpy.fft.fft2",
         x=x[0],
     )
