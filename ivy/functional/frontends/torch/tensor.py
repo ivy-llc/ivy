@@ -2,6 +2,7 @@
 
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 class Tensor:
@@ -15,7 +16,6 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-
     def reshape(self, shape):
         return torch_frontend.reshape(self.data, shape)
 
@@ -46,6 +46,13 @@ class Tensor:
         self.data = self.cos()
         return self.data
 
+    def cosh(self, *, out=None):
+        return torch_frontend.cosh(self.data, out=out)
+
+    def cosh_(self):
+        self.data = self.cosh()
+        return self.data
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
@@ -69,6 +76,13 @@ class Tensor:
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
 
+    def tanh(self, *, out=None):
+        return torch_frontend.tanh(self.data, out=out)
+
+    def tanh_(self):
+        self.data = self.tanh()
+        return self.data
+
     def log(self):
         return ivy.log(self.data)
 
@@ -84,6 +98,9 @@ class Tensor:
     def abs_(self):
         self.data = self.abs()
         return self.data
+
+    def bitwise_and(self, other, *, out=None):
+        return torch_frontend.bitwise_and(self.data, other, out=out)
 
     def contiguous(self, memory_format=None):
         return self.data
@@ -126,7 +143,13 @@ class Tensor:
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
     def arctan(self, *, out=None):
-        return torch_frontend.arctan(self, out=out)
+
+        return torch_frontend.atan(self, out=out)
+
+    @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
+    def arctan_(self):
+        self.data = self.arctan()
+        return self.data
 
     def acos(self, *, out=None):
         return torch_frontend.acos(self.data, out=out)
@@ -220,6 +243,12 @@ class Tensor:
     def __add__(self, other, *, alpha=1):
         return torch_frontend.add(self, other, alpha=alpha)
 
+    def __mod__(self, other):
+        return torch_frontend.remainder(self, other)
+
+    def __long__(self, memory_format=None):
+        return ivy.astype(self, ivy.int64)
+
     def __getitem__(self, query):
         ret = ivy.get_item(self.data, query)
         return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
@@ -238,9 +267,6 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
-
-    def __mod__(self, other):
-        return ivy.remainder(self.data, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

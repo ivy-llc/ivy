@@ -54,7 +54,7 @@ def _forward_fn(xs, func):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    xs = _arrays_to_float_variables(xs)
+    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
@@ -120,7 +120,7 @@ def execute_with_gradients(
             grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
     grads = ivy.nested_map(
         grads,
-        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
