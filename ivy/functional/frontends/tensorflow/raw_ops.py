@@ -357,6 +357,11 @@ def Sinh(*, x, name="Sinh"):
 
 
 @to_ivy_arrays_and_back
+def Split(*, axis, value, num_split, name="Split"):
+    return ivy.split(value, num_or_size_splits=num_split, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def Sqrt(*, x, name="Sqrt"):
     return ivy.sqrt(x)
 

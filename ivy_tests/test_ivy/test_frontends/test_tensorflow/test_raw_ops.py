@@ -605,6 +605,77 @@ def test_tensorflow_Square(dtype_and_x, as_variable, num_positional_args, native
     )
 
 
+@st.composite
+def _get_splits(draw, as_list=False):
+    """
+    Generate valid splits, either by generating an integer that evenly divides the axis
+    or a list of splits that sum to the length of the axis being split.
+    """
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
+    axis = draw(
+        st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+    )
+
+    @st.composite
+    def get_int_split(draw):
+        if shape[axis] == 0:
+            return 0
+        factors = []
+        for i in range(1, shape[axis] + 1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        return draw(st.sampled_from(factors))
+
+    @st.composite
+    def get_list_split(draw):
+        num_or_size_splits = []
+        while sum(num_or_size_splits) < shape[axis]:
+            split_value = draw(
+                helpers.ints(
+                    min_value=1,
+                    max_value=shape[axis] - sum(num_or_size_splits),
+                )
+            )
+            num_or_size_splits.append(split_value)
+        return num_or_size_splits
+
+    if as_list:
+        return draw(get_list_split() | st.none())
+    else:
+        return draw(get_int_split() | st.none())
+
+
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    num_splits=_get_splits(),
+)
+def test_tensorflow_Split(dtype_value, num_splits, axis, as_variable, native_array):
+    dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Split",
+        value=value[0],
+        axis=axis,
+        num_split=num_splits,
+    )
+
+
 # Sqrt
 @handle_cmd_line_args
 @given(
