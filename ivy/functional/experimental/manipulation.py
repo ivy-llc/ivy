@@ -1184,3 +1184,43 @@ def dsplit(
         indices_or_sections=indices_or_sections,
         out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def dstack(
+    arrays: Sequence[ivy.Array], 
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Stack arrays in sequence depth wise (along third axis).
+
+    Parameters
+    ----------
+    arrays
+        Sequence of arrays to be stacked.
+
+    Returns
+    -------
+    ret
+        The array formed by stacking the given arrays.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([2, 3, 4])
+    >>> ivy.dstack((x, y))
+    ivy.array([[[1, 2],
+                [2, 3],
+                [3, 4]]])
+    >>> x = ivy.array([[1], [2], [3]])
+    >>> y = ivy.array([[2], [3], [4]])
+    >>> ivy.dstack((x, y))
+    ivy.array([[[1, 2]],
+               [[2, 3]],
+               [[3, 4]]])
+
+    """
+    return ivy.current_backend(arrays[0]).dstack(arrays)

@@ -201,3 +201,12 @@ def dsplit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.dsplit(ary, indices_or_sections)
+
+
+def dstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dstack(arrays)
