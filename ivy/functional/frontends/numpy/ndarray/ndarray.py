@@ -89,6 +89,31 @@ class ndarray:
             out=out,
         )
 
+    def clip(
+        self, 
+        a_min, 
+        a_max, 
+        /, 
+        out=None, 
+        *, 
+        where=True, 
+        casting="same_kind", 
+        order="k", 
+        dtype=None, 
+        subok=True
+    ):
+        return np_frontend.clip(
+            self.data, 
+            a_min,
+            a_max,
+            out=out, 
+            where=where, 
+            casting=casting,
+            order=order, 
+            dtype=dtype, 
+            subok=subok
+        )
+
     def cumprod(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumprod(
             self.data,
