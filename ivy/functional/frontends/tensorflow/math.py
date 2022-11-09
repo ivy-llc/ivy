@@ -7,7 +7,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 @to_ivy_arrays_and_back
 def add(x, y, name=None):
     x, y = promote_types_of_tensorflow_inputs(x, y)
-    return ivy.add(x, y)
+    return ivy.add(x, y).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back

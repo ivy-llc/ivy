@@ -1,7 +1,8 @@
 # global
 import ivy
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
-
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
+from ivy.functional.frontends.tensorflow import math
 
 @to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
@@ -192,3 +193,29 @@ weighted_cross_entropy_with_logits.unsupported_dtypes = (
     "int64",
     "bool",
 )
+
+
+@with_supported_dtypes({"2.9.0 and below": ("float32", "float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def local_response_normalization(
+        input,
+        depth_radius = 5,
+        bias = 1,
+        alpha = 1,
+        beta = 0.5,
+        name=None):
+    input_shape = ivy.shape(input)
+    ivy.assertions.check_equal(
+        ivy.get_num_dims(input),
+        4,
+        message="4D input, but got input with sizes " + str(input_shape),
+    )
+    input_perm = ivy.permute_dims(input , axes= [0,3,1,2])
+    sqr_sum = ivy.zeros_like(input_perm)
+    for p in range(input_shape[0]):
+        for c in range(input_shape[3]):
+            start_idx = c - depth_radius
+            end_idx = c + depth_radius +1
+            sqr_sum[p][c] = sum(ivy.pow(input_perm[p][max(start_idx,0):end_idx],2.0))
+    div = ivy.divide(input_perm, ivy.pow(math.add(math.scalar_mul(alpha,sqr_sum),bias), beta))
+    return ivy.permute_dims(div,[0,2,3,1])
