@@ -1,6 +1,37 @@
 import ivy
 import functools
 from typing import Callable
+import sys
+import traceback as tb
+
+
+# Helpers #
+# ------- #
+
+
+def _print_new_stack_trace(old_stack_trace):
+    new_stack_trace = []
+    for st in old_stack_trace:
+        if "func_wrapper.py" not in repr(st):
+            new_stack_trace.append(st)
+    print("".join(tb.format_list(new_stack_trace)))
+
+
+def _custom_exception_handle(type, value, tb_history):
+    _print_new_stack_trace(tb.extract_tb(tb_history))
+    print(type.__name__ + ":", value)
+
+
+def _print_traceback_history():
+    _print_new_stack_trace(tb.extract_tb(sys.exc_info()[2]))
+    print("During the handling of the above exception, another exception occurred:\n")
+
+
+sys.excepthook = _custom_exception_handle
+
+
+# Classes and Methods #
+# ------------------- #
 
 
 class IvyException(Exception):
@@ -57,14 +88,12 @@ def handle_exceptions(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
             if ivy.get_exception_trace_mode():
-                raise ivy.exceptions.IvyError(fn.__name__, str(e))
-            else:
-                raise ivy.exceptions.IvyError(fn.__name__, str(e)) from None
+                _print_traceback_history()
+            raise ivy.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
             if ivy.get_exception_trace_mode():
-                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
-            else:
-                raise ivy.exceptions.IvyBackendException(fn.__name__, str(e)) from None
+                _print_traceback_history()
+            raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
 
     new_fn.handle_exceptions = True
     return new_fn
