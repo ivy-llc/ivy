@@ -46,6 +46,13 @@ class Tensor:
         self.data = self.cos()
         return self.data
 
+    def cosh(self, *, out=None):
+        return torch_frontend.cosh(self.data, out=out)
+
+    def cosh_(self):
+        self.data = self.cosh()
+        return self.data    
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
