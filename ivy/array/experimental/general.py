@@ -6,7 +6,7 @@ from typing import Optional
 import ivy
 
 
-class ArrayWithGeneralExtensions(abc.ABC):
+class ArrayWithGeneralExperimental(abc.ABC):
     def isin(
         self: ivy.Array,
         test_elements: ivy.Array,
