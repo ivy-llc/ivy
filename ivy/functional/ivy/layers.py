@@ -473,8 +473,8 @@ def scaled_dot_product_attention(
 @handle_exceptions
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
-    scale,
-    num_heads,
+    scale: float,
+    num_heads: int,
     /,
     *,
     context: Union[ivy.Array, ivy.NativeArray] = None,
@@ -486,7 +486,7 @@ def multi_head_attention(
     to_kv_v=None,
     to_out_v=None,
     out: Optional[ivy.Array] = None,
-) -> Union[ivy.Array, ivy.NativeArray]:
+) -> ivy.Array:
     """Applies multi-head attention to inputs x.
 
     Parameters
@@ -526,6 +526,10 @@ def multi_head_attention(
     ret
         The output following application of multi-head attention.
         *[batch_shape,num_queries,out_feat_dim]*
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
 
     """
     # BS x Q x (HxF)
