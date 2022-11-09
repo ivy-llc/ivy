@@ -610,21 +610,16 @@ def handle_nans(fn: Callable) -> Callable:
         kwargs_nans = ivy.nested_map(
             kwargs, _is_nan, include_derived={tuple: True}
         )
-        if type(args_nans) is dict:
-            args_result = any(list(args_nans.values()))
-        else:
-            args_result = any(list(args_nans))
-        
-        if type(kwargs_nans) is dict:
-            kwargs_result = any(list(kwargs_nans.values()))
-        else:
-            kwargs_result = any(list(kwargs_nans))
+        inputs = ivy.Container(args_nans=args_nans, kwargs_nans=kwargs_nans)
+        results = []
+        for kc, v in inputs.to_iterator():
+            if v is tuple:
+                results.append(list(v))
+            elif v:
+                results.append(v)
+        result = any(results)
 
-        # working on alternative solution
-        inputs = ivy.Container(args=args, kwargs=kwargs)
-        inputs_nans = ivy.nested_map(inputs, _is_nan, include_derived={tuple: True})
-
-        if args_result or kwargs_result:
+        if result:
             # handle nans based on the selected policy
             if ivy.get_nan_policy() == "raise_exception":
                 raise ivy.exceptions.IvyException(
