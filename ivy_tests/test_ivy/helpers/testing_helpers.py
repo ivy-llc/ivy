@@ -183,7 +183,7 @@ def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_nam
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
-        _fn = _tmp_mod.__dict__[class_name].__dict__[fn_name]
+        _fn = getattr(_tmp_mod.__dict__[class_name], fn_name)
         supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
         ivy.unset_backend()
     return supported_device_dtypes
@@ -293,13 +293,58 @@ def _import_method(method_tree: str):
     split_index = class_tree.rfind(".")
     mod_to_import, class_name = class_tree[:split_index], class_tree[split_index + 1 :]
     _mod = importlib.import_module(mod_to_import)
-    _class = _mod.__dict__[class_name]
-    _method = _class.__dict__[method_name]
+    _class = _mod.__getattribute__(class_name)
+    _method = getattr(_class, method_name)
     return _method, method_name, _class, class_name, _mod
 
 
 def handle_method(*, method_tree, **_given_kwargs):
-    pass
+    method_tree = "ivy." + method_tree
+    is_hypothesis_test = len(_given_kwargs) != 0
+
+    def test_wrapper(test_fn):
+        callable_method, method_name, class_, class_name, method_mod = _import_method(
+            method_tree
+        )
+        supported_device_dtypes = _get_method_supported_devices_dtypes(
+            method_name, method_mod.__name__, class_name
+        )
+
+        if is_hypothesis_test:
+            fn_args = typing.get_type_hints(test_fn)
+
+            for k, v in fn_args.items():
+                if v is NativeArrayFlags or v is ContainerFlags or v is AsVariableFlags:
+                    _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
+                elif v is NumPositionalArg:
+                    if k.startswith("method"):
+                        _given_kwargs[k] = num_positional_args(
+                            fn_name=f"{class_name}.{method_name}"
+                        )
+                    else:
+                        _given_kwargs[k] = num_positional_args(
+                            fn_name=class_name + ".__init__"
+                        )
+
+            wrapped_test = given(**_given_kwargs)(test_fn)
+            _name = wrapped_test.__name__
+            wrapped_test = partial(
+                wrapped_test, class_name=class_name, method_name=method_name
+            )
+            wrapped_test.__name__ = _name
+        else:
+            wrapped_test = test_fn
+
+        wrapped_test.test_data = TestData(
+            test_fn=wrapped_test,
+            fn_tree=method_tree,
+            fn_name=method_name,
+            supported_device_dtypes=supported_device_dtypes,
+        )
+
+        return wrapped_test
+
+    return test_wrapper
 
 
 def handle_frontend_method(*, method_tree, **_given_kwargs):
@@ -321,7 +366,12 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
                 if v is NativeArrayFlags or v is ContainerFlags or v is AsVariableFlags:
                     _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
                 elif v is NumPositionalArg:
-                    _given_kwargs[k] = st.just(0)
+                    if k.startswith("method"):
+                        _given_kwargs[k] = num_positional_args(
+                            f"{class_name}.{method_name}"
+                        )
+                    else:
+                        _given_kwargs[k] = num_positional_args(class_name + ".__init__")
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__

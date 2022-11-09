@@ -6,41 +6,51 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_method
+from ivy_tests.test_ivy.helpers.function_testing import (
+    ContainerFlags,
+    NativeArrayFlags,
+    AsVariableFlags,
+    NumPositionalArg,
+)
 
 
 # GELU
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="stateful.activations.GELU.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     approximate=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="GELU.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="GELU._forward"),
 )
 def test_gelu(
     *,
     dtype_and_x,
     approximate,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
+    init_num_positional_args: NumPositionalArg,
+    method_num_positional_args: NumPositionalArg,
+    init_as_variable: AsVariableFlags,
+    init_native_array: NativeArrayFlags,
+    init_container: ContainerFlags,
+    method_as_variable: AsVariableFlags,
+    method_native_array: NativeArrayFlags,
+    method_container: ContainerFlags,
+    method_name,
+    class_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
         input_dtypes_init=input_dtype,
-        num_positional_args_init=num_positional_args_init,
+        num_positional_args_init=init_num_positional_args,
         all_as_kwargs_np_init={"approximate": approximate},
         input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
+        as_variable_flags_method=method_as_variable,
+        num_positional_args_method=method_num_positional_args,
+        native_array_flags_method=method_native_array,
+        container_flags_method=method_container,
         all_as_kwargs_np_method={"x": x[0]},
-        class_name="GELU",
+        class_name=class_name,
+        method_name=method_name,
     )
 
 
