@@ -85,6 +85,28 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
+def check_torch_pad_input_valid(padding):
+    if type(padding) is tuple:
+        if type(padding[0]) is tuple:
+            if len(padding[0]) != 2:
+                raise ivy.exceptions.IvyException(
+                    "Each tuple pad width element must be of length 2, saw ({})".format(
+                        len(padding[0]))
+                )
+        elif len(padding) != 1:
+            if len(padding) % 2 != 0:
+                raise ivy.exceptions.IvyException(
+                    "Tuple padding length ({}) must be even".format(
+                        len(padding))
+                )
+            if len(padding) > 6:
+                raise ivy.exceptions.IvyException(
+                    "Padding length ({}) must be 1, 2, 4, or 6".format(
+                        len(padding)
+                    )
+                )
+
+
 def _pad_handle_padding_shape(padding, n, mode):
     if type(padding) is tuple:
         if type(padding[0]) is tuple:  # case nested tuples
@@ -107,7 +129,7 @@ def _pad_handle_padding_shape(padding, n, mode):
 
 @to_ivy_arrays_and_back
 def pad(input, padding, mode='constant' , value=0):
-    ivy.assertions.check_torch_pad_input_valid(padding)   
+    check_torch_pad_input_valid(padding)
     padding = _pad_handle_padding_shape(padding, len(input.shape), mode)
     if mode == 'constant':
         return ivy.pad(input, padding, mode='constant', constant_values=value) 
