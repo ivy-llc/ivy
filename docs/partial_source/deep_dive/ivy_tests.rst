@@ -153,7 +153,7 @@ To briefly describe -:
 * `lists`_ accepts another strategy which describes the elements of the list being generated.
   This is best used when a sequence of varying lengths is required to be generated, with elements that are described by other strategies.
 
-Important Strategies
+Writing your own strategy
 ^^^^^^^^^^^^^^^^^^^^
 We will not be covering all of the strategies that Hypothesis provide, but to give you a glance of what they're capable of, we will briefly
 explain some of the stratigies and write a new strategy to be used later for testing. Read more about strategies on Hypothesis docs. #TODO add link
@@ -181,45 +181,111 @@ Suppose you need to generate a 1-D array or a scaler value, which also generate 
             index = st.None()
     return values, index
 
-we can then later use this strategy in any of our tests. # TODO add simple test example.
+we can then later use this strategy in any of our tests.
+
+Writing Hypothesis Test
+^^^^^^^^^^^^^^^^^^^^^^^
+
+Writing Hypothesis tests are intuitive and simple, as an example, we've implemented our own :code:`add` function, which takes in 2 parameters :code:`x` and :code:`y`.
+We would like to run a test and compare it to Python :code:`+` operator, and **assert** it returns the same values.
+
+.. code-block:: python
+
+    def add(x, y):
+        return y + x
+
+    @given(
+        x=st.integers()
+        y=st.integers()
+    )
+    def test_add(x, y):
+        assert x + y == add(x, y)
+
+1. At first, we define our function :code:`add`, which simply returns :code:`y + x`.
+2. Defining a test function, which basically **assert** that the result of :code:`x + y` is exactly equal to :code:`add(x, y)`.
+3. Add Hypothesis :code:`@given` decorator, passing two keyword arguments, :code:`x` and :code:`y` each corresponds to the variables we are going to run the test
+on, :code:`@given` is our entry point to Hypothesis, it expects a :class:`strategy` to be passed in, describing what kind of data to generate, for our example, we choose to only test for :code:`integers` using :code:`st.integers()` strategy.
 
 Ivy Test Decorators
 ^^^^^^^^^^^^^^^^^^^^
 
-# Why do we need handle test decorators?
+- Why do we need handle test decorators?
 
-In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keywoard only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a *complete* way. all of this happens at collecting time.
+In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keywoard only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a **complete** way. all of this happens at collecting time.
 
-# What do the handle test decorators do?
+- What do the handle test decorators do?
 
 1.  Generate the test flags:
-    1.  `native_array` flags
-    2.  `as_variable` flags
-    3.  `with_out` flag
-2.  Generate `num_positional_args`
+    1.  :code:`native_array` flags
+    2.  :code:`as_variable` flags
+    3.  :code:`with_out` flag
+2.  Generate :code:`num_positional_args`
 
-The flags that the decorators would generate, may be more or less depending on the function, **Ivy Functional API** requires `gradient_test` flag, some test functions like `test_gpu_is_available` does not requrie any of these flags, and therefore the decorator will not generate any of these.
+The flags that the decorators would generate, may be more or less depending on the function, **Ivy Functional API** requires :code:`gradient_test` flag, some test functions like :code:`test_gpu_is_available` does not requrie any of these flags, and therefore the decorator will not generate any of these.
 
-3.  Generate test specific parameters, `fn_name`, `fn_tree`, `method_tree`.
+3.  Generate test specific parameters, :code:`fn_name`, :code:`fn_tree`, :code:`method_tree`.
 4.  Check for the function's supported data types and devices.
-5.  Implicitly wraps the test function using Hypothesis `@given` decorator, this allows us to write less code, more readable, and easy to update and maintain.
+5.  Implicitly wraps the test function using Hypothesis :code:`@given` decorator, this allows us to write less code, more readable, and easy to update and maintain.
 
-This is not an exhaustive list of what the `handle_test` decorators actually do, they may do more or less in the future, to summaraize, the test decorators does some of `Pretest-processing` part in the testing pipeline.
+This is not an exhaustive list of what the :code:`handle_test` decorators actually do, they may do more or less in the future, to summaraize, the test decorators does some of **Pretest-processing** part in the testing pipeline.
 
-# Why do we have multiple handle test decorators?
+- Why do we have multiple handle test decorators?
 
 Having multiple test decorator is mainly for efficiency, `handle_test` could do what `handle_frontend_test` does, it just handles the parameters slighlty different, and this can be inferred at run time, but we choose to seperate the decorator for general different usages, currently we have 4 seperate decorators
 
-1.  `handle_test`
-2.  `handle_method`
-3.  `handle_frontend_test`
-4.  `handle_frontend_method`
+1.  :code:`handle_test`
+2.  :code:`handle_method`
+3.  :code:`handle_frontend_test`
+4.  :code:`handle_frontend_method`
 
 One of the few differences between the 4 decorators that they generate different kind of flags, some generate more or less, but they all share the same general structure.
 
-# Integration
+- Integration
 
-Our test decorators actually transforms to `@given` decorators at PyTets collecting time, therefore this allows us to use other **Hypothesis** decorators like, `@reproduce_failure`, `@settings`, `@seed`.
+Our test decorators actually transforms to :code:`@given` decorators at PyTets collecting time, therefore this allows us to use other **Hypothesis** decorators like, :code:`@reproduce_failure`, :code:`@settings`, :code:`@seed`.
+
+Writing Ivy Tests
+^^^^^^^^^^^^^^^^^
+
+As mentioned previously, testing Ivy functions needs a lot of pre-processing and past-processing, using only :code:`given` decorator would not be sufficient
+to write an effective test, the following example describes how to implement a test for the function :code:`ivy.abs, using our test decorators and test helpers.
+
+.. code-block:: python
+    @handle_test(
+        fn_tree="functional.ivy.abs",
+        dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric")
+        ),
+    )
+    def test_abs(
+        *,
+        dtype_and_x,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        container_flags,
+        instance_method,
+        backend_fw,
+        fn_name,
+        on_device,
+        test_gradients,
+    ):
+        input_dtype, x = dtype_and_x
+        helpers.test_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            fw=backend_fw,
+            fn_name=fn_name,
+            on_device=on_device,
+            test_gradients=test_gradients,
+            x=x[0],
+        )
 
 Integration of Strategies into Ivy Tests
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
