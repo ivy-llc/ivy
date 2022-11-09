@@ -217,3 +217,12 @@ def dsplit(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.dsplit(ary, indices_or_sections)
+
+
+def dstack(
+    arrays: Sequence[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dstack(arrays)
