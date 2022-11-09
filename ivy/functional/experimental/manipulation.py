@@ -663,13 +663,13 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
         if pre_ind_0 != ind[0]:
             i = 0
         if (ind[0] < end) and (ind[0] >= start):
-            if not hasattr(value, '__len__'):
+            if not hasattr(value, "__len__"):
                 input[ind] = value
                 continue
             if len(value.shape) == 0:
                 try:
                     input[ind] = value.item()
-                except:
+                except AttributeError:
                     input[ind] = value.numpy().item()
                 continue
             if len(ind) == 1:
@@ -1021,6 +1021,10 @@ def pad(
     """
     input = ivy.asarray(input, dtype=input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
+    ivy.assertions.check_true(
+        all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
+        message="the pad_widths must be greater or equal to zero",
+    )
     if callable(mode):
         func = mode
         padded = _pad_simple(input, pad_width, fill_value=0)
@@ -1059,11 +1063,25 @@ def pad(
     elif mode in stat_functions:
         func = stat_functions[mode]
         stat_length = _to_pairs(stat_length, padded.ndim)
+        if mode == "median":
+            ivy.assertions.check_true(
+                all(element[1] > 1 for element in ivy.ndenumerate(stat_length)),
+                message="median interpolation asserts stat lengths greater than one",
+            )
+        else:
+            ivy.assertions.check_true(
+                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+                message="the stat lengths must be greater than zero",
+            )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, width_pair, length_pair, func)
             padded = _set_pad_area(padded, width_pair, stat_pair)
             padded = ivy.moveaxis(padded, 0, -1)
     elif mode in {"reflect", "symmetric"}:
+        ivy.assertions.check_true(
+            reflect_type in ["even", "odd"],
+            message="the reflection type can be either odd or even",
+        )
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
             if input.shape[0] == 1 and (left_index > 0 or right_index > 0):
@@ -1082,6 +1100,23 @@ def pad(
                     padded, (left_index, right_index)
                 )
             padded = ivy.moveaxis(padded, 0, -1)
+    else:
+        ivy.assertions.check_true(
+            False,
+            message="the supported modes are: "
+            "constant, "
+            "edge, "
+            "linear_ramp, "
+            "maximum, "
+            "mean, "
+            "median, "
+            "minimum, "
+            "reflect, "
+            "symmetric, "
+            "wrap, "
+            "empty, "
+            "and <function>",
+        )
     return padded
 
 
@@ -1108,7 +1143,7 @@ def vsplit(
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
         and the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1129,9 +1164,7 @@ def vsplit(
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
     return ivy.current_backend(ary).vsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
 
 
@@ -1154,11 +1187,11 @@ def dsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n sections.
         If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first 
+        equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1176,11 +1209,9 @@ def dsplit(
           [12.,  13.,  14.,  15.]]]
         )
     >>> ivy.dsplit(ary, 2)
-    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]), 
+    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
     return ivy.current_backend(ary).dsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
