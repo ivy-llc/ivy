@@ -28,4 +28,5 @@ Manipulation
    manipulation/pad.rst
    manipulation/vsplit.rst
    manipulation/dsplit.rst
+   manipulation/dstack.rst
 
