@@ -5808,7 +5808,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        an array containing the values before the decimal point for each element ``x``.</span>
+<span class="sd">        an array containing the rounded result for each element in ``x``.</span>
 <span class="sd">        The returned array must have the same data type as ``x``.</span>
 
 
@@ -5821,6 +5821,43 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0.54, 3.67, -0.025])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trunc(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-1.,  0.,  3., -0.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0.56, 7, -23.4, -0.0375])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.trunc(x, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([  0.,   7., -23.,  -0.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0.4, -8, 0.55], [0, 0.032, 2]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros([2,3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.trunc(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 0., -8.,  0.],</span>
+<span class="sd">           [ 0.,  0.,  2.]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0.34, -6., 0.09, 25.4])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trunc(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([ 0., -6.,  0., 25.])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]), b=ivy.array([12, -3.5, 1.234]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.trunc(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([-0., 4., 1.]),</span>
+<span class="sd">        b: ivy.array([12., -3., 1.])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">trunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

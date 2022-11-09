@@ -3851,7 +3851,14 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the rounded result for each element in ``self``.</span>
-<span class="sd">        The returned array must have the same data type as ``self``.</span>
+<span class="sd">        The returned array must have the same data type as ``self``</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, 0.54, 3.67, -0.025])</span>
+<span class="sd">    &gt;&gt;&gt; y = x.trunc()</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([-1.,  0.,  3., -0.])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
