@@ -395,7 +395,7 @@ def dct(
     >>> ivy.dct(x, type=2, n=None, norm='ortho')
     ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])
 
-    >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]], 
+    >>> x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],
                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])
     >>> ivy.dct(x, type=1, n=None, axis=0, norm=None)
     ivy.array([[[ 9., 18., 27., 36.],
@@ -440,6 +440,4 @@ def dct(
         b: ivy.array([15., -4., 0., -1.])
     }
     """
-    return ivy.current_backend(x).dct(
-        x, type=type, n=n, axis=axis, norm=norm, out=out
-    )
+    return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)

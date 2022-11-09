@@ -230,9 +230,5 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
         """
         return self.static_nanmean(
-            self,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )

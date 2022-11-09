@@ -2111,5 +2111,5 @@ def test_torch_instance_bitwise_and(
         },
         frontend="torch",
         class_name="tensor",
-        method_name="bitwise_and"
+        method_name="bitwise_and",
     )

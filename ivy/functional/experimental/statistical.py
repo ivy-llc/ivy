@@ -103,9 +103,5 @@ def nanmean(
     ivy.array([2.,  4.])
     """
     return ivy.current_backend(a).nanmean(
-        a,
-        axis=axis,
-        keepdims=keepdims,
-        dtype=dtype,
-        out=out
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
     )
