@@ -189,6 +189,11 @@ def Inv(*, x, name="Inv"):
 
 
 @to_ivy_arrays_and_back
+def Reciprocal(*, x, name=None):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 
@@ -306,6 +311,11 @@ def NthElement(*, input, n, reverse=False, name="NthElement"):
 @to_ivy_arrays_and_back
 def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
+
+
+@to_ivy_arrays_and_back
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
 
 
 Relu = to_ivy_arrays_and_back(

@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
@@ -261,5 +261,53 @@ class ArrayWithLayersExperimental(abc.ABC):
             strides,
             padding,
             data_format=data_format,
+            out=out,
+        )
+
+    def dct(
+        self: ivy.Array,
+        /,
+        *,
+        type: Optional[Literal[1, 2, 3, 4]] = 2,
+        n: Optional[int] = None,
+        axis: Optional[int] = -1,
+        norm: Optional[Literal["ortho"]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.dct. This method simply
+        wraps the function, and so the docstring for ivy.dct also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The input signal.
+        type
+            The type of the dct. Must be 1, 2, 3 or 4.
+        n
+            The lenght of the transform. If n is less than the input signal lenght,
+            then x is truncated, if n is larger than x is zero-padded.
+        norm
+            The type of normalization to be applied. Must be either None or "ortho".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+
+        Examples
+        --------
+        >>> x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])
+        >>> x.dct(type=2, norm="ortho")
+        ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
+        """
+        return ivy.dct(
+            self._data, 
+            type=type, 
+            n=n, 
+            axis=axis, 
+            norm=norm, 
             out=out,
         )
