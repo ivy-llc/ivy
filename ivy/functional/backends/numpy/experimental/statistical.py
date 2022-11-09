@@ -31,3 +31,13 @@ def nanmean(
 
 
 nanmean_support_native_out = True
+
+
+def unravel_index(
+    indices: np.ndarray,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.unravel_index(indices, shape)
