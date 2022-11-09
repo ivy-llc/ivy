@@ -354,10 +354,10 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1, 2, 3])
-        >>> y = x.constant_pad(pad_width = (2, 3), value = (4, 6))
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.constant_pad(pad_width = [[2, 3]])
         >>> print(y)
-        ivy.array([4, 4, 1, ..., 6, 6, 6])
+        ivy.array([0., 0., 1., 2., 3., 0., 0., 0.])
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 

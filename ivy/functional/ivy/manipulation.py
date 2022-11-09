@@ -970,32 +970,29 @@ def constant_pad(
 
     Functional Examples
     -------------------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4, 5])
-    >>> print(ivy.constant_pad(x, pad_width = (2, 3), value = (4, 6)))
-    ivy.array([4, 4, 1, ..., 6, 6, 6])
+    >>> y = ivy.constant_pad(x, pad_width = [[2, 3]])
+    >>> print(y)
+    ivy.array([0, 0, 1, 2, 3, 4, 5, 0, 0, 0])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
-    >>> print(ivy.constant_pad(x, pad_width = (2, 3), value = (8, 0)))
-    ivy.array([[8 8 8 8 0 0 0],
-                [8 8 8 8 0 0 0],
-                [8 8 1 2 0 0 0],
-                [8 8 3 4 0 0 0],
-                [8 8 0 0 0 0 0],
-                [8 8 0 0 0 0 0],
-                [8 8 0 0 0 0 0]])
+    >>> y = ivy.constant_pad(x, pad_width = [[2, 3]])
+    >>> print(y)
+    ivy.array([[0, 0, 1, 2, 0, 0, 0],
+                [0, 0, 3, 4, 0, 0, 0]])
 
     >>> x = ivy.array([[1, 2], [3, 4]])
-    >>> print(ivy.constant_pad(x, pad_width = ((3, 2), (2, 3)), value = (4, 6)))
-    ivy.array([[4 4 4 4 6 6 6],
-                [4 4 4 4 6 6 6],
-                [4 4 4 4 6 6 6],
-                [4 4 1 2 6 6 6],
-                [4 4 3 4 6 6 6],
-                [4 4 6 6 6 6 6],
-                [4 4 6 6 6 6 6]])
+    >>> y = ivy.constant_pad(x, pad_width = [[3, 2], [2, 3]])
+    >>> print(y)
+    ivy.array([[0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 2, 0, 0, 0],
+                [0, 0, 3, 4, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0]])
 
     """
     return current_backend(x).constant_pad(x, pad_width, value, out=out)
