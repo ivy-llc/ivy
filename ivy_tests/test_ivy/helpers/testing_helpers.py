@@ -11,12 +11,7 @@ import ivy
 from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
-from .function_testing import (
-    ContainerFlags,
-    NativeArrayFlags,
-    AsVariableFlags,
-    NumPositionalArg,
-)
+from . import test_parameter_flags as pf
 
 cmd_line_args = (
     "with_out",
@@ -314,9 +309,13 @@ def handle_method(*, method_tree, **_given_kwargs):
             fn_args = typing.get_type_hints(test_fn)
 
             for k, v in fn_args.items():
-                if v is NativeArrayFlags or v is ContainerFlags or v is AsVariableFlags:
+                if (
+                    v is pf.NativeArrayFlags
+                    or v is pf.ContainerFlags
+                    or v is pf.AsVariableFlags
+                ):
                     _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
-                elif v is NumPositionalArg:
+                elif v is pf.NumPositionalArg:
                     if k.startswith("method"):
                         _given_kwargs[k] = num_positional_args(
                             fn_name=f"{class_name}.{method_name}"
@@ -363,9 +362,13 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
             fn_args = typing.get_type_hints(test_fn)
 
             for k, v in fn_args.items():
-                if v is NativeArrayFlags or v is ContainerFlags or v is AsVariableFlags:
+                if (
+                    v is pf.NativeArrayFlags
+                    or v is pf.ContainerFlags
+                    or v is pf.AsVariableFlags
+                ):
                     _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
-                elif v is NumPositionalArg:
+                elif v is pf.NumPositionalArg:
                     if k.startswith("method"):
                         _given_kwargs[k] = num_positional_args(
                             f"{class_name}.{method_name}"
