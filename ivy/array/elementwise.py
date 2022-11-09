@@ -2142,7 +2142,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
         >>> y = x.trunc()
         >>> print(y)
-        ivy.array([-1.,  0.,  3., -0.]).
+        ivy.array([-1.,  0.,  3., -0.])
         """
         return ivy.trunc(self._data, out=out)
 
