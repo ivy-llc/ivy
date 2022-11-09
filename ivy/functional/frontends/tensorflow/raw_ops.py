@@ -362,6 +362,12 @@ def Split(*, axis, value, num_split, name="Split"):
 
 
 @to_ivy_arrays_and_back
+def SplitV(*, value, size_splits, axis, num_split, name="SplitV"):
+    res = ivy.split(value, num_or_size_splits=size_splits, axis=axis)
+    return ivy.split(res[0], num_or_size_splits=num_split, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def Sqrt(*, x, name="Sqrt"):
     return ivy.sqrt(x)
 
