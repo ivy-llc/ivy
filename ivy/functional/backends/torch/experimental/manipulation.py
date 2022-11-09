@@ -154,3 +154,12 @@ def dsplit(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.dsplit(ary, indices_or_sections)
+
+
+def dstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dstack(arrays, out=None)
