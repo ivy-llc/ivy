@@ -571,27 +571,29 @@ def _st_tuples_or_int(n_pairs, exclude_zero=False):
 
 @st.composite
 def _pad_helper(draw):
-    mode = draw(st.sampled_from(
-        [
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-        ]
-    ))
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
+    )
     dtype, input, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
-        ).filter(
-            lambda x: x[0][0] not in ['bfloat16']))
+        ).filter(lambda x: x[0][0] not in ["bfloat16"])
+    )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
     stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
@@ -625,7 +627,7 @@ def test_pad(
         stat_length,
         constant_values,
         end_values,
-        mode
+        mode,
     ) = dtype_and_input_and_other
     helpers.test_function(
         input_dtypes=dtype,
@@ -644,7 +646,7 @@ def test_pad(
         stat_length=stat_length,
         constant_values=constant_values,
         end_values=end_values,
-        reflect_type=reflect_type
+        reflect_type=reflect_type,
     )
 
 
@@ -661,10 +663,7 @@ def test_pad(
         max_dim_size=5,
     ),
     indices_or_sections=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vsplit"),
 )
@@ -692,7 +691,7 @@ def test_vsplit(
         fw=fw,
         fn_name="vsplit",
         x=x[0],
-        indices_or_sections=indices_or_sections
+        indices_or_sections=indices_or_sections,
     )
 
 
@@ -709,10 +708,7 @@ def test_vsplit(
         max_dim_size=5,
     ),
     indices_or_sections=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     num_positional_args=helpers.num_positional_args(fn_name="dsplit"),
 )
@@ -740,7 +736,7 @@ def test_dsplit(
         fw=fw,
         fn_name="dsplit",
         x=x[0],
-        indices_or_sections=indices_or_sections
+        indices_or_sections=indices_or_sections,
     )
 
 
