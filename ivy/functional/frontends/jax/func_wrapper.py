@@ -13,9 +13,7 @@ def _is_jax_frontend_array(x):
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if len(ivy.backend_stack) != 0 and isinstance(x, ivy.NativeArray):
-        raise ivy.exceptions.IvyException("input must be Ivy Jax DeviceArray")
-    elif isinstance(x, jax_frontend.DeviceArray):
+    if isinstance(x, jax_frontend.DeviceArray):
         return x.data
     return x
 

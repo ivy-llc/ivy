@@ -1,4 +1,4 @@
-from typing import Union, Optional, Tuple
+from typing import Union, Optional, Tuple, Literal
 import tensorflow as tf
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -101,3 +101,26 @@ def avg_pool3d(
     if data_format == "NCDHW":
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+def dct(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    n: Optional[int] = None,
+    axis: Optional[int] = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> tf.Tensor:
+    if x.dtype not in (tf.float32, tf.float64):
+        x = tf.cast(x, tf.float32)
+    if axis != -1:
+        new_dims = list(range(len(x.shape)))
+        new_dims[axis], new_dims[-1] = new_dims[-1], axis
+        x = tf.transpose(x, new_dims)
+        dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
+        dct_out = tf.transpose(dct_out, new_dims)
+    else:
+        dct_out = tf.signal.dct(x, type=type, n=n, axis=-1, norm=norm)
+    return dct_out
