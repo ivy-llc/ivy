@@ -3,7 +3,6 @@ import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # global
-import logging
 import math
 
 
