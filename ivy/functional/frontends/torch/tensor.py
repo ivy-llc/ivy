@@ -46,6 +46,13 @@ class Tensor:
         self.data = self.cos()
         return self.data
 
+    def cosh(self, *, out=None):
+        return torch_frontend.cosh(self.data, out=out)
+
+    def cosh_(self):
+        self.data = self.cosh()
+        return self.data    
+
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
 
@@ -84,6 +91,9 @@ class Tensor:
     def abs_(self):
         self.data = self.abs()
         return self.data
+
+    def bitwise_and(self, other, *, out=None):
+        return torch_frontend.bitwise_and(self.data, other, out=out)
 
     def contiguous(self, memory_format=None):
         return self.data
