@@ -6,12 +6,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
-from ivy_tests.test_ivy.helpers.function_testing import (
-    ContainerFlags,
-    NativeArrayFlags,
-    AsVariableFlags,
-    NumPositionalArg,
-)
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 
 
 # GELU
@@ -27,29 +22,29 @@ def test_gelu(
     *,
     dtype_and_x,
     approximate,
-    init_num_positional_args: NumPositionalArg,
+    init_num_positional_args: pf.NumPositionalArg,
     method_num_positional_args,
-    init_as_variable: AsVariableFlags,
-    init_native_array: NativeArrayFlags,
-    method_as_variable: AsVariableFlags,
-    method_native_array: NativeArrayFlags,
-    method_container: ContainerFlags,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
     method_name,
     class_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        input_dtypes_init=input_dtype,
-        all_as_kwargs_np_init={"approximate": approximate},
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=init_as_variable,
-        num_positional_args_init=init_num_positional_args,
-        native_array_flags_init=init_native_array,
-        as_variable_flags_method=method_as_variable,
-        num_positional_args_method=method_num_positional_args,
-        native_array_flags_method=method_native_array,
-        container_flags_method=method_container,
-        all_as_kwargs_np_method={"x": x[0]},
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        init_all_as_kwargs_np={"approximate": approximate},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"x": x[0]},
         class_name=class_name,
         method_name=method_name,
     )
@@ -70,11 +65,11 @@ def test_gelu(
 def test_geglu(
     *,
     dtype_and_x,
-    num_positional_args_init: NumPositionalArg,
+    num_positional_args_init: pf.NumPositionalArg,
     num_positional_args_method,
-    method_as_variable_flags: AsVariableFlags,
-    method_native_array_flags: NativeArrayFlags,
-    method_container_flags: ContainerFlags,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
     class_name,
     method_name,
 ):
@@ -82,14 +77,14 @@ def test_geglu(
     # last dim must be even, this could replaced with a private helper
     assume(x[0].shape[-1] % 2 == 0)
     helpers.test_method(
-        input_dtypes_init=input_dtype,
-        num_positional_args_init=num_positional_args_init,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=method_as_variable_flags,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=method_native_array_flags,
-        container_flags_method=method_container_flags,
-        all_as_kwargs_np_method={"inputs": x[0]},
+        init_input_dtypes=input_dtype,
+        init_num_positional_args=num_positional_args_init,
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": x[0]},
         class_name=class_name,
         method_name=method_name,
         atol_=1e-3,

@@ -40,18 +40,18 @@ def test_sgd_optimizer(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "lr": lr,
             "inplace": inplace,
             "stop_gradients": stop_gradients,
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_container_flags=container,
+        method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
         },
@@ -93,19 +93,19 @@ def test_lars_optimizer(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "lr": lr,
             "decay_lambda": decay_lambda,
             "inplace": inplace,
             "stop_gradients": stop_gradients,
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_container_flags=container,
+        method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
         },
@@ -150,8 +150,8 @@ def test_adam_optimizer(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "lr": lr,
             "beta1": beta1,
             "beta2": beta2,
@@ -159,12 +159,12 @@ def test_adam_optimizer(
             "inplace": inplace,
             "stop_gradients": stop_gradients,
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_container_flags=container,
+        method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
         },
@@ -213,8 +213,8 @@ def test_lamb_optimizer(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "lr": lr,
             "beta1": beta1,
             "beta2": beta2,
@@ -224,12 +224,12 @@ def test_lamb_optimizer(
             "inplace": inplace,
             "stop_gradients": stop_gradients,
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_container_flags=container,
+        method_all_as_kwargs_np={
             "v": x[0],
             "grads": x[1],
         },

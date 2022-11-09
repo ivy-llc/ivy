@@ -32,8 +32,8 @@ def test_layer_norm_layer(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
-        num_positional_args_init=1,
-        all_as_kwargs_np_init={
+        init_num_positional_args=1,
+        init_all_as_kwargs_np={
             "normalized_shape": x[0].shape,
             "epsilon": ivy._MIN_BASE,
             "elementwise_affine": True,
@@ -41,12 +41,12 @@ def test_layer_norm_layer(
             "device": device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=5,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": x[0]},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=5,
+        method_native_array_flags=native_array,
+        method_container_flags=container,
+        method_all_as_kwargs_np={"inputs": x[0]},
         class_name="LayerNorm",
         init_with_v=init_with_v,
         method_with_v=method_with_v,

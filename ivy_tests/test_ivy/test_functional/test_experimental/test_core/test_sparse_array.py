@@ -70,21 +70,21 @@ def test_sparse_coo(
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
-        input_dtypes_init=["int64", val_dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=["int64", val_dtype],
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=0,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "coo_indices": np.array(coo_ind, dtype="int64"),
             "values": np.array(val, dtype=val_dtype),
             "dense_shape": shp,
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={},
+        method_input_dtypes=[],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_container_flags=False,
+        method_all_as_kwargs_np={},
         class_name="SparseArray",
         method_name="to_dense_array",
     )
@@ -102,22 +102,22 @@ def test_sparse_csr(
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
-        input_dtypes_init=["int64", "int64", value_dtype],
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=["int64", "int64", value_dtype],
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=0,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "csr_crow_indices": np.array(crow_indices, dtype="int64"),
             "csr_col_indices": np.array(col_indices, dtype="int64"),
             "values": np.array(values, dtype=value_dtype),
             "dense_shape": shape,
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=[],
-        num_positional_args_method=0,
-        native_array_flags_method=[],
-        container_flags_method=False,
-        all_as_kwargs_np_method={},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=False,
+        method_all_as_kwargs_np={},
         class_name="SparseArray",
         method_name="to_dense_array",
     )
