@@ -1,7 +1,6 @@
 from typing import Optional, Sequence
 import jax.numpy as jnp
 
-import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
