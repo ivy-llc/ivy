@@ -10,16 +10,16 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.split"
     ),
-    available_dtypes=helpers.get_dtypes(
-        dtype=helpers.get_dtypes("numeric", full=False, none=True),
+    dtype_and_x=helpers.get_dtypes(
+        available_dtypes=helpers.get_dtypes("numeric", full=False, none=True),
     ),
 )
 def test_numpy_split(
     as_variable,
-    available_dtype,
+    dtype_and_x,
     num_positional_args,
 ):
-    indices_or_sections, ary, axis, input_dtypes = available_dtype
+    indices_or_sections, ary, axis, input_dtypes = dtype_and_x
     helpers.test_frontend_function(
         as_variable_flags=as_variable,
         input_dtypes=input_dtypes,
