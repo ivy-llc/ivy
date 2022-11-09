@@ -12,11 +12,11 @@ def isin(
 ) -> tf.Tensor:
     input_shape = elements.shape
 
-    if (tf.rank(elements) == 0):
+    if tf.rank(elements) == 0:
         elements = tf.reshape(elements, [1])
-    if (tf.rank(test_elements) == 0):
+    if tf.rank(test_elements) == 0:
         test_elements = tf.reshape(test_elements, [1])
-    if (not assume_unique):
+    if not assume_unique:
         test_elements = tf.unique(tf.reshape(test_elements, [-1]))[0]
 
     elements = tf.reshape(elements, [-1])
