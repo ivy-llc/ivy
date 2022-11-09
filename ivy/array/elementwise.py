@@ -2135,7 +2135,14 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the rounded result for each element in ``self``.
-            The returned array must have the same data type as ``self``.
+            The returned array must have the same data type as ``self``
+
+        Examples
+        --------
+        >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+        >>> y = x.trunc()
+        >>> print(y)
+        ivy.array([-1.,  0.,  3., -0.])
         """
         return ivy.trunc(self._data, out=out)
 
