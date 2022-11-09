@@ -535,7 +535,7 @@ from ivy.functional.ivy import (
     general,
     gradients,
     layers,
-    linear_algebra,
+    linalg,
     losses,
     manipulation,
     norms,
@@ -559,7 +559,7 @@ add_ivy_array_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -584,7 +584,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -610,7 +610,7 @@ add_ivy_container_instance_methods(
         general,
         gradients,
         layers,
-        linear_algebra,
+        linalg,
         losses,
         manipulation,
         norms,
@@ -629,6 +629,7 @@ class GlobalsDict(dict):
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
+    __name__ = dict.__name__
 
 
 # defines ivy.globals attribute

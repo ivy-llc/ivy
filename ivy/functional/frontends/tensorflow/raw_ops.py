@@ -13,8 +13,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
-    inputs = ivy.array(inputs)
-    return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
+    return ivy.sum(inputs, dtype=inputs.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -190,6 +189,11 @@ def Inv(*, x, name="Inv"):
 
 
 @to_ivy_arrays_and_back
+def Reciprocal(*, x, name=None):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 
@@ -307,6 +311,11 @@ def NthElement(*, input, n, reverse=False, name="NthElement"):
 @to_ivy_arrays_and_back
 def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
+
+
+@to_ivy_arrays_and_back
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
 
 
 Relu = to_ivy_arrays_and_back(
@@ -427,3 +436,24 @@ Sigmoid = to_ivy_arrays_and_back(
 @to_ivy_arrays_and_back
 def Softplus(features, name="Softplus"):
     return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
+def Xdivy(*, x, y, name="Xdivy"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def Xlog1py(*, x, y, name="Xlog1py"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.multiply(x, ivy.log1p(y))
+
+
+@to_ivy_arrays_and_back
+def Xlogy(*, x, y, name="Xlogy"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.multiply(x, ivy.log(y))
