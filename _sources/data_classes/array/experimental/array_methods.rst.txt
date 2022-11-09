@@ -32,6 +32,7 @@ Array methods
    array_methods/max_pool1d.rst
    array_methods/max_pool3d.rst
    array_methods/avg_pool3d.rst
+   array_methods/dct.rst
    array_methods/diagflat.rst
    array_methods/kron.rst
    array_methods/moveaxis.rst

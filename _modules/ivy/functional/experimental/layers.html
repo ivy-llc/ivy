@@ -128,13 +128,15 @@
            <div itemprop="articleBody">
              
   <h1>Source code for ivy.functional.experimental.layers</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">integer_arrays_to_float</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
 <div class="viewcode-block" id="max_pool1d"><a class="viewcode-back" href="../../../../functional/experimental/layers/max_pool1d.html#ivy.functional.experimental.layers.max_pool1d">[docs]</a><span class="nd">@handle_out_argument</span>
@@ -470,6 +472,106 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">avg_pool3d</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dct"><a class="viewcode-back" href="../../../../functional/experimental/layers/dct.html#ivy.functional.experimental.layers.dct">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@integer_arrays_to_float</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">dct</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ortho&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the 1D Discrete Cosine Tranformation of a given signal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        The input signal.</span>
+<span class="sd">    type</span>
+<span class="sd">        The type of the dct. Must be 1, 2, 3 or 4.</span>
+<span class="sd">    n</span>
+<span class="sd">        The lenght of the transform. If n is less than the input signal lenght,</span>
+<span class="sd">        then x is truncated, if n is larger then x is zero-padded.</span>
+<span class="sd">    axis</span>
+<span class="sd">        The axis to compute the DCT along.</span>
+<span class="sd">    norm</span>
+<span class="sd">        The type of normalization to be applied. Must be either None or &quot;ortho&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Array containing the transformed input.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([8, 16, 24, 32, 40, 48, 56, 64])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=2, n=None, norm=&#39;ortho&#39;)</span>
+<span class="sd">    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]], </span>
+<span class="sd">               [[1,  2,  3,  4], [ 5,  6,  7,  8]]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=1, n=None, axis=0, norm=None)</span>
+<span class="sd">    ivy.array([[[ 9., 18., 27., 36.],</span>
+<span class="sd">                [45., 54., 63., 72.]],</span>
+<span class="sd">               [[ 7., 14., 21., 28.],</span>
+<span class="sd">                [35., 42., 49., 56.]]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[ 8.1, 16.2, 24.3, 32.4],</span>
+<span class="sd">    ...                [40.5, 48.6, 56.7, 64.8]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros((2, 4), dtype=ivy.float32)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=1, n=None, norm=None, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[ 1.22e+02, -3.24e+01,  1.91e-06, -8.10e+00],</span>
+<span class="sd">               [ 3.16e+02, -3.24e+01,  3.81e-06, -8.10e+00]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([8., 16., 24., 32., 40., 48., 56., 64.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=4, n=None, norm=None, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([ 279. , -280. ,  128. , -115. ,   83.7,  -79.5,   69.8,  -68.7])</span>
+
+<span class="sd">    With one :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),</span>
+<span class="sd">    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=3, n=None, norm=&#39;ortho&#39;)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([79.5, -70.4, 30., -23.6, 13.9, -10.1, 5.2, -1.95]),</span>
+<span class="sd">        b: ivy.array([9.94, -8.8, 3.75, -2.95, 1.74, -1.26, 0.65, -0.244])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),</span>
+<span class="sd">    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))</span>
+<span class="sd">    &gt;&gt;&gt; container_n = ivy.Container(a=9, b=4)</span>
+<span class="sd">    &gt;&gt;&gt; container_type = ivy.Container(a=2, b=1)</span>
+<span class="sd">    &gt;&gt;&gt; container_norm = ivy.Container(a=&quot;ortho&quot;, b=None)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=container_type, n=container_n, norm=container_norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,</span>
+<span class="sd">                    -5.89]),</span>
+<span class="sd">        b: ivy.array([15., -4., 0., -1.])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 </pre></div>
 

@@ -1920,7 +1920,7 @@
 
 <span class="c1">#ivy.container.experimental.layers</span>
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -2480,6 +2480,122 @@
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([], shape=(2, 0, 2, 2)),</span>
 <span class="sd">        b: (&lt;class ivy.array.array.Array&gt; shape=[2, 3, 2, 2])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="static_dct"><a class="viewcode-back" href="../../../../data_classes/container/experimental/container_methods/static_dct.html#ivy.container.experimental.container_methods.static_dct">[docs]</a><span class="k">def</span> <span class="nf">static_dct</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ortho&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;ivy.Container static method variant of ivy.dct. This method simply wraps</span>
+<span class="sd">    the function, and so the docstring for ivy.dct also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        Container with the input signals.</span>
+<span class="sd">    type</span>
+<span class="sd">        The type of the dct. Must be 1, 2, 3 or 4.</span>
+<span class="sd">    n</span>
+<span class="sd">        The lenght of the transform. If n is less than the input signal lenght,</span>
+<span class="sd">        then x is truncated, if n is larger than x is zero-padded.</span>
+<span class="sd">    norm</span>
+<span class="sd">        The type of normalization to be applied. Must be either None or &quot;ortho&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The transformed input.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With one :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),</span>
+<span class="sd">    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.Container.static_dct(x, type=2, norm=&#39;ortho&#39;)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,</span>
+<span class="sd">                    -0.406]),</span>
+<span class="sd">        b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,</span>
+<span class="sd">                    -0.0507])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([  8, 16,  24,  32,   40,   48,   56,   64]),</span>
+<span class="sd">    ...                   b=ivy.array([11., 54, 23., 13., 255., 255., 132., 182.]))</span>
+<span class="sd">    &gt;&gt;&gt; n = ivy.Container(a=9, b=5)</span>
+<span class="sd">    &gt;&gt;&gt; type = ivy.Container(a=2, b=4)</span>
+<span class="sd">    &gt;&gt;&gt; norm = ivy.Container(a=&quot;ortho&quot;, b=None)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.Container.static_dct(x, type=type, n=n, norm=norm)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,</span>
+<span class="sd">                    -5.89]),</span>
+<span class="sd">        b: ivy.array([242., -253., 286., -515., 467.])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="dct"><a class="viewcode-back" href="../../../../data_classes/container/experimental/container_methods/dct.html#ivy.container.experimental.container_methods.dct">[docs]</a><span class="k">def</span> <span class="nf">dct</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">norm</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ortho&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.dct. This method simply wraps</span>
+<span class="sd">    the function, and so the docstring for ivy.dct also applies to this method</span>
+<span class="sd">    with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        Container with the input signals.</span>
+<span class="sd">    type</span>
+<span class="sd">        The type of the dct. Must be 1, 2, 3 or 4.</span>
+<span class="sd">    n</span>
+<span class="sd">        The lenght of the transform. If n is less than the input signal lenght,</span>
+<span class="sd">        then x is truncated, if n is larger then x is zero-padded.</span>
+<span class="sd">    norm</span>
+<span class="sd">        The type of normalization to be applied. Must be either None or &quot;ortho&quot;.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The transformed input.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),</span>
+<span class="sd">    ...                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))</span>
+<span class="sd">    &gt;&gt;&gt; x.dct(type=2, norm=&#39;ortho&#39;)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,</span>
+<span class="sd">                    -0.406]),</span>
+<span class="sd">        b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,</span>
+<span class="sd">                    -0.0507])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>

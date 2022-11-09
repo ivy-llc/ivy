@@ -61,6 +61,8 @@ Container methods
    container_methods/avg_pool3d.rst
    container_methods/static_avg_pool2d.rst
    container_methods/avg_pool2d.rst
+   container_methods/static_dct.rst
+   container_methods/dct.rst
    container_methods/static_diagflat.rst
    container_methods/diagflat.rst
    container_methods/static_kron.rst
