@@ -2129,6 +2129,7 @@ def test_jax_numpy_kron(
     initial=st.one_of(st.floats(), st.none()),
     where=np_helpers.where(),
     keepdims=st.booleans(),
+    promote_integers=st.booleans(),
 )
 def test_jax_numpy_sum(
     dtype_and_x,
@@ -2138,6 +2139,7 @@ def test_jax_numpy_sum(
     native_array,
     keepdims,
     initial,
+    promote_integers,
     where,
     fw,
 ):
@@ -2158,4 +2160,5 @@ def test_jax_numpy_sum(
         keepdims=keepdims,
         initial=initial,
         where=where,
+        promote_integers=promote_integers,
     )
