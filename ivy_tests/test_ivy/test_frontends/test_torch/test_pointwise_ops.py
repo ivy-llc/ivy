@@ -1581,7 +1581,7 @@ def test_torch_addcdiv(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
-    value=st.floats(min_value=-100, max_value=100),
+    value=st.floats(min_value=-10, max_value=10),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.addcmul"
     ),
@@ -1603,6 +1603,7 @@ def test_torch_addcmul(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="addcmul",
+        atol=1e-2,
         input=x[0],
         tensor1=x[1],
         tensor2=x[2],
