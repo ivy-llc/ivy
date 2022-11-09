@@ -151,3 +151,7 @@ deserialize.supported_dtypes = {
         "float64",
     ),
 }
+
+
+def get(name, custom_objects=None):
+    return ivy.get(name, custom_objects=custom_objects)

@@ -149,7 +149,7 @@ def test_array__getitem__(
 ):
     query, x_dtype = query_dtype_and_x
     _, x = x_dtype
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = data.__getitem__(query)
     np_ret = x[0].__getitem__(query)
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -174,7 +174,7 @@ def test_array__setitem__(
 ):
     query, x_dtype = query_dtype_and_x
     _, x = x_dtype
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = data.__setitem__(query, val)
     np_ret = x[0].__setitem__(query, val)
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -198,9 +198,9 @@ def test_array__pos__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = +data
-    np_ret = +x[0]
+    np_ret = +ivy.asarray(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -222,9 +222,9 @@ def test_array__neg__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = -data
-    np_ret = -x[0]
+    np_ret = -ivy.asarray(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -253,8 +253,8 @@ def test_array__pow__(
         x[1] = np.abs(x[1])
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = Array(x[0])
-    power = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    power = Array(ivy.asarray(x[1]))
     ret = pow(data, power)
     np_ret = pow(x[0], x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -286,10 +286,10 @@ def test_array__rpow__(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = Array(x[1])
-    power = Array(x[0])
+    data = Array(ivy.asarray(x[1]))
+    power = Array(ivy.asarray(x[0]))
     ret = data.__rpow__(power)
-    np_ret = x[1].__rpow__(x[0])
+    np_ret = x[1].__rpow__((x[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -319,8 +319,8 @@ def test_array__ipow__(
 
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
-    data = Array(x[0])
-    power = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    power = Array(ivy.asarray(x[1]))
     ret = data.__ipow__(power)
     np_ret = pow(x[0], x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -349,8 +349,8 @@ def test_array__add__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data + other
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -379,8 +379,8 @@ def test_array__radd__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__radd__(other)
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -409,8 +409,8 @@ def test_array__iadd__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__iadd__(other)
     np_ret = x[0] + x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -439,8 +439,8 @@ def test_array__sub__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data - other
     np_ret = x[0] - x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -469,8 +469,8 @@ def test_array__rsub__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rsub__(other)
     np_ret = x[1] - x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -499,8 +499,8 @@ def test_array__isub__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__isub__(other)
     np_ret = x[0] - x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -529,8 +529,8 @@ def test_array__mul__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data * other
     np_ret = x[0] * x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -559,8 +559,8 @@ def test_array__rmul__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rmul__(other)
     np_ret = x[0] * x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -589,10 +589,10 @@ def test_array__imul__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__imul__(other)
-    np_ret = x[0] * x[1]
+    np_ret = ivy.asarray(x[0]) * ivy.asarray(x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -619,8 +619,9 @@ def test_array__mod__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    assume(not np.any(np.isclose(x[1], 0)))
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data % other
     np_ret = x[0] % x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -649,8 +650,9 @@ def test_array__rmod__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    assume(not np.any(np.isclose(x[0], 0)))
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rmod__(other)
     np_ret = x[1] % x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -679,8 +681,9 @@ def test_array__imod__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    assume(not np.any(np.isclose(x[1], 0)))
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__imod__(other)
     np_ret = x[0] % x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -708,10 +711,11 @@ def test_array__divmod__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
-    ret = divmod(data, other)
-    np_ret = divmod(x[0], x[1])
+    assume(not np.any(np.isclose(x[1], 0)))
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
+    ret = data.__divmod__(other)
+    np_ret = np.asarray(divmod(x[0], x[1]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -737,10 +741,11 @@ def test_array__rdivmod__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    assume(not np.any(np.isclose(x[0], 0)))
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rdivmod__(other)
-    np_ret = divmod(x[1], x[0])
+    np_ret = np.asarray(divmod(x[1], x[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -768,11 +773,10 @@ def test_array__truediv__(
 ):
     _, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data / other
-    dtype = ivy.dtype(ivy.to_numpy(ret))
-    np_ret = np.asarray(x[0] / x[1], dtype=dtype)
+    np_ret = np.asarray(x[0] / x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -798,13 +802,12 @@ def test_array__truediv__(
 def test_array__rtruediv__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
+    dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rtruediv__(other)
-    dtype = ivy.dtype(ivy.to_numpy(ret))
-    np_ret = np.asarray(x[1] / x[0], dtype=dtype)
+    np_ret = np.asarray(x[1] / x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -830,13 +833,12 @@ def test_array__rtruediv__(
 def test_array__itruediv__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
+    dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__itruediv__(other)
-    dtype = ivy.dtype(ivy.to_numpy(ret))
-    np_ret = np.asarray(x[0] / x[1], dtype=dtype)
+    np_ret = np.asarray(x[0] / x[1], dtype=dtype[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -853,8 +855,7 @@ def test_array__itruediv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=4,
         shared_dtype=True,
         safety_factor_scale="linear",
     ),
@@ -864,10 +865,10 @@ def test_array__floordiv__(
 ):
     _, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
-    ret = data // other
-    np_ret = np.floor((x[0] / x[1])).astype(x[0].dtype)
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
+    ret = data.__floordiv__(other)
+    np_ret = x[0] // x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -875,6 +876,7 @@ def test_array__floordiv__(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
+            atol=1,
         )
 
 
@@ -884,8 +886,7 @@ def test_array__floordiv__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        large_abs_safety_factor=2.5,
-        small_abs_safety_factor=2.5,
+        large_abs_safety_factor=4,
         shared_dtype=True,
         safety_factor_scale="linear",
     ),
@@ -893,12 +894,12 @@ def test_array__floordiv__(
 def test_array__rfloordiv__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
+    dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rfloordiv__(other)
-    np_ret = np.floor(x[1] / x[0]).astype(x[0].dtype)
+    np_ret = x[1] // x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -906,6 +907,7 @@ def test_array__rfloordiv__(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
+            atol=1,
         )
 
 
@@ -926,10 +928,10 @@ def test_array__ifloordiv__(
 ):
     _, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__ifloordiv__(other)
-    np_ret = np.floor(x[0] / x[1]).astype(x[0].dtype)
+    np_ret = x[0] // x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -937,6 +939,7 @@ def test_array__ifloordiv__(
             ret_np_flat=ret,
             ret_np_from_gt_flat=ret_gt,
             ground_truth_backend="numpy",
+            atol=1,
         )
 
 
@@ -952,8 +955,8 @@ def test_array__matmul__(
 ):
     _, x1 = x1
     _, x2 = x2
-    data = Array(x1)
-    other = Array(x2)
+    data = Array(ivy.asarray(x1))
+    other = Array(ivy.asarray(x2))
     ret = data @ other
     np_ret = x1 @ x2
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -978,8 +981,8 @@ def test_array__rmatmul__(
 ):
     _, x1 = x1
     _, x2 = x2
-    data = Array(x1)
-    other = Array(x2)
+    data = Array(ivy.asarray(x1))
+    other = Array(ivy.asarray(x2))
     ret = data.__rmatmul__(other)
     np_ret = x2 @ x1
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1004,8 +1007,8 @@ def test_array__imatmul__(
 ):
     _, x1 = x1
     _, x2 = x2
-    data = Array(x1)
-    other = Array(x2)
+    data = Array(ivy.asarray(x1))
+    other = Array(ivy.asarray(x2))
     ret = data.__imatmul__(other)
     np_ret = x1 @ x2
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1029,7 +1032,7 @@ def test_array__abs__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = abs(data)
     np_ret = abs(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1054,7 +1057,7 @@ def test_array__float__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = float(data)
     np_ret = float(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1081,7 +1084,7 @@ def test_array__int__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = ivy.array(x[0])
+    data = ivy.array(ivy.asarray(x[0]))
     ret = int(data)
     np_ret = int(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1108,7 +1111,7 @@ def test_array__bool__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = bool(data)
     np_ret = bool(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1134,8 +1137,8 @@ def test_array__lt__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data < other
     np_ret = x[0] < x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1161,10 +1164,10 @@ def test_array__le__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data <= other
-    np_ret = x[0] <= x[1]
+    np_ret = ivy.asarray(x[0]) <= ivy.asarray(x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -1188,8 +1191,8 @@ def test_array__eq__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data == other
     np_ret = x[0] == x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1215,10 +1218,10 @@ def test_array__ne__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data != other
-    np_ret = x[0] != x[1]
+    np_ret = ivy.asarray(x[0]) != ivy.asarray(x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=np_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -1242,8 +1245,8 @@ def test_array__gt__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data > other
     np_ret = x[0] > x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1269,8 +1272,8 @@ def test_array__ge__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data >= other
     np_ret = x[0] >= x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1296,8 +1299,8 @@ def test_array__and__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data & other
     np_ret = x[0] & x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1323,8 +1326,8 @@ def test_array__rand__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rand__(other)
     np_ret = x[1] & x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1350,8 +1353,8 @@ def test_array__iand__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__iand__(other)
     np_ret = x[1] & x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1377,8 +1380,8 @@ def test_array__or__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data | other
     np_ret = x[0] | x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1404,8 +1407,8 @@ def test_array__ror__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__ror__(other)
     np_ret = x[1] | x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1424,15 +1427,15 @@ def test_array__ror__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__ior__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__ior__(other)
     np_ret = x[0] | x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1450,14 +1453,13 @@ def test_array__ior__(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
-        shared_dtype=True,
     ),
 )
 def test_array__invert__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = ~data
     np_ret = ~x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1476,15 +1478,15 @@ def test_array__invert__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__xor__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data ^ other
     np_ret = x[0] ^ x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1503,15 +1505,15 @@ def test_array__xor__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__rxor__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rxor__(other)
     np_ret = x[1] ^ x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1530,15 +1532,15 @@ def test_array__rxor__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__ixor__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__ixor__(other)
     np_ret = x[0] ^ x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1557,16 +1559,16 @@ def test_array__ixor__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__lshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data << other
     np_ret = x[0] << x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1585,16 +1587,16 @@ def test_array__lshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__rlshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rlshift__(other)
     np_ret = x[1] << x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1613,16 +1615,16 @@ def test_array__rlshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__ilshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__ilshift__(other)
     np_ret = x[0] << x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1648,9 +1650,10 @@ def test_array__ilshift__(
 def test_array__rshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data >> other
     np_ret = x[0] >> x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1669,16 +1672,16 @@ def test_array__rshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__rrshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[0])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__rrshift__(other)
     np_ret = x[1] >> x[0]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1697,16 +1700,16 @@ def test_array__rrshift__(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
-        min_value=0,
-        shared_dtype=True,
+        array_api_dtypes=True,
     ),
 )
 def test_array__irshift__(
     dtype_and_x,
 ):
-    _, x = dtype_and_x
-    data = Array(x[0])
-    other = Array(x[1])
+    dtype, x = dtype_and_x
+    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    data = Array(ivy.asarray(x[0]))
+    other = Array(ivy.asarray(x[1]))
     ret = data.__irshift__(other)
     np_ret = x[0] >> x[1]
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1730,7 +1733,7 @@ def test_array__deepcopy__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = data.__deepcopy__()
     py_ret = deepcopy(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -1756,9 +1759,9 @@ def test_array__len__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = len(data)
-    py_ret = len(x[0])
+    py_ret = len(ivy.asarray(x[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=py_ret)
     for (_, _) in zip(ret, ret_gt):
@@ -1782,7 +1785,7 @@ def test_array__iter__(
     dtype_and_x,
 ):
     _, x = dtype_and_x
-    data = Array(x[0])
+    data = Array(ivy.asarray(x[0]))
     ret = data.__iter__()
     np_ret = iter(x[0])
     ret = helpers.flatten_and_to_np(ret=ret)

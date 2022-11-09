@@ -16,6 +16,13 @@ def tan(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def remainder(input, other, *, out=None):
+    if ivy.is_array(input) and ivy.isscalar(other):
+        other = ivy.full(input.shape, other)
+    return ivy.remainder(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 
@@ -277,6 +284,11 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def floor(input, *, out=None):
+    return ivy.floor(input, out=out)
+
+
+@to_ivy_arrays_and_back
 def flipud(input):
     return ivy.flipud(input)
 
@@ -290,3 +302,14 @@ def deg2rad(input, *, out=None):
     if "int" in input.dtype:
         input = input.astype("float32")
     return ivy.array(input * 3.1416 / 180, out=out)
+
+
+arcsinh = asinh
+
+
+divide = div
+
+
+@to_ivy_arrays_and_back
+def true_divide(input, other, *, out=None):
+    return ivy.divide(input, other, out=out)
