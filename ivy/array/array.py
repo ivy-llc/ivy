@@ -240,9 +240,9 @@ class Array(
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         rep = (
-            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
+            ivy.vec_sig_fig(np.array(self._data), sig_fig)
             if self._size > 0
-            else ivy.to_numpy(self._data)
+            else np.array(self._data)
         )
         with np.printoptions(precision=dec_vals):
             return (
@@ -465,10 +465,10 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return divmod(self._data, other)
+        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
 
     def __rdivmod__(self, other):
-        return divmod(other, self._data)
+        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
 
     def __truediv__(self, other):
         return ivy.divide(self._data, other)

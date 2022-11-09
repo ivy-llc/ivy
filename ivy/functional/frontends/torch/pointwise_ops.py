@@ -16,6 +16,13 @@ def tan(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def remainder(input, other, *, out=None):
+    if ivy.is_array(input) and ivy.isscalar(other):
+        other = ivy.full(input.shape, other)
+    return ivy.remainder(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
 def atan(input, *, out=None):
     return ivy.atan(input, out=out)
 

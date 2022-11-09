@@ -308,10 +308,10 @@ def test_numpy_instance_argsort(
     ),
 )
 def test_numpy_ndarray_mean(
-        dtype_x_axis,
-        as_variable,
-        num_positional_args_method,
-        native_array,
+    dtype_x_axis,
+    as_variable,
+    num_positional_args_method,
+    native_array,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(

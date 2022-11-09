@@ -184,7 +184,7 @@ def fmax(
     x1
         First input array.
     x2
-        Second input array
+        Second input array.
     out
         optional output array, for writing the result to.
 
@@ -203,7 +203,7 @@ def fmax(
     >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
     >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
     >>> ivy.fmax(x1, x2)
-    ivy.array([ 0,  0,  nan])
+    ivy.array([ 0.,  0.,  nan])
     """
     return ivy.current_backend().fmax(x1, x2, out=out)
 
@@ -522,7 +522,7 @@ def isposinf(
     Returns
     -------
     ret
-        Returns a boolean array with values True where 
+        Returns a boolean array with values True where
         the corresponding element of the input is positive
         infinity and values False where the element of the
         input is not positive infinity.
@@ -561,7 +561,7 @@ def isneginf(
     Returns
     -------
     ret
-        Returns a boolean array with values True where 
+        Returns a boolean array with values True where
         the corresponding element of the input is negative
         infinity and values False where the element of the
         input is not negative infinity.
@@ -632,12 +632,7 @@ def nan_to_num(
     ivy.array([1.,   2.,   3.,   5e+100])
     """
     return ivy.current_backend(x).nan_to_num(
-        x,
-        copy=copy,
-        nan=nan,
-        posinf=posinf,
-        neginf=neginf,
-        out=out
+        x, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
     )
 
 
@@ -646,7 +641,7 @@ def nan_to_num(
 @handle_nestable
 def logaddexp2(
     x1: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
-    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],    
+    x2: Union[ivy.Array, ivy.NativeArray, float, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
@@ -675,3 +670,36 @@ def logaddexp2(
     ivy.array([4.169925, 5.169925, 6.169925])
     """
     return ivy.current_backend(x1, x2).logaddexp2(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def signbit(
+    x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns element-wise True where signbit is set (less than zero).
+
+    Parameters
+    ----------
+    x
+        Array-like input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Output array, or reference to out if that was supplied.
+        This is a scalar if x is a scalar.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, -2, 3])
+    >>> ivy.signbit(x)
+    ivy.array([False, True, False])
+    """
+    return ivy.current_backend(x).signbit(x, out=out)
