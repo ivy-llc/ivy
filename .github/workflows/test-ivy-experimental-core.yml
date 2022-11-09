@@ -1,4 +1,4 @@
-name: test-ivy-experimental-core
+name: test-experimental-core-ivy
 on:
   push:
   pull_request:

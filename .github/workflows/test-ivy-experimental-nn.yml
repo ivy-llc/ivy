@@ -1,4 +1,4 @@
-name: test-ivy-experimental-nn
+name: test-experimental-nn-ivy
 on:
   push:
   pull_request:
