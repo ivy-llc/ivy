@@ -1,0 +1,17 @@
+Linear algebra
+==============
+
+.. automodule:: ivy.array.experimental.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Linear algebra
+
+   linear_algebra/ArrayWithLinearAlgebraExperimental.rst
+

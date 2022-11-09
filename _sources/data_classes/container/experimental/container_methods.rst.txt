@@ -103,4 +103,6 @@ Container methods
    container_methods/median.rst
    container_methods/static_nanmean.rst
    container_methods/nanmean.rst
+   container_methods/static_unravel_index.rst
+   container_methods/unravel_index.rst
 

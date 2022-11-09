@@ -50,7 +50,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/extensions.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
@@ -1795,6 +1795,8 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
 <span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(U.shape, S.shape, Vh.shape)</span>
@@ -1806,13 +1808,39 @@
 <span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &gt; 1e-3).sum())</span>
 <span class="sd">    ivy.array(0)</span>
 
-<span class="sd">    &gt;&gt;&gt; print((reconstructed_x - x &lt; -1e-3).sum())</span>
-<span class="sd">    ivy.array(0)</span>
+<span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x, full_matrices = False)</span>
+<span class="sd">    &gt;&gt;&gt; print(U.shape, S.shape, Vh.shape)</span>
+<span class="sd">    (9, 6) (6,) (6, 6)</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.random_normal(shape = (9, 6))</span>
-<span class="sd">    &gt;&gt;&gt; S = ivy.svd(x, compute_uv = False)</span>
-<span class="sd">    print(S)</span>
 
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])</span>
+<span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(U.shape, S.shape, Vh.shape)</span>
+<span class="sd">    (3, 3) (3,) (3, 3)</span>
+
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],</span>
+<span class="sd">    ...                                [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),</span>
+<span class="sd">    ...                   b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],</span>
+<span class="sd">    ...                                [2.0, 5.0, 3.0, 4.0, 10.0],</span>
+<span class="sd">    ...                                [2.0, 11.0, 6.0, 1.0, 3.0],</span>
+<span class="sd">    ...                                [8.0, 3.0, 4.0, 5.0, 9.0]]))</span>
+<span class="sd">    &gt;&gt;&gt; U, S, Vh = ivy.svd(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(U.shape)</span>
+<span class="sd">    {</span>
+<span class="sd">    a: [</span>
+<span class="sd">        4,</span>
+<span class="sd">        4</span>
+<span class="sd">    ],</span>
+<span class="sd">    b: [</span>
+<span class="sd">        4,</span>
+<span class="sd">        4</span>
+<span class="sd">    ]</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">compute_uv</span><span class="o">=</span><span class="n">compute_uv</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="n">full_matrices</span><span class="p">)</span></div>
 

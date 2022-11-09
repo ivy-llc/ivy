@@ -1,0 +1,18 @@
+Linear algebra
+==============
+
+.. automodule:: ivy.functional.experimental.linear_algebra
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Linear algebra
+
+   linear_algebra/diagflat.rst
+   linear_algebra/kron.rst
+

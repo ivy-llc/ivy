@@ -53,4 +53,5 @@ Array methods
    array_methods/msort.rst
    array_methods/median.rst
    array_methods/nanmean.rst
+   array_methods/unravel_index.rst
 
