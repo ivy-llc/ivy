@@ -2485,7 +2485,7 @@ def test_isreal(
     )
 
 
-# gcd
+# diff
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
