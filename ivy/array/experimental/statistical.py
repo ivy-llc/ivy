@@ -71,8 +71,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             If this is set to True, the axes which are reduced are left in the result
             as dimensions with size one. With this option, the result will broadcast
             correctly against the original a. If the value is anything but the default,
-            then keepdims will be passed through to the mean or sum methods of 
-            sub-classes of ndarray. If the sub-classes methods does not implement 
+            then keepdims will be passed through to the mean or sum methods of
+            sub-classes of ndarray. If the sub-classes methods does not implement
             keepdims any exceptions will be raised.
         dtype
             The desired data type of returned tensor. Default is None.
@@ -93,9 +93,5 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         ivy.array([2.,  4.])
         """
         return ivy.nanmean(
-            self._data,
-            axis=axis,
-            keepdims=keepdims,
-            dtype=dtype,
-            out=out
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
         )

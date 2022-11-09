@@ -1188,7 +1188,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1205,7 +1205,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1215,7 +1215,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ivy.Container.static_vsplit(ary, 2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
@@ -1254,7 +1254,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1272,7 +1272,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1282,16 +1282,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ary.vsplit(2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
         return self.static_vsplit(
-            self,
-            indices_or_sections=indices_or_sections,
-            out=out
+            self, indices_or_sections=indices_or_sections, out=out
         )
 
     @staticmethod
@@ -1322,7 +1320,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1339,7 +1337,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1349,7 +1347,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ivy.Container.static_dsplit(ary, 2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
@@ -1388,7 +1386,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1406,7 +1404,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1416,16 +1414,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ary.dsplit(2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
         return self.static_dsplit(
-            self,
-            indices_or_sections=indices_or_sections,
-            out=out
+            self, indices_or_sections=indices_or_sections, out=out
         )
 
     def dstack(

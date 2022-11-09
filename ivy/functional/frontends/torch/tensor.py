@@ -51,7 +51,7 @@ class Tensor:
 
     def cosh_(self):
         self.data = self.cosh()
-        return self.data    
+        return self.data
 
     def arcsin(self, *, out=None):
         return torch_frontend.arcsin(self.data, out=out)
@@ -75,10 +75,10 @@ class Tensor:
 
     def tan(self, *, out=None):
         return torch_frontend.tan(self.data, out=out)
-    
+
     def tanh(self, *, out=None):
         return torch_frontend.tanh(self.data, out=out)
-    
+
     def tanh_(self):
         self.data = self.tanh()
         return self.data

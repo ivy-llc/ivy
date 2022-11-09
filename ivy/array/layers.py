@@ -82,13 +82,13 @@ class ArrayWithLayers(abc.ABC):
         )
 
     def dropout1d(
-            self: ivy.Array,
-            prob: float,
-            /,
-            *,
-            training: bool = True,
-            data_format: str = "NWC",
-            out: Optional[ivy.Array] = None,
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.dropout1d(
             self._data,

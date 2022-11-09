@@ -801,10 +801,10 @@ class ContainerWithLayersExperimental(ContainerBase):
         }
         """
         return self.static_dct(
-            self, 
-            type=type, 
-            n=n, 
-            axis=axis, 
-            norm=norm, 
+            self,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
             out=out,
         )

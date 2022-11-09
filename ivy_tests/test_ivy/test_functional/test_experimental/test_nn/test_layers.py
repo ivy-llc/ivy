@@ -233,7 +233,7 @@ def test_dct(
     container,
     instance_method,
     fw,
-):  
+):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_function(
         input_dtypes=input_dtype,

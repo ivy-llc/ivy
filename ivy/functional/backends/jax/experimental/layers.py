@@ -251,7 +251,7 @@ def dct(
     elif type == 2:
         dct_out = jax.scipy.fft.dct(x, type=2, n=n, axis=axis, norm=norm)
         return dct_out
-    
+
     elif type == 3:
         scale_dims = [1] * len(x.shape)
         scale_dims[axis] = axis_dim
