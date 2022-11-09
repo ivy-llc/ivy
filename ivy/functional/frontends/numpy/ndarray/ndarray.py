@@ -89,7 +89,8 @@ class ndarray:
             out=out,
         )
 
-    def clip(self, 
+    def clip(
+        self, 
         a_min, 
         a_max, 
         /, 
@@ -100,7 +101,7 @@ class ndarray:
         order="k", 
         dtype=None, 
         subok=True
-        ):
+    ):
         return np_frontend.clip(
             self.data, 
             a_min,
