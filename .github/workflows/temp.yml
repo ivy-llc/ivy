@@ -19,7 +19,7 @@ jobs:
          run: |
            mkdir tests
            cd tests
-           echo "" > tests.pbz2
+           echo "Hello" > tests.pbz2
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
