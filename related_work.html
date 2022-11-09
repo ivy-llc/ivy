@@ -147,46 +147,44 @@
 <h1>Related Work<a class="headerlink" href="#related-work" title="Permalink to this heading"></a></h1>
 <p>In this section, we explain how Ivy compares to many other very important and related pieces of work, which also address fragmentation but at other areas within the ML stack.</p>
 <p>Firstly, we need to look at the overall ML stack, and understand how the high level frameworks relate to the low level components.</p>
-<p>In order to conceptualize this rather complex hierarchy, we have broken the ML stack into 9 groups, which are: <a class="reference internal" href="related_work/what_does_ivy_add.html#api-standards"><span class="std std-ref">API Standards</span></a>, <a class="reference internal" href="related_work/wrapper_frameworks.html#wrapper-frameworks"><span class="std std-ref">Wrapper Frameworks</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#frameworks"><span class="std std-ref">Frameworks</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#graph-tracers"><span class="std std-ref">Graph Tracers</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#exchange-formats"><span class="std std-ref">Exchange Formats</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#compiler-infrastructure"><span class="std std-ref">Compiler Infrastructure</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#multi-vendor-compiler-frameworks"><span class="std std-ref">Multi-Vendor Compiler Frameworks</span></a>, <a class="reference internal" href="related_work/what_does_ivy_add.html#vendor-specific-apis"><span class="std std-ref">Vendor-Specific APIs</span></a> and <a class="reference internal" href="related_work/what_does_ivy_add.html#vendor-specific-compilers"><span class="std std-ref">Vendor-Specific Compilers</span></a>, going from high level to low level respectively.</p>
+<p>In order to conceptualize this rather complex hierarchy, we have broken the ML stack into 9 groups, which are: <a class="reference internal" href="related_work/api_standards.html#rworks-api-standards"><span class="std std-ref">API Standards</span></a>, <a class="reference internal" href="related_work/wrapper_frameworks.html#rworks-wrapper-frameworks"><span class="std std-ref">Wrapper Frameworks</span></a>, <a class="reference internal" href="related_work/frameworks.html#rworks-frameworks"><span class="std std-ref">Frameworks</span></a>, <a class="reference internal" href="related_work/graph_tracers.html#rworks-graph-tracers"><span class="std std-ref">Graph Tracers</span></a>, <a class="reference internal" href="related_work/exchange_formats.html#rworks-exchange-formats"><span class="std std-ref">Exchange Formats</span></a>, <a class="reference internal" href="related_work/compiler_infrastructure.html#rworks-compiler-infrastructure"><span class="std std-ref">Compiler Infrastructure</span></a>, <a class="reference internal" href="related_work/multi_vendor_compiler_frameworks.html#rworks-multi-vendor-compiler-frameworks"><span class="std std-ref">Multi-Vendor Compiler Frameworks</span></a>, <a class="reference internal" href="related_work/vendor_specific_apis.html#rworks-vendor-specific-apis"><span class="std std-ref">Vendor-Specific APIs</span></a> and <a class="reference internal" href="related_work/vendor_specific_compilers.html#rworks-vendor-specific-compilers"><span class="std std-ref">Vendor-Specific Compilers</span></a>, going from high level to low level respectively.</p>
 <a class="reference internal image-reference" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/ml_stack.png?raw=true"><img alt="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/ml_stack.png?raw=true" src="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/ml_stack.png?raw=true" style="width: 100%;" /></a>
 <p>Each of these groups within the ML stack has it’s own sub-section, linked below, within which we discuss various related projects which operate at that particular level within the stack.</p>
 <p>We then compare Ivy to some other ML-unifying companies which are working on very important problems and are helping to unify the lower levels of the ML stack.
 We see these efforts as being very complimentary to Ivy’s vision for high level unification.</p>
 <p>Finally, we discuss how Ivy compares to each of these important works at all levels within the ML stack.</p>
 <div class="line-block">
-<div class="line">(a) <a class="reference internal" href="related_work/what_does_ivy_add.html#api-standards"><span class="std std-ref">API Standards</span></a> 🤝🏽</div>
-<div class="line-block">
+<div class="line">(a) <a class="reference internal" href="related_work/api_standards.html#rworks-api-standards"><span class="std std-ref">API Standards</span></a> 🤝🏽</div>
 <div class="line">Standardized APIs which similar libraries should adhere to</div>
 <div class="line"><br /></div>
-</div>
-<div class="line">(b) <a class="reference internal" href="related_work/wrapper_frameworks.html#wrapper-frameworks"><span class="std std-ref">Wrapper Frameworks</span></a> 🎁</div>
+<div class="line">(b) <a class="reference internal" href="related_work/wrapper_frameworks.html#rworks-wrapper-frameworks"><span class="std std-ref">Wrapper Frameworks</span></a> 🎁</div>
 <div class="line">Frameworks which wrap other ML frameworks</div>
 <div class="line"><br /></div>
-<div class="line">(c) <a class="reference internal" href="related_work/what_does_ivy_add.html#frameworks"><span class="std std-ref">Frameworks</span></a> 🔢</div>
+<div class="line">(c) <a class="reference internal" href="related_work/frameworks.html#rworks-frameworks"><span class="std std-ref">Frameworks</span></a> 🔢</div>
 <div class="line">Standalone ML Frameworks</div>
 <div class="line"><br /></div>
-<div class="line">(d) <a class="reference internal" href="related_work/what_does_ivy_add.html#graph-tracers"><span class="std std-ref">Graph Tracers</span></a> 🕸️</div>
+<div class="line">(d) <a class="reference internal" href="related_work/graph_tracers.html#rworks-graph-tracers"><span class="std std-ref">Graph Tracers</span></a> 🕸️</div>
 <div class="line">Extracting acyclic directed computation graphs from code</div>
 <div class="line"><br /></div>
-<div class="line">(e) <a class="reference internal" href="related_work/what_does_ivy_add.html#exchange-formats"><span class="std std-ref">Exchange Formats</span></a> 💱</div>
+<div class="line">(e) <a class="reference internal" href="related_work/exchange_formats.html#rworks-exchange-formats"><span class="std std-ref">Exchange Formats</span></a> 💱</div>
 <div class="line">File formats to exchange neural networks between frameworks</div>
 <div class="line"><br /></div>
-<div class="line">(f) <a class="reference internal" href="related_work/what_does_ivy_add.html#compiler-infrastructure"><span class="std std-ref">Compiler Infrastructure</span></a> 🔟️🏗️</div>
+<div class="line">(f) <a class="reference internal" href="related_work/compiler_infrastructure.html#rworks-compiler-infrastructure"><span class="std std-ref">Compiler Infrastructure</span></a> 🔟️🏗️</div>
 <div class="line">Infrastructure and standards to simplify the lives of compiler designers</div>
 <div class="line"><br /></div>
-<div class="line">(g) <a class="reference internal" href="related_work/what_does_ivy_add.html#multi-vendor-compiler-frameworks"><span class="std std-ref">Multi-Vendor Compiler Frameworks</span></a> 🖥️💻🔟</div>
+<div class="line">(g) <a class="reference internal" href="related_work/multi_vendor_compiler_frameworks.html#rworks-multi-vendor-compiler-frameworks"><span class="std std-ref">Multi-Vendor Compiler Frameworks</span></a> 🖥️💻🔟</div>
 <div class="line">Executing ML code on a variety of hardware targets</div>
 <div class="line"><br /></div>
-<div class="line">(h) <a class="reference internal" href="related_work/what_does_ivy_add.html#vendor-specific-apis"><span class="std std-ref">Vendor-Specific APIs</span></a> 💻🔢</div>
+<div class="line">(h) <a class="reference internal" href="related_work/vendor_specific_apis.html#rworks-vendor-specific-apis"><span class="std std-ref">Vendor-Specific APIs</span></a> 💻🔢</div>
 <div class="line">Interfacing with specific hardware in an intuitive manner</div>
 <div class="line"><br /></div>
-<div class="line">(i) <a class="reference internal" href="related_work/what_does_ivy_add.html#vendor-specific-compilers"><span class="std std-ref">Vendor-Specific Compilers</span></a> 💻🔟</div>
+<div class="line">(i) <a class="reference internal" href="related_work/vendor_specific_compilers.html#rworks-vendor-specific-compilers"><span class="std std-ref">Vendor-Specific Compilers</span></a> 💻🔟</div>
 <div class="line">Compiling code to specific hardware</div>
 <div class="line"><br /></div>
-<div class="line">(j) <a class="reference internal" href="related_work/ml_unifying_companies.html#ml-unifying-companies"><span class="std std-ref">ML-Unifying Companies</span></a> 📈</div>
+<div class="line">(j) <a class="reference internal" href="related_work/ml_unifying_companies.html#rworks-ml-unifying-companies"><span class="std std-ref">ML-Unifying Companies</span></a> 📈</div>
 <div class="line">Companies working towards unification in ML</div>
 <div class="line"><br /></div>
-<div class="line">(k) <a class="reference internal" href="related_work/what_does_ivy_add.html#what-does-ivy-add"><span class="std std-ref">What does Ivy Add?</span></a> 🟢</div>
+<div class="line">(k) <a class="reference internal" href="related_work/what_does_ivy_add.html#rworks-what-does-ivy-add"><span class="std std-ref">What does Ivy Add?</span></a> 🟢</div>
 <div class="line">How does Ivy fit into all of this?</div>
 </div>
 <div class="toctree-wrapper compound">

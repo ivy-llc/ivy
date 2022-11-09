@@ -151,7 +151,7 @@
            <div itemprop="articleBody">
              
   <section id="graph-tracers">
-<h1>Graph Tracers<a class="headerlink" href="#graph-tracers" title="Permalink to this heading"></a></h1>
+<span id="rworks-graph-tracers"></span><h1>Graph Tracers<a class="headerlink" href="#graph-tracers" title="Permalink to this heading"></a></h1>
 <p>Graph tracers enable acyclic directed computation graphs to be extracted from functions which operate on the tensors, expressed as source code in the framework.
 There is inevitably some overlap with the role of the lower level compilers here, but for the purpose of this discussion we consider tracers as being any tool which: execute the function to be traced and produce a computation graph consisting solely of the lowest level functions defined within the framework itself, without going any lower.
 In this light, the tracer does not need to know about the hardware, the compiler instruction set, or anything else lower level.
