@@ -366,6 +366,11 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
+@to_ivy_arrays_and_back
+def Squeeze(*, input, axis, name="Squeeze"):
+    return ivy.squeeze(input, axis=axis)
+
+
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
 
 
