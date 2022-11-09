@@ -217,5 +217,5 @@ def local_response_normalization(
             start_idx = c - depth_radius
             end_idx = c + depth_radius +1
             sqr_sum[p][c] = sum(ivy.pow(input_perm[p][max(start_idx,0):end_idx],2.0))
-    div = ivy.divide(input_perm, ivy.pow(math.add(math.scalar_mul(alpha,sqr_sum),bias), beta))
+    div = ivy.divide(input_perm, ivy.pow(ivy.add(math.scalar_mul(alpha,sqr_sum),bias), beta))
     return ivy.permute_dims(div,[0,2,3,1])
