@@ -4,21 +4,33 @@ import inspect
 from typing import Callable, Dict
 import functools
 
+import tensorflow as tf
+
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
 
 
-def tensorflow_array_to_ivy(x):
-    if isinstance(x, frontend.Tensor):
+def _tf_frontend_array_to_ivy(x):
+    if isinstance(x, frontend.EagerTensor):
         return x.data
     return x
 
 
 def ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return frontend.Tensor(x.data)
+        return frontend.EagerTensor(x.data)
     return x
+
+
+def _tf_array_to_ivy_array(x):
+    if isinstance(x, tf.Tensor):
+        return ivy.array(x)
+    return x
+
+
+def _to_ivy_array(x):
+    return _tf_frontend_array_to_ivy(_tf_array_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -49,10 +61,8 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
 
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, tensorflow_array_to_ivy, include_derived=True)
-        ivy_kwargs = ivy.nested_map(
-            kwargs, tensorflow_array_to_ivy, include_derived=True
-        )
+        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived=True)
+        ivy_kwargs = ivy.nested_map(kwargs, _to_ivy_array, include_derived=True)
         if has_out:
             ivy_kwargs["out"] = out
         return fn(*ivy_args, **ivy_kwargs)
