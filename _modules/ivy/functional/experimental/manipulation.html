@@ -784,17 +784,30 @@
         <span class="n">end</span> <span class="o">=</span> <span class="n">dim_length</span>
     <span class="k">elif</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">end</span> <span class="o">+=</span> <span class="n">dim_length</span>
-    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">input</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pre_ind_0</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ndindex</span><span class="p">(</span><span class="nb">input</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pre_ind_0</span> <span class="o">!=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;__len__&#39;</span><span class="p">):</span>
                 <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ind</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">input</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">pre_ind_0</span> <span class="o">=</span> <span class="n">ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="nb">input</span>
 
 
@@ -859,9 +872,13 @@
         <span class="n">old_length</span> <span class="o">-=</span> <span class="mi">1</span>
     <span class="k">if</span> <span class="n">left_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">chunk_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_length</span><span class="p">,</span> <span class="n">left_pad</span><span class="p">)</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="n">left_pad</span> <span class="o">-</span> <span class="n">edge_offset</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="n">chunk_length</span>
-        <span class="n">left_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">stop</span><span class="p">:</span><span class="n">start</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="n">left_pad</span> <span class="o">-</span> <span class="n">edge_offset</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop</span> <span class="o">+</span> <span class="n">chunk_length</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="n">start</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">start</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="n">left_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;odd&quot;</span><span class="p">:</span>
             <span class="n">left_chunk</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padded</span><span class="p">[</span><span class="n">left_pad</span> <span class="p">:</span> <span class="n">left_pad</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">-</span> <span class="n">left_chunk</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">left_pad</span> <span class="o">-</span> <span class="n">chunk_length</span>
@@ -870,9 +887,13 @@
         <span class="n">left_pad</span> <span class="o">-=</span> <span class="n">chunk_length</span>
     <span class="k">if</span> <span class="n">right_pad</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">chunk_length</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">old_length</span><span class="p">,</span> <span class="n">right_pad</span><span class="p">)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="o">-</span><span class="n">right_pad</span> <span class="o">+</span> <span class="n">edge_offset</span> <span class="o">-</span> <span class="mi">2</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="n">start</span> <span class="o">-</span> <span class="n">chunk_length</span>
-        <span class="n">right_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">stop</span><span class="p">:</span><span class="n">start</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">right_pad</span> <span class="o">+</span> <span class="n">edge_offset</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="n">start</span> <span class="o">-</span> <span class="n">chunk_length</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">stop</span> <span class="o">&gt;</span> <span class="n">start</span><span class="p">:</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">start</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">stop</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="n">tmp</span>
+        <span class="n">right_chunk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">padded</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;odd&quot;</span><span class="p">:</span>
             <span class="n">right_chunk</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padded</span><span class="p">[</span><span class="o">-</span><span class="n">right_pad</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">:</span> <span class="o">-</span><span class="n">right_pad</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_chunk</span>
         <span class="n">start</span> <span class="o">=</span> <span class="n">padded</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">right_pad</span>
@@ -914,10 +935,10 @@
 <span class="k">def</span> <span class="nf">_to_pairs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isscalar</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">),)</span> <span class="o">*</span> <span class="n">n</span>
-    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,):</span>
         <span class="k">return</span> <span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),)</span> <span class="o">*</span> <span class="n">n</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_equal</span><span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span>
         <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
         <span class="n">message</span><span class="o">=</span><span class="s2">&quot;values should be an integer or an iterable &quot;</span>
         <span class="s2">&quot;of ndim pairs where ndim is the number of &quot;</span>

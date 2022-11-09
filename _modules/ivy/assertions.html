@@ -344,6 +344,29 @@
                 <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">var</span><span class="o">.</span><span class="n">shape</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
+
+
+<span class="c1"># Torch Frontend</span>
+<div class="viewcode-block" id="check_torch_pad_input_valid"><a class="viewcode-back" href="../../assertions/check_torch_pad_input_valid.html#ivy.assertions.check_torch_pad_input_valid">[docs]</a><span class="k">def</span> <span class="nf">check_torch_pad_input_valid</span><span class="p">(</span><span class="n">padding</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">is</span> <span class="nb">tuple</span><span class="p">:</span>  
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                    <span class="s2">&quot;Each tuple pad width element must be of length 2, saw (</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span> 
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                    <span class="s2">&quot;Tuple padding length (</span><span class="si">{}</span><span class="s2">) must be even&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">))</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                    <span class="s2">&quot;Padding length (</span><span class="si">{}</span><span class="s2">) must be 1, 2, 4, or 6&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="nb">len</span><span class="p">(</span><span class="n">padding</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="p">)</span></div>
 </pre></div>
 
            </div>
