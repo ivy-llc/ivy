@@ -123,5 +123,5 @@ def test_nanmean(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype
+        dtype=dtype,
     )

@@ -648,13 +648,13 @@ def conv_general_transpose(
 
 
 def dropout1d(
-        x: np.ndarray,
-        prob: float,
-        /,
-        *,
-        training: bool = True,
-        data_format: str = 'NWC',
-        out: Optional[np.ndarray] = None,
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if training:
         if data_format == "NCW":
