@@ -1299,8 +1299,8 @@ def conv_general_dilated(
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D input x respectively
-    and filters arrays.
+    """Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
