@@ -356,6 +356,22 @@ def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def Sign(*, x, name="Sign"):
+    return ivy.sign(x)
+
+
 @to_ivy_arrays_and_back
 def Split(*, axis, value, num_split, name="Split"):
     return ivy.split(value, num_or_size_splits=num_split, axis=axis)
