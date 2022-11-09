@@ -279,6 +279,11 @@ def bitwise_and(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_not(x):
+    return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
 def bitwise_or(x1, x2):
     return ivy.bitwise_or(x1, x2)
 
@@ -370,3 +375,61 @@ def exp2(x):
 @to_ivy_arrays_and_back
 def gcd(x1, x2):
     return ivy.gcd(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def i0(x):
+    return ivy.i0(x)
+
+
+@to_ivy_arrays_and_back
+def isneginf(x, out=None):
+    return ivy.isneginf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def isposinf(x, out=None):
+    return ivy.isposinf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def kron(a, b):
+    return ivy.kron(a, b)
+
+
+@to_ivy_arrays_and_back
+def lcm(x1, x2):
+    return ivy.lcm(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def logaddexp2(x1, x2):
+    return ivy.logaddexp2(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def trapz(y, x=None, dx=1.0, axis=-1, out=None):
+    return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def any(a, axis=None, out=None, keepdims=False, *, where=True):
+    ret = ivy.any(a, axis=axis, keepdims=keepdims)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def diag(v, k=0):
+    return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def flip(m, axis=None):
+    return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m)
