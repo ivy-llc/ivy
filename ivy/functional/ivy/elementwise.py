@@ -5678,7 +5678,7 @@ def trunc(
     Returns
     -------
     ret
-        an array containing the values before the decimal point for each element ``x``.
+        an array containing the rounded result for each element in ``x``.
         The returned array must have the same data type as ``x``.
 
 
@@ -5691,6 +5691,43 @@ def trunc(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    ivy.array([-1.,  0.,  3., -0.])
+
+    >>> x = ivy.array([0.56, 7, -23.4, -0.0375])
+    >>> ivy.trunc(x, out=x)
+    >>> print(x)
+    ivy.array([  0.,   7., -23.,  -0.])
+
+    >>> x = ivy.array([[0.4, -8, 0.55], [0, 0.032, 2]])
+    >>> y = ivy.zeros([2,3])
+    >>> ivy.trunc(x, out=y)
+    >>> print(y)
+    ivy.array([[ 0., -8.,  0.],
+           [ 0.,  0.,  2.]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([0.34, -6., 0.09, 25.4])
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    ivy.array([ 0., -6.,  0., 25.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]), b=ivy.array([12, -3.5, 1.234]))
+    >>> y = ivy.trunc(x)
+    >>> print(y)
+    {
+        a: ivy.array([-0., 4., 1.]),
+        b: ivy.array([12., -3., 1.])
+    }
     """
     return ivy.current_backend(x).trunc(x, out=out)
 
@@ -5737,7 +5774,7 @@ def maximum(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the max of x1 and x2 (i.e. x1 > x2 ? x1 : x2) element-wise.
@@ -5750,7 +5787,7 @@ def maximum(
         Tensor containing maximum values, must be broadcastable to x1.
     use_where
         Whether to use :func:`where` to calculate the maximum. If ``False``, the maximum
-        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``False``.
+        is calculated using the ``(x + y + |x - y|)/2`` formula. Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -5824,7 +5861,7 @@ def minimum(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the min of x1 and x2 (i.e. x1 < x2 ? x1 : x2) element-wise.
@@ -5837,7 +5874,7 @@ def minimum(
         Tensor containing minimum values, must be broadcastable to x1.
     use_where
         Whether to use :func:`where` to calculate the minimum. If ``False``, the minimum
-        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``False``.
+        is calculated using the ``(x + y - |x - y|)/2`` formula. Default is ``True``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
