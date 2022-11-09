@@ -240,9 +240,9 @@ class Array(
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
         rep = (
-            ivy.vec_sig_fig(np.array(self._data), sig_fig)
+            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
             if self._size > 0
-            else np.array(self._data)
+            else ivy.to_numpy(self._data)
         )
         with np.printoptions(precision=dec_vals):
             return (
