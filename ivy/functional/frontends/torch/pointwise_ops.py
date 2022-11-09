@@ -313,3 +313,8 @@ divide = div
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
+    return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
