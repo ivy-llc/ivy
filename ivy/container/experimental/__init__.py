@@ -9,7 +9,7 @@ from .general import ContainerWithGeneralExperimental
 from .gradients import ContainerWithGradientsExperimental
 from .image import ContainerWithImageExperimental
 from .layers import ContainerWithLayersExperimental
-from .linalg import ContainerWithLinalgExperimental
+from .linear_algebra import ContainerWithLinearAlgebraExperimental
 from .losses import ContainerWithLossesExperimental
 from .manipulation import ContainerWithManipulationExperimental
 from .norms import ContainerWithNormsExperimental
