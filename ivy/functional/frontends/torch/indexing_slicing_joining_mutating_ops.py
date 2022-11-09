@@ -32,8 +32,8 @@ def concat(tensors, dim=0, *, out=None):
 @to_ivy_arrays_and_back
 def gather(input, dim, index, *, sparse_grad=False, out=None):
     if sparse_grad:
-        logging.warning(
-            "Ivy does not yet support the sparse tensor functionality."
+        raise ivy.exceptions.IvyException(
+            "Gather does not yet support the sparse grad functionality"
         )
 
     dim = dim % len(input.shape)
