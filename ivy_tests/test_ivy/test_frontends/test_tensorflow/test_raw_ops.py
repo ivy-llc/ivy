@@ -605,6 +605,46 @@ def test_tensorflow_Square(dtype_and_x, as_variable, num_positional_args, native
     )
 
 
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    valid_axes.insert(0, None)
+    return draw(st.sampled_from(valid_axes))
+
+
+# Squeeze
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    axis=_squeeze_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.raw_ops.Squeeze"
+    ),
+)
+def test_tensorflow_Squeeze(
+    dtype_value, axis, as_variable, num_positional_args, native_array
+):
+    dtype, xs = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="raw_ops.Squeeze",
+        input=xs[0],
+        axis=axis,
+    )
+
+
 # Sqrt
 @handle_cmd_line_args
 @given(
