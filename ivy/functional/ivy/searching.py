@@ -554,37 +554,6 @@ def argwhere(
     >>> print(res)
     ivy.array([[0, 1], [1, 0], [1, 1]])
 
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([[1, 2], [3, 4]])
-    >>> res = ivy.argwhere(x)
-    >>> print(res)
-    ivy.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-
-    >>> x = ivy.native_array([[0, 2], [3, 4]])
-    >>> res = ivy.argwhere(x)
-    >>> print(res)
-    ivy.array([[0, 1], [1, 0], [1, 1]])
-
-    With a :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
-    >>> res = ivy.argwhere(x)
-    >>> print(res)
-    {
-        a: ivy.array([[0], [1]]),
-        b: ivy.array([[0], [1]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
-    >>> res = ivy.argwhere(x)
-    >>> print(res)
-    {
-        a: ivy.array([[0]]),
-        b: ivy.array([[0], [1]])
-    }
-
     Instance Method Examples
     ------------------------
 
@@ -600,22 +569,5 @@ def argwhere(
     >>> print(res)
     ivy.array([[0, 1], [1, 0], [1, 1]])
 
-    Using :class:`ivy.Container` instance method
-
-    >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
-    >>> res = x.argwhere()
-    >>> print(res)
-    {
-        a: ivy.array([[0], [1]]),
-        b: ivy.array([[0], [1]])
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
-    >>> res = x.argwhere()
-    >>> print(res)
-    {
-        a: ivy.array([[0]]),
-        b: ivy.array([[0], [1]])
-    }
     """
     return current_backend(x).argwhere(x, out=out)
