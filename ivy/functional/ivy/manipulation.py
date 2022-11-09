@@ -995,7 +995,7 @@ def constant_pad(
                 [0, 0, 0, 0, 0, 0, 0]])
 
     >>> x = ivy.array([[2], [3]])
-    >>> y = y = ivy.zeros((2, 3))
+    >>> y = ivy.zeros((2, 3))
     >>> ivy.constant_pad(x, pad_width = [[1, 1]], value = 5.0, out = y)
     ivy.array([[5, 2, 5],
        [5, 3, 5]])
