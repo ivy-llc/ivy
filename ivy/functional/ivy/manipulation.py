@@ -994,6 +994,23 @@ def constant_pad(
                 [0, 0, 0, 0, 0, 0, 0],
                 [0, 0, 0, 0, 0, 0, 0]])
 
+    >>> x = ivy.array([[2], [3]])
+    >>> y = y = ivy.zeros((2, 3))
+    >>> ivy.constant_pad(x, pad_width = [[1, 1]], value = 5.0, out = y)
+    ivy.array([[5, 2, 5],
+       [5, 3, 5]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.array([1., 2., 3.]),
+    ...                   b = ivy.array([3., 4., 5.]))
+    >>> y = ivy.constant_pad(x, pad_width = [[2, 3]], value = 5.0)
+    >>> print(y)
+    {
+            a: ivy.array([5, 5, 1, 2, 3, 5, 5, 5]),
+            b: ivy.array([5, 5, 4, 5, 6, 5, 5, 5])
+    }
+
     """
     return current_backend(x).constant_pad(x, pad_width, value, out=out)
 
