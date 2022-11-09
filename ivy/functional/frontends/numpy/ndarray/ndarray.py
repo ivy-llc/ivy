@@ -35,6 +35,14 @@ class ndarray:
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
 
+    @property
+    def T(self):
+        return np_frontend.transpose(self.data)
+
+    @property
+    def shape(self):
+        return np_frontend.shape(self)
+
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
 
