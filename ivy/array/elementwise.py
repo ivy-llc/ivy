@@ -1543,7 +1543,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1560,7 +1560,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1578,7 +1578,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1591,7 +1591,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
