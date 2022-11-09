@@ -135,7 +135,7 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a sub-category of :mod:`arithmetic_operations` as shown in the `numpy mathematical functions`_ directory.
 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
-Additional handling code is added to recover the behaviour according to the `numpy.add`_ documentation.
+Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
 For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 
@@ -307,7 +307,7 @@ For example, at the time of writing, implementing :func:`median` for the NumPy f
 However, if the function :func:`ivy.median` was added to Ivy's functional API, then this frontend implementation would become very simple, with some light wrapping around :func:`ivy.median`.
 
 Adding :func:`ivy.median` would be a sensible decision, as many frameworks support this function.
-When you come across such a function which is missing from Ivy, you should create a new issue on the Ivy repo, with the title :func:`ivy.func_name` and with the labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release`.
+When you come across such a function which is missing from Ivy, you should create a new issue on the Ivy repo, with the title :func:`ivy.func_name` and with the labels :code:`Suggestion`, :code:`Experimental`, :code:`Ivy API` and :code:`Next Release`.
 A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
 Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.

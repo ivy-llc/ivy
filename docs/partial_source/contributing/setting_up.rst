@@ -205,7 +205,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video">
+    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -239,7 +239,7 @@ If Docker's latest version causes error, try using an earlier version by visitin
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -311,7 +311,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
 Setting Up Testing
@@ -553,7 +553,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video">
+    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
 
