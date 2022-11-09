@@ -601,13 +601,13 @@ For integers, it will identify the integer closest to 0 that produces the error 
 Checkout the `documentation`_ for more information on shrinking behaviors of other strategies.
 
 Hypothesis doesn’t search for falsifying examples from scratch every time the test is run.
-Instead, it save a database of these examples associated with each of the project’s test functions.
+Instead, it saves a database of these examples associated with each of the project’s test functions.
 In the case of Ivy, the :code:`.hypothesis` cache folder is generated if one doesn’t exist, otherwise the existing one is added to it.
 We just preserve this folder on the CI, so that each commit uses the same folder, and so it is ignored by git, thereby never forming part of the :code:`commit`.
 
 2. **–-hypothesis-show-statistics**
 
-This feature helps is debugging the tests, with methods like **note()**, custom **event()s** where addition to the summary, and a variety performance details are supported.
+This feature helps in debugging the tests, with methods like **note()**, custom **event()s** where addition to the summary, and a variety performance details are supported.
 Let’s look at the function `test_gelu`_ -:
 
 **run** :code:`pytest —hypothesis-show-statistics <test_file>.py`
@@ -632,7 +632,7 @@ This test runs for every backend, and the output is shown below-:
 
 
 It can be seen that the function doesn’t fail for **Jax**, **Numpy** and **Torch**, which is clearly not the case with **Tensorflow**, wherein 7 examples failed the test.
-One important thing to note is the number of values for which **Shrinking**(discussed in brief above) happened.
+One important thing to note is the number of values for which **Shrinking** (discussed in brief above) happened.
 Statistics for both *generate phase*, and *shrink phase* if the test fails are printed in the output.
 If the tests are re-run, *reuse phase* statistics are printed as well where notable examples from previous runs are displayed.
 
