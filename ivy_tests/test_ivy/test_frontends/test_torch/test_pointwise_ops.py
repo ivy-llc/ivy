@@ -1539,12 +1539,14 @@ def test_torch_floor(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    value=st.floats(min_value=-100, max_value=100),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.addcdiv"
     ),
 )
 def test_torch_addcdiv(
     dtype_and_x,
+    value,
     as_variable,
     with_out,
     num_positional_args,
@@ -1563,7 +1565,7 @@ def test_torch_addcdiv(
         input=x[0],
         tensor1=x[1],
         tensor2=x[2],
-        value=1,
+        value=value,
         out=None,
     )
 
@@ -1579,12 +1581,14 @@ def test_torch_addcdiv(
         safety_factor_scale="log",
         shared_dtype=True,
     ),
+    value=st.floats(min_value=-100, max_value=100),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.addcmul"
     ),
 )
 def test_torch_addcmul(
     dtype_and_x,
+    value,
     as_variable,
     with_out,
     num_positional_args,
@@ -1602,6 +1606,6 @@ def test_torch_addcmul(
         input=x[0],
         tensor1=x[1],
         tensor2=x[2],
-        value=1,
+        value=value,
         out=None,
     )
