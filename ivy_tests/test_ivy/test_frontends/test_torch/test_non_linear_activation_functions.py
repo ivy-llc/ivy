@@ -1130,6 +1130,9 @@ def _generate_data_layer_norm(
     min_value=None,
     max_value=None,
     shared_dtype=False,
+    min_axis=None,
+    max_axis=None,
+    group=False
 ):
     results = draw(
         helpers.dtype_values_axis(
@@ -1139,18 +1142,30 @@ def _generate_data_layer_norm(
             safety_factor_scale=safety_factor_scale,
             min_num_dims=min_num_dims,
             max_num_dims=max_num_dims,
+            min_dim_size=min_axis,
+            max_dim_size=max_axis,
             valid_axis=valid_axis,
             allow_neg_axes=allow_neg_axes,
             max_axes_size=max_axes_size,
             force_int_axis=force_int_axis,
+            # min_axis=min_axis,
+            # max_axis=max_axis,
             ret_shape=ret_shape,
         )
     )
 
     dtype, values, axis, shape = results
 
-    weight_shape = shape[axis:]
-    bias_shape = shape[axis:]
+    if group:
+        channel_size = shape[1]
+        group_list = [*range(1, max_axis)]
+        group_list = list(filter(lambda x: (channel_size % x == 0), group_list))
+        group_size = draw(st.sampled_from(group_list))
+        weight_shape = [shape[1]]
+        bias_shape = [shape[1]]
+    else:
+        weight_shape = shape[axis:]
+        bias_shape = shape[axis:]
 
     arg_dict = {
         "available_dtypes": dtype,
@@ -1178,7 +1193,8 @@ def _generate_data_layer_norm(
     _, new_std_values = results_new_std
 
     axis = shape[axis:]
-
+    if group:
+        return dtype, values, weight_values, bias_values, group_size
     return dtype, values, axis, weight_values, bias_values, new_std_values
 
 
@@ -1190,10 +1206,12 @@ def _generate_data_layer_norm(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.layer_norm"
     ),
+    epsilon=st.floats(min_value=0.01, max_value=0.1),
 )
 def test_torch_layer_norm(
     dtype_x_and_axis,
     num_positional_args,
+    epsilon,
     as_variable,
     native_array,
 ):
@@ -1206,13 +1224,11 @@ def test_torch_layer_norm(
         native_array_flags=native_array,
         frontend="torch",
         fn_tree="nn.functional.layer_norm",
-        rtol=1e-1,
-        atol=1e-1,
         input=x[0],
         normalized_shape=axis,
         weight=weight[0],
         bias=bias[0],
-        eps=1e-12,
+        eps=epsilon,
     )
 
 
@@ -1249,4 +1265,45 @@ def test_torch_softplus(
         input=x[0],
         beta=beta,
         threshold=threshold,
+    )
+
+
+# group_norm
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axis=_generate_data_layer_norm(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_axis=2,
+        max_axis=4,
+        group=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.nn.functional.group_norm"
+    ),
+    epsilon=st.floats(min_value=0.01, max_value=0.1),
+)
+def test_torch_group_norm(
+    dtype_x_and_axis,
+    num_positional_args,
+    epsilon,
+    as_variable,
+    native_array,
+):
+    dtype, x, weight, bias, group_size = dtype_x_and_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.group_norm",
+        input=x[0],
+        num_groups=group_size,
+        weight=weight[0],
+        bias=bias[0],
+        eps=epsilon,
     )

@@ -52,9 +52,9 @@ def to_ivy(
     nested: bool = False,
     include_derived: Optional[Dict[type, bool]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
-    """Returns the input array converted to an ivy.Array instance if it is a frontend array
-    type, otherwise the input is returned unchanged. If nested is set, the check is
-    applied to all nested leafs of tuples, lists and dicts contained within x.
+    """Returns the input array converted to an ivy.Array instance if it is a frontend
+    array type, otherwise the input is returned unchanged. If nested is set, the check
+    is applied to all nested leafs of tuples, lists and dicts contained within x.
 
     Parameters
     ----------
