@@ -435,6 +435,6 @@ def fliplr(m):
     return ivy.fliplr(m)
 
 
-@inputs_to_ivy_arrays
+@to_ivy_arrays_and_back
 def vstack(x, dtype=None):
     return ivy.vstack(x)
