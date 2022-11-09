@@ -1,7 +1,8 @@
 # global
 
+import math
 import numpy as np
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Literal
 
 # local
 import ivy
@@ -315,3 +316,98 @@ def avg_pool3d(
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+def dct(
+    x: np.ndarray,
+    /,
+    *,
+    type: Optional[Literal[1, 2, 3, 4]] = 2,
+    n: Optional[int] = None,
+    axis: Optional[int] = -1,
+    norm: Optional[Literal["ortho"]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if norm not in (None, "ortho"):
+        raise ValueError("Norm must be either None or 'ortho'")
+    if axis < 0:
+        axis = axis + len(x.shape)
+    if n is not None:
+        signal_len = x.shape[axis]
+        if n <= signal_len:
+            local_idx = [slice(None)] * len(x.shape)
+            local_idx[axis] = slice(None, n)
+            x = x[tuple(local_idx)]
+        else:
+            pad_idx = [[0, 0] for _ in range(len(x.shape))]
+            pad_idx[axis][1] = n - signal_len
+            x = np.pad(x, pad_idx)
+    real_zero = np.array(0.0, dtype=x.dtype)
+    axis_dim = x.shape[axis]
+    axis_dim_float = np.array(axis_dim, dtype=x.dtype)
+    cast_final = True if x.dtype != np.float64 else False
+
+    if type == 1:
+        if norm:
+            raise ValueError("Normalization not supported for type-I DCT")
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(-2, 0, -1)
+        x = np.concatenate([x, x[tuple(axis_idx)]], axis=axis)
+        dct_out = np.real(np.fft.rfft(x, axis=axis))
+
+    elif type == 2:
+        cmplx = np.empty(axis_dim, dtype=np.complex64)
+        cmplx.real = real_zero
+        cmplx.imag = -np.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+
+        scale_dims = [1] * len(x.shape)
+        scale_dims[axis] = axis_dim
+        scale = 2.0 * np.exp(cmplx).reshape(scale_dims)
+
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(None, axis_dim)
+        dct_out = np.real(
+            np.fft.rfft(x, n=2 * axis_dim, axis=axis)[tuple(axis_idx)] * scale
+        )
+
+        if norm == "ortho":
+            n1 = 0.5 * np.reciprocal(np.sqrt(axis_dim_float))
+            n2 = n1 * math.sqrt(2.0)
+            sf = np.pad(np.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
+            dct_out = sf.reshape(scale_dims) * dct_out
+
+    elif type == 3:
+        cmplx = np.empty(axis_dim, dtype=np.complex64)
+        cmplx.real = real_zero
+        cmplx.imag = np.arange(axis_dim_float) * math.pi * 0.5 / axis_dim_float
+
+        scale_dims = [1] * len(x.shape)
+        scale_dims[axis] = axis_dim
+        scale = 2.0 * np.exp(cmplx).reshape(scale_dims)
+
+        if norm == "ortho":
+            n1 = np.sqrt(axis_dim_float)
+            n2 = n1 * np.sqrt(0.5)
+            sf = np.pad(np.expand_dims(n1, 0), (0, axis_dim - 1), constant_values=n2)
+            x = x * sf.reshape(scale_dims)
+        else:
+            x = x * axis_dim_float
+
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(None, axis_dim)
+
+        x = x.astype(np.complex64)
+        x.imag = real_zero
+        dct_out = np.real(np.fft.irfft(scale * x, n=2 * axis_dim, axis=axis))[
+            tuple(axis_idx)
+        ]
+
+    elif type == 4:
+        dct_2 = dct(x, type=2, n=2 * axis_dim, axis=axis, norm=None)
+        axis_idx = [slice(None)] * len(x.shape)
+        axis_idx[axis] = slice(1, None, 2)
+        dct_out = dct_2[tuple(axis_idx)]
+        if norm == "ortho":
+            dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
+
+    return dct_out.astype(np.float32) if cast_final else dct_out
