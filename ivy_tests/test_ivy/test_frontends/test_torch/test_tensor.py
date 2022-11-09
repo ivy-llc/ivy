@@ -1946,3 +1946,38 @@ def test_torch_instance_device(dtype_and_x, as_variable, native_array):
         class_name="tensor",
         method_name="device",
     )
+
+
+# bitwise_and
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+    )
+)
+def test_torch_instance_bitwise_and(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "other": x[1],
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="bitwise_and"
+    )
