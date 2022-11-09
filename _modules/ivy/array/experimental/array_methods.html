@@ -1588,7 +1588,7 @@
 <span class="sd">        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and</span>
 <span class="sd">        the rest will have size int(ary.size(0) / n).</span>
 <span class="sd">        If indices_or_sections is a tuple of ints, then input is split at each of</span>
-<span class="sd">        the indices in the tuple. </span>
+<span class="sd">        the indices in the tuple.</span>
 <span class="sd">    out</span>
 <span class="sd">        Optional output, for writing the result to.</span>
 
@@ -1634,7 +1634,7 @@
 <span class="sd">        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and</span>
 <span class="sd">        the rest will have size int(ary.size(0) / n).</span>
 <span class="sd">        If indices_or_sections is a tuple of ints, then input is split at each of</span>
-<span class="sd">        the indices in the tuple. </span>
+<span class="sd">        the indices in the tuple.</span>
 <span class="sd">    out</span>
 <span class="sd">        Optional output, for writing the result to.</span>
 
@@ -1652,7 +1652,7 @@
 <span class="sd">          [12.,  13.,  14.,  15.]]]</span>
 <span class="sd">    )</span>
 <span class="sd">    &gt;&gt;&gt; ary.dsplit(2)</span>
-<span class="sd">    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]), </span>
+<span class="sd">    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),</span>
 <span class="sd">    ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
@@ -1866,8 +1866,8 @@
 <span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
 <span class="sd">        as dimensions with size one. With this option, the result will broadcast</span>
 <span class="sd">        correctly against the original a. If the value is anything but the default,</span>
-<span class="sd">        then keepdims will be passed through to the mean or sum methods of </span>
-<span class="sd">        sub-classes of ndarray. If the sub-classes methods does not implement </span>
+<span class="sd">        then keepdims will be passed through to the mean or sum methods of</span>
+<span class="sd">        sub-classes of ndarray. If the sub-classes methods does not implement</span>
 <span class="sd">        keepdims any exceptions will be raised.</span>
 <span class="sd">    dtype</span>
 <span class="sd">        The desired data type of returned tensor. Default is None.</span>

@@ -525,7 +525,7 @@
 <span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=2, n=None, norm=&#39;ortho&#39;)</span>
 <span class="sd">    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]], </span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],</span>
 <span class="sd">               [[1,  2,  3,  4], [ 5,  6,  7,  8]]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=1, n=None, axis=0, norm=None)</span>
 <span class="sd">    ivy.array([[[ 9., 18., 27., 36.],</span>
@@ -570,9 +570,7 @@
 <span class="sd">        b: ivy.array([15., -4., 0., -1.])</span>
 <span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
