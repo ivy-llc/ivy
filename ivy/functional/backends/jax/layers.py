@@ -4,6 +4,7 @@
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
+
 # local
 import ivy
 from ivy.functional.backends.jax import JaxArray
@@ -404,7 +405,7 @@ def dropout1d(
     /,
     *,
     training: bool = True,
-    data_format: str = 'NWC',
+    data_format: str = "NWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if training:
@@ -413,7 +414,7 @@ def dropout1d(
             x = jnp.transpose(x, perm)
         noise_shape = list(x.shape)
         noise_shape[-1] = 1
-        _, rng_input = jax.random.split(RNG)
+        _, rng_input = jax.random.split(RNG.key)
         mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
         res = jnp.where(mask, x / (1 - prob), 0)
         if data_format == "NWC":
