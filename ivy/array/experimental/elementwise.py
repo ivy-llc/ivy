@@ -431,7 +431,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.isposinf. This method simply
         wraps the function, and so the docstring for ivy.isposinf also applies to
         this method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -439,15 +439,15 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
-            Returns a boolean array with values True where 
+            Returns a boolean array with values True where
             the corresponding element of the input is positive
             infinity and values False where the element of the
             input is not positive infinity.
-        
+
         Examples
         --------
         >>> a = ivy.array([12.1, -ivy.inf, ivy.inf])
@@ -466,7 +466,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.Array instance method variant of ivy.isneginf. This method simply
         wraps the function, and so the docstring for ivy.isneginf also applies to
         this method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -474,15 +474,15 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
-            Returns a boolean array with values True where 
+            Returns a boolean array with values True where
             the corresponding element of the input is negative
             infinity and values False where the element of the
             input is not negative infinity.
-        
+
         Examples
         --------
         >>> x = ivy.array([12.1, -ivy.inf, ivy.inf])
@@ -542,12 +542,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([1.,   2.,   3.,   5e+100])
         """
         return ivy.nan_to_num(
-            self._data, 
-            copy=copy,
-            nan=nan,
-            posinf=posinf,
-            neginf=neginf,
-            out=out
+            self._data, copy=copy, nan=nan, posinf=posinf, neginf=neginf, out=out
         )
 
     def logaddexp2(
@@ -583,3 +578,34 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([4.169925, 5.169925, 6.169925])
         """
         return ivy.logaddexp2(self._data, x2, out=out)
+
+    def signbit(
+        self: Union[ivy.Array, float, int, list, tuple],
+        x2: Union[ivy.Array, float, int, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.signbit. This method
+        simply wraps the function, and so the docstring for ivy.signbit also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Element-wise signbit of x.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, -2, 3])
+        >>> x.signbit()
+        ivy.array([False, True, False])
+        """
+        return ivy.signbit(self._data, out=out)

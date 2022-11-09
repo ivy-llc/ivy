@@ -203,10 +203,22 @@ def logaddexp2(
     /,
     *,
     out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:    
+) -> torch.Tensor:
     x1 = x1 if type(x1) == torch.Tensor else torch.Tensor(x1)
     x2 = x2 if type(x2) == torch.Tensor else torch.Tensor(x2)
     return torch.logaddexp2(x1, x2, out=out)
 
 
 logaddexp2.support_native_out = True
+
+
+def signbit(
+    x: Union[torch.Tensor, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.signbit(x, out=out)
+
+
+signbit.support_native_out = True
