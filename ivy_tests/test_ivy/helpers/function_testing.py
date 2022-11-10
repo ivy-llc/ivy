@@ -378,12 +378,7 @@ def test_function(
         ):
             pass
         else:
-            print(ivy.nested_argwhere(
-                [all_as_kwargs_np],
-                lambda x: x.dtype in fn.unsupported_gradients[fw]
-                if ivy.is_array(x)
-                else None,
-            ))
+            print(all_as_kwargs_np)
             gradient_test(
                 fn_name=fn_name,
                 all_as_kwargs_np=all_as_kwargs_np,
