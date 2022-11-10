@@ -742,11 +742,7 @@ def test_dsplit(
 
 @st.composite
 def atleast_1d_arrays(draw, dtype1):
-    shapes = draw(
-        helpers.get_shape(
-            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
-        )
-    )
+    shapes = draw(helpers.get_shape())
     dtypes = draw(helpers.get_dtypes(dtype1))
     arrays = []
     for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
