@@ -2456,4 +2456,3 @@ def test_jax_numpy_vstack(
         dtype=dtype,
         arrays=x,
     )
-    

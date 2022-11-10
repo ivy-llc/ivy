@@ -7,7 +7,6 @@ from ivy.container.base import ContainerBase
 
 
 class ContainerWithLayersExperimental(ContainerBase):
-
     @staticmethod
     def static_max_pool1d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
