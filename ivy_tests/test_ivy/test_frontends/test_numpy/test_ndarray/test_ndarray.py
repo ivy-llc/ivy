@@ -425,7 +425,7 @@ def test_numpy_ndarray_argmin(
         frontend_class=np.ndarray,
         fn_tree="ndarray.argmin",
     )
-    
+
 
 # clip
 @handle_cmd_line_args
@@ -457,10 +457,7 @@ def test_numpy_instance_clip(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
-            "a_min": 0,
-            "a_max": 1
-        },
+        all_as_kwargs_np_method={"a_min": 0, "a_max": 1},
         frontend="numpy",
         class_name="ndarray",
         method_name="clip",
