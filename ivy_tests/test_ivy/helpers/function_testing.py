@@ -358,6 +358,10 @@ def test_function(
         ivy.unset_backend()
         raise e
     hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
+    if hasattr_unsupported_gradients:
+        fw_list=fn.unsupported_gradients
+    else:
+        fw_list=None
     ivy.unset_backend()
     # gradient test
     if (
@@ -368,10 +372,10 @@ def test_function(
     ):
         if (
             hasattr_unsupported_gradients
-            and fw in fn.unsupported_gradients
+            and fw in fw_list
             and ivy.nested_argwhere(
                 [all_as_kwargs_np],
-                lambda x: x.dtype in fn.unsupported_gradients[fw]
+                lambda x: x.dtype in fw_list[fw]
                 if ivy.is_array(x)
                 else None,
             )
