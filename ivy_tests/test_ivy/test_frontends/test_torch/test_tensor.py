@@ -2210,8 +2210,9 @@ def test_torch_instance_arccos(dtype_and_x, as_variable, native_array):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
     ),
 )
 def test_torch_instance_acos_(
@@ -2243,8 +2244,9 @@ def test_torch_instance_acos_(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
     ),
 )
 def test_torch_instance_asin_(
@@ -2365,4 +2367,124 @@ def test_torch_instance_tan_(
         frontend="torch",
         class_name="tensor",
         method_name="tan_",
+    )
+
+
+# atanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_atanh(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="atanh",
+    )
+
+
+# atanh_
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_atanh_(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="atanh_",
+    )
+
+
+# arctanh
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_arctanh(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="arctanh",
+    )
+
+
+# arctanh_
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        min_value=-1.0,
+        max_value=1.0,
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_arctanh_(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=["float64"] + input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="arctanh_",
     )
