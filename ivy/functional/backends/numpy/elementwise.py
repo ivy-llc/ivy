@@ -671,7 +671,7 @@ def maximum(
     x2: Union[float, np.ndarray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[np.ndarray] = None,
 ):
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -692,7 +692,7 @@ def minimum(
     x2: Union[float, np.ndarray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
