@@ -18,8 +18,8 @@ def matrix_is_stable(x, cond_limit=30):
     matrix
         The original matrix whose condition number is to be determined.
     condition_index
-        The greater the condition number, the more ill-conditioned the matrix 
-        will be, the more it will be prone to numerical instabilities. 
+        The greater the condition number, the more ill-conditioned the matrix
+        will be, the more it will be prone to numerical instabilities.
 
         There is no rule of thumb for what the exact condition number
         should be to consider a matrix ill-conditioned(prone to numerical errors).
@@ -28,11 +28,11 @@ def matrix_is_stable(x, cond_limit=30):
         instabilities in further calculations, but that would probably be a
         very simple matrix.
 
-        The cond_limit should start with "30", gradually decreasing it according 
-        to our use, lower cond_limit would result in more numerically stable 
+        The cond_limit should start with "30", gradually decreasing it according
+        to our use, lower cond_limit would result in more numerically stable
         matrices but more simple matrices.
 
-        The limit should always be in the range "1-30", greater the number greater 
+        The limit should always be in the range "1-30", greater the number greater
         the computational instability. Should not increase 30, it leads to strong
         multicollinearity which leads to singularity.
 
@@ -41,7 +41,7 @@ def matrix_is_stable(x, cond_limit=30):
     A bool, either True or False. Which tells whether the matrix is suitable for
     further numerical computations or not.
     """
-    return np.linalg.cond(x.astype('float64')) <= cond_limit
+    return np.linalg.cond(x.astype("float64")) <= cond_limit
 
 
 def apply_safety_factor(

@@ -552,7 +552,7 @@ def get(
     >>> sigmoid = ivy.get(name)
     >>> print(sigmoid)
     <function sigmoid at XXXXXXXXXXXXXX>
-    
+
     >>> name = None
     >>> linear = ivy.get(name)
     >>> print(linear)

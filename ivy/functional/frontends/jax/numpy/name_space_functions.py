@@ -410,3 +410,31 @@ def logaddexp2(x1, x2):
 @to_ivy_arrays_and_back
 def trapz(y, x=None, dx=1.0, axis=-1, out=None):
     return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def any(a, axis=None, out=None, keepdims=False, *, where=True):
+    ret = ivy.any(a, axis=axis, keepdims=keepdims)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def diag(v, k=0):
+    return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def flip(m, axis=None):
+    return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m)
+
+
+@to_ivy_arrays_and_back
+def hstack(x, dtype=None):
+    return ivy.hstack(x)

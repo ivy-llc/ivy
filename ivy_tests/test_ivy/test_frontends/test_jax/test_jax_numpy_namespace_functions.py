@@ -1900,7 +1900,7 @@ def test_jax_numpy_deg2rad(
         x=x[0],
     )
 
-    
+
 # exp2
 @handle_cmd_line_args
 @given(
@@ -2269,4 +2269,190 @@ def test_jax_numpy_trapz(
         x=x,
         dx=dx,
         axis=axis,
+    )
+
+
+# any
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        valid_axis=True,
+        max_axes_size=1,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.any"
+    ),
+)
+def test_jax_numpy_any(
+    dtype_x_axis,
+    keepdims,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x, axis = dtype_x_axis
+    axis = axis if axis is None or isinstance(axis, int) else axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.any",
+        a=x[0],
+        axis=axis,
+        keepdims=keepdims,
+    )
+
+
+# diag
+@st.composite
+def _diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    return dtype, x, k
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_k=_diag_helper(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.diag"
+    ),
+)
+def test_jax_numpy_diag(
+    dtype_x_k,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, x, k = dtype_x_k
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.diag",
+        v=x[0],
+        k=k,
+    )
+
+
+# flip
+@handle_cmd_line_args
+@given(
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.flip"
+    ),
+)
+def test_jax_numpy_flip(
+    dtype_value,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.flip",
+        m=value[0],
+        axis=axis,
+    )
+
+
+# fliplr
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.fliplr"
+    ),
+)
+def test_jax_numpy_fliplr(
+    dtype_and_m,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.fliplr",
+        m=m[0],
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.jax.numpy.hstack"
+    ),
+)
+def test_jax_numpy_hstack(
+    dtype_and_x,
+    as_variable,
+    dtype,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="jax",
+        fn_tree="numpy.hstack",
+        dtype=dtype,
+        arrays=x,
     )
