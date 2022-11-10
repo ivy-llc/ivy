@@ -137,13 +137,9 @@ def avg_pool1d(
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / general_pool(jnp.ones(div_shape,
-                                      dtype=res.dtype),
-                             0.0,
-                             jlax.add,
-                             kernel,
-                             strides,
-                             padding)
+    res = res / general_pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))
     return res
@@ -177,13 +173,9 @@ def avg_pool2d(
     div_shape = x.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / general_pool(jnp.ones(div_shape,
-                                      dtype=res.dtype),
-                             0.0,
-                             jlax.add,
-                             kernel,
-                             strides,
-                             padding)
+    res = res / general_pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
     if data_format == "NCHW":
         return jnp.transpose(res, (0, 3, 1, 2))
     return res
@@ -233,12 +225,9 @@ def avg_pool3d(
     div_shape = res.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / general_pool(jnp.ones(div_shape),
-                             0.0,
-                             jlax.add,
-                             kernel,
-                             strides,
-                             padding)
+    res = res / general_pool(
+        jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding
+    )
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))

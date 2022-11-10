@@ -171,9 +171,7 @@ def avg_pool1d(
         x = x.permute(0, 2, 1)
     x_shape = x.shape[2]
     pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
-    x = torch.nn.functional.pad(
-        x, [pad_w // 2, pad_w - pad_w // 2], mode="replicate"
-    )
+    x = torch.nn.functional.pad(x, [pad_w // 2, pad_w - pad_w // 2], mode="replicate")
 
     res = torch.nn.functional.avg_pool1d(x, kernel, strides, 0)
 

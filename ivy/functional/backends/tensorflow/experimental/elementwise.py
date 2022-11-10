@@ -243,9 +243,7 @@ def allclose(
     )
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16,")}, backend_version
-)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
 def fix(
     x: Union[tf.Tensor, tf.Variable],
     /,
