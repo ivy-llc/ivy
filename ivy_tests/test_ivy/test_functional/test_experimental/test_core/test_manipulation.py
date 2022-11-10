@@ -741,7 +741,7 @@ def test_dsplit(
 
 
 @st.composite
-def atleast_1d_arrays(draw, dtype1):
+def atleast_nd_arrays(draw, dtype1):
     shapes = draw(helpers.get_shape())
     dtypes = draw(helpers.get_dtypes(dtype1))
     arrays = []
@@ -754,7 +754,7 @@ def atleast_1d_arrays(draw, dtype1):
 # atleast_1d
 @handle_cmd_line_args
 @given(
-    dtype_arrays=atleast_1d_arrays(dtype1="numeric"),
+    dtype_arrays=atleast_nd_arrays(dtype1="numeric"),
 )
 def test_atleast_1d(
     dtype_arrays,
