@@ -1689,82 +1689,48 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_diff(
-        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, float, list, tuple],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, float, list, tuple],
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
         /,
         *,
-        out: Optional[ivy.Array] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.allclose. This method simply wraps
-        the function, and so the docstring for ivy.allclose also applies to this method
-        with minimal changes.
-
+        ivy.Container static method variant of ivy.diff. This method simply wraps
+        the function, and so the docstring for ivy.diff also applies to this
+        method with minimal changes.
         Parameters
         ----------
         x1
-            Input container containing first input array.
+            first input container with array-like items.
         x2
-            Input container containing second input array.
-        rtol
-            The relative tolerance parameter.
-        atol
-            The absolute tolerance parameter.
-        equal_nan
-            Whether to compare NaN's as equal. If True, NaN's in x1 will be
-            considered equal to NaN's in x2 in the output array.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
+            second input container with array-like items.
         out
-            Alternate output array in which to place the result.
-            The default is None.
-
+            optional output container, for writing the result to.
         Returns
         -------
         ret
-            A new container holding the result is returned unless out is specified,
-            in which it is returned.
-
+            Container including arrays with element-wise difference of input arrays.
         Examples
         --------
-        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
-        ...                         b=ivy.array([1., 2., 3.]))
-        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
-        ...                         b=ivy.array([1., 2., 3.]))
-        >>> y = ivy.Container.static_allclose(x1, x2)
-        >>> print(y)
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
+                               b=ivy.array([1, 2, 3]))
+        >>> x2 = ivy.Container(a=ivy.array([5, 6, 7]),\
+                               b=10)
+        >>> ivy.Container.static_diff(x1, x2)
         {
-            a: true,
-            b: true
-        }
-
-        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
-        ...                         b=ivy.array([1., 2., 3.]))
-        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.0003]),\
-        ...                         b=ivy.array([1.0006, 2., 3.]))
-        >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
-        >>> print(y)
-        {
-            a: true,
-            b: true
+            a: ivy.array([-4.,  -4.,  -4.])
+            b: ivy.array([-9., -8., -7.])
         }
         """
         return ContainerBase.multi_map_in_static_method(
-            "allclose",
+            "diff",
             x1,
             x2,
-            rtol=rtol,
-            atol=atol,
-            equal_nan=equal_nan,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1779,8 +1745,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.gcd. This method simply
-        wraps the function, and so the docstring for ivy.gcd also applies to
+        """ivy.Container instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
         this method with minimal changes.
         Parameters
         ----------

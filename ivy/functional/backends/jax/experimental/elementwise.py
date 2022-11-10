@@ -168,15 +168,3 @@ def diff(
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.diff(x1, x2)
-
-def allclose(
-    x1: JaxArray,
-    x2: JaxArray,
-    /,
-    *,
-    rtol: Optional[float] = 1e-05,
-    atol: Optional[float] = 1e-08,
-    equal_nan: Optional[bool] = False,
-    out: Optional[JaxArray] = None,
-) -> bool:
-    return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
