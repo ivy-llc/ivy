@@ -365,7 +365,6 @@ def test_function(
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
-        and hasattr(all_as_kwargs_np, "__iter__")
     ):
         if (
             hasattr_unsupported_gradients
