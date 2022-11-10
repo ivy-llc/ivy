@@ -214,6 +214,14 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def is_cuda(self) -> bool:
+        # ivy.assertions.check_true(
+        #     is_tensor(obj),
+        #     message="input must be a tensor",
+        # )
+        # return Tensor(ivy.is_array(obj)).device() in ["gpu", "cuda"]
+        return True
+
     # Special Methods #
     # -------------------#
 
