@@ -147,6 +147,19 @@ def signbit(
     return jnp.signbit(x)
 
 
+def allclose(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> bool:
+    return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
 def diff(
     x1: Union[JaxArray, int, float, list, tuple],
     x2: Union[JaxArray, int, float, list, tuple],
