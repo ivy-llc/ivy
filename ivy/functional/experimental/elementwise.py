@@ -184,7 +184,7 @@ def fmax(
     x1
         First input array.
     x2
-        Second input array
+        Second input array.
     out
         optional output array, for writing the result to.
 
@@ -203,7 +203,7 @@ def fmax(
     >>> x1 = ivy.array([ivy.nan, 0, ivy.nan])
     >>> x2 = ivy.array([0, ivy.nan, ivy.nan])
     >>> ivy.fmax(x1, x2)
-    ivy.array([ 0,  0,  nan])
+    ivy.array([ 0.,  0.,  nan])
     """
     return ivy.current_backend().fmax(x1, x2, out=out)
 

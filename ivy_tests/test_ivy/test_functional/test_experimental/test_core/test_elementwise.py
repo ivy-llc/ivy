@@ -136,7 +136,7 @@ def test_fmod(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
         max_value=10,
         num_arrays=2,
