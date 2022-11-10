@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 from .. import backend_version
 
@@ -93,6 +93,22 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.pow(2, x, name=None)
+
+
+def count_nonzero(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if dtype is None:
+        return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
+    return tf.math.count_nonzero(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
+    )
 
 
 def nansum(

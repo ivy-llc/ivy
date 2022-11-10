@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Tuple
 
 # local
 import ivy
@@ -603,6 +603,187 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_count_nonzero(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.count_nonzero. This method simply
+        wraps the function, and so the docstring for ivy.count_nonzero also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            container with the base input arrays.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including number of non-zero values in the array along a
+            given axis. Otherwise, container with the total number of non-zero
+            values in the array is returned.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x)
+        {
+            a: ivy.array(7),
+            b: ivy.array(7)
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x, axis=0)
+        {
+            a: ivy.array([1, 2, 2, 2]),
+            b: ivy.array([[1, 2],
+                          [2, 2]])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x, axis=(0,1), keepdims=True)
+        {
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "count_nonzero",
+            a,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def count_nonzero(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.count_nonzero. This method
+        simply wraps the function, and so the docstring for ivy.count_nonzero also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including number of non-zero values in the array along a
+            given axis. Otherwise, container with the total number of non-zero
+            values in the array is returned.
+
+        Examples
+        --------
+       >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero()
+        {
+            a: ivy.array(7),
+            b: ivy.array(7)
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=0)
+        {
+            a: ivy.array([1, 2, 2, 2]),
+            b: ivy.array([[1, 2],
+                          [2, 2]])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        {
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
+        }
+        """
+        return self.static_count_nonzero(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     @staticmethod
     def static_nansum(
