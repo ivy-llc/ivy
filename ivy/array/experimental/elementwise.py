@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -273,6 +273,59 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([32.,   64.,  128.])
         """
         return ivy.exp2(self._data, out=out)
+
+    def count_nonzero(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.count_nonzero. This method simply
+        wraps the function, and so the docstring for ivy.count_nonzero also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array for which to count non-zeros.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+           Number of non-zero values in the array along a given axis. Otherwise,
+           the total number of non-zero values in the array is returned.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.count_nonzero()
+        ivy.array(3)
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=0)
+        ivy.array([[1, 2],
+               [2, 2]])
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        ivy.array([[[3, 4]]])
+        """
+        return ivy.count_nonzero(
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
 
     def nansum(
         self: ivy.Array,
