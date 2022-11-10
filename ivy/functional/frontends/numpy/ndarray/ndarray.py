@@ -29,13 +29,13 @@ class ndarray:
             keepdims=keepdims,
         )
 
-    def reshape(self, shape, order="C"):
+    def reshape(self, shape, /, order="C"):
         return np_frontend.reshape(self.data, shape)
 
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
     
-    def swapaxes(self, axis1, axis2):
+    def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self.data, axis1, axis2)
 
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
