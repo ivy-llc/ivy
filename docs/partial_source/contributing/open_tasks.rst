@@ -230,6 +230,8 @@ A general workflow for these tasks would be:
    Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
 #. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
    Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
+   in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:

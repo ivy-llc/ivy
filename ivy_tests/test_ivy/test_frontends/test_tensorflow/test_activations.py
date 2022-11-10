@@ -442,8 +442,8 @@ def test_tensorflow_deserialize(fn_name, dtype_and_data):
         ivy_submodules=["keras", "activations"],
         framework_submodules=["keras", "activations"],
     )
-    
-    
+
+
 @handle_cmd_line_args
 @given(
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
@@ -465,7 +465,7 @@ def test_tensorflow_deserialize(fn_name, dtype_and_data):
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
-)    
+)
 def test_tensorflow_get(fn_name, dtype_and_data):
     dtype_data, data = dtype_and_data
     simple_test_two_function(
