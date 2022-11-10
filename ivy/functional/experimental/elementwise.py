@@ -865,3 +865,45 @@ def fix(
     ivy.array([ 2.,  2., -2.])
     """
     return ivy.current_backend(x).fix(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nextafter(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Return the next floating-point value after x1 towards x2, element-wise.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1.0e-50, 2.0e+50])
+    >>> x2 = ivy.array([2.0, 1.0])
+    >>> ivy.nextafter(x1, x2)
+    ivy.array([1.4013e-45., 3.4028e+38])
+    """
+    return ivy.current_backend(x1, x2).nextafter(
+        x1, x2, out=out
+    )

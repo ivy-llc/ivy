@@ -755,3 +755,41 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([ 2.,  2., -2.])
         """
         return ivy.fix(self._data, out=out)
+
+    def nextafter(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.nextafter. This method simply
+        wraps the function, and so the docstring for ivy.nextafter also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1.0e-50, 2.0e+50])
+        >>> x2 = ivy.array([2.0, 1.0])
+        >>> x1.nextafter(x2)
+        ivy.array([1.4013e-45., 3.4028e+38])
+        """
+        return ivy.nextafter(
+            self._data, x2, out=out
+        )
