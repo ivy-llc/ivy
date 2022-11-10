@@ -23,14 +23,14 @@ import ivy
     keep_dims=st.booleans(),
 )
 def test_numpy_mean(
-    dtype_and_x,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    keep_dims,
+        dtype_and_x,
+        dtype,
+        where,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
     x_array = ivy.array(x[0])
@@ -80,14 +80,14 @@ def test_numpy_mean(
     keep_dims=st.booleans(),
 )
 def test_numpy_nanmean(
-    dtype_and_a,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    keep_dims,
+        dtype_and_a,
+        dtype,
+        where,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        keep_dims,
 ):
     input_dtype, a, axis = dtype_and_a
     a_array = ivy.array(a[0])
@@ -123,3 +123,29 @@ def test_numpy_nanmean(
         where=where,
         test_values=False,
     )
+
+
+# # std
+# @handle_cmd_line_args
+# @given(
+#     dtype_and_x=statistical_dtype_values(function="std"),
+#     dtype=helpers.get_dtypes("float", full=False, none=True),
+#     where=np_frontend_helpers.where(),
+#     num_positional_args=helpers.num_positional_args(
+#         fn_name="ivy.functional.frontends.numpy.std"
+#     ),
+#     keep_dims=st.booleans(),
+#
+# )
+# def test_numpy_std(
+#         dtype_and_a,
+#         dtype,
+#         where,
+#         as_variable,
+#         with_out,
+#         num_positional_args,
+#         native_array,
+#         keep_dims,
+# ):
+
+# About to start
