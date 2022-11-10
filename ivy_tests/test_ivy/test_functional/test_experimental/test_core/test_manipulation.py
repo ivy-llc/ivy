@@ -584,12 +584,18 @@ def _pad_helper(draw):
             ]
         )
     )
+    if mode == "median":
+        dtypes = "float"
+    else:
+        dtypes = "numeric"
     dtype, input, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes(dtypes),
             ret_shape=True,
             min_num_dims=1,
-        ).filter(lambda x: x[0][0] not in ["bfloat16"])
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
     )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
@@ -610,7 +616,6 @@ def test_pad(
     dtype_and_input_and_other,
     reflect_type,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container,

@@ -1033,8 +1033,8 @@ def pad(
         stat_length = _to_pairs(stat_length, padded.ndim)
         if mode == "median":
             ivy.assertions.check_true(
-                all(element[1] > 1 for element in ivy.ndenumerate(stat_length)),
-                message="median interpolation asserts stat lengths greater than one",
+                ivy.is_float_dtype(input),
+                message="median interpolation is only supported for floats",
             )
         else:
             ivy.assertions.check_true(
