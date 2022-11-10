@@ -216,3 +216,15 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def fix(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fix(x, out=out)
+
+
+fix.support_native_out = True

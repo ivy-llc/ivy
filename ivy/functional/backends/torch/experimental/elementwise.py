@@ -222,3 +222,15 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def fix(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fix(x, out=out)
+
+
+fix.support_native_out = True

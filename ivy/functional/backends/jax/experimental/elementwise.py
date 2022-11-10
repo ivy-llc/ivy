@@ -145,3 +145,12 @@ def signbit(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.signbit(x)
+
+
+def fix(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fix(x, out=out)
