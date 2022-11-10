@@ -34,9 +34,13 @@ def _to_ivy_array(x):
     return _tf_frontend_array_to_ivy(_tf_array_to_ivy_array(x))
 
 
-def _is_nan(x):
-    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return ivy.isnan(x).any().item()
+def _has_nans(x):
+    if isinstance(x, ivy.Container):
+        return x.has_nans()
+    elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        return ivy.isnan(x).any()
+    elif isinstance(x, tuple):
+        return any(_has_nans(xi) for xi in x)
     else:
         return False
 
@@ -204,22 +208,23 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
-        # check all args and kwards for presence of nans
-        args_nans = ivy.nested_map(args, _is_nan, include_derived={tuple: True})
-        kwargs_nans = ivy.nested_map(
-            kwargs, _is_nan, include_derived={tuple: True}
-        )
-        if type(args_nans) is dict:
-            args_result = any(list(args_nans.values()))
-        else:
-            args_result = any(list(args_nans))
-        
-        if type(kwargs_nans) is dict:
-            kwargs_result = any(list(kwargs_nans.values()))
-        else:
-            kwargs_result = any(list(kwargs_nans))
+        # skip the check if the current nan policy is `nothing``
+        if ivy.get_nan_policy() == "nothing":
+            return fn(*args, **kwargs)
 
-        if args_result or kwargs_result:
+        # check all args and kwards for presence of nans
+        args_nans = ivy.nested_map(args, _has_nans, include_derived={tuple: True})
+        kwargs_nans = ivy.nested_map(kwargs, _has_nans, include_derived={tuple: True})
+        inputs = ivy.Container(args_nans=args_nans, kwargs_nans=kwargs_nans)
+        results = []
+        for kc, v in inputs.to_iterator():
+            if isinstance(v, tuple):
+                results.extend(v)
+            else:
+                results.append(v)
+        result = any(results)
+
+        if result:
             # handle nans based on the selected policy
             if ivy.get_nan_policy() == "raise_exception":
                 raise ivy.exceptions.IvyException(

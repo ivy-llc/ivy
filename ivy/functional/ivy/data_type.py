@@ -14,7 +14,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_arrays,
     handle_nestable,
-    handle_nans,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -351,7 +350,6 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@handle_nans
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,

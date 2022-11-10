@@ -573,9 +573,13 @@ def _dtype_device_wrapper_creator(attrib, t):
 # --------------#
 
 
-def _is_nan(x):
-    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return ivy.isnan(x).any().item()
+def _has_nans(x):
+    if isinstance(x, ivy.Container):
+        return x.has_nans()
+    elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        return ivy.isnan(x).any()
+    elif isinstance(x, tuple):
+        return any(_has_nans(xi) for xi in x)
     else:
         return False
 
@@ -605,17 +609,19 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
+        # skip the check if the current nan policy is `nothing``
+        if ivy.get_nan_policy() == "nothing":
+            return fn(*args, **kwargs)
+
         # check all args and kwards for presence of nans
-        args_nans = ivy.nested_map(args, _is_nan, include_derived={tuple: True})
-        kwargs_nans = ivy.nested_map(
-            kwargs, _is_nan, include_derived={tuple: True}
-        )
+        args_nans = ivy.nested_map(args, _has_nans, include_derived={tuple: True})
+        kwargs_nans = ivy.nested_map(kwargs, _has_nans, include_derived={tuple: True})
         inputs = ivy.Container(args_nans=args_nans, kwargs_nans=kwargs_nans)
         results = []
         for kc, v in inputs.to_iterator():
-            if v is tuple:
-                results.append(list(v))
-            elif v:
+            if isinstance(v, tuple):
+                results.extend(v)
+            else:
                 results.append(v)
         result = any(results)
 
