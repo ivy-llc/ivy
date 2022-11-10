@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Any,
     Literal,
+    List,
 )
 from numbers import Number
 import ivy
@@ -1087,7 +1088,7 @@ def vsplit(
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
         and the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1108,9 +1109,7 @@ def vsplit(
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
     return ivy.current_backend(ary).vsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
 
 
@@ -1133,11 +1132,11 @@ def dsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n sections.
         If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first 
+        equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1155,11 +1154,44 @@ def dsplit(
           [12.,  13.,  14.,  15.]]]
         )
     >>> ivy.dsplit(ary, 2)
-    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]), 
+    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
     return ivy.current_backend(ary).dsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_1d(
+    *arys: Union[ivy.Array, ivy.NativeArray],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least one dimension.
+    Scalar inputs are converted to 1-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more input arrays.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 1D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_1d(ary1)
+    ivy.array([5])
+    >>> ary2 = ivy.array([[3,4]])
+    >>> ivy.atleast_1d(ary2)
+    ivy.array([[3, 4]])
+    >>> ivy.atleast_1d(6,7,8)
+    [ivy.array([6]), ivy.array([7]), ivy.array([8])]
+    """
+    return ivy.current_backend().atleast_1d(*arys)

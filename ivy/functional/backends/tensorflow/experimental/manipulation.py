@@ -1,4 +1,4 @@
-from typing import Union, Optional, Sequence, Tuple, NamedTuple
+from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
@@ -130,3 +130,9 @@ def dsplit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(
+    *arys: Union[tf.Tensor, tf.Variable],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_1d(*arys)

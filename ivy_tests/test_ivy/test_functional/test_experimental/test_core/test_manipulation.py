@@ -659,10 +659,7 @@ def test_pad(
         max_dim_size=5,
     ),
     indices_or_sections=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     num_positional_args=helpers.num_positional_args(fn_name="vsplit"),
 )
@@ -690,7 +687,7 @@ def test_vsplit(
         fw=fw,
         fn_name="vsplit",
         x=x[0],
-        indices_or_sections=indices_or_sections
+        indices_or_sections=indices_or_sections,
     )
 
 
@@ -707,10 +704,7 @@ def test_vsplit(
         max_dim_size=5,
     ),
     indices_or_sections=helpers.get_shape(
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
     ),
     num_positional_args=helpers.num_positional_args(fn_name="dsplit"),
 )
@@ -738,5 +732,52 @@ def test_dsplit(
         fw=fw,
         fn_name="dsplit",
         x=x[0],
-        indices_or_sections=indices_or_sections
+        indices_or_sections=indices_or_sections,
+    )
+
+
+@st.composite
+def atleast_1d_arrays(draw, dtype1):
+    shapes = draw(
+        helpers.get_shape(
+            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+        )
+    )
+    dtypes = draw(helpers.get_dtypes(dtype1))
+    arrays = []
+    for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
+        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
+        arrays.append(x)
+    return dtypes, arrays
+
+
+# atleast_1d
+@handle_cmd_line_args
+@given(
+    dtype_arrays=atleast_1d_arrays(dtype1="numeric"),
+)
+def test_atleast_1d(
+    dtype_arrays,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, arrays = dtype_arrays
+    kw = {}
+    for i, array in enumerate(arrays):
+        kw["x{}".format(i)] = np.asarray(array)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="atleast_1d",
+        **kw,
     )

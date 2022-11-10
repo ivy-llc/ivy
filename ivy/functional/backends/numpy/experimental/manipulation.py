@@ -1,5 +1,15 @@
 # global
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 from numbers import Number
 import numpy as np
 
@@ -217,3 +227,7 @@ def dsplit(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(*arys: np.ndarray) -> List[np.ndarray]:
+    return np.atleast_1d(*arys)
