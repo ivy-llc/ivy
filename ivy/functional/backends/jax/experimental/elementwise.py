@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -60,6 +60,22 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def count_nonzero(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if dtype is None:
+        return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
+    return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
 
 
 def nansum(
