@@ -35,6 +35,8 @@ Container methods
    container_methods/float_power.rst
    container_methods/static_exp2.rst
    container_methods/exp2.rst
+   container_methods/static_count_nonzero.rst
+   container_methods/count_nonzero.rst
    container_methods/static_nansum.rst
    container_methods/nansum.rst
    container_methods/static_gcd.rst
@@ -53,6 +55,8 @@ Container methods
    container_methods/signbit.rst
    container_methods/static_allclose.rst
    container_methods/allclose.rst
+   container_methods/static_fix.rst
+   container_methods/fix.rst
    container_methods/static_max_pool1d.rst
    container_methods/max_pool1d.rst
    container_methods/static_max_pool2d.rst

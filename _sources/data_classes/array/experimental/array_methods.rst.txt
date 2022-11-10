@@ -20,6 +20,7 @@ Array methods
    array_methods/trapz.rst
    array_methods/float_power.rst
    array_methods/exp2.rst
+   array_methods/count_nonzero.rst
    array_methods/nansum.rst
    array_methods/gcd.rst
    array_methods/isclose.rst
@@ -29,6 +30,7 @@ Array methods
    array_methods/logaddexp2.rst
    array_methods/signbit.rst
    array_methods/allclose.rst
+   array_methods/fix.rst
    array_methods/max_pool1d.rst
    array_methods/max_pool2d.rst
    array_methods/max_pool3d.rst
