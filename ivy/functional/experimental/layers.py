@@ -180,10 +180,16 @@ def avg_pool1d(
     --------
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.avg_pool1d(x, 2, 2, 'SAME'))
+    ivy.array([[[ 2.,  3.,  4.,  5.],
+            [ 8.,  9., 10., 11.]],
 
+           [[14., 15., 16., 17.],
+            [20., 21., 22., 23.]]])
     >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
     >>> print(ivy.avg_pool1d(x, 2, 2, 'VALID'))
+    ivy.array([[[ 2.,  3.,  4.,  5.]],
 
+           [[14., 15., 16., 17.]]])
     """
     return ivy.current_backend(x).avg_pool1d(
         x, kernel, strides, padding, data_format=data_format, out=out

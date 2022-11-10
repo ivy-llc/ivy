@@ -456,7 +456,12 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(ivy.Container.static_avg_pool1d(x,2, 2, "VALID"))
-
+        {
+            a: ivy.array([[[1.5, 2.5, 3.5]],
+                          [[7.5, 8.5, 9.5]]]),
+            b: ivy.array([[[2., 3., 4., 5.]],
+                          [[14., 15., 16., 17.]]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "avg_pool1d",
@@ -518,7 +523,12 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> b = ivy.arange(24.).reshape((2,3,4))
         >>> x = ivy.Container({'a': a, 'b': b})
         >>> print(x.avg_pool1d(2, 2, "VALID"))
-
+        {
+            a: ivy.array([[[1.5, 2.5, 3.5]],
+                          [[7.5, 8.5, 9.5]]]),
+            b: ivy.array([[[2., 3., 4., 5.]],
+                          [[14., 15., 16., 17.]]])
+        }
         """
         return self.static_avg_pool1d(
             self,

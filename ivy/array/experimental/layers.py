@@ -239,10 +239,16 @@ class ArrayWithLayersExperimental(abc.ABC):
         --------
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.avg_pool1d(2, 2, 'SAME'))
+        ivy.array([[[ 2.,  3.,  4.,  5.],
+                [ 8.,  9., 10., 11.]],
 
+               [[14., 15., 16., 17.],
+                [20., 21., 22., 23.]]])
         >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
         >>> print(x.avg_pool1d(2, 2, 'VALID'))
+        ivy.array([[[ 2.,  3.,  4.,  5.]],
 
+               [[14., 15., 16., 17.]]])
         """
         return ivy.avg_pool1d(
             self,

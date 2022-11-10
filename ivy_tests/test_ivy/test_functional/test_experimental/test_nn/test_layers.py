@@ -79,6 +79,7 @@ def test_max_pool1d(
         padding=pad,
     )
 
+
 @handle_cmd_line_args
 @given(
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),

@@ -83,6 +83,7 @@ def max_pool3d(
         return tf.transpose(res, (0, 4, 1, 2, 3))
     return res
 
+
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool1d(
     x: Union[tf.Tensor, tf.Variable],
