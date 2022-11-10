@@ -15,8 +15,8 @@ Layers
 
    layers/max_pool1d.rst
    layers/max_pool2d.rst
-   layers/avg_pool1d.rst
    layers/max_pool3d.rst
+   layers/avg_pool1d.rst
    layers/avg_pool2d.rst
    layers/avg_pool3d.rst
    layers/dct.rst
