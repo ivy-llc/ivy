@@ -1951,3 +1951,135 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_fix(self, out=out)
+
+    @staticmethod
+    def static_nextafter(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nextafter. This method simply wraps
+        the function, and so the docstring for ivy.nextafter also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input arrays.
+        x2
+            Input container containing second input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1.0e-50, 2.0e+50]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> x2 = ivy.Container(a=ivy.array([5.5e-30]),\
+        ...                         b=ivy.array([-2.0]))
+        >>> ivy.Container.static_nextafter(x1, x2)
+        {
+            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            b: ivy.array([5.5e-30])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nextafter",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nextafter(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nextafter. This method simply
+        wraps the function, and so the docstring for ivy.nextafter also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1.0e-50, 2.0e+50]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> x2 = ivy.Container(a=ivy.array([5.5e-30]),\
+        ...                         b=ivy.array([-2.0]))
+        >>> x1.nextafter(x2)
+        {
+            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            b: ivy.array([5.5e-30])
+        }
+        """
+        return self.static_nextafter(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
