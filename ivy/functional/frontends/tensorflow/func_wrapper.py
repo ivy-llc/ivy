@@ -213,16 +213,8 @@ def handle_nans(fn: Callable) -> Callable:
             return fn(*args, **kwargs)
 
         # check all args and kwards for presence of nans
-        args_nans = ivy.nested_map(args, _has_nans, include_derived={tuple: True})
-        kwargs_nans = ivy.nested_map(kwargs, _has_nans, include_derived={tuple: True})
-        inputs = ivy.Container(args_nans=args_nans, kwargs_nans=kwargs_nans)
-        results = []
-        for kc, v in inputs.to_iterator():
-            if isinstance(v, tuple):
-                results.extend(v)
-            else:
-                results.append(v)
-        result = any(results)
+        result = ivy.nested_any(args, _has_nans) or ivy.nested_any(
+            kwargs, _has_nans)
 
         if result:
             # handle nans based on the selected policy
