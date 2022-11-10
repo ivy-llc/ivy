@@ -198,6 +198,67 @@ class ArrayWithLayersExperimental(abc.ABC):
             out=out,
         )
 
+    def avg_pool1d(
+        self: ivy.Array,
+        kernel: Union[int, Tuple[int]],
+        strides: Union[int, Tuple[int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input image *[batch_size,w,d_in]*.
+        kernel
+            The size of the window for each dimension of the input tensor.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NWC" or "NCW". Defaults to "NWC".
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the max pooling operation.
+
+        Examples
+        --------
+        >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+        >>> print(x.avg_pool1d(2, 2, 'SAME'))
+        ivy.array([[[ 2.,  3.,  4.,  5.],
+                [ 8.,  9., 10., 11.]],
+
+               [[14., 15., 16., 17.],
+                [20., 21., 22., 23.]]])
+        >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+        >>> print(x.avg_pool1d(2, 2, 'VALID'))
+        ivy.array([[[ 2.,  3.,  4.,  5.]],
+
+               [[14., 15., 16., 17.]]])
+        """
+        return ivy.avg_pool1d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            out=out,
+        )
+
     def avg_pool3d(
         self: ivy.Array,
         kernel: Union[int, Tuple[int], Tuple[int, int, int]],
