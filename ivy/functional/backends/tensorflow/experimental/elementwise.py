@@ -210,3 +210,18 @@ def signbit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.signbit(x)
+
+
+def allclose(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> bool:
+    return tf.experimental.numpy.allclose(
+        x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
