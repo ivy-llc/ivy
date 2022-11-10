@@ -182,7 +182,7 @@ def avg_pool1d(
     padding: str,
     /,
     *,
-    data_format: str = "NHWC",
+    data_format: str = "NWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
 

@@ -205,12 +205,12 @@ class ArrayWithLayersExperimental(abc.ABC):
         padding: str,
         /,
         *,
-        data_format: str = "NHWC",
+        data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of `ivy.max_pool1d`. This method simply
-        wraps the function, and so the docstring for `ivy.max_pool1d` also applies
+        ivy.Array instance method variant of `ivy.avg_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
         to this method with minimal changes.
 
         Parameters
