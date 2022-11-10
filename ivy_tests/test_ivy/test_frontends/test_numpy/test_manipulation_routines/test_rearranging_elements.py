@@ -76,6 +76,36 @@ def test_numpy_flip(dtype_x_axis, num_positional_args, native_array):
     )
 
 
+# fliplr
+@handle_cmd_line_args
+@given(
+    dtype_and_m=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.fliplr"
+    ),
+)
+def test_numpy_fliplr(
+    dtype_and_m,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, m = dtype_and_m
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="fliplr",
+        m=np.asarray(m[0], dtype=input_dtype[0]),
+    )
+
+
 # flipud
 @handle_cmd_line_args
 @given(

@@ -346,7 +346,8 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return jnp.round(diff * x2).astype(x1.dtype)
-    return jnp.remainder(x1, x2)
+    # jnp.remainder hasn't been used as it results in inconsistent gradients
+    return x1 - x2 * jnp.floor_divide(x1, x2)
 
 
 def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -418,7 +419,7 @@ def maximum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -432,7 +433,7 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

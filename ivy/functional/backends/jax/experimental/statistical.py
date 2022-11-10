@@ -29,3 +29,13 @@ def nanmean(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+def unravel_index(
+    indices: JaxArray,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.unravel_index(indices, shape)

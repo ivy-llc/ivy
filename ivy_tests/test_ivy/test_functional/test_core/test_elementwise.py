@@ -59,6 +59,7 @@ def test_abs(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
@@ -2484,7 +2485,7 @@ def test_isreal(
     )
 
 
-# gcd
+# diff
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
