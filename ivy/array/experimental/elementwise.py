@@ -671,3 +671,34 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         return ivy.allclose(
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
+
+    def fix(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fix. This method
+        simply wraps the function, and so the docstring for ivy.fix also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array of floats with elements corresponding to input elements
+            rounded to nearest integer towards zero, element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([2.1, 2.9, -2.1])
+        >>> x.fix()
+        ivy.array([ 2.,  2., -2.])
+        """
+        return ivy.fix(self._data, out=out)

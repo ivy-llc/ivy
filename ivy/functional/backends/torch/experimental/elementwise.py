@@ -235,3 +235,15 @@ def allclose(
     out: Optional[torch.Tensor] = None,
 ) -> bool:
     return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def fix(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fix(x, out=out)
+
+
+fix.support_native_out = True
