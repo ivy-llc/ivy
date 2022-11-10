@@ -317,6 +317,10 @@ def true_divide(input, other, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def log1p(input, *, out=None):
+    return ivy.log1p(input, out=out)
+    
+    
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
