@@ -338,6 +338,74 @@ def test_exp2(
     )
 
 
+@st.composite
+def _get_dtype_values_axis_for_count_nonzero(
+    draw,
+    in_available_dtypes,
+    out_available_dtypes,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    input_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes(in_available_dtypes),
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            valid_axis=True,
+        )
+    )
+    axis = draw(st.one_of(st.just(axis), st.none()))
+    output_dtype = draw(helpers.get_dtypes(out_available_dtypes))
+    return [input_dtype, output_dtype], values, axis
+
+
+# count_nonzero
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
+        in_available_dtypes="numeric",
+        out_available_dtypes="numeric",
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="count_nonzero"),
+)
+def test_count_nonzero(
+    dtype_values_axis,
+    keepdims,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    i_o_dtype, a, axis = dtype_values_axis
+    helpers.test_function(
+        input_dtypes=i_o_dtype[0],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="count_nonzero",
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=i_o_dtype[1],
+    )
+
+
 # nansum
 @handle_cmd_line_args
 @given(

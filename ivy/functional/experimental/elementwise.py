@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -341,6 +341,61 @@ def exp2(
     ivy.array([32.,   64.,  128.])
     """
     return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def count_nonzero(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[Union[int, ivy.Array]] = None,
+) -> ivy.Array:
+    """Counts the number of non-zero values in the array a.
+
+    Parameters
+    ----------
+    a
+        array for which to count non-zeros.
+    axis
+        optional axis or tuple of axes along which to count non-zeros. Default is
+        None, meaning that non-zeros will be counted along a flattened
+        version of the input array.
+    keepdims
+        optional, if this is set to True, the axes that are counted are left in the
+        result as dimensions with size one. With this option, the result
+        will broadcast correctly against the input array.
+    dtype
+        optional output dtype. Default is of type integer.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Number of non-zero values in the array along a given axis. Otherwise,
+        the total number of non-zero values in the array is returned.
+
+    Examples
+    --------
+    >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
+    >>> ivy.count_nonzero(a)
+    ivy.array(7)
+    >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
+    >>> ivy.count_nonzero(a, axis=0)
+    ivy.array([1, 2, 2, 2])
+    >>> a = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> ivy.count_nonzero(a, axis=(0,1), keepdims=True)
+    ivy.array([[[3, 4]]])
+    """
+    return ivy.current_backend().count_nonzero(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
 
 
 @to_native_arrays_and_back
