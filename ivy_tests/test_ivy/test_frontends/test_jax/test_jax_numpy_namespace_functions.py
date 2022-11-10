@@ -2434,10 +2434,10 @@ def test_jax_numpy_fliplr(
     ),
     dtype=helpers.get_dtypes("numeric", none=True, full=False),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.vstack"
+        fn_name="ivy.functional.frontends.jax.numpy.hstack"
     ),
 )
-def test_jax_numpy_vstack(
+def test_jax_numpy_hstack(
     dtype_and_x,
     as_variable,
     dtype,
@@ -2452,7 +2452,7 @@ def test_jax_numpy_vstack(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="jax",
-        fn_tree="numpy.vstack",
+        fn_tree="numpy.hstack",
         dtype=dtype,
         arrays=x,
     )
