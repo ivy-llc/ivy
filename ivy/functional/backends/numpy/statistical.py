@@ -4,6 +4,7 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 # Array API Standard #
@@ -40,6 +41,7 @@ def max(
 max.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def mean(
     x: np.ndarray,
     /,
@@ -49,7 +51,7 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.asarray(np.mean(x, axis=axis, keepdims=keepdims, out=out)).astype(x.dtype)
+    return np.mean(x, axis=axis, keepdims=keepdims, out=out).astype(x.dtype)
 
 
 mean.support_native_out = True
@@ -123,6 +125,7 @@ def sum(
 sum.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def var(
     x: np.ndarray,
     /,
@@ -135,29 +138,19 @@ def var(
     if axis is None:
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
-    dtype = x.dtype
-    x = ivy.astype(x, "float64").to_native()
     if isinstance(correction, int):
-        return ivy.astype(
-            np.asarray(
-                np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out)
-            ),
-            dtype,
+        return np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out).astype(
+            x.dtype
         )
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return ivy.astype(
-        np.asarray(
-            np.multiply(
-                np.var(x, axis=axis, keepdims=keepdims, out=out),
-                ivy.stable_divide(size, (size - correction)),
-            )
-        ),
-        dtype,
-    )
+    return np.multiply(
+        np.var(x, axis=axis, keepdims=keepdims, out=out),
+        ivy.stable_divide(size, (size - correction)),
+    ).astype(x.dtype)
 
 
 var.support_native_out = True
@@ -237,10 +230,11 @@ def cumsum(
 cumsum.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def einsum(
     equation: str, *operands: np.ndarray, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.asarray(np.einsum(equation, *operands, out=out))
+    return np.einsum(equation, *operands, out=out)
 
 
 einsum.support_native_out = True

@@ -10,7 +10,7 @@ Whether you're a veteran developer 🥷 or a total beginner 🤷, everyone is we
 
 If you're new to any aspects of open-source development, we'll guide you through the process.
 
-We want our ML unification journey to be as inclusvie as possible, this is all only possible with a big team effort, and all are totally welcome on board for our journey! 🙂
+We want our ML unification journey to be as inclusive as possible, this is all only possible with a big team effort, and all are totally welcome on board for our journey! 🙂
 
 The contributor guide is split into the sections below, it's best to go from start to finish, but you can also dive in at any stage! We're excited for you to get involved!  🦾
 
@@ -54,5 +54,5 @@ The contributor guide is split into the sections below, it's best to go from sta
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video">
+    src="https://www.youtube.com/embed/HF-ZLF23g38" class="video" allowfullscreen="true">
     </iframe>

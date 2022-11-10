@@ -90,13 +90,13 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-def cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+def cumprod(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
-def cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+def cumsum(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
@@ -285,7 +285,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
     scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
-    return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
+    return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -347,6 +347,3 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
-
-
-# TODO: Ibeta for Future Release
