@@ -1,11 +1,41 @@
+# global
 from typing import Optional, Union, Tuple
 import torch
-from ivy.func_wrapper import with_unsupported_dtypes
 
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
+def _consistent_median(input, axis, keepdims, out):
+    input_max = torch.max(input, axis, keepdim=True)[0]
+    return torch.div(
+        torch.add(
+            torch.median(
+                torch.cat((input, input_max), dim=axis),
+                dim=axis,
+                keepdim=keepdims,
+            )[0],
+            torch.median(
+                input,
+                dim=axis,
+                keepdim=keepdims,
+            )[0],
+        ),
+        2,
+        out=out,
+    )
+
+
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def median(
     input: torch.tensor,
     /,
@@ -16,20 +46,12 @@ def median(
 ) -> torch.tensor:
     if hasattr(axis, "__iter__"):
         for dim in axis:
-            input = torch.median(
-                input,
-                dim=dim,
-                keepdim=keepdims,
-                out=out,
-            )[0]
-        return input
+            input = _consistent_median(input, dim, keepdims, out)
+    elif axis is None:
+        input = _consistent_median(torch.flatten(input), -1, keepdims, out)
     else:
-        return torch.median(
-            input,
-            dim=axis,
-            keepdim=keepdims,
-            out=out,
-        )
+        input = _consistent_median(input, axis, keepdims, out)
+    return input
 
 
 def nanmean(
