@@ -436,5 +436,5 @@ def fliplr(m):
 
 
 @to_ivy_arrays_and_back
-def vstack(x, dtype=None):
-    return ivy.vstack(x)
+def hstack(x, dtype=None):
+    return ivy.hstack(x)
