@@ -222,3 +222,33 @@ class ndarray:
 
     def __lt__(self, value, /):
         return np_frontend.less(self.data, value)
+
+    def __int__(self,):
+        return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.int64)[0]
+
+    def __float__(self,):
+        return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.float64)[0]
+
+    def __contains__(self, key, /):
+        return key in ivy.reshape(self.data, -1)
+
+    def __iadd__(self, value, /):
+        return np_frontend.add(self.data, value)
+
+    def __isub__(self, value, /):
+        return np_frontend.subtract(self.data, value)
+
+    def __imul__(self, value, /):
+        return np_frontend.multiply(self.data, value)
+
+    def __ipow__(self, value, /):
+        return np_frontend.power(self.data, value)
+
+    def __iand__(self, value, /):
+        return np_frontend.logical_and(self.data, value)
+
+    def __ior__(self, value, /):
+        return np_frontend.logical_or(self.data, value)
+
+    def __ixor__(self, value, /):
+        return np_frontend.logical_xor(self.data, value)
