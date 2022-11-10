@@ -142,7 +142,7 @@ def max_value_as_shape_prod(draw):
         helpers.dtype_values_axis(
             available_dtypes=helpers.get_dtypes("integer"),
             min_value=0,
-            max_value=np.prod(shape) - 1
+            max_value=np.prod(shape) - 1,
         )
     )
     return dtype_and_x, shape
@@ -176,5 +176,5 @@ def test_unravel_index(
         fw=fw,
         fn_name="unravel_index",
         indices=np.asarray(x[0], dtype=input_dtype[0]),
-        shape=shape
+        shape=shape,
     )
