@@ -769,7 +769,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     )
 
 
-
+# local_response_normalization
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -786,7 +786,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         fn_name="ivy.functional.frontends.tensorflow.nn.local_response_normalization"
     ),
 )
-def test_local_response_normalization(
+def test_tensorflow_local_response_normalization(
     dtype_and_x,
     depth_radius,
     bias,
