@@ -484,7 +484,7 @@ def test_numpy_mod(
     )
 
 
-#reciprocal
+# reciprocal
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -531,4 +531,3 @@ def test_numpy_reciprocal(
         dtype=dtype,
         subok=True,
     )
-
