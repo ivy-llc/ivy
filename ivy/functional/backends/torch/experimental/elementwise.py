@@ -224,6 +224,19 @@ def signbit(
 signbit.support_native_out = True
 
 
+def allclose(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> bool:
+    return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
 def fix(
     x: torch.Tensor,
     /,
