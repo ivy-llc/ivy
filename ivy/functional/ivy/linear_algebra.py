@@ -1689,7 +1689,7 @@ def svd(
     >>> U, S, Vh = ivy.svd(x)
     >>> print(U.shape, S.shape, Vh.shape)
     (3, 3) (3,) (3, 3)
-    
+
 
     With :class:`ivy.Container` input:
 
