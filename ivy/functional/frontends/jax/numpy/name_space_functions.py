@@ -438,4 +438,3 @@ def fliplr(m):
 @to_ivy_arrays_and_back
 def hstack(x, dtype=None):
     return ivy.hstack(x)
-    
