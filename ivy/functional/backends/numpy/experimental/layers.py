@@ -70,6 +70,57 @@ def max_pool2d(
     return res
 
 
+def avg_pool1d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(kernel, tuple):
+        kernel = kernel[0]
+
+    if data_format == "NCW":
+        x = x.permute(0, 2, 1)
+
+    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_w = (x_shape[1] - kernel) // strides + 1
+    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides,
+        x.strides[1],
+        x.strides[2],
+    )
+
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    res = np.mean(sub_matrices, axis=2)
+
+    if data_format == "NCW":
+        return res.permute(0, 2, 1)
+    return res
+
+
 def avg_pool2d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],

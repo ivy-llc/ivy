@@ -85,6 +85,27 @@ def max_pool3d(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
+def avg_pool1d(
+    x: Union[tf.Tensor, tf.Variable],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+
+    if data_format == "NCW":
+        x = tf.transpose(x, (0, 2, 1))
+    res = tf.nn.avg_pool1d(x, kernel, strides, padding)
+
+    if data_format == "NCW":
+        res = tf.transpose(res, (0, 2, 1))
+    return res
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],

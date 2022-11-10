@@ -175,6 +175,42 @@ def avg_pool3d(
     return res
 
 
+def avg_pool1d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if data_format == "NCW":
+        x = jnp.transpose(x, (0, 2, 1))
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    res = _pool(x, 0.0, jlax.add, kernel, strides, padding)
+    div_shape = x.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / _pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
+    if data_format == "NCW":
+        res = jnp.transpose(x, (0, 2, 1))
+    return res
+
+
 def avg_pool2d(
     x: JaxArray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],

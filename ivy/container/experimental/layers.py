@@ -410,6 +410,140 @@ class ContainerWithLayersExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_avg_pool1d(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        kernel: Union[int, Tuple[int]],
+        strides: Union[int, Tuple[int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.avg_pool1d. This method simply
+        wraps the function, and so the docstring for ivy.avg_pool1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Container of input images *[batch_size, w, d_in]*.
+        kernel
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(ivy.Container.static_avg_pool1d(x,2, 2, "VALID"))
+        {
+            a: ivy.array([[[1.5, 2.5, 3.5]],
+                          [[7.5, 8.5, 9.5]]]),
+            b: ivy.array([[[2., 3., 4., 5.]],
+                          [[14., 15., 16., 17.]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "avg_pool1d",
+            x,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def avg_pool1d(
+        self: ivy.Container,
+        kernel: Union[int, Tuple[int]],
+        strides: Union[int, Tuple[int]],
+        padding: str,
+        /,
+        *,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of `ivy.avg_pool1d`. This method simply
+        wraps the function, and so the docstring for `ivy.avg_pool1d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container of input images *[batch_size, w, d_in]*.
+        kernel
+            Size of the kernel i.e., the sliding window for each
+            dimension of input. *[w]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            SAME" or "VALID" indicating the algorithm, or list
+            indicating the per-dimension paddings.
+        data_format
+            NWC" or "NCW". Defaults to "NWC".
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The result of the pooling operation.
+
+        Examples
+        --------
+        >>> a = ivy.arange(12.).reshape((2,2,3))
+        >>> b = ivy.arange(24.).reshape((2,3,4))
+        >>> x = ivy.Container({'a': a, 'b': b})
+        >>> print(x.avg_pool1d(2, 2, "VALID"))
+        {
+            a: ivy.array([[[1.5, 2.5, 3.5]],
+                          [[7.5, 8.5, 9.5]]]),
+            b: ivy.array([[[2., 3., 4., 5.]],
+                          [[14., 15., 16., 17.]]])
+        }
+        """
+        return self.static_avg_pool1d(
+            self,
+            kernel,
+            strides,
+            padding,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_avg_pool3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         kernel: Union[int, Tuple[int], Tuple[int, int, int]],
