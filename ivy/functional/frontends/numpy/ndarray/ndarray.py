@@ -29,7 +29,7 @@ class ndarray:
             keepdims=keepdims,
         )
 
-    def reshape(self, shape, /, order="C"):
+    def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
     def transpose(self, /, axes=None):
