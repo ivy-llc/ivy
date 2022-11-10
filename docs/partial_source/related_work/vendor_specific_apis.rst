@@ -1,3 +1,5 @@
+.. _`RWorks Vendor-Specific APIs`:
+
 Vendor-Specific APIs
 ====================
 

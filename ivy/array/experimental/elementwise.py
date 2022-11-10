@@ -609,3 +609,65 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([False, True, False])
         """
         return ivy.signbit(self._data, out=out)
+
+    def allclose(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.allclose. This method simply
+        wraps the function, and so the docstring for ivy.allclose also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in a will be
+            considered equal to NaN's in b in the output array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Returns True if the two arrays are equal within the given tolerance;
+            False otherwise.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1e10, 1e-7])
+        >>> x2 = ivy.array([1.00001e10, 1e-8])
+        >>> y = x1.allclose(x2)
+        >>> print(y)
+        False
+
+        >>> x1 = ivy.array([1.0, ivy.nan])
+        >>> x2 = ivy.array([1.0, ivy.nan])
+        >>> y = x1.allclose(x2, equal_nan=True)
+        >>> print(y)
+        True
+
+        >>> x1 = ivy.array([1e-10, 1e-10])
+        >>> x2 = ivy.array([1.00001e-10, 1e-10])
+        >>> y = x1.allclose(x2, rtol=0.005, atol=0.0)
+        >>> print(y)
+
+        """
+        return ivy.allclose(
+            self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+        )
