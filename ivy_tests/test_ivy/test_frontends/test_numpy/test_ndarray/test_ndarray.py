@@ -140,6 +140,7 @@ def test_numpy_ndarray_transpose(
     )
 
 
+# swapaxes
 @st.composite
 def dtype_values_and_axes(draw):
     dtype, x, x_shape = draw(
@@ -163,7 +164,6 @@ def dtype_values_and_axes(draw):
     return dtype, x, axis1, axis2
 
 
-# swapaxes
 @handle_cmd_line_args
 @given(
     dtype_x_and_axes=dtype_values_and_axes(),
@@ -182,7 +182,7 @@ def test_numpy_ndarray_swapaxes(
         input_dtypes_init=input_dtype,
         input_dtypes_method=input_dtype,
         as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
+        num_positional_args_init=1,
         num_positional_args_method=num_positional_args_method,
         native_array_flags_init=native_array,
         as_variable_flags_method=as_variable,
