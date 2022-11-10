@@ -738,7 +738,69 @@
 <span class="sd">        &gt;&gt;&gt; x.signbit()</span>
 <span class="sd">        ivy.array([False, True, False])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">signbit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">signbit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementWiseExperimental.allclose"><a class="viewcode-back" href="../../../../data_classes/array/experimental/elementwise/ArrayWithElementWiseExperimental.html#ivy.array.experimental.elementwise.ArrayWithElementWiseExperimental.allclose">[docs]</a>    <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
+        <span class="n">atol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
+        <span class="n">equal_nan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.allclose. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.allclose also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            First input array.</span>
+<span class="sd">        x2</span>
+<span class="sd">            Second input array.</span>
+<span class="sd">        rtol</span>
+<span class="sd">            The relative tolerance parameter.</span>
+<span class="sd">        atol</span>
+<span class="sd">            The absolute tolerance parameter.</span>
+<span class="sd">        equal_nan</span>
+<span class="sd">            Whether to compare NaN&#39;s as equal. If True, NaN&#39;s in a will be</span>
+<span class="sd">            considered equal to NaN&#39;s in b in the output array.</span>
+<span class="sd">        out</span>
+<span class="sd">            Alternate output array in which to place the result.</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Returns True if the two arrays are equal within the given tolerance;</span>
+<span class="sd">            False otherwise.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1e10, 1e-7])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.00001e10, 1e-8])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1.0, ivy.nan])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.0, ivy.nan])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2, equal_nan=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1e-10, 1e-10])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.00001e-10, 1e-10])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2, rtol=0.005, atol=0.0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="n">equal_nan</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

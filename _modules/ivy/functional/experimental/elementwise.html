@@ -833,6 +833,79 @@
 <span class="sd">    ivy.array([False, True, False])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">signbit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="allclose"><a class="viewcode-back" href="../../../../functional/experimental/elementwise/allclose.html#ivy.functional.experimental.elementwise.allclose">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">rtol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-05</span><span class="p">,</span>
+    <span class="n">atol</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1e-08</span><span class="p">,</span>
+    <span class="n">equal_nan</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a True if the two arrays are element-wise equal</span>
+<span class="sd">    within given tolerance; otherwise False.</span>
+<span class="sd">    The tolerance values are positive, typically very small numbers.</span>
+<span class="sd">    The relative difference (rtol * abs(x2)) and the absolute difference</span>
+<span class="sd">    atol are added together to compare against the absolute difference</span>
+<span class="sd">    between x1 and x2.</span>
+<span class="sd">    The default atol is not appropriate for comparing numbers that are</span>
+<span class="sd">    much smaller than one</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        First input array.</span>
+<span class="sd">    x2</span>
+<span class="sd">        Second input array.</span>
+<span class="sd">    rtol</span>
+<span class="sd">        The relative tolerance parameter.</span>
+<span class="sd">    atol</span>
+<span class="sd">        The absolute tolerance parameter.</span>
+<span class="sd">    equal_nan</span>
+<span class="sd">        Whether to compare NaN&#39;s as equal. If True, NaN&#39;s in x1 will be</span>
+<span class="sd">        considered equal to NaN&#39;s in x2 in the output array.</span>
+<span class="sd">    out</span>
+<span class="sd">        Alternate output array in which to place the result.</span>
+<span class="sd">        The default is None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Returns True if the two arrays are equal within the given tolerance;</span>
+<span class="sd">        False otherwise.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1e10, 1e-7])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.00001e10, 1e-8])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    False</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1.0, ivy.nan])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.0, ivy.nan])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2, equal_nan=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1e-10, 1e-10])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.00001e-10, 1e-10])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="n">equal_nan</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
 </pre></div>
 
            </div>

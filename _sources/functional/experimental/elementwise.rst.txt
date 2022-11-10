@@ -28,4 +28,5 @@ Elementwise
    elementwise/nan_to_num.rst
    elementwise/logaddexp2.rst
    elementwise/signbit.rst
+   elementwise/allclose.rst
 
