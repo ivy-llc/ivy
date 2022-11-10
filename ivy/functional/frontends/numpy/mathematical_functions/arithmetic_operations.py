@@ -166,6 +166,8 @@ def negative(
     return ret
 
 
+@handle_numpy_casting
+@to_ivy_arrays_and_back
 def floor_divide(
     x1,
     x2,
@@ -185,7 +187,6 @@ def floor_divide(
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
-
 
 @to_ivy_arrays_and_back
 def reciprocal(
