@@ -28,8 +28,10 @@ def test_gelu(
     as_variable,
     native_array,
     container,
+    fw,
 ):
     input_dtype, x = dtype_and_x
+    assume(not (fw == "torch" and "float16" in input_dtype))
     helpers.test_method(
         input_dtypes_init=input_dtype,
         num_positional_args_init=num_positional_args_init,

@@ -663,13 +663,13 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
         if pre_ind_0 != ind[0]:
             i = 0
         if (ind[0] < end) and (ind[0] >= start):
-            if not hasattr(value, '__len__'):
+            if not hasattr(value, "__len__"):
                 input[ind] = value
                 continue
             if len(value.shape) == 0:
                 try:
                     input[ind] = value.item()
-                except:
+                except Exception:
                     input[ind] = value.numpy().item()
                 continue
             if len(ind) == 1:
@@ -1108,7 +1108,7 @@ def vsplit(
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
         and the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1129,9 +1129,7 @@ def vsplit(
     [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
     """
     return ivy.current_backend(ary).vsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
 
 
@@ -1154,11 +1152,11 @@ def dsplit(
     indices_or_sections
         If indices_or_sections is an integer n, the array is split into n sections.
         If the array is divisible by n along the 3rd axis, each section will be of
-        equal size. If input is not divisible by n, the sizes of the first 
+        equal size. If input is not divisible by n, the sizes of the first
         int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
         the rest will have size int(ary.size(0) / n).
         If indices_or_sections is a tuple of ints, then input is split at each of
-        the indices in the tuple. 
+        the indices in the tuple.
     out
         optional output array, for writing the result to.
 
@@ -1176,13 +1174,11 @@ def dsplit(
           [12.,  13.,  14.,  15.]]]
         )
     >>> ivy.dsplit(ary, 2)
-    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]), 
+    [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
      ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
     """
     return ivy.current_backend(ary).dsplit(
-        ary,
-        indices_or_sections=indices_or_sections,
-        out=out
+        ary, indices_or_sections=indices_or_sections, out=out
     )
 
 
@@ -1190,7 +1186,7 @@ def dsplit(
 @handle_out_argument
 @handle_nestable
 def dstack(
-    arrays: Sequence[ivy.Array], 
+    arrays: Sequence[ivy.Array],
     /,
     *,
     out: Optional[ivy.Array] = None,

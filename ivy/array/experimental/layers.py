@@ -304,10 +304,10 @@ class ArrayWithLayersExperimental(abc.ABC):
         ivy.array([ 102.,  -51.5,   0.,  -5.39,   0.,  -1.61,   0., -0.406])
         """
         return ivy.dct(
-            self._data, 
-            type=type, 
-            n=n, 
-            axis=axis, 
-            norm=norm, 
+            self._data,
+            type=type,
+            n=n,
+            axis=axis,
+            norm=norm,
             out=out,
         )
