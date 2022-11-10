@@ -297,6 +297,49 @@ def test_numpy_instance_argsort(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.mean"
+    ),
+)
+def test_numpy_ndarray_mean(
+    dtype_x_axis,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "dtype": "float64",
+            "out": None,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="mean",
+    )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
@@ -381,6 +424,46 @@ def test_numpy_ndarray_argmin(
         method_name="argmin",
         frontend_class=np.ndarray,
         fn_tree="ndarray.argmin",
+    )
+    
+
+# clip
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.clip"
+    ),
+)
+def test_numpy_instance_clip(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "a_min": 0,
+            "a_max": 1
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="clip",
     )
 
 

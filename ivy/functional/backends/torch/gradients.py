@@ -54,7 +54,7 @@ def _forward_fn(xs, func):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    xs = _arrays_to_float_variables(xs)
+    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
@@ -69,37 +69,34 @@ def execute_with_gradients(
         grads_ = ivy.nested_map(
             xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
         )
-        try:
-            if isinstance(xs, ivy.Container):
-                grads = xs.from_flat_list(
-                    list(
-                        torch.autograd.grad(
-                            [y],
-                            [v for k, v in xs.to_iterator()],
-                            retain_graph=True,
-                            create_graph=retain_grads,
-                            allow_unused=True,
-                        )
+        if isinstance(xs, ivy.Container):
+            grads = xs.from_flat_list(
+                list(
+                    torch.autograd.grad(
+                        [y],
+                        [v for k, v in xs.to_iterator()],
+                        retain_graph=True,
+                        create_graph=retain_grads,
+                        allow_unused=True,
                     )
                 )
-                if isinstance(grads, ivy.Container):
-                    grads = ivy.nested_map(
-                        grads, lambda x: 0 if x is None else x, include_derived=True
-                    )
-                    grads += grads_
-                else:
-                    grads = grads_ if grads is None else grads
+            )
+            if isinstance(grads, ivy.Container):
+                grads = ivy.nested_map(
+                    grads, lambda x: 0 if x is None else x, include_derived=True
+                )
+                grads += grads_
             else:
-                grads = torch.autograd.grad(
-                    y,
-                    xs,
-                    retain_graph=True,
-                    create_graph=retain_grads,
-                    allow_unused=True,
-                )[0]
                 grads = grads_ if grads is None else grads
-        except RuntimeError:
-            grads = grads_
+        else:
+            grads = torch.autograd.grad(
+                y,
+                xs,
+                retain_graph=True,
+                create_graph=retain_grads,
+                allow_unused=True,
+            )[0]
+            grads = grads_ if grads is None else grads
         return grads
 
     if isinstance(y, ivy.NativeArray):
@@ -123,7 +120,7 @@ def execute_with_gradients(
             grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
     grads = ivy.nested_map(
         grads,
-        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)

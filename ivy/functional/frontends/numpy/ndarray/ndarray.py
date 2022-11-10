@@ -44,6 +44,11 @@ class ndarray:
     def argsort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.argsort(self.data, axis, kind, order)
 
+    def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
+        return np_frontend.mean(
+            self.data, axis=axis, dtype=dtype, out=out, keepdims=keepdims, where=where
+        )
+
     def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amin(
             self.data,
@@ -82,6 +87,31 @@ class ndarray:
             axis=axis,
             keepdims=keepdims,
             out=out,
+        )
+
+    def clip(
+        self, 
+        a_min, 
+        a_max, 
+        /, 
+        out=None, 
+        *, 
+        where=True, 
+        casting="same_kind", 
+        order="k", 
+        dtype=None, 
+        subok=True
+    ):
+        return np_frontend.clip(
+            self.data, 
+            a_min,
+            a_max,
+            out=out, 
+            where=where, 
+            casting=casting,
+            order=order, 
+            dtype=dtype, 
+            subok=subok
         )
 
     def cumprod(self, *, axis=None, dtype=None, out=None):
@@ -149,13 +179,19 @@ class ndarray:
     ):
         return np_frontend.copy(self.data)
 
-    def __neg__(self,):
+    def __neg__(
+        self,
+    ):
         return np_frontend.negative(self.data)
 
-    def __pos__(self,):
+    def __pos__(
+        self,
+    ):
         return np_frontend.positive(self.data)
 
-    def __bool__(self,):
+    def __bool__(
+        self,
+    ):
         if isinstance(self.data, int):
             return self.data != 0
 
