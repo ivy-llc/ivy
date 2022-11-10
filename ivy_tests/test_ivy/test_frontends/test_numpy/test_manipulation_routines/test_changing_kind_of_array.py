@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     as_variable=helpers.array_bools(),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.asarray"
+        fn_name="ivy.functional.frontends.numpy.manipulation_routines.asarray"
     ),
     native_array=helpers.array_bools(),
 )

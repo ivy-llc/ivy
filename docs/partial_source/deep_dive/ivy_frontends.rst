@@ -19,6 +19,8 @@ Ivy Frontends
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
+.. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
@@ -581,9 +583,37 @@ An example function using this is the :func:`numpy.isfinite` function.
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
+
+Frontends Duplicate Policy
+--------------------------
+Some frontend functions appear in multiple namespaces within the original framework that the frontend is replicating.
+For example the :func:`np.asarray` function appears in `Array manipulation routines`_ and also in `Array creation routines`_.
+Thus, rather than implementing these functions as duplicates in their respective namespaces in Ivy, this section outlines a policy
+that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:
+
+**Listing duplicate frontend functions on the ToDo lists**
+
+* if a function is duplicated across multiple namespaces then we should designate the function as an '(alias)' on each namespace list.
+This means that when creating ToDo lists, extra care should be taken to keep note of duplicate functions. Duplicate functions should have '(alias)' written beside the function name.
+
+**Contributing duplicate frontend functions**
+
+Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
+If the function is an alias, you should check if there is an existing implementation already.
+
+* If an implementation exist then you should use the existing implementation as an alias in your implementation.
+* If there is no existing implementation, then feel free to contribute the function with its full implementation and tests.
+* If two PRs are implementing a duplicate function (and no alias for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the alias while the second implementation should be refactored to use the alias. Both contributors should be rewarded equally if need be.
+
+Tests should be written for duplicate fronend functions using aliases. However, when defining the :code:`fn_name` in the test, be sure to use the full import path to the function.
+
+**Handling already contributed duplicates**
+
+In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation as the alias, then refactor all other instances of the duplicate to make use of the alias.
+
 **Round Up**
 
-This should hopefully have given you a better grasp on the what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
+This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_ or in the `ivy frontends forum`_!

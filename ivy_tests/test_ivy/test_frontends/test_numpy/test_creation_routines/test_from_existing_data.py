@@ -18,7 +18,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_dim_size=5,
     ),
     num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.asarray"
+        fn_name="ivy.functional.frontends.numpy.creation_routines.asarray"
     ),
 )
 def test_numpy_asarray(
