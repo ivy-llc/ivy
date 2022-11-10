@@ -140,6 +140,66 @@ def test_numpy_ndarray_transpose(
     )
 
 
+# swapaxes
+@st.composite
+def dtype_values_and_axes(draw):
+    dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=5,
+            ret_shape=True,
+        )
+    )
+    axis1, axis2 = draw(
+        helpers.get_axis(
+            shape=x_shape,
+            sorted=False,
+            unique=True,
+            min_size=2,
+            max_size=2,
+            force_tuple=True,
+        )
+    )
+    return dtype, x, axis1, axis2
+
+
+@handle_cmd_line_args
+@given(
+    dtype_x_and_axes=dtype_values_and_axes(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.swapaxes"
+    ),
+)
+def test_numpy_ndarray_swapaxes(
+    dtype_x_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args_method,
+):
+    input_dtype, x, axis1, axis2 = dtype_x_and_axes
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="swapaxes",
+    )
+
+
 # any
 @handle_cmd_line_args
 @given(
