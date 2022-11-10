@@ -277,3 +277,16 @@ def fix(
 
 
 fix.support_native_out = True
+
+
+def nextafter(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nextafter(x1, x2)
+
+
+nextafter.support_natvie_out = True
