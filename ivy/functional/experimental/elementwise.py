@@ -740,6 +740,7 @@ def diff(
     """
     return ivy.current_backend().diff(x1, x2, out=out)
 
+
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],

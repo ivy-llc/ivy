@@ -230,6 +230,7 @@ def diff(
 
 diff.support_native_out = True
 
+
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
