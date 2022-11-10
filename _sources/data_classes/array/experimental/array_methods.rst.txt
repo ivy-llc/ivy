@@ -31,6 +31,7 @@ Array methods
    array_methods/signbit.rst
    array_methods/allclose.rst
    array_methods/fix.rst
+   array_methods/nextafter.rst
    array_methods/max_pool1d.rst
    array_methods/max_pool2d.rst
    array_methods/max_pool3d.rst

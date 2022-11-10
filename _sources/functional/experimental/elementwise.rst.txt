@@ -31,4 +31,5 @@ Elementwise
    elementwise/signbit.rst
    elementwise/allclose.rst
    elementwise/fix.rst
+   elementwise/nextafter.rst
 
