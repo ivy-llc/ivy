@@ -236,4 +236,4 @@ def fix(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.round(x)
+    return tf.experimental.numpy.fix(x)
