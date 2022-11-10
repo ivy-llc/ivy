@@ -3016,6 +3016,9 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
+    def __deepcopy__(self, memo):
+        return self.deep_copy()
+
     def map(
         self,
         func,

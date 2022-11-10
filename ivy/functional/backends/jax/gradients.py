@@ -68,7 +68,7 @@ def _forward_fn(xs, x, xs_grad_idxs, func, duplicate_key_chains):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    xs = _arrays_to_float_variables(xs)
+    xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     func_ret = func(xs)
     xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
     xs = ivy.to_native(xs)
@@ -98,9 +98,10 @@ def execute_with_gradients(
     if isinstance(xs, ivy.Container):
         grads = _set_duplicates(grads, duplicate_key_chains)
     grads = ivy.nested_map(
-        grads, lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x
+        grads,
+        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
+        include_derived=True,
     )
-    grads = _remove_zeros_and_nones(grads, grads)
     func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
     grads = ivy.to_ivy(grads)
     return func_ret, grads

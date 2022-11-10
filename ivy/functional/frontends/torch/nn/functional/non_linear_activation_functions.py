@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from .. import versions
+
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -164,6 +164,18 @@ def celu(input, alpha=1.0, inplace=False):
 
 
 @to_ivy_arrays_and_back
+def mish(input, inplace=False):
+    ret = ivy.multiply(
+        input,
+        ivy.tanh(ivy.softplus(input)),
+    )
+    if inplace:
+        ivy.inplace_update(input, ret)
+        return input
+    return ret
+
+
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
 
@@ -283,7 +295,7 @@ def normalize(input, p=2.0, dim=1, eps=1e-12, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, versions["torch"])
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     if isinstance(normalized_shape, int) and normalized_shape == shape[-1]:
@@ -292,3 +304,43 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
         assert normalized_shape == shape[-len(normalized_shape) :]
         axis = list(range(len(shape) - len(normalized_shape), len(shape)))
     return ivy.layer_norm(input, axis, weight=weight, bias=bias, epsilon=eps)
+
+
+@to_ivy_arrays_and_back
+def softplus(input, beta=1, threshold=20):
+    return ivy.softplus(input, beta=beta, threshold=threshold)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
+    shape = ivy.shape(input)
+    assert shape[1] % num_groups == 0
+    groups = shape[1] // num_groups
+    num_dims = ivy.get_num_dims(input)
+    expand_dims = (
+        [0, *range(2, num_dims)] if weight is not None and num_dims > 2 else [0]
+    )
+    ret = ivy.concat(
+        [
+            ivy.layer_norm(
+                input[:, i * groups : (i + 1) * groups, ...],
+                list(range(1, num_dims)),
+                weight=ivy.expand_dims(
+                    weight[i * groups : (i + 1) * groups], axis=expand_dims
+                )
+                if weight is not None
+                else None,
+                bias=ivy.expand_dims(
+                    bias[i * groups : (i + 1) * groups], axis=expand_dims
+                )
+                if bias is not None
+                else None,
+                epsilon=eps,
+            )
+            for i in range(num_groups)
+        ],
+        axis=1,
+    )
+
+    return ret

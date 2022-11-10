@@ -7,7 +7,7 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, data):
-        self.data = ivy.array(data)
+        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
 
     def __repr__(self):
         return (
@@ -19,14 +19,11 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
-    # Special Methods #
-    # --------------- #
-
     def __add__(self, other):
-        return jax_frontend.lax.add(self, other)
+        return jax_frontend.numpy.add(self, other)
 
     def __radd__(self, other):
-        return jax_frontend.lax.add(other, self)
+        return jax_frontend.numpy.add(other, self)
 
     def __sub__(self, other):
         return jax_frontend.lax.sub(self, other)
@@ -59,10 +56,10 @@ class DeviceArray:
         return jax_frontend.lax.div(other, self)
 
     def __matmul__(self, other):
-        return jax_frontend.lax.dot(self, other)
+        return jax_frontend.numpy.dot(self, other)
 
     def __rmatmul__(self, other):
-        return jax_frontend.lax.dot(other, self)
+        return jax_frontend.numpy.dot(other, self)
 
     def __pos__(self):
         return ivy.positive(self)
@@ -89,7 +86,7 @@ class DeviceArray:
         return jax_frontend.lax.ge(self, other)
 
     def __abs__(self):
-        return jax_frontend.lax.abs(self)
+        return jax_frontend.numpy.abs(self)
 
     def __pow__(self, other):
         return jax_frontend.lax.pow(self, other)
@@ -98,16 +95,16 @@ class DeviceArray:
         return jax_frontend.lax.pow(other, self)
 
     def __and__(self, other):
-        return jax_frontend.lax.bitwise_and(self, other)
+        return jax_frontend.numpy.bitwise_and(self, other)
 
     def __rand__(self, other):
-        return jax_frontend.lax.bitwise_and(other, self)
+        return jax_frontend.numpy.bitwise_and(other, self)
 
     def __or__(self, other):
-        return jax_frontend.lax.bitwise_or(self, other)
+        return jax_frontend.numpy.bitwise_or(self, other)
 
     def __ror__(self, other):
-        return jax_frontend.lax.bitwise_or(other, self)
+        return jax_frontend.numpy.bitwise_or(other, self)
 
     def __xor__(self, other):
         return jax_frontend.lax.bitwise_xor(self, other)

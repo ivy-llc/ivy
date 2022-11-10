@@ -441,7 +441,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the
         input is returned.
     """
-    if key == "linalg":
+    if key == "linear_algebra":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)
@@ -473,6 +473,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
 
 # Gets dtype from a version dictionary
 def _dtype_from_version(dic, version):
+    # if version is a string, it's a frontend function
+    if isinstance(version, str):
+        version = ivy.functional.frontends.__dict__["versions"][version]
     # if version is a dict, extract the version
     if isinstance(version, dict):
         version = version["version"]

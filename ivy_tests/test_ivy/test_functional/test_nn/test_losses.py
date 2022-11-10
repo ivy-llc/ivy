@@ -148,7 +148,8 @@ def test_binary_cross_entropy(
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1.0013580322265625e-05,
+        small_abs_safety_factor=4,
+        safety_factor_scale="log",
         max_value=1,
         allow_inf=False,
         exclude_min=True,
@@ -159,7 +160,7 @@ def test_binary_cross_entropy(
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
-    epsilon=helpers.floats(min_value=0, max_value=0.49),
+    epsilon=helpers.floats(min_value=0.01, max_value=0.49),
     num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
 )
 def test_sparse_cross_entropy(
@@ -188,6 +189,7 @@ def test_sparse_cross_entropy(
         instance_method=instance_method,
         fw=fw,
         fn_name="sparse_cross_entropy",
+        test_gradients=True,
         true=true[0],
         pred=pred[0],
         axis=axis,

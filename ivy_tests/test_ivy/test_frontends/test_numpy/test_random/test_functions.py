@@ -47,7 +47,8 @@ def test_numpy_random(input_dtypes, num_positional_args, size, native_array):
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.dirichlet"
     ),
-    native_array=helpers.array_bools(),)
+    native_array=helpers.array_bools(),
+)
 def test_numpy_dirichlet(
     dtype_and_x,
     size,
