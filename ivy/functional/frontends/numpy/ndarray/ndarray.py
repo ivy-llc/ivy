@@ -34,6 +34,9 @@ class ndarray:
 
     def transpose(self, /, axes=None):
         return np_frontend.transpose(self.data, axes=axes)
+    
+    def swapaxes(self, axis1, axis2, /):
+        return np_frontend.swapaxes(self.data, axis1, axis2)
 
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
