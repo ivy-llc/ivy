@@ -655,17 +655,30 @@ def _scatter_at_0_axis(input, value, start=None, end=None):
         end = dim_length
     elif end < 0:
         end += dim_length
-    i = 0
     value = ivy.asarray(value, dtype=input.dtype)
     if len(value.shape) > 1:
         value = ivy.flatten(value)
+    i = 0
+    pre_ind_0 = 0
     for ind in ivy.ndindex(input.shape):
+        if pre_ind_0 != ind[0]:
+            i = 0
         if (ind[0] < end) and (ind[0] >= start):
-            if len(value.shape) >= 1:
-                input[ind] = value[i]
-            else:
+            if not hasattr(value, "__len__"):
                 input[ind] = value
-            i += 1
+                continue
+            if len(value.shape) == 0:
+                try:
+                    input[ind] = value.item()
+                except Exception:
+                    input[ind] = value.numpy().item()
+                continue
+            if len(ind) == 1:
+                input[ind] = value[0]
+            else:
+                input[ind] = value[i]
+                i = i + 1
+        pre_ind_0 = ind[0]
     return input
 
 
@@ -730,9 +743,13 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         old_length -= 1
     if left_pad > 0:
         chunk_length = min(old_length, left_pad)
-        stop = left_pad - edge_offset
-        start = stop + chunk_length
-        left_chunk = ivy.flip(padded[stop:start, ...])
+        stop = (left_pad - edge_offset) % len(padded.shape)
+        start = (stop + chunk_length) % len(padded.shape)
+        if stop < start:
+            tmp = start
+            start = stop
+            stop = tmp
+        left_chunk = ivy.flip(padded[start:stop, ...])
         if method == "odd":
             left_chunk = 2 * padded[left_pad : left_pad + 1, ...] - left_chunk
         start = left_pad - chunk_length
@@ -741,9 +758,13 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         left_pad -= chunk_length
     if right_pad > 0:
         chunk_length = min(old_length, right_pad)
-        start = -right_pad + edge_offset - 2
-        stop = start - chunk_length
-        right_chunk = ivy.flip(padded[stop:start, ...])
+        start = (-right_pad + edge_offset - 2) % len(padded.shape)
+        stop = (start - chunk_length) % len(padded.shape)
+        if stop > start:
+            tmp = start
+            start = stop
+            stop = tmp
+        right_chunk = ivy.flip(padded[start:stop, ...])
         if method == "odd":
             right_chunk = 2 * padded[-right_pad - 1 : -right_pad, ...] - right_chunk
         start = padded.shape[0] - right_pad
@@ -785,10 +806,10 @@ def _set_wrap_both(padded, width_pair):
 def _to_pairs(x, n):
     if ivy.isscalar(x):
         return ((x, x),) * n
-    elif ivy.asarray(x).shape == (2,):
+    elif ivy.asarray(list(x)).shape == (2,):
         return ((x[0], x[1]),) * n
     ivy.assertions.check_equal(
-        ivy.asarray(x).shape,
+        ivy.asarray(list(x)).shape,
         (n, 2),
         message="values should be an integer or an iterable "
         "of ndim pairs where ndim is the number of "
@@ -1195,3 +1216,43 @@ def atleast_1d(
     [ivy.array([6]), ivy.array([7]), ivy.array([8])]
     """
     return ivy.current_backend().atleast_1d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def dstack(
+    arrays: Sequence[ivy.Array],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Stack arrays in sequence depth wise (along third axis).
+
+    Parameters
+    ----------
+    arrays
+        Sequence of arrays to be stacked.
+
+    Returns
+    -------
+    ret
+        The array formed by stacking the given arrays.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.array([2, 3, 4])
+    >>> ivy.dstack((x, y))
+    ivy.array([[[1, 2],
+                [2, 3],
+                [3, 4]]])
+    >>> x = ivy.array([[1], [2], [3]])
+    >>> y = ivy.array([[2], [3], [4]])
+    >>> ivy.dstack((x, y))
+    ivy.array([[[1, 2]],
+               [[2, 3]],
+               [[3, 4]]])
+
+    """
+    return ivy.current_backend(arrays[0]).dstack(arrays)

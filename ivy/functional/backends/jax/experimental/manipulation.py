@@ -213,5 +213,15 @@ def dsplit(
     return jnp.dsplit(ary, indices_or_sections)
 
 
+
 def atleast_1d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_1d(*arys)
+
+
+def dstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dstack(arrays)

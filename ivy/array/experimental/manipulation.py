@@ -591,3 +591,29 @@ class ArrayWithManipulationExperimental(abc.ABC):
         [ivy.array([[1, 2, 3]]), ivy.array([4]), ivy.array([5]), ivy.array([6])]
         """
         return ivy.atleast_1d(self._data, *arys)
+
+    def dstack(
+        self: ivy.Array,
+        /,
+        arrays: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dstack. This method simply
+        wraps the function, and so the docstring for ivy.dstack also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([2, 3, 4])
+        >>> x.dstack(y)
+        ivy.array([[[1, 2],
+                    [2, 3],
+                    [3, 4]]])
+        """
+        return ivy.dstack(self.concat(arrays), out=out)

@@ -158,3 +158,12 @@ def dsplit(
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return list(torch.atleast_1d(*arys))
+
+
+def dstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dstack(arrays, out=None)

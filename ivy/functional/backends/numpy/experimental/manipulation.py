@@ -231,3 +231,12 @@ def dsplit(
 
 def atleast_1d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_1d(*arys)
+
+
+def dstack(
+    arrays: Sequence[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dstack(arrays)

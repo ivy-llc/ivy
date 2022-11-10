@@ -584,3 +584,34 @@ def test_torch_unsqueeze(
         input=value[0],
         dim=dim,
     )
+
+    
+# hstack
+@handle_cmd_line_args
+@given(
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.hstack"
+    ),
+)
+def test_torch_hstack(
+    dtype_value_shape,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="hstack",
+        tensors=value,
+    )
+    

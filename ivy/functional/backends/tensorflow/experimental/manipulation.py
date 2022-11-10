@@ -136,3 +136,12 @@ def atleast_1d(
     *arys: Union[tf.Tensor, tf.Variable],
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_1d(*arys)
+
+
+def dstack(
+    arrays: Union[Sequence[tf.Tensor], Sequence[tf.Variable]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.dstack(arrays)
