@@ -7,7 +7,7 @@ from hypothesis import strategies as st, assume
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import ivy
+
 
 # GELU
 @handle_cmd_line_args
@@ -28,7 +28,7 @@ def test_gelu(
     as_variable,
     native_array,
     container,
-    fw
+    fw,
 ):
     input_dtype, x = dtype_and_x
     assume(not (fw == "torch" and "float16" in input_dtype))
