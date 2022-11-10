@@ -552,10 +552,7 @@ def test_flatten(
     )
 
 
-def _st_tuples_or_int(n_pairs, exclude_zero=False):
-    min_val = 0
-    if exclude_zero:
-        min_val = 1
+def _st_tuples_or_int(n_pairs, min_val=0):
     return st.one_of(
         hypothesis_helpers.tuples(
             st.tuples(
@@ -596,7 +593,7 @@ def _pad_helper(draw):
     )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
-    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
+    stat_length = draw(_st_tuples_or_int(ndim, min_val=2))
     constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
     return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
