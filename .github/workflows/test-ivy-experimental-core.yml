@@ -12,8 +12,8 @@ jobs:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
          submodules: [creation, device, dtype, elementwise, general, gradients, linalg,
-                     manipulation, meta, nest, random, searching, set, sorting, statistical,
-                     utility]
+                     manipulation, meta, nest, random, searching, set, sorting, sparse_array                                                                               
+                     statistical, utility]
      continue-on-error: true
      runs-on: ubuntu-latest
      steps:
