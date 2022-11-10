@@ -129,5 +129,7 @@ def unsqueeze(input, dim=0):
 def movedim(input, source, destination):
     return ivy.moveaxis(input, source, destination)
 
+
+@to_ivy_arrays_and_back
 def hstack(tensors, *, out=None):
     return ivy.hstack(tensors, out=out)
