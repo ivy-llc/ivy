@@ -158,3 +158,12 @@ def allclose(
     out: Optional[JaxArray] = None,
 ) -> bool:
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def fix(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fix(x, out=out)

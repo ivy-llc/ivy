@@ -776,3 +776,37 @@ def allclose(
     return ivy.current_backend().allclose(
         a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
     )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fix(
+    x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Round an array of floats element-wise to nearest integer towards zero.
+    The rounded values are returned as floats.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array of floats with elements corresponding to input elements
+        rounded to nearest integer towards zero, element-wise.
+
+    Examples
+    --------
+    >>> x = ivy.array([2.1, 2.9, -2.1])
+    >>> ivy.fix(x)
+    ivy.array([ 2.,  2., -2.])
+    """
+    return ivy.current_backend(x).fix(x, out=out)
