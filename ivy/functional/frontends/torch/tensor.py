@@ -103,6 +103,20 @@ class Tensor:
         self.data = self.tanh()
         return self.data
 
+    def atanh(self):
+        return torch_frontend.atanh(self.data)
+
+    def atanh_(self):
+        self.data = self.atanh()
+        return self.data
+
+    def arctanh(self):
+        return torch_frontend.arctanh(self.data)
+
+    def arctanh_(self):
+        self.data = self.arctanh()
+        return self.data
+
     def log(self):
         return ivy.log(self.data)
 
@@ -277,7 +291,7 @@ class Tensor:
         return torch_frontend.remainder(self, other)
 
     def __long__(self, memory_format=None):
-        return ivy.astype(self, ivy.int64)
+        return Tensor(ivy.astype(self.data, ivy.int64))
 
     def __getitem__(self, query):
         ret = ivy.get_item(self.data, query)
