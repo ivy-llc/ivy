@@ -228,7 +228,7 @@ In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` 
         else:
             return ivy.astype(ivy.argmax(input, axis=axis), "int64")
 
-This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensoFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax` and in some corner cases, arguments are renamed such as the case in :func:`tf.math.argmax`, the :code:`dimension` argument replaces :code:`axis`.
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax` and in some corner cases, arguments are renamed such in the case of :func:`tf.math.argmax`, the :code:`dimension` argument replaces :code:`axis`.
 Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
 
 .. code-block:: python
