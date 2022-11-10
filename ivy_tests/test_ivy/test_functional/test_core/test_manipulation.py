@@ -108,7 +108,6 @@ def test_expand_dims(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -153,7 +152,6 @@ def test_flip(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -201,7 +199,6 @@ def test_permute_dims(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -242,7 +239,6 @@ def test_reshape(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -385,7 +381,6 @@ def test_squeeze(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -441,7 +436,6 @@ def test_stack(
     instance_method,
     fw,
 ):
-
     dtypes, arrays = dtypes_arrays
 
     helpers.test_function(
@@ -512,7 +506,7 @@ def test_clip(
 
 
 @st.composite
-def _pad_helper(draw):
+def _constant_pad_helper(draw):
     dtype, value, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"), ret_shape=True, min_num_dims=1
@@ -536,7 +530,7 @@ def _pad_helper(draw):
 # constant_pad
 @handle_cmd_line_args
 @given(
-    dtype_value_pad_width_constant=_pad_helper(),
+    dtype_value_pad_width_constant=_constant_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="constant_pad"),
 )
 def test_constant_pad(
@@ -722,7 +716,6 @@ def test_split(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -770,7 +763,6 @@ def test_swapaxes(
     instance_method,
     fw,
 ):
-
     dtype, value = dtype_value
 
     helpers.test_function(
@@ -850,7 +842,7 @@ def test_tile(
 # zero_pad
 @handle_cmd_line_args
 @given(
-    dtype_value_pad_width=_pad_helper(),
+    dtype_value_pad_width=_constant_pad_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="zero_pad"),
 )
 def test_zero_pad(

@@ -103,17 +103,8 @@ def astype(
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = tf.experimental.numpy.copy(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = tf.experimental.numpy.copy(x)
-            new_tensor = tf.cast(new_tensor, dtype)
-            return new_tensor
+    if x.dtype == dtype:
+        return tf.experimental.numpy.copy(x) if copy else x
     return tf.cast(x, dtype)
 
 
@@ -145,6 +136,9 @@ def broadcast_to(
     return tf.broadcast_to(x, shape)
 
 
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("complex64", "complex128")}, backend_version
+)
 def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
     if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
         from_ = ivy.as_ivy_dtype(from_.dtype)
@@ -168,9 +162,6 @@ def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) ->
     if "float16" in from_str and "float16" in to_str:
         return from_str == to_str
     return True
-
-
-can_cast.unsupported_dtypes = ("complex64", "complex128")
 
 
 @_handle_nestable_dtype_info

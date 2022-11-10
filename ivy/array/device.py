@@ -17,6 +17,12 @@ class ArrayWithDevice(abc.ABC):
         the function, and so the docstring for ivy.dev also applies to this
         method with minimal changes.
 
+        Examples
+        --------
+        >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
+        >>> y = x.dev(as_native=True)
+        >>> print(y)
+        cpu
         """
         return ivy.dev(self, as_native=as_native)
 

@@ -1,7 +1,8 @@
 Building Blocks
 ===============
 
-Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework. These are the 4 parts labelled as (a) in the image below:
+Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
+These are the 4 parts labelled as (a) in the image below:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
@@ -10,7 +11,9 @@ Here we explain the components of Ivy which are fundamental to it’s usage eith
 Backend Functional APIs ✅
 -----------------------
 
-The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend. Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment. Let’s take the function :func:`ivy.stack` as an example.
+The first important point to make is that, Ivy does not implement it’s own C++ or CUDA backend.
+Instead, Ivy **wraps** the functional APIs of existing frameworks, bringing them into syntactic and semantic alignment.
+Let’s take the function :func:`ivy.stack` as an example.
 
 There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and so we implement the :code:`stack` method once for each backend, each in separate backend files like so:
 
@@ -63,7 +66,10 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
 
 There were no changes required for this function except a minor axis check for JAX.
 
-For more complicated functions, we need to do more than simply wrap and maybe change the name. For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API. For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing. Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
+For more complicated functions, we need to do more than simply wrap and maybe change the name.
+For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
+For example, the APIs of JAX, PyTorch and NumPy all have a :code:`logspace` method, but TensorFlow does not at the time of writing.
+Therefore, we need to construct it using a composition of existing TensorFlow ops like so:
 
 .. code-block:: python
 
@@ -84,9 +90,12 @@ For more complicated functions, we need to do more than simply wrap and maybe ch
 Ivy Functional API ✅
 ------------------
 
-Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend. Instead, we allow these backends to be bound to the single shared namespace ivy. The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
+Calling the different backend files explicitly would work okay, but it would mean we need to :code:`import ivy.functional.backends.torch as ivy` to use a PyTorch backend or :code:`import ivy.functional.backends.tensorflow as ivy` to use a TensorFlow backend.
+Instead, we allow these backends to be bound to the single shared namespace ivy.
+The backend can then be changed by calling :code:`ivy.set_backend(‘torch’)` for example.
 
-:mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API. For example, The function :func:`prod`  is shown below:
+:mod:`ivy.functional.ivy` is the submodule where all the doc strings and argument typing reside for the functional Ivy API.
+For example, The function :func:`prod`  is shown below:
 
 .. code-block:: python
 
@@ -109,12 +118,12 @@ Calling the different backend files explicitly would work okay, but it would mea
         axis
             axis or axes along which products must be computed. By default, the product must
             be computed over the entire array. If a tuple of integers, products must be
-            computed over multiple axes. Default: None.
+            computed over multiple axes. Default: ``None``.
         keepdims
             bool, if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible with the
             input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: False.
+            (dimensions) must not be included in the result. Default: ``False``.
         dtype
             data type of the returned array. If None,
             if the default data type corresponding to the data type “kind” (integer or
@@ -129,7 +138,7 @@ Calling the different backend files explicitly would work okay, but it would mea
             integer data type (e.g., if the default integer data type is int32, the returned
             array must have a uint32 data type). If the data type (either specified or
             resolved) differs from the data type of x, the input array should be cast to the
-            specified data type before computing the product. Default: None.
+            specified data type before computing the product. Default: ``None``.
         out
             optional output array, for writing the result to.
 
@@ -157,7 +166,8 @@ Calling the different backend files explicitly would work okay, but it would mea
         )
 
 Implicitly, Ivy sets numpy as the default backend or operates with the backend corresponding to the specified data inputs
-until the user explicitly sets a different backend. The examples can be seen below:
+until the user explicitly sets a different backend.
+The examples can be seen below:
 
 
 +----------------------------------------+----------------------------------------------------+
@@ -181,7 +191,8 @@ This implicit backend selection, and the use of a shared global ivy namespace fo
 Backend Handler ✅
 -----------------
 
-All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`. The contents of this function are as follows:
+All code for setting and unsetting backend resides in the submodule at :mod:`ivy/backend_handler.py`, and the front facing function is :func:`ivy.current_backend`.
+The contents of this function are as follows:
 
 .. code-block:: python
 
@@ -204,14 +215,16 @@ All code for setting and unsetting backend resides in the submodule at :mod:`ivy
             verbosity.cprint("Using backend from type: {}".format(f))
         return importlib.import_module(_backend_dict[implicit_backend])
 
-If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned. Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
+If a global backend framework has been previously set using for example :code:`ivy.set_backend(‘tensorflow’)`, then this globally set backend is returned.
+Otherwise, the input arguments are type-checked to infer the backend, and this is returned from the function as a callable module with all bound functions adhering to the specific backend.
 
-The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace. The following is a slightly simplified version of this code for illustration, which updates the global :attr:`ivy.__dict__` directly:
+The functions in this returned module are populated by iterating through the global :attr:`ivy.__dict__` (or a non-global copy of :attr:`ivy.__dict__` if non-globally-set), and overwriting every function which is also directly implemented in the backend-specific namespace.
+The following is a slightly simplified version of this code for illustration, which updates the global :attr:`ivy.__dict__` directly:
 
 .. code-block:: python
 
    # ivy/backend_handler.py
-   def set_backend(backend):
+   def set_backend(backend: str):
 
        # un-modified ivy.__dict__
        global ivy_original_dict
@@ -219,24 +232,27 @@ The functions in this returned module are populated by iterating through the glo
            ivy_original_dict = ivy.__dict__.copy()
 
        # add the input backend to global stack
-       backend_stack.append(f)
+       backend_stack.append(backend)
 
        # iterate through original ivy.__dict__
        for k, v in ivy_original_dict.items():
 
            # if method doesn't exist in the backend
-           if k not in f.__dict__:
+           if k not in backend.__dict__:
                # add the original ivy method to backend
-               f.__dict__[k] = v
+               backend.__dict__[k] = v
            # update global ivy.__dict__ with this method
-           ivy.__dict__[k] = f.__dict__[k]
+           ivy.__dict__[k] = backend.__dict__[k]
 
        # maybe log to terminal
        if verbosity.level > 0:
            verbosity.cprint(
                'Backend stack: {}'.format(backend_stack))
 
-The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API. This is because many higher level functions are written as a composition of lower level Ivy functions. These functions therefore do not need to be written independently for each backend framework. A good example is :func:`ivy.lstm_update`, as shown:
+The functions implemented by the backend-specific backend such as :code:`ivy.functional.backends.torch` only constitute a subset of the full Ivy API.
+This is because many higher level functions are written as a composition of lower level Ivy functions.
+These functions therefore do not need to be written independently for each backend framework.
+A good example is :func:`ivy.lstm_update`, as shown:
 
 .. code-block:: python
 
@@ -334,17 +350,23 @@ Generally, we have made decisions so that Ivy is as stable and scalable as possi
 Graph Compiler 🚧
 --------------
 
-“What about performance?” I hear you ask. This is a great point to raise!
+“What about performance?” I hear you ask.
+This is a great point to raise!
 
-With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping. One reason we created the graph compiler was to address this issue.
+With the design as currently presented, there would be a small performance hit every time we call an Ivy function by virtue of the added Python wrapping.
+One reason we created the graph compiler was to address this issue.
 
-The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only. The dependency graph for this process looks like this:
+The compiler takes in any Ivy function, backend function, or composition, and returns the computation graph using the backend functional API only.
+The dependency graph for this process looks like this:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiler_dependency_graph.png?raw=true
    :align: center
    :width: 75%
 
-As an example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+Let's look at a few examples, and observe the compiled graph of the Ivy code against the native backend code.
+First, let's set our desired backend as PyTorch.
+When we compile the three functions below, despite the fact that each
+has a different mix of Ivy and PyTorch code, they all compile to the same graph:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -374,7 +396,11 @@ As an example, the following 3 pieces of code all compile to the exact same comp
    :align: center
    :width: 75%
 
-For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes. This means that under the hood, any code can be expressed as a composition of ops in the functional API. The same is true for Ivy. Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded. For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
+For all existing ML frameworks, the functional API is the backbone which underpins all higher level functions and classes.
+This means that under the hood, any code can be expressed as a composition of ops in the functional API.
+The same is true for Ivy.
+Therefore, when compiling the graph with Ivy, any higher-level classes or extra code which does not directly contribute towards the computation graph is excluded.
+For example, the following 3 pieces of code all compile to the exact same computation graph as shown:
 
 +----------------------------------------+-----------------------------------------+-----------------------------------------+
 |.. code-block:: python                  |.. code-block:: python                   |.. code-block:: python                   |
@@ -405,7 +431,51 @@ For all existing ML frameworks, the functional API is the backbone which underpi
    :align: center
    :width: 75%
 
-The graph compiler does not compile to C++, CUDA or any other lower level language. It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python. Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
+This compilation is not restricted to just PyTorch.
+Let's take another example, but compile to Tensorflow, NumPy and JAX:
+
++------------------------------------+
+|.. code-block:: python              |
+|                                    | 
+| def ivy_func(x, y):                |
+|     w = ivy.diag(x)                |
+|     z = ivy.matmul(w, y)           |
+|     return z                       |
+|                                    |
+| # input                            |
+| x = ivy.array([[1., 2., 3.]])      |
+| y = ivy.array([[2., 3., 4.]])      |
+| # create graph                     |
+| graph = ivy.compile_graph(         |
+|     ivy_func, x, y)                |
+|                                    |
+| # call graph                       |
+| ret = graph(x, y)                  |
++------------------------------------+
+
+Converting this code to a graph, we get a slightly different graph for each backend:
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
+   :align: center
+   :width: 75%
+
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
+   :align: center
+   :width: 75%
+
+The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
+Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
+However, when compiling native framework code, we are only able to compile a graph for that same framework.
+For example, we cannot take torch code and compile this into tensorflow code.
+However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
+
+The graph compiler does not compile to C++, CUDA or any other lower level language.
+It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.
+Compiling to lower level languages (C++, CUDA, TorchScript etc.) is supported for most backend frameworks via :func:`ivy.compile`, which wraps backend-specific compilation code, for example:
 
 .. code-block:: python
 
@@ -437,4 +507,4 @@ Therefore, the backend code can always be run with maximal efficiency by compili
 
 Hopefully this has painted a clear picture of the fundamental building blocks underpinning the Ivy framework, being the backend functional APIs, Ivy functional API, backend handler and graph compiler 🙂
 
-Please check out the discussions on the `repo <https://github.com/unifyai/ivy>`_ for FAQs, and reach out on `discord <https://discord.gg/ZVQdvbzNQJ>`_ if you have any questions!
+Please reach out on `discord <https://discord.gg/sXyFF8tDtm>`_ if you have any questions!

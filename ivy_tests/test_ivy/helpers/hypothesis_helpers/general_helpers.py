@@ -4,7 +4,116 @@ import math
 
 # local
 import ivy
+import numpy as np
 from . import array_helpers, number_helpers, dtype_helpers
+
+
+def matrix_is_stable(x, cond_limit=30):
+    """
+    Used to avoid numerical instabilities in further computationally heavy
+    calculations.
+
+    Parameters
+    ----------
+    matrix
+        The original matrix whose condition number is to be determined.
+    condition_index
+        The greater the condition number, the more ill-conditioned the matrix
+        will be, the more it will be prone to numerical instabilities.
+
+        There is no rule of thumb for what the exact condition number
+        should be to consider a matrix ill-conditioned(prone to numerical errors).
+        But, if the condition number is "1", the matrix is perfectly said to be a
+        well-conditioned matrix which will not be prone to any type of numerical
+        instabilities in further calculations, but that would probably be a
+        very simple matrix.
+
+        The cond_limit should start with "30", gradually decreasing it according
+        to our use, lower cond_limit would result in more numerically stable
+        matrices but more simple matrices.
+
+        The limit should always be in the range "1-30", greater the number greater
+        the computational instability. Should not increase 30, it leads to strong
+        multicollinearity which leads to singularity.
+
+    Returns
+    -------
+    A bool, either True or False. Which tells whether the matrix is suitable for
+    further numerical computations or not.
+    """
+    return np.linalg.cond(x.astype("float64")) <= cond_limit
+
+
+def apply_safety_factor(
+    dtype,
+    *,
+    min_value=None,
+    max_value=None,
+    abs_smallest_val=None,
+    small_abs_safety_factor=1.1,
+    large_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+):
+    """
+    Applies safety factor scaling to numeric data type.
+
+    Parameters
+    ----------
+    dtype
+    min_value
+    max_value
+    abs_smallest_val
+    large_abs_safety_factor
+    small_abs_safety_factor
+    safety_factor_scale
+
+    Returns
+    -------
+    the result of applying safety scaling to minimum value, maximum value and
+    absolute smallest representable value (only for float dtypes).
+    """
+    assert small_abs_safety_factor >= 1, "small_abs_safety_factor must be >= 1"
+    assert large_abs_safety_factor >= 1, "large_value_safety_factor must be >= 1"
+
+    if "complex" in dtype:
+        dtype = "float32" if dtype == "complex64" else "float64"
+    if "float" in dtype:
+        kind_dtype = "float"
+        dtype_info = ivy.finfo(dtype)
+    elif "int" in dtype:
+        kind_dtype = "int"
+        dtype_info = ivy.iinfo(dtype)
+    else:
+        raise TypeError(
+            f"{dtype} is not a valid numeric data type only integers and floats"
+        )
+
+    if min_value is None:
+        min_value = dtype_info.min
+    if max_value is None:
+        max_value = dtype_info.max
+
+    if safety_factor_scale == "linear":
+        min_value = min_value / large_abs_safety_factor
+        max_value = max_value / large_abs_safety_factor
+        if kind_dtype == "float" and not abs_smallest_val:
+            abs_smallest_val = dtype_info.smallest_normal * small_abs_safety_factor
+    elif safety_factor_scale == "log":
+        min_sign = math.copysign(1, min_value)
+        min_value = abs(min_value) ** (1 / large_abs_safety_factor) * min_sign
+        max_sign = math.copysign(1, max_value)
+        max_value = abs(max_value) ** (1 / large_abs_safety_factor) * max_sign
+        if kind_dtype == "float" and not abs_smallest_val:
+            m, e = math.frexp(dtype_info.smallest_normal)
+            abs_smallest_val = m * (2 ** (e / small_abs_safety_factor))
+    else:
+        raise ValueError(
+            f"{safety_factor_scale} is not a valid safety factor scale."
+            f" use 'log' or 'linear'."
+        )
+    if kind_dtype == "int":
+        return int(min_value), int(max_value), None
+    return min_value, max_value, abs_smallest_val
 
 
 # Hypothesis #
@@ -136,7 +245,8 @@ def get_mean_std(draw, *, dtype):
     -------
     A strategy that can be used in the @given hypothesis decorator.
     """
-    values = draw(number_helpers.none_or_list_of_floats(dtype=dtype, size=2))
+    none_or_float = none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+    values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
     values[1] = abs(values[1]) if values[1] else None
     return values[0], values[1]
 
@@ -164,7 +274,8 @@ def get_bounds(draw, *, dtype):
         if low == high:
             return draw(get_bounds(dtype=dtype))
     else:
-        values = draw(number_helpers.none_or_list_of_floats(dtype=dtype, size=2))
+        none_or_float = number_helpers.floats(dtype=dtype) | st.none()
+        values = draw(array_helpers.list_of_length(x=none_or_float, length=2))
         if values[0] is not None and values[1] is not None:
             low, high = min(values), max(values)
         else:

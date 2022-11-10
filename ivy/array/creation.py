@@ -37,7 +37,7 @@ class ArrayWithCreation(abc.ABC):
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
-            device on which to place the created array. Default: None.
+            device on which to place the created array. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -200,7 +200,7 @@ class ArrayWithCreation(abc.ABC):
         k
             diagonal above which to zero elements. If k = 0, the diagonal is the main
             diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-            diagonal is above the main diagonal. Default: 0.
+            diagonal is above the main diagonal. Default: ``0``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -232,7 +232,7 @@ class ArrayWithCreation(abc.ABC):
         k
             diagonal below which to zero elements. If k = 0, the diagonal is the main
             diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-            diagonal is above the main diagonal. Default: 0.
+            diagonal is above the main diagonal. Default: ``0``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -267,10 +267,10 @@ class ArrayWithCreation(abc.ABC):
             input array from which to derive the output array shape.
         dtype
             output array data type. If dtype is None, the output array data type must be
-            inferred from ``self``. Default  None.
+            inferred from ``self``. Deafult: ``None``.
         device
             device on which to place the created array. If device is None, the output
-            array device must be inferred from ``self``. Default: None.
+            array device must be inferred from ``self``. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -390,7 +390,7 @@ class ArrayWithCreation(abc.ABC):
         dtype
             datatype, optional. Datatype is inferred from the input data.
         device
-            device on which to place the created array. Default: None.
+            device on which to place the created array. Default: ``None``.
 
         Returns
         -------
@@ -428,7 +428,7 @@ class ArrayWithCreation(abc.ABC):
         off_value
             Value to fill in output when ``indices[j] != i``. Default 0.
         axis
-            The axis to scatter on. The default is -1 which is the last axis.
+            The axis to scatter on. The default is ``-1`` which is the last axis.
         dtype
             The data type of the output array. If None, the data type of the on_value is
             used, or if that is None, the data type of the off_value is used. Default

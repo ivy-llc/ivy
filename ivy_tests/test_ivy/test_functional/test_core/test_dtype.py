@@ -841,9 +841,6 @@ def _composition_2():
                 "float16",
                 "float32",
                 "float64",
-                "complex64",
-                "complex128",
-                "complex256",
             ],
         ),
         (
@@ -862,9 +859,6 @@ def _composition_2():
                 "float16",
                 "float32",
                 "float64",
-                "complex64",
-                "complex128",
-                "complex256",
             ],
         ),
     ],
@@ -877,15 +871,21 @@ def test_function_supported_dtypes(func, expected):
     if "torch" in ivy.current_backend_str():
         exp.remove("float16")
 
-    assert sorted(tuple(exp)) == sorted(res)
+    assert set(tuple(exp)) == set(res)
 
 
 # function_unsupported_dtypes
 @pytest.mark.parametrize(
     "func, expected",
     [
-        (_composition_1, []),
-        (_composition_2, []),
+        (
+            _composition_1,
+            [],
+        ),
+        (
+            _composition_2,
+            [],
+        ),
     ],
 )
 def test_function_unsupported_dtypes(func, expected):
@@ -896,7 +896,7 @@ def test_function_unsupported_dtypes(func, expected):
     if "torch" in ivy.current_backend_str():
         exp.add("float16")
 
-    assert sorted(tuple(exp)) == sorted(res)
+    assert set(tuple(exp)) == set(res)
 
 
 @pytest.mark.parametrize(
@@ -913,7 +913,9 @@ def test_function_dtype_versioning(func_and_version, fw):
     for key in func_and_version:
         if key != fw:
             continue
-        var = ivy.get_backend().version
+        var = ivy.get_backend().backend_version
+
+        # key --> framework
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:
@@ -926,7 +928,6 @@ def test_function_dtype_versioning(func_and_version, fw):
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 
@@ -942,21 +943,19 @@ def test_function_dtype_versioning(func_and_version, fw):
     ],
 )
 def test_function_dtype_versioning_frontend(func_and_version, fw):
-    # todo need to devise a method to hack into the versions dict
-    # change stuff before importing. Currently the decorators are executed
-    # as soon as the module is loaded and modifying the dictionary doesn't
-    # help as the attributes have already been assigned
+
     for key in func_and_version:
         if key != fw:
             continue
-        frontend = importlib.import_module("ivy.functional.frontends." + fw)
+        frontend = importlib.import_module("ivy.functional.frontends")
         var = frontend.versions
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:
                 var[fw] = key2
-                print(key2)
-                fn = getattr(frontend, key1)
+                fn = getattr(
+                    importlib.import_module("ivy.functional.frontends." + fw), key1
+                )
                 expected = func_and_version[key][key1][key2]
                 res = fn.unsupported_dtypes
                 if res is None:
@@ -964,7 +963,6 @@ def test_function_dtype_versioning_frontend(func_and_version, fw):
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 

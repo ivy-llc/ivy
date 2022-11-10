@@ -182,7 +182,9 @@ def handle_cmd_line_args(test_fn):
     # first[1:-2] 5 arguments are all fixtures
     @given(data=st.data())
     @settings(max_examples=1)
-    def new_fn(data, get_command_line_flags, device, f, fw, *args, **kwargs):
+    def new_fn(
+        data, get_command_line_flags, device, f, fw, fixt_frontend_str, *args, **kwargs
+    ):
         gc.collect()
         flag, backend_string = (False, "")
         # skip test if device is gpu and backend is numpy
@@ -197,14 +199,13 @@ def handle_cmd_line_args(test_fn):
             # use the one which is parametrized
             flag = True
 
+        # Set the frontend framework
+        # Reset to None if we're not testing frontend function.
         global frontend_fw
-        # Reset the global variable,
-        # only set if frontend fw is inferred
-        frontend_fw = None
-        full_fn_test_path = test_fn.__module__.split(".")
-        if len(full_fn_test_path) > 2:
-            if full_fn_test_path[2] == "test_frontends":
-                frontend_fw = TEST_BACKENDS[full_fn_test_path[3][5:]]
+        if fixt_frontend_str is None:
+            frontend_fw = None
+        else:
+            frontend_fw = _ivy_fws_dict[fixt_frontend_str]
 
         # set backend using the context manager
         with f.use:

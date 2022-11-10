@@ -12,15 +12,26 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 @st.composite
-def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
+def get_gradient_arguments_with_lr(
+    draw,
+    *,
+    min_value=-1e20,
+    max_value=1e20,
+    abs_smallest_val=None,
+    large_abs_safety_factor=2,
+    small_abs_safety_factor=16,
+    num_arrays=1,
+    no_lr=False,
+):
     dtypes, arrays, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             num_arrays=num_arrays,
-            min_value=-1e20,
-            max_value=1e20,
-            large_abs_safety_factor=2,
-            small_abs_safety_factor=2,
+            min_value=min_value,
+            max_value=max_value,
+            abs_smallest_val=abs_smallest_val,
+            large_abs_safety_factor=large_abs_safety_factor,
+            small_abs_safety_factor=small_abs_safety_factor,
             safety_factor_scale="log",
             min_num_dims=1,
             shared_dtype=True,
@@ -32,9 +43,15 @@ def get_gradient_arguments_with_lr(draw, *, num_arrays=1, no_lr=False):
         return dtypes, arrays
     lr = draw(
         st.one_of(
-            helpers.floats(min_value=0.0, max_value=1.0, exclude_min=True),
+            helpers.floats(
+                min_value=1e-2,
+                max_value=1.0,
+            ),
             helpers.array_values(
-                dtype=dtype, shape=shape, min_value=0.0, max_value=1.0, exclude_min=True
+                dtype=dtype,
+                shape=shape,
+                min_value=1e-2,
+                max_value=1.0,
             ),
         )
     )
@@ -199,12 +216,19 @@ def test_execute_with_gradients(
     retain_grads,
     num_positional_args,
     native_array,
+    container,
     fw,
 ):
     def func(xs):
-        array_idxs = ivy.nested_argwhere(xs, ivy.is_ivy_array)
-        array_vals = ivy.multi_index_nest(xs, array_idxs)
-        final_array = ivy.stack(array_vals)
+        if isinstance(xs, ivy.Container):
+            array_idxs = ivy.nested_argwhere(xs, ivy.is_array)
+            array_vals = ivy.multi_index_nest(xs, array_idxs)
+            if len(array_vals) == 0:
+                final_array = None
+            else:
+                final_array = ivy.stack(array_vals)
+        else:
+            final_array = xs
         ret = ivy.mean(final_array)
         return ret
 
@@ -215,7 +239,7 @@ def test_execute_with_gradients(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[False],
+        container_flags=container,
         instance_method=False,
         fw=fw,
         fn_name="execute_with_gradients",
@@ -318,10 +342,18 @@ def test_grad(x, dtype, func, fw):
 # adam_step
 @handle_cmd_line_args
 @given(
-    dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(num_arrays=3, no_lr=True),
-    step=helpers.ints(min_value=1, max_value=100),
+    dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(
+        num_arrays=3,
+        no_lr=True,
+        min_value=-1e08,
+        max_value=1e08,
+        abs_smallest_val=1e-05,
+        large_abs_safety_factor=2.0,
+        small_abs_safety_factor=2.0,
+    ),
+    step=helpers.ints(min_value=1, max_value=3),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+        arg=helpers.floats(min_value=1e-1, max_value=1),
         min_size=3,
         max_size=3,
     ),
@@ -356,8 +388,9 @@ def test_adam_step(
         instance_method=instance_method,
         fw=fw,
         fn_name="adam_step",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         dcdw=dcdw,
         mw=mw,
         vw=vw,
@@ -399,6 +432,7 @@ def test_optimizer_update(
         fn_name="optimizer_update",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         w=w,
         effective_grad=effective_grad,
         lr=lr,
@@ -438,6 +472,7 @@ def test_gradient_descent_update(
         fn_name="gradient_descent_update",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         w=w,
         dcdw=dcdw,
         lr=lr,
@@ -448,8 +483,10 @@ def test_gradient_descent_update(
 # lars_update
 @handle_cmd_line_args
 @given(
-    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(num_arrays=2),
-    decay_lambda=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+    dtype_n_ws_n_dcdw_n_lr=get_gradient_arguments_with_lr(
+        num_arrays=2,
+    ),
+    decay_lambda=helpers.floats(min_value=1e-2, max_value=1),
     stop_gradients=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lars_update"),
 )
@@ -467,6 +504,9 @@ def test_lars_update(
     fw,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
+    # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
+    if "bfloat16" in input_dtypes:
+        return
     helpers.test_function(
         input_dtypes=input_dtypes,
         with_out=with_out,
@@ -479,6 +519,7 @@ def test_lars_update(
         fn_name="lars_update",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         w=w,
         dcdw=dcdw,
         lr=lr,
@@ -493,7 +534,7 @@ def test_lars_update(
     dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
     step=st.integers(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon=helpers.lists(
-        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+        arg=helpers.floats(min_value=1e-2, max_value=1),
         min_size=3,
         max_size=3,
     ),
@@ -529,6 +570,7 @@ def test_adam_update(
         fn_name="adam_update",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         w=w,
         dcdw=dcdw,
         lr=lr,
@@ -545,16 +587,23 @@ def test_adam_update(
 # lamb_update
 @handle_cmd_line_args
 @given(
-    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(
+        min_value=-1e5,
+        max_value=1e5,
+        num_arrays=4,
+    ),
     step=helpers.ints(min_value=1, max_value=100),
     beta1_n_beta2_n_epsilon_n_lambda=helpers.lists(
-        arg=helpers.floats(min_value=0, max_value=1, exclude_min=True),
+        arg=helpers.floats(
+            min_value=1e-2,
+            max_value=1.0,
+        ),
         min_size=4,
         max_size=4,
     ),
     mtr=st.one_of(
         helpers.ints(min_value=1, max_value=10),
-        st.floats(min_value=0, max_value=10, exclude_min=True, width=16),
+        st.floats(min_value=1e-2, max_value=10, exclude_min=True),
     ),
     stopgrad=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="lamb_update"),
@@ -594,6 +643,7 @@ def test_lamb_update(
         fn_name="lamb_update",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         w=w,
         dcdw=dcdw,
         lr=lr,

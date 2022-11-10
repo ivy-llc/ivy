@@ -21,7 +21,7 @@ from ivy import promote_types_of_inputs
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cholesky(
-    x: JaxArray, /, *, upper: Optional[bool] = False, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, upper: bool = False, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not upper:
         ret = jnp.linalg.cholesky(x)
@@ -51,30 +51,6 @@ def det(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.linalg.det(x)
 
 
-def diag(
-    x: JaxArray,
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
-    out: Optional[JaxArray] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = jnp.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += jnp.diag(x - padding_value, k=offset)
-
-    return ret
-
-
 def diagonal(
     x: JaxArray,
     /,
@@ -99,8 +75,12 @@ def diagonal(
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.linalg.eigh(x, UPLO=UPLO)
+) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eigh", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eigh(x, UPLO=UPLO)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
@@ -166,11 +146,11 @@ def matrix_norm(
     /,
     *,
     ord: Optional[Union[int, float, Literal[inf, -inf, "fro", "nuc"]]] = "fro",
-    axis: Optional[Union[int, Sequence[int]]] = (-2, -1),
+    axis: Optional[Tuple[int, int]] = (-2, -1),
     keepdims: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if not isinstance(axis, tuple) and axis:
+    if not isinstance(axis, tuple):
         axis = tuple(axis)
     return jnp.linalg.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 
@@ -188,6 +168,23 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return jnp.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return jnp.asarray(0).astype(x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -204,16 +201,31 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
-    if atol and rtol is None:
-        ret = jnp.sum(singular_values > atol, axis=axis)
-    elif rtol and atol is None:
-        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
-    elif rtol and atol:
-        tol = jnp.max(atol, max_values * rtol)
-        ret = jnp.sum(singular_values > tol, axis=axis)
-    else:
-        ret = jnp.sum(singular_values != 0, axis=axis)
-
+    if atol is None:
+        if rtol is None:
+            ret = jnp.sum(singular_values != 0, axis=axis)
+        else:
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = jnp.sum(singular_values > atol, axis=axis)
+        else:
+            tol = jnp.max(atol, max_values * rtol)
+            ret = jnp.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
         ret = ret.reshape(ret_shape)
     return ret.astype(x.dtype)
@@ -245,7 +257,7 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
+def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -255,7 +267,7 @@ def qr(x: JaxArray, /, *, mode: str = "reduced") -> NamedTuple:
 def slogdet(
     x: JaxArray,
     /,
-) -> NamedTuple:
+) -> Tuple[JaxArray, JaxArray]:
     results = NamedTuple("slogdet", [("sign", JaxArray), ("logabsdet", JaxArray)])
     sign, logabsdet = jnp.linalg.slogdet(x)
     return results(sign, logabsdet)
@@ -366,6 +378,27 @@ def vector_norm(
 
 # Extra #
 # ------#
+
+
+def diag(
+    x: JaxArray,
+    /,
+    *,
+    k: int = 0,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.diag(x, k=k)
+
+
+def vander(
+    x: JaxArray,
+    /,
+    *,
+    N: Optional[int] = None,
+    increasing: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vander(x, N=N, increasing=increasing)
 
 
 def vector_to_skew_symmetric_matrix(

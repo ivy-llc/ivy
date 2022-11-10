@@ -7,7 +7,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy import to_ivy, to_native
+from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -59,6 +59,20 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     return new_fn
 
 
+def _ivy_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x[i] = _ivy_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+            x = ivy.to_native(x, nested=True)
+        elif ivy.is_ivy_array(x):
+            x = ivy.to_native(x)
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -70,11 +84,8 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
         # and the checks to see if we can avoid it are cheap
-        nested = (
-            isinstance(args[0], (list, tuple))
-            and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple)))
-        ) or (isinstance(args[0], np.ndarray) and args[0].ndim == 1)
-        new_args = (to_native(args[0], nested=nested),) + args[1:]
+        new_arg = _ivy_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
         if dtype is not None:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
@@ -170,7 +181,7 @@ def arange(
         the interval (exclusive). If stop is not specified, the default starting value
         is 0.
     stop
-        the end of the interval. Default: None.
+        the end of the interval. Default: ``None``.
     step
         the distance between two adjacent elements (out[i+1] - out[i]). Must not be 0;
         may be negative, this results in an empty array if stop >= start. Default: 1.
@@ -181,7 +192,7 @@ def arange(
         the output array dtype must be the default floating-point data type. Default:
         None.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -476,28 +487,6 @@ def full_like(
         a: ivy.array([15., 15., 15.]),
         b: ivy.array([15., 15., 15.])
     }
-
-    Instance Method Examples:
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3, 4, 5, 6])
-    >>> fill_value = 1
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    ivy.array([1, 1, 1, 1, 1, 1])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([1,2,3]),b=ivy.array([4,5,6]))
-    >>> fill_value = 10
-    >>> y = x.full_like(fill_value)
-    >>> print(y)
-    {
-        a: ivy.array([10, 10, 10]),
-        b: ivy.array([10, 10, 10])
-    }
     """
     return current_backend(x).full_like(
         x, fill_value, dtype=dtype, device=device, out=out
@@ -518,8 +507,8 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input array
-    ``x``.
+    """Returns a new array filled with ones and having the same shape as an input
+    array ``x``.
 
     Parameters
     ----------
@@ -527,10 +516,10 @@ def ones_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data type
-        must be inferred from x. Default  ``None``.
+        must be inferred from ``x``. Default  ``None``.
     device
         device on which to place the created array. If device is ``None``, the output
-        array device must be inferred from x. Default: ``None``.
+        array device must be inferred from ``x``. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -538,7 +527,7 @@ def ones_like(
     Returns
     -------
     ret
-        an array having the same shape as x and filled with ones.
+        an array having the same shape as ``x`` and filled with ``ones``.
 
 
     This function conforms to the `Array API Standard
@@ -550,13 +539,72 @@ def ones_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.ones_like(x2)
+    >>> print(y2)
+    ivy.array([[1., 1., 1.],
+            [1., 1., 1.]])
+
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.zeros(3)
+    >>> ivy.ones_like(x3, out=y3)
+    ivy.array([1., 1., 1.])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([[1, 1, 1],[1, 1, 1]])
+
+
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.ones_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    # Array ``y2`` is now stored on the CPU.
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
     >>> y = ivy.ones_like(x)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-           [1, 1, 1]])
+    {
+        a: ivy.array([1, 1, 1]),
+        b: ivy.array([1, 1, 1])
+    }
+
+    Instance Method Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.ones_like()
+    >>> print(y)
+    ivy.array([1, 1, 1, 1, 1])
+
+    With :class:'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.ones_like()
+    >>> print(y)
+    {
+        a: ivy.array([1., 1.]),
+        b: ivy.array([1., 1.])
+    }
+
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -698,7 +746,7 @@ def tril(
     k
         diagonal above which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-        diagonal is above the main diagonal. Default: 0.
+        diagonal is above the main diagonal. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -745,7 +793,7 @@ def triu(
     k
         diagonal below which to zero elements. If k = 0, the diagonal is the main
         diagonal. If k < 0, the diagonal is below the main diagonal. If k > 0, the
-        diagonal is above the main diagonal. Default: 0.
+        diagonal is above the main diagonal. Default: ``0``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -792,9 +840,9 @@ def empty(
         output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be the
-        default floating-point data type. Default: None.
+        default floating-point data type. Default: ``None``.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -840,10 +888,10 @@ def empty_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If dtype is None, the output array data type must be
-        inferred from x. Default  None.
+        inferred from x. Deafult: ``None``.
     device
         device on which to place the created array. If device is None, the output array
-        device must be inferred from x. Default: None.
+        device must be inferred from x. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -892,13 +940,13 @@ def eye(
         number of rows in the output array.
     n_cols
         number of columns in the output array. If None, the default number of columns in
-        the output array is equal to n_rows. Default: None.
+        the output array is equal to n_rows. Default: ``None``.
     k
         index of the diagonal. A positive value refers to an upper diagonal, a negative
-        value to a lower diagonal, and 0 to the main diagonal. Default: 0.
+        value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.
     dtype
         output array data type. If dtype is None, the output array data type must be the
-        default floating-point data type. Default: None.
+        default floating-point data type. Default: ``None``.
     device
          device on which to place the created array.
     out
@@ -908,7 +956,7 @@ def eye(
     Returns
     -------
     ret
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
 
 
     This function conforms to the `Array API Standard
@@ -922,7 +970,13 @@ def eye(
 
     """
     return current_backend().eye(
-        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+        n_rows,
+        n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 
@@ -960,6 +1014,10 @@ def linspace(
         Number of values to generate.
     axis
         Axis along which the operation is performed.
+    endpoint
+        If True, stop is the last sample. Otherwise, it is not included.
+    dtype
+        output array data type.
     device
         device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     out
@@ -1010,7 +1068,7 @@ def meshgrid(
         an arbitrary number of one-dimensional arrays representing grid coordinates.
         Each array should have the same numeric data type.
     sparse
-        if True, a sparse grid is returned in order to conserve memory. Default: False.
+        if True, a sparse grid is returned in order to conserve memory. Default: ``False``.
     indexing
         Cartesian ``'xy'`` or matrix ``'ij'`` indexing of output. If provided zero or
         one one-dimensional vector(s) (i.e., the zero- and one-dimensional cases,
@@ -1382,7 +1440,7 @@ def native_array(
     dtype
         datatype, optional. Datatype is inferred from the input data.
     device
-        device on which to place the created array. Default: None.
+        device on which to place the created array. Default: ``None``.
 
     Returns
     -------
@@ -1423,11 +1481,13 @@ def one_hot(
     depth
         Scalar defining the depth of the one-hot dimension.
     on_value
-        Scalar defining the value to fill in output when indices[j] == i. Default: 1.
+        Scalar defining the value to fill in output when indices[j] == i.
+        Default: ``1``.
     off_value
-        Scalar defining the value to fill in output when indices[j] != i. Default: 0.
+        Scalar defining the value to fill in output when indices[j] != i.
+        Default: ``0``.
     axis
-        Axis to scatter on. The default is -1, a new inner-most axis is created.
+        Axis to scatter on. The default is ``-1``, a new inner-most axis is created.
     dtype
         The data type of the output tensor.
     device

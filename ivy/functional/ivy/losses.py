@@ -214,7 +214,7 @@ def sparse_cross_entropy(
     Returns
     -------
     ret
-     The sparse cross-entropy loss between the given distributions
+        The sparse cross-entropy loss between the given distributions
 
     Functional Examples
     -------------------
