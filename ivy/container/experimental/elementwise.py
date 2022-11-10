@@ -750,7 +750,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-       >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
                         b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
         >>> x.count_nonzero()
         {
