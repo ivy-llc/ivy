@@ -183,3 +183,13 @@ def fix(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.fix(x, out=out)
+
+
+def nextafter(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nextafter(x1, x2)
