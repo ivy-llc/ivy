@@ -1,7 +1,7 @@
 import ivy
 import pytest
 from ivy.func_wrapper import handle_array_like
-from typing import Union, Tuple, Optional, List, Sequence, Iterable
+from typing import Union, Tuple, List, Sequence
 
 
 @handle_array_like
