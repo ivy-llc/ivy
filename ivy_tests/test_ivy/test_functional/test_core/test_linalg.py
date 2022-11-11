@@ -1567,8 +1567,6 @@ def test_vander(
     fw,
 ):
     input_dtype, x = dtype_and_x
-    if "bfloat16" in input_dtype:
-        return
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
