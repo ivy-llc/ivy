@@ -458,13 +458,3 @@ def rad2deg(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 def isreal(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.isreal(x)
-
-
-def diff(
-    x1: Union[JaxArray, int, float, list, tuple],
-    x2: Union[JaxArray, int, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None
-) -> JaxArray:
-    return jnp.diff(x1, x2)
