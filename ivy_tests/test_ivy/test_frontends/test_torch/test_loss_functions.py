@@ -184,7 +184,7 @@ def test_torch_binary_cross_entropy(
     ),
     size_average=st.booleans(),
     reduce=st.booleans(),
-    reduction=st.sampled_from(["mean", "none", "sum", None]),
+    reduction=st.sampled_from(["mean"]),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.torch.nn.functional.mse_loss"
     ),
