@@ -1,10 +1,11 @@
 import ivy
+from ivy.array.conversions import _to_native
 import functools
 from types import FunctionType
 from typing import Callable
 
 
-# for wrapping (sequence matters)
+# for wrapping (order matters)
 FN_DECORATORS = [
     "infer_device",
     "infer_dtype",
