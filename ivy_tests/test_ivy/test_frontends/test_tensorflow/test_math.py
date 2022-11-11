@@ -1065,5 +1065,5 @@ def test_tensorflow_argmin(
         fn_tree="math.argmin",
         input=x[0],
         axis=axis,
-        output_type = random.choice(["int64", "int32"]),,
+        output_type = random.choice(["int64", "int32"]),
     )    
