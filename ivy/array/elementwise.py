@@ -1248,6 +1248,12 @@ class ArrayWithElementwise(abc.ABC):
         --------
 
         Using :code:`ivy.Array` instance method:
+	
+	>>> x = ivy.array(10)
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array(3.322)
+	
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log2()
         >>> print(y)
