@@ -1,15 +1,11 @@
-# global
-from hypothesis import given
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="max_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="max_pool2d"),
 )
 def test_max_pool2d(
     *,
@@ -18,9 +14,9 @@ def test_max_pool2d(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -29,9 +25,9 @@ def test_max_pool2d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name="max_pool2d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -43,10 +39,9 @@ def test_max_pool2d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="max_pool1d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="max_pool1d"),
 )
 def test_max_pool1d(
     *,
@@ -55,9 +50,9 @@ def test_max_pool1d(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -66,9 +61,9 @@ def test_max_pool1d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name="max_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -80,10 +75,9 @@ def test_max_pool1d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="max_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="max_pool3d"),
 )
 def test_max_pool3d(
     *,
@@ -92,9 +86,9 @@ def test_max_pool3d(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -103,9 +97,9 @@ def test_max_pool3d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name="max_pool3d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -117,10 +111,9 @@ def test_max_pool3d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="avg_pool3d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="avg_pool3d"),
 )
 def test_avg_pool3d(
     *,
@@ -129,9 +122,9 @@ def test_avg_pool3d(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -140,9 +133,9 @@ def test_avg_pool3d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name="avg_pool3d",
         rtol_=1e-2,
         atol_=1e-2,
@@ -154,10 +147,9 @@ def test_avg_pool3d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="avg_pool2d",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
-    num_positional_args=helpers.num_positional_args(fn_name="avg_pool2d"),
 )
 def test_avg_pool2d(
     *,
@@ -166,9 +158,9 @@ def test_avg_pool2d(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -177,9 +169,9 @@ def test_avg_pool2d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name="avg_pool2d",
         rtol_=1e-2,
         atol_=1e-2,
