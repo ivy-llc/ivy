@@ -12,7 +12,7 @@ import traceback as tb
 def _print_new_stack_trace(old_stack_trace):
     print(
         "<func_wrapper.py stack trace is squashed,",
-        "call ivy.set_show_func_wrapper_traces(True) in order to view this>",
+        "call `ivy.set_show_func_wrapper_traces(True)` in order to view this>",
     )
     new_stack_trace = []
     for st in old_stack_trace:
