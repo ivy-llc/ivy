@@ -1565,7 +1565,7 @@ def fft(
     norm
         Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
         "backward" indicates no normalization.
-        "ortho" indicates normalization by $\\frac{1}{\sqrt{n}}$.
+        "ortho" indicates normalization by $\\frac{1}{\\sqrt{n}}$.
         "forward" indicates normalization by $\\frac{1}{n}$.
     n
         Optional argument indicating the sequence length, if given, the input would be
@@ -1587,10 +1587,10 @@ def fft(
     ivy.array([ 0.7373808 ,  1.63194287, -1.21472287, -0.50204533, -1.71194172,
             0.55867577,  1.5112083 ,  0.38700372,  0.38406864, -0.99417818,
             1.97504234,  0.02178292, -0.25875261, -2.4416604 , -1.10865319,
-        -1.03847492, -0.12588134,  1.25679553, -0.30794758,  0.61527479,
-        -0.89843714,  1.70298481,  1.09386349,  0.47972685, -0.5925259 ,
+           -1.03847492, -0.12588134,  1.25679553, -0.30794758,  0.61527479,
+            -0.89843714,  1.70298481,  1.09386349,  0.47972685, -0.5925259 ,
             0.4792572 , -0.04875712,  0.2166176 , -0.84938639])
-    >>> y = ivy.fft(x,1,32)
+    >>> y = ivy.fft(x,1,n=32)
     >>> y[0][0][0]
     ivy.array([ 0.95826091+0.j        ,  1.67160617+2.45314172j,
        -4.70821637-4.94625394j,  4.49872965+6.74854813j,
