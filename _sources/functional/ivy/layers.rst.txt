@@ -32,6 +32,7 @@ Layers
    layers/handle_padding.rst
    layers/deconv_length.rst
    layers/get_x_data_format.rst
+   layers/fft.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
