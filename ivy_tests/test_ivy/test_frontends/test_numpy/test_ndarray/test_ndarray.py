@@ -1990,3 +1990,43 @@ def test_numpy_instance_ixor__(
         class_name="ndarray",
         method_name="__ixor__",
     )
+
+
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        exclude_min=True,
+    ),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.__imod__"
+    ),
+)
+def test_numpy_instance_imod__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="__imod__",
+    )

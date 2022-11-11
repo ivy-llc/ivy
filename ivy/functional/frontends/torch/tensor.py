@@ -281,6 +281,13 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def pow(self, other):
+        return ivy.pow(self.data, other)
+
+    def pow_(self, other):
+        self.data = self.pow(other)
+        return self.data
+
     # Special Methods #
     # -------------------#
 

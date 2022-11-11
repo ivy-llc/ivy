@@ -123,7 +123,7 @@ def execute_with_gradients(
         lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
     grads = ivy.to_ivy(grads)
     return func_ret, grads
 
