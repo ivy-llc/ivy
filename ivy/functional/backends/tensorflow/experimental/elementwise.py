@@ -262,15 +262,3 @@ def nextafter(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.nextafter(x1, x2)
-
-
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16",)}, backend_version
-)
-def arccos(
-    x: Union[tf.Tensor, tf.Variable, list, tuple, float, int],
-    /,
-    *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.arccos(x)
