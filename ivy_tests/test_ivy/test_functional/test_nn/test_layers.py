@@ -1034,7 +1034,7 @@ def x_and_fft(draw, dtypes):
     )
     x = draw(
         helpers.array_values(
-            dtype = dtype[0],
+            dtype=dtype[0],
             shape=tuple(x_dim),
         )
     )
@@ -1046,9 +1046,9 @@ def x_and_fft(draw, dtypes):
             max_size=1
         )
     )
-    norm = draw(st.sampled_from(["backward","forward","ortho"]))
-    n = draw(st.integers(min_fft_points,256))
-    return dtype,x,dim,norm,n
+    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
+    n = draw(st.integers(min_fft_points, 256))
+    return dtype, x, dim, norm, n
 
 
 @handle_cmd_line_args
@@ -1070,7 +1070,7 @@ def test_fft(
     fw,
     device,
 ):
-    dtype, x, dim,norm,n = d_x_d_n_n
+    dtype, x, dim, norm, n = d_x_d_n_n
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1085,8 +1085,8 @@ def test_fft(
         atol_=1e-2,
         test_gradients=False,
         ground_truth_backend="numpy",
-        x = x,
-        dim = dim,
-        norm = norm,
-        n = n
+        x=x,
+        dim=dim,
+        norm=norm,
+        n=n
     )

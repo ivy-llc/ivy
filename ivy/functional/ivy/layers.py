@@ -1595,23 +1595,25 @@ def fft(
     dim: int,
     /,
     *,
-    norm: Optional[str]="backward",
+    norm: Optional[str] = "backward",
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the one dimensional discrete Fourier transform given input at least 1-D input x.
+    r"""Computes the one dimensional discrete Fourier transform given input at least 
+    1-D input x.
 
     Parameters
     ----------
     x
-        Input volume *[...,d_in,...]*, where d_in indicates the dimension that needs FFT.
+        Input volume *[...,d_in,...]*, 
+        where d_in indicates the dimension that needs FFT.
     dim
         The dimension along which to take the one dimensional FFT.
     norm
         Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
         "backward" indicates no normalization.
-        "ortho" indicates normalization by $\\frac{1}{\\sqrt{n}}$.
-        "forward" indicates normalization by $\\frac{1}{n}$.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
     n
         Optional argument indicating the sequence length, if given, the input would be
         padded with zero or truncated to length n before performing FFT.
@@ -1655,5 +1657,5 @@ def fft(
        -4.70821637+4.94625394j,  1.67160617-2.45314172j])
     """
     return current_backend(x).fft(
-        x,dim,norm=norm,n=n,out=out
+        x, dim, norm=norm, n=n, out=out
     )
