@@ -1157,31 +1157,6 @@ class Module(abc.ABC):
         return self._built
 
     # Module Converters #
-    # ------------------#
-    
-    @staticmethod
-    def static_to_haiku_module(ivy_module):
-        class MyHaikuModel(hk.Module):
-            def __init__(self):
-                super(MyHaikuModel, self).__init__()
-
-            def __call__(self, *args, **kwargs):
-                ivy_module.v = ivy_module.v.map(
-                    lambda x, kc: hk.get_parameter(
-                        name=kc,
-                        shape=x.shape,
-                        dtype=x.dtype,
-                        init=lambda shape, dtype: ivy.to_native(ivy_module.v[kc])
-                    )
-                )
-                a, kw = ivy.args_to_native(*args, **kwargs)
-                ret = ivy_module._forward(*a, **kw)
-                if isinstance(ret, tuple):
-                    return ivy.args_to_native(*ret)
-                return ivy.to_native(ret)
-
-        return MyHaikuModel
-
     def to_haiku_module(self):
         """
         Converts an ivy Module instance to a Haiku Module instance.
@@ -1195,7 +1170,29 @@ class Module(abc.ABC):
             The new trainable hk.Module instance.
         """
 
-        return ivy.Module.static_to_haiku_module(self)
+        ivy_module = self
+        
+        class MyHaikuModel(hk.Module):
+            def __init__(self):
+                super(MyHaikuModel, self).__init__()
+                self._ivy_module = ivy_module
+
+            def __call__(self, *args, **kwargs):
+                self._ivy_module.v = self._ivy_module.v.map(
+                    lambda x, kc: hk.get_parameter(
+                        name=kc,
+                        shape=x.shape,
+                        dtype=x.dtype,
+                        init=lambda shape, dtype: ivy.to_native(self._ivy_module.v[kc]),
+                    )
+                )
+                a, kw = ivy.args_to_native(*args, **kwargs)
+                ret = self._ivy_module._forward(*a, **kw)
+                if isinstance(ret, tuple):
+                    return ivy.args_to_native(*ret)
+                return ivy.to_native(ret)
+
+        return MyHaikuModel
 
     def to_keras_module(self):
         """
@@ -1229,16 +1226,17 @@ class Module(abc.ABC):
 
     @staticmethod
     def from_haiku_module(
-            native_module,
-            args=None,
-            kwargs=None,
-            device=None,
-            devices=None,
+        native_module,
+        args=None,
+        kwargs=None,
+        device=None,
+        devices=None,
     ):
         """
         Converts a Haiku module instance to an Ivy module instance.
         If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` as **position-only**.
+        arguments` as **keyword-only** and model's `forward-pass arguments` 
+        as **position-only**.
 
         Parameters
         ----------
@@ -1262,6 +1260,7 @@ class Module(abc.ABC):
 
         """
         RNG = jax.random.PRNGKey(42)
+
         def _hk_flat_map_to_dict(hk_flat_map):
             ret_dict = dict()
             for k, v in hk_flat_map.items():
@@ -1283,14 +1282,7 @@ class Module(abc.ABC):
             return FlatMapping(ret_flat_map)
 
         class HaikuIvyModule(ivy.Module):
-            def __init__(
-                    self,
-                    *args,
-                    native_module,
-                    device,
-                    devices,
-                    **kwargs
-            ):
+            def __init__(self, *args, native_module, device, devices, **kwargs):
                 self._native_module = native_module
                 self._args = args
                 self._kwargs = kwargs
@@ -1300,7 +1292,7 @@ class Module(abc.ABC):
                     build_mode="on_init",
                     device=device,
                     devices=devices,
-                    **kwargs
+                    **kwargs,
                 )
 
             def _create_variables(self, device, dtype):
@@ -1329,6 +1321,7 @@ class Module(abc.ABC):
         transformed_module = native_module
 
         if inspect.isclass(native_module):
+
             def forward_fn(*a, **kw):
                 model = native_module(**kw)
                 return model(*a)
@@ -1340,22 +1333,23 @@ class Module(abc.ABC):
             native_module=transformed_module,
             device=device,
             devices=devices,
-            **kwargs
+            **kwargs,
         )
 
     @staticmethod
     def from_keras_module(
-            native_module=None,
-            args=None,
-            kwargs=None,
-            device=None,
-            devices=None,
+        native_module=None,
+        args=None,
+        kwargs=None,
+        device=None,
+        devices=None,
     ):
         """
         Converts a Keras module instance to an Ivy module instance.
         If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` as **position-only**.
-        
+        arguments` as **keyword-only** and model's `forward-pass arguments` 
+        as **position-only**.
+
         Parameters
         ----------
         native_module
@@ -1378,19 +1372,14 @@ class Module(abc.ABC):
         """
 
         class KerasIvyModule(ivy.Module):
-            def __init__(
-                    self,
-                    *args,
-                    native_module,
-                    device,
-                    devices,
-                    **kwargs
-            ):
+            def __init__(self, *args, native_module, device, devices, **kwargs):
                 self._native_module = native_module
                 self._args = args
                 self._kwargs = kwargs
 
-                ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
+                ivy.Module.__init__(
+                    self, *args, device=device, devices=devices, **kwargs
+                )
 
             def _create_variables(self, device=None, dtype=None):
                 return self._native_params
@@ -1398,7 +1387,12 @@ class Module(abc.ABC):
             def _build(self, *args, **kwargs):
                 self._native_params = ivy.Container(
                     OrderedDict(
-                        sorted([(param.name, param) for param in self._native_module.variables])
+                        sorted(
+                            [
+                                (param.name, param)
+                                for param in self._native_module.variables
+                            ]
+                        )
                     )
                 )
 
@@ -1412,33 +1406,30 @@ class Module(abc.ABC):
         args = ivy.default(args, [])
         kwargs = ivy.default(kwargs, {})
 
-        if (inspect.isclass(native_module)):
+        if inspect.isclass(native_module):
             native_module = native_module(**kwargs)
             input_shape = args[0].shape
             native_module.build((input_shape[-1],))
 
         return KerasIvyModule(
-            *args,
-            native_module=native_module,
-            device=device,
-            devices=devices,
-            **kwargs
+            *args, native_module=native_module, device=device, devices=devices, **kwargs
         )
 
     @staticmethod
     def from_torch_module(
-            native_module=None,
-            args=None,
-            kwargs=None,
-            device=None,
-            devices=None,
-            inplace_update=False
+        native_module=None,
+        args=None,
+        kwargs=None,
+        device=None,
+        devices=None,
+        inplace_update=False,
     ):
         """
         Converts a Torch module instance to an Ivy module instance.
         If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` as **position-only**.
-        
+        arguments` as **keyword-only** and model's `forward-pass arguments` 
+        as **position-only**.
+
         Parameters
         ----------
         native_module
@@ -1464,13 +1455,7 @@ class Module(abc.ABC):
 
         class TorchIvyModule(ivy.Module):
             def __init__(
-                    self,
-                    *args,
-                    native_module,
-                    device,
-                    devices,
-                    inplace_update,
-                    **kwargs
+                self, *args, native_module, device, devices, inplace_update, **kwargs
             ):
                 self._native_module = native_module
                 self._args = args
@@ -1478,7 +1463,9 @@ class Module(abc.ABC):
                 self._update_v = (
                     self._inplace_update_v if inplace_update else self._replace_update_v
                 )
-                ivy.Module.__init__(self, *args, device=device, devices=devices, **kwargs)
+                ivy.Module.__init__(
+                    self, *args, device=device, devices=devices, **kwargs
+                )
 
             def _create_variables(self, device=None, dtype=None):
                 return self._native_params
@@ -1489,7 +1476,9 @@ class Module(abc.ABC):
                         sorted(
                             [
                                 (k.replace(".", "/"), v)
-                                for k, v in dict(self._native_module.named_parameters()).items()
+                                for k, v in dict(
+                                    self._native_module.named_parameters()
+                                ).items()
                             ]
                         )
                     )
@@ -1510,7 +1499,9 @@ class Module(abc.ABC):
                 for k, v in new_v.items():
                     if isinstance(v, ivy.Container):
                         # noinspection PyProtectedMember
-                        native._modules[k] = self._replace_update_v(v, native._modules[k])
+                        native._modules[k] = self._replace_update_v(
+                            v, native._modules[k]
+                        )
                     elif ivy.is_variable(v):
                         if isinstance(v, torch.nn.Parameter):
                             # noinspection PyProtectedMember
@@ -1536,7 +1527,7 @@ class Module(abc.ABC):
         args = ivy.default(args, [])
         kwargs = ivy.default(kwargs, {})
 
-        if (inspect.isclass(native_module)):
+        if inspect.isclass(native_module):
             native_module = native_module(**kwargs)
 
         return TorchIvyModule(
@@ -1545,8 +1536,9 @@ class Module(abc.ABC):
             device=device,
             devices=devices,
             inplace_update=inplace_update,
-            **kwargs
+            **kwargs,
         )
+
 
 class MyTorchModule(torch.nn.Module):
     def __init__(self, ivy_module):
@@ -1557,8 +1549,9 @@ class MyTorchModule(torch.nn.Module):
     def _assign_variables(self):
         self._ivy_module.v.map(
             lambda x, kc: self.register_parameter(
-                name=kc,
-                param=torch.nn.Parameter(ivy.to_native(x))))
+                name=kc, param=torch.nn.Parameter(ivy.to_native(x))
+            )
+        )
         self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: self._parameters[kc])
 
     def forward(self, *args, **kwargs):
@@ -1568,25 +1561,6 @@ class MyTorchModule(torch.nn.Module):
             return ivy.args_to_native(*ret)
         return ivy.to_native(ret)
 
-class MyHaikuModel(hk.Module):
-    def __init__(self, ivy_module):
-        super(MyHaikuModel, self).__init__()
-        self._ivy_module = ivy_module
-
-    def __call__(self, *args, **kwargs):
-        self._ivy_module.v = self._ivy_module.v.map(
-            lambda x, kc: hk.get_parameter(
-                name=kc,
-                shape=x.shape,
-                dtype=x.dtype,
-                init=lambda shape, dtype: ivy.to_native(self._ivy_module.v[kc])
-            )
-        )
-        a, kw = ivy.args_to_native(*args, **kwargs)
-        ret = self._ivy_module._forward(*a, **kw)
-        if isinstance(ret, tuple):
-            return ivy.args_to_native(*ret)
-        return ivy.to_native(ret)
 
 class MyTFModule(tf.keras.Model):
     def __init__(self, ivy_module):
@@ -1597,19 +1571,13 @@ class MyTFModule(tf.keras.Model):
     def _assign_variables(self):
         self._ivy_module.v.map(
             lambda x, kc: self.add_weight(
-                name=kc,
-                shape=x.shape,
-                dtype=x.dtype,
-                trainable=True
+                name=kc, shape=x.shape, dtype=x.dtype, trainable=True
             )
         )
         model_weights = list()
-        self._ivy_module.v.map(
-            lambda x, kc: model_weights.append(ivy.to_numpy(x)))
+        self._ivy_module.v.map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
         self.set_weights(model_weights)
-        params = {
-            re.sub(":\\d+", '', param.name): param for param in self.variables
-        }
+        params = {re.sub(":\\d+", "", param.name): param for param in self.variables}
         self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: params[kc])
 
     def call(self, *args, **kwargs):
