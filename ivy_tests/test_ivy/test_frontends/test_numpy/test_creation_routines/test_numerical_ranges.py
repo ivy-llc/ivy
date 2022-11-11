@@ -1,13 +1,13 @@
 # global
 from numpy import mgrid as np_mgrid, ogrid as np_ogrid
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 import ivy
 
 # local
 from ivy.functional.frontends.numpy import mgrid, ogrid
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 
 
 # helpers
@@ -212,8 +212,9 @@ def test_numpy_meshgrid(
 
 
 # mgrid
-@handle_cmd_line_args
-@given(range=_get_range_for_grid())
+@handle_frontend_method(
+    method_tree="numpy.mgrid.__getitem__", range=_get_range_for_grid()
+)
 def test_numpy_mgrid(
     range,
 ):
@@ -242,8 +243,9 @@ def test_numpy_mgrid(
 
 
 # ogrid
-@handle_cmd_line_args
-@given(range=_get_range_for_grid())
+@handle_frontend_method(
+    method_tree="numpy.ogrid.__getitem__", range=_get_range_for_grid()
+)
 def test_numpy_ogrid(
     range,
 ):
