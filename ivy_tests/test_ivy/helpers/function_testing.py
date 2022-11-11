@@ -371,8 +371,6 @@ def test_function(
         and "bool" not in input_dtypes
     ):
         if hasattr_unsupported_gradients and fw in fw_list:
-            # print("yahan tak aaya bhi nahi")
-            # print( type(all_as_kwargs_np['x1']),str(type(all_as_kwargs_np['x1']))=="<class 'numpy.ndarray'>")
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
                 lambda x: x.dtype in fw_list[fw]
