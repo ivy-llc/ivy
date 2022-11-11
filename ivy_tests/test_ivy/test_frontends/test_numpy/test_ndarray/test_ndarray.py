@@ -1,10 +1,10 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
+from ivy_tests.test_ivy.helpers import handle_frontend_method, assert_all_close
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -12,9 +12,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-# argmax
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -24,7 +23,6 @@ def test_numpy_ndarray_argmax(
     dtype_and_x,
     as_variable,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -47,7 +45,6 @@ def test_numpy_ndarray_argmax(
     )
 
 
-# reshape
 @st.composite
 def dtypes_x_reshape(draw):
     dtypes, x = draw(
@@ -66,8 +63,8 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
 )
 def test_numpy_ndarray_reshape(
@@ -97,17 +94,13 @@ def test_numpy_ndarray_reshape(
     )
 
 
-# transpose
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.transpose",
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=10,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.transpose"
     ),
 )
 def test_numpy_ndarray_transpose(
@@ -138,9 +131,8 @@ def test_numpy_ndarray_transpose(
     )
 
 
-# any
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.any",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -197,9 +189,8 @@ def test_numpy_ndarray_any(
     )
 
 
-# all
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -256,17 +247,14 @@ def test_numpy_ndarray_all(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.argsort"
     ),
 )
 def test_numpy_instance_argsort(
@@ -292,17 +280,14 @@ def test_numpy_instance_argsort(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.mean",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.mean"
     ),
 )
 def test_numpy_ndarray_mean(
@@ -335,8 +320,8 @@ def test_numpy_ndarray_mean(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.min",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -345,9 +330,6 @@ def test_numpy_ndarray_mean(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.min"
-    ),
 )
 def test_numpy_instance_min(
     dtype_x_axis,
@@ -380,9 +362,8 @@ def test_numpy_instance_min(
     )
 
 
-# argmin
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -390,9 +371,6 @@ def test_numpy_instance_min(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.argmin"
-    ),
 )
 def test_numpy_ndarray_argmin(
     dtype_x_axis,
@@ -425,8 +403,8 @@ def test_numpy_ndarray_argmin(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.max",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -435,9 +413,6 @@ def test_numpy_ndarray_argmin(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.max"
-    ),
 )
 def test_numpy_instance_max(
     dtype_x_axis,
@@ -470,8 +445,8 @@ def test_numpy_instance_max(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -480,9 +455,6 @@ def test_numpy_instance_max(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.cumprod"
-    ),
 )
 def test_numpy_instance_cumprod(
     dtype_x_axis,
@@ -516,8 +488,8 @@ def test_numpy_instance_cumprod(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.cumsum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -526,9 +498,6 @@ def test_numpy_instance_cumprod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.cumsum"
-    ),
 )
 def test_numpy_instance_cumsum(
     dtype_x_axis,
@@ -562,17 +531,14 @@ def test_numpy_instance_cumsum(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.sort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.sort"
     ),
 )
 def test_numpy_instance_sort(
@@ -613,14 +579,11 @@ def test_numpy_instance_sort(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.copy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.copy"
     ),
 )
 def test_numpy_instance_copy(
@@ -650,13 +613,10 @@ def test_numpy_instance_copy(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.nonzero",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.nonzero"
     ),
 )
 def test_numpy_instance_nonzero(
@@ -686,13 +646,10 @@ def test_numpy_instance_nonzero(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.ravel",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.ravel"
     ),
 )
 def test_numpy_instance_ravel(
@@ -722,8 +679,8 @@ def test_numpy_instance_ravel(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.repeat",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
@@ -731,9 +688,6 @@ def test_numpy_instance_ravel(
     ),
     repeats=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=1),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.repeat"
-    ),
 )
 def test_numpy_instance_repeat(
     dtype_and_x,
@@ -767,8 +721,8 @@ def test_numpy_instance_repeat(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.searchsorted",
     dtype_x_v=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
         min_num_dims=1,
@@ -776,9 +730,6 @@ def test_numpy_instance_repeat(
         num_arrays=2,
     ),
     side=st.sampled_from(["left", "right"]),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.searchsorted"
-    ),
 )
 def test_numpy_instance_searchsorted(
     dtype_x_v,
@@ -812,17 +763,14 @@ def test_numpy_instance_searchsorted(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.squeeze",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.squeeze"
     ),
 )
 def test_numpy_instance_squeeze(
@@ -854,8 +802,8 @@ def test_numpy_instance_squeeze(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -892,13 +840,10 @@ def test_numpy_instance_add__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__sub__"
     ),
 )
 def test_numpy_instance_sub__(
@@ -930,14 +875,11 @@ def test_numpy_instance_sub__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__mul__"
     ),
 )
 def test_numpy_instance_mul__(
@@ -969,14 +911,11 @@ def test_numpy_instance_mul__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__and__"
     ),
 )
 def test_numpy_instance_and__(
@@ -1008,14 +947,11 @@ def test_numpy_instance_and__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__or__"
     ),
 )
 def test_numpy_instance_or__(
@@ -1047,14 +983,11 @@ def test_numpy_instance_or__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__xor__"
     ),
 )
 def test_numpy_instance_xor__(
@@ -1086,13 +1019,10 @@ def test_numpy_instance_xor__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__matmul__"
-    ),
 )
 def test_numpy_instance_matmul__(
     x,
@@ -1126,14 +1056,11 @@ def test_numpy_instance_matmul__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__copy__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__copy__"
     ),
 )
 def test_numpy_instance_copy__(
@@ -1163,14 +1090,11 @@ def test_numpy_instance_copy__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__neg__"
     ),
 )
 def test_numpy_instance_neg__(
@@ -1200,14 +1124,11 @@ def test_numpy_instance_neg__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__pos__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__pos__"
     ),
 )
 def test_numpy_instance_pos__(
@@ -1237,14 +1158,11 @@ def test_numpy_instance_pos__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__bool__"
     ),
 )
 def test_numpy_instance_bool__(
@@ -1274,14 +1192,11 @@ def test_numpy_instance_bool__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__ne__"
     ),
 )
 def test_numpy_instance_ne__(
@@ -1313,14 +1228,11 @@ def test_numpy_instance_ne__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__eq__"
     ),
 )
 def test_numpy_instance_eq__(
@@ -1352,14 +1264,11 @@ def test_numpy_instance_eq__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__ge__"
     ),
 )
 def test_numpy_instance_ge__(
@@ -1391,14 +1300,11 @@ def test_numpy_instance_ge__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__gt__"
     ),
 )
 def test_numpy_instance_gt__(
@@ -1430,14 +1336,11 @@ def test_numpy_instance_gt__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__le__"
     ),
 )
 def test_numpy_instance_le__(
@@ -1469,14 +1372,11 @@ def test_numpy_instance_le__(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__lt__"
     ),
 )
 def test_numpy_instance_lt__(

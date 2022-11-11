@@ -1,14 +1,11 @@
-# global
-from hypothesis import given
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
 # argmax
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.matrix.argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
@@ -50,8 +47,8 @@ def test_numpy_matrix_argmax(
 
 
 # any
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.matrix.any",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
