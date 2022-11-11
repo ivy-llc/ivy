@@ -214,16 +214,16 @@ def fft(
     dim: int,
     /,
     *,
-    norm: str="backward",
+    norm: Optional[str]="backward",
     n: Union[int, Tuple[int]] = None,
     out: Optional[JaxArray] = None
 ) -> JaxArray:
     if not isinstance(dim,int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
-    if n < -len(x.shape) :
-        raise ivy.exceptions.IvyError(f"Invalid dim {dim}, expecting ranging from {-len(x.shape)} to {len(x.shape)-1}  ")
     if n is None:
         n = x.shape[dim]
+    if n < -len(x.shape) :
+        raise ivy.exceptions.IvyError(f"Invalid dim {dim}, expecting ranging from {-len(x.shape)} to {len(x.shape)-1}  ")
     if not isinstance(n,int):
         raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
     if n <= 1 :

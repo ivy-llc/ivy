@@ -1540,3 +1540,75 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+def fft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    /,
+    *,
+    norm: Optional[str]="backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the one dimensional discrete Fourier transform given input at least 1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*, where d_in indicates the dimension that needs FFT.
+    dim
+        The dimension along which to take the one dimensional FFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing FFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT operation.
+
+    Examples
+    --------
+    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 4, 29])
+    >>> x[0][0][0]
+    ivy.array([ 0.7373808 ,  1.63194287, -1.21472287, -0.50204533, -1.71194172,
+            0.55867577,  1.5112083 ,  0.38700372,  0.38406864, -0.99417818,
+            1.97504234,  0.02178292, -0.25875261, -2.4416604 , -1.10865319,
+        -1.03847492, -0.12588134,  1.25679553, -0.30794758,  0.61527479,
+        -0.89843714,  1.70298481,  1.09386349,  0.47972685, -0.5925259 ,
+            0.4792572 , -0.04875712,  0.2166176 , -0.84938639])
+    >>> y = ivy.fft(x,1,32)
+    >>> y[0][0][0]
+    ivy.array([ 0.95826091+0.j        ,  1.67160617+2.45314172j,
+       -4.70821637-4.94625394j,  4.49872965+6.74854813j,
+        5.55730002-1.0830992j ,  0.743972  +2.46456858j,
+       10.91911522-4.84222949j, -2.30498222-2.53520727j,
+       -5.21550904-2.01393196j,  2.90226047-1.20510516j,
+        0.85035832-1.46330944j, -0.15454801-0.85945263j,
+        2.68582011-3.26870685j,  2.33639796-1.11222504j,
+       -3.78143029-7.57629331j, -2.78733884+7.05924817j,
+       -3.78914552+0.j        , -2.78733884-7.05924817j,
+       -3.78143029+7.57629331j,  2.33639796+1.11222504j,
+        2.68582011+3.26870685j, -0.15454801+0.85945263j,
+        0.85035832+1.46330944j,  2.90226047+1.20510516j,
+       -5.21550904+2.01393196j, -2.30498222+2.53520727j,
+       10.91911522+4.84222949j,  0.743972  -2.46456858j,
+        5.55730002+1.0830992j ,  4.49872965-6.74854813j,
+       -4.70821637+4.94625394j,  1.67160617-2.45314172j])
+    """
+    return current_backend(x).fft(
+        x,dim,norm=norm,n=n,out=out
+    )
