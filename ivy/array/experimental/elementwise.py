@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -273,6 +273,59 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([32.,   64.,  128.])
         """
         return ivy.exp2(self._data, out=out)
+
+    def count_nonzero(
+        self: ivy.Array,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.count_nonzero. This method simply
+        wraps the function, and so the docstring for ivy.count_nonzero also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array for which to count non-zeros.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+           Number of non-zero values in the array along a given axis. Otherwise,
+           the total number of non-zero values in the array is returned.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.count_nonzero()
+        ivy.array(3)
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=0)
+        ivy.array([[1, 2],
+               [2, 2]])
+        >>> x = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        ivy.array([[[3, 4]]])
+        """
+        return ivy.count_nonzero(
+            self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        )
 
     def nansum(
         self: ivy.Array,
@@ -705,3 +758,72 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([-9.,   -8.,  -7.])
         """
         return ivy.diff(self._data, x2, out=out)
+
+    def fix(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.fix. This method
+        simply wraps the function, and so the docstring for ivy.fix also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Array input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Array of floats with elements corresponding to input elements
+            rounded to nearest integer towards zero, element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([2.1, 2.9, -2.1])
+        >>> x.fix()
+        ivy.array([ 2.,  2., -2.])
+        """
+        return ivy.fix(self._data, out=out)
+
+    def nextafter(
+        self: ivy.Array,
+        x2: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.nextafter. This method simply
+        wraps the function, and so the docstring for ivy.nextafter also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            The next representable values of x1 in the direction of x2.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([1.0e-50, 2.0e+50])
+        >>> x2 = ivy.array([2.0, 1.0])
+        >>> x1.nextafter(x2)
+        ivy.array([1.4013e-45., 3.4028e+38])
+        """
+        return ivy.nextafter(
+            self._data, x2, out=out
+        )

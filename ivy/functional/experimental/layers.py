@@ -204,6 +204,68 @@ def max_pool3d(
     )
 
 
+@handle_out_argument
+@to_native_arrays_and_back
+@handle_out_argument
+def avg_pool1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes a 1-D avg pool given 3-D input x.
+
+    Parameters
+    ----------
+    x
+        Input image *[batch_size, w, d_in]*.
+    kernel
+        Size of the kernel i.e., the sliding window for each
+        dimension of input. *[w]*.
+    strides
+        The stride of the sliding window for each dimension of input.
+    padding
+        SAME" or "VALID" indicating the algorithm, or list
+        indicating the per-dimension paddings.
+    data_format
+        NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        The result of the pooling operation.
+
+    Both the description and the type hints above assumes an array input
+    for simplicity, but this function is *nestable*, and therefore
+    also accepts :class:`ivy.Container` instances in place of any of
+    the arguments.
+
+    Examples
+    --------
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.avg_pool1d(x, 2, 2, 'SAME'))
+    ivy.array([[[ 2.,  3.,  4.,  5.],
+            [ 8.,  9., 10., 11.]],
+
+           [[14., 15., 16., 17.],
+            [20., 21., 22., 23.]]])
+    >>> x = ivy.arange(0, 24.).reshape((2, 3, 4))
+    >>> print(ivy.avg_pool1d(x, 2, 2, 'VALID'))
+    ivy.array([[[ 2.,  3.,  4.,  5.]],
+
+           [[14., 15., 16., 17.]]])
+    """
+    return ivy.current_backend(x).avg_pool1d(
+        x, kernel, strides, padding, data_format=data_format, out=out
+    )
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
