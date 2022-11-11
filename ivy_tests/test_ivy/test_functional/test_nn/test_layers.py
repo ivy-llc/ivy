@@ -1026,10 +1026,7 @@ def x_and_fft(draw, dtypes):
     dtype = draw(dtypes)
     x_dim = draw(
         helpers.get_shape(
-            min_dim_size=2,
-            max_dim_size=100,
-            min_num_dims=1,
-            max_num_dims=4
+            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
         )
     )
     x = draw(
@@ -1039,12 +1036,7 @@ def x_and_fft(draw, dtypes):
         )
     )
     dim = draw(
-        helpers.get_axis(
-            shape=x_dim,
-            allow_neg=True,
-            allow_none=False,
-            max_size=1
-        )
+        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
     )
     norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
     n = draw(st.integers(min_fft_points, 256))
@@ -1053,9 +1045,7 @@ def x_and_fft(draw, dtypes):
 
 @handle_cmd_line_args
 @given(
-    d_x_d_n_n=x_and_fft(
-        helpers.get_dtypes("complex")
-    ),
+    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
     num_positional_args=helpers.num_positional_args(fn_name="fft"),
 )
 def test_fft(
@@ -1088,5 +1078,5 @@ def test_fft(
         x=x,
         dim=dim,
         norm=norm,
-        n=n
+        n=n,
     )
