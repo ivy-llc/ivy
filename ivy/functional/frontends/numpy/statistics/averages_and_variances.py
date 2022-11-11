@@ -72,19 +72,13 @@ def nanmedian(
     out=None,
     overwrite_input=False
 ):
-    is_nan = ivy.isnan(a)
+    if overwrite_input:
+        a=ivy.array(a)
+
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    if not any(is_nan):
-        if overwrite_input:
-            a = ivy.array(a)
-        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+    a = [i for i in a if ivy.isnan(i) is False]
 
-    else:
-        a = [i for i in a if ivy.isnan(i) is False]
-
-        if overwrite_input:
-            a = ivy.array(a)
-        ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
+    ret = ivy.median(a, axis=axis, keepdims=keepdims, out=out)
 
     return ret
