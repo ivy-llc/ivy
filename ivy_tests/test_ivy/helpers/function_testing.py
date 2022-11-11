@@ -380,10 +380,11 @@ def test_function(
         ):
             pass
         else:
-            print(hasattr_unsupported_gradients,fw in fw_list,ivy.nested_argwhere(
-                [all_as_kwargs_np],
-                lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
-            ))
+            if hasattr_unsupported_gradients:
+                print(hasattr_unsupported_gradients,fw in fw_list,ivy.nested_argwhere(
+                    [all_as_kwargs_np],
+                    lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
+                ))
             gradient_test(
                 fn_name=fn_name,
                 all_as_kwargs_np=all_as_kwargs_np,
