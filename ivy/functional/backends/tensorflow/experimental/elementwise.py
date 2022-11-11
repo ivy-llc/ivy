@@ -1,4 +1,5 @@
 from typing import Union, Optional, Tuple
+from numbers import Number
 import tensorflow as tf
 from .. import backend_version
 
@@ -93,6 +94,19 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.pow(2, x, name=None)
+
+
+def copysign(
+    x1: Union[tf.Tensor, tf.Variable, Number],
+    x2: Union[tf.Tensor, tf.Variable, Number],
+    /,
+    *,
+    out: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    signs = tf.math.sign(x2)
+    # All unsigned zeroes should be considered positive
+    signs = tf.where(tf.equal(signs, 0), tf.ones_like(signs), signs)
+    return tf.math.multiply(x1, signs)
 
 
 def count_nonzero(
