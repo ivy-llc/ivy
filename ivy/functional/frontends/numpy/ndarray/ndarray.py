@@ -258,4 +258,3 @@ class ndarray:
 
     def __imod__(self, value, /):
         return np_frontend.mod(self.data, value)
-
