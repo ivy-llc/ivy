@@ -1,4 +1,5 @@
 from typing import Optional, Union, Tuple
+from numbers import Number
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -60,6 +61,16 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def copysign(
+    x1: Union[JaxArray, Number],
+    x2: Union[JaxArray, Number],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.copysign(x1, x2)
 
 
 def count_nonzero(
