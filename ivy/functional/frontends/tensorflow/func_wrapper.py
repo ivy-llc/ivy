@@ -10,6 +10,7 @@ import tensorflow as tf
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
+from ivy.func_wrapper import handle_nans
 
 
 def _tf_frontend_array_to_ivy(x):
@@ -32,17 +33,6 @@ def _tf_array_to_ivy_array(x):
 
 def _to_ivy_array(x):
     return _tf_frontend_array_to_ivy(_tf_array_to_ivy_array(x))
-
-
-def _has_nans(x):
-    if isinstance(x, ivy.Container):
-        return x.has_nans()
-    elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return ivy.isnan(x).any()
-    elif isinstance(x, tuple):
-        return any(_has_nans(xi) for xi in x)
-    else:
-        return False
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -181,50 +171,3 @@ def map_raw_ops_alias(alias: callable, kwargs_to_update: Dict = None) -> callabl
         return _wraped_fn
 
     return _wrap_raw_ops_alias(alias, kwargs_to_update)
-
-
-def handle_nans(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
-        """
-        Checks for the existence of nans in all arrays in the `args`
-        and `kwargs`. The presence of nans is then handled depending
-        on the enabled `nan_policy`.
-
-        Following policies apply:
-        raise_exception: raises an exception in case nans are present
-        warns: warns a user in case nans are present
-        nothing: does nothing
-
-        Parameters
-        ----------
-        args
-            The arguments to be passed to the function.
-        kwargs
-            The keyword arguments to be passed to the function.
-
-        Returns
-        -------
-            The return of the function, with handling of inputs based
-            on the selected `nan_policy`.
-        """
-        # skip the check if the current nan policy is `nothing``
-        if ivy.get_nan_policy() == "nothing":
-            return fn(*args, **kwargs)
-
-        # check all args and kwards for presence of nans
-        result = ivy.nested_any(args, _has_nans) or ivy.nested_any(
-            kwargs, _has_nans)
-
-        if result:
-            # handle nans based on the selected policy
-            if ivy.get_nan_policy() == "raise_exception":
-                raise ivy.exceptions.IvyException(
-                    "Nans are not allowed in `raise_exception` policy.")
-            elif ivy.get_nan_policy() == "warns":
-                logging.warning("Nans are present in the input.")
-        
-        return fn(*args, **kwargs)
-
-    new_fn.handle_nans = True
-    return new_fn

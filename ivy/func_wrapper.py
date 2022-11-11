@@ -573,15 +573,18 @@ def _dtype_device_wrapper_creator(attrib, t):
 # --------------#
 
 
-def _has_nans(x):
+def _leaf_has_nans(x):
     if isinstance(x, ivy.Container):
         return x.has_nans()
-    elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
+    elif ivy.is_array(x):
         return ivy.isnan(x).any()
-    elif isinstance(x, tuple):
-        return any(_has_nans(xi) for xi in x)
-    else:
-        return False
+    elif x is float("nan"):
+        return True
+    return False
+
+
+def _nest_has_nans(x):
+    return ivy.nested_any(x, _leaf_has_nans)
 
 
 def handle_nans(fn: Callable) -> Callable:
@@ -609,20 +612,20 @@ def handle_nans(fn: Callable) -> Callable:
             The return of the function, with handling of inputs based
             on the selected `nan_policy`.
         """
+        nan_policy = ivy.get_nan_policy()
         # skip the check if the current nan policy is `nothing``
-        if ivy.get_nan_policy() == "nothing":
+        if nan_policy == "nothing":
             return fn(*args, **kwargs)
 
         # check all args and kwards for presence of nans
-        result = ivy.nested_any(args, _has_nans) or ivy.nested_any(
-            kwargs, _has_nans)
+        result = _nest_has_nans(args) or _nest_has_nans(kwargs)
 
         if result:
             # handle nans based on the selected policy
-            if ivy.get_nan_policy() == "raise_exception":
+            if nan_policy == "raise_exception":
                 raise ivy.exceptions.IvyException(
                     "Nans are not allowed in `raise_exception` policy.")
-            elif ivy.get_nan_policy() == "warns":
+            elif nan_policy == "warns":
                 logging.warning("Nans are present in the input.")
         
         return fn(*args, **kwargs)
