@@ -111,13 +111,13 @@ exp2.support_native_out = True
 
 
 def copysign(
-    x1: torch.Tensor,
+    x1: Union[torch.Tensor, Number],
     x2: Union[torch.Tensor, Number],
     /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.copysign(x1, x2, out=out)
+    return torch.copysign(torch.as_tensor(x1), x2, out=out)
 
 
 copysign.support_native_out = True
