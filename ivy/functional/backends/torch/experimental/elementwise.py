@@ -1,5 +1,6 @@
 # global
 from typing import Optional, Union, Tuple
+from numbers import Number
 import torch
 
 # local
@@ -107,6 +108,19 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+def copysign(
+    x1: torch.Tensor,
+    x2: Union[torch.Tensor, Number],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.copysign(x1, x2, out=out)
+
+
+copysign.support_native_out = True
 
 
 def count_nonzero(
