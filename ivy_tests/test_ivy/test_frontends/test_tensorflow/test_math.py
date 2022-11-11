@@ -1051,7 +1051,7 @@ def test_tensorflow_argmin(
     as_variable,
     num_positional_args,
     native_array,
-    output_type = random.choice(["int64", "int32"]),
+    output_type,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
