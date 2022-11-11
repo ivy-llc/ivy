@@ -87,7 +87,7 @@ def test_lars_optimizer(
     method_as_variable_flags: pf.AsVariableFlags,
     method_native_array_flags: pf.NativeArrayFlags,
     method_container_flags: pf.ContainerFlags,
-    device,
+    on_device,
     class_name,
     method_name,
 ):
@@ -111,7 +111,7 @@ def test_lars_optimizer(
         },
         class_name=class_name,
         method_name=method_name,
-        device_=device,
+        device_=on_device,
     )
 
 
@@ -140,7 +140,7 @@ def test_adam_optimizer(
     epsilon,
     inplace,
     stop_gradients,
-    device,
+    on_device,
     num_positional_args_init: pf.NumPositionalArg,
     num_positional_args_method: pf.NumPositionalArg,
     method_as_variable_flags: pf.AsVariableFlags,
@@ -171,7 +171,7 @@ def test_adam_optimizer(
         },
         class_name=class_name,
         method_name=method_name,
-        device_=device,
+        device_=on_device,
     )
 
 
