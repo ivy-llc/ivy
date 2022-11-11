@@ -770,7 +770,7 @@ def diff(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns the difference of x1 and x2.
+    """Returns the element-wise difference of x1 and x2.
     Parameters
     ----------
     x1
@@ -787,10 +787,10 @@ def diff(
     --------
     >>> x1 = ivy.array([1, 2, 3])
     >>> x2 = ivy.array([4, 5, 6])
-    >>> ivy.gcd(x1, x2)
+    >>> ivy.diff(x1, x2)
     ivy.array([-3.,    -3.,   -3.])
     >>> x1 = ivy.array([1, 2, 3])
-    >>> ivy.gcd(x1, 10)
+    >>> ivy.diff(x1, 10)
     ivy.array([-9.,   -8.,  -7.])
     """
     return ivy.current_backend().diff(x1, x2, out=out)

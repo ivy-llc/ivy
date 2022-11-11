@@ -733,7 +733,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.diff. This method simply
-        wraps the function, and so the docstring for ivy.gcd also applies to
+        wraps the function, and so the docstring for ivy.diff also applies to
         this method with minimal changes.
         Parameters
         ----------
@@ -746,7 +746,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         Returns
         -------
         ret
-            Element-wise gcd of |x1| and |x2|.
+            Element-wise difference of x1 and x2.
         Examples
         --------
         >>> x1 = ivy.array([1, 2, 3])
