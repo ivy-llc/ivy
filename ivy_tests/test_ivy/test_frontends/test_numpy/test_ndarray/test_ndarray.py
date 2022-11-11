@@ -2029,4 +2029,3 @@ def test_numpy_instance_imod__(
         class_name="ndarray",
         method_name="__imod__",
     )
-
