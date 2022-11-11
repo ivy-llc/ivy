@@ -443,3 +443,18 @@ def hstack(x, dtype=None):
 @to_ivy_arrays_and_back
 def arctanh(x):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def maximum(x1, x2):
+    return ivy.maximum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def minimum(x1, x2):
+    return ivy.minimum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def msort(a):
+    return ivy.msort(a)
