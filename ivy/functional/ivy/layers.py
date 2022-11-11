@@ -1599,7 +1599,7 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    r"""Computes the one dimensional discrete Fourier transform given input at least 
+    """Computes the one dimensional discrete Fourier transform given input at least 
     1-D input x.
 
     Parameters
