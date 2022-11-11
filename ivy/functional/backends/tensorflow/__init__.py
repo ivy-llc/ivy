@@ -151,5 +151,4 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
-from . import extension
-from .extension import *
+
