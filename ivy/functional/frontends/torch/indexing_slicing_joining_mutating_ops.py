@@ -133,3 +133,8 @@ def movedim(input, source, destination):
 @to_ivy_arrays_and_back
 def hstack(tensors, *, out=None):
     return ivy.hstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def index_select(input, dim, index, *, out=None):
+    return ivy.gather(input, index, axis=dim, out=out)
