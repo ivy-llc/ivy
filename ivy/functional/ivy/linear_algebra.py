@@ -1665,6 +1665,8 @@ def svd(
 
     Examples
     --------
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.random_normal(shape = (9, 6))
     >>> U, S, Vh = ivy.svd(x)
     >>> print(U.shape, S.shape, Vh.shape)
@@ -1676,13 +1678,39 @@ def svd(
     >>> print((reconstructed_x - x > 1e-3).sum())
     ivy.array(0)
 
-    >>> print((reconstructed_x - x < -1e-3).sum())
-    ivy.array(0)
+    >>> U, S, Vh = ivy.svd(x, full_matrices = False)
+    >>> print(U.shape, S.shape, Vh.shape)
+    (9, 6) (6,) (6, 6)
 
-    >>> x = ivy.random_normal(shape = (9, 6))
-    >>> S = ivy.svd(x, compute_uv = False)
-    print(S)
 
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[3.4,-0.7,0.9],[6.,-7.4,0.],[-8.5,92,7.]])
+    >>> U, S, Vh = ivy.svd(x)
+    >>> print(U.shape, S.shape, Vh.shape)
+    (3, 3) (3,) (3, 3)
+
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[2.0, 3.0, 6.0], [5.0, 3.0, 4.0],
+    ...                                [1.0, 7.0, 3.0], [3.0, 2.0, 5.0]]),
+    ...                   b=ivy.array([[7.0, 1.0, 2.0, 3.0, 9.0],
+    ...                                [2.0, 5.0, 3.0, 4.0, 10.0],
+    ...                                [2.0, 11.0, 6.0, 1.0, 3.0],
+    ...                                [8.0, 3.0, 4.0, 5.0, 9.0]]))
+    >>> U, S, Vh = ivy.svd(x)
+    >>> print(U.shape)
+    {
+    a: [
+        4,
+        4
+    ],
+    b: [
+        4,
+        4
+    ]
+    }
     """
     return current_backend(x).svd(x, compute_uv=compute_uv, full_matrices=full_matrices)
 

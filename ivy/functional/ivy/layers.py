@@ -246,11 +246,9 @@ def dropout1d(
         an array with some channels zero-ed and the rest of channels are
          scaled by (1/1-prob).
     """
-    return current_backend(x).dropout1d(x,
-                                        prob,
-                                        training=training,
-                                        data_format=data_format,
-                                        out=out)
+    return current_backend(x).dropout1d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
 
 
 # Attention #
@@ -838,6 +836,7 @@ def conv2d(
     }
 
     With multiple :class:`ivy.Container` inputs:
+
     >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
     ...                   b = ivy.eye(4, 4).reshape((1, 4, 4, 1)),
     ...                   c = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
@@ -1300,7 +1299,8 @@ def conv_general_dilated(
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -1360,7 +1360,8 @@ def conv_general_transpose(
     feature_group_count: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
