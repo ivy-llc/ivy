@@ -472,6 +472,7 @@ def Xdivy(*, x, y, name="Xdivy"):
     return ivy.divide(x, y)
 
 
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def Xlog1py(*, x, y, name="Xlog1py"):
     if (x == 0).all():
@@ -480,6 +481,7 @@ def Xlog1py(*, x, y, name="Xlog1py"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0
