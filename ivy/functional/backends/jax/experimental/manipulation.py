@@ -181,3 +181,32 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def vsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dsplit(ary, indices_or_sections)
+
+
+def dstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dstack(arrays)

@@ -189,6 +189,11 @@ def Inv(*, x, name="Inv"):
 
 
 @to_ivy_arrays_and_back
+def Reciprocal(*, x, name=None):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 
@@ -308,6 +313,11 @@ def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
 
 
+@to_ivy_arrays_and_back
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -354,6 +364,11 @@ def Sqrt(*, x, name="Sqrt"):
 @to_ivy_arrays_and_back
 def Square(*, x, name="Square"):
     return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
+def Squeeze(*, input, axis, name="Squeeze"):
+    return ivy.squeeze(input, axis=axis)
 
 
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))

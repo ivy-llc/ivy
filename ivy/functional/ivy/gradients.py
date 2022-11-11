@@ -94,7 +94,7 @@ def _idxs_to_str(idxs):
     return final_idxs
 
 
-def _get_native_variables_and_indices(x, reshape=True):
+def _get_native_variables_and_indices(x, reshape=True, idxs=None):
     def map_fn(x_):
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
@@ -119,6 +119,12 @@ def _get_native_variables_and_indices(x, reshape=True):
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
     else:
+        if idxs is not None:
+            arr_idxs = [
+                arr_idx
+                for arr_idx in arr_idxs
+                if "_".join(str(x) for x in arr_idx) in _idxs_to_str(idxs)
+            ]
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
