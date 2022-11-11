@@ -60,24 +60,20 @@ def handle_exceptions(fn: Callable) -> Callable:
         try:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
-            if (
-                ivy.get_exception_trace_mode() == "frontend"
-                or ivy.get_exception_trace_mode() == "ivy"
-            ):
+            trace_mode = ivy.get_exception_trace_mode()
+            if trace_mode == "frontend" or trace_mode == "ivy":
                 tb = _process_traceback_frames(
-                    e.__traceback__, ivy.trace_mode_dict[ivy.get_exception_trace_mode()]
+                    e.__traceback__, ivy.trace_mode_dict[trace_mode]
                 )
                 exp = ivy.exceptions.IvyError(fn.__name__, str(e))
                 raise exp.with_traceback(tb) from None
             else:
                 raise ivy.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
-            if (
-                ivy.get_exception_trace_mode() == "frontend"
-                or ivy.get_exception_trace_mode() == "ivy"
-            ):
+            trace_mode = ivy.get_exception_trace_mode()
+            if trace_mode == "frontend" or trace_mode == "ivy":
                 tb = _process_traceback_frames(
-                    e.__traceback__, ivy.trace_mode_dict[ivy.get_exception_trace_mode()]
+                    e.__traceback__, ivy.trace_mode_dict[trace_mode]
                 )
                 exp = ivy.exceptions.IvyBackendException(fn.__name__, str(e))
                 raise exp.with_traceback(tb) from None
