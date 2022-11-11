@@ -378,6 +378,10 @@ def test_function(
                 lambda x: str(ivy.dtype(x.dtype)) in fw_list[fw] if ivy.is_array(x) else None,
             )
         ):
+            print("lol this case",hasattr_unsupported_gradients, fw, fw_list, ivy.nested_argwhere(
+                [all_as_kwargs_np],
+                lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
+            ), type(all_as_kwargs_np['x1']))
             pass
         else:
             if hasattr_unsupported_gradients:
