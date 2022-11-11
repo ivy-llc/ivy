@@ -260,7 +260,7 @@
         <span class="k">return</span> <span class="n">arr_idxs</span><span class="p">,</span> <span class="n">arr_values</span>
 
 
-<span class="k">def</span> <span class="nf">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">grad_idxs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">retain_grads</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">func_ret</span><span class="p">):</span>
             <span class="n">func_ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">func_ret</span><span class="p">)</span>
@@ -270,9 +270,6 @@
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
                 <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="p">)</span>
-    <span class="k">if</span> <span class="n">grad_idxs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">grad_idxs</span> <span class="o">=</span> <span class="n">_idxs_to_str</span><span class="p">(</span><span class="n">grad_idxs</span><span class="p">)</span>
-        <span class="n">grads</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">grads</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">grad_idxs</span><span class="p">}</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">func_ret</span><span class="p">,</span> <span class="n">grads</span>
