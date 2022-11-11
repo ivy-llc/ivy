@@ -2152,7 +2152,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
     ),
 )
 def test_torch_instance_arccos_(dtype_and_x, as_variable, native_array):
@@ -2182,7 +2182,7 @@ def test_torch_instance_arccos_(dtype_and_x, as_variable, native_array):
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
     ),
 )
 def test_torch_instance_arccos(dtype_and_x, as_variable, native_array):
