@@ -1,19 +1,19 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
 
 
 # __add__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -43,16 +43,19 @@ def test_tensorflow_instance_add(dtype_and_x, as_variable, native_array):
     )
 
 
-# __div__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__div__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_div(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_div(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -75,9 +78,8 @@ def test_tensorflow_instance_div(dtype_and_x, as_variable, native_array, fw):
     )
 
 
-# get_shape
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.get_shape",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -105,9 +107,8 @@ def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array):
     )
 
 
-# __eq__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -136,14 +137,13 @@ def test_tensorflow_instance_eq(dtype_and_x, as_variable, native_array):
     )
 
 
-# __floordiv__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_floordiv(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -168,14 +168,13 @@ def test_tensorflow_instance_floordiv(dtype_and_x, as_variable, native_array):
     )
 
 
-# __ge__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_ge(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -200,14 +199,13 @@ def test_tensorflow_instance_ge(dtype_and_x, as_variable, native_array):
     )
 
 
-# __gt__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_gt(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -232,14 +230,13 @@ def test_tensorflow_instance_gt(dtype_and_x, as_variable, native_array):
     )
 
 
-# __le__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_le(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -264,14 +261,13 @@ def test_tensorflow_instance_le(dtype_and_x, as_variable, native_array):
     )
 
 
-# __lt__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_lt(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -296,16 +292,19 @@ def test_tensorflow_instance_lt(dtype_and_x, as_variable, native_array):
     )
 
 
-# __mul__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_mul(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_mul(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -329,8 +328,8 @@ def test_tensorflow_instance_mul(dtype_and_x, as_variable, native_array, fw):
 
 
 # __sub__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
@@ -363,8 +362,8 @@ def test_tensorflow_instance_sub(dtype_and_x, as_variable, native_array):
 
 
 # __ne__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -395,8 +394,8 @@ def test_tensorflow_instance_ne(dtype_and_x, as_variable, native_array):
 
 
 # __radd__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -427,13 +426,13 @@ def test_tensorflow_instance_radd(dtype_and_x, as_variable, native_array):
 
 
 # __rfloordiv__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rfloordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -459,8 +458,8 @@ def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
 
 
 # __rsub__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rsub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -491,8 +490,8 @@ def test_tensorflow_instance_rsub(dtype_and_x, as_variable, native_array):
 
 
 # __and__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -523,8 +522,8 @@ def test_tensorflow_instance_and(dtype_and_x, as_variable, native_array):
 
 
 # __rand__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -555,8 +554,8 @@ def test_tensorflow_instance_rand(dtype_and_x, as_variable, native_array):
 
 
 # __or__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -587,8 +586,8 @@ def test_tensorflow_instance_or(dtype_and_x, as_variable, native_array):
 
 
 # __ror__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -619,13 +618,13 @@ def test_tensorflow_instance_ror(dtype_and_x, as_variable, native_array):
 
 
 # __truediv__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_truediv(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -651,13 +650,13 @@ def test_tensorflow_instance_truediv(dtype_and_x, as_variable, native_array):
 
 
 # __rtruediv__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rtruediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
-    )
+    ),
 )
 def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
     input_dtype, x = dtype_and_x
@@ -683,14 +682,18 @@ def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
 
 
 # __bool__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
     ),
 )
-def test_tensorflow_instance_bool(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_bool(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -712,14 +715,18 @@ def test_tensorflow_instance_bool(dtype_and_x, as_variable, native_array, fw):
 
 
 # __nonzero__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__nonzero__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
     ),
 )
-def test_tensorflow_instance_nonzero(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_nonzero(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -741,8 +748,8 @@ def test_tensorflow_instance_nonzero(dtype_and_x, as_variable, native_array, fw)
 
 
 # __neg__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float32",
@@ -754,7 +761,11 @@ def test_tensorflow_instance_nonzero(dtype_and_x, as_variable, native_array, fw)
         ],
     ),
 )
-def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_neg(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -776,15 +787,19 @@ def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
 
 
 # __rxor__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rxor(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_rxor(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -808,15 +823,19 @@ def test_tensorflow_instance_rxor(dtype_and_x, as_variable, native_array, fw):
 
 
 # __xor__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_xor(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_xor(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -840,8 +859,8 @@ def test_tensorflow_instance_xor(dtype_and_x, as_variable, native_array, fw):
 
 
 # __matmul__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -855,7 +874,11 @@ def test_tensorflow_instance_xor(dtype_and_x, as_variable, native_array, fw):
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_matmul(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_matmul(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -879,8 +902,8 @@ def test_tensorflow_instance_matmul(dtype_and_x, as_variable, native_array, fw):
 
 
 # __rmatmul__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -894,7 +917,11 @@ def test_tensorflow_instance_matmul(dtype_and_x, as_variable, native_array, fw):
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rmatmul(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_rmatmul(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -918,13 +945,17 @@ def test_tensorflow_instance_rmatmul(dtype_and_x, as_variable, native_array, fw)
 
 
 # __array__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__array__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
 )
-def test_tensorflow_instance_array(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_array(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -946,13 +977,17 @@ def test_tensorflow_instance_array(dtype_and_x, as_variable, native_array, fw):
 
 
 # __invert__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer")
     ),
 )
-def test_tensorflow_instance_invert(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_invert(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -974,8 +1009,8 @@ def test_tensorflow_instance_invert(dtype_and_x, as_variable, native_array, fw):
 
 
 # __rmul__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -984,7 +1019,11 @@ def test_tensorflow_instance_invert(dtype_and_x, as_variable, native_array, fw):
         max_value=100,
     ),
 )
-def test_tensorflow_instance_rmul(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_rmul(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1008,8 +1047,8 @@ def test_tensorflow_instance_rmul(dtype_and_x, as_variable, native_array, fw):
 
 
 # __rpow__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__rpow__",
     dtype_and_x=_pow_helper_shared_dtype(),
 )
 def test_tensorflow_instance_rpow(dtype_and_x, as_variable, native_array):
@@ -1091,11 +1130,15 @@ def _array_and_index(
 
 
 # __getitem__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
-def test_tensorflow_instance_getitem(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_getitem(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     data = x[0]
     index = x[1]
@@ -1160,14 +1203,18 @@ def _array_and_shape(
     return dtype, [array, to_shape]
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.set_shape",
     dtype_and_x=_array_and_shape(
         min_num_dims=0,
         max_num_dims=5,
-    )
+    ),
 )
-def test_tensorflow_instance_set_shape(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_set_shape(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
@@ -1187,14 +1234,18 @@ def test_tensorflow_instance_set_shape(dtype_and_x, as_variable, native_array, f
 
 
 # __len__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.Tensor.__len__",
     dtype_and_x=_array_and_shape(
         min_num_dims=1,
         max_num_dims=5,
     ),
 )
-def test_tensorflow_instance_len(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_len(
+    dtype_and_x,
+    as_variable,
+    native_array,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
