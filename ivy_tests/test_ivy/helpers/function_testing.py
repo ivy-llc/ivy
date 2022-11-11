@@ -375,7 +375,7 @@ def test_function(
             and fw in fw_list
             and ivy.nested_argwhere(
                 [all_as_kwargs_np],
-                lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
+                lambda x: str(ivy.dtype(x.dtype)) in fw_list[fw] if ivy.is_array(x) else None,
             )
         ):
             pass
