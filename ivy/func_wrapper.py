@@ -55,6 +55,7 @@ def handle_array_like(fn: Callable) -> Callable:
         parameters = list(typing.get_type_hints(fn))
         annotations = list(typing.get_type_hints(fn).values())
 
+        # accessing common index across input arg values, parameters and annotations.
         for i in range(len(annotations)):
 
             if "Array" in str(annotations[i]) and all(
