@@ -13,8 +13,8 @@ def _generate_data_layer_norm(
     draw,
     *,
     available_dtypes,
-    large_abs_safety_factor=2,
-    small_abs_safety_factor=2,
+    large_abs_safety_factor=4,
+    small_abs_safety_factor=4,
     safety_factor_scale="log",
     min_num_dims=1,
     max_num_dims=5,
@@ -28,8 +28,8 @@ def _generate_data_layer_norm(
     allow_nan=False,
     exclude_min=False,
     exclude_max=False,
-    min_value=-1e10,
-    max_value=1e10,
+    min_value=-1e20,
+    max_value=1e20,
     shared_dtype=False,
 ):
     results = draw(
