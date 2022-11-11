@@ -167,7 +167,7 @@ def _get_dtype_and_matrix(draw, *, symmetric=False):
 
 
 @st.composite
-def _get_first_matrix_and_dtype(draw):
+def _get_first_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, random_size, shared
     input_dtype = draw(
         st.shared(
@@ -178,22 +178,27 @@ def _get_first_matrix_and_dtype(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [random_size, shared_size]),
+            shape=tuple([random_size, shared_size]),
             min_value=2,
             max_value=5,
         )
     )
+    if transpose is True:
+        transpose = draw(st.booleans())
+        if transpose:
+            matrix = np.transpose(matrix)
+        return [input_dtype], matrix, transpose
+    return [input_dtype], matrix
 
 
 @st.composite
-def _get_second_matrix_and_dtype(draw):
+def _get_second_matrix_and_dtype(draw, *, transpose=False):
     # batch_shape, shared, random_size
     input_dtype = draw(
         st.shared(
@@ -204,18 +209,23 @@ def _get_second_matrix_and_dtype(draw):
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    random_size = draw(helpers.ints(min_value=2, max_value=4))
-    batch_shape = draw(
-        st.shared(helpers.get_shape(min_num_dims=1, max_num_dims=3), key="shape")
+    random_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
     )
-    return [input_dtype], draw(
+    matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=tuple(list(batch_shape) + [shared_size, random_size]),
+            shape=tuple([random_size, shared_size]),
             min_value=2,
             max_value=5,
         )
     )
+    if transpose is True:
+        transpose = draw(st.booleans())
+        if transpose:
+            matrix = np.transpose(matrix)
+        return [input_dtype], matrix, transpose
+    return [input_dtype], matrix
 
 
 # vector_to_skew_symmetric_matrix
@@ -268,6 +278,7 @@ def test_vector_to_skew_symmetric_matrix(
         instance_method=instance_method,
         fw=fw,
         fn_name="vector_to_skew_symmetric_matrix",
+        test_gradients=True,
         vector=x,
     )
 
@@ -277,11 +288,11 @@ def test_vector_to_skew_symmetric_matrix(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
+        min_value=1e-3,
+        max_value=20,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
-    n=helpers.ints(min_value=1, max_value=8),
+    n=helpers.ints(min_value=1, max_value=6),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_power"),
 )
 def test_matrix_power(
@@ -310,6 +321,7 @@ def test_matrix_power(
         fn_name="matrix_power",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         n=n,
     )
@@ -318,8 +330,8 @@ def test_matrix_power(
 # matmul
 @handle_cmd_line_args
 @given(
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    x=_get_first_matrix_and_dtype(transpose=True),
+    y=_get_second_matrix_and_dtype(transpose=True),
     num_positional_args=helpers.num_positional_args(fn_name="matmul"),
 )
 def test_matmul(
@@ -334,8 +346,8 @@ def test_matmul(
     instance_method,
     fw,
 ):
-    input_dtype1, x_1 = x
-    input_dtype2, y_1 = y
+    input_dtype1, x_1, transpose_a = x
+    input_dtype2, y_1, transpose_b = y
     helpers.test_function(
         input_dtypes=input_dtype1 + input_dtype2,
         as_variable_flags=as_variable,
@@ -348,15 +360,23 @@ def test_matmul(
         fn_name="matmul",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x1=x_1,
         x2=y_1,
+        transpose_a=transpose_a,
+        transpose_b=transpose_b,
     )
 
 
 # det
 @handle_cmd_line_args
 @given(
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=2,
+        max_value=5,
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="det"),
 )
 def test_det(
@@ -381,9 +401,10 @@ def test_det(
         instance_method=instance_method,
         fw=fw,
         fn_name="det",
-        rtol_=1e-3,
-        atol_=1e-3,
-        x=x,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
+        x=x[0],
     )
 
 
@@ -528,6 +549,7 @@ def test_inner(
         fn_name="inner",
         rtol_=1e-1,
         atol_=1e-2,
+        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -570,6 +592,7 @@ def test_inv(
         rtol_=1e-2,
         atol_=1e-2,
         fn_name="inv",
+        test_gradients=True,
         x=x[0],
         adjoint=adjoint,
     )
@@ -603,6 +626,7 @@ def test_matrix_transpose(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_transpose",
+        test_gradients=True,
         x=x,
     )
 
@@ -642,6 +666,7 @@ def test_outer(
         instance_method=instance_method,
         fw=fw,
         fn_name="outer",
+        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -653,11 +678,11 @@ def test_outer(
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=72,
-        large_abs_safety_factor=72,
+        min_value=2,
+        max_value=5,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
     num_positional_args=helpers.num_positional_args(fn_name="slogdet"),
 )
 def test_slogdet(
@@ -683,6 +708,8 @@ def test_slogdet(
         rtol_=1e-1,
         atol_=1e-2,
         fn_name="slogdet",
+        test_gradients=True,
+        ret_grad_idxs=[["1"]],
         x=x[0],
     )
 
@@ -770,6 +797,7 @@ def test_solve(
         fn_name="solve",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x1=x1,
         x2=x2,
     )
@@ -810,6 +838,7 @@ def test_svdvals(
         fn_name="svdvals",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -857,6 +886,7 @@ def test_tensordot(
         fn_name="tensordot",
         rtol_=0.8,
         atol_=0.8,
+        test_gradients=True,
         x1=x1,
         x2=x2,
         axes=axis,
@@ -908,6 +938,7 @@ def test_trace(
         fn_name="trace",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axis1,
@@ -954,6 +985,7 @@ def test_vecdot(
         fn_name="vecdot",
         rtol_=5e-1,
         atol_=5e-1,
+        test_gradients=True,
         x1=x1,
         x2=x2,
         axis=axis,
@@ -1002,6 +1034,7 @@ def test_vector_norm(
         fn_name="vector_norm",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
@@ -1050,6 +1083,7 @@ def test_pinv(
         fn_name="pinv",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         rtol=rtol,
     )
@@ -1200,6 +1234,11 @@ def test_svd(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
+        min_value=-1e20,
+        max_value=1e20,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     kd=st.booleans(),
     axis=st.just((-2, -1)),
@@ -1231,6 +1270,9 @@ def test_matrix_norm(
         instance_method=instance_method,
         fw=fw,
         fn_name="matrix_norm",
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
@@ -1336,6 +1378,7 @@ def test_cholesky(
         instance_method=instance_method,
         fw=fw,
         fn_name="cholesky",
+        test_gradients=True,
         x=x,
         upper=upper,
         rtol_=1e-3,
@@ -1382,6 +1425,7 @@ def test_cross(
         instance_method=instance_method,
         fw=fw,
         fn_name="cross",
+        test_gradients=True,
         rtol_=1e-1,
         atol_=1e-2,
         x1=x1,
@@ -1430,6 +1474,7 @@ def test_diagonal(
         instance_method=instance_method,
         fw=fw,
         fn_name="diagonal",
+        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axes[0],
@@ -1437,22 +1482,37 @@ def test_diagonal(
     )
 
 
+@st.composite
+def _diag_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            small_abs_safety_factor=2,
+            large_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_num_dims=1,
+            max_num_dims=2,
+            min_dim_size=1,
+            max_dim_size=50,
+        )
+    )
+    shape = x[0].shape
+    if len(shape) == 2:
+        k = draw(helpers.ints(min_value=-shape[0] + 1, max_value=shape[1] - 1))
+    else:
+        k = draw(helpers.ints(min_value=0, max_value=shape[0]))
+    return dtype, x, k
+
+
 # diag
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=2,
-        min_dim_size=1,
-        max_dim_size=50,
-    ),
-    k=helpers.ints(min_value=-49, max_value=49),
+    dtype_x_k=_diag_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="diag"),
 )
 def test_diag(
     *,
-    dtype_x,
+    dtype_x_k,
     as_variable,
     with_out,
     num_positional_args,
@@ -1460,9 +1520,8 @@ def test_diag(
     container,
     instance_method,
     fw,
-    k,
 ):
-    dtype, x = dtype_x
+    dtype, x, k = dtype_x_k
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1473,6 +1532,7 @@ def test_diag(
         instance_method=instance_method,
         fw=fw,
         fn_name="diag",
+        test_gradients=True,
         x=x[0],
         k=k,
     )
@@ -1486,6 +1546,9 @@ def test_diag(
         shape=st.tuples(
             helpers.ints(min_value=1, max_value=10),
         ),
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
     N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
@@ -1514,6 +1577,9 @@ def test_vander(
         instance_method=instance_method,
         fw=fw,
         fn_name="vander",
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         N=N,
         increasing=increasing,

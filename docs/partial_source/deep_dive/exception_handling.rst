@@ -5,22 +5,18 @@ Exception Handling
 .. _`exception handling forum`: https://discord.com/channels/799879767196958751/1028297940168626257
 .. _`discord`: https://discord.gg/sXyFF8tDtm
 
-As Ivy is unifying multiple backends, various issues are seen during exception
-handling:
+As Ivy is unifying multiple backends, various issues are seen during exception handling:
 
 #. each backend throws their own exceptions
 #. exceptions thrown are backend-specific, therefore inconsistent
 
-To unify the handling of exceptions and assertions, Ivy includes a custom
-exception class and decorator, which are explained further in the following
-sub-sections.
+To unify the handling of exceptions and assertions, Ivy includes a custom exception class and decorator, which are explained further in the following sub-sections.
 
 
 Ivy Exception Class
 -------------------
 
-Firstly, Ivy's base exception class is :code:`IvyException` class, which inherits
-from the Python :code:`Exception` class.
+Firstly, Ivy's base exception class is :code:`IvyException` class, which inherits from the Python :code:`Exception` class.
 
 .. code-block:: python
 
@@ -29,10 +25,8 @@ from the Python :code:`Exception` class.
         def __init__(self, message):
             super().__init__(message)
 
-In cases where an exception class for a specific purpose is required, we inherit
-from the :code:`IvyException` class.
-For example, the :code:`IvyBackendException` class is created to unify
-backend exceptions.
+In cases where an exception class for a specific purpose is required, we inherit from the :code:`IvyException` class.
+For example, the :code:`IvyBackendException` class is created to unify backend exceptions.
 
 .. code-block:: python
 
@@ -47,9 +41,8 @@ backend exceptions.
                 self._default.append(message)
             super().__init__(self._delimiter.join(self._default))
 
-In some Array API tests, :code:`IndexError` and :code:`ValueError` are
-explicitly tested to ensure that the functions are behaving correctly. Thus,
-the :code:`IvyError` class unifies these special cases.
+In some Array API tests, :code:`IndexError` and :code:`ValueError` are explicitly tested to ensure that the functions are behaving correctly.
+Thus, the :code:`IvyError` class unifies these special cases.
 This is to reduce repetition and the creation of similar exception classes.
 
 .. code-block:: python
@@ -68,8 +61,7 @@ This is to reduce repetition and the creation of similar exception classes.
 @handle_exceptions Decorator
 ----------------------------
 
-To ensure that all backend exceptions are caught properly, a decorator is used
-to handle functions in the :code:`try/except` block.
+To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the :code:`try/except` block.
 
 .. code-block:: python
 
@@ -104,8 +96,7 @@ Let's look at an example of :func:`ivy.all`.
     ) -> ivy.Array:
         return ivy.current_backend(x).all(x, axis=axis, keepdims=keepdims, out=out)
 
-When a backend throws an exception, it will be caught in the decorator and
-an :code:`IvyBackendException` or :code:`IvyError` will be raised.
+When a backend throws an exception, it will be caught in the decorator and an :code:`IvyBackendException` or :code:`IvyError` will be raised.
 This ensures that all exceptions are consistent.
 
 Let's look at the comparison of before and after adding the decorator.
@@ -150,25 +141,21 @@ In PyTorch,
     <error_stack>
     ivy.exceptions.IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
 
-The errors are unified into an :code:`IvyError`, with the current backend and
-function stated to provide clearer information. The message string is
-inherited from the native exception.
+The errors are unified into an :code:`IvyError`, with the current backend and function stated to provide clearer information.
+The message string is inherited from the native exception.
 
 Assertion Function
 ------------------
 
-There are often conditions or limitations needed to ensure that a function
-is working correctly.
+There are often conditions or limitations needed to ensure that a function is working correctly.
 
 Inconsistency is observed such as some functions:
 
 #. use :code:`assert` for checks and throw :code:`AssertionError`, or
 #. use :code:`if/elif/else` blocks and raise :code:`Exception`, :code:`ValueError`, etc.
 
-To unify the behaviours, our policy is to use conditional blocks and
-raise :code:`IvyException` whenever a check is required.
-Moreover, to reduce code redundancy, conditions which are commonly used are collected
-as helper functions with custom parameters in :mod:`ivy/assertions.py`.
+To unify the behaviours, our policy is to use conditional blocks and raise :code:`IvyException` whenever a check is required.
+Moreover, to reduce code redundancy, conditions which are commonly used are collected as helper functions with custom parameters in :mod:`ivy/assertions.py`.
 This allows them to be reused and promotes cleaner code.
 
 Let's look at an example!
@@ -208,13 +195,10 @@ Let's look at an example!
         device = ivy.default(device, default_device())
         split_factors[device] = factor
 
-Instead of coding a conditional block and raising an exception if the
-conditions are not met, a helper function is used to simplify
-the logic and increase code readability.
+Instead of coding a conditional block and raising an exception if the conditions are not met, a helper function is used to simplify the logic and increase code readability.
 
 **Round Up**
 
 This should have hopefully given you a good feel for how function wrapping is applied to functions in Ivy.
 
-If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_
-or in the `exception handling forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `exception handling channel`_ or in the `exception handling forum`_!

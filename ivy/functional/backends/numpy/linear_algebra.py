@@ -11,7 +11,7 @@ import numpy as np
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
 
@@ -45,7 +45,7 @@ def cross(
     return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
@@ -81,7 +81,7 @@ def eigvalsh(
     return np.linalg.eigvalsh(x)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def inner(
     x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -131,7 +131,7 @@ def matmul(
 matmul.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
     x: np.ndarray,
@@ -162,7 +162,7 @@ def matrix_power(
     },
     backend_version,
 )
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def matrix_rank(
     x: np.ndarray,
     /,
@@ -284,7 +284,7 @@ def tensordot(
     return np.tensordot(x1, x2, axes=axes)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: np.ndarray,

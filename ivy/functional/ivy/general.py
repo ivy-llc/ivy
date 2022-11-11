@@ -39,6 +39,7 @@ trace_mode_dict = dict()
 trace_mode_dict["frontend"] = "ivy/functional/frontends"
 trace_mode_dict["ivy"] = "ivy/"
 trace_mode_dict["full"] = ""
+show_func_wrapper_trace_mode_stack = list()
 
 
 def _parse_ellipsis(so, ndims):
@@ -193,7 +194,7 @@ def is_frontend_array(x: Any) -> bool:
         x,
         (
             ivy.functional.frontends.torch.Tensor,
-            ivy.functional.frontends.tensorflow.Tensor,
+            ivy.functional.frontends.tensorflow.EagerTensor,
             ivy.functional.frontends.numpy.ndarray,
             ivy.functional.frontends.jax.DeviceArray,
         ),
@@ -432,6 +433,71 @@ def get_exception_trace_mode() -> str:
     if not exception_trace_mode_stack:
         return "full"
     return exception_trace_mode_stack[-1]
+
+
+@handle_exceptions
+def set_show_func_wrapper_trace_mode(mode: bool) -> None:
+    """Set the mode of whether to show the full stack trace with function
+    wrapping traces
+
+    Parameter
+    ---------
+    mode
+        boolean whether to perform ivy.Array conversions
+
+    Examples
+    --------
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+
+    >>> ivy.set_show_func_wrapper_trace_mode(True)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+    """
+    global show_func_wrapper_trace_mode_stack
+    ivy.assertions.check_isinstance(mode, bool)
+    show_func_wrapper_trace_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_show_func_wrapper_trace_mode() -> None:
+    """Reset the mode of whether to show the full stack trace with function
+    wrapping traces
+
+    Examples
+    --------
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+
+    >>> ivy.unset_show_func_wrapper_trace_mode()
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+    """
+    global show_func_wrapper_trace_mode_stack
+    if show_func_wrapper_trace_mode_stack:
+        show_func_wrapper_trace_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_show_func_wrapper_trace_mode() -> bool:
+    """Get the current state of whether to show the full stack trace with function
+    wrapping traces. Default is True (function wrapping traces are shown)
+
+    Examples
+    --------
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+    """
+    global show_func_wrapper_trace_mode_stack
+    if not show_func_wrapper_trace_mode_stack:
+        return True
+    return show_func_wrapper_trace_mode_stack[-1]
 
 
 @inputs_to_native_arrays
@@ -1567,6 +1633,7 @@ def current_backend_str() -> Union[str, None]:
     return fw.current_backend_str()
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_rearrange(
@@ -1597,14 +1664,14 @@ def einops_rearrange(
         New array with einops.rearrange having been applied.
 
     """
-    x = ivy.to_native(x)
     ret = einops.rearrange(x, pattern, **axes_lengths)
-    ret = ivy.array(ret)
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_reduce(
@@ -1660,10 +1727,8 @@ def einops_reduce(
         b: ivy.array([-1.4, 6.21])
     }
     """
-    dtype = x.dtype
-    x = ivy.to_native(x)
     ret = einops.reduce(x, pattern, reduction, **axes_lengths)
-    ret = ivy.array(ret, dtype=dtype)
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -1673,6 +1738,7 @@ def einops_reduce(
 einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def einops_repeat(
@@ -1728,10 +1794,8 @@ def einops_repeat(
     }
 
     """
-    x = ivy.to_native(x)
     ret = einops.repeat(x, pattern, **axes_lengths)
-    ret = ivy.array(ret)
-
+    ret = ivy.array(ret, dtype=x.dtype)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
@@ -2321,6 +2385,9 @@ def inplace_update(
 
     """
     return current_backend(x).inplace_update(x, val, ensure_in_backend)
+
+
+inplace_update.unsupported_dtypes = {"torch": ("bfloat16",)}
 
 
 @handle_nestable

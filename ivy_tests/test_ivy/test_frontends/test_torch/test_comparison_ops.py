@@ -802,3 +802,53 @@ def test_torch_kthvalue(
         keepdim=keepdim,
         out=None,
     )
+
+
+# topk
+# TODO: add value test after the stable sorting is added to torch
+# https://github.com/pytorch/pytorch/issues/88184
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        large_abs_safety_factor=8,
+        small_abs_safety_factor=8,
+        safety_factor_scale="log",
+        min_dim_size=4,
+        max_dim_size=10,
+    ),
+    dim=helpers.ints(min_value=-1, max_value=0),
+    k=helpers.ints(min_value=1, max_value=4),
+    largest=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.topk"
+    ),
+)
+def test_torch_topk(
+    dtype_and_x,
+    k,
+    dim,
+    largest,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input = dtype_and_x
+    assume("float16" not in input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="topk",
+        input=input[0],
+        k=k,
+        dim=dim,
+        largest=largest,
+        out=None,
+        test_values=False,
+    )
