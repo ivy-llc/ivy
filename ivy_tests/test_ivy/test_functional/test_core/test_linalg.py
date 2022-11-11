@@ -1546,6 +1546,9 @@ def test_diag(
         shape=st.tuples(
             helpers.ints(min_value=1, max_value=10),
         ),
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
     N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
@@ -1564,6 +1567,8 @@ def test_vander(
     fw,
 ):
     input_dtype, x = dtype_and_x
+    if "bfloat16" in input_dtype:
+        return
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1574,8 +1579,9 @@ def test_vander(
         instance_method=instance_method,
         fw=fw,
         fn_name="vander",
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         N=N,
         increasing=increasing,
