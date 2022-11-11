@@ -677,7 +677,7 @@ def maximum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -705,7 +705,7 @@ def minimum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

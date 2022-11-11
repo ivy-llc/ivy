@@ -247,7 +247,7 @@ from .linalg.matrix_and_vector_products import (
     outer,
     matmul,
     matrix_power,
-    # tensordot,
+    tensordot,
     # einsum,
     # einsum_path,
     # kron,
