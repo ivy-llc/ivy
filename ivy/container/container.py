@@ -15,7 +15,7 @@ from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
 from .layers import ContainerWithLayers
-from .linalg import ContainerWithLinalg
+from .linear_algebra import ContainerWithLinearAlgebra
 from .losses import ContainerWithLosses
 from .manipulation import ContainerWithManipulation
 from .norms import ContainerWithNorms
@@ -36,7 +36,7 @@ from ivy.container.experimental import (
     ContainerWithGradientsExperimental,
     ContainerWithImageExperimental,
     ContainerWithLayersExperimental,
-    ContainerWithLinalgExperimental,
+    ContainerWithLinearAlgebraExperimental,
     ContainerWithLossesExperimental,
     ContainerWithManipulationExperimental,
     ContainerWithNormsExperimental,
@@ -60,7 +60,7 @@ class Container(
     ContainerWithGradients,
     ContainerWithImage,
     ContainerWithLayers,
-    ContainerWithLinalg,
+    ContainerWithLinearAlgebra,
     ContainerWithLosses,
     ContainerWithManipulation,
     ContainerWithNorms,
@@ -80,7 +80,7 @@ class Container(
     ContainerWithGradientsExperimental,
     ContainerWithImageExperimental,
     ContainerWithLayersExperimental,
-    ContainerWithLinalgExperimental,
+    ContainerWithLinearAlgebraExperimental,
     ContainerWithLossesExperimental,
     ContainerWithManipulationExperimental,
     ContainerWithNormsExperimental,
