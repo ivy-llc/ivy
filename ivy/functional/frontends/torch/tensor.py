@@ -288,6 +288,9 @@ class Tensor:
         self.data = self.pow(other)
         return self.data
 
+    def matmul(self, tensor2):
+        return torch_frontend.matmul(self.data, tensor2)
+
     # Special Methods #
     # -------------------#
 
