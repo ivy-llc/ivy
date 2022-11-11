@@ -20,10 +20,10 @@ import ivy
 def _to_native(
     x: Any, inplace: bool = False, ignore_frontend_arrays: bool = False
 ) -> Any:
-    if ivy.is_frontend_array(x) and not ignore_frontend_arrays:
-        return x.data.data
     if isinstance(x, ivy.Array):
         return x.data
+    elif ivy.is_frontend_array(x) and not ignore_frontend_arrays:
+        return x.data.data
     elif isinstance(x, ivy.Container):
         return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
     return x

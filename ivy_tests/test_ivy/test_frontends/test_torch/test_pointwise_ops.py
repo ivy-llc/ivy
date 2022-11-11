@@ -1587,8 +1587,8 @@ def test_torch_log1p(
         fn_tree="log1p",
         input=x[0],
         out=None,
-    )    
-    
+    )
+
 
 # addcdiv
 @handle_cmd_line_args
