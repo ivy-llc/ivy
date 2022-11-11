@@ -371,11 +371,14 @@ def test_function(
         and "bool" not in input_dtypes
     ):
         if hasattr_unsupported_gradients and fw in fw_list:
+            # print("yahan tak aaya bhi nahi")
+            # print( type(all_as_kwargs_np['x1']),str(type(all_as_kwargs_np['x1']))=="<class 'numpy.ndarray'>")
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
-                lambda x: x.dtype  in fw_list[fw] if ivy.is_array(x) else None,
+                lambda x: x.dtype  in fw_list[fw] if str(type(x))=="<class 'numpy.ndarray'>" else None
             ):
                 pass
+
             else:
                 gradient_test(
                     fn_name=fn_name,
@@ -392,6 +395,7 @@ def test_function(
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=ground_truth_backend,
                 )
+
 
     # assuming value test will be handled manually in the test function
     if not test_values:
