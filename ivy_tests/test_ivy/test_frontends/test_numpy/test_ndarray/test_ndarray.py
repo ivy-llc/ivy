@@ -1991,6 +1991,7 @@ def test_numpy_instance_ixor__(
         method_name="__ixor__",
     )
 
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
