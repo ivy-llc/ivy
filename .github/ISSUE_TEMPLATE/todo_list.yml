@@ -1,5 +1,5 @@
-name: ToDo List Tasks
-description: Create a list of ToDo tasks.
+name: ToDo Task-List
+description: "Create a list of ToDo tasks (not for picking sub-tasks)."
 title: "[ToDo List]: <TITLE>"
 labels: "ToDo"
 body:
