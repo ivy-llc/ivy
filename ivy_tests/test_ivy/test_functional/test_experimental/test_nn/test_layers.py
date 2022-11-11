@@ -17,6 +17,7 @@ def test_max_pool2d(
     container_flags,
     instance_method,
     backend_fw,
+    fn_name
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -28,7 +29,7 @@ def test_max_pool2d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name="max_pool2d",
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -53,6 +54,7 @@ def test_max_pool1d(
     container_flags,
     instance_method,
     backend_fw,
+    fn_name
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -64,7 +66,7 @@ def test_max_pool1d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name="max_pool1d",
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -89,6 +91,7 @@ def test_max_pool3d(
     container_flags,
     instance_method,
     backend_fw,
+    fn_name
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -100,7 +103,7 @@ def test_max_pool3d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name="max_pool3d",
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -125,6 +128,7 @@ def test_avg_pool3d(
     container_flags,
     instance_method,
     backend_fw,
+    fn_name
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -136,7 +140,7 @@ def test_avg_pool3d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name="avg_pool3d",
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="jax",
@@ -161,6 +165,7 @@ def test_avg_pool2d(
     container_flags,
     instance_method,
     backend_fw,
+    fn_name
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
@@ -172,7 +177,7 @@ def test_avg_pool2d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name="avg_pool2d",
+        fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
         ground_truth_backend="tensorflow",
