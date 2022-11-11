@@ -2010,7 +2010,25 @@
 
 <div class="viewcode-block" id="unset_default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/unset_default_int_dtype.html#ivy.functional.ivy.data_type.unset_default_int_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">unset_default_int_dtype</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">    Reset the current default int dtype to the previous state.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_default_int_dtype(ivy.intDtype(&quot;int16&quot;))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype()</span>
+<span class="sd">    &#39;int16&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.unset_default_int_dtype()</span>
+<span class="sd">    &gt;&gt;&gt; ivy.default_int_dtype()</span>
+<span class="sd">    &#39;int32&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">default_int_dtype_stack</span>
     <span class="k">if</span> <span class="n">default_int_dtype_stack</span><span class="p">:</span>
         <span class="n">default_int_dtype_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
