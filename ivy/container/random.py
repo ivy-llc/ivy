@@ -1048,6 +1048,16 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([7, 6, 0]),
+        ...                   b=ivy.array([8, 9, 4]))
+        >>> ivy.Container.static_shuffle(x)
+        {
+            a: ivy.array([7, 0, 6]),
+            b: ivy.array([8, 4, 9])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "shuffle",
@@ -1100,6 +1110,16 @@ class ContainerWithRandom(ContainerBase):
         -------
         ret
             A container object, shuffled along the first dimension.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([5, 2, 9]),
+        ...                   b=ivy.array([7, 1, 6]))
+        >>> ivy.Container.shuffle(x)
+        {
+            a: ivy.array([9, 5, 2]),
+            b: ivy.array([6, 7, 1])
+        }
         """
         return self.static_shuffle(
             self,
@@ -1108,5 +1128,147 @@ class ContainerWithRandom(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_beta(
+        alpha: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        device: Optional[str] = None,
+        dtype: Optional[str] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container static method variant of ivy.beta. This method
+        simply wraps the function, and so the docstring for ivy.beta also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input array or container. Should have a numeric data type.
+        alpha
+            The alpha parameter of the distribution.
+        beta
+            The beta parameter of the distribution.
+        shape
+            The shape of the output array. Default is ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        device
+            The device to place the output array on. Default is ``None``.
+        dtype
+            The data type of the output array. Default is ``None``.
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container object, with values drawn from the beta distribution.
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "beta",
+            alpha,
+            beta,
+            shape=shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    def beta(
+        self: ivy.Container,
+        /,
+        *,
+        alpha: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        beta: Union[int, float, ivy.Container, ivy.Array, ivy.NativeArray],
+        shape: Optional[Union[ivy.Shape, ivy.NativeShape, ivy.Container]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        device: Optional[str] = None,
+        dtype: Optional[str] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.beta. This method
+        simply wraps the function, and so the docstring for ivy.beta also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container. Should have a numeric data type.
+        alpha
+            The alpha parameter of the distribution.
+        beta
+            The beta parameter of the distribution.
+        shape
+            The shape of the output array. Default is ``None``.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        device
+            The device to place the output array on. Default is ``None``.
+        dtype
+            The data type of the output array. Default is ``None``.
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container object, with values drawn from the beta distribution.
+        """
+        return self.static_beta(
+            self,
+            alpha,
+            beta,
+            shape=shape,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            device=device,
+            dtype=dtype,
+            seed=seed,
             out=out,
         )
