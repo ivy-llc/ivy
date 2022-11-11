@@ -2,6 +2,7 @@
 
 # global
 import time
+import math
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
@@ -215,6 +216,8 @@ def test_get_item(
         instance_method=False,
         fw=fw,
         fn_name="get_item",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         x=x,
         query=indices,
     )
@@ -406,29 +409,51 @@ def test_get_num_dims(
     )
 
 
+@st.composite
+def _vector_norm_helper(draw):
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
+            min_num_dims=1,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            safety_factor_scale="log",
+        )
+    )
+    if ivy.is_int_dtype(dtype[0]):
+        max_val = ivy.iinfo(dtype[0]).max
+    else:
+        max_val = ivy.finfo(dtype[0]).max
+    max_x = np.abs(x[0]).max()
+    if max_x > 1:
+        max_p = math.log(max_val) / math.log(max_x)
+    else:
+        max_p = math.log(max_val)
+    p = draw(
+        helpers.floats(
+            small_abs_safety_factor=2, safety_factor_scale="log", max_value=max_p
+        )
+    )
+    max_norm_val = math.log(max_val / max_x)
+    max_norm = draw(
+        helpers.floats(
+            small_abs_safety_factor=2,
+            safety_factor_scale="log",
+            min_value=0,
+            max_value=max_norm_val,
+        )
+    )
+    return dtype, x, max_norm, p
+
+
 # clip_vector_norm
 @handle_cmd_line_args
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
-        min_num_dims=1,
-        large_abs_safety_factor=16,
-        small_abs_safety_factor=64,
-        safety_factor_scale="log",
-    ),
-    max_norm_n_p=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
-        num_arrays=2,
-        large_abs_safety_factor=16,
-        small_abs_safety_factor=64,
-        safety_factor_scale="log",
-        shape=(),
-    ),
+    dtype_x_max_norm_p=_vector_norm_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="clip_vector_norm"),
 )
 def test_clip_vector_norm(
-    dtype_x,
-    max_norm_n_p,
+    dtype_x_max_norm_p,
     as_variable,
     num_positional_args,
     with_out,
@@ -438,8 +463,7 @@ def test_clip_vector_norm(
     device,
     fw,
 ):
-    dtype, x = dtype_x
-    max_norm, p = max_norm_n_p[1]
+    dtype, x, max_norm, p = dtype_x_max_norm_p
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -452,9 +476,10 @@ def test_clip_vector_norm(
         fn_name="clip_vector_norm",
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
-        max_norm=float(max_norm),
-        p=float(p),
+        max_norm=max_norm,
+        p=p,
     )
 
 
@@ -714,6 +739,8 @@ def test_gather(
         instance_method=instance_method,
         fw=fw,
         fn_name="gather",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=indices,
         axis=axis,
@@ -834,6 +861,8 @@ def test_gather_nd(
         instance_method=instance_method,
         fw=fw,
         fn_name="gather_nd",
+        test_gradients=True,
+        xs_grad_idxs=[["0"]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
@@ -1167,6 +1196,7 @@ def test_einops_rearrange(
         instance_method=instance_method,
         fw=fw,
         fn_name="einops_rearrange",
+        test_gradients=True,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1280,6 +1310,7 @@ def test_einops_repeat(
         instance_method=instance_method,
         fw=fw,
         fn_name="einops_repeat",
+        test_gradients=True,
         x=x[0],
         pattern=pattern,
         **axes_lengths,
@@ -1332,8 +1363,8 @@ def test_inplace_update(x_val_and_dtypes, tensor_fn, device):
     # ToDo: Ask Daniel about tensor_fn, we use it here since
     #  we don't use helpers.test_function
     x, val = x_val_and_dtypes[1]
-    x = tensor_fn(x, dtype="float32", device=device)
-    val = tensor_fn(val, dtype="float32", device=device)
+    x = tensor_fn(x.tolist(), dtype="float32", device=device)
+    val = tensor_fn(val.tolist(), dtype="float32", device=device)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or (
         tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()
     ):
@@ -1551,6 +1582,7 @@ def test_all_equal(
         max_dim_size=5,
         min_value=-10,
         max_value=10,
+        abs_smallest_val=1e-4,
     ),
     max_norm=st.floats(min_value=0.137, max_value=1e05),
     p=st.sampled_from([1, 2, float("inf"), "fro", "nuc"]),
@@ -1582,6 +1614,7 @@ def test_clip_matrix_norm(
         fn_name="clip_matrix_norm",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         max_norm=max_norm,
         p=p,
@@ -1820,7 +1853,12 @@ def test_set_min_base(x):
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=3, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=3,
+        shared_dtype=True,
+        small_abs_safety_factor=8,
+        large_abs_safety_factor=8,
+        safety_factor_scale="log",
     ),
     num_positional_args=helpers.num_positional_args(fn_name="stable_divide"),
 )
@@ -1844,6 +1882,7 @@ def test_stable_divide(
         instance_method=instance_method,
         fw=fw,
         fn_name="stable_divide",
+        test_gradients=True,
         numerator=x[0],
         denominator=x[1],
         min_denominator=x[2],
@@ -1897,6 +1936,7 @@ def test_stable_pow(
         fn_name="stable_pow",
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         base=xs[0][0],
         exponent=np.abs(xs[1]),
         min_base=min_base[0],

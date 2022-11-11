@@ -68,7 +68,7 @@ def test_tensorflow_eigh(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.eigh",
-        input=x[0],
+        tensor=x[0],
     )
 
 
@@ -108,7 +108,9 @@ def test_tensorflow_eigvalsh(
     ),
     tolr=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
-def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, tolr):
+def test_tensorflow_matrix_rank(
+    dtype_x, as_variable, num_positional_args, native_array, tolr
+):
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -118,9 +120,7 @@ def test_matrix_rank(dtype_x, as_variable, num_positional_args, native_array, to
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="linalg.matrix_rank",
-        atol=1.0,
         a=x[0],
-        validate_args=False,
         tol=tolr,
     )
 
@@ -194,9 +194,33 @@ def test_tensorflow_solve(
 
 
 # logdet
+@st.composite
+def _get_hermitian_pos_def_matrix(draw):
+    # batch_shape, random_size, shared
+    input_dtype = draw(
+        st.shared(
+            st.sampled_from(draw(helpers.get_dtypes("float"))),
+            key="shared_dtype",
+        )
+    )
+    shared_size = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
+    )
+    gen = draw(
+        helpers.array_values(
+            dtype=input_dtype,
+            shape=tuple([shared_size, shared_size]),
+            min_value=2,
+            max_value=5,
+        ).filter(lambda x: np.linalg.cond(x.tolist()) < 1 / sys.float_info.epsilon)
+    )
+    hpd = np.matmul(np.matrix(gen).getH(), np.matrix(gen)) + np.identity(gen.shape[0])
+    return [input_dtype], hpd
+
+
 @handle_cmd_line_args
 @given(
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=_get_hermitian_pos_def_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.linalg.logdet"
     ),
@@ -469,4 +493,99 @@ def test_tensorflow_normalize(
         tensor=x[0],
         ord=ord,
         axis=axis,
+    )
+
+
+# l2_normalize
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=4,
+        min_axis=-3,
+        max_axis=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.l2_normalize"
+    ),
+)
+def test_tensorflow_l2_normalize(
+    dtype_values_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.l2_normalize",
+        x=x[0],
+        axis=axis,
+    )
+
+
+# trace
+@handle_cmd_line_args
+@given(
+    dtype_and_input=_get_dtype_and_matrix(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.trace"
+    ),
+)
+def test_tensorflow_trace(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.trace",
+        x=x[0],
+    )
+
+
+# matrix_transpose
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.linalg.matrix_transpose"
+    ),
+)
+def test_tensorflow_matrix_transpose(
+    dtype_and_input,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="linalg.matrix_transpose",
+        a=x[0],
     )

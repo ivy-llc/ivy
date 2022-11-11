@@ -233,15 +233,18 @@ def cumprod(
         x = torch.transpose(x, axis, -1)
         x = torch.concat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = torch.transpose(x, axis, -1)
-        return torch.flip(x, dims=(axis,))
+        ret = torch.flip(x, dims=(axis,))
     elif exclusive:
         x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         x = torch.cumprod(x, -1, dtype=dtype)
-        return torch.transpose(x, axis, -1)
-    elif reverse:
+        ret = torch.transpose(x, axis, -1)
+    else:
         x = torch.cumprod(torch.flip(x, dims=(axis,)), axis, dtype=dtype)
-        return torch.flip(x, dims=(axis,))
+        ret = torch.flip(x, dims=(axis,))
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 cumprod.support_native_out = True
@@ -296,5 +299,8 @@ def einsum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = _get_promoted_type_of_operands(operands)
-    operands = (ivy.astype(operand, torch.float32, copy=False) for operand in operands)
+    operands = (
+        ivy.astype(operand, torch.float32, copy=False).to_native()
+        for operand in operands
+    )
     return ivy.astype(torch.einsum(equation, *operands), dtype, copy=False)

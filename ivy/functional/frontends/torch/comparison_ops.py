@@ -1,9 +1,3 @@
-"""
-ToDo
-----
-Add allclose(), isclose(), isposinf(), isneginf(), fmax()
-to ivy functional API
-"""
 # global
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -13,7 +7,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
 
-@to_ivy_arrays_and_back
 def _compute_allclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.all(
@@ -24,7 +17,6 @@ def _compute_allclose_with_tol(input, other, rtol, atol):
     )
 
 
-@to_ivy_arrays_and_back
 def _compute_isclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less_equal(
@@ -283,3 +275,10 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
+
+
+@to_ivy_arrays_and_back
+def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
+    if dim is None:
+        dim = -1
+    return ivy.top_k(input, k, axis=dim, largest=largest, out=out)
