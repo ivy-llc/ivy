@@ -1599,13 +1599,13 @@ def fft(
     n: Optional[Union[int, Tuple[int]]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the one dimensional discrete Fourier transform given input at least 
+    r"""Computes the one dimensional discrete Fourier transform given input at least
     1-D input x.
 
     Parameters
     ----------
     x
-        Input volume *[...,d_in,...]*, 
+        Input volume *[...,d_in,...]*,
         where d_in indicates the dimension that needs FFT.
     dim
         The dimension along which to take the one dimensional FFT.
@@ -1649,6 +1649,4 @@ def fft(
         3.52068201e-17+8.25501143e-17j,  0.00000000e+00+2.71158374e-17j,
         4.04549134e-18+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j])
     """
-    return current_backend(x).fft(
-        x, dim, norm=norm, n=n, out=out
-    )
+    return current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
