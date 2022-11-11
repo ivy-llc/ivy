@@ -549,7 +549,7 @@ def test_isclose(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
