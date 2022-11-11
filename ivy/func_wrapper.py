@@ -20,7 +20,7 @@ FN_DECORATORS = [
 
 
 # Helpers #
-# --------#
+# ------- #
 
 
 def _get_first_array(*args, **kwargs):
@@ -42,7 +42,7 @@ def _get_first_array(*args, **kwargs):
 
 
 # Array Handling #
-# ---------------#
+# -------------- #
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
@@ -67,21 +67,12 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         """
         if not ivy.get_array_mode():
             return fn(*args, **kwargs)
-        # check if kwargs contains an out argument, and if so, remove it
-        has_out = False
-        out = None
-        if "out" in kwargs:
-            out = kwargs["out"]
-            del kwargs["out"]
-            has_out = True
-        # convert all arrays in the inputs to ivy.NativeArray instances
-        new_args, new_kwargs = ivy.args_to_native(
-            *args, **kwargs, include_derived={tuple: True}
+        native_args = ivy.nested_map(
+            args,
+            _to_native,
+            include_derived,
         )
-        # add the original out argument back to the keyword arguments
-        if has_out:
-            new_kwargs["out"] = out
-        return fn(*new_args, **new_kwargs)
+        return fn(*native_args, **kwargs)
 
     new_fn.inputs_to_native_arrays = True
     return new_fn
