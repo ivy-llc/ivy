@@ -7,7 +7,6 @@ import typing
 
 # for wrapping (sequence matters)
 FN_DECORATORS = [
-    "handle_array_like",
     "infer_device",
     "infer_dtype",
     "integer_arrays_to_float",
@@ -18,6 +17,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
+    "handle_array_like",
 ]
 
 
@@ -63,11 +63,10 @@ def handle_array_like(fn: Callable) -> Callable:
 
                 if i < len(args):
                     if isinstance(args[i], (list, tuple)):
-                        args[i] = ivy.to_native(ivy.array(args[i]))
+                        args[i] = ivy.array(args[i])
                 elif parameters[i] in kwargs:
                     if isinstance(kwargs[parameters[i]], (list, tuple)):
-                        kwargs[parameters[i]] = ivy.to_native(
-                            ivy.array(kwargs[parameters[i]]))
+                        kwargs[parameters[i]] = ivy.array(kwargs[parameters[i]])
 
         return fn(*args, **kwargs)
 
