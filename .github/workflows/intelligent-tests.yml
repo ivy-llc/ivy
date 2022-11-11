@@ -1,7 +1,7 @@
 name: intelligent-tests
 on:
   workflow_dispatch:
-#  push:
+  push:
 permissions:
   actions: read
 jobs:
@@ -19,7 +19,7 @@ jobs:
        - name: Determine and Run Tests
          id: tests
          run: |
-           git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
+           git clone -b master https://github.com/unifyai/Mapping.git --depth 1
            pip install pydriller
            cp Mapping/tests.pbz2 ivy/
            cd ivy
@@ -41,12 +41,12 @@ jobs:
            destination-repository-name: 'Mapping'
            user-email: rashul.chutani@gmail.com
            commit-message: Update Mapping
-           target-branch: master1
+           target-branch: master
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
          run: exit 1
-#
+
 #   run_tests_2:
 #     runs-on: ubuntu-latest
 #     steps:
