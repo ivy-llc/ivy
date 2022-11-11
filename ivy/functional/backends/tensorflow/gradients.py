@@ -39,10 +39,12 @@ def execute_with_gradients(
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         tape.watch(xs_required)
         func_ret = func(xs)
-    ret_idxs, ret_values = _get_native_variables_and_indices(func_ret, reshape=False)
+    ret_idxs, ret_values = _get_native_variables_and_indices(
+        func_ret, reshape=False, idxs=ret_grad_idxs
+    )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}
-    if isinstance(ret_values, list) and len(ret_values) == 1:
+    if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
         y = ret_values[0]
     else:
         y = ret_values
