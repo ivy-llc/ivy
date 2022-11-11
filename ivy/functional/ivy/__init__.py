@@ -21,3 +21,4 @@ from .set import *
 from .sorting import *
 from .statistical import *
 from .utility import *
+from .extension import *
