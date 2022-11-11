@@ -239,12 +239,8 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        detached = self._data.detach() if self.backend == "torch" else self._data
-        rep = (
-            ivy.vec_sig_fig(np.array(detached), sig_fig)
-            if self._size > 0
-            else np.array(detached)
-        )
+        arr_np = ivy.get_backend(self.backend).to_numpy(self._data)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             return (
                 self._pre_repr

@@ -13,7 +13,7 @@ tests = {}
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 30
+N = 32
 run_iter = int(sys.argv[1])
 
 os.system(
