@@ -4,6 +4,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import ivy
 
+
 def max_pool1d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int]],
