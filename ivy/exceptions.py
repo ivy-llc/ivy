@@ -10,6 +10,10 @@ import traceback as tb
 
 
 def _print_new_stack_trace(old_stack_trace):
+    print(
+        "<func_wrapper.py stack trace is squashed,",
+        "call ivy.set_show_func_wrapper_traces(True) in order to view this>",
+    )
     new_stack_trace = []
     for st in old_stack_trace:
         if "func_wrapper.py" not in repr(st):
@@ -18,12 +22,18 @@ def _print_new_stack_trace(old_stack_trace):
 
 
 def _custom_exception_handle(type, value, tb_history):
-    _print_new_stack_trace(tb.extract_tb(tb_history))
+    if ivy.get_show_func_wrapper_trace_mode():
+        print("".join(tb.format_tb(tb_history)))
+    else:
+        _print_new_stack_trace(tb.extract_tb(tb_history))
     print(type.__name__ + ":", value)
 
 
 def _print_traceback_history():
-    _print_new_stack_trace(tb.extract_tb(sys.exc_info()[2]))
+    if ivy.get_show_func_wrapper_trace_mode():
+        print("".join(tb.format_tb(sys.exc_info()[2])))
+    else:
+        _print_new_stack_trace(tb.extract_tb(sys.exc_info()[2]))
     print("During the handling of the above exception, another exception occurred:\n")
 
 
