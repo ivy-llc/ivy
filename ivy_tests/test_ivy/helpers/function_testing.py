@@ -375,7 +375,9 @@ def test_function(
             # print( type(all_as_kwargs_np['x1']),str(type(all_as_kwargs_np['x1']))=="<class 'numpy.ndarray'>")
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
-                lambda x: x.dtype  in fw_list[fw] if str(type(x))=="<class 'numpy.ndarray'>" else None
+                lambda x: x.dtype in fw_list[fw]
+                if str(type(x)) == "<class 'numpy.ndarray'>"
+                else None,
             ):
                 pass
 
@@ -395,7 +397,6 @@ def test_function(
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=ground_truth_backend,
                 )
-
 
     # assuming value test will be handled manually in the test function
     if not test_values:
