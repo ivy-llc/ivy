@@ -10,7 +10,7 @@ def fn1(x: Union[ivy.Array, Tuple[int, int]]):
 
 
 @handle_array_like
-def fn2(x: Union[ivy.Array]):
+def fn2(x: Union[ivy.Array, ivy.NativeArray]):
     return x
 
 
