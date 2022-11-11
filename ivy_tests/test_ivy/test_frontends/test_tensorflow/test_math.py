@@ -1044,15 +1044,14 @@ def test_tensorflow_truediv(
     dtype_and_x=statistical_dtype_values(function="argmin"),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.math.argmin"
-    ), output_types=helpers.get_dtypes("numeric"),
+    ),
 )
 def test_tensorflow_argmin(
     dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
-    output_types,
+    output_type = random.choice(["int64", "int32"]),
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -1067,5 +1066,5 @@ def test_tensorflow_argmin(
         fn_tree="math.argmin",
         input=x[0],
         axis=axis,
-        output_type=output_types[0],
+        output_type=output_type,
     )    
