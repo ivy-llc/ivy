@@ -156,7 +156,7 @@ class ndarray:
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
 
-    def std(self,axis=None,dtype=None,out=None,ddof=0,keepdims=False, *,where=True):
+    def std(self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True):
         return np_frontend.std(
             self.data,
             axis=axis,
