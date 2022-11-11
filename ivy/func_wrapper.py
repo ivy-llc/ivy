@@ -71,7 +71,7 @@ def inputs_to_native_arrays(fn: Callable) -> Callable:
         native_args = ivy.nested_map(
             args,
             _to_native,
-            include_derived,
+            include_derived={tuple: True},
         )
         return fn(*native_args, **kwargs)
 
