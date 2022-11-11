@@ -791,36 +791,3 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([1.4013e-45., 3.4028e+38])
         """
         return ivy.nextafter(self._data, x2, out=out)
-
-    def arccos(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Container] = None,
-    ) -> bool:
-        """
-        ivy.Array instance method variant of ivy.arccos. This method simply
-        wraps the function, and so the docstring for ivy.arccos also applies to
-        this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            Array input.
-        out
-            Alternate output array in which to place the result.
-            The default is None.
-
-        Returns
-        -------
-        ret
-            The angle of the ray intersecting the unit circle at the given x-coordinate
-            in radians [0, pi].
-
-        Examples
-        --------
-        >>> x = ivy.array([1, -1])
-        >>> x.arccos()
-        ivy.array([ 0.   ,  3.14159265])
-        """
-        return ivy.arccos(self._data, out=out)
