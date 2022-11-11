@@ -32,5 +32,4 @@ Elementwise
    elementwise/allclose.rst
    elementwise/fix.rst
    elementwise/nextafter.rst
-   elementwise/arccos.rst
 
