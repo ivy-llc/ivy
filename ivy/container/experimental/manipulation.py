@@ -1487,9 +1487,10 @@ class ContainerWithManipulationExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> List[ivy.Container]:
-        """ivy.Container instance method variant of ivy.dsplit. This method simply
-        wraps the function, and so the docstring for ivy.dsplit also applies to this
-        method with minimal changes.
+        """
+        ivy.Container instance method variant of ivy.atleast_1d. This method simply 
+        wraps the function, and so the docstring for ivy.atleast_1d also applies to 
+        this method with minimal changes.
 
         Parameters
         ----------
