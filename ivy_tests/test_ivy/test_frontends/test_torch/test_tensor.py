@@ -2488,8 +2488,8 @@ def test_torch_instance_arctanh_(dtype_and_x, as_variable, native_array):
         class_name="tensor",
         method_name="arctanh_",
     )
-    
-    
+
+
 # pow
 @handle_cmd_line_args
 @given(
