@@ -1,8 +1,8 @@
 # local
 import ivy
-
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import \
+    to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
@@ -21,3 +21,7 @@ def clip_by_value(t, clip_value_min, clip_value_max):
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
+
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+def sort(values, axis=-1, direction='ASCENDING', name=None):
+    return ivy.sort(values, axis, direction)
