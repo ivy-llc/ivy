@@ -36,8 +36,8 @@ def test_sinc(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        rtol_=1e-03,
-        atol_=1e-03,
+        rtol_=1e-02,
+        atol_=1e-02,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
@@ -335,6 +335,74 @@ def test_exp2(
         fw=fw,
         fn_name="exp2",
         x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+@st.composite
+def _get_dtype_values_axis_for_count_nonzero(
+    draw,
+    in_available_dtypes,
+    out_available_dtypes,
+    min_num_dims=1,
+    max_num_dims=10,
+    min_dim_size=1,
+    max_dim_size=10,
+):
+    input_dtype, values, axis = draw(
+        helpers.dtype_values_axis(
+            available_dtypes=helpers.get_dtypes(in_available_dtypes),
+            min_num_dims=min_num_dims,
+            max_num_dims=max_num_dims,
+            min_dim_size=min_dim_size,
+            max_dim_size=max_dim_size,
+            valid_axis=True,
+        )
+    )
+    axis = draw(st.one_of(st.just(axis), st.none()))
+    output_dtype = draw(helpers.get_dtypes(out_available_dtypes))
+    return [input_dtype, output_dtype], values, axis
+
+
+# count_nonzero
+@handle_cmd_line_args
+@given(
+    dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
+        in_available_dtypes="numeric",
+        out_available_dtypes="numeric",
+        min_num_dims=1,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="count_nonzero"),
+)
+def test_count_nonzero(
+    dtype_values_axis,
+    keepdims,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    i_o_dtype, a, axis = dtype_values_axis
+    helpers.test_function(
+        input_dtypes=i_o_dtype[0],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="count_nonzero",
+        a=a,
+        axis=axis,
+        keepdims=keepdims,
+        dtype=i_o_dtype[1],
     )
 
 
@@ -681,4 +749,128 @@ def test_signbit(
         fw=fw,
         fn_name="signbit",
         x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# allclose
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    rtol=st.floats(min_value=1e-5, max_value=1e-5),
+    atol=st.floats(min_value=1e-5, max_value=1e-5),
+    equal_nan=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="allclose"),
+)
+def test_allclose(
+    dtype_and_x,
+    rtol,
+    atol,
+    equal_nan,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="allclose",
+        x1=x[0],
+        x2=x[1],
+        rtol=rtol,
+        atol=atol,
+        equal_nan=equal_nan,
+    )
+
+
+# fix
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="fix"),
+)
+def test_fix(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="fix",
+        x=np.asarray(x[0], dtype=input_dtype[0]),
+    )
+
+
+# nextafter
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="nextafter"),
+)
+def test_nextafter(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="nextafter",
+        x1=x[0],
+        x2=x[1],
     )
