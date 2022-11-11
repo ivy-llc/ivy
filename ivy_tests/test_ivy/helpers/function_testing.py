@@ -370,40 +370,28 @@ def test_function(
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        if (
-            hasattr_unsupported_gradients
-            and fw in fw_list
-            and ivy.nested_argwhere(
+        if hasattr_unsupported_gradients and fw in fw_list:
+            if ivy.nested_argwhere(
                 all_as_kwargs_np,
-                lambda x: x.dtype in fw_list[fw] in fw_list[fw] if ivy.is_array(x) else None,
-            )
-        ):
-            print("lol this case",hasattr_unsupported_gradients, fw, fw_list, ivy.nested_argwhere(
-                [all_as_kwargs_np],
-                lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
-            ), type(all_as_kwargs_np['x1']))
-            pass
-        else:
-            if hasattr_unsupported_gradients:
-                print(hasattr_unsupported_gradients,fw,fw_list,ivy.nested_argwhere(
-                    [all_as_kwargs_np],
-                    lambda x: x.dtype in fw_list[fw] if ivy.is_array(x) else None,
-                ), type(all_as_kwargs_np['x1']))
-            gradient_test(
-                fn_name=fn_name,
-                all_as_kwargs_np=all_as_kwargs_np,
-                args_np=args_np,
-                kwargs_np=kwargs_np,
-                input_dtypes=input_dtypes,
-                as_variable_flags=as_variable_flags,
-                native_array_flags=native_array_flags,
-                container_flags=container_flags,
-                rtol_=rtol_,
-                atol_=atol_,
-                xs_grad_idxs=xs_grad_idxs,
-                ret_grad_idxs=ret_grad_idxs,
-                ground_truth_backend=ground_truth_backend,
-            )
+                lambda x: x.dtype  in fw_list[fw] if ivy.is_array(x) else None,
+            ):
+                pass
+            else:
+                gradient_test(
+                    fn_name=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    as_variable_flags=as_variable_flags,
+                    native_array_flags=native_array_flags,
+                    container_flags=container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
