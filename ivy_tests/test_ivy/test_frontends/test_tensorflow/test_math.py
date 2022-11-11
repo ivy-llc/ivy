@@ -1051,11 +1051,10 @@ def test_tensorflow_argmin(
     as_variable,
     num_positional_args,
     native_array,
-    output_type = random.choice(["int64", "int32"]),
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
-        axis = axis[0]
+        axis=axis[0]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1066,5 +1065,5 @@ def test_tensorflow_argmin(
         fn_tree="math.argmin",
         input=x[0],
         axis=axis,
-        output_type=output_type,
+        output_type = random.choice(["int64", "int32"]),,
     )    
