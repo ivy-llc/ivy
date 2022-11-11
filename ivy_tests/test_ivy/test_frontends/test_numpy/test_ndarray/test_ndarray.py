@@ -2,6 +2,7 @@
 import numpy as np
 from hypothesis import given, strategies as st
 
+import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
@@ -973,6 +974,7 @@ def test_numpy_instance_std(
     dtype_x_axis,
     keepdims,
     where,
+    as_variable,
     num_positional_args_method,
     native_array,
 ):
@@ -987,8 +989,8 @@ def test_numpy_instance_std(
         input_dtypes_init=input_dtype,
         input_dtypes_method=input_dtype,
         as_variable_flags_init=as_variable,
-        num_positional_args_init=num_positional_args,
-        num_positional_args_method=num_positional_args,
+        num_positional_args_init=num_positional_args_method,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_init=native_array,
         as_variable_flags_method=as_variable,
         native_array_flags_method=native_array,
