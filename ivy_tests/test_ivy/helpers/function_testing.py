@@ -374,7 +374,7 @@ def test_function(
             hasattr_unsupported_gradients
             and fw in fw_list
             and ivy.nested_argwhere(
-                [all_as_kwargs_np],
+                all_as_kwargs_np,
                 lambda x: str(ivy.dtype(x.dtype)) in fw_list[fw] if ivy.is_array(x) else None,
             )
         ):
