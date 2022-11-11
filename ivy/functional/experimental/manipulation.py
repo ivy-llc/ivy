@@ -1229,14 +1229,16 @@ def dstack(
 def atleast_2d(
     *arys: Union[ivy.Array, ivy.NativeArray],
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least one dimension.
+    """Convert inputs to arrays with at least two dimension.
     Scalar inputs are converted to 2-dimensional arrays, whilst
     higher-dimensional inputs are preserved.
 
     Parameters
     ----------
     arys
-        One or more input arrays.
+        One or more array-like sequences. Non-array inputs are 
+        converted to arrays. Arrays that already have two or more 
+        dimensions are preserved.
 
     Returns
     -------
