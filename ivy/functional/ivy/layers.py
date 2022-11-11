@@ -1612,7 +1612,7 @@ def fft(
     norm
         Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
         "backward" indicates no normalization.
-        "ortho" indicates normalization by $\frac{1}{\\sqrt{n}}$.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
         "forward" indicates normalization by $\frac{1}{n}$.
     n
         Optional argument indicating the sequence length, if given, the input would be
