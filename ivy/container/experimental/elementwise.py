@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, List, Dict
+from typing import Optional, Union, List, Dict, Tuple
 
 # local
 import ivy
@@ -603,6 +603,187 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_count_nonzero(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.count_nonzero. This method simply
+        wraps the function, and so the docstring for ivy.count_nonzero also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        a
+            container with the base input arrays.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is None.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is True.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is False.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples). Default is False.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including number of non-zero values in the array along a
+            given axis. Otherwise, container with the total number of non-zero
+            values in the array is returned.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x)
+        {
+            a: ivy.array(7),
+            b: ivy.array(7)
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x, axis=0)
+        {
+            a: ivy.array([1, 2, 2, 2]),
+            b: ivy.array([[1, 2],
+                          [2, 2]])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> ivy.Container.static_count_nonzero(x, axis=(0,1), keepdims=True)
+        {
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "count_nonzero",
+            a,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def count_nonzero(
+        self: ivy.Container,
+        /,
+        *,
+        axis: Optional[Union[int, Tuple[int, ...]]] = None,
+        keepdims: Optional[bool] = False,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.count_nonzero. This method
+        simply wraps the function, and so the docstring for ivy.count_nonzero also
+        applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        axis
+            optional axis or tuple of axes along which to count non-zeros. Default is
+            None, meaning that non-zeros will be counted along a flattened
+            version of the input array.
+        keepdims
+            optional, if this is set to True, the axes that are counted are left in the
+            result as dimensions with size one. With this option, the result
+            will broadcast correctly against the input array.
+        dtype
+            optional output dtype. Default is of type integer.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including number of non-zero values in the array along a
+            given axis. Otherwise, container with the total number of non-zero
+            values in the array is returned.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero()
+        {
+            a: ivy.array(7),
+            b: ivy.array(7)
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=0)
+        {
+            a: ivy.array([1, 2, 2, 2]),
+            b: ivy.array([[1, 2],
+                          [2, 2]])
+        }
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]]),\
+                        b=ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]]))
+        >>> x.count_nonzero(axis=(0,1), keepdims=True)
+        {
+            a: ivy.array([[7]]),
+            b: ivy.array([[[3, 4]]])
+        }
+        """
+        return self.static_count_nonzero(
+            self,
+            axis=axis,
+            keepdims=keepdims,
+            dtype=dtype,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
 
     @staticmethod
     def static_nansum(
@@ -1504,3 +1685,401 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_signbit(self, out=out)
+
+    @staticmethod
+    def static_allclose(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.allclose. This method simply wraps
+        the function, and so the docstring for ivy.allclose also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in x1 will be
+            considered equal to NaN's in x2 in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new container holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> y = ivy.Container.static_allclose(x1, x2)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.0003]),\
+        ...                         b=ivy.array([1.0006, 2., 3.]))
+        >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "allclose",
+            x1,
+            x2,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def allclose(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        rtol: Optional[float] = 1e-05,
+        atol: Optional[float] = 1e-08,
+        equal_nan: Optional[bool] = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.allclose. This method simply
+        wraps the function, and so the docstring for ivy.allclose also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        rtol
+            The relative tolerance parameter.
+        atol
+            The absolute tolerance parameter.
+        equal_nan
+            Whether to compare NaN's as equal. If True, NaN's in x1 will be
+            considered equal to NaN's in x2 in the output array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            A new container holding the result is returned unless out is specified,
+            in which it is returned.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> y = x1.allclose(x2)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
+        ...                         b=ivy.array([1., 2., 3.]))
+        >>> x2 = ivy.Container(a=ivy.array([1., 2., 3.0003]),\
+        ...                         b=ivy.array([1.0006, 2., 3.]))
+        >>> y = x1.allclose(x2, rtol=1e-3)
+        >>> print(y)
+        {
+            a: true,
+            b: true
+        }
+        """
+        return self.static_allclose(
+            self,
+            x2,
+            rtol=rtol,
+            atol=atol,
+            equal_nan=equal_nan,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_fix(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.fix. This method simply wraps
+        the function, and so the docstring for ivy.fix also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container with array items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise rounding of
+            input arrays elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.1, 2.9, -2.1]),\
+                               b=ivy.array([3.14]))
+        >>> ivy.Container.static_fix(x)
+        {
+            a: ivy.array([ 2.,  2., -2.])
+            b: ivy.array([ 3.0 ])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "fix",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def fix(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.fix. This method simply
+        wraps the function, and so the docstring for ivy.fix also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array items.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with element-wise rounding of
+            input arrays elements.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.1, 2.9, -2.1]),\
+                               b=ivy.array([3.14]))
+        >>> x.fix()
+        {
+            a: ivy.array([ 2.,  2., -2.])
+            b: ivy.array([ 3.0 ])
+        }
+        """
+        return self.static_fix(self, out=out)
+
+    @staticmethod
+    def static_nextafter(
+        x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.nextafter. This method simply wraps
+        the function, and so the docstring for ivy.nextafter also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Input container containing first input arrays.
+        x2
+            Input container containing second input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1.0e-50, 2.0e+50]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> x2 = ivy.Container(a=ivy.array([5.5e-30]),\
+        ...                         b=ivy.array([-2.0]))
+        >>> ivy.Container.static_nextafter(x1, x2)
+        {
+            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            b: ivy.array([5.5e-30])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "nextafter",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def nextafter(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.nextafter. This method simply
+        wraps the function, and so the docstring for ivy.nextafter also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        x2
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the next representable values of
+            input container's arrays, element-wise
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([1.0e-50, 2.0e+50]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> x2 = ivy.Container(a=ivy.array([5.5e-30]),\
+        ...                         b=ivy.array([-2.0]))
+        >>> x1.nextafter(x2)
+        {
+            a: ivy.array([1.4013e-45., 3.4028e+38]),
+            b: ivy.array([5.5e-30])
+        }
+        """
+        return self.static_nextafter(
+            self,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
