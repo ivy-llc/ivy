@@ -1,14 +1,12 @@
 # global
-from copy import deepcopy
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, strategies as st
 import math
 import numpy as np
 
 # local
-from ivy.array import Array
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, handle_method
+from ivy_tests.test_ivy.helpers import handle_method
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 
 _zero = np.asarray(0, dtype="uint8")
@@ -1723,9 +1721,8 @@ def test_array__ge__(
     )
 
 
-# __and__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
@@ -1734,25 +1731,36 @@ def test_array__ge__(
 )
 def test_array__and__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data & other
-    np_ret = x[0] & x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __rand__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
@@ -1761,25 +1769,36 @@ def test_array__and__(
 )
 def test_array__rand__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__rand__(other)
-    np_ret = x[1] & x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __iand__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__iand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
@@ -1788,25 +1807,36 @@ def test_array__rand__(
 )
 def test_array__iand__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__iand__(other)
-    np_ret = x[1] & x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __or__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
@@ -1815,25 +1845,36 @@ def test_array__iand__(
 )
 def test_array__or__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data | other
-    np_ret = x[0] | x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __ror__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
@@ -1842,157 +1883,224 @@ def test_array__or__(
 )
 def test_array__ror__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__ror__(other)
-    np_ret = x[1] | x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __ior__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__ior__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        array_api_dtypes=True,
+        shared_dtype=True,
     ),
 )
 def test_array__ior__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__ior__(other)
-    np_ret = x[0] | x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __invert__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
 def test_array__invert__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    ret = ~data
-    np_ret = ~x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __xor__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        array_api_dtypes=True,
+        shared_dtype=True,
     ),
 )
 def test_array__xor__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data ^ other
-    np_ret = x[0] ^ x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __rxor__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        array_api_dtypes=True,
+        shared_dtype=True,
     ),
 )
 def test_array__rxor__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__rxor__(other)
-    np_ret = x[1] ^ x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __ixor__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__ixor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
-        array_api_dtypes=True,
+        shared_dtype=True,
     ),
 )
 def test_array__ixor__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__ixor__(other)
-    np_ret = x[0] ^ x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __lshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__lshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2001,26 +2109,37 @@ def test_array__ixor__(
 )
 def test_array__lshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data << other
-    np_ret = x[0] << x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __rlshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__rlshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2029,26 +2148,37 @@ def test_array__lshift__(
 )
 def test_array__rlshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
-    x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__rlshift__(other)
-    np_ret = x[1] << x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    x[0] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __ilshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__ilshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2057,26 +2187,37 @@ def test_array__rlshift__(
 )
 def test_array__ilshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__ilshift__(other)
-    np_ret = x[0] << x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __rshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__rshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2086,26 +2227,37 @@ def test_array__ilshift__(
 )
 def test_array__rshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data >> other
-    np_ret = x[0] >> x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __rrshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__rrshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2114,26 +2266,37 @@ def test_array__rshift__(
 )
 def test_array__rrshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
     x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[0])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__rrshift__(other)
-    np_ret = x[1] >> x[0]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __irshift__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__irshift__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2142,50 +2305,73 @@ def test_array__rrshift__(
 )
 def test_array__irshift__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
-    data = Array(ivy.asarray(x[0]))
-    other = Array(ivy.asarray(x[1]))
-    ret = data.__irshift__(other)
-    np_ret = x[0] >> x[1]
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"other": x[1]},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __deepcopy__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__deepcopy__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
     ),
 )
 def test_array__deepcopy__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    ret = data.__deepcopy__()
-    py_ret = deepcopy(x[0])
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=py_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __len__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__len__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_dim_size=2,
@@ -2194,24 +2380,36 @@ def test_array__deepcopy__(
 )
 def test_array__len__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    ret = len(data)
-    py_ret = len(ivy.asarray(x[0]))
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=py_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
 
 
-# __iter__
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Array.__iter__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_dim_size=2,
@@ -2220,16 +2418,29 @@ def test_array__len__(
 )
 def test_array__iter__(
     dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_num_positional_args: pf.NumPositionalArg,
+    init_as_variable: pf.AsVariableFlags,
+    init_native_array: pf.NativeArrayFlags,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    method_name,
+    class_name,
 ):
-    _, x = dtype_and_x
-    data = Array(ivy.asarray(x[0]))
-    ret = data.__iter__()
-    np_ret = iter(x[0])
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=np_ret)
-    for (_, _) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret_np_flat=ret,
-            ret_np_from_gt_flat=ret_gt,
-            ground_truth_backend="numpy",
-        )
+    dtype, x = dtype_and_x
+    helpers.test_method(
+        init_all_as_kwargs_np={"data": x[0]},
+        init_input_dtypes=dtype,
+        init_as_variable_flags=init_as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=init_native_array,
+        method_input_dtypes=dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={},
+        class_name=class_name,
+        method_name=method_name,
+    )
