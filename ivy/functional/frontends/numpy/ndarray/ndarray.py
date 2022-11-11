@@ -255,3 +255,6 @@ class ndarray:
 
     def __ixor__(self, value, /):
         return np_frontend.logical_xor(self.data, value)
+
+    def __imod__(self, value, /):
+        return np_frontend.mod(self.data, value)
