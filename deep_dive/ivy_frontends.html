@@ -69,7 +69,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#the-frontend-basics">The Frontend Basics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unused-arguments">Unused Arguments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#compositions">Compositions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions">Missing Ivy Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#missing-ivy-functions-and-complex-data-types">Missing Ivy Functions and Complex Data Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#temporary-compositions">Temporary Compositions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-data-types-and-devices">Supported Data Types and Devices</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#classes-and-instance-methods">Classes and Instance Methods</a></li>
@@ -387,8 +387,8 @@ For example, we can simply reverse the result by calling <code class="xref py py
 </div>
 <p>Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.</p>
 </section>
-<section id="missing-ivy-functions">
-<h2>Missing Ivy Functions<a class="headerlink" href="#missing-ivy-functions" title="Permalink to this heading"></a></h2>
+<section id="missing-ivy-functions-and-complex-data-types">
+<h2>Missing Ivy Functions and Complex Data Types<a class="headerlink" href="#missing-ivy-functions-and-complex-data-types" title="Permalink to this heading"></a></h2>
 <p>Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
 For example, at the time of writing, implementing <code class="xref py py-func docutils literal notranslate"><span class="pre">median()</span></code> for the NumPy frontend would require a very manual and heavily compositional implementation.
 However, if the function <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code> was added to Ivy’s functional API, then this frontend implementation would become very simple, with some light wrapping around <code class="xref py py-func docutils literal notranslate"><span class="pre">ivy.median()</span></code>.</p>
@@ -397,6 +397,11 @@ When you come across such a function which is missing from Ivy, you should creat
 A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the “Extend Ivy Functional API” <a class="reference external" href="https://github.com/unifyai/ivy/issues/3856">ToDo list issue</a>.
 At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
 Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.</p>
+<p>Some frontend functions also perform operations on complex inputs such as <code class="xref py py-func docutils literal notranslate"><span class="pre">np.sort_complex()</span></code>.
+As Ivy does not currently support complex data types, these functions cannot be implemented at this time.
+If you come across such a function, you should create an issue for it as described in the <a class="reference external" href="https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues">ToDo List Issues guide</a> and add the label <code class="code docutils literal notranslate"><span class="pre">Next</span> <span class="pre">Release</span></code>.
+This will help others stay away from it and notify the team to be aware of the function once we come around working on complex data type support.
+Please find another function to work on in the meantime.</p>
 </section>
 <section id="temporary-compositions">
 <h2>Temporary Compositions<a class="headerlink" href="#temporary-compositions" title="Permalink to this heading"></a></h2>
