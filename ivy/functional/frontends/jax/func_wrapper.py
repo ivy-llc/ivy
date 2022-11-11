@@ -7,7 +7,6 @@ import jax
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
-from ivy.func_wrapper import handle_nans
 
 
 def _is_jax_frontend_array(x):

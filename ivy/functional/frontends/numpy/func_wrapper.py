@@ -7,7 +7,6 @@ import numpy
 # local
 import ivy
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
-from ivy.func_wrapper import handle_nans
 
 
 def _is_same_kind_or_safe(t1, t2):

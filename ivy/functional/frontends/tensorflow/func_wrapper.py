@@ -9,7 +9,6 @@ import tensorflow as tf
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
-from ivy.func_wrapper import handle_nans
 
 
 def _tf_frontend_array_to_ivy(x):

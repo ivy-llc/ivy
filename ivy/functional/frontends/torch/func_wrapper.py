@@ -7,7 +7,6 @@ import torch
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
-from ivy.func_wrapper import handle_nans
 
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
