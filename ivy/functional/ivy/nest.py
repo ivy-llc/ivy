@@ -435,6 +435,7 @@ def nested_argwhere(
     _index: List = None,
     _base: bool = True,
     stop_after_n_found: Optional[int] = None,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -458,6 +459,9 @@ def nested_argwhere(
         stack. Used internally, do not set manually.
     stop_after_n_found
         to stop after some needed indices are found.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -502,8 +506,18 @@ def nested_argwhere(
     ]
     """
     to_ignore = ivy.default(to_ignore, ())
+    extra_nest_types = ivy.default(extra_nest_types, ())
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
+    if (
+        isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types)
+    ) and not isinstance(nest, to_ignore):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            cond_met = fn(nest)
+            ind = ivy.argwhere(cond_met)
+            _indices = []
+            for i in range(len(ind)):
+                _indices.append(_index + ind.to_list()[i])
+            return _indices
         n = 0
         _indices = []
         for i, item in enumerate(nest):
@@ -516,10 +530,18 @@ def nested_argwhere(
                     _index + [i],
                     False,
                     stop_after_n_found - n,
+                    extra_nest_types,
                 )
                 if stop_after_n_found is not None
                 else nested_argwhere(
-                    item, fn, check_nests, to_ignore, _index + [i], False
+                    item,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [i],
+                    False,
+                    None,
+                    extra_nest_types,
                 )
             )
             if stop_after_n_found is not None and ind:
@@ -548,9 +570,19 @@ def nested_argwhere(
                     _index + [k],
                     False,
                     stop_after_n_found - n,
+                    extra_nest_types,
                 )
                 if stop_after_n_found is not None
-                else nested_argwhere(v, fn, check_nests, to_ignore, _index + [k], False)
+                else nested_argwhere(
+                    v,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [k],
+                    False,
+                    None,
+                    extra_nest_types,
+                )
             )
             if stop_after_n_found is not None and ind:
                 if n < stop_after_n_found:
