@@ -104,7 +104,11 @@ eigh.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
-    x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
+    x: torch.Tensor,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     return torch.linalg.eigvalsh(x, UPLO=UPLO, out=out)
 

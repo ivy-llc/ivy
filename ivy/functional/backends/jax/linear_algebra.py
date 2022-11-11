@@ -85,7 +85,11 @@ def eigh(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
-    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
+    x: JaxArray,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
