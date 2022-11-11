@@ -7,6 +7,7 @@ import hypothesis.extra.numpy as hnp
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy.functional.frontends.torch import Tensor
 
 
 # Helper functions
@@ -2086,26 +2087,24 @@ def test_torch_instance_device(dtype_and_x, as_variable, native_array):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
+    copy=st.booleans(),
+    device=st.booleans(),
 )
-def test_torch_instance_is_cuda(dtype_and_x, as_variable, native_array):
+def test_torch_instance_is_cuda(dtype_and_x, copy, device):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={},
-        frontend="torch",
-        class_name="tensor",
-        method_name="is_cuda",
+    x: Tensor = Tensor(data=x[0]).to(
+        **{
+            "device": ivy.Device("cpu" if device is False else "gpu:0"),
+            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
+            "non_blocking": False,
+            "copy": copy,
+            "memory_format": torch.preserve_format,
+        }
     )
+    if device:
+        assert x.is_cuda is True
+    else:
+        assert x.is_cuda is False
 
 
 # bitwise_and
