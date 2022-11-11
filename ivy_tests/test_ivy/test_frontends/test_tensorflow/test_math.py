@@ -1065,7 +1065,7 @@ def test_tensorflow_pow(
             if x[1] < 0:
                 x[1] *= -1
         else:
-            x[1][(x[1]<0).nonzero()] *= -1
+            x[1][(x[1] < 0).nonzero()] *= -1
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,

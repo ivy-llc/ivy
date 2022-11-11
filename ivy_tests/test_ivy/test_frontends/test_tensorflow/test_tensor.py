@@ -1026,7 +1026,7 @@ def test_tensorflow_instance_pow(dtype_and_x, as_variable, native_array, fw):
             if x[1] < 0:
                 x[1] *= -1
         else:
-            x[1][(x[1]<0).nonzero()] *= -1
+            x[1][(x[1] < 0).nonzero()] *= -1
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
