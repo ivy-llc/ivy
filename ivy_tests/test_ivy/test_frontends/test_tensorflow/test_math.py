@@ -1067,5 +1067,3 @@ def test_tensorflow_argmin(
         axis=axis,
         output_type = random.choice(["int64", "int32"]),,
     )    
-
-    
