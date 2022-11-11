@@ -52,22 +52,27 @@ def handle_array_like(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
-        parameters = list(typing.get_type_hints(fn))
-        annotations = list(typing.get_type_hints(fn).values())
+        num_args = len(args)
+        type_hints = typing.get_type_hints(fn)
+        parameters = list(type_hints)
+        annotations = list(type_hints.values())
 
         # accessing common index across input arg values, parameters and annotations.
-        for i in range(len(annotations)):
-
-            if "Array" in str(annotations[i]) and all(
-                    sq not in str(annotations[i])
+        for i, (annotation, parameter, arg) in enumerate(zip(annotations,
+                                                             parameters,
+                                                             args)):
+            annotation_str = str(annotation)
+            if "Array" in annotation_str and all(
+                    sq not in annotation_str
                     for sq in ["Sequence", "List", "Tuple"]):
 
-                if i < len(args):
-                    if isinstance(args[i], (list, tuple)):
-                        args[i] = ivy.array(args[i])
-                elif parameters[i] in kwargs:
-                    if isinstance(kwargs[parameters[i]], (list, tuple)):
-                        kwargs[parameters[i]] = ivy.array(kwargs[parameters[i]])
+                if i < num_args:
+                    if isinstance(arg, (list, tuple)):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if isinstance(kwarg, (list, tuple)):
+                        kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
