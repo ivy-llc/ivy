@@ -1580,7 +1580,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         Parameters
         ----------
         self
-            the container with array inputs.
+            a container with array inputs.
         arys
             one or more container with array inputs.
         key_chains
