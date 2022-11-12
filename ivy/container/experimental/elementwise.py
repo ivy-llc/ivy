@@ -1893,7 +1893,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Container including arrays with the n-th discrete difference along the given axis.
+            Container including arrays with the n-th discrete difference along
+            the given axis.
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
@@ -1933,7 +1934,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Returns
         -------
         ret
-            Container including arrays with the n-th discrete difference along the given axis.
+            Container including arrays with the n-th discrete difference along the
+            given axis.
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
