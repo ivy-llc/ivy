@@ -1870,8 +1870,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     @staticmethod
     def static_diff(
-        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
-        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
         /,
         *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -1886,32 +1885,28 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         method with minimal changes.
         Parameters
         ----------
-        x1
-            first input container with array-like items.
-        x2
-            second input container with array-like items.
+        x
+            input container with array-like items.
+        
         out
             optional output container, for writing the result to.
         Returns
         -------
         ret
-            Container including arrays with element-wise difference of input arrays.
+            Container including arrays with the n-th discrete difference along the given axis.
         Examples
         --------
-        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
-                               b=ivy.array([1, 2, 3]))
-        >>> x2 = ivy.Container(a=ivy.array([5, 6, 7]),\
-                               b=10)
-        >>> ivy.Container.static_diff(x1, x2)
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
         {
-            a: ivy.array([-4.,  -4.,  -4.])
-            b: ivy.array([-9., -8., -7.])
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
         }
         """
         return ContainerBase.multi_map_in_static_method(
             "diff",
-            x1,
-            x2,
+            x,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1921,7 +1916,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     def diff(
         self: ivy.Container,
-        x2: ivy.Container,
         /,
         *,
         out: Optional[ivy.Container] = None,
@@ -1932,28 +1926,25 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         Parameters
         ----------
         self
-            first input container with array-like items.
-        x2
-            second input container with array-like items.
+            input container with array-like items.
+        
         out
             optional output container, for writing the result to.
         Returns
         -------
         ret
-            Container including arrays with element-wise difference of input arrays.
+            Container including arrays with the n-th discrete difference along the given axis.
         Examples
         --------
-        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),\
-                               b=ivy.array([1, 2, 3]))
-        >>> x2 = ivy.Container(a=ivy.array([5, 6, 7]),\
-                               b=10)
-        >>> x1.diff(x2)
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
         {
-            a: ivy.array([-4.,  -4.,  -4.])
-            b: ivy.array([-9., -8., -7.])
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
         }
         """
-        return self.static_diff(self, x2, out=out)
+        return self.static_diff(self, out=out)
 
     @staticmethod
     def static_fix(

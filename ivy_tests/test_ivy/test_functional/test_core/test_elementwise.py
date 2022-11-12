@@ -2521,6 +2521,5 @@ def test_diff(
         instance_method=instance_method,
         fw=fw,
         fn_name="diff",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1])
+        x=np.asarray(x[0], dtype=input_dtype[0])
     )
