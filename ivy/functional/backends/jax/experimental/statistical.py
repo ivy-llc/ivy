@@ -17,3 +17,25 @@ def median(
         keepdims=keepdims,
         out=out,
     )
+
+
+def nanmean(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nanmean(a, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
+
+
+def unravel_index(
+    indices: JaxArray,
+    shape: Tuple[int],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.unravel_index(indices, shape)

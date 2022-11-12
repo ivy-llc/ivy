@@ -299,7 +299,7 @@ For example, we can simply reverse the result by calling :func:`ivy.flip` on the
 
 Through compositions, we can easily meet the required input-output behaviour for the TensorFlow frontend function.
 
-Missing Ivy Functions
+Missing Ivy Functions and Complex Data Types
 ---------------------
 
 Sometimes, there is a clear omission of an Ivy function, which would make the frontend implementation much simpler.
@@ -311,6 +311,12 @@ When you come across such a function which is missing from Ivy, you should creat
 A member of our team will then review this issue, and if the proposed addition is deemed to be timely and sensible, then we will add this function to the "Extend Ivy Functional API" `ToDo list issue <https://github.com/unifyai/ivy/issues/3856>`_.
 At this point in time, you can reserve the function for yourself and get it implemented in a unique PR.
 Once merged, you can then resume working on the frontend function, which will now be a much easier task with the new addition to Ivy.
+
+Some frontend functions also perform operations on complex inputs such as :func:`np.sort_complex`.
+As Ivy does not currently support complex data types, these functions cannot be implemented at this time.
+If you come across such a function, you should create an issue for it as described in the `ToDo List Issues guide <https://lets-unify.ai/ivy/contributing/the_basics.html#todo-list-issues>`_ and add the label :code:`Next Release`.
+This will help others stay away from it and notify the team to be aware of the function once we come around working on complex data type support.
+Please find another function to work on in the meantime.
 
 Temporary Compositions
 ----------------------

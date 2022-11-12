@@ -51,7 +51,9 @@ def _set_duplicates(xs, duplicate_key_chains):
     return xs
 
 
-def _forward_fn(xs, x, xs_grad_idxs, func, duplicate_key_chains):
+def _forward_fn(
+    xs, x, func, duplicate_key_chains, xs_grad_idxs=None, ret_grad_idxs=None
+):
     if xs_grad_idxs is not None:
         ivy.set_nest_at_indices(xs, xs_grad_idxs, x)
     else:
@@ -59,8 +61,8 @@ def _forward_fn(xs, x, xs_grad_idxs, func, duplicate_key_chains):
     if isinstance(xs, ivy.Container):
         xs = _set_duplicates(xs, duplicate_key_chains)
     ret = func(xs)
-    _, ret_values = _get_native_variables_and_indices(ret)
-    if isinstance(ret_values, list) and len(ret_values) == 1:
+    _, ret_values = _get_native_variables_and_indices(ret, idxs=ret_grad_idxs)
+    if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
         ret_values = ret_values[0]
     return ret_values
 
@@ -72,10 +74,12 @@ def execute_with_gradients(
     func_ret = func(xs)
     xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
     xs = ivy.to_native(xs)
-    ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
+    ret_idxs, ret_values = _get_native_variables_and_indices(
+        func_ret, idxs=ret_grad_idxs
+    )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}
-    if isinstance(ret_values, list) and len(ret_values) == 1:
+    if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
         y = ret_values[0]
     else:
         y = ret_values
@@ -84,12 +88,26 @@ def execute_with_gradients(
         duplicate_key_chains = xs.duplicate_array_keychains()
     if isinstance(y, ivy.NativeArray):
         grad_fn = jax.grad(
-            lambda x: _forward_fn(xs, x, xs_grad_idxs, func, duplicate_key_chains)
+            lambda x: _forward_fn(
+                xs,
+                x,
+                func,
+                duplicate_key_chains,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+            )
         )
         grads = grad_fn(xs_required)
     else:
         grad_fn = jax.jacrev(
-            lambda x: _forward_fn(xs, x, xs_grad_idxs, func, duplicate_key_chains)
+            lambda x: _forward_fn(
+                xs,
+                x,
+                func,
+                duplicate_key_chains,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+            )
         )
         grads_ = grad_fn(xs_required)
         grads = grads_
@@ -99,10 +117,10 @@ def execute_with_gradients(
         grads = _set_duplicates(grads, duplicate_key_chains)
     grads = ivy.nested_map(
         grads,
-        lambda x: ivy.where(ivy.isnan(x), 0, x) if ivy.is_array(x) else x,
+        lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
     grads = ivy.to_ivy(grads)
     return func_ret, grads
 
