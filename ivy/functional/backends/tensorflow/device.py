@@ -77,11 +77,12 @@ def clear_mem_on_dev(device: str, /):
 
 def num_gpus() -> int:
     """Determine the number of available GPUs, with the backend framework.
-        Returns
-        -------
-        ret
-            Number of available GPUs.
-        """
+
+    Returns
+    -------
+    ret
+        Number of available GPUs.
+    """
     return len(tf.config.list_physical_devices("GPU"))
 
 

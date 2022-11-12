@@ -35,11 +35,12 @@ def tpu_is_available() -> bool:
 
 def num_gpus() -> int:
     """Determine the number of available GPUs, with the backend framework.
-        Returns
-        -------
-        ret
-            Number of available GPUs.
-        """
+
+    Returns
+    -------
+    ret
+        Number of available GPUs.
+    """
     return 0
 
 
