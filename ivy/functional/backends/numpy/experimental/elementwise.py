@@ -264,3 +264,16 @@ def fix(
 
 
 fix.support_native_out = True
+
+
+def nextafter(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nextafter(x1, x2)
+
+
+nextafter.support_natvie_out = True

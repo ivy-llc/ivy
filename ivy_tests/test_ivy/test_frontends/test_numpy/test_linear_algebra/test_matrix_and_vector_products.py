@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
+    _get_dtype_value1_value2_axis_for_tensordot,
 )
 
 
@@ -145,4 +146,35 @@ def test_numpy_matrix_power(
         fn_tree="linalg.matrix_power",
         a=x[0],
         n=n,
+    )
+
+
+# tensordot
+@handle_cmd_line_args
+@given(
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.linalg.tensordot"
+    ),
+)
+def test_numpy_tensordot(
+    dtype_values_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args,
+):
+    dtype, a, b, axes = dtype_values_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="numpy",
+        fn_tree="tensordot",
+        a=a,
+        b=b,
+        axes=axes,
     )
