@@ -780,33 +780,23 @@ def test_dstack(
     )
 
 
-@st.composite
-def atleast_nd_arrays(draw, in_dtype):
-    dtype_s = draw(helpers.get_dtypes(in_dtype))
-    arrays = []
-    for c, dtype_i in enumerate(dtype_s):
-        shape = draw(helpers.get_shape())
-        x = draw(
-            helpers.array_values(dtype=dtype_i, shape=shape), label=f"x{c}"
-        ).tolist()
-        arrays.append(x)
-    return dtype_s, arrays
-
-
 # atleast_2d
 @handle_cmd_line_args
 @given(
-    dtype_arrays=atleast_nd_arrays(in_dtype="valid"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
 )
 def test_atleast_2d(
-    dtype_arrays,
+    dtype_and_x,
     as_variable,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    input_dtypes, arrays = dtype_arrays
+    input_dtypes, arrays = dtype_and_x
     kw = {}
     for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
