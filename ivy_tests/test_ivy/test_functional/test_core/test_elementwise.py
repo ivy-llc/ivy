@@ -2489,21 +2489,16 @@ def test_isreal(
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True,
-        min_num_dims=1,
-        max_num_dims=3,
-        min_value=-100,
-        max_value=100,
-        allow_nan=False,
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="diff"),
 )
 def test_diff(
+    *,
     dtype_and_x,
-    with_out,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
     container,
@@ -2521,5 +2516,6 @@ def test_diff(
         instance_method=instance_method,
         fw=fw,
         fn_name="diff",
-        x=np.asarray(x[0], dtype=input_dtype[0])
+        test_gradients=True,
+        x=x[0],
     )
