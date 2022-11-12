@@ -22,7 +22,7 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _arrays_to_float_variables(xs):
+def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
         if ivy.is_array(x, exclusive=True):
             if ivy.is_int_dtype(x.dtype):
@@ -32,7 +32,13 @@ def _arrays_to_float_variables(xs):
             return ivy.variable(x)
         return x
 
-    return ivy.nested_map(xs, map_fn, include_derived=True)
+    if xs_grad_idxs is not None:
+        xs = xs.to_dict()
+        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+        xs = ivy.Container(xs)
+        return xs
+    else:
+        return ivy.nested_map(xs, map_fn, include_derived=True)
 
 
 def _get_required_native_variables(xs, xs_grad_idxs):
@@ -88,7 +94,7 @@ def _idxs_to_str(idxs):
     return final_idxs
 
 
-def _get_native_variables_and_indices(x, reshape=True):
+def _get_native_variables_and_indices(x, reshape=True, idxs=None):
     def map_fn(x_):
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
@@ -113,12 +119,18 @@ def _get_native_variables_and_indices(x, reshape=True):
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
     else:
+        if idxs is not None:
+            arr_idxs = [
+                arr_idx
+                for arr_idx in arr_idxs
+                if "_".join(str(x) for x in arr_idx) in _idxs_to_str(idxs)
+            ]
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
 
 
-def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
+def _stop_grad_and_index(func_ret, retain_grads, grads):
     if not retain_grads:
         if ivy.is_array(func_ret):
             func_ret = ivy.stop_gradient(func_ret)
@@ -128,9 +140,6 @@ def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
                 lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
                 include_derived=True,
             )
-    if grad_idxs is not None:
-        grad_idxs = _idxs_to_str(grad_idxs)
-        grads = {idx: grads[idx] for idx in grad_idxs}
     if isinstance(grads, dict):
         grads = ivy.Container(grads)
     return func_ret, grads
