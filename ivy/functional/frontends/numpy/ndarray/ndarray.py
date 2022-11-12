@@ -45,7 +45,12 @@ class ndarray:
         return np_frontend.any(self.data, axis, out, keepdims, where=where)
 
     def argsort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.argsort(self.data, axis, kind, order)
+        return np_frontend.argsort(
+            self.data,
+            axis=axis,
+            kind=kind,
+            order=order,
+        )
 
     def mean(self, *, axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
@@ -70,6 +75,14 @@ class ndarray:
             keepdims=keepdims,
             initial=initial,
             where=where,
+        )
+
+    def argsort(self, *, axis=-1, kind=None, order=None):
+        return np_frontend.argsort(
+            self.data,
+            axis=axis,
+            kind=kind,
+            order=order,
         )
 
     @property
