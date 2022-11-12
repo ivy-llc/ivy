@@ -3,6 +3,8 @@ from numbers import Number
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
+jax_ArrayLike = Union[JaxArray, Number]
+
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
     return jnp.lcm(x1, x2)
@@ -64,8 +66,8 @@ def exp2(
 
 
 def copysign(
-    x1: Union[JaxArray, Number],
-    x2: Union[JaxArray, Number],
+    x1: jax_ArrayLike,
+    x2: jax_ArrayLike,
     /,
     *,
     out: Optional[JaxArray] = None,
