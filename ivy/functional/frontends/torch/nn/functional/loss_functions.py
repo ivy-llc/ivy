@@ -147,6 +147,7 @@ def smooth_l1_loss(
 
     return ret
 
+
 @to_ivy_arrays_and_back
 def l1_loss(
     input,

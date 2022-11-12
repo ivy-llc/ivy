@@ -216,6 +216,7 @@ def test_torch_mse_loss(
         reduction=reduction,
     )
 
+
 # l1_loss
 @handle_cmd_line_args
 @given(
@@ -254,7 +255,7 @@ def test_torch_mse_loss(
         fn_name="ivy.functional.frontends.torch.nn.functional.l1_loss"
     ),
 )
-def test_torch_mse_loss(
+def test_torch_l1_loss(
     dtype_and_true,
     dtype_and_pred,
     size_average,
