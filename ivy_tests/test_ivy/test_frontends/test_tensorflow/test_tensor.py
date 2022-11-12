@@ -6,6 +6,9 @@ import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
+    _pow_helper_shared_dtype,
+)
 
 
 # __add__
@@ -35,7 +38,7 @@ def test_tensorflow_instance_add(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__add__",
     )
 
@@ -67,7 +70,7 @@ def test_tensorflow_instance_div(dtype_and_x, as_variable, native_array, fw):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__div__",
     )
 
@@ -97,7 +100,7 @@ def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="get_shape",
     )
 
@@ -128,7 +131,7 @@ def test_tensorflow_instance_eq(dtype_and_x, as_variable, native_array):
             "other": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__eq__",
     )
 
@@ -160,7 +163,7 @@ def test_tensorflow_instance_floordiv(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__floordiv__",
     )
 
@@ -192,7 +195,7 @@ def test_tensorflow_instance_ge(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__ge__",
     )
 
@@ -224,7 +227,7 @@ def test_tensorflow_instance_gt(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__gt__",
     )
 
@@ -256,7 +259,7 @@ def test_tensorflow_instance_le(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__le__",
     )
 
@@ -288,7 +291,7 @@ def test_tensorflow_instance_lt(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__lt__",
     )
 
@@ -320,7 +323,7 @@ def test_tensorflow_instance_mul(dtype_and_x, as_variable, native_array, fw):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__mul__",
     )
 
@@ -354,7 +357,7 @@ def test_tensorflow_instance_sub(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__sub__",
     )
 
@@ -386,7 +389,7 @@ def test_tensorflow_instance_ne(dtype_and_x, as_variable, native_array):
             "other": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__ne__",
     )
 
@@ -418,7 +421,7 @@ def test_tensorflow_instance_radd(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__radd__",
     )
 
@@ -450,7 +453,7 @@ def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rfloordiv__",
     )
 
@@ -482,7 +485,7 @@ def test_tensorflow_instance_rsub(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rsub__",
     )
 
@@ -514,7 +517,7 @@ def test_tensorflow_instance_and(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__and__",
     )
 
@@ -546,7 +549,7 @@ def test_tensorflow_instance_rand(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rand__",
     )
 
@@ -578,7 +581,7 @@ def test_tensorflow_instance_or(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__or__",
     )
 
@@ -610,7 +613,7 @@ def test_tensorflow_instance_ror(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__ror__",
     )
 
@@ -642,7 +645,7 @@ def test_tensorflow_instance_truediv(dtype_and_x, as_variable, native_array):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__truediv__",
     )
 
@@ -674,7 +677,7 @@ def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rtruediv__",
     )
 
@@ -703,7 +706,7 @@ def test_tensorflow_instance_bool(dtype_and_x, as_variable, native_array, fw):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__bool__",
     )
 
@@ -732,7 +735,7 @@ def test_tensorflow_instance_nonzero(dtype_and_x, as_variable, native_array, fw)
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__nonzero__",
     )
 
@@ -767,7 +770,7 @@ def test_tensorflow_instance_neg(dtype_and_x, as_variable, native_array, fw):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__neg__",
     )
 
@@ -799,7 +802,7 @@ def test_tensorflow_instance_rxor(dtype_and_x, as_variable, native_array, fw):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rxor__",
     )
 
@@ -831,7 +834,7 @@ def test_tensorflow_instance_xor(dtype_and_x, as_variable, native_array, fw):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__xor__",
     )
 
@@ -870,7 +873,7 @@ def test_tensorflow_instance_matmul(dtype_and_x, as_variable, native_array, fw):
             "y": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__matmul__",
     )
 
@@ -909,7 +912,7 @@ def test_tensorflow_instance_rmatmul(dtype_and_x, as_variable, native_array, fw)
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rmatmul__",
     )
 
@@ -937,7 +940,7 @@ def test_tensorflow_instance_array(dtype_and_x, as_variable, native_array, fw):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__array__",
     )
 
@@ -965,7 +968,7 @@ def test_tensorflow_instance_invert(dtype_and_x, as_variable, native_array, fw):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__invert__",
     )
 
@@ -999,8 +1002,80 @@ def test_tensorflow_instance_rmul(dtype_and_x, as_variable, native_array, fw):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rmul__",
+    )
+
+
+# __rpow__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_pow_helper_shared_dtype(),
+)
+def test_tensorflow_instance_rpow(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "y": x[1],
+        },
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__rpow__",
+    )
+
+
+# __pow__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_pow(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    if x[1].dtype == "int32" or x[1].dtype == "int64":
+        if x[1].ndim == 0:
+            if x[1] < 0:
+                x[1] *= -1
+        else:
+            x[1][(x[1] < 0).nonzero()] *= -1
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "y": x[1],
+        },
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__pow__",
     )
 
 
@@ -1080,7 +1155,7 @@ def test_tensorflow_instance_getitem(dtype_and_x, as_variable, native_array, fw)
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={"slice_spec": index},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__getitem__",
     )
 
@@ -1150,6 +1225,35 @@ def test_tensorflow_instance_set_shape(dtype_and_x, as_variable, native_array, f
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={"shape": x[1]},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="set_shape",
+    )
+
+
+# __len__
+@handle_cmd_line_args
+@given(
+    dtype_and_x=_array_and_shape(
+        min_num_dims=1,
+        max_num_dims=5,
+    ),
+)
+def test_tensorflow_instance_len(dtype_and_x, as_variable, native_array, fw):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        all_as_kwargs_np_method={},
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__len__",
     )
