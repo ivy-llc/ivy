@@ -31,6 +31,35 @@ def cholesky(
     return ret
 
 
+def cov(
+    x1: JaxArray,
+    x2: Optional[JaxArray] = None,
+    /,
+    *,
+    rowVar: Optional[bool] = True,
+    bias: Optional[bool] = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[JaxArray] = None,
+    aweights: Optional[JaxArray] = None,
+    dtype: Optional[type] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if dtype is not None:
+        x1 = x1.type(dtype)
+        if x2 is not None:
+            x2 = x2.type(dtype)
+
+    return jnp.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+    )
+
+
 def cross(
     x1: JaxArray,
     x2: JaxArray,

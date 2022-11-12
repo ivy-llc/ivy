@@ -1386,6 +1386,48 @@ def test_cholesky(
     )
 
 
+# cov
+@handle_cmd_line_args
+@given(
+    dtype_x1_x2=dtype_value1_value2_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_value=-1e10,
+        max_value=1e10,
+        abs_smallest_val=0.01,
+        large_abs_safety_factor=2,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="cov"),
+)
+def test_cov(
+    dtype_x1_x2,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x1, x2, _ = dtype_x1_x2
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="cov",
+        x1=x1,
+        x2=x2,
+    )
+
+
 # cross
 @handle_cmd_line_args
 @given(

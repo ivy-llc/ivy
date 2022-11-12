@@ -39,6 +39,51 @@ def cholesky(
 cholesky.support_native_out = True
 
 
+def cov(
+    x1: torch.Tensor,
+    x2: Optional[torch.Tensor] = None,
+    /,
+    *,
+    rowVar: Optional[bool] = True,
+    bias: Optional[bool] = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[torch.Tensor] = None,
+    aweights: Optional[torch.Tensor] = None,
+    dtype: Optional[type] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    corr = int(not bias)
+    if ddof is not None:
+        if ddof == 1:
+            corr = int(False)
+        else:
+            corr = int(True)
+
+    if dtype is not None:
+        x1 = x1.type(dtype)
+
+    if x2 is None:
+        if rowVar is True:
+            return torch.cov(x1, correction=corr, fweights=fweights, aweights=aweights)
+        else:
+            return torch.cov(
+                torch.transpose(x1, 0, 1),
+                correction=corr,
+                fweights=fweights,
+                aweights=aweights,
+            )
+    else:
+        if dtype is not None:
+            x2 = x2.type(dtype)
+        combined = torch.vstack((x1, x2))
+        return torch.cov(
+            combined, correction=corr, fweights=fweights, aweights=aweights
+        )
+
+
+cov.support_native_out = True
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: torch.Tensor,

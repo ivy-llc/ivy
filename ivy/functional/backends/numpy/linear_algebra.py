@@ -31,6 +31,31 @@ def cholesky(
     return ret
 
 
+def cov(
+    x1: np.ndarray,
+    x2: Optional[np.ndarray] = None,
+    /,
+    *,
+    rowVar: Optional[bool] = True,
+    bias: Optional[bool] = False,
+    ddof: Optional[int] = None,
+    fweights: Optional[np.ndarray] = None,
+    aweights: Optional[np.ndarray] = None,
+    dtype: Optional[type] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.cov(
+        m=x1,
+        y=x2,
+        rowvar=rowVar,
+        bias=bias,
+        ddof=ddof,
+        fweights=fweights,
+        aweights=aweights,
+        dtype=dtype,
+    )
+
+
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,
