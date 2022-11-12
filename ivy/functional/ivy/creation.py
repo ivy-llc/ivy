@@ -1077,9 +1077,9 @@ def linspace(
                 [40.  7.]
                 [50. 11.]]])
 
-    >>> x1 = ivy.array([3., 2., 1.])
-    >>> y1 = ivy.array([13., 72., 11.])
-    >>> op = ivy.linspace(x1, y1, 4, axis=1,dev_str=ivy.Device('cpu'))
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.array([13., 72., 11.])
+    >>> op = ivy.linspace(x, y, 4, axis=1,dev_str=ivy.Device('cpu'))
     >>> print(op)
     ivy.array([[ 3.  8. 13.]
                [ 2. 37. 72.]
