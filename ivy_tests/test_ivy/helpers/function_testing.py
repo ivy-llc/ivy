@@ -373,13 +373,10 @@ def test_function(
         if hasattr_unsupported_gradients and fw in fw_list:
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
-                lambda x: x.dtype in fw_list[fw]
-                if isinstance(x,np.ndarray)
-                else None,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
             ):
                 pass
             else:
-                print(all_as_kwargs_np,"why",  )
 
                 gradient_test(
                     fn_name=fn_name,

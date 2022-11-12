@@ -1735,7 +1735,7 @@ def test_pow(
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
     helpers.test_function(
-        input_dtypes=[ivy.float16],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
