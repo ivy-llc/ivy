@@ -57,7 +57,6 @@ def handle_array_like(fn: Callable) -> Callable:
         parameters = type_hints
         annotations = type_hints.values()
 
-        # accessing common index across input arg values, parameters and annotations.
         for i, (annotation, parameter, arg) in enumerate(zip(annotations,
                                                              parameters,
                                                              args)):
