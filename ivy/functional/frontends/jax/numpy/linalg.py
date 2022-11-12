@@ -108,3 +108,7 @@ def tensorsolve(a, b, axes=None):
     res = ivy.solve(a, b)
     res = ivy.reshape(res, shape=ret_shape)
     return res
+
+@to_ivy_arrays_and_back
+def slogdet(a):
+    return ivy.slogdet(a)
