@@ -1214,6 +1214,7 @@ def test_frontend_method(
         "DeviceArray": jax.numpy.array,
         "ndarray": np.array,
         "Tensor": tf.constant,
+        "EagerTensor": tf.constant,
     }
     # split the arguments into their positional and keyword components
 
@@ -1402,7 +1403,7 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-
+    
     ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
