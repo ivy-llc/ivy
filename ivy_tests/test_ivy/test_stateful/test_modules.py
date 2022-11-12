@@ -6,6 +6,7 @@ import numpy as np
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.helpers as helpers
 
@@ -177,17 +178,17 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     v = ivy.Container(
         {
             "linear0": {
-                "b": ivy.variable(ivy.random_uniform(shape=[64])),
-                "w": ivy.variable(ivy.random_uniform(shape=[64, 4])),
+                "b": _variable(ivy.random_uniform(shape=[64])),
+                "w": _variable(ivy.random_uniform(shape=[64, 4])),
             },
             "linear1": {
-                "b": ivy.variable(ivy.random_uniform(shape=[64])),
-                "w": ivy.variable(ivy.random_uniform(shape=[64, 64])),
-                "extra": ivy.variable(ivy.random_uniform(shape=[64, 64])),
+                "b": _variable(ivy.random_uniform(shape=[64])),
+                "w": _variable(ivy.random_uniform(shape=[64, 64])),
+                "extra": _variable(ivy.random_uniform(shape=[64, 64])),
             },
             "linear2": {
-                "b": ivy.variable(ivy.random_uniform(shape=[5])),
-                "w": ivy.variable(ivy.random_uniform(shape=[5, 64])),
+                "b": _variable(ivy.random_uniform(shape=[5])),
+                "w": _variable(ivy.random_uniform(shape=[5, 64])),
             },
         }
     )
@@ -204,10 +205,10 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     v = ivy.Container(
         {
             "linear0": {
-                "b": ivy.variable(ivy.random_uniform(shape=[64])),
+                "b": _variable(ivy.random_uniform(shape=[64])),
             },
-            "linear1": {"w": ivy.variable(ivy.random_uniform(shape=[64, 64]))},
-            "linear2": {"b": ivy.variable(ivy.random_uniform(shape=[output_channels]))},
+            "linear1": {"w": _variable(ivy.random_uniform(shape=[64, 64]))},
+            "linear2": {"b": _variable(ivy.random_uniform(shape=[output_channels]))},
         }
     )
     try:
@@ -263,9 +264,9 @@ class TrainableModuleWithDuplicate(ivy.Module):
             self._linear0 = linear
             self._linear1 = linear
         else:
-            w = ivy.variable(ivy.ones((channels, channels)))
-            b0 = ivy.variable(ivy.ones((channels,)))
-            b1 = ivy.variable(ivy.ones((channels,)))
+            w = _variable(ivy.ones((channels, channels)))
+            b0 = _variable(ivy.ones((channels,)))
+            b1 = _variable(ivy.ones((channels,)))
             v0 = ivy.Container({"w": w, "b": b0})
             v1 = ivy.Container({"w": w, "b": b1})
             self._linear0 = ivy.Linear(channels, channels, device=device, v=v0)
