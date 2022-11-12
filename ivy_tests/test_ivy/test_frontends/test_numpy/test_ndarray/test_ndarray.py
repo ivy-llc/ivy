@@ -596,6 +596,7 @@ def test_numpy_instance_max(
         all_as_kwargs_np_method={
             "axis": axis,
             "keepdims": keepdims,
+            "initial": None
         },
         frontend="numpy",
         class_name="ndarray",

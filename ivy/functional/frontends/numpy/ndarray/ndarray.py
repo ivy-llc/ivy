@@ -75,7 +75,7 @@ class ndarray:
             where=where,
         )
 
-    def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
+    def max(self, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amax(
             self.data,
             axis=axis,
