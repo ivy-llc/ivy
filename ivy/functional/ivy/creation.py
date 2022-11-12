@@ -1039,6 +1039,78 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With General input:
+
+    >>> x = ivy.linspace(3,17,num=9)
+    >>> print(x)
+    ivy.array([ 3.    4.75  6.5   8.25 10.   11.75 13.5  15.25 17.  ])
+
+    >>> x1 = ivy.linspace(6,12,num=3,axis=0)
+    >>> print(x1)
+    ivy.array([ 6.   7.5  9.  10.5 12. ])
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> x2 = ivy.array([7, 11, 2, 9, 7, 6])
+    >>> op = ivy.linspace(x1,x2,3,axis=1)
+    >>> print(op)
+    ivy.array([[ 1.   4.   7. ]
+               [ 2.   6.5 11. ]
+               [ 3.   2.5  2. ]
+               [ 4.   6.5  9. ]
+               [ 5.   6.   7. ]
+               [ 6.   6.   6. ]])
+
+    >>> x1 = ivy.array([[10, 20, 30], [70, 40, 50]])
+    >>> x2 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> op = ivy.linspace(x1, x2, 4, axis=2)
+    >>> print(op)
+    ivy.array([[[10.  1.]
+                [20.  3.]
+                [30.  9.]]
+
+               [[70.  5.]
+                [40.  7.]
+                [50. 11.]]])
+
+    >>> x1 = ivy.array([3., 2., 1.])
+    >>> x3 = ivy.array([13., 72., 11.])
+    >>> op = ivy.linspace(x1, x3, 4, axis=1,dev_str=ivy.Device('cpu'))
+    >>> print(op)
+    ivy.array([[ 3.  8. 13.]
+               [ 2. 37. 72.]
+               [ 1.  6. 11.]])
+
+    # Array ``op`` is now stored on the CPU.
+
+    >>> x1 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> x2 = ivy.zeros(3)
+    >>> op1 = ivy.linspace(x1, x2, 4, axis=1)
+    >>> print(op1)
+    ivy.array([[[ 1.          3.          9.        ]
+                [ 0.66666667  2.          6.        ]
+                [ 0.33333333  1.          3.        ]
+                [ 0.          0.          0.        ]]
+
+               [[ 5.          7.         11.        ]
+                [ 3.33333333  4.66666667  7.33333333]
+                [ 1.66666667  2.33333333  3.66666667]
+                [ 0.          0.          0.        ]]])
+
+    >>> x2 = ivy.array([[5, 13, 9], [15, 6, 7]])
+    >>> x3 = ivy.ones(3)
+    >>> op1 = ivy.linspace(x2, x3, 2, axis=0)
+    >>> print(op1)
+    ivy.array([[[ 5. 13.  9.]
+                [15.  6.  7.]]
+
+               [[ 1.  1.  1.]
+                [ 1.  1.  1.]]])
+
     """
     return current_backend(start).linspace(
         start,
