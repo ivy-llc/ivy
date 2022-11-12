@@ -1048,8 +1048,8 @@ def linspace(
     >>> print(x)
     ivy.array([ 3.    4.75  6.5   8.25 10.   11.75 13.5  15.25 17.  ])
 
-    >>> x1 = ivy.linspace(6,12,num=3,axis=0)
-    >>> print(x1)
+    >>> y = ivy.linspace(6,12,num=3,axis=0)
+    >>> print(y)
     ivy.array([ 6.   7.5  9.  10.5 12. ])
 
     With :class:`ivy.Array` input:
