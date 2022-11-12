@@ -696,10 +696,7 @@ def test_torch_hstack(
     params_indices_others=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("valid"),
         indices_dtypes=["int64"],
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=1,
-        max_dim_size=10,
+        max_num_dims=1,
         indices_same_dims=True,
     ),
     num_positional_args=helpers.num_positional_args(
