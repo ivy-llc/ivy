@@ -266,17 +266,22 @@ def test_numpy_ndarray_all(
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
+        valid_axis=True,
     ),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.argsort"
     ),
+    descending=st.booleans(),
+    stable=st.booleans(),
 )
 def test_numpy_instance_argsort(
     dtype_x_axis,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
+    descending,
+    stable
+    
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -285,15 +290,16 @@ def test_numpy_instance_argsort(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
-        frontend_class=np.ndarray,
+        class_name="ndarray",
         fn_tree="ndarray.argsort",
-        x=x[0],
+        a=x[0],
         axis=axis,
+        descending=descending,
+        stable=stable
+        
     )
-
-
+    
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(

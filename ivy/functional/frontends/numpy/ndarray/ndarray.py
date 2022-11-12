@@ -40,10 +40,24 @@ class ndarray:
 
     def any(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.any(self.data, axis, out, keepdims, where=where)
-
-    def argsort(self, *, axis=-1, kind=None, order=None):
-        return np_frontend.argsort(self.data, axis, kind, order)
-
+     
+    def argsort(
+        self,
+        /,
+        *,
+        axis=None,
+        descending=False,
+        stable=True,
+        out=None
+    ):
+        return np_frontend.argsort(
+            self.data,
+            axis=axis,
+            descending=descending,
+            stable=stable,
+            out=out
+        )
+    
     def mean(self, * , axis=None, dtype=None, out=None, keepdims=False, where=True):
         return np_frontend.mean(
             self.data,
