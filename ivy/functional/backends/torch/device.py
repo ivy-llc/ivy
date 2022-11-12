@@ -67,6 +67,12 @@ def clear_mem_on_dev(device: torch.device, /):
 
 
 def num_gpus() -> int:
+    """Determine the number of available GPUs, with the backend framework.
+    Returns
+    -------
+    ret
+        Number of available GPUs.
+    """
     return torch.cuda.device_count()
 
 
