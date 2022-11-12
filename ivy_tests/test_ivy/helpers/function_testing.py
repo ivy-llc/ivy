@@ -64,6 +64,8 @@ def test_function(
     atol_: float = 1e-06,
     test_values: bool = True,
     test_gradients: bool = False,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str = "tensorflow",
     device_: str = "cpu",
     return_flat_np_arrays: bool = False,
@@ -357,7 +359,12 @@ def test_function(
         raise e
     ivy.unset_backend()
     # gradient test
-    if test_gradients and not fw == "numpy" and not instance_method:
+    if (
+        test_gradients
+        and not fw == "numpy"
+        and not instance_method
+        and "bool" not in input_dtypes
+    ):
         gradient_test(
             fn_name=fn_name,
             all_as_kwargs_np=all_as_kwargs_np,
@@ -369,6 +376,8 @@ def test_function(
             container_flags=container_flags,
             rtol_=rtol_,
             atol_=atol_,
+            xs_grad_idxs=xs_grad_idxs,
+            ret_grad_idxs=ret_grad_idxs,
             ground_truth_backend=ground_truth_backend,
         )
 
@@ -767,6 +776,8 @@ def gradient_test(
     container_flags,
     rtol_: float = None,
     atol_: float = 1e-06,
+    xs_grad_idxs=None,
+    ret_grad_idxs=None,
     ground_truth_backend: str = "tensorflow",
 ):
     def grad_fn(xs):
@@ -778,9 +789,7 @@ def gradient_test(
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
         ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
-        if isinstance(ret, tuple):
-            ret = ret[0]
-        return ivy.mean(ret)
+        return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
@@ -801,7 +810,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, grads = ivy.execute_with_gradients(grad_fn, xs)
+    _, grads = ivy.execute_with_gradients(
+        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+    )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
     # compute the return with a Ground Truth backend
@@ -828,7 +839,9 @@ def gradient_test(
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
     xs = args_to_container(arg_array_vals + kwarg_array_vals)
-    _, grads_from_gt = ivy.execute_with_gradients(grad_fn, xs)
+    _, grads_from_gt = ivy.execute_with_gradients(
+        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+    )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
 

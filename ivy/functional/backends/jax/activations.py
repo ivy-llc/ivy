@@ -37,11 +37,7 @@ def sigmoid(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def softmax(
-    x: JaxArray,
-    /,
-    *,
-    axis: Optional[int] = None, 
-    out: Optional[JaxArray] = None
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
 ) -> JaxArray:
     if axis is None:
         axis = -1

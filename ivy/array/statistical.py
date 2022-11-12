@@ -17,6 +17,28 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.min()
+        >>> print(y)
+        ivy.array(3.)
+
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = x.min()
+        >>> print(y)
+        ivy.array(-1)
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.min(out=y)
+        >>> print(y)
+        ivy.array(0.1)
+
+        """
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(

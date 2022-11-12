@@ -24,7 +24,7 @@ The tasks currently open are:
 
 #. Function Formatting
 #. Frontend APIs
-#. Ivy API Extensions
+#. Ivy Experimental API
 
 We try to explain these tasks as clearly as possible, but in cases where things are not clear, then please feel free to reach out on `discord`_ in the `open tasks channel`_!
 
@@ -124,7 +124,7 @@ The general workflow for this task is:
 If you feel as though there is an ivy function :func:`ivy.<func_name>` clearly missing, which would make your frontend function much simpler to implement, then you should first do the following:
 
 #. Create a new issue with the title :func:`ivy.<func_name>`
-#. Add the labels :code:`Suggestion`, :code:`Extension`, :code:`Ivy API` and :code:`Next Release` to it
+#. Add the labels :code:`Suggestion`, :code:`Experimental`, :code:`Ivy API` and :code:`Next Release` to it
 #. Then simply leave this issue open.
 
 At some point, a member of our team will assess whether it should be added, and if so, they will add it to another appropriate ToDo list issue (see the open task below).
@@ -136,7 +136,7 @@ After this, you then have two options for how to proceed:
    Once the PR is merged, your sub-task issue will then be closed as normal.
 #. Alternatively, if you do not want to try and implement the frontend function compositionally, or if this is not feasible, then you can simply choose another frontend function to work on.
    You could also choose to work on another open task entirely at this point if you wanted to.
-   For example, you might decide to wait for a member of our team to review your suggested addition :func:`ivy.<func_name>`, and potentially add this to an Ivy Extension ToDo list issue (see the open task below).
+   For example, you might decide to wait for a member of our team to review your suggested addition :func:`ivy.<func_name>`, and potentially add this to an Ivy Experimental ToDo list issue (see the open task below).
    In either case, you should add the label "Pending other Issue" to the frontend sub-task issue, and leave it open.
    This issue will then still show up as open in the original frontend ToDo list, helpfully preventing others from working on this problematic frontend function, which depends on the unimplemented :func:`ivy.<func_name>`.
    Finally, you should add a comment to the issue with the contents: :code:`pending <issue_link>`, which links to the :func:`ivy.<func_name>` issue, making the "Pending other Issue" label more informative.
@@ -213,7 +213,7 @@ This is confirmation that we've found the correct place!
 If many of the files are empty and you're unsure where to place your function, feel free to ask the member of the Ivy team reviewing your PR.
 
 
-Ivy API Extensions
+Ivy Experimental API
 ------------------
 
 The goal of this task is to add functions to the existing Ivy API which would help with the implementation for many of the functions in the frontend.
@@ -225,11 +225,13 @@ There is only one central ToDo list `issue <https://github.com/unifyai/ivy/issue
 
 A general workflow for these tasks would be:
 
-#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/extensions/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
+#. Implement the functions in each of the backend files :mod:`ivy/functional/backends/backend_name/experimental/[relevant_submodule].py`, sometimes as a composition if the respective backends do not behave in a similar way.
    You may also use submodule-specific helper functions to recreate the behaviour.
    Refer the `Backend API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#backend-api>`_ on how this can be done.
-#. Implement the functions in :mod:`ivy/functional/ivy/extensions/[relevant_submodule].py` simply deferring to their backend-specific implementation.
+#. Implement the functions in :mod:`ivy/functional/ivy/experimental/[relevant_submodule].py` simply deferring to their backend-specific implementation.
    Refer the `Ivy API Guide <https://lets-unify.ai/ivy/deep_dive/navigating_the_code.html#ivy-api>`_ to get a clearer picture of how this must be done.
+#. Implement the container instance method in :mod:`ivy/container/experimental/[relevant_submodule].py` and the array instance method 
+   in :mod:`ivy/array/experimental/[relevant_submodule].py`
 #. Write tests for the function using the `Ivy Tests`_ guide, and make sure they are passing.
 
 A few points to keep in mind while doing this:

@@ -1143,7 +1143,7 @@ def test_torch_ceil(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    decimals=st.integers(),
+    decimals=st.integers(min_value=0, max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="functional.frontends.torch.round"
     ),
@@ -1355,6 +1355,75 @@ def test_torch_div(
     )
 
 
+# reciprocal
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.reciprocal"
+    ),
+)
+def test_torch_reciprocal(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="reciprocal",
+        input=x[0],
+    )
+
+
+# remainder
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.remainder"
+    ),
+)
+def test_torch_remainder(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="remainder",
+        atol=1,
+        input=x[0],
+        other=x[1],
+        out=None,
+    )
+
+
 # flipud
 @handle_cmd_line_args
 @given(
@@ -1455,5 +1524,151 @@ def test_torch_true_divide(
         fn_tree="true_divide",
         input=x[0],
         other=x[1],
+        out=None,
+    )
+
+
+# floor
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.floor"
+    ),
+)
+def test_torch_floor(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="floor",
+        input=x[0],
+        out=None,
+    )
+
+
+# log1p
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.log1p"
+    ),
+)
+def test_torch_log1p(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="log1p",
+        input=x[0],
+        out=None,
+    )
+
+
+# addcdiv
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+    value=st.floats(min_value=-100, max_value=100),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.addcdiv"
+    ),
+)
+def test_torch_addcdiv(
+    dtype_and_x,
+    value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[2], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="addcdiv",
+        input=x[0],
+        tensor1=x[1],
+        tensor2=x[2],
+        value=value,
+        out=None,
+    )
+
+
+# addcmul
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+    value=st.floats(min_value=-10, max_value=10),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="functional.frontends.torch.addcmul"
+    ),
+)
+def test_torch_addcmul(
+    dtype_and_x,
+    value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="addcmul",
+        atol=1e-2,
+        input=x[0],
+        tensor1=x[1],
+        tensor2=x[2],
+        value=value,
         out=None,
     )
