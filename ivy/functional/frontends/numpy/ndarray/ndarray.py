@@ -14,19 +14,6 @@ class ndarray:
     # Instance Methods #
     # ---------------- #
 
-
-    # max
-    def max(self, axis=None, out=None, keepdims=False, inital=None, where=True):
-        return np_frontend.amax(
-            self.data,
-            axis=axis, 
-            out=out,
-            keepdims=keepdims,
-            initial=inital,
-            where=where
-        )
-
-    # Add argmax #
     def argmax(
         self,
         /,
@@ -75,7 +62,7 @@ class ndarray:
             where=where,
         )
 
-    def max(self, axis=None, out=None, keepdims=False, initial=None, where=True):
+    def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amax(
             self.data,
             axis=axis,
