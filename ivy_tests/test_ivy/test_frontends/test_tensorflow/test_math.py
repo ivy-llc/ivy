@@ -1039,3 +1039,44 @@ def test_tensorflow_truediv(
         x=x[0],
         y=x[1],
     )
+
+
+# pow
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=[
+            "float16",
+            "float32",
+            "float64",
+            "int32",
+            "int64",
+        ],
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.math.pow"
+    ),
+)
+def test_tensorflow_pow(
+    dtype_and_x, as_variable, num_positional_args, native_array
+):
+    input_dtype, x = dtype_and_x
+    if x[1].dtype == "int32" or x[1].dtype == "int64":
+        if x[1].ndim == 0:
+            if x[1] < 0:
+                x[1] *= -1
+        else:
+            x[1][(x[1] < 0).nonzero()] *= -1
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="math.pow",
+        x=x[0],
+        y=x[1],
+    )
