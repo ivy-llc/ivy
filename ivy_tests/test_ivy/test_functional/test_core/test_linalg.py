@@ -1288,7 +1288,7 @@ def _matrix_rank_helper(draw):
             min_num_dims=2,
             shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
             large_abs_safety_factor=48,
-            small_abs_safety_factor=48,
+            abs_smallest_val=1e-1,
             safety_factor_scale="log",
         )
     )
@@ -1299,9 +1299,9 @@ def _matrix_rank_helper(draw):
 @handle_cmd_line_args
 @given(
     dtype_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
-    rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
     num_positional_args=helpers.num_positional_args(fn_name="matrix_rank"),
 )
@@ -1334,7 +1334,7 @@ def test_matrix_rank(
         fn_name="matrix_rank",
         x=x[0],
         atol=atol,
-        rtol_=rtol,
+        rtol=rtol,
     )
 
 
