@@ -740,34 +740,26 @@ def test_dsplit(
     )
 
 
-@st.composite
-def atleast_nd_arrays(draw, in_dtype):
-    shapes = draw(helpers.get_shape())
-    dtypes = draw(helpers.get_dtypes(in_dtype))
-    arrays = []
-    for c, (shape, dtype) in enumerate(zip(shapes, dtypes), 1):
-        x = draw(helpers.array_values(dtype=dtype, shape=shape), label=f"x{c}").tolist()
-        arrays.append(x)
-    return dtypes, arrays
-
-
 # atleast_1d
 @handle_cmd_line_args
 @given(
-    dtype_arrays=atleast_nd_arrays(in_dtype="numeric"),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
 )
 def test_atleast_1d(
-    dtype_arrays,
+    dtype_and_x,
     as_variable,
     native_array,
     container,
     instance_method,
     fw,
 ):
-    input_dtypes, arrays = dtype_arrays
+    input_dtypes, arrays = dtype_and_x
     kw = {}
-    for i, array in enumerate(arrays):
-        kw["x{}".format(i)] = np.asarray(array)
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     num_positional_args = len(kw)
     helpers.test_function(
         input_dtypes=input_dtypes,
