@@ -374,12 +374,13 @@ def test_function(
             if ivy.nested_argwhere(
                 all_as_kwargs_np,
                 lambda x: x.dtype in fw_list[fw]
-                if str(type(x)) == "<class 'numpy.ndarray'>"
+                if isinstance(x,np.ndarray)
                 else None,
             ):
                 pass
-
             else:
+                print(all_as_kwargs_np,"why",  )
+
                 gradient_test(
                     fn_name=fn_name,
                     all_as_kwargs_np=all_as_kwargs_np,
@@ -395,6 +396,23 @@ def test_function(
                     ret_grad_idxs=ret_grad_idxs,
                     ground_truth_backend=ground_truth_backend,
                 )
+
+        else:
+            gradient_test(
+                fn_name=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                as_variable_flags=as_variable_flags,
+                native_array_flags=native_array_flags,
+                container_flags=container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
