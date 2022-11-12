@@ -71,24 +71,28 @@ def dtypes_x_reshape(draw):
 @handle_cmd_line_args
 @given(
     dtypes_x_shape=dtypes_x_reshape(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.reshape"
+    ),
 )
 def test_numpy_ndarray_reshape(
     dtypes_x_shape,
     as_variable,
     native_array,
+    num_positional_args_method
 ):
     input_dtype, x, shape = dtypes_x_shape
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
         as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
+        num_positional_args_init=1,
         native_array_flags_init=native_array,
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        input_dtypes_method=[],
+        input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
+        num_positional_args_method=num_positional_args_method,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={
             "shape": shape,
