@@ -441,7 +441,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the
         input is returned.
     """
-    if key == "linear_algebra":
+    if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)

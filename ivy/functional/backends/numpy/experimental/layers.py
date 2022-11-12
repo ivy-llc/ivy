@@ -8,6 +8,57 @@ from typing import Optional, Union, Tuple, Literal
 import ivy
 
 
+def max_pool1d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(kernel, tuple):
+        kernel = kernel[0]
+
+    if data_format == "NCW":
+        x = x.permute(0, 2, 1)
+
+    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_w = (x_shape[1] - kernel) // strides + 1
+    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides,
+        x.strides[1],
+        x.strides[2],
+    )
+
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    res = sub_matrices.max(axis=(2))
+
+    if data_format == "NCW":
+        return res.permute(0, 2, 1)
+    return res
+
+
 def max_pool2d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int]],
@@ -67,118 +118,6 @@ def max_pool2d(
     res = sub_matrices.max(axis=(3, 4))
     if data_format == "NCHW":
         return np.transpose(res, (0, 3, 1, 2))
-    return res
-
-
-def avg_pool2d(
-    x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NHWC",
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = (kernel,) * 2
-    elif len(kernel) == 1:
-        kernel = (kernel,) * 2
-
-    if isinstance(strides, int):
-        strides = (strides,) * 2
-    elif len(strides) == 1:
-        strides = (strides[0],) * 2
-
-    if data_format == "NCHW":
-        x = np.transpose(x, (0, 2, 3, 1))
-
-    x_shape = list(x.shape[1:3])
-    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
-    )
-
-    x_shape = x.shape
-    new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
-    new_w = (x_shape[2] - kernel[1]) // strides[1] + 1
-    new_shape = [x_shape[0], new_h, new_w] + list(kernel) + [x_shape[-1]]
-    new_strides = (
-        x.strides[0],
-        x.strides[1] * strides[0],
-        x.strides[2] * strides[1],
-        x.strides[1],
-        x.strides[2],
-        x.strides[3],
-    )
-    # B x OH x OW x KH x KW x I
-    sub_matrices = np.lib.stride_tricks.as_strided(
-        x, new_shape, new_strides, writeable=False
-    )
-
-    # B x OH x OW x O
-    res = np.mean(sub_matrices, axis=(3, 4))
-    if data_format == "NCHW":
-        return np.transpose(res, (0, 3, 1, 2))
-    return res
-
-
-def max_pool1d(
-    x: np.ndarray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NWC",
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-
-    if isinstance(strides, tuple):
-        strides = strides[0]
-    if isinstance(kernel, tuple):
-        kernel = kernel[0]
-
-    if data_format == "NCW":
-        x = x.permute(0, 2, 1)
-
-    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
-    x = np.pad(
-        x,
-        [
-            (0, 0),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
-    )
-
-    x_shape = x.shape
-    new_w = (x_shape[1] - kernel) // strides + 1
-    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
-    new_strides = (
-        x.strides[0],
-        x.strides[1] * strides,
-        x.strides[1],
-        x.strides[2],
-    )
-
-    sub_matrices = np.lib.stride_tricks.as_strided(
-        x, new_shape, new_strides, writeable=False
-    )
-
-    res = sub_matrices.max(axis=(2))
-
-    if data_format == "NCW":
-        return res.permute(0, 2, 1)
     return res
 
 
@@ -250,6 +189,118 @@ def max_pool3d(
     return res
 
 
+def avg_pool1d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+
+    if isinstance(strides, tuple):
+        strides = strides[0]
+    if isinstance(kernel, tuple):
+        kernel = kernel[0]
+
+    if data_format == "NCW":
+        x = x.permute(0, 2, 1)
+
+    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_w = (x_shape[1] - kernel) // strides + 1
+    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides,
+        x.strides[1],
+        x.strides[2],
+    )
+
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    res = np.mean(sub_matrices, axis=2)
+
+    if data_format == "NCW":
+        return res.permute(0, 2, 1)
+    return res
+
+
+def avg_pool2d(
+    x: np.ndarray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 2
+    elif len(kernel) == 1:
+        kernel = (kernel,) * 2
+
+    if isinstance(strides, int):
+        strides = (strides,) * 2
+    elif len(strides) == 1:
+        strides = (strides[0],) * 2
+
+    if data_format == "NCHW":
+        x = np.transpose(x, (0, 2, 3, 1))
+
+    x_shape = list(x.shape[1:3])
+    pad_h = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
+    pad_w = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            (pad_h // 2, pad_h - pad_h // 2),
+            (pad_w // 2, pad_w - pad_w // 2),
+            (0, 0),
+        ],
+        "edge",
+    )
+
+    x_shape = x.shape
+    new_h = (x_shape[1] - kernel[0]) // strides[0] + 1
+    new_w = (x_shape[2] - kernel[1]) // strides[1] + 1
+    new_shape = [x_shape[0], new_h, new_w] + list(kernel) + [x_shape[-1]]
+    new_strides = (
+        x.strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
+        x.strides[1],
+        x.strides[2],
+        x.strides[3],
+    )
+    # B x OH x OW x KH x KW x I
+    sub_matrices = np.lib.stride_tricks.as_strided(
+        x, new_shape, new_strides, writeable=False
+    )
+
+    # B x OH x OW x O
+    res = np.mean(sub_matrices, axis=(3, 4))
+    if data_format == "NCHW":
+        return np.transpose(res, (0, 3, 1, 2))
+    return res
+
+
 def avg_pool3d(
     x: np.ndarray,
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -316,6 +367,33 @@ def avg_pool3d(
     if data_format == "NCDHW":
         return np.transpose(res, (0, 4, 1, 2, 3))
     return res
+
+
+def fft(
+    x: np.ndarray,
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if not isinstance(dim, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+    if n is None:
+        n = x.shape[dim]
+    if n < -len(x.shape):
+        raise ivy.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not isinstance(n, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+    if n <= 1:
+        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return np.fft.fft(x, n, dim, norm)
 
 
 def dct(

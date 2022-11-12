@@ -1,5 +1,6 @@
 # global
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
@@ -284,6 +285,11 @@ def div(input, other, *, rounding_mode=None, out=None):
 
 
 @to_ivy_arrays_and_back
+def reciprocal(input, *, out=None):
+    return ivy.reciprocal(input)
+
+
+@to_ivy_arrays_and_back
 def floor(input, *, out=None):
     return ivy.floor(input, out=out)
 
@@ -313,3 +319,19 @@ divide = div
 @to_ivy_arrays_and_back
 def true_divide(input, other, *, out=None):
     return ivy.divide(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def log1p(input, *, out=None):
+    return ivy.log1p(input, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
+    return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def addcmul(input, tensor1, tensor2, *, value=1, out=None):
+    return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)

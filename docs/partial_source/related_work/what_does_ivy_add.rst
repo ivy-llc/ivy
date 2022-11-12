@@ -1,3 +1,5 @@
+.. _`RWorks What does Ivy Add?`:
+
 What does Ivy Add?
 ==================
 
@@ -97,7 +99,7 @@ Finally, vendor-specific compilers sit at the very bottom of the stack as far as
 These are essential for converting models into instructions which the specific hardware can actually understand, and they also of course form a critical part of the stack.
 However, again they do nothing to address the challenge of running code from one framework inside another framework at training time, which is the central problem Ivy addresses.
 
-ML Unifying Companies
+ML-Unifying Companies
 ---------------------
 The ML-unifying companies `Quansight`_, `OctoML`_ and `Modular`_ are/were directly involved with the `Array API Standard`_, `Apache TVM`_ and `MLIR`_ respectively, as explained in the :ref:`ML-Unifying Companies` section.
 For the same reasons that Ivy as a framework is complementary to these three frameworks, Ivy as a company is also complementary to these three companies.
