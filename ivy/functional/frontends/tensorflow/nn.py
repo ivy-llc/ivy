@@ -199,6 +199,8 @@ weighted_cross_entropy_with_logits.unsupported_dtypes = (
 @to_ivy_arrays_and_back
 def local_response_normalization(
         input,
+        /,
+        *,
         depth_radius = 5,
         bias = 1,
         alpha = 1,
@@ -210,12 +212,10 @@ def local_response_normalization(
         4,
         message="4D input, but got input with sizes " + str(input_shape),
     )
-    input_perm = ivy.permute_dims(input , axes= [0,3,1,2])
+    input_perm = ivy.permute_dims(input , axes= [0 , 3 , 1 , 2 ])
     sqr_sum = ivy.zeros_like(input_perm)
     for p in range(input_shape[0]):
-        for c in range(input_shape[3]):
-            start_idx = c - depth_radius
-            end_idx = c + depth_radius +1
-            sqr_sum[p][c] = sum(ivy.pow(input_perm[p][max(start_idx,0):end_idx],2.0))
+        sqr_sum[p] = [sum(ivy.pow(input_perm[p][max(c - depth_radius , 0): c + depth_radius + 1 ] , 2.0) )
+                         for c in range(input_shape[3])]
     div = ivy.divide(input_perm, ivy.pow(ivy.add(math.scalar_mul(alpha,sqr_sum),bias), beta))
-    return ivy.permute_dims(div,[0,2,3,1])
+    return ivy.permute_dims(div,[ 0 , 2 , 3 , 1 ])
