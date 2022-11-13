@@ -170,3 +170,10 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     if isinstance(transformed, tuple):
         return list(transformed)
     return transformed
+
+
+def atleast_3d(*arys: torch.Tensor) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed

@@ -146,3 +146,9 @@ def atleast_2d(
     *arys: Union[tf.Tensor, tf.Variable],
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_2d(*arys)
+
+
+def atleast_3d(
+    *arys: Union[tf.Tensor, tf.Variable],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_3d(*arys)

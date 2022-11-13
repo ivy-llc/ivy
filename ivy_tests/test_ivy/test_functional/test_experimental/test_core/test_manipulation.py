@@ -828,7 +828,6 @@ def test_dstack(
     ),
 )
 def test_atleast_2d(
-    *,
     dtype_and_x,
     as_variable,
     num_positional_args,

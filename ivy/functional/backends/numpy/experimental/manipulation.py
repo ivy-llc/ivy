@@ -240,3 +240,7 @@ def dstack(
 
 def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_2d(*arys)
+
+
+def atleast_3d(*arys: np.ndarray) -> List[np.ndarray]:
+    return np.atleast_3d(*arys)
