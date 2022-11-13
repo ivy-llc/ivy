@@ -814,8 +814,8 @@ def test_dstack(
 
 
 # atleast_2d
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
@@ -824,10 +824,14 @@ def test_dstack(
 def test_atleast_2d(
     dtype_and_x,
     as_variable,
+    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -837,12 +841,52 @@ def test_atleast_2d(
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="atleast_2d",
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        **kw,
+    )
+
+
+@handle_test(
+    fn_tree="functional.experimental.atleast_3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
+)
+def test_atleast_3d(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtypes, arrays = dtype_and_x
+    kw = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
         **kw,
     )
