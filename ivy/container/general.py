@@ -21,7 +21,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_native_array.
@@ -46,9 +45,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -63,7 +59,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_native_array(
@@ -75,7 +70,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -100,9 +94,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -116,7 +107,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -129,7 +119,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_ivy_array.
@@ -154,9 +143,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -171,7 +157,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_ivy_array(
@@ -183,7 +168,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -208,9 +192,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -224,7 +205,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -237,7 +217,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_array.
@@ -279,7 +258,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_array(
@@ -291,7 +269,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_array.
@@ -316,9 +293,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -332,7 +306,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -344,7 +317,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_ivy_container.
@@ -366,9 +338,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -382,7 +351,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_ivy_container(
@@ -393,7 +361,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_ivy_container.
@@ -415,9 +382,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -430,7 +394,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -1852,8 +1815,8 @@ class ContainerWithGeneral(ContainerBase):
             "scatter_flat",
             indices,
             updates,
-            size,
-            reduction,
+            size=size,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -2547,15 +2510,15 @@ class ContainerWithGeneral(ContainerBase):
 
         Examples
         --------
-        With one :class:`ivy.Container` inputs:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 0, 1, 1]),
         ...                   b=ivy.array([1, -1, 0, 0]))
         >>> y = ivy.Container.static_to_numpy(x)
         >>> print(y)
         {
-            a: array([1, 0, 1, 1]),
-            b: array([1, -1, 0, 0])
+            a: array([1, 0, 1, 1], dtype=int32),
+            b: array([1, -1, 0, 0], dtype=int32)
         }
 
         >>> x = ivy.Container(a=ivy.array([1., 0., 0., 1.]),
@@ -2564,20 +2527,7 @@ class ContainerWithGeneral(ContainerBase):
         >>> print(y)
         {
             a: array([1., 0., 0., 1.], dtype=float32),
-            b: array([1, 1, -1, 0])
-        }
-
-        Examples
-        --------
-        With one :class:`ivy.Container` static method:
-
-        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]),
-        ...                   b=ivy.array([-1, 0, 1, 1, 1, 0]))
-        >>> y = ivy.Container.static_has_nans(x)
-        >>> print(y)
-        {
-            a: false,
-            b: false
+            b: array([1, 1, -1, 0], dtype=int32)
         }
 
         """
@@ -2634,43 +2584,25 @@ class ContainerWithGeneral(ContainerBase):
         --------
         With one :class:`ivy.Container` instances:
 
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1, 0, 1, 1]))
+        >>> y = x.to_numpy()
+        >>> print(y)
+        {
+            a: array([-1, 0, 1], dtype=int32),
+            b: array([1, 0, 1, 1], dtype=int32)
+        }
+
         >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
         ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
         >>> y = x.to_numpy()
         >>> print(y)
         {
             a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]],dtype=int32),
+                    [-1, 0, 1],
+                    [1, 0, -1]], dtype=int32),
             b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]]), dtype=int32
-        }
-
-        >>> x = ivy.Container(a=ivy.native_array([[-1, 0, 1], [-1, 0, 1], [1, 0, -1]]),
-        ...                   b=ivy.native_array([[-1, 0, 0], [1, 0, 1], [1, 1, 1]]))
-        >>> y = ivy.Container.static_to_numpy(x)
-        >>> print(y)
-        {
-            a: array([[-1, 0, 1],
-                      [-1, 0, 1],
-                      [1, 0, -1]],dtype=int32),
-            b: array([[-1, 0, 0],
-                      [1, 0, 1],
-                      [1, 1, 1]]),dtype=int32
-        }
-
-        Examples
-        --------
-        With :class:`ivy.Container` instance method:
-
-        >>> x = ivy.Container(a=ivy.array([1, 0, 1]),
-        ...                   b=ivy.array([-1, 0, 1, 1]))
-        >>> y = x.has_nans()
-        >>> print(y)
-        {
-            a: false,
-            b: false
+                    [1, 0, 1],
+                    [1, 1, 1]], dtype=int32)
         }
 
         """

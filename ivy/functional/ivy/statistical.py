@@ -13,6 +13,21 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+# Helpers #
+# --------#
+
+
+def _get_promoted_type_of_operands(operands):
+    dtype = None
+    for operand in operands:
+        operand_dtype = ivy.as_ivy_dtype(operand.dtype)
+        if dtype is None:
+            dtype = operand_dtype
+        else:
+            dtype = ivy.promote_types(dtype, operand_dtype)
+    return ivy.as_native_dtype(dtype)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -105,14 +120,6 @@ def min(
     ivy.array(0)
 
     With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.min(x)
-    >>> print(y)
-    {
-        a: ivy.array(0.),
-        b: ivy.array(3.)
-    }
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
     >>> z = x.min()

@@ -22,54 +22,117 @@ from ivy.exceptions import handle_exceptions
 # ------- #
 
 
-def _zero_gradients_to_none_and_to_ivy(grads):
-    if isinstance(grads, ivy.Array):
-        return None if ivy.all(grads == 0.0) else ivy.to_ivy(grads)
-    else:
-        zero_idxs = ivy.nested_argwhere(grads, lambda x: ivy.all(x == 0.0) or x is None)
-        if (
-            not isinstance(zero_idxs, list)
-            or np.asarray(zero_idxs, dtype="object").size == 0
-        ):
-            return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
-        zero_idxs.reverse()
-        ivy.prune_nest_at_indices(grads, zero_idxs)
-        return ivy.nested_map(grads, ivy.to_ivy, include_derived=True)
-
-
-def _get_native_arrays_and_indices(func_ret, reshape=True):
+def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
-        if ivy.is_array(x):
-            x = ivy.to_ivy(x) if ivy.is_native_array(x) else x
-            if len(x.shape) == 0:
-                return ivy.to_native(x)
-            elif x.size == 1:
-                if reshape:
-                    return ivy.to_native(ivy.reshape(x, []))
-                return ivy.to_native(x)
+        if ivy.is_array(x, exclusive=True):
+            if ivy.is_int_dtype(x.dtype):
+                x = x.astype(ivy.default_float_dtype())
             else:
-                return ivy.to_ivy(x)
+                x = ivy.stop_gradient(x)
+            return ivy.variable(x)
         return x
 
-    if isinstance(func_ret, ivy.Array):
-        return [], map_fn(func_ret)
-
-    func_ret = ivy.nested_map(func_ret, map_fn, include_derived=True)
-    arr_idxs = ivy.nested_argwhere(func_ret, lambda x: ivy.is_native_array(x))
-    if not isinstance(arr_idxs, list) or np.asarray(arr_idxs, "object").size == 0:
-        arr_values = []
+    if xs_grad_idxs is not None:
+        xs = xs.to_dict()
+        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+        xs = ivy.Container(xs)
+        return xs
     else:
-        arr_values = ivy.multi_index_nest(func_ret, arr_idxs)
-        for i in range(len(arr_idxs)):
-            arr_idxs[i] = [str(x) for x in arr_idxs[i]]
-            arr_idxs[i] = "_".join(arr_idxs[i])
-
-    return arr_idxs, arr_values
+        return ivy.nested_map(xs, map_fn, include_derived=True)
 
 
-def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
+def _get_required_native_variables(xs, xs_grad_idxs):
+    xs = ivy.to_ivy(xs)
+    if xs_grad_idxs is not None:
+        ivy.map_nest_at_indices(xs, xs_grad_idxs, ivy.to_native)
+    else:
+        xs = ivy.nested_map(xs, ivy.to_native)
+
+    def map_fn(x):
+        if ivy.is_native_array(x):
+            return x
+        return None
+
+    xs = ivy.nested_map(xs, map_fn, include_derived=True)
+    none_idxs = ivy.nested_argwhere(xs, lambda x: x is None)
+    if not _check_if_empty(none_idxs):
+        none_idxs.reverse()
+        ivy.prune_nest_at_indices(xs, none_idxs)
+    return xs
+
+
+def _check_if_empty(idxs):
+    return not isinstance(idxs, list) or np.asarray(idxs, dtype="object").size == 0
+
+
+def _remove_zeros_and_nones(grads, x, idx=[]):
+    if ivy.is_array(x):
+        abs_val = ivy.abs(x)
+        if ivy.all(abs_val.astype("float64") < 1e-10) and len(idx):
+            ivy.prune_nest_at_index(grads, idx)
+        return grads
+    if x is None:
+        ivy.prune_nest_at_index(grads, idx)
+    else:
+        keys = [k for k in x]
+        for k in keys:
+            idx.append(k)
+            grads = _remove_zeros_and_nones(grads, x[k], idx)
+            idx.pop()
+
+        keys = [k for k in x]
+        if len(keys) == 0 and len(idx) and _check_if_empty(idx):
+            ivy.prune_nest_at_index(grads, idx)
+    return grads
+
+
+def _idxs_to_str(idxs):
+    final_idxs = []
+    for i in range(len(idxs)):
+        final_idxs.append([str(x) for x in idxs[i]])
+        final_idxs[i] = "_".join(final_idxs[i])
+    return final_idxs
+
+
+def _get_native_variables_and_indices(x, reshape=True, idxs=None):
+    def map_fn(x_):
+        if ivy.is_array(x_):
+            x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
+            if len(x_.shape) == 0:
+                return ivy.to_native(x_)
+            if reshape:
+                if x_.size == 1:
+                    if reshape:
+                        return ivy.to_native(ivy.reshape(x_, []))
+                    return ivy.to_native(x_)
+                else:
+                    return ivy.to_ivy(x_)
+            else:
+                return ivy.to_native(x_)
+        return x_
+
+    if ivy.is_array(x):
+        return [], map_fn(x)
+
+    x = ivy.nested_map(x, map_fn, include_derived=True)
+    arr_idxs = ivy.nested_argwhere(x, lambda x: ivy.is_native_array(x))
+    if _check_if_empty(arr_idxs):
+        return arr_idxs, []
+    else:
+        if idxs is not None:
+            arr_idxs = [
+                arr_idx
+                for arr_idx in arr_idxs
+                if "_".join(str(x) for x in arr_idx) in _idxs_to_str(idxs)
+            ]
+        arr_values = ivy.multi_index_nest(x, arr_idxs)
+        arr_idxs = _idxs_to_str(arr_idxs)
+        return arr_idxs, arr_values
+
+
+def _stop_grad_and_index(func_ret, retain_grads, grads):
     if not retain_grads:
-        if isinstance(func_ret, ivy.Array):
+        if ivy.is_array(func_ret):
             func_ret = ivy.stop_gradient(func_ret)
         else:
             func_ret = ivy.nested_map(
@@ -77,11 +140,6 @@ def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
                 lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
                 include_derived=True,
             )
-    if grad_idxs is not None:
-        for i in range(len(grad_idxs)):
-            grad_idxs[i] = [str(x) for x in grad_idxs[i]]
-            grad_idxs[i] = "_".join(grad_idxs[i])
-        grads = {idx: grads[idx] for idx in grad_idxs}
     if isinstance(grads, dict):
         grads = ivy.Container(grads)
     return func_ret, grads
@@ -357,7 +415,7 @@ is_variable.computes_gradients = True
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def variable_data(x):
+def variable_data(x, /):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
     dedicated variable class, the function returns the data passed in.
@@ -459,7 +517,9 @@ def stop_gradient(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
-def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
+def execute_with_gradients(
+    func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
+):
     """Call function func with input of xs variables, and return the function result
     func_ret and the gradients of each output variable w.r.t each input variable,
 
@@ -472,9 +532,12 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
         Variables for which to compute the function gradients with respective to.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
-    grad_idxs
-        Indices of the returned arrays for which to return computed gradients If None,
-        all gradients are returned. (Default value = None)
+    xs_grad_idxs
+        Indices of the input arrays to compute gradients with respect to. If None,
+        gradients are returned with respect to all input arrays. (Default value = None)
+    ret_grad_idxs
+        Indices of the returned arrays for which to return computed gradients. If None,
+        gradients are returned for all returned arrays. (Default value = None)
 
     Returns
     -------
@@ -484,7 +547,11 @@ def execute_with_gradients(func, xs, /, *, retain_grads=False, grad_idxs=None):
 
     """
     return current_backend(None).execute_with_gradients(
-        func, xs, retain_grads=retain_grads, grad_idxs=grad_idxs
+        func,
+        xs,
+        retain_grads=retain_grads,
+        xs_grad_idxs=xs_grad_idxs,
+        ret_grad_idxs=ret_grad_idxs,
     )
 
 

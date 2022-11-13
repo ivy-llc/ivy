@@ -1543,7 +1543,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1560,7 +1560,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1578,7 +1578,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1591,7 +1591,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1627,7 +1627,7 @@ class ArrayWithElementwise(abc.ABC):
 
     def not_equal(
         self: ivy.Array,
-        x2: Union[ivy.Array, ivy.NativeArray],
+        x2: Union[float, ivy.Array, ivy.NativeArray],
         /,
         *,
         out: Optional[ivy.Array] = None,
@@ -1653,6 +1653,43 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned
             array must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([2., 7., 9.])
+        >>> x2 = ivy.array([1., 7., 9.])
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        ivy.array([True, False, False])
+
+        With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        ivy.array([False, True,  False])
+
+        With mixed :class:`ivy.Array` and `float` inputs:
+
+        >>> x1 = ivy.array([2.5, 7.3, 9.375])
+        >>> x2 = 7.3
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        ivy.array([True, False, True])
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.array([3., 1., 0.9])
+        >>> x2 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ivy.not_equal(self._data, x2, out=out)
 
@@ -2098,7 +2135,14 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the rounded result for each element in ``self``.
-            The returned array must have the same data type as ``self``.
+            The returned array must have the same data type as ``self``
+
+        Examples
+        --------
+        >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+        >>> y = x.trunc()
+        >>> print(y)
+        ivy.array([-1.,  0.,  3., -0.])
         """
         return ivy.trunc(self._data, out=out)
 

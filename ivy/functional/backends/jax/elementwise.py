@@ -10,7 +10,8 @@ from ivy.functional.backends.jax import JaxArray
 
 
 def abs(x: Union[float, JaxArray], /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.absolute(x)
+    # jnp.where is used for consistent gradients
+    return jnp.where(x != 0, jnp.absolute(x), 0)
 
 
 def acos(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -356,7 +357,7 @@ def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
 
 
 def sign(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
-    return jnp.where(x == -0.0, 0.0, jnp.sign(x))
+    return jnp.where(x == -0.0, 0.0, jnp.sign(x)).astype(x.dtype)
 
 
 def sin(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -417,7 +418,7 @@ def maximum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -431,7 +432,7 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

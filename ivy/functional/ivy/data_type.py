@@ -917,21 +917,41 @@ def default_float_dtype(
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+        (Default value = None) Number or array for inferring float dtype.
     float_dtype
-
+        (Default value = None) float type to be returned.
     as_native
-         (Default value = None)
+        (Default value = None) Whether to return the float dtype as native
+        dtype.
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global default
-        float dtype.
+        Return the input float dtype as native or ivy dtype if provided, else
+        if an input is given, return its float dtype, otherwise return the
+        global default float dtype.
+
+    Examples
+    --------
+    >>> ivy.default_float_dtype()
+    'float32'
+
+    >>> ivy.set_default_float_dtype(ivy.FloatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float16"))
+    'float16'
+
+    >>> ivy.default_float_dtype(input=4294.967346)
+    'float32'
+
+    >>> x = ivy.array([9.8,8.9], dtype="float16")
+    >>> ivy.default_float_dtype(input=x)
+    'float16'
     """
     if ivy.exists(float_dtype):
         if as_native is True:
@@ -1121,11 +1141,17 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
+            get_scalar = lambda x: ivy.to_scalar(x) if ivy.is_array(x) else x
             if ivy.nested_argwhere(
-                input, lambda x: x > 9223372036854775807 and x != ivy.inf
+                input,
+                lambda x: get_scalar(x) > 9223372036854775807
+                and get_scalar(x) != ivy.inf,
             ):
                 ret = ivy.uint64
-            elif ivy.nested_argwhere(input, lambda x: x > 2147483647 and x != ivy.inf):
+            elif ivy.nested_argwhere(
+                input,
+                lambda x: get_scalar(x) > 2147483647 and get_scalar(x) != ivy.inf,
+            ):
                 ret = ivy.int64
             else:
                 def_dtype = ivy.default_dtype()
@@ -1525,7 +1551,11 @@ def is_int_dtype(
             True
             if ivy.nested_argwhere(
                 dtype_in,
-                lambda x: isinstance(x, (int, np.integer)) and not type(x) == bool,
+                lambda x: (
+                    isinstance(x, (int, np.integer))
+                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                )
+                and not type(x) == bool,
             )
             else False
         )
@@ -1590,7 +1620,9 @@ def is_float_dtype(
         return (
             True
             if ivy.nested_argwhere(
-                dtype_in, lambda x: isinstance(x, (float, np.floating))
+                dtype_in,
+                lambda x: isinstance(x, (float, np.floating))
+                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )
@@ -1728,12 +1760,24 @@ def set_default_float_dtype(float_dtype: Union[ivy.Dtype, str], /):
 
 @handle_exceptions
 def set_default_int_dtype(int_dtype: Union[ivy.Dtype, str], /):
-    """Summary.
+    """
+    Sets the 'int_dtype' as the default data type.
 
     Parameters
     ----------
     int_dtype
+        The integer data type to be set as the default.
 
+    Examples
+    --------
+    With :class: `ivy.Dtype` input:
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int64"))
+    >>> ivy.default_int_dtype()
+    'int64'
+
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int32"))
+    >>> ivy.default_int_dtype()
+    'int32'
     """
     int_dtype = ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     global default_int_dtype_stack
@@ -1817,7 +1861,18 @@ def unset_default_dtype():
 
 @handle_exceptions
 def unset_default_float_dtype():
-    """"""
+    """Reset the current default float dtype to the previous state.
+
+    Examples
+    --------
+    >>> ivy.set_default_float_dtype(ivy.float32)
+    >>> ivy.set_default_float_dtype(ivy.float64)
+    >>> ivy.default_float_dtype_stack
+    ['float32','float64']
+    >>> ivy.unset_default_float_dtype()
+    >>> ivy.default_float_dtype_stack
+    ['float32']
+    """
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
@@ -1825,7 +1880,25 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """"""
+    """
+
+    Reset the current default int dtype to the previous state.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.unset_default_int_dtype()
+    >>> ivy.default_int_dtype()
+    'int32'
+
+    """
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)

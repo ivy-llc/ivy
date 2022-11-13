@@ -7,7 +7,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy import to_ivy, to_native
+from ivy import to_ivy
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
@@ -59,6 +59,20 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
     return new_fn
 
 
+def _ivy_to_native(x):
+    # checks the first element of the leaf list and
+    # converts it to a native array if it is an ivy array
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x[i] = _ivy_to_native(item)
+    else:
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
+            x = ivy.to_native(x, nested=True)
+        elif ivy.is_ivy_array(x):
+            x = ivy.to_native(x)
+    return x
+
+
 def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, dtype=None, **kwargs):
@@ -70,11 +84,8 @@ def asarray_to_native_arrays_and_back(fn: Callable) -> Callable:
         # When possible we want to not nest this
         # because nested calls introduce massive overhead
         # and the checks to see if we can avoid it are cheap
-        nested = (
-            isinstance(args[0], (list, tuple))
-            and (len(args[0]) != 0 and not isinstance(args[0][0], (list, tuple)))
-        ) or (isinstance(args[0], np.ndarray) and args[0].ndim == 1)
-        new_args = (to_native(args[0], nested=nested),) + args[1:]
+        new_arg = _ivy_to_native(args[0])
+        new_args = (new_arg,) + args[1:]
         if dtype is not None:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         return to_ivy(fn(*new_args, dtype=dtype, **kwargs))
@@ -496,8 +507,8 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input array
-    ``x``.
+    """Returns a new array filled with ones and having the same shape as an input
+    array ``x``.
 
     Parameters
     ----------
@@ -505,10 +516,10 @@ def ones_like(
         input array from which to derive the output array shape.
     dtype
         output array data type. If ``dtype`` is ``None``, the output array data type
-        must be inferred from x. Default  ``None``.
+        must be inferred from ``x``. Default  ``None``.
     device
         device on which to place the created array. If device is ``None``, the output
-        array device must be inferred from x. Default: ``None``.
+        array device must be inferred from ``x``. Default: ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -516,7 +527,7 @@ def ones_like(
     Returns
     -------
     ret
-        an array having the same shape as x and filled with ones.
+        an array having the same shape as ``x`` and filled with ``ones``.
 
 
     This function conforms to the `Array API Standard
@@ -528,13 +539,72 @@ def ones_like(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
-    >>> x = ivy.array([[0, 1, 2],[3, 4, 5]])
+    Functional Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    >>> x2 = ivy.array([[0, 1, 2],[3, 4, 5]], dtype = ivy.float32)
+    >>> y2 = ivy.ones_like(x2)
+    >>> print(y2)
+    ivy.array([[1., 1., 1.],
+            [1., 1., 1.]])
+
+    >>> x3 = ivy.array([3., 2., 1.])
+    >>> y3 = ivy.zeros(3)
+    >>> ivy.ones_like(x3, out=y3)
+    ivy.array([1., 1., 1.])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x1 = ivy.native_array([[3, 8, 2],[2, 8, 3]])
+    >>> y1 = ivy.ones_like(x1)
+    >>> print(y1)
+    ivy.array([[1, 1, 1],[1, 1, 1]])
+
+
+    >>> x2 = ivy.native_array([3, 8, 2, 0, 0, 2])
+    >>> y2 = ivy.ones_like(x2, dtype=ivy.IntDtype('int32'), device=ivy.Device('cpu'))
+    >>> print(y2)
+    ivy.array([1, 1, 1, 1, 1, 1])
+
+    # Array ``y2`` is now stored on the CPU.
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([3, 2, 1]), b=ivy.array([8, 2, 3]))
     >>> y = ivy.ones_like(x)
     >>> print(y)
-    ivy.array([[1, 1, 1],
-           [1, 1, 1]])
+    {
+        a: ivy.array([1, 1, 1]),
+        b: ivy.array([1, 1, 1])
+    }
+
+    Instance Method Examples
+    -------------------
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([2, 3, 8, 2, 1])
+    >>> y = x.ones_like()
+    >>> print(y)
+    ivy.array([1, 1, 1, 1, 1])
+
+    With :class:'ivy.Container' input:
+
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = x.ones_like()
+    >>> print(y)
+    {
+        a: ivy.array([1., 1.]),
+        b: ivy.array([1., 1.])
+    }
+
     """
     return current_backend(x).ones_like(x, dtype=dtype, device=device, out=out)
 
@@ -900,7 +970,13 @@ def eye(
 
     """
     return current_backend().eye(
-        n_rows, n_cols, k, batch_shape, dtype=dtype, device=device, out=out
+        n_rows,
+        n_cols,
+        k=k,
+        batch_shape=batch_shape,
+        dtype=dtype,
+        device=device,
+        out=out,
     )
 
 

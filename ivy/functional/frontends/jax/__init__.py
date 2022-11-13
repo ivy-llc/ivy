@@ -4,6 +4,7 @@ from .devicearray import DeviceArray
 from . import lax
 from . import nn
 from . import numpy
+from . import _src
 
 import ivy
 from ivy import (
@@ -228,10 +229,10 @@ def promote_types_jax(
 
 @handle_exceptions
 def promote_types_of_jax_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
     based on type promotion rules. While passing float or integer values or any
@@ -245,9 +246,10 @@ def promote_types_of_jax_inputs(
     ):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
-        promoted = promote_types_jax(x1.dtype, x2.dtype)
-        x1 = ivy.asarray(x1, dtype=promoted)
-        x2 = ivy.asarray(x2, dtype=promoted)
+        if x1.dtype != x2.dtype:
+            promoted = promote_types_jax(x1.dtype, x2.dtype)
+            x1 = ivy.asarray(x1, dtype=promoted)
+            x2 = ivy.asarray(x2, dtype=promoted)
     elif hasattr(x1, "dtype"):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2, dtype=x1.dtype)

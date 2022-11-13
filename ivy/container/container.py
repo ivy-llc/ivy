@@ -11,7 +11,6 @@ from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
 from .elementwise import ContainerWithElementwise
-from .extensions import ContainerWithExtensions
 from .general import ContainerWithGeneral
 from .gradients import ContainerWithGradients
 from .image import ContainerWithImage
@@ -26,6 +25,28 @@ from .set import ContainerWithSet
 from .sorting import ContainerWithSorting
 from .statistical import ContainerWithStatistical
 from .utility import ContainerWithUtility
+from ivy.container.experimental import (
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinearAlgebraExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
+)
 
 
 class Container(
@@ -35,7 +56,6 @@ class Container(
     ContainerWithDataTypes,
     ContainerWithDevice,
     ContainerWithElementwise,
-    ContainerWithExtensions,
     ContainerWithGeneral,
     ContainerWithGradients,
     ContainerWithImage,
@@ -50,6 +70,26 @@ class Container(
     ContainerWithSorting,
     ContainerWithStatistical,
     ContainerWithUtility,
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinearAlgebraExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
 ):
     def __init__(
         self,

@@ -76,7 +76,7 @@ def conv1d_transpose(
         if len(output_shape) == 1:
             output_shape = [1, x.shape[0], output_shape[0], x.shape[-1]]
         else:
-            output_shape = [1] + output_shape
+            output_shape = [1] + list(output_shape)
     x_shape = (1,) + x.shape
     filter_shape = (1,) + filters.shape
     x_strides = (x.strides[0],) + x.strides
@@ -209,7 +209,7 @@ def conv2d_transpose(
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
     if strides[1] > 1:
         x = _add_dilations(x, strides[1], axis=2)
     if strides[0] > 1:
@@ -408,7 +408,7 @@ def conv3d_transpose(
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 3:
-        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
@@ -586,7 +586,7 @@ def conv_general_transpose(
         ]
         output_shape = [x.shape[0], *new_shape, filters.shape[-1]]
     elif len(output_shape) == dims:
-        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
 
     for j in range(dims):
         if dilations[j] > 1:
@@ -645,3 +645,27 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def dropout1d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCW":
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x

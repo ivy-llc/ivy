@@ -540,6 +540,65 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_diag(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "diag",
+            x,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diag(
+        self: ivy.Container,
+        /,
+        *,
+        k: int = 0,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=[[0, 1, 2],
+        >>>                      [3, 4, 5],
+        >>>                      [6, 7, 8]])
+        >>> ivy.diag(x, k=1)
+        {
+            a: ivy.array([1, 5])
+        }
+        """
+        return self.static_diag(
+            self,
+            k=k,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def eigh(
         self: ivy.Container,
         /,
@@ -1217,6 +1276,40 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                        b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.Container.static_matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
+        """
         return ContainerBase.multi_map_in_static_method(
             "matrix_transpose",
             x,
@@ -1236,6 +1329,40 @@ class ContainerWithLinearAlgebra(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have a
+            shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :code:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([[1., 1.], [0., 3.]]), \
+                      b=ivy.array([[0., 4.], [3., 1.]]))
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        {
+            a: ivy.array([[1., 0.],
+                          [1., 3.]]),
+            b: ivy.array([[0., 3.],
+                          [4., 1.]])
+        }
+        """
         return self.static_matrix_transpose(
             self,
             key_chains,
@@ -1806,11 +1933,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
     def static_vecdot(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1829,21 +1957,22 @@ class ContainerWithLinearAlgebra(ContainerBase):
     def vecdot(
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_vecdot(
             self,
             x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             axis=axis,
             out=out,
         )

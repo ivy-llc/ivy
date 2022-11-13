@@ -100,16 +100,8 @@ def astype(
     out: Optional[ivy.Array] = None,
 ) -> np.ndarray:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = np.copy(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = np.copy(x)
-            return new_tensor.astype(dtype)
+    if x.dtype == dtype:
+        return np.copy(x) if copy else x
     return x.astype(dtype)
 
 

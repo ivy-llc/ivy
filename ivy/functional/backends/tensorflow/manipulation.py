@@ -36,7 +36,7 @@ def concat(
     for i in range(len(xs)):
         if is_axis_none:
             xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
+        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
     if is_axis_none:
         axis = 0
         if is_tuple:

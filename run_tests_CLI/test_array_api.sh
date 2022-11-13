@@ -8,4 +8,4 @@ fi
 
 mkdir -p .hypothesis
 # shellcheck disable=SC2046
-docker run --rm --env IVY_BACKEND="$1" --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL="$3" --env REDIS_PASSWD="$4" -v $(pwd):/ivy -v $(pwd)/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy_tests/test_array_api/array_api_tests/"$2".py -k "$ARRAY_API_TESTS_K_FLAG" -vv
+docker run --rm --env IVY_BACKEND="$1" --env ARRAY_API_TESTS_MODULE="ivy" --env REDIS_URL="$3" --env REDIS_PASSWD="$4" -v $(pwd):/ivy -v $(pwd)/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest ivy_tests/test_array_api/array_api_tests/"$2".py -k "$ARRAY_API_TESTS_K_FLAG" --tb=short -vv

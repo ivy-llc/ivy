@@ -170,119 +170,22 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
-    With :class:`ivy.Array` input:
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
 
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With :class:`ivy.NativeArray` input:
-
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    3
+    0
 
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
+    >>> x = ivy.Container(x1=ivy.array([-1]),
+    ...                   x2=ivy.native_array([-1]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     1
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
-    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
-
-    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.array([2]),
-    ...                   x4=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With a mix of :class:`ivy.Container` and :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                    x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.native_array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.native_array([2]),
-    ...                   x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
     """
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
@@ -290,7 +193,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    *, device: Union[ivy.Device, ivy.NativeDevice] = None, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -318,7 +221,6 @@ def print_all_ivy_arrays_on_dev(
     >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
     [1,0,2]
     [3,2,1]
-
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
     if attr_only:
@@ -420,6 +322,13 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     ----------
     device
         The device string to convert to native device handle.
+
+    Examples
+    --------
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.clear_mem_on_dev(device)
 
     """
     ivy.current_backend(None).clear_mem_on_dev(device)
@@ -1113,30 +1022,26 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
 
 
 def _get_devices(fn, complement=True):
-    # TODO: Not hardcode this
-    VALID_DEVICES = ("cpu",)
-    INVALID_DEVICES = (
-        "gpu",
-        "tpu",
-    )
-    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
+    valid_devices = ivy.valid_devices
+    invalid_devices = ivy.invalid_devices
+    all_devices = ivy.all_devices
 
-    supported = set(VALID_DEVICES)
+    supported = set(ivy.valid_devices)
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
     is_einops_fn = "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
-            supported = set(ALL_DEVICES).difference(supported)
+            supported = set(all_devices).difference(supported)
         return supported
 
     # Their values are formated like either
     # 1. fn.supported_devices = ("cpu",)
     # Could also have the "all" value for the framework
     basic = [
-        ("supported_devices", set.intersection, VALID_DEVICES),
-        ("unsupported_devices", set.difference, INVALID_DEVICES),
+        ("supported_devices", set.intersection, valid_devices),
+        ("unsupported_devices", set.difference, invalid_devices),
     ]
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
@@ -1147,7 +1052,7 @@ def _get_devices(fn, complement=True):
             supported = merge_fn(supported, set(v))
 
     if complement:
-        supported = set(ALL_DEVICES).difference(supported)
+        supported = set(all_devices).difference(supported)
 
     return tuple(supported)
 

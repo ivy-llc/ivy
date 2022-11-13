@@ -195,7 +195,7 @@ def conv3d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def conv3d_transpose(
     x: Tensor,
     filters: Tensor,
@@ -249,7 +249,7 @@ def conv3d_transpose(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def conv_general_dilated(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -360,7 +360,7 @@ def conv_general_dilated(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 abd below": ("bfloat16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def conv_general_transpose(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
@@ -434,3 +434,29 @@ def conv_general_transpose(
     if data_format == "channel_first":
         res = tf.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+conv_general_transpose.unsupported_dtypes = ("bfloat16",)
+
+
+def dropout1d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = tf.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        if data_format == "NCW":
+            res = tf.transpose(res, perm)
+        return res
+    else:
+        return x
