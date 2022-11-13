@@ -360,35 +360,44 @@ def matrix_rank(
         if rtol is None:
             ret = ivy.sum(singular_values != 0, axis=axis)
         else:
-            try:
-                max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
-                    rtol, dtype=tf.float32
+            if isinstance(rtol, float):
+                max_rtol = rtol
+                ret = ivy.sum(
+                    tf.cast(singular_values, dtype=tf.float32) > max_rtol,
+                    axis=axis,
                 )
-            except ValueError:
-                if ivy.all(
-                    element == rtol[0] for element in rtol
-                ):  # all elements are same in rtol
-                    rtol = dim_reduction(rtol)
+            elif not isinstance(rtol, float):
+                try:
                     max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
                         rtol, dtype=tf.float32
                     )
-            if not isinstance(rtol, float) and tf.size(rtol) > 1:
-                if ivy.all(
-                    tf.math.equal(
-                        max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
-                    )
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            elif not isinstance(max_values, float) and tf.size(max_values) > 1:
-                if ivy.all(
-                    tf.math.equal(max_values, tf.fill(max_values.shape, max_values[0]))
-                ):
-                    max_rtol = dim_reduction(max_rtol)
-            ret = ivy.sum(
-                tf.cast(singular_values, dtype=tf.float32)
-                > tf.cast(max_rtol, dtype=tf.float32),
-                axis=axis,
-            )
+                except ValueError:
+                    if ivy.all(
+                        element == rtol[0] for element in rtol
+                    ):  # all elements are same in rtol
+                        rtol = dim_reduction(rtol)
+                        max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
+                            rtol, dtype=tf.float32
+                        )
+                if tf.size(rtol) > 1:
+                    if ivy.all(
+                        tf.math.equal(
+                            max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
+                        )
+                    ):
+                        max_rtol = dim_reduction(max_rtol)
+                elif tf.size(max_values) > 1:
+                    if ivy.all(
+                        tf.math.equal(
+                            max_values, tf.fill(max_values.shape, max_values[0])
+                        )
+                    ):
+                        max_rtol = dim_reduction(max_rtol)
+                ret = ivy.sum(
+                    tf.cast(singular_values, dtype=tf.float32)
+                    > tf.cast(max_rtol, dtype=tf.float32),
+                    axis=axis,
+                )
     else:  # atol is not None
         if rtol is None:  # atol is not None, rtol is None
             ret = ivy.sum(singular_values > atol, axis=axis)
