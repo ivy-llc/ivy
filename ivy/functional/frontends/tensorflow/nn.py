@@ -50,7 +50,14 @@ def conv1d_transpose(
 def gelu(features, approximate=False, name=None):
     return ivy.gelu(features, approximate=approximate)
 
-
+@to_ivy_arrays_and_back
+def avg_pool2d(
+        input, ksize, strides, padding, data_format='NHWC', name=None
+):
+    return ivy.avg_pool2d(
+        input, ksize, strides, padding, data_format=data_format
+    )
+    
 @to_ivy_arrays_and_back
 def conv2d(
     input, filters, strides, padding, data_format="NHWC", dilations=None, name=None
