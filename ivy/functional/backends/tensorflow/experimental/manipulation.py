@@ -23,7 +23,8 @@ def heaviside(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.heaviside(x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    return tf.cast(tf.experimental.numpy.heaviside(x1, x2), x1.dtype)
 
 
 def flipud(

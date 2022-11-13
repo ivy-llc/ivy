@@ -33,6 +33,7 @@ def any(
     return ret
 
 
+@to_ivy_arrays_and_back
 def isscalar(element):
     return (
         isinstance(element, int)

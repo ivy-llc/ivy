@@ -1236,8 +1236,8 @@ def atleast_2d(
     Parameters
     ----------
     arys
-        One or more array-like sequences. Non-array inputs are 
-        converted to arrays. Arrays that already have two or more 
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have two or more
         dimensions are preserved.
 
     Returns

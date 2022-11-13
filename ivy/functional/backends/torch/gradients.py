@@ -17,7 +17,7 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x):
+def variable(x, /):
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()
@@ -27,7 +27,7 @@ def is_variable(x, /, *, exclusive: bool = False):
     return isinstance(x, torch.Tensor) and x.requires_grad
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x.data
 
 
@@ -159,8 +159,9 @@ def value_and_grad(func):
 
 def stop_gradient(
     x: Optional[torch.Tensor],
-    preserve_type: bool = True,
+    /,
     *,
+    preserve_type: bool = True,
     out: Optional[torch.Tensor] = None,
 ):
     if is_variable(x) and preserve_type:
