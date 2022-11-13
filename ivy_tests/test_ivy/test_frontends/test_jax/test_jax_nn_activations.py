@@ -838,5 +838,5 @@ def test_jax_nn_selu(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=xs[0],
+        x=x[0],
     )
