@@ -430,14 +430,23 @@ def test_tensorflow_gelu(
 
 @handle_frontend_test(
     fn_name="tensorflow.nn.avg_pool2d",
-    x_f_d_df = _x_and_filters(
+    x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         type="2d",
     ),
 )
-def test_tensorflow_avg_pool2d(*, x_f_d_df, as_variable, num_positional_args, native_array, frontend, fn_tree, on_device):
+def test_tensorflow_avg_pool2d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device
+):
     input_dtype, x, ksize, stride, data_format, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
