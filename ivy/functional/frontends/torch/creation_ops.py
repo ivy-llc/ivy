@@ -122,7 +122,7 @@ def range(
     device=None,
     requires_grad=False,
 ):
-    ret = arange(start, stop=end, step=step, dtype=dtype, device=device)
+    ret = arange(end, start=start, step=step, dtype=dtype, device=device)
     if requires_grad:
         return ivy.variable(ret)
     return ret
@@ -220,7 +220,8 @@ def as_tensor(
     return ivy.asarray(data, dtype=dtype, device=device)
 
 
-def from_numpy(data):
+@to_ivy_arrays_and_back
+def from_numpy(data, /):
     return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
 
 
