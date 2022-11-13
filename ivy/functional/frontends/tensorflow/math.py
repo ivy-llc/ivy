@@ -119,12 +119,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def maximum(a, b, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
-    # Cast inputs to ivy array
-    a = ivy.array(a)
-    b = ivy.array(b)
-    return ivy.maximum(a, b)
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back

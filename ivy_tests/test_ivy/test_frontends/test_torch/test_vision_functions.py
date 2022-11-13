@@ -1,14 +1,14 @@
-from hypothesis import given, assume, strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # pixel_shuffle
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.pixel_shuffle",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -16,58 +16,60 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         max_num_dims=4,
         min_dim_size=1,
     ),
-    factor=st.integers(min_value=1),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.pixel_shuffle"
-    ),
+    factor=helpers.ints(min_value=1),
 )
 def test_torch_pixel_shuffle(
-    dtype_and_x,
-    factor,
-    as_variable,
-    num_positional_args,
-    native_array,
-):
-    input_dtype, x = dtype_and_x
-    input = x[0]
-    assume(ivy.shape(input)[1] % (factor**2) == 0)
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.pixel_shuffle",
-        input=input,
-        upscale_factor=factor,
-    )
-
-
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=4,
-        max_num_dims=4,
-        min_dim_size=1,
-    ),
-    factor=st.integers(min_value=1),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.pixel_unshuffle"
-    ),
-)
-def test_torch_pixel_unshuffle(
+    *,
     dtype_and_x,
     factor,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
-    input = x[0]
+    assume(ivy.shape(input)[1] % (factor**2) == 0)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        upscale_factor=factor,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.pixel_unshuffle",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=1,
+    ),
+    factor=helpers.ints(min_value=1),
+)
+def test_torch_pixel_unshuffle(
+    *,
+    dtype_and_x,
+    factor,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
     assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -75,9 +77,10 @@ def test_torch_pixel_unshuffle(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.pixel_unshuffle",
-        input=input,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
         downscale_factor=factor,
     )
 
@@ -135,8 +138,8 @@ def _pad_helper(draw):
     return dtype, input[0], padding, value, mode
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="nn.functional.pad",
     dtype_and_input_and_other=_pad_helper(),
 )
 def test_torch_pad(
@@ -145,6 +148,8 @@ def test_torch_pad(
     as_variable,
     with_out,
     native_array,
+    frontend,
+    fn_tree,
 ):
     dtype, input, padding, value, mode = dtype_and_input_and_other
     helpers.test_frontend_function(
@@ -153,8 +158,8 @@ def test_torch_pad(
         with_out=with_out,
         num_positional_args=2,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.pad",
+        frontend=frontend,
+        fn_tree=fn_tree,
         input=input,
         padding=padding,
         mode=mode,
