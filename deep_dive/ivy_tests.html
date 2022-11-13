@@ -67,7 +67,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#testing-pipeline">Testing Pipeline</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id2">Hypothesis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Data Generation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#important-strategies">Important Strategies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-your-own-strategy">Writing your own strategy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-hypothesis-test">Writing Hypothesis Test</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ivy-test-decorators">Ivy Test Decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-ivy-tests">Writing Ivy Tests</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#integration-of-strategies-into-ivy-tests">Integration of Strategies into Ivy Tests</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#why-do-we-need-helper-functions">Why do we need helper functions</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#how-to-write-hypothesis-tests-effectively">How to write Hypothesis Tests effectively</a></li>
@@ -75,7 +78,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#self-consistent-and-explicit-testing">Self-Consistent and Explicit Testing</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">test_array_function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">test_array_function</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#re-running-failed-ivy-tests">Re-Running Failed Ivy Tests</a></li>
 </ul>
 </li>
@@ -224,7 +227,7 @@ Take <a class="reference external" href="https://github.com/unifyai/ivy/blob/d8f
 It can take either arrays or dtypes as input, hence the <a class="reference external" href="https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L337">data generation</a> reflects this using the bespoke search strategy <code class="code docutils literal notranslate"><span class="pre">_array_or_type</span></code>.
 However, such rigorous testing is not necessary for standalone functions (those that are entirely self-contained in the Ivy codebase without external references).
 These kinds of functions may only require standard Pytest testing using <code class="code docutils literal notranslate"><span class="pre">parametrize</span></code>, e.g. <a class="reference external" href="https://github.com/unifyai/ivy/blob/7063bf4475b93f87a4a96ef26c56c2bd309a2338/ivy_tests/test_ivy/test_functional/test_core/test_dtype.py#L835">test_default_int_dtype</a>.
-For further clarity on the various function types in ivy, see <a href="#id5"><span class="problematic" id="id6">`here`_</span></a>.</p>
+For further clarity on the various function types in ivy, see <a href="#id7"><span class="problematic" id="id8">`here`_</span></a>.</p>
 <p>The way data is generated is described by the <code class="code docutils literal notranslate"><span class="pre">hypothesis.strategies</span></code> module which contains a variety of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html">methods</a> that have been used widely in each of Ivy’s functional and stateful submodule tests.
 An initialized strategy is an object that is used by Hypothesis to generate data for the test.
 For example, let’s write a strategy that generates a random data type -:</p>
@@ -255,44 +258,18 @@ This strategy will return a value that is sampled from this collection.</p></li>
 <li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.lists">lists</a> accepts another strategy which describes the elements of the list being generated.
 This is best used when a sequence of varying lengths is required to be generated, with elements that are described by other strategies.</p></li>
 </ul>
-<section id="important-strategies">
-<h3>Important Strategies<a class="headerlink" href="#important-strategies" title="Permalink to this heading"></a></h3>
-<p>It might be helpful to look at a few more strategies, since they are widely used across the  helper functions to generate custom data -:</p>
+<section id="writing-your-own-strategy">
+<h3>Writing your own strategy<a class="headerlink" href="#writing-your-own-strategy" title="Permalink to this heading"></a></h3>
+<p>We will not be covering all of the strategies that Hypothesis provide, but to give you a glance of what they’re capable of, we will briefly
+explain some of the stratigies and write a new strategy to be used later for testing. Read more about strategies on Hypothesis docs. #TODO add link</p>
 <ol class="arabic simple">
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.booleans">booleans</a> - generates boolean values True or False.</p></li>
 <li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.integers">integers</a> - generates integers values within a given range.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.floats">floats</a> - It is a powerful strategy that generates all variety of floats, including math.inf and math.nan.</p></li>
 <li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.none">none</a> - returns a strategy which only generates None.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.tuples">tuples</a> - The strategy accepts N Hypothesis strategies, and will generate length - N tuples whose elements are drawn from the respective strategies that were specified as inputs.</p></li>
 <li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of">one_of</a> - This allows us to specify a collection of strategies and any given datum will be drawn from “one of” them.
-Hypothesis has the <em>pipe</em> operator overloaded as a shorthand for <code class="code docutils literal notranslate"><span class="pre">one_of</span></code>.
-This has been widely used all over in Ivy Tests.
-For example, this <a class="reference external" href="https://github.com/unifyai/ivy/blob/b2305d1d01528c4a6fa9643dfccf65e33b8ecfd8/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L477">line</a> here, can also be written as -:</p></li>
+Hypothesis has the <em>pipe</em> operator overloaded as a shorthand for <code class="code docutils literal notranslate"><span class="pre">one_of</span></code>.</p></li>
+<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a> - This provides a decorator, which permits us to form our own strategies for describing data by composing Hypothesis built-in strategies</p></li>
 </ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">one_of</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">none</span><span class="p">(),</span> <span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="n">ndim</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="n">ndim</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-</pre></div>
-</div>
-<ol class="arabic simple" start="7">
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.shared">shared</a> - This returns a strategy that draws a shared value per run, drawn from base.
-Any two shared instances with the same key will share the same value.
-For example, <a href="#id7"><span class="problematic" id="id8">`here`_</span></a> , the parameters, <em>input_dtype</em> and <em>as_variable</em> share the same key <em>num_arrays</em>, hence the same values will be drawn for both arguments.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.sets">sets</a> - This is used for generating a <em>unique collection</em> of elements.
-It has the same behaviour as <code class="code docutils literal notranslate"><span class="pre">st.lists</span></code>, but returns sets instead.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#mapping">map</a> - The map method, permits us to perform a mapping on the data being produced by a strategy.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#filtering">filter</a> - Data is filtered using this method.
-It takes a callable that returns either True or False, we generally should use filter to avoid corner cases, rather than filtering most of the search space, for example, if we want to generate numbers that are not close to 0, doing the following is not very efficient:</p></li>
-</ol>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">isclose</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">0</span><span class="p">))</span>
-</pre></div>
-</div>
-<p>instead, we should avoid generating numbers that are close to 0.
-The use of <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#filtering">filter</a> with a condition that is hard to satisfy, will cause the Hypothesis to fail.</p>
-<ol class="arabic simple" start="11">
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html#chaining-strategies-together">flatmap</a> - This enables us to define a strategy based on a value drawn from a previous strategy.</p></li>
-<li><p><a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a> - The second <strong>most</strong> widely used strategy in <em>Ivy tests</em>.
-This provides a decorator, which permits us to form our own strategies for describing data by composing Hypothesis built-in strategies.
-Suppose you need to generate a 1-D array or a scaler value, which also generate an index of an element if an array is generated, otherwise None.</p></li>
-</ol>
+<p>Suppose you need to generate a 1-D array or a scaler value, which also generate an index of an element if an array is generated, otherwise None.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@st</span><span class="o">.</span><span class="n">composite</span>
 <span class="k">def</span> <span class="nf">array_or_scaler</span><span class="p">(</span><span class="n">draw</span><span class="p">):</span>
     <span class="n">values</span> <span class="o">=</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()</span> <span class="o">|</span> <span class="n">st</span><span class="o">.</span><span class="n">lists</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()))</span>
@@ -304,56 +281,87 @@ Suppose you need to generate a 1-D array or a scaler value, which also generate 
 <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">index</span>
 </pre></div>
 </div>
-<p>we can then later use this strategy in the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code>: decorator in any of our tests.</p>
-<p>13. <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a> - The use of data is similar to <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a>.
-The main difference is that <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a> allows you to interactively draw data in the run body of the test, instead of defining the strategy in the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator.
-Usually you won’t need to use <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a>, as the test helpers functions takes care of that (discussed later).
-In Ivy, we don’t use the <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a> strategy, all of the helpers are implemented as a <strong>composite</strong> strategy, this provides reusability of the strategy across our test suite.
-refer to the Hypothesis docs for more info on the difference between <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.data#hypothesis.strategies.data">data</a> and <a class="reference external" href="https://hypothesis.readthedocs.io/en/latest/data.html?highlight=strategies.composite#hypothesis.strategies.composite">composite</a>.</p>
+<p>we can then later use this strategy in any of our tests.</p>
+</section>
+<section id="writing-hypothesis-test">
+<h3>Writing Hypothesis Test<a class="headerlink" href="#writing-hypothesis-test" title="Permalink to this heading"></a></h3>
+<p>Writing Hypothesis tests are intuitive and simple, as an example, we’ve implemented our own <code class="code docutils literal notranslate"><span class="pre">add</span></code> function, which takes in 2 parameters <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code>.
+We would like to run a test and compare it to Python <code class="code docutils literal notranslate"><span class="pre">+</span></code> operator, and <strong>assert</strong> it returns the same values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">y</span> <span class="o">+</span> <span class="n">x</span>
+
+<span class="nd">@given</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()</span>
+    <span class="n">y</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">integers</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">==</span> <span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple">
+<li><p>At first, we define our function <code class="code docutils literal notranslate"><span class="pre">add</span></code>, which simply returns <code class="code docutils literal notranslate"><span class="pre">y</span> <span class="pre">+</span> <span class="pre">x</span></code>.</p></li>
+<li><p>Defining a test function, which basically <strong>assert</strong> that the result of <code class="code docutils literal notranslate"><span class="pre">x</span> <span class="pre">+</span> <span class="pre">y</span></code> is exactly equal to <code class="code docutils literal notranslate"><span class="pre">add(x,</span> <span class="pre">y)</span></code>.</p></li>
+</ol>
+<p>3. Add Hypothesis <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator, passing two keyword arguments, <code class="code docutils literal notranslate"><span class="pre">x</span></code> and <code class="code docutils literal notranslate"><span class="pre">y</span></code> each corresponds to the variables we are going to run the test
+on, <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> is our entry point to Hypothesis, it expects a <code class="xref py py-class docutils literal notranslate"><span class="pre">strategy</span></code> to be passed in, describing what kind of data to generate, for our example, we choose to only test for <code class="code docutils literal notranslate"><span class="pre">integers</span></code> using <code class="code docutils literal notranslate"><span class="pre">st.integers()</span></code> strategy.</p>
+</section>
+<section id="ivy-test-decorators">
+<h3>Ivy Test Decorators<a class="headerlink" href="#ivy-test-decorators" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Why do we need handle test decorators?</p></li>
+</ul>
+<p>In order to run a test, a lot of pre-processing must be done, e.g. import the function, does it support complex data type? does it run on CPU? how many parameters does it take? are they positional or keywoard only, or both? and a lot of information about the function that is being tested, this allows us later to run the test efficiently and in a <strong>complete</strong> way. all of this happens at collecting time.</p>
+<ul class="simple">
+<li><p>What do the handle test decorators do?</p></li>
+</ul>
+<ol class="arabic simple">
+<li><p>Generate the test flags:
+1.  <code class="code docutils literal notranslate"><span class="pre">native_array</span></code> flags
+2.  <code class="code docutils literal notranslate"><span class="pre">as_variable</span></code> flags
+3.  <code class="code docutils literal notranslate"><span class="pre">with_out</span></code> flag</p></li>
+<li><p>Generate <code class="code docutils literal notranslate"><span class="pre">num_positional_args</span></code></p></li>
+</ol>
+<p>The flags that the decorators would generate, may be more or less depending on the function, <strong>Ivy Functional API</strong> requires <code class="code docutils literal notranslate"><span class="pre">gradient_test</span></code> flag, some test functions like <code class="code docutils literal notranslate"><span class="pre">test_gpu_is_available</span></code> does not requrie any of these flags, and therefore the decorator will not generate any of these.</p>
+<ol class="arabic simple" start="3">
+<li><p>Generate test specific parameters, <code class="code docutils literal notranslate"><span class="pre">fn_name</span></code>, <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code>, <code class="code docutils literal notranslate"><span class="pre">method_tree</span></code>.</p></li>
+<li><p>Check for the function’s supported data types and devices.</p></li>
+<li><p>Implicitly wraps the test function using Hypothesis <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator, this allows us to write less code, more readable, and easy to update and maintain.</p></li>
+</ol>
+<p>This is not an exhaustive list of what the <code class="code docutils literal notranslate"><span class="pre">handle_test</span></code> decorators actually do, they may do more or less in the future, to summaraize, the test decorators does some of <strong>Pretest-processing</strong> part in the testing pipeline.</p>
+<ul class="simple">
+<li><p>Why do we have multiple handle test decorators?</p></li>
+</ul>
+<p>Having multiple test decorator is mainly for efficiency, <cite>handle_test</cite> could do what <cite>handle_frontend_test</cite> does, it just handles the parameters slighlty different, and this can be inferred at run time, but we choose to seperate the decorator for general different usages, currently we have 4 seperate decorators</p>
+<ol class="arabic simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">handle_test</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">handle_method</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">handle_frontend_test</span></code></p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">handle_frontend_method</span></code></p></li>
+</ol>
+<p>One of the few differences between the 4 decorators that they generate different kind of flags, some generate more or less, but they all share the same general structure.</p>
+<ul class="simple">
+<li><p>Integration</p></li>
+</ul>
+<p>Our test decorators actually transforms to <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorators at PyTets collecting time, therefore this allows us to use other <strong>Hypothesis</strong> decorators like, <code class="code docutils literal notranslate"><span class="pre">&#64;reproduce_failure</span></code>, <code class="code docutils literal notranslate"><span class="pre">&#64;settings</span></code>, <code class="code docutils literal notranslate"><span class="pre">&#64;seed</span></code>.</p>
+</section>
+<section id="writing-ivy-tests">
+<h3>Writing Ivy Tests<a class="headerlink" href="#writing-ivy-tests" title="Permalink to this heading"></a></h3>
+<p>As mentioned previously, testing Ivy functions needs a lot of pre-processing and past-processing, using only <code class="code docutils literal notranslate"><span class="pre">given</span></code> decorator would not be sufficient
+to write an effective test, the following example describes how to implement a test for the function :code:<a href="#id4"><span class="problematic" id="id5">`</span></a>ivy.abs, using our test decorators and test helpers.</p>
 </section>
 <section id="integration-of-strategies-into-ivy-tests">
 <h3>Integration of Strategies into Ivy Tests<a class="headerlink" href="#integration-of-strategies-into-ivy-tests" title="Permalink to this heading"></a></h3>
 <p>Once a strategy is initialised the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> decorator is added to the test function for drawing values from the strategy and passing them as inputs to the test.
 For example, in this code snippet here -:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@handle_test</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">)),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span><span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;abs&quot;</span><span class="p">),</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_abs</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">with_out</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">container</span><span class="p">,</span>
-    <span class="n">instance_method</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">container_flags</span><span class="o">=</span><span class="n">container</span><span class="p">,</span>
-        <span class="n">instance_method</span><span class="o">=</span><span class="n">instance_method</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;abs&quot;</span><span class="p">,</span>
-        <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-    <span class="p">)</span>
 </pre></div>
 </div>
-<p>In the test above, all parameters being exhaustively drawn inside the decorator <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code>.
-Boolean flags that are shared between all tests and that is not specific to any are generated by <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> decorator, e.g. (native_array, container, instance_method).
-Input arguments to the function are generated in the <code class="code docutils literal notranslate"><span class="pre">given</span></code> decorator.</p>
 <p>Lets take a deeper look at <code class="code docutils literal notranslate"><span class="pre">ivy.abs</span></code>, according to the function signature, it accepts two arguments, <code class="code docutils literal notranslate"><span class="pre">x</span></code> which can be a Python numeric or an ivy.Array of numeric data type, and an <code class="code docutils literal notranslate"><span class="pre">out</span></code> optional output array.
 Using a lot of help from <a class="reference external" href="https://github.com/unifyai/ivy/tree/master/ivy_tests/test_ivy/helpers/hypothesis_helpers">test helpers</a>, we can simply generate a random input that covers all the possible combinations using <code class="code docutils literal notranslate"><span class="pre">dtype_and_values</span></code> composite strategy, specifying the the list of data types to sample from by also using another composite strategy <code class="code docutils literal notranslate"><span class="pre">get_dtypes</span></code> which samples a valid data types according to the backend that is tested.
-For <code class="code docutils literal notranslate"><span class="pre">out</span></code> keyword argument, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> decorator generates a boolean for whether we should provide an <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument or not, thankfully, the <cite>test_function</cite> helper function does a lot under the hood to properly create an array for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
-If the function does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code>, we should explicitly specify that we should not generate boolean flags for <code class="code docutils literal notranslate"><span class="pre">out</span></code> by setting <code class="code docutils literal notranslate"><span class="pre">with_out=False</span></code>, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> in this case will not generate a value for <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p>
-<p><strong>Note</strong> - It is advisable to specify the parameters of given as keyword arguments, so that there’s a correspondence between our strategies with the function-signature’s parameters.</p>
+For <code class="code docutils literal notranslate"><span class="pre">out</span></code> keyword argument, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> decorator generates a boolean for whether we should provide an <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument or not, thankfully, the <cite>test_function</cite> helper function does a lot under the hood to properly create an array for the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument.
+If the function does not support the <code class="code docutils literal notranslate"><span class="pre">out</span></code>, we should explicitly specify that we should not generate boolean flags for <code class="code docutils literal notranslate"><span class="pre">out</span></code> by setting <code class="code docutils literal notranslate"><span class="pre">with_out=False</span></code>, the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_test</span></code> in this case will not generate a value for <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p>
 <p>As  discussed above, the helper functions use the composite decorator, which helps in defining a series of custom strategies.
 It can be seen that <code class="code docutils literal notranslate"><span class="pre">dtype_and_x</span></code> uses the code:<cite>dtype_and_values</cite> strategy to generate numeric data types and corresponding array elements, whose shapes can be specified manually or are randomized by default.
 The generated data is returned as a tuple.
@@ -729,8 +737,8 @@ With such functions, it’s possible that the bug exists in the shared <em>compo
 These should be added using <code class="code docutils literal notranslate"><span class="pre">pytest.mark.parametrize</span></code>.
 However, we should still also include <code class="xref py py-func docutils literal notranslate"><span class="pre">test_array_function()</span></code> in the test, so that we can still test for arbitrary variations in the input arguments.</p>
 </section>
-<section id="id4">
-<h2>test_array_function<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
+<section id="id6">
+<h2>test_array_function<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
 <p>The helper <a class="reference external" href="https://github.com/unifyai/ivy/blob/0fc4a104e19266fb4a65f5ec52308ff816e85d78/ivy_tests/test_ivy/helpers.py#L401">test_array_function</a> tests that the function:</p>
 <ol class="arabic simple">
 <li><p>can handle the <code class="code docutils literal notranslate"><span class="pre">out</span></code> argument correctly</p></li>
