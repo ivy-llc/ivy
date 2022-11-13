@@ -94,7 +94,7 @@ def _idxs_to_str(idxs):
     return final_idxs
 
 
-def _get_native_variables_and_indices(x, reshape=True):
+def _get_native_variables_and_indices(x, reshape=True, idxs=None):
     def map_fn(x_):
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
@@ -119,12 +119,18 @@ def _get_native_variables_and_indices(x, reshape=True):
     if _check_if_empty(arr_idxs):
         return arr_idxs, []
     else:
+        if idxs is not None:
+            arr_idxs = [
+                arr_idx
+                for arr_idx in arr_idxs
+                if "_".join(str(x) for x in arr_idx) in _idxs_to_str(idxs)
+            ]
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
 
 
-def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
+def _stop_grad_and_index(func_ret, retain_grads, grads):
     if not retain_grads:
         if ivy.is_array(func_ret):
             func_ret = ivy.stop_gradient(func_ret)
@@ -134,9 +140,6 @@ def _stop_grad_and_index(func_ret, retain_grads, grads, grad_idxs):
                 lambda x: ivy.stop_gradient(x) if ivy.is_array(x) else x,
                 include_derived=True,
             )
-    if grad_idxs is not None:
-        grad_idxs = _idxs_to_str(grad_idxs)
-        grads = {idx: grads[idx] for idx in grad_idxs}
     if isinstance(grads, dict):
         grads = ivy.Container(grads)
     return func_ret, grads
@@ -412,7 +415,7 @@ is_variable.computes_gradients = True
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def variable_data(x):
+def variable_data(x, /):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
     dedicated variable class, the function returns the data passed in.

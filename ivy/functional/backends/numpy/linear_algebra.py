@@ -171,19 +171,67 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if len(x.shape) < 2:
-        return np.asarray(0).astype(x.dtype)
-    if type(atol) and type(rtol) == tuple:
-        if atol.all() and rtol.all() is None:
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
-        elif atol.all() and rtol.all():
-            tol = np.maximum(atol, rtol)
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return np.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return np.asarray(0).astype(x.dtype)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) == 2:
+        singular_values = np.linalg.svd(x, compute_uv=False)
+    elif len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = np.asarray(
+            [
+                np.linalg.svd(split[0], compute_uv=False)
+                for split in np.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return np.array(0, dtype=x.dtype)
+    max_values = np.max(singular_values, axis=axis)
+    if atol is None:
+        if rtol is None:
+            ret = np.sum(singular_values != 0, axis=axis)
         else:
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    else:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    return ret
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = np.sum(singular_values > atol, axis=axis)
+        else:
+            tol = np.max(atol, max_values * rtol)
+            ret = np.sum(singular_values > tol, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
 def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -302,7 +350,12 @@ trace.support_native_out = True
 
 
 def vecdot(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))

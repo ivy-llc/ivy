@@ -1256,3 +1256,40 @@ def dstack(
 
     """
     return ivy.current_backend(arrays[0]).dstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_2d(
+    *arys: Union[ivy.Array, ivy.NativeArray],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least two dimension.
+    Scalar inputs are converted to 2-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have two or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 2D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_2d(ary1)
+    ivy.array([[5]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_2d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ivy.atleast_2d(6,7,8)
+    [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
+    """
+    return ivy.current_backend().atleast_2d(*arys)

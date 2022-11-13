@@ -1627,3 +1627,120 @@ class ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_atleast_2d(
+        *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.atleast_2d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_2d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 2D. Copies are made only if necessary.
+
+        Examples
+        --------
+        >>> ary = ivy.Container(a=ivy.array(1), b=ivy.array([3,4,5]),\
+                        c=ivy.array([[3]]))
+        >>> ivy.Container.static_atleast_2d(ary)
+        {
+            a: ivy.array([[1]]),
+            b: ivy.array([[3, 4, 5]]),
+            c: ivy.array([[3]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "atleast_2d",
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def atleast_2d(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """ivy.Container instance method variant of ivy.atleast_2d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_2d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with array inputs.
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 2D. Copies are made only if necessary.
+
+        Examples
+        --------
+        >>> ary1 = ivy.Container(a=ivy.array(1), b=ivy.array([3,4]),\
+                            c=ivy.array([[5]]))
+        >>> ary2 = ivy.Container(a=ivy.array(9), b=ivy.array(2),\
+                            c=ivy.array(3))
+        >>> ary1.atleast_2d(ary2)
+        [{
+            a: ivy.array([[1]]),
+            b: ivy.array([[3, 4]]),
+            c: ivy.array([[5]])
+        }, {
+            a: ivy.array([[9]]),
+            b: ivy.array([[2]]),
+            c: ivy.array([[3]])
+        }]
+        """
+        return self.static_atleast_2d(
+            self,
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )

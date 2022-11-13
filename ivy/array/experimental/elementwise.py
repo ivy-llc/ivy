@@ -790,6 +790,4 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> x1.nextafter(x2)
         ivy.array([1.4013e-45., 3.4028e+38])
         """
-        return ivy.nextafter(
-            self._data, x2, out=out
-        )
+        return ivy.nextafter(self._data, x2, out=out)

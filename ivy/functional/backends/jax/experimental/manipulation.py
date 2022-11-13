@@ -224,3 +224,7 @@ def dstack(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.dstack(arrays)
+
+
+def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
+    return jnp.atleast_2d(*arys)

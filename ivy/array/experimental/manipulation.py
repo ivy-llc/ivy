@@ -617,3 +617,31 @@ class ArrayWithManipulationExperimental(abc.ABC):
                     [3, 4]]])
         """
         return ivy.dstack(self.concat(arrays), out=out)
+
+    def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.atleast_2d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Cannot be a scalar input.
+        arys
+            An arbitrary number of input arrays.
+
+        Returns
+        -------
+        ret
+            List of arrays, each with a.ndim >= 2. Copies are made
+            only if necessary.
+
+        Examples
+        --------
+        >>> a1 = ivy.array([[1,2,3]])
+        >>> a2 = ivy.array(4)
+        >>> a1.atleast_2d(a2,5,6)
+        [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]
+        """
+        return ivy.atleast_2d(self._data, *arys)

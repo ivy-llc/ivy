@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _get_reduction_func(reduction):
@@ -94,6 +95,7 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):
@@ -102,6 +104,14 @@ def binary_cross_entropy(
 
     if weight is not None:
         result = ivy.multiply(weight, result)
+    result = reduction(result)
+    return result
+
+
+@to_ivy_arrays_and_back
+def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.square(input - target)
     result = reduction(result)
     return result
 
@@ -137,4 +147,18 @@ def smooth_l1_loss(
 
     ret = reduction(loss)
 
+    return ret
+
+
+@to_ivy_arrays_and_back
+def l1_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.abs(input - target)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
     return ret
