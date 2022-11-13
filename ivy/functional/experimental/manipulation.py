@@ -1266,7 +1266,7 @@ def atleast_2d(
 def atleast_3d(
     *arys: Union[ivy.Array, ivy.NativeArray],
 ) -> List[ivy.Array]:
-    """Convert inputs to arrays with at least two dimension.
+    """Convert inputs to arrays with at least three dimension.
     Scalar inputs are converted to 3-dimensional arrays, whilst
     higher-dimensional inputs are preserved.
 
@@ -1288,13 +1288,19 @@ def atleast_3d(
 
     Examples
     --------
-    >>> ary1 = ivy.array(5)
+    >>> ary1 = ivy.array([5,6])
     >>> ivy.atleast_3d(ary1)
-    ivy.array([[5]])
+    ivy.array([[[5],
+            [6]]])
     >>> ary2 = ivy.array([[[3,4]]])
     >>> ivy.atleast_3d(ary2)
     ivy.array([[[3, 4]]])
-    >>> ivy.atleast_3d(6,7,8)
-    [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
+    >>> ary3 = ivy.array([[3,4],[9,10]])
+    >>> ivy.atleast_3d(6,7,ary3)
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
+            [ 4]],
+
+           [[ 9],
+            [10]]])]
     """
     return ivy.current_backend().atleast_3d(*arys)

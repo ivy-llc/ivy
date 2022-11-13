@@ -634,16 +634,19 @@ class ArrayWithManipulationExperimental(abc.ABC):
         Returns
         -------
         ret
-            List of arrays, each with a.ndim >= 3. Copies are made
-            only if necessary and views with three or more dimensions are returned.
-            For example, a 1-D array of shape (N,) becomes a view of shape (1, N, 1),
-            and a 2-D array of shape (M, N) becomes a view of shape (M, N, 1).
+            List of arrays, each with a.ndim >= 3. Copies are made only if necessary
+            and views with three or more dimensions are returned. For example, a 1-D
+            array of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array
+            of shape (M, N) becomes a view of shape (M, N, 1).
 
         Examples
         --------
         >>> a1 = ivy.array([[1,2,3]])
-        >>> a2 = ivy.array(4)
+        >>> a2 = ivy.array([4,8])
         >>> a1.atleast_3d(a2,5,6)
-        [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]
+        [ivy.array([[[1],
+                [2],
+                [3]]]), ivy.array([[[4],
+                [8]]]), ivy.array([[[5]]]), ivy.array([[[6]]])]
         """
         return ivy.atleast_3d(self._data, *arys)

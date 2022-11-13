@@ -1670,9 +1670,11 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         c=ivy.array([[3]]))
         >>> ivy.Container.static_atleast_3d(ary)
         {
-            a: ivy.array([[1]]),
-            b: ivy.array([[3, 4, 5]]),
-            c: ivy.array([[3]])
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4],
+                           [5]]]),
+            c: ivy.array([[[3]]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1730,13 +1732,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
                             c=ivy.array(3))
         >>> ary1.atleast_3d(ary2)
         [{
-            a: ivy.array([[1]]),
-            b: ivy.array([[3, 4]]),
-            c: ivy.array([[5]])
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4]]]),
+            c: ivy.array([[[5]]])
         }, {
-            a: ivy.array([[9]]),
-            b: ivy.array([[2]]),
-            c: ivy.array([[3]])
+            a: ivy.array([[[9]]]),
+            b: ivy.array([[[2]]]),
+            c: ivy.array([[[3]]])
         }]
         """
         return self.static_atleast_3d(
