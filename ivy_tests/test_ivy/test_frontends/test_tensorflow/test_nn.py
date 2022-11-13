@@ -778,10 +778,10 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         max_num_dims=4,
         min_dim_size=1,
     ),
-    depth_radius=st.integers(min_value=1),
-    bias=st.floats(min_value=0.01),
+    depth_radius=st.integers(min_value=1,max_value=7),
+    bias=st.floats(min_value=1e-4),
     alpha=st.floats(min_value=0.1),
-    beta=st.floats(min_value=0.02),
+    beta=st.floats(min_value=0.011),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.nn.local_response_normalization"
     ),
