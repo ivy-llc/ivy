@@ -69,6 +69,8 @@ def cov(
 
     if dtype is not None:
         x1 = x1.type(dtype)
+        if x2 is not None:
+            x2 = x2.type(dtype)
 
     if x2 is None:
         if rowVar is True:
@@ -81,8 +83,6 @@ def cov(
                 aweights=aweights,
             )
     else:
-        if dtype is not None:
-            x2 = x2.type(dtype)
         combined = torch.vstack((x1, x2))
         return torch.cov(
             combined, correction=corr, fweights=fweights, aweights=aweights

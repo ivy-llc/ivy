@@ -52,10 +52,10 @@ def cov(
         if jnp.ndim(x2) > 2:
             raise ValueError("x2 has more than 2 dimensions")
 
-    if dtype is not None:
-        x1 = x1.type(dtype)
-        if x2 is not None:
-            x2 = x2.type(dtype)
+    if x2 is not None:
+        x1, x2 = promote_types_of_inputs(x1, x2)
+    else:
+        x1, _x2 = promote_types_of_inputs(x1, None)
 
     return jnp.cov(
         m=x1,
