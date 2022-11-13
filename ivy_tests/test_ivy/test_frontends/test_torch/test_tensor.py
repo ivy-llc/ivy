@@ -9,7 +9,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
-    _get_dtype_input_and_mat_vec,
     _get_dtype_input_and_matrices,
 )
 
@@ -2567,12 +2566,9 @@ def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
 @st.composite
 def _get_dtype_and_multiplicative_matrices(draw):
     return draw(
-        st.sampled_from(
-            [
-                _get_dtype_input_and_matrices(),
-                _get_dtype_and_3dbatch_matrices(),
-                _get_dtype_input_and_mat_vec(),
-            ]
+        st.one_of(
+            _get_dtype_input_and_matrices(),
+            _get_dtype_and_3dbatch_matrices(),
         )
     )
 
@@ -2580,7 +2576,7 @@ def _get_dtype_and_multiplicative_matrices(draw):
 # matmul
 @handle_cmd_line_args
 @given(
-    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices().example(),
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
 def test_torch_instance_matmul(
     dtype_tensor1_tensor2,
@@ -2601,7 +2597,6 @@ def test_torch_instance_matmul(
         num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={"tensor2": tensor2},
-        rtol_=1e-02,
         frontend="torch",
         class_name="tensor",
         method_name="matmul",
