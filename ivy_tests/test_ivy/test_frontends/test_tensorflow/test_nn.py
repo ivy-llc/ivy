@@ -854,8 +854,7 @@ def test_tensorflow_conv3d_transpose(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
     x_f_d_df=_x_and_filters_convolution_channel_last(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(['NWC', 'NCW', 'NHWC', 'NCHW', 'NDHWC', 'NCDHW']),
