@@ -33,3 +33,10 @@ def det(a):
 def slogdet(a):
     sign, logabsdet = ivy.slogdet(a)
     return ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
+
+
+# trace
+@to_ivy_arrays_and_back
+def trace(a, offset=0, axis1=0, axis2=1, dtype=None, out=None):
+    ret = ivy.trace(a, offset, axis1, axis2, dtype, out)
+    return ret
