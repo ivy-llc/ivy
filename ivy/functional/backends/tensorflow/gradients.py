@@ -18,16 +18,16 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x):
+def variable(x, /):
     with tf.device(ivy.dev(x, as_native=True)):
         return tf.Variable(x, trainable=True)
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, /, *, exclusive=False):
     return isinstance(x, tf.Variable)
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x.value()
 
 
@@ -123,8 +123,9 @@ def value_and_grad(func):
 
 def stop_gradient(
     x: Union[tf.Tensor, tf.Variable],
-    preserve_type: bool = True,
+    /,
     *,
+    preserve_type: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_var = is_variable(x)
