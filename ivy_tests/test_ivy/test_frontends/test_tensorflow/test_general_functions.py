@@ -92,3 +92,37 @@ def test_tensorflow_eye(
         batch_shape=batch_shape,
         dtype=dtype,
     )
+
+
+# sort
+@handle_cmd_line_args
+@given(
+    values=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6), min_value=1, max_value=9),
+    axis=helpers.ints(),
+    direction=helpers.subsets(elements=["ASCENDING", "DESCENDING"]),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.sort"
+    ),
+    datatype=helpers.get_dtypes("valid")
+)
+def test_tensorflow_sort(
+    values,
+    axis,
+    direction,
+    as_variable,
+    native_array,
+    num_positional_args,
+    datatype
+):
+    helpers.test_frontend_function(
+        input_dtypes=datatype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="sort",
+        values=values,
+        direction=direction,
+        axis=axis,
+    )
