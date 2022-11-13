@@ -573,7 +573,7 @@ Note: Currently you do not need to comment out the :code:`conftest.py` file in t
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video">
+    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
 
