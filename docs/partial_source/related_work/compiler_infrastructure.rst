@@ -1,3 +1,5 @@
+.. _`RWorks Compiler Infrastructure`:
+
 Compiler Infrastructure
 =======================
 

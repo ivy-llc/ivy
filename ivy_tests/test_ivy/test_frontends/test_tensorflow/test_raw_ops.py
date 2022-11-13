@@ -705,6 +705,49 @@ def test_tensorflow_Square(
     )
 
 
+@st.composite
+def _squeeze_helper(draw):
+    shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
+    valid_axes = []
+    for index, axis in enumerate(shape):
+        if axis == 1:
+            valid_axes.append(index)
+    valid_axes.insert(0, None)
+    return draw(st.sampled_from(valid_axes))
+
+
+# Squeeze
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Squeeze",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid", full=True),
+        shape=st.shared(helpers.get_shape(), key="value_shape"),
+    ),
+    axis=_squeeze_helper(),
+)
+def test_tensorflow_Squeeze(
+    dtype_value,
+    axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, xs = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=xs[0],
+        axis=axis,
+    )
+
+
 # Sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sqrt",
@@ -1881,6 +1924,35 @@ def test_tensorflow_Inv(
     )
 
 
+# reciprocal
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_value=1,
+    ),
+)
+def test_tensorflow_Reciprocal(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x=x[0],
+    )
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.OnesLike",
     dtype_and_x=helpers.dtype_and_values(
@@ -2756,4 +2828,34 @@ def test_tensorflow_Xlogy(
         on_device=on_device,
         x=xs[0],
         y=xs[1],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Pack",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        force_int_axis=True,
+        min_num_dims=1,
+    ),
+)
+def test_tensorflow_Pack(
+    dtype_x_axis,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    dtype, x, axis = dtype_x_axis
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=0,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        values=x,
+        axis=axis,
     )

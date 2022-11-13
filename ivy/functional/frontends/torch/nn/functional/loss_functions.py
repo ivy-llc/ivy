@@ -109,6 +109,14 @@ def binary_cross_entropy(
 
 
 @to_ivy_arrays_and_back
+def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.square(input - target)
+    result = reduction(result)
+    return result
+
+
+@to_ivy_arrays_and_back
 def smooth_l1_loss(
     input,
     target,

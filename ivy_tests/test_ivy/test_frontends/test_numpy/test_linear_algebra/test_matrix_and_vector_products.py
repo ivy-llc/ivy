@@ -7,6 +7,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
+    _get_dtype_value1_value2_axis_for_tensordot,
 )
 
 
@@ -158,4 +159,34 @@ def test_numpy_matrix_power(
         on_device=on_device,
         a=x[0],
         n=n,
+    )
+
+
+# tensordot
+@handle_frontend_test(
+    fn_tree="numpy.linalg.tensordot",
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+)
+def test_numpy_tensordot(
+    dtype_values_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+):
+    dtype, a, b, axes = dtype_values_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        a=a,
+        b=b,
+        axes=axes,
     )

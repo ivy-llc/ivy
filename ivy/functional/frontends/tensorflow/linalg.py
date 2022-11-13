@@ -36,11 +36,12 @@ def solve(matrix, rhs):
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float16", "float32", "float64", "complex64", "complex128")},
+    "tensorflow",
+)
 def logdet(matrix, name=None):
     return ivy.det(matrix).log()
-
-
-logdet.supported_dtypes = ("float16", "float32", "float64")
 
 
 @to_ivy_arrays_and_back
@@ -114,3 +115,15 @@ def l2_normalize(x, axis=None, epsilon=1e-12, name=None):
     square_sum = ivy.sum(ivy.square(x), axis=axis, keepdims=True)
     x_inv_norm = ivy.reciprocal(ivy.sqrt(ivy.maximum(square_sum, epsilon)))
     return ivy.multiply(x, x_inv_norm)
+
+
+@to_ivy_arrays_and_back
+def trace(x, name=None):
+    return ivy.trace(x)
+
+
+@to_ivy_arrays_and_back
+def matrix_transpose(a, name="matrix_transpose", conjugate=False):
+    # Conjugate is ignored - Should be added as an argument
+    # if complex numbers become supported
+    return ivy.matrix_transpose(a)

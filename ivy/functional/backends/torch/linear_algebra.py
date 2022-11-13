@@ -442,7 +442,16 @@ def vander(
     increasing: bool = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.vander(x, N=N, increasing=increasing)
+    # torch.vander hasn't been used as it produces 0 gradients
+    N = ivy.default(N, x.shape[-1])
+    start, stop, step = N - 1, -1, -1
+    if increasing:
+        start, stop, step = 0, N, 1
+    return torch.pow(
+        torch.transpose(torch.unsqueeze(x, 0), 0, 1),
+        torch.arange(start, stop, step),
+        out=out,
+    )
 
 
 def vector_to_skew_symmetric_matrix(

@@ -660,9 +660,7 @@ def gradient_test(
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
         ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
         ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
-        if isinstance(ret, tuple):
-            ret = ret[0]
-        return ivy.mean(ret)
+        return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
@@ -1083,6 +1081,7 @@ def test_frontend_method(
     """
     _assert_dtypes_are_valid(init_input_dtypes)
     _assert_dtypes_are_valid(method_input_dtypes)
+
     # split the arguments into their positional and keyword components
 
     # Constructor arguments #
@@ -1259,7 +1258,6 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-
     frontend_class = importlib.import_module(frontend).__getattribute__(class_.__name__)
     ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
     frontend_ret = ins_gt.__getattribute__(method_name)(

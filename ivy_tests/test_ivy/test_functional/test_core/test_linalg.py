@@ -278,6 +278,7 @@ def test_vector_to_skew_symmetric_matrix(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         vector=x,
     )
 
@@ -287,11 +288,11 @@ def test_vector_to_skew_symmetric_matrix(
     fn_tree="functional.ivy.matrix_power",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
+        min_value=1e-3,
+        max_value=20,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
-    n=helpers.ints(min_value=1, max_value=8),
+    n=helpers.ints(min_value=1, max_value=6),
 )
 def test_matrix_power(
     *,
@@ -308,7 +309,6 @@ def test_matrix_power(
     on_device,
 ):
     dtype, x = dtype_x
-
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -322,6 +322,7 @@ def test_matrix_power(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         n=n,
     )
@@ -362,6 +363,7 @@ def test_matmul(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x1=x_1,
         x2=y_1,
         transpose_a=transpose_a,
@@ -372,7 +374,12 @@ def test_matmul(
 # det
 @handle_test(
     fn_tree="functional.ivy.det",
-    dtype_x=_get_dtype_and_matrix(),
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=2,
+        max_value=5,
+        shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
 )
 def test_det(
     *,
@@ -399,9 +406,10 @@ def test_det(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        rtol_=1e-3,
-        atol_=1e-3,
-        x=x,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
+        x=x[0],
     )
 
 
@@ -552,6 +560,7 @@ def test_inner(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-2,
+        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -596,6 +605,7 @@ def test_inv(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         adjoint=adjoint,
     )
@@ -631,6 +641,7 @@ def test_matrix_transpose(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         x=x,
     )
 
@@ -672,6 +683,7 @@ def test_outer(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         x1=arrays[0],
         x2=arrays[1],
     )
@@ -683,11 +695,11 @@ def test_outer(
     fn_tree="functional.ivy.slogdet",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        small_abs_safety_factor=72,
-        large_abs_safety_factor=72,
+        min_value=2,
+        max_value=5,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ),
+    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
 )
 def test_slogdet(
     *,
@@ -716,6 +728,8 @@ def test_slogdet(
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
+        ret_grad_idxs=[["1"]],
         x=x[0],
     )
 
@@ -805,6 +819,7 @@ def test_solve(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x1=x1,
         x2=x2,
     )
@@ -847,6 +862,7 @@ def test_svdvals(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
     )
 
@@ -896,6 +912,7 @@ def test_tensordot(
         on_device=on_device,
         rtol_=0.8,
         atol_=0.8,
+        test_gradients=True,
         x1=x1,
         x2=x2,
         axes=axis,
@@ -949,6 +966,7 @@ def test_trace(
         on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axis1,
@@ -997,6 +1015,7 @@ def test_vecdot(
         on_device=on_device,
         rtol_=5e-1,
         atol_=5e-1,
+        test_gradients=True,
         x1=x1,
         x2=x2,
         axis=axis,
@@ -1047,6 +1066,7 @@ def test_vector_norm(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
@@ -1097,6 +1117,7 @@ def test_pinv(
         on_device=on_device,
         rtol_=1e-2,
         atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         rtol=rtol,
     )
@@ -1250,6 +1271,11 @@ def test_svd(
         max_num_dims=2,
         min_dim_size=1,
         max_dim_size=10,
+        min_value=-1e20,
+        max_value=1e20,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
     kd=st.booleans(),
     axis=st.just((-2, -1)),
@@ -1283,6 +1309,9 @@ def test_matrix_norm(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-2,
+        atol_=1e-2,
+        test_gradients=True,
         x=x[0],
         axis=axis,
         keepdims=kd,
@@ -1309,9 +1338,9 @@ def _matrix_rank_helper(draw):
 @handle_test(
     fn_tree="functional.ivy.matrix_rank",
     dtype_x=_matrix_rank_helper(),
-    atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
-    rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True)
+    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True)
     | st.just(None),
 )
 def test_matrix_rank(
@@ -1392,6 +1421,7 @@ def test_cholesky(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         x=x,
         upper=upper,
         rtol_=1e-3,
@@ -1440,6 +1470,7 @@ def test_cross(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         rtol_=1e-1,
         atol_=1e-2,
         x1=x1,
@@ -1490,6 +1521,7 @@ def test_diagonal(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         x=x[0],
         offset=offset,
         axis1=axes[0],
@@ -1549,6 +1581,7 @@ def test_diag(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        test_gradients=True,
         x=x[0],
         k=k,
     )
@@ -1562,6 +1595,9 @@ def test_diag(
         shape=st.tuples(
             helpers.ints(min_value=1, max_value=10),
         ),
+        large_abs_safety_factor=15,
+        small_abs_safety_factor=15,
+        safety_factor_scale="log",
     ),
     N=st.integers(min_value=1, max_value=10) | st.none(),
     increasing=st.booleans(),
@@ -1593,6 +1629,9 @@ def test_vander(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        test_gradients=True,
         x=x[0],
         N=N,
         increasing=increasing,

@@ -35,6 +35,7 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+show_func_wrapper_trace_mode_stack = list()
 
 
 def _parse_ellipsis(so, ndims):
@@ -427,6 +428,71 @@ def get_exception_trace_mode() -> bool:
     if not exception_trace_mode_stack:
         return True
     return exception_trace_mode_stack[-1]
+
+
+@handle_exceptions
+def set_show_func_wrapper_trace_mode(mode: bool) -> None:
+    """Set the mode of whether to show the full stack trace with function
+    wrapping traces
+
+    Parameter
+    ---------
+    mode
+        boolean whether to perform ivy.Array conversions
+
+    Examples
+    --------
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+
+    >>> ivy.set_show_func_wrapper_trace_mode(True)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+    """
+    global show_func_wrapper_trace_mode_stack
+    ivy.assertions.check_isinstance(mode, bool)
+    show_func_wrapper_trace_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_show_func_wrapper_trace_mode() -> None:
+    """Reset the mode of whether to show the full stack trace with function
+    wrapping traces
+
+    Examples
+    --------
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+
+    >>> ivy.unset_show_func_wrapper_trace_mode()
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+    """
+    global show_func_wrapper_trace_mode_stack
+    if show_func_wrapper_trace_mode_stack:
+        show_func_wrapper_trace_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_show_func_wrapper_trace_mode() -> bool:
+    """Get the current state of whether to show the full stack trace with function
+    wrapping traces. Default is True (function wrapping traces are shown)
+
+    Examples
+    --------
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    True
+
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
+    False
+    """
+    global show_func_wrapper_trace_mode_stack
+    if not show_func_wrapper_trace_mode_stack:
+        return True
+    return show_func_wrapper_trace_mode_stack[-1]
 
 
 @inputs_to_native_arrays

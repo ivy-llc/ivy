@@ -519,7 +519,7 @@ def test_tensorflow_conv2d_transpose(
     fn_tree="tensorflow.nn.conv3d",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
+        data_format=st.sampled_from(["NDHWC"]),
         padding=st.sampled_from(["SAME"]),
         type="3d",
     ),
@@ -561,7 +561,7 @@ def test_tensorflow_conv3d(
     fn_tree="tensorflow.nn.conv3d_transpose",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
+        data_format=st.sampled_from(["NDHWC"]),
         padding=st.sampled_from(["SAME"]),
         type="3d",
         transpose=True,

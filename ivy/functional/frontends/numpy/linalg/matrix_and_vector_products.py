@@ -33,3 +33,8 @@ def matmul(
 @to_ivy_arrays_and_back
 def matrix_power(a, n):
     return ivy.matrix_power(a, n)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, axes=2):
+    return ivy.tensordot(a, b, axes=axes)

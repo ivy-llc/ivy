@@ -583,60 +583,64 @@ def test_flatten(
     )
 
 
-def _st_tuples_or_int(n_pairs):
+def _st_tuples_or_int(n_pairs, exclude_zero=False):
+    min_val = 0
+    if exclude_zero:
+        min_val = 1
     return st.one_of(
         st.tuples(
             st.tuples(
-                st.integers(min_value=1, max_value=4),
-                st.integers(min_value=1, max_value=4),
+                st.integers(min_value=min_val, max_value=4),
+                st.integers(min_value=min_val, max_value=4),
             ),
             min_size=n_pairs,
             max_size=n_pairs,
         ),
-        helpers.ints(min_value=1, max_value=4),
+        helpers.ints(min_value=min_val, max_value=4),
     )
 
 
 @st.composite
 def _pad_helper(draw):
-    dtype, value, shape = draw(
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "edge",
+                "linear_ramp",
+                "maximum",
+                "mean",
+                "median",
+                "minimum",
+                "reflect",
+                "symmetric",
+                "wrap",
+            ]
+        )
+    )
+    dtype, input, shape = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             ret_shape=True,
             min_num_dims=1,
-        )
+        ).filter(lambda x: x[0][0] not in ["bfloat16"])
     )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
-    stat_length = draw(_st_tuples_or_int(ndim))
+    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
     constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
-    return dtype, value, pad_width, stat_length, constant_values, end_values
+    return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
 
 
 @handle_test(
     fn_tree="functional.experimental.pad",
     dtype_and_input_and_other=_pad_helper(),
-    mode=st.sampled_from(
-        [
-            "constant",
-            "edge",
-            "linear_ramp",
-            "maximum",
-            "mean",
-            "median",
-            "minimum",
-            "reflect",
-            "symmetric",
-            "wrap",
-        ]
-    ),
     reflect_type=st.sampled_from(["even", "odd"]),
 )
 def test_pad(
     *,
     dtype_and_input_and_other,
-    mode,
     reflect_type,
     num_positional_args,
     as_variable,
@@ -650,16 +654,17 @@ def test_pad(
 ):
     (
         dtype,
-        value,
+        input,
         pad_width,
         stat_length,
         constant_values,
         end_values,
+        mode,
     ) = dtype_and_input_and_other
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container_flags,
@@ -668,11 +673,141 @@ def test_pad(
         fn_name=fn_name,
         on_device=on_device,
         ground_truth_backend="numpy",
-        input=value[0],
+        input=input,
         pad_width=pad_width,
         mode=mode,
         stat_length=stat_length,
         constant_values=constant_values,
         end_values=end_values,
         reflect_type=reflect_type,
+    )
+
+
+# vsplit
+@handle_test(
+    fn_tree="functional.experimental.vsplit",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indices_or_sections=helpers.get_shape(
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+    ),
+)
+def test_vsplit(
+    dtype_and_x,
+    indices_or_sections,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    backend_fw,
+    fn_name,
+):
+    input_dtype, x = dtype_and_x
+    indices_or_sections = sorted(indices_or_sections)
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# dsplit
+@handle_test(
+    fn_tree="functional.experimental.dsplit",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=3,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indices_or_sections=helpers.get_shape(
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+    ),
+)
+def test_dsplit(
+    dtype_and_x,
+    indices_or_sections,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    backend_fw,
+    fn_name,
+):
+    input_dtype, x = dtype_and_x
+    indices_or_sections = sorted(indices_or_sections)
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices_or_sections=indices_or_sections,
+    )
+
+
+# dstack
+@handle_test(
+    fn_tree="functional.experimental.dstack",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        shared_dtype=True,
+        num_arrays=2,
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+        ),
+    ),
+)
+def test_dstack(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    backend_fw,
+    fn_name,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        arrays=x,
     )
