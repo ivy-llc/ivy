@@ -44,6 +44,14 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+
+    if jnp.ndim(x1) > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if jnp.ndim(x2) > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
     if dtype is not None:
         x1 = x1.type(dtype)
         if x2 is not None:

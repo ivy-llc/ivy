@@ -52,6 +52,14 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
+    if x1.dim() > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+
+    if x2 is not None:
+        if x2.dim() > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
     corr = int(not bias)
     if ddof is not None:
         if ddof == 1:

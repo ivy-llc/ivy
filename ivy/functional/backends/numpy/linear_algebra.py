@@ -44,6 +44,12 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
+    if x1.ndim > 2:
+        raise ValueError("x1 has more than 2 dimensions")
+    if x2 is not None:
+        if x2.ndim > 2:
+            raise ValueError("x2 has more than 2 dimensions")
+
     return np.cov(
         m=x1,
         y=x2,
