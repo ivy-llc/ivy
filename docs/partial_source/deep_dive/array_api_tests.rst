@@ -15,6 +15,9 @@ Array API Tests
 .. _`ivy_tests/test_array_api/array_api_tests/test_special_cases.py`: https://github.com/data-apis/array-api-tests/blob/ddd3b7a278cd0c0b68c0e4666b2c9f4e67b7b284/array_api_tests/test_special_cases.py
 .. _`here`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 .. _`git website`: https://www.git-scm.com/book/en/v2/Git-Tools-Submodules
+.. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
+.. _`ivy tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
+.. _`final section`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
@@ -48,7 +51,7 @@ You will need to make sure the Array API tests are passing for each backend fram
 If a test fails on the CI, you can see details about the failure under `Details -> Run [backend] Tests`.
 
 You can also run the tests locally before making a PR.
-There are two ways to do this: by the terminal or using your IDE.
+There are two ways to do this: using the terminal or using your IDE.
 
 Using Terminal
 **************
@@ -58,20 +61,19 @@ Using the terminal, you can run all array-api tests in a given file for a certai
 .. code-block:: none
 
         # /ivy
-        # /bin/bash -e ./run_tests_CLI/test_array_api.sh  <insert_chosen_backend> test_<category>
-        /bin/bash -e ./run_tests_CLI/test_array_api.sh  jax test_linalg
+        /bin/bash -e ./run_tests_CLI/test_array_api.sh jax test_linalg
 
 You can change the argument with any of our supported frameworks - tensorflow, numpy, torch or jax - and the individual test function categories in :code:`ivy/ivy_tests/test_array_api/array_api_tests`, e.g. *test_set_functions*, *test_signatures* etc.
 
 You can also run a specific test, as often running *all* tests in a file is excessive.
-To make this work, you should set the backend explicitly in the `_array_module.py` file, which can find it in the `array_api_tests` submodule.
+To make this work, you should set the backend explicitly in the `_array_module.py` file, which you can find in the `array_api_tests` submodule.
 At the beginning of the file, you will see the following line of code :code:`array_module = None`.
 You need to comment out that line and add the following:
 
 .. code-block:: none
 
         import ivy as array_module
-        array_module.set_backend("<insert_chosen_backend>")
+        array_module.set_backend("jax") # or numpy, tensorflow, torch
 
 You should now be able to run the following commands via terminal:
 
@@ -92,6 +94,65 @@ After that, you can run the API test files as you typically would with other tes
 See `here`_  for instructions on how to run tests in ivy more generally.
 
 *NB*: make sure to not add any changes to the array-api files to your commit.
+
+Regenerating Test Failures
+--------------------------
+Array-API tests are written using `hypothesis`_ to perform property-based testing, just like the `ivy tests`_.
+However, unlike the ivy tests, the Array-API tests make liberal use of :code:`data.draw` in the main body of the test function instead of generating the data in the :code:`@given` decorator that wraps it.
+This means that failed tests cannot be re-run with the :code:`@example` decorator, as explained in the `final section`_ of the ivy tests deep dive.
+Fortunately, it is possible to regenerate test failures using a unique decorator that appears in the final line of the falsifying example in the error stack trace:
+
+.. code-block:: none
+
+    =================================== FAILURES ===================================
+    ______________________ test_remainder[remainder(x1, x2)] _______________________
+    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1264: in test_remainder
+        @given(data=st.data())
+    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:1277: in test_remainder
+        binary_param_assert_against_refimpl(ctx, left, right, res, "%", operator.mod)
+    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:620: in binary_param_assert_against_refimpl
+        binary_assert_against_refimpl(
+    ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py:324: in binary_assert_against_refimpl
+        assert isclose(scalar_o, expected), (
+    E   AssertionError: out=-2.0, but should be roughly (x1 % x2)=1.0 [remainder()]
+    E     x1=17304064.0, x2=3.0
+    E   assert False
+    E    +  where False = isclose(-2.0, 1.0)
+    E   Falsifying example: test_remainder(
+    E       data=data(...), ctx=BinaryParamContext(<remainder(x1, x2)>),
+    E   )
+    E   Draw 1 (x1): ivy.array(17304064.)
+    E   Draw 2 (x2): ivy.array(3.)
+    E
+    E   You can reproduce this example by temporarily adding @reproduce_failure('6.55.0', b'AXic42BAAowcnP+RuMwMABAeAR0=') as a decorator on your test case
+
+Copy the :code:`@reproduce_failure` decorator and paste it after the usual decorators of `test_remainder`.
+You may also need to include the hypothesis import of `reproduce_failure` as shown below.
+
+.. code-block:: none
+
+    from hypothesis import reproduce_failure
+
+    @pytest.mark.parametrize("ctx", make_binary_params("remainder", dh.numeric_dtypes))
+    @given(data=st.data())
+    @reproduce_failure('6.55.0', b'AXic42BAAowcnP+RuMwMABAeAR0=')
+    def test_remainder(ctx, data):
+        left = data.draw(ctx.left_strat, label=ctx.left_sym)
+        right = data.draw(ctx.right_strat, label=ctx.right_sym)
+        if ctx.right_is_scalar:
+            assume(right != 0)
+        else:
+            assume(not xp.any(right == 0))
+
+        res = ctx.func(left, right)
+
+        binary_param_assert_dtype(ctx, left, right, res)
+        binary_param_assert_shape(ctx, left, right, res)
+        binary_param_assert_against_refimpl(ctx, left, right, res, "%", operator.mod)
+
+The test should then include the inputs which led to the previous failure and recreate it.
+If you are taking the :code:`@reproduce_failure` decorator from a CI stack trace and trying to reproduce it locally, you may find that sometimes the local test unexpectedly passes.
+This is usually caused by a discrepancy in your local source code and ivy-master, so try pulling from master to sync the behaviour.
 
 Test Skipping
 -------------
@@ -129,9 +190,9 @@ In :code:`ivy_tests/skips.txt`, tests are skipped by writing the filepath + cond
     ivy_tests/test_array_api/array_api_tests/test_special_cases.py::test_iop[__ipow__(x1_i is -infinity and x2_i > 0 and not (x2_i.is_integer() and x2_i % 2 == 1)) -> +infinity]
 
 is skipping the in-place operations test on the :code:`pow` instance method when x1 is -infinity and x2 is a positive, odd float.
-The result should be +infinity, however there is an issue with the numpy instance method and an `issue`_ has been raised on the numpy repository.
+The result should be +infinity, however there is a known problem with the numpy instance method and an `issue`_ has been raised on the numpy repository.
 Tests are categorised in :code:`ivy_tests/skips.txt` according to the backend they are failing on and the reason for the failure.
-This should make unskipping temporarily failing tests straightforward once the issue has been resolved, especially if the skip instruction itself contains the exact input conditions that are failing.
+The fact that the skip instruction itself contains the exact input conditions that are failing makes it easier to keep track of and revisit failing tests to try and fix them.
 
 **Round Up**
 

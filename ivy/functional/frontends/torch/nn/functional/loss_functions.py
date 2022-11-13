@@ -146,3 +146,17 @@ def smooth_l1_loss(
     ret = reduction(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+def l1_loss(
+    input,
+    target,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    loss = ivy.abs(input - target)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret
