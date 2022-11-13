@@ -156,7 +156,7 @@ def test_numpy_slogdet(
     fn_tree="numpy.trace",
     dtype_and_x=_get_dtype_and_matrix(),
 )
-def test_numpy_det(
+def test_numpy_trace(
     dtype_and_x,
     as_variable,
     num_positional_args,
