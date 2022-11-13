@@ -710,6 +710,7 @@ def test_vsplit(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
@@ -755,6 +756,7 @@ def test_dsplit(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
@@ -768,6 +770,7 @@ def test_dsplit(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
@@ -788,6 +791,7 @@ def test_dsplit(
     ),
 )
 def test_dstack(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -797,6 +801,7 @@ def test_dstack(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -809,6 +814,7 @@ def test_dstack(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         arrays=x,
     )
 
@@ -822,6 +828,7 @@ def test_dstack(
     ),
 )
 def test_atleast_2d(
+    *,
     dtype_and_x,
     as_variable,
     num_positional_args,
