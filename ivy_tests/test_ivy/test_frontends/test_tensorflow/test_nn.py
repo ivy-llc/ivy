@@ -427,6 +427,7 @@ def test_tensorflow_gelu(
         approximate=approximate,
     )
 
+
 @handle_frontend_test(
     fn_name="tensorflow.nn.avg_pool2d",
     x_f_d_df = _x_and_filters(
@@ -453,6 +454,7 @@ def test_tensorflow_avg_pool2d(*, x_f_d_df, as_variable, num_positional_args, na
         padding=padding,
         data_format=data_format,
     )
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.conv2d",
