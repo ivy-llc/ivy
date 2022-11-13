@@ -29,4 +29,5 @@ Manipulation
    manipulation/vsplit.rst
    manipulation/dsplit.rst
    manipulation/dstack.rst
+   manipulation/atleast_2d.rst
 

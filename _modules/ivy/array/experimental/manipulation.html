@@ -718,7 +718,35 @@
 <span class="sd">                    [2, 3],</span>
 <span class="sd">                    [3, 4]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dstack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithManipulationExperimental.atleast_2d"><a class="viewcode-back" href="../../../../data_classes/array/experimental/manipulation/ArrayWithManipulationExperimental.html#ivy.array.experimental.manipulation.ArrayWithManipulationExperimental.atleast_2d">[docs]</a>    <span class="k">def</span> <span class="nf">atleast_2d</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">*</span><span class="n">arys</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.atleast_2d. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.atleast_2d also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array. Cannot be a scalar input.</span>
+<span class="sd">        arys</span>
+<span class="sd">            An arbitrary number of input arrays.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            List of arrays, each with a.ndim &gt;= 2. Copies are made</span>
+<span class="sd">            only if necessary.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a1 = ivy.array([[1,2,3]])</span>
+<span class="sd">        &gt;&gt;&gt; a2 = ivy.array(4)</span>
+<span class="sd">        &gt;&gt;&gt; a1.atleast_2d(a2,5,6)</span>
+<span class="sd">        [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="o">*</span><span class="n">arys</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

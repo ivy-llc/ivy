@@ -105,6 +105,8 @@ Container methods
    container_methods/dsplit.rst
    container_methods/dstack.rst
    container_methods/static_dstack.rst
+   container_methods/static_atleast_2d.rst
+   container_methods/atleast_2d.rst
    container_methods/static_dirichlet.rst
    container_methods/dirichlet.rst
    container_methods/static_msort.rst
