@@ -2483,4 +2483,3 @@ def test_isreal(
         fn_name="isreal",
         x=x[0],
     )
-
