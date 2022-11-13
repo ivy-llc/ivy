@@ -300,18 +300,19 @@ def softplus(x):
     return ivy.softplus(x).astype(x.dtype)
 
 
+@to_ivy_arrays_and_back
 def selu(x):
-    alpha = -ivy.sqrt(2 / ivy.pi) / ((1 - ivy.erf(1 / ivy.sqrt(2))) 
-            * ivy.exp(1 / 2) - 1)
-    scale = ((1 - (1 - ivy.erf(1 / ivy.sqrt(2))) * ivy.sqrt(ivy.e)) 
-            * ivy.sqrt(2 * ivy.pi) 
-            * (
-                2 * (1 - ivy.erf(ivy.sqrt(2))) * ivy.e ** 2 
-                + ivy.pi * (1 - ivy.erf(1 / ivy.sqrt(2))) ** 2 * ivy.e 
-                - 2 * (2 + ivy.pi) * (1 - ivy.erf(1 / ivy.sqrt(2))) * ivy.sqrt(ivy.e) 
-                + ivy.pi 
-                + 2
-            ) ** (-1 / 2))
+    alpha =  -ivy.sqrt(2 / ivy.pi) / ((1 - ivy.erf(1 / ivy.sqrt(2))) 
+             * ivy.exp(1 / 2) - 1)
+    scale =  ((1 - (1 - ivy.erf(1 / ivy.sqrt(2))) * ivy.sqrt(ivy.e)) 
+             * ivy.sqrt(2 * ivy.pi) 
+             * (
+                 2 * (1 - ivy.erf(ivy.sqrt(2))) * ivy.e ** 2 
+                 + ivy.pi * (1 - ivy.erf(1 / ivy.sqrt(2))) ** 2 * ivy.e 
+                 - 2 * (2 + ivy.pi) * (1 - ivy.erf(1 / ivy.sqrt(2))) * ivy.sqrt(ivy.e) 
+                 + ivy.pi 
+                 + 2
+           ) ** (-1 / 2))
     return scale * elu(x, alpha)
 
 
