@@ -230,6 +230,9 @@ class Tensor:
         self.data = self.unsqueeze(dim)
         return self.data
 
+    def argsort(self,axis, descending=False, stable=False):
+        return ivy.argsort(self.data,axis=axis, descending=False, stable=False)
+
     def dim(self):
         return self.data.ndim
 
