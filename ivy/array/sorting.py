@@ -103,6 +103,15 @@ class ArrayWithSorting(abc.ABC):
         *,
         side="left",
         sorter=None,
+        ret_dtype=ivy.int64,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.searchsorted(self.data, v, side=side, sorter=None, out=out)
+        """
+        ivy.Array instance method variant of ivy.searchsorted.
+        This method simply wraps the function, and so the docstring for
+        ivy.searchsorted also applies to this method with minimal changes.
+
+        """
+        return ivy.searchsorted(
+            self.data, v, side=side, sorter=sorter, ret_dtype=ret_dtype, out=out
+        )

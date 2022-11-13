@@ -1,45 +1,34 @@
-import numpy as np
-from hypothesis import given
-
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # ceil
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ceil"
-    ),
 )
 def test_numpy_ceil(
     dtype_and_x,
-    dtype,
     where,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
-
-    if type(input_dtype) != list:
-        input_dtype = [input_dtype]
-    if type(as_variable) != list:
-        as_variable = [as_variable]
-    if type(native_array) != list:
-        native_array = [native_array]
-
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -51,46 +40,95 @@ def test_numpy_ceil(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="ceil",
-        x=np.asarray(x, dtype=input_dtype[0]),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
         out=None,
         where=where,
-        casting="same_kind",
-        order="k",
+        casting=casting,
+        order="K",
         dtype=dtype,
         subok=True,
-        test_values=False,
     )
 
 
-@handle_cmd_line_args
-@given(
+# fix
+@handle_frontend_test(
+    fn_tree="numpy.fix",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.fix"
     ),
 )
 def test_numpy_fix(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="fix",
-        a=np.asarray(x, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         test_values=False,
+        a=x[0],
+    )
+
+
+# trunc
+@handle_frontend_test(
+    fn_tree="numpy.trunc",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    where=np_frontend_helpers.where(),
+)
+def test_numpy_trunc(
+    dtype_and_x,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
+        dtypes=input_dtype,
+        get_dtypes_kind="float",
+    )
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+        out=None,
+        where=where,
+        casting=casting,
+        order="K",
+        dtype=dtype,
+        subok=True,
     )

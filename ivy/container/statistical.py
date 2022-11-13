@@ -21,6 +21,22 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+
+        With: code:`ivy.Container`
+        input:
+
+        >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                               b=ivy.array([2, 3, 4]))
+        >> > z = x.min()
+        >> > print(z)
+        {
+            a: ivy.array(3),
+            b: ivy.array(4)
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.min(x_, axis=axis, keepdims=keepdims)
@@ -93,16 +109,16 @@ class ContainerWithStatistical(ContainerBase):
             the result. Default: ``False``.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was
-            not applied. Default is False.
+            not applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -117,7 +133,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
         >>> y = x.mean()
@@ -152,8 +168,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(1.)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]), \
-                              b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+        ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
         >>> x.mean(axis=0, out=x)
         >>> print(x)
         {
@@ -161,10 +177,10 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array([4.5, 5.5, 6.5])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]), \
-                              b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
-        >>> ivy.mean(x, axis=1, out=x)
-        >>> print(x)
+        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
+        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+        >>> y = ivy.mean(x, axis=1)
+        >>> print(y)
         {
             a: ivy.array([1., 2.]),
             b: ivy.array([3., 4.])
@@ -211,7 +227,7 @@ class ContainerWithStatistical(ContainerBase):
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array for each array in the input
             container. If a tuple of integers, variances must be computed over
-            multiple axes. Default: None.
+            multiple axes. Default: ``None``.
         correction
             degrees of freedom adjustment. Setting this parameter to a value other than
             0 has the effect of adjusting the divisor during the calculation of the
@@ -223,26 +239,26 @@ class ContainerWithStatistical(ContainerBase):
             When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled from
             a larger population; this is commonly referred to as Bessel's correction).
-            Default: 0.
+            Default: ``0``.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible
             with the input array (see Broadcasting). Otherwise, if False, the
             reduced axes (dimensions) must not be included in the result.
-            Default: False.
+            Default: ``False``.
             input array. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not
-            applied. Default is False.
+            applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -258,8 +274,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
-        b=ivy.array([3.0, 4.0, 5.0]))
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),
+        ...                   b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = x.var()
         >>> print(y)
         {
@@ -267,8 +283,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(0.6666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), \
-        b=ivy.array([3.0, 4.0, 5.0]))
+        >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]),
+        ...                   b=ivy.array([3.0, 4.0, 5.0]))
         >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
         >>> x.var(out=y)
         >>> print(y)
@@ -277,8 +293,8 @@ class ContainerWithStatistical(ContainerBase):
             b: ivy.array(0.6666667)
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]), \
-                              b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))
+        >>> x = ivy.Container(a=ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0]]),
+        ...                   b=ivy.array([[6.0, 7.0, 8.0], [9.0, 10.0, 11.0]]))
         >>> y = ivy.Container(a=ivy.array([0., 0., 0.]), b=ivy.array([0., 0., 0.]))
         >>> x.var(axis=0, out=y)
         >>> print(y)
@@ -329,16 +345,16 @@ class ContainerWithStatistical(ContainerBase):
             input array. Should have a floating-point data type.
         key_chains
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains,
-            otherwise key_chains will be skipped. Default is True.
+            otherwise key_chains will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was
-            not applied. Default is False.
+            not applied. Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
         out
             optional output, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -354,8 +370,8 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]), \
-                              b=ivy.array([0.7, 0.1, 0.9]))
+        >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
+        ...                   b=ivy.array([0.7, 0.1, 0.9]))
         >>> y = ivy.Container.static_var(x)
         >>> print(y)
         {
@@ -489,11 +505,10 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumsum(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -511,26 +526,27 @@ class ContainerWithStatistical(ContainerBase):
         x
             Input array or container to apply cumsum.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -540,10 +556,10 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], [2, 4, 5]]),
+        ...                   b=ivy.array([[4, 5, 6], [2, 3, 1 ]]))
         >>> y = ivy.Container.static_cumsum(x, axis=0)
         >>> print(y)
         {
@@ -553,25 +569,25 @@ class ContainerWithStatistical(ContainerBase):
                           [6, 8, 7]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]), \
-                              b=ivy.array([[3, 5, 7]]))
-        >>> y = ivy.Container.static_cumsum(x, axis=0,  \
-                              exclusive=False, reverse=True, dtype='float32')
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 5]]),
+        ...                   b=ivy.array([[3, 5, 7]]))
+        >>> y = ivy.Container.static_cumsum(x, axis=0,
+        ...                      exclusive=False, reverse=True, dtype='float32')
         >>> print(y)
         {
             a: ivy.array([[1., 3., 5.]]),
             b: ivy.array([[3., 5., 7.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+        ...                   b=ivy.array([[3, 5, 8],
+        ...                                [5, 6, 5]]),
+        ...                   c=ivy.array([[2, 4, 1],
+        ...                                [3, 6, 9],
+        ...                                [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+        ...                   b = ivy.zeros((2, 3)),
+        ...                   c = ivy.zeros((3,3)))
         >>> ivy.cumsum(x,axis=1,exclusive=True, reverse=False, out=y)
         >>> print(y)
         {
@@ -583,8 +599,8 @@ class ContainerWithStatistical(ContainerBase):
                           [0, 0, 2]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], [5, 7, 8], [9, 10, 11]]),
+        ...                   b=ivy.array([[3, 4, 5], [4, 5, 6], [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
         >>> ivy.Container.static_cumsum(x, axis=1, exclusive=True, reverse=True, out=y)
         >>> print(y)
@@ -596,13 +612,13 @@ class ContainerWithStatistical(ContainerBase):
                           [11, 6, 0],
                           [13, 7, 0]])
         }
-        >>> x = ivy.Container(a=ivy.array([[1], \
-                                           [1]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [2, 0, 1]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+        >>> x = ivy.Container(a=ivy.array([[1],
+        ...                                [1]]),
+        ...                   b=ivy.array([[6, 8, 7],
+        ...                                [2, 0, 1]]),
+        ...                   c=ivy.array([[1, 2],
+        ...                                [3, 4],
+        ...                                [6, 4]]))
         >>> ivy.Container.static_cumsum(x, axis=0, out=x)
         >>> print(x)
         {
@@ -631,11 +647,10 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumsum(
         self: ivy.Container,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -653,26 +668,27 @@ class ContainerWithStatistical(ContainerBase):
         self
             Input container to apply cumsum at leaves.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -682,12 +698,12 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` input:
+        With :class:`ivy.Container` input:
 
-        >>> x = ivy.Container(a=ivy.array([[1, 2, 3], \
-                                          [2, 4, 5]]), \
-                              b=ivy.array([[4, 5, 6], \
-                                          [2, 3, 1 ]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],
+        ...                                [2, 4, 5]]),
+        ...                   b=ivy.array([[4, 5, 6],
+        ...                                [2, 3, 1 ]]))
         >>> y = x.cumsum(axis=0, dtype='float64')
         >>> print(y)
         {
@@ -697,12 +713,12 @@ class ContainerWithStatistical(ContainerBase):
                           [6., 8., 7.]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4], \
-                                           [5, 7, 8], \
-                                           [9, 10, 11]]), \
-                              b=ivy.array([[3, 4, 5], \
-                                           [4, 5, 6], \
-                                            [5, 6, 7]]))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4],
+        ...                                [5, 7, 8],
+        ...                                [9, 10, 11]]),
+        ...                   b=ivy.array([[3, 4, 5],
+        ...                                [4, 5, 6],
+        ...                                [5, 6, 7]]))
         >>> y = ivy.Container(a= ivy.zeros((3, 3)), b= ivy.zeros((3, 3)))
         >>> x.cumsum(axis=1, exclusive=False, reverse=True, out=y)
         >>> print(y)
@@ -715,15 +731,15 @@ class ContainerWithStatistical(ContainerBase):
                           [18, 13, 7]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]), \
-                              b=ivy.array([[3, 5, 8], \
-                                           [5, 6, 5]]), \
-                              c=ivy.array([[2, 4, 1], \
-                                           [3, 6, 9], \
-                                           [0, 2, 3]]))
-        >>> y = ivy.Container(a = ivy.zeros((1, 3)), \
-                              b = ivy.zeros((2, 3)), \
-                              c = ivy.zeros((3,3)))
+        >>> x = ivy.Container(a=ivy.array([[1, 3, 4]]),
+        ...                   b=ivy.array([[3, 5, 8],
+        ...                                [5, 6, 5]]),
+        ...                   c=ivy.array([[2, 4, 1],
+        ...                                [3, 6, 9],
+        ...                                [0, 2, 3]]))
+        >>> y = ivy.Container(a = ivy.zeros((1, 3)),
+        ...                   b = ivy.zeros((2, 3)),
+        ...                   c = ivy.zeros((3,3)))
         >>> x.cumsum(axis=1,exclusive=True, reverse=False, out=y)
         >>> print(y)
         {
@@ -735,12 +751,12 @@ class ContainerWithStatistical(ContainerBase):
                           [0, 0, 2]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0, 3, 2], \
-                                           [5, 10, 2], \
-                                           [1, 10, 1]]), \
-                              b=ivy.array([[2, 4, 5], \
-                                           [4, 5, 5], \
-                                           [0, 1, 3]]))
+        >>> x = ivy.Container(a=ivy.array([[0, 3, 2],
+        ...                                [5, 10, 2],
+        ...                                [1, 10, 1]]),
+        ...                   b=ivy.array([[2, 4, 5],
+        ...                                [4, 5, 5],
+        ...                                [0, 1, 3]]))
         >>> y = x.cumsum(axis=1,exclusive=True, reverse=True, dtype='int64')
         >>> print(y)
         {
@@ -752,13 +768,13 @@ class ContainerWithStatistical(ContainerBase):
                           [4, 3, 0]])
         }
 
-        >>> x = ivy.Container(a=ivy.array([[0], \
-                                       [5]]), \
-                          b=ivy.array([[6, 8, 7], \
-                                       [4, 2, 3]]), \
-                          c=ivy.array([[1, 2], \
-                                       [3, 4], \
-                                       [6, 4]]))
+        >>> x = ivy.Container(a=ivy.array([[0],
+        ...                                [5]]),
+        ...                   b=ivy.array([[6, 8, 7],
+        ...                                [4, 2, 3]]),
+        ...                   c=ivy.array([[1, 2],
+        ...                                [3, 4],
+        ...                                [6, 4]]))
         >>> x.cumsum(axis=0, out=x)
         >>> print(x)
         {
@@ -787,10 +803,10 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -808,23 +824,28 @@ class ContainerWithStatistical(ContainerBase):
         x
             Input array or container to cumprod.
         axis
-            Axis to cumprod along. Default is 0.
+            Axis to cumprod along. Default is ``0``.
         exclusive
-            Whether to exclude the first element of the input array. Default is False.
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
+        reverse
+            Whether to perform the cumprod from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -833,7 +854,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` input:
+        With one :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = ivy.Container.static_cumprod(x, axis=0)
@@ -862,6 +883,7 @@ class ContainerWithStatistical(ContainerBase):
             x,
             axis=axis,
             exclusive=exclusive,
+            reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -872,10 +894,10 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumprod(
         self: ivy.Container,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -893,23 +915,25 @@ class ContainerWithStatistical(ContainerBase):
         self
             Input container to cumprod at leaves.
         axis
-            Axis along which the cumulative product is computed. Default is 0.
+            Axis along which the cumulative product is computed. Default is ``0``.
         exclusive
-            Whether to exclude the first element of the input array. Default is False.
+            Whether to exclude the first element of the input array.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional output container. Default is None.
+            Optional output container. Default is ``None``.
 
         Returns
         -------
@@ -918,7 +942,7 @@ class ContainerWithStatistical(ContainerBase):
 
         Examples
         --------
-        With one :code:`ivy.Container` instances:
+        With one :class:`ivy.Container` instances:
 
         >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([4, 5, 6]))
         >>> y = x.cumprod(axis=0)
@@ -945,6 +969,7 @@ class ContainerWithStatistical(ContainerBase):
             self,
             axis=axis,
             exclusive=exclusive,
+            reverse=reverse,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

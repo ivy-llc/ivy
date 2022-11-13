@@ -3,6 +3,7 @@ import jax.numpy as jnp
 from typing import Optional
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -47,4 +48,28 @@ def searchsorted(
     ret_dtype=jnp.int64,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.searchsorted(x, v, side=side).astype(ret_dtype)
+    assert ivy.is_int_dtype(ret_dtype), ValueError(
+        "only Integer data types are supported for ret_dtype."
+    )
+    if sorter is not None:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
+        x = jnp.take_along_axis(x, sorter, axis=-1)
+    if x.ndim != 1:
+        assert x.shape[:-1] == v.shape[:-1], RuntimeError(
+            f"the first N-1 dimensions of x array and v array "
+            f"must match, got {x.shape} and {v.shape}"
+        )
+        original_shape = v.shape
+        out_array = []  # JAX arrays are immutable.
+        x = x.reshape(-1, x.shape[-1])
+        v = v.reshape(-1, v.shape[-1])
+        for i in range(x.shape[0]):
+            out_array.append(jnp.searchsorted(x[i], v[i], side=side))
+        ret = jnp.array(out_array).reshape(original_shape)
+    else:
+        ret = jnp.searchsorted(x, v, side=side)
+    return ret.astype(ret_dtype)

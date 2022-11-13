@@ -2,6 +2,9 @@
 import numpy as np
 from typing import Optional
 
+# local
+import ivy
+
 
 def argsort(
     x: np.ndarray,
@@ -43,5 +46,30 @@ def searchsorted(
     ret_dtype=np.int64,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    v = list(v)
-    return np.searchsorted(x, v, side=side, sorter=sorter).astype(ret_dtype)
+    assert ivy.is_int_dtype(ret_dtype), ValueError(
+        "only Integer data types are supported for ret_dtype."
+    )
+    is_sorter_provided = sorter is not None
+    if is_sorter_provided:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
+    if x.ndim != 1:
+        assert x.shape[:-1] == v.shape[:-1], RuntimeError(
+            f"the first N-1 dimensions of x array and v array "
+            f"must match, got {x.shape} and {v.shape}"
+        )
+        if is_sorter_provided:
+            x = np.take_along_axis(x, sorter, axis=-1)
+        original_shape = v.shape
+        x = x.reshape(-1, x.shape[-1])
+        v = v.reshape(-1, v.shape[-1])
+        out_array = np.empty_like(v)
+        for i in range(x.shape[0]):
+            out_array[i] = np.searchsorted(x[i], v[i], side=side)
+        ret = out_array.reshape(original_shape)
+    else:
+        ret = np.searchsorted(x, v, side=side, sorter=sorter)
+    return ret.astype(ret_dtype)

@@ -17,6 +17,28 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        Examples
+        --------
+        With :code:`ivy.Array` input:
+
+        >>> x = ivy.array([3., 4., 5.])
+        >>> y = x.min()
+        >>> print(y)
+        ivy.array(3.)
+
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = x.min()
+        >>> print(y)
+        ivy.array(-1)
+
+        >>> x = ivy.array([0.1, 1.1, 2.1])
+        >>> y = ivy.array(0.)
+        >>> x.min(out=y)
+        >>> print(y)
+        ivy.array(0.1)
+
+        """
         return ivy.min(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def max(
@@ -77,7 +99,7 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` input:
+        With :class:`ivy.Array` input:
 
         >>> x = ivy.array([3., 4., 5.])
         >>> y = x.mean()
@@ -126,8 +148,8 @@ class ArrayWithStatistical(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
-        ivy.Array instance method variant of ivy.var. This method simply 
-        wraps the function, and so the docstring for ivy.var also applies 
+        ivy.Array instance method variant of ivy.var. This method simply
+        wraps the function, and so the docstring for ivy.var also applies
         to this method with minimal changes.
 
         **Special Cases**
@@ -145,25 +167,25 @@ class ArrayWithStatistical(abc.ABC):
         axis
             axis or axes along which variances must be computed. By default, the
             variance must be computed over the entire array. If a tuple of integers,
-            variances must be computed over multiple axes. Default: None.
+            variances must be computed over multiple axes. Default: ``None``.
         correction
-            degrees of freedom adjustment. Setting this parameter to a value other 
+            degrees of freedom adjustment. Setting this parameter to a value other
             than 0 has the effect of adjusting the divisor during the calculation
-            of the variance according to N-c where N corresponds to the total 
+            of the variance according to N-c where N corresponds to the total
             number of elements over which the variance is computed and c corresponds
             to the provided degrees of freedom adjustment. When computing the variance
             of a population, setting this parameter to 0 is the standard choice
             (i.e., the provided array contains data constituting an entire population).
-            When computing the unbiased sample variance, setting this parameter to 1 
+            When computing the unbiased sample variance, setting this parameter to 1
             is the standard choice (i.e., the provided array contains data sampled
             from a larger population; this is commonly referred to as Bessel's
-            correction). Default: 0.
+            correction). Default: ``0``.
         keepdims
             if True, the reduced axes (dimensions) must be included in the result as
             singleton dimensions, and, accordingly, the result must be compatible
             with the input array (see Broadcasting). Otherwise, if False, the
             reduced axes (dimensions) must not be included in the result.
-            Default: False.
+            Default: ``False``.
         out
             optional output array, for writing the result to.
 
@@ -176,23 +198,23 @@ class ArrayWithStatistical(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, 8.0]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, 8.0]])
         >>> y = x.var()
         >>> print(y)
         ivy.array(6.6666665)
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = x.var(axis=0)
         >>> print(y)
         ivy.array([6., 6., 4.1])
 
-        >>> x = ivy.array([[0.0, 1.0, 2.0], \
-                           [3.0, 4.0, 5.0], \
-                           [6.0, 7.0, .08]])
+        >>> x = ivy.array([[0.0, 1.0, 2.0],
+        ...                [3.0, 4.0, 5.0],
+        ...                [6.0, 7.0, .08]])
         >>> y = ivy.array([0., 0., 0.])
         >>> x.var(axis=1, out=y)
         >>> print(y)
@@ -234,18 +256,19 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.std(self._data, axis=axis, keepdims=keepdims, out=out)
+        return ivy.std(
+            self, axis=axis, correction=correction, keepdims=keepdims, out=out
+        )
 
     # Extra #
     # ----- #
 
     def cumsum(
         self: ivy.Array,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
+        *,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -259,16 +282,16 @@ class ArrayWithStatistical(abc.ABC):
         self
             Input array to apply cumsum.
         axis
-            Axis along which the cumulative sum is computed. Default is 0.
+            Axis along which the cumulative sum is computed. Default is ``0``.
         exclusive
             Whether to perform cumsum exclusively. Default is ``False``.
         reverse
             Whether to perform the cumsum from last to first element in the selected
-            axis. Default is False (from first to last element)
+            axis. Default is ``False`` (from first to last element)
         dtype
             Data type of the returned array. Default is ``None``.
         out
-            Optional array container. Default is None.
+            Optional array container. Default is ``None``.
 
         Returns
         -------
@@ -296,9 +319,9 @@ class ArrayWithStatistical(abc.ABC):
                    [0, 4],
                    [0, 8]])
 
-        >>> x = ivy.array([[1, 5, 2], \
-                           [4, 3, 0], \
-                           [4, 8, 2]])
+        >>> x = ivy.array([[1, 5, 2],
+        ...                [4, 3, 0],
+        ...                [4, 8, 2]])
         >>> y = x.cumsum(axis=1, exclusive=True, reverse=True)
         >>> print(y)
         ivy.array([[ 7,  2,  0],
@@ -316,10 +339,11 @@ class ArrayWithStatistical(abc.ABC):
 
     def cumprod(
         self: ivy.Array,
-        /,
-        *,
         axis: int = 0,
         exclusive: bool = False,
+        reverse: bool = False,
+        *,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -332,10 +356,13 @@ class ArrayWithStatistical(abc.ABC):
         self
             input array
         axis
-            int, axis along which to take the cumulative product. Default is 0.
+            int, axis along which to take the cumulative product. Default is ``0``.
         exclusive
             optional bool, whether to exclude the first value of the input array.
-            Default is False.
+            Default is ``False``.
+        reverse
+            Whether to perform the cumprod from last to first element in the selected
+            axis. Default is ``False`` (from first to last element)
         out
             optional output array, for writing the result to.
 
@@ -355,11 +382,13 @@ class ArrayWithStatistical(abc.ABC):
         >>> y = ivy.zeros((3, 2), dtype="int32")
         >>> x.cumprod(axis=1, exclusive=True, out=y)
         >>> print(y)
-        ivy.array([[1, 2],
-                   [1, 5],
-                   [1, 11]])
+        ivy.array([[0, 0],
+                   [0, 0],
+                   [0, 0]])
         """
-        return ivy.cumprod(self._data, axis, exclusive, out=out)
+        return ivy.cumprod(
+            self._data, axis=axis, exclusive=exclusive, reverse=reverse, out=out
+        )
 
     def einsum(
         self: ivy.Array,

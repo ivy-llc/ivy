@@ -21,7 +21,7 @@ def container_types():
     return []
 
 
-def current_backend_str():
+def current_backend_str() -> str:
     return "numpy"
 
 
@@ -37,6 +37,8 @@ def to_numpy(x: np.ndarray, /, *, copy: bool = True) -> np.ndarray:
 
 
 def to_scalar(x: np.ndarray, /) -> Number:
+    if isinstance(x, (float, int)):
+        return x
     return x.item()
 
 
@@ -50,17 +52,39 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return _to_device(np.take(params, indices, axis))
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    result = []
+    if batch_dims == 0:
+        result = np.take(params, indices, axis)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = np.take(p, i, axis - batch_dims)
+            result.append(r)
+        result = np.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
-def gather_nd(
-    params: np.ndarray, indices: np.ndarray, /, *, out: Optional[np.ndarray] = None
-) -> np.ndarray:
+def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    num_index_dims = indices_shape[-1]
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
         reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -82,7 +106,37 @@ def gather_nd(
     flat_gather = np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = np.reshape(flat_gather, new_shape)
-    return _to_device(res)
+    return res
+
+
+def gather_nd(
+    params: np.ndarray,
+    indices: np.ndarray,
+    /,
+    *,
+    batch_dims: Optional[int] = 0,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, np.asarray(i, indices.dtype))
+            result.append(r)
+        result = np.array(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return _to_device(result)
 
 
 def get_num_dims(x, /, *, as_array=False):
@@ -122,6 +176,7 @@ def inplace_update(
     val: Union[ivy.Array, np.ndarray],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    ivy.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
 
@@ -225,6 +280,24 @@ def scatter_nd(
     if ivy.exists(shape) and target_given:
         ivy.assertions.check_equal(ivy.Shape(target.shape), ivy.Shape(shape))
     shape = list(shape) if ivy.exists(shape) else list(out.shape)
+    if indices is not Ellipsis and (
+        isinstance(indices, (tuple, list)) and not (Ellipsis in indices)
+    ):
+        indices = [[indices]] if isinstance(indices, Number) else indices
+        indices = np.array(indices)
+        if len(indices.shape) < 2:
+            indices = np.expand_dims(indices, -1)
+        expected_shape = (
+            indices.shape[:-1] + out.shape[indices.shape[-1] :]
+            if ivy.exists(out)
+            else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+        )
+        if sum(updates.shape) < sum(expected_shape):
+            updates = ivy.broadcast_to(updates, expected_shape)._data
+        elif sum(updates.shape) > sum(expected_shape):
+            indices = ivy.broadcast_to(
+                indices, updates.shape[:1] + (indices.shape[-1],)
+            )._data
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == "sum":

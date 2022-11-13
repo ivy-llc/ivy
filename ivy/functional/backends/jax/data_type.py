@@ -23,6 +23,8 @@ ivy_dtype_dict = {
     jnp.dtype("float16"): "float16",
     jnp.dtype("float32"): "float32",
     jnp.dtype("float64"): "float64",
+    jnp.dtype("complex64"): "complex64",
+    jnp.dtype("complex128"): "complex128",
     jnp.dtype("bool"): "bool",
     jnp.int8: "int8",
     jnp.int16: "int16",
@@ -36,6 +38,8 @@ ivy_dtype_dict = {
     jnp.float16: "float16",
     jnp.float32: "float32",
     jnp.float64: "float64",
+    jnp.complex64: "complex64",
+    jnp.complex128: "complex128",
     jnp.bool_: "bool",
 }
 
@@ -52,6 +56,8 @@ native_dtype_dict = {
     "float16": jnp.dtype("float16"),
     "float32": jnp.dtype("float32"),
     "float64": jnp.dtype("float64"),
+    "complex64": jnp.dtype("complex64"),
+    "complex128": jnp.dtype("complex128"),
     "bool": jnp.dtype("bool"),
 }
 
@@ -90,16 +96,8 @@ class Finfo:
 
 def astype(x: JaxArray, dtype: jnp.dtype, /, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = jnp.array(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = jnp.array(x)
-            return new_tensor.astype(dtype)
+    if x.dtype == dtype:
+        return jnp.copy(x) if copy else x
     return x.astype(dtype)
 
 
@@ -108,10 +106,12 @@ def broadcast_arrays(*arrays: JaxArray) -> List[JaxArray]:
 
 
 def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> JaxArray:
+    if x.ndim > len(shape):
+        return jnp.broadcast_to(x.reshape(-1), shape)
     return jnp.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype) -> bool:
+def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
     if type(from_) in [
         jax.interpreters.xla._DeviceArray,
         jaxlib.xla_extension.DeviceArray,
@@ -177,4 +177,5 @@ def dtype_bits(dtype_in: Union[jnp.dtype, str]) -> int:
         .replace("int", "")
         .replace("bfloat", "")
         .replace("float", "")
+        .replace("complex", "")
     )

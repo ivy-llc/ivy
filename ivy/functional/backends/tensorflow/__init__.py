@@ -1,12 +1,15 @@
 # global
 import sys
+
 import tensorflow as tf
-from tensorflow.python.types.core import Tensor
 from tensorflow.python.framework.dtypes import DType
 from tensorflow.python.framework.tensor_shape import TensorShape
+from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
+
+backend_version = {"version": tf.__version__}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -21,9 +24,9 @@ NativeSparseArray = tf.SparseTensor
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
@@ -39,10 +42,13 @@ native_bfloat16 = tf.bfloat16
 native_float16 = tf.float16
 native_float32 = tf.float32
 native_float64 = tf.float64
-# noinspection PyShadowingBuiltins
+native_complex64 = tf.complex64
+native_complex128 = tf.complex128
+native_double = native_float64
 native_bool = tf.bool
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -84,6 +90,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = ()
@@ -91,6 +98,7 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = False
 
@@ -119,8 +127,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -143,3 +149,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *

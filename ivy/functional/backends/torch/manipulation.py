@@ -1,12 +1,17 @@
 # global
-import ivy
-import torch
 import math
 from numbers import Number
 from typing import Union, Optional, Tuple, List, Sequence, Iterable
 
+import torch
+
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+
 # noinspection PyProtectedMember
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
 
 
 # Array API Standard #
@@ -14,7 +19,11 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def concat(
-    xs: List[torch.Tensor], /, *, axis: int = 0, out: Optional[torch.Tensor] = None
+    xs: Union[Tuple[torch.Tensor, ...], List[torch.Tensor]],
+    /,
+    *,
+    axis: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if axis is None:
         is_tuple = type(xs) is tuple
@@ -50,13 +59,13 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    num_dims: int = len(x.shape)
+    num_dims = len(x.shape)
     if not num_dims:
         return x
     if axis is None:
-        new_axis: List[int] = list(range(num_dims))
+        new_axis = list(range(num_dims))
     else:
-        new_axis: List[int] = axis
+        new_axis = axis
     if isinstance(new_axis, int):
         new_axis = [new_axis]
     else:
@@ -100,6 +109,9 @@ def roll(
     # manually cover the case when shift is int, and axis is a tuple/list
     if isinstance(shift, int) and (type(axis) in [list, tuple]):
         shift = [shift for _ in range(len(axis))]
+    if isinstance(shift, torch.Tensor):
+        shift = shift.tolist()
+        shift = tuple([shift])
     return torch.roll(x, shift, axis)
 
 
@@ -112,7 +124,7 @@ def squeeze(
 ) -> torch.Tensor:
     if isinstance(axis, int):
         if x.size(dim=axis) > 1:
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], but found "
                 "dimension size {}".format(-x.dim(), x.dim(), axis)
             )
@@ -134,7 +146,7 @@ def squeeze(
     for i in axis_updated_after_squeeze:
         shape = x.shape[i]
         if shape > 1 and (shape < -dim or dim <= shape):
-            raise ivy.exceptions.IvyException(
+            raise ValueError(
                 "Expected dimension of size [{}, {}], "
                 "but found dimension size {}".format(-dim, dim, shape)
             )
@@ -165,8 +177,8 @@ def split(
     /,
     *,
     num_or_size_splits: Optional[Union[int, List[int]]] = None,
-    axis: int = 0,
-    with_remainder: bool = False,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
 ) -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -202,6 +214,7 @@ def split(
     return list(torch.split(x, num_or_size_splits, axis))
 
 
+@with_unsupported_dtypes({"1.11.0": ("int8", "int16", "uint8")}, backend_version)
 def repeat(
     x: torch.Tensor,
     /,
@@ -214,9 +227,6 @@ def repeat(
         axis = None
     repeats = torch.tensor(repeats)
     return torch.repeat_interleave(x, repeats, axis)
-
-
-repeat.unsupported_dtypes = ("int8", "int16", "uint8")
 
 
 def tile(
@@ -239,9 +249,8 @@ def constant_pad(
         x = x.unsqueeze(0)
     if isinstance(pad_width, torch.Tensor):
         pad_width = pad_width.detach().cpu().numpy().tolist()
-    pad_width.reverse()
     pad_width_flat: List[int] = list()
-    for pad_width_sec in pad_width:
+    for pad_width_sec in reversed(pad_width):
         for item in pad_width_sec:
             pad_width_flat.append(item)
     return torch.nn.functional.pad(x, pad_width_flat, mode="constant", value=value)
@@ -263,6 +272,7 @@ def swapaxes(
     return torch.transpose(x, axis0, axis1)
 
 
+@with_unsupported_dtypes({"1.11.0": ("float16",)}, backend_version)
 def clip(
     x: torch.Tensor,
     x_min: Union[Number, torch.Tensor],
@@ -282,10 +292,11 @@ def clip(
 
 
 clip.support_native_out = True
-clip.unsupported_dtypes = ("float16",)
 
 
-def unstack(x: torch.Tensor, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
+def unstack(
+    x: torch.Tensor, /, *, axis: int = 0, keepdims: bool = False
+) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
     ret = list(torch.unbind(x, axis))

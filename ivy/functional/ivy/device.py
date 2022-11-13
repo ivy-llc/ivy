@@ -38,7 +38,6 @@ max_chunk_sizes = dict()
 class DefaultDevice:
     """"""
 
-    # noinspection PyShadowingNames
     def __init__(
         self,
         device: Union[ivy.Device, ivy.NativeDevice],
@@ -53,7 +52,6 @@ class DefaultDevice:
 
         Examples
         --------
-        >>> z = ivy.DefaultDevice("cpu")
         >>> x = ivy.DefaultDevice("tpu")
         """
         self._dev = device
@@ -69,11 +67,11 @@ class DefaultDevice:
         Examples
         --------
         A "cpu" as device:
+
         >>> with ivy.DefaultDevice("cpu") as device:
         >>>     # with block calls device.__enter__()
         >>>     print(device._dev)
         "cpu"
-
         """
         ivy.set_default_device(self._dev)
         return self
@@ -90,19 +88,12 @@ class DefaultDevice:
         Examples
         --------
         A "gpu" as device:
+
         >>> with ivy.DefaultDevice("gpu") as device:
         >>>     pass
         >>> # after with block device.__exit__() is called
         >>> print(device._dev)
         "cpu"
-
-        A "tpu" as device:
-        >>> with ivy.DefaultDevice("tpu") as device:
-        >>>     pass
-        >>> # after with block device.__exit__() is called
-        >>> print(device._dev)
-        "cpu"
-
         """
         ivy.unset_default_device()
         return self
@@ -110,7 +101,7 @@ class DefaultDevice:
 
 # Helpers #
 
-# noinspection PyShadowingNames
+
 def _get_nvml_gpu_handle(device: Union[ivy.Device, ivy.NativeDevice], /) -> int:
     global dev_handles
     if device in dev_handles:
@@ -179,119 +170,22 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
-    With :code:`ivy.Array` input:
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
 
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With :code:`ivy.NativeArray` input:
-
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    3
+    0
 
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
+    >>> x = ivy.Container(x1=ivy.array([-1]),
+    ...                   x2=ivy.native_array([-1]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     1
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
-    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.Array` input:
-
-    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
-                        x2=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
-                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
-                      x3=ivy.array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),\
-                      x2=ivy.array([-1, 0, 5.2, 4, 5]),\
-                      x3=ivy.array([2]),\
-                      x4=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With a mix of :code:`ivy.Container` and :code:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
-                        x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
-                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
-                      x3=ivy.native_array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),\
-                      x2=ivy.native_array([-1, 0, 5.2, 4, 5]),\
-                      x3=ivy.native_array([2]),\
-                      x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
     """
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
@@ -299,7 +193,7 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 @handle_nestable
 @handle_exceptions
 def print_all_ivy_arrays_on_dev(
-    device: Union[ivy.Device, ivy.NativeDevice], /, *, attr_only: bool = True
+    *, device: Union[ivy.Device, ivy.NativeDevice] = None, attr_only: bool = True
 ) -> None:
     """
     Prints the shape and dtype for all ivy arrays which are currently alive on the
@@ -327,7 +221,6 @@ def print_all_ivy_arrays_on_dev(
     >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
     [1,0,2]
     [3,2,1]
-
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
     if attr_only:
@@ -353,7 +246,7 @@ def dev(
           array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is False.
+          Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
@@ -363,61 +256,19 @@ def dev(
     Functional Examples
     --------------------
 
-    With :code:'ivy.Array' input:
+    With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3, 1, 4, 5])
     >>> y = ivy.dev(x)
     >>> print(y)
     cpu
 
-    With :code:'ivy.NativeArray' input:
+    With :class:`ivy.NativeArray` input:
 
     >>> x = ivy.native_array([[2, 5, 4], [3, 1, 5]])
     >>> y = ivy.dev(x, as_native=True)
     >>> print(y)
     cpu
-
-    Array Instance Method Examples
-    ------------------------------
-
-    With :code:'ivy.Array' input:
-
-    >>> x = ivy.array([[2, 5, 4, 1], [3, 1, 5, 2]])
-    >>> y = x.dev(as_native=True)
-    >>> print(y)
-    cpu
-
-    Container Static Method Examples
-    ---------------------------------
-
-    With :code:'ivy.Container' input:
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3], [3, 5]]),\
-                          b=ivy.native_array([1, 2, 4, 5, 7]))
-    >>> as_native = ivy.Container(a=True, b=False)
-    >>> y = ivy.Container.static_dev(x, as_native=as_native)
-    >>> print(y)
-    {
-        a: device(type=cpu),
-        b: cpu
-    }
-
-    Container Instance Method Examples
-    ----------------------------
-
-    With :code:'ivy.Container' input:
-
-    >>> x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),\
-                          b=ivy.native_array([[1, 2], [4, 5]]))
-    >>> as_native = ivy.Container(a=False, b=True)
-    >>> y = x.dev(as_native=as_native)
-    >>> print(y)
-    {
-        a: cpu,
-        b: device(type=cpu)
-    }
-
-
     """
     return ivy.current_backend(x).dev(x, as_native=as_native)
 
@@ -456,7 +307,6 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     -------
     ret
         Native device handle.
-
     """
     return ivy.current_backend().as_native_dev(device)
 
@@ -472,6 +322,13 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     ----------
     device
         The device string to convert to native device handle.
+
+    Examples
+    --------
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.clear_mem_on_dev(device)
 
     """
     ivy.current_backend(None).clear_mem_on_dev(device)
@@ -927,7 +784,7 @@ def to_device(
     >>> x = ivy.to_device(x, 'cpu')
 
     """
-    return ivy.current_backend(x).to_device(x, device, out=out)
+    return ivy.current_backend(x).to_device(x, device)
 
 
 # Function Splitting #
@@ -1050,15 +907,15 @@ def split_func_call(
         The maximum size of each of the chunks to be fed into the function.
     chunk_size
         The size of each of the chunks to be fed into the function. Specifying this arg
-        overwrites the global split factor. Default is None.
+        overwrites the global split factor. Default is ``None``.
     input_axes
         The axes along which to split each of the inputs, before passing to the
-        function. Default is 0.
+        function. Default is ``0``.
     output_axes
         The axes along which to concat each of the returned outputs. Default is same as
         fist input axis.
     stop_gradients
-        Whether to stop the gradients for each computed return. Default is False.
+        Whether to stop the gradients for each computed return. Default is ``False``.
     device
         The device to set the split factor for. Sets the default device by default.
 
@@ -1165,30 +1022,26 @@ def _is_valid_devices_attributes(fn: Callable) -> bool:
 
 
 def _get_devices(fn, complement=True):
-    # TODO: Not hardcode this
-    VALID_DEVICES = ("cpu",)
-    INVALID_DEVICES = (
-        "gpu",
-        "tpu",
-    )
-    ALL_DEVICES = VALID_DEVICES + INVALID_DEVICES
+    valid_devices = ivy.valid_devices
+    invalid_devices = ivy.invalid_devices
+    all_devices = ivy.all_devices
 
-    supported = set(VALID_DEVICES)
+    supported = set(ivy.valid_devices)
 
     is_backend_fn = "backend" in fn.__module__
     is_frontend_fn = "frontend" in fn.__module__
     is_einops_fn = "einops" in fn.__name__
     if not is_backend_fn and not is_frontend_fn and not is_einops_fn:
         if complement:
-            supported = set(ALL_DEVICES).difference(supported)
+            supported = set(all_devices).difference(supported)
         return supported
 
     # Their values are formated like either
     # 1. fn.supported_devices = ("cpu",)
     # Could also have the "all" value for the framework
     basic = [
-        ("supported_devices", set.intersection, VALID_DEVICES),
-        ("unsupported_devices", set.difference, INVALID_DEVICES),
+        ("supported_devices", set.intersection, valid_devices),
+        ("unsupported_devices", set.difference, invalid_devices),
     ]
     for (key, merge_fn, base) in basic:
         if hasattr(fn, key):
@@ -1199,7 +1052,7 @@ def _get_devices(fn, complement=True):
             supported = merge_fn(supported, set(v))
 
     if complement:
-        supported = set(ALL_DEVICES).difference(supported)
+        supported = set(all_devices).difference(supported)
 
     return tuple(supported)
 
@@ -1214,7 +1067,7 @@ def function_supported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the supported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------
@@ -1246,7 +1099,7 @@ def function_unsupported_devices(fn: Callable, recurse=True) -> Tuple:
     fn
         The function to check for the unsupported device attribute
     recurse
-        Whether to recurse into used ivy functions. Default is True.
+        Whether to recurse into used ivy functions. Default is ``True``.
 
     Returns
     -------

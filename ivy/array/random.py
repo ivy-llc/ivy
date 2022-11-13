@@ -15,6 +15,7 @@ class ArrayWithRandom(abc.ABC):
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.random_uniform. This method simply
@@ -39,8 +40,10 @@ class ArrayWithRandom(abc.ABC):
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
         dtype
-             output array data type. If ``dtype`` is ``None``, the output array data
-             type will be the default floating-point data type. Default ``None``
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -98,6 +101,7 @@ class ArrayWithRandom(abc.ABC):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
@@ -109,6 +113,7 @@ class ArrayWithRandom(abc.ABC):
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.random_normal. This method simply
@@ -133,6 +138,8 @@ class ArrayWithRandom(abc.ABC):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -190,6 +197,7 @@ class ArrayWithRandom(abc.ABC):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
@@ -202,6 +210,7 @@ class ArrayWithRandom(abc.ABC):
         batch_size: int = 1,
         replace: bool = True,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.multinomial. This method simply
@@ -220,10 +229,12 @@ class ArrayWithRandom(abc.ABC):
         batch_size
             Number of tensors to generate. Default is 1.
         replace
-            Whether to replace samples once they've been drawn. Default is True.
+            Whether to replace samples once they've been drawn. Default is ``True``.
         device
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None)
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -240,6 +251,7 @@ class ArrayWithRandom(abc.ABC):
             probs=self._data,
             replace=replace,
             device=device,
+            seed=seed,
             out=out,
         )
 
@@ -251,6 +263,7 @@ class ArrayWithRandom(abc.ABC):
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.randint. This method simply
@@ -274,6 +287,8 @@ class ArrayWithRandom(abc.ABC):
         dtype
              output array data type. If ``dtype`` is ``None``, the output array data
              type will be the default integer data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -332,10 +347,17 @@ class ArrayWithRandom(abc.ABC):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 
-    def shuffle(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def shuffle(
+        self: ivy.Array,
+        /,
+        *,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.shuffle. This method simply
         wraps the function, and so the docstring for ivy.shuffle also applies to
         this method with minimal changes.
@@ -344,6 +366,8 @@ class ArrayWithRandom(abc.ABC):
         ----------
         self
             Input array. Should have a numeric data type.
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a
             shape that the inputs broadcast to.
@@ -352,5 +376,112 @@ class ArrayWithRandom(abc.ABC):
         -------
         ret
             An array object, shuffled along the first dimension.
+
+        Examples
+        --------
+        >>> x = ivy.array([5, 2, 9])
+        >>> y = x.shuffle()
+        >>> print(y)
+        ivy.array([2, 5, 9])
         """
-        return ivy.shuffle(self, out=out)
+        return ivy.shuffle(self, seed=seed, out=out)
+
+    def beta(
+        self: ivy.Array,
+        alpha: Union[int, ivy.Array, ivy.NativeArray],
+        beta: Union[int, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.beta. This method simply
+        wraps the function, and so the docstring for ivy.beta also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input Array.
+        alpha
+            The first parameter of the beta distribution.
+        beta
+            The second parameter of the beta distribution.
+        device
+            device on which to create the array.
+        dtype
+             output array data type. If ``dtype`` is ``None``, the output array data
+             type will be the default data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized beta distribution with the shape of
+            the array.
+        """
+        return ivy.beta(
+            alpha,
+            beta,
+            shape=self.shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )
+
+    def gamma(
+        self: ivy.Array,
+        alpha: Union[int, ivy.Array, ivy.NativeArray],
+        beta: Union[int, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.gamma. This method simply
+        wraps the function, and so the docstring for ivy.gamma also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input Array.
+        alpha
+            The first parameter of the gamma distribution.
+        beta
+            The second parameter of the gamma distribution.
+        device
+            device on which to create the array.
+        dtype
+             output array data type. If ``dtype`` is ``None``, the output array data
+             type will be the default data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            Drawn samples from the parameterized gamma distribution with the shape of
+            the input array.
+        """
+        return ivy.gamma(
+            alpha,
+            beta,
+            shape=self.shape,
+            device=device,
+            dtype=dtype,
+            seed=seed,
+            out=out,
+        )

@@ -1,12 +1,12 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Union
-
 # global
+from typing import Optional, Union
 import numpy as np
 
+# local
 import ivy
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 try:
     from scipy.special import erf
@@ -14,8 +14,9 @@ except (ImportError, ModuleNotFoundError):
     erf = None
 
 
+@_scalar_output_to_0d_array
 def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.asarray(np.maximum(x, 0, out=out, dtype=x.dtype))
+    return np.maximum(x, 0, out=out, dtype=x.dtype)
 
 
 relu.support_native_out = True
@@ -27,6 +28,7 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
+@_scalar_output_to_0d_array
 def gelu(
     x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
@@ -39,7 +41,7 @@ def gelu(
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:
         ret = 0.5 * x * (1 + erf(x / np.sqrt(2)))
-    return np.asarray(ret.astype(x.dtype))
+    return ivy.astype(ret, x.dtype, copy=False)
 
 
 def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -58,7 +60,7 @@ def softmax(
 softmax.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def softplus(
     x: np.ndarray,
     /,
@@ -85,8 +87,30 @@ def softplus(
             out=out,
         )
     if threshold is not None:
-        return np.where(x_beta > threshold, x, res)
-    return res
+        return np.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
 
 
 softplus.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def log_softmax(
+    x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
+) -> np.ndarray:
+    x_max = np.max(x, axis=axis, keepdims=True)
+    if x_max.ndim > 0:
+        x_max[~np.isfinite(x_max)] = 0
+    elif not np.isfinite(x_max):
+        x_max = 0
+    exp_tmp = np.exp(x - x_max)
+
+    with np.errstate(divide="ignore"):
+        s = np.sum(exp_tmp, axis=axis, keepdims=True)
+        ret = np.log(s)
+
+    ret = x - x_max - ret
+    return ret
+
+
+log_softmax.support_native_out = True

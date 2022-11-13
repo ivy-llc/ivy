@@ -12,6 +12,7 @@ import numpy as np
 import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
+import torch
 
 
 # Base #
@@ -55,24 +56,25 @@ class Module(abc.ABC):
             build(), or the first time the __call__ method is run.
             Default is on initialization.
         compile_on_next_step
-            Whether to compile the network on the next forward pass. Default is False.
+            Whether to compile the network on the next forward pass.
+            Default is ``False``.
         store_vars
-            Whether or not to store the variables created. Default is True.
+            Whether or not to store the variables created. Default is ``True``.
         stateful
             The constant id stateful items to track as part of the forward pass.
-            Used when graph compiling, default is None.
+            Used when graph compiling, default is ``None``.
         arg_stateful_idxs
             The nested argument indices of stateful items to track as part of
             the forward pass.
-            Used when graph compiling, default is None.
+            Used when graph compiling, default is ``None``.
         kwarg_stateful_idxs
             The nested keyword argument indices of stateful items to track as part of
-            the forward pass. Used when graph compiling, default is None.
+            the forward pass. Used when graph compiling, default is ``None``.
         fallback_to_non_compiled
             Whether to fall back to non-compiled forward call in the case that an error
-            is raised during the compiled forward pass. Default is True.
+            is raised during the compiled forward pass. Default is ``True``.
         with_partial_v
-            Whether to allow partial specification of variables. Default is False.
+            Whether to allow partial specification of variables. Default is ``False``.
         devices
             devices on which to distribute the module's variables
             'cuda:0', 'cuda:1', 'cpu' etc. (Default value = None)
@@ -80,7 +82,12 @@ class Module(abc.ABC):
         valid_build_modes = ["on_init", "explicit", "on_call"]
         ivy.assertions.check_elem_in_list(build_mode, valid_build_modes)
         self._dev = ivy.default(
-            device, ivy.default(lambda: devices[0], ivy.default_device(), rev=True)
+            device,
+            ivy.default(
+                lambda: devices[0],
+                default_val=ivy.default_device(),
+                catch_exceptions=True,
+            ),
         )
         self._devs = ivy.default(devices, [self._dev])
         self._build_mode = build_mode
@@ -143,7 +150,7 @@ class Module(abc.ABC):
             depth upto which we want to visualise
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is False.
+            which all nested key-chains flattened. Default is ``False``.
 
         Returns
         -------
@@ -573,13 +580,13 @@ class Module(abc.ABC):
         ----------
         show_v
             If set True, will return values of all submodule variables.
-            Default is True.
+            Default is ``True``.
         depth
             How many layers we step in before beginning enumerating submodules.
-            None for current layer. Default is None.
+            None for current layer. Default is ``None``.
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is False.
+            which all nested key-chains flattened. Default is ``False``.
 
         Returns
         -------
@@ -619,7 +626,7 @@ class Module(abc.ABC):
         ----------
         depth
             The number of modules we want to step in. None for the value of
-            current module. Default is None.
+            current module. Default is ``None``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             self.top_v(depth).show_sub_container(self.v)
@@ -639,10 +646,10 @@ class Module(abc.ABC):
         ----------
         depth
             The number of modules we want to step in. None for the value of
-            current module. Default is None.
+            current module. Default is ``None``.
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is False.
+            which all nested key-chains flattened. Default is ``False``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
@@ -670,7 +677,7 @@ class Module(abc.ABC):
 
         flatten_key_chain
             If set True, will return return a flat (depth-1) container,
-            with all nested key-chains flattened. Default is False.
+            with all nested key-chains flattened. Default is ``False``.
         """
         if not ivy.exists(self.top_mod) or depth == 0:
             return self.__repr__()
@@ -704,13 +711,13 @@ class Module(abc.ABC):
         ----------
         upper_depth
             How many modules it tracks up as upper module. None for current module.
-            Default is None. Will be truncated to mod_depth.
+            Default is ``None``. Will be truncated to mod_depth.
         lower_depth
             How many modules it tracks down. None for current module.
-            Default is None. Will be truncated to mod_height.
+            Default is ``None``. Will be truncated to mod_height.
         flatten_key_chains
             If set True, will return a flat (depth-1) container,
-            which all nested key-chains flattened. Default is False.
+            which all nested key-chains flattened. Default is ``False``.
         """
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
@@ -780,7 +787,7 @@ class Module(abc.ABC):
         ----------
         top_mod
             Explicit indicate the top module. None for the top
-            module of current module. Default is None.
+            module of current module. Default is ``None``.
 
         Returns
         -------
@@ -957,7 +964,7 @@ class Module(abc.ABC):
         ----------
         v
             If given, use this container as internal varibles temporarily.
-            Default is None.
+            Default is ``None``.
         with_grads
             If True, forward this pass with gradients.
         track_submod_rets
@@ -1018,12 +1025,12 @@ class Module(abc.ABC):
         ----------
         from_call
             If True, denote that this build is triggered by calling. Otherwise,
-            triggered by initializing the module. Default is False.
+            triggered by initializing the module. Default is ``False``.
         device
             The device we want to build module on. None for default device.
-            Default is None.
+            Default is ``None``.
         dtype
-            The data type for building the module. Default is None.
+            The data type for building the module. Default is ``None``.
 
         Returns
         -------
@@ -1136,3 +1143,46 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
+
+    # Methods #
+    # ------- #
+
+    def to_torch_module(self):
+        """
+        Convert a trainable ivy.Module instance to an instance of a trainable torch
+        module.
+
+        Parameters
+        ----------
+        self
+            trainable ivy.Module instance
+
+        Returns
+        -------
+        ret
+            The new trainable torch module instance.
+
+        """
+        return NewTorchModule(self)
+
+
+class NewTorchModule(torch.nn.Module):
+    def __init__(self, ivy_module, *args, **kwargs):
+        super().__init__()
+        self._ivy_module = ivy_module
+        self._set_variables()
+
+    def _set_variables(self):
+        self._parameters = {
+            kc: v
+            for kc, v in self._ivy_module.v.map(
+                lambda x, kc: torch.nn.Parameter(ivy.to_native(x))
+            ).to_iterator()
+        }
+
+    def forward(self, *a, **kw):
+        if ivy.current_backend_str() != "torch":
+            raise ivy.exceptions.IvyException(
+                "Backend must be torch when converting Ivy Module to Torch Module."
+            )
+        return self._ivy_module(*a, **kw).to_native()

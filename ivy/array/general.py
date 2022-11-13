@@ -12,7 +12,10 @@ import ivy
 
 class ArrayWithGeneral(abc.ABC):
     def is_native_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
+        self: ivy.Array,
+        /,
+        *,
+        exclusive: bool = False,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.is_native_array. This method simply
@@ -32,7 +35,7 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ivy.is_native_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_native_array(self, exclusive=exclusive)
 
     def is_ivy_array(self: ivy.Array, /, *, exclusive: Optional[bool] = False) -> bool:
         """
@@ -56,9 +59,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.is_ivy_array(self, exclusive=exclusive)
 
-    def is_array(
-        self: ivy.Array, /, *, exclusive: bool = False, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_array(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
         """
         ivy.Array instance method variant of ivy.is_array. This method simply wraps the
         function, and so the docstring for ivy.is_array also applies to this method
@@ -77,11 +78,9 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an array.
         """
-        return ivy.is_array(self._data, exclusive=exclusive, out=out)
+        return ivy.is_array(self, exclusive=exclusive)
 
-    def is_ivy_container(
-        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
-    ) -> ivy.Array:
+    def is_ivy_container(self: ivy.Array) -> bool:
         """
         ivy.Array instance method variant of ivy.is_ivy_container. This method simply
         wraps the function, and so the docstring for ivy.is_ivy_container also applies
@@ -97,10 +96,10 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Boolean, whether or not x is an ivy container.
         """
-        return ivy.is_ivy_container(self._data, out=out)
+        return ivy.is_ivy_container(self)
 
     def all_equal(
-        self: ivy.Array, x2: Iterable[Any], /, equality_matrix: bool = False
+        self: ivy.Array, *x2: Iterable[Any], equality_matrix: bool = False
     ) -> Union[bool, ivy.Array, ivy.NativeArray]:
         """
         ivy.Array instance method variant of ivy.all_equal. This method simply wraps the
@@ -115,7 +114,7 @@ class ArrayWithGeneral(abc.ABC):
             input iterable to compare to ``self``
         equality_matrix
             Whether to return a matrix of equalities comparing each input with every
-            other. Default is False.
+            other. Default is ``False``.
 
         Returns
         -------
@@ -124,9 +123,10 @@ class ArrayWithGeneral(abc.ABC):
             equality_matrix=True is set.
 
         """
-        return ivy.all_equal(self, x2, equality_matrix=equality_matrix)
+        arrays = [self] + [x for x in x2]
+        return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
-    def has_nans(self: ivy.Array, include_infs: bool = True):
+    def has_nans(self: ivy.Array, /, *, include_infs: bool = True):
         """
         ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
         function, and so the docstring for ivy.has_nans also applies to this method
@@ -138,7 +138,7 @@ class ArrayWithGeneral(abc.ABC):
             input array
         include_infs
             Whether to include ``+infinity`` and ``-infinity`` in the check.
-            Default is True.
+            Default is ``True``.
 
         Returns
         -------
@@ -152,14 +152,15 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         False
         """
-        return ivy.has_nans(self, include_infs)
+        return ivy.has_nans(self, include_infs=include_infs)
 
     def gather(
         self: ivy.Array,
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        axis: int = -1,
+        axis: Optional[int] = -1,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -169,16 +170,18 @@ class ArrayWithGeneral(abc.ABC):
 
         Parameters
         ----------
-        params
+        self
             The array from which to gather values.
         indices
             The array which indicates the indices that will be gathered along
             the specified axis.
         axis
-            The axis from which the indices will be gathered. Default is -1.
+            The axis from which the indices will be gathered. Default is ``-1``.
+        batch_dims
+            optional int, lets you gather different items from each element of a batch.
         out
-            An array for writing the result to. It must have a shape
-            that the inputs broadcast to. (Optional)
+            optional array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------
@@ -194,7 +197,9 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([0., 1.])
 
         """
-        return ivy.gather(self._data, indices, axis=axis, out=out)
+        return ivy.gather(
+            self._data, indices, axis=axis, batch_dims=batch_dims, out=out
+        )
 
     def scatter_nd(
         self: ivy.Array,
@@ -211,13 +216,11 @@ class ArrayWithGeneral(abc.ABC):
         Parameters
         ----------
         self
-            The tensor in which to scatter the results
-        indices
-            Tensor of indices
+            array of indices
         updates
             values to update input tensor with
         shape
-            The shape of the result. Default is None, in which case tensor
+            The shape of the result. Default is ``None``, in which case tensor
             argument must be provided.
         reduction
             The reduction method for the scatter, one of 'sum', 'min', 'max'
@@ -233,6 +236,7 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         scatter values into an array
+
         >>> arr = ivy.array([1,2,3,4,5,6,7,8, 9, 10])
         >>> indices = ivy.array([[4], [3], [1], [7]])
         >>> updates = ivy.array([9, 10, 11, 12])
@@ -241,6 +245,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([ 1, 11,  3, 10,  9,  6,  7, 12,  9, 10])
 
         scatter values into an empty array
+
         >>> shape = ivy.array([2, 5])
         >>> indices = ivy.array([[1,4], [0,3], [1,1], [0,2]])
         >>> updates = ivy.array([25, 40, 21, 22])
@@ -256,6 +261,7 @@ class ArrayWithGeneral(abc.ABC):
         indices: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        batch_dims: Optional[int] = 0,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -269,9 +275,6 @@ class ArrayWithGeneral(abc.ABC):
             The array from which to gather values.
         indices
             Index array.
-        device
-            device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as
-            ``x`` if None.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -289,7 +292,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(z)
         ivy.array(2)
         """
-        return ivy.gather_nd(self, indices, out=out)
+        return ivy.gather_nd(self, indices, batch_dims=batch_dims, out=out)
 
     def einops_rearrange(
         self: ivy.Array,
@@ -361,21 +364,22 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([[[5,4],
-                       [11, 2]],
-                      [[3, 5],
-                       [9, 7]]])
-        >>> reduced = x.einops_reduce('a b c -> b c', 'max')
-        >>> print(reduced)
+        >>> x = ivy.array([[[5, 4],
+        ...                 [11, 2]],
+        ...                [[3, 5],
+        ...                 [9, 7]]])
+
+        >>> y = x.einops_reduce('a b c -> b c', 'max')
+        >>> print(y)
         ivy.array([[ 5,  5],
                    [11,  7]])
 
         >>> x = ivy.array([[[5, 4, 3],
-                        [11, 2, 9]],
-                       [[3, 5, 7],
-                        [9, 7, 1]]])
-        >>> reduced = x.einops_reduce('a b c -> a () c', 'min')
-        >>> print(reduced)
+        ...                 [11, 2, 9]],
+        ...                [[3, 5, 7],
+        ...                 [9, 7, 1]]])
+        >>> y = x.einops_reduce('a b c -> a () c', 'min')
+        >>> print(y)
         ivy.array([[[5, 2, 3]],
                    [[3, 5, 1]]])
         """
@@ -416,25 +420,20 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([5,4])
-        >>> repeated = x.einops_repeat('a -> a c', c=3)
-        >>> print(repeated)
-        ivy.array([[5, 4],
-                   [5, 4],
-                  [5, 4]])
+        >>> y = x.einops_repeat('a -> a c', c=3)
+        >>> print(y)
+        ivy.array([[5,5,5],[4,4,4]])
 
         >>> x = ivy.array([[5,4],
-                    [2, 3]])
-        >>> repeated = x.einops_repeat('a b ->  a b c', c=3)
-        >>> print(repeated)
-        ivy.array([[[5, 5, 5],
-                    [4, 4, 4]],
-                   [[2, 2, 2],
-                    [3, 3, 3]]])
+        ...                [2, 3]])
+        >>> y = x.einops_repeat('a b ->  a b c', c=3)
+        >>> print(y)
+        ivy.array([[5,5,5],[4,4,4]])
 
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
-    def to_numpy(self: ivy.Array) -> np.ndarray:
+    def to_numpy(self: ivy.Array, /, *, copy: bool = True) -> np.ndarray:
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
@@ -450,10 +449,26 @@ class ArrayWithGeneral(abc.ABC):
         ret
             a numpy array copying all the element of the array ``self``.
 
-        """
-        return ivy.to_numpy(self)
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
 
-    def to_list(self: ivy.Array) -> List:
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [-1  0  1]
+
+        >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [[-1  0  1]
+        [-1  0  1]
+        [ 1  0 -1]]
+
+        """
+        return ivy.to_numpy(self, copy=copy)
+
+    def to_list(self: ivy.Array, /) -> List:
         """
         ivy.Array instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
@@ -471,7 +486,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0, 1, 2])
         >>> y = x.to_list()
@@ -500,8 +515,9 @@ class ArrayWithGeneral(abc.ABC):
         Examples
         --------
         With `ivy.Array` input and backend set as "tensorflow":
+
         >>> x = ivy.array([1., 4.2, 2.2])
-        >>> ret = x.supports_inplace()
+        >>> ret = x.supports_inplace_updates()
         >>> print(ret)
         False
         """
@@ -529,7 +545,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_decrement(1)
@@ -573,7 +589,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.asarray([4., 5., 6.])
         >>> y = x.stable_divide(2)
@@ -627,7 +643,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([0., 1., 2.])
         >>> y = x.clip_vector_norm(2.0)
@@ -657,29 +673,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.array_equal(self, x)
-
-    def arrays_equal(
-        self: ivy.Array, x: List[Union[ivy.Array, ivy.NativeArray]]
-    ) -> bool:
-        """
-        ivy.Array instance method variant of ivy.arrays_equal. This method simply wraps
-        the function, and so the docstring for ivy.arrays_equal also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input list of arrays to compare to ``self``
-
-        Returns
-        -------
-        ret
-            Boolean, whether the input arrays are equal
-
-        """
-        return ivy.arrays_equal([self] + x)
 
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """
@@ -718,15 +711,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
-
-        >>> x = ivy.array([-1])
-        >>> y = x.to_scalar()
-        >>> print(y)
-        -1
-
-        >>> print(ivy.is_int_dtype(y))
-        True
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([3])
         >>> y = x.to_scalar()
@@ -761,13 +746,13 @@ class ArrayWithGeneral(abc.ABC):
             The number of frequency bands for the encoding. Default is 4.
         linear
             Whether to space the frequency bands linearly as opposed to geometrically.
-            Default is False.
+            Default is ``False``.
         concat
             Whether to concatenate the position, sin and cos values, or return
-            seperately. Default is True.
+            seperately. Default is ``True``.
         flatten
             Whether to flatten the position dimension into the batch dimension.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -796,7 +781,7 @@ class ArrayWithGeneral(abc.ABC):
         self
             input array
         include_infs
-            Whether to include infs and -infs in the check. Default is True.
+            Whether to include infs and -infs in the check. Default is ``True``.
 
         Returns
         -------
@@ -805,7 +790,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With one :code:`ivy.Array` instance method:
+        With one :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([92])
         >>> y = x.value_is_nan()
@@ -868,12 +853,12 @@ class ArrayWithGeneral(abc.ABC):
         default_val
             The default value.
         catch_exceptions
-            Whether to catch exceptions from callable x. Default is False.
+            Whether to catch exceptions from callable x. Default is ``False``.
         rev
-            Whether to reverse the input x and default_val. Default is False.
+            Whether to reverse the input x and default_val. Default is ``False``.
         with_callable
             Whether either of the arguments might be callable functions.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -969,7 +954,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance methods:
+        With :class:`ivy.Array` instance methods:
 
         >>> x = ivy.array([5.7, 4.3, 2.5, 1.9])
         >>> y = x.inplace_increment(1)
@@ -1016,7 +1001,7 @@ class ArrayWithGeneral(abc.ABC):
 
         Examples
         --------
-        With :code:`ivy.Array` instance method:
+        With :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[0., 1., 2.]])
         >>> y = x.clip_matrix_norm(2.0)
@@ -1024,7 +1009,7 @@ class ArrayWithGeneral(abc.ABC):
         ivy.array([[0.   , 0.894, 1.79 ]])
 
         """
-        return ivy.clip_matrix_norm(self, max_norm, p, out=out)
+        return ivy.clip_matrix_norm(self, max_norm, p=p, out=out)
 
     def scatter_flat(
         self: ivy.Array,
@@ -1080,5 +1065,22 @@ class ArrayWithGeneral(abc.ABC):
         ret
             Shape of the array
 
+        Examples
+        --------
+        >>> x = ivy.array([[0.,1.,1.],[1.,0.,0.],[8.,2.,3.]])
+        >>> b = x.get_num_dims()
+        >>> print(b)
+        2
+
+        >>> x = ivy.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]],\
+                            [[0, 0, 0], [0, 0, 0], [0, 0, 0]]])
+        >>> b = x.get_num_dims(as_array=False)
+        >>> print(b)
+        3
+        
+        >>> b = x.get_num_dims(as_array=True)
+        >>> print(b)
+        ivy.array(3)
         """
         return ivy.get_num_dims(self, as_array=as_array)

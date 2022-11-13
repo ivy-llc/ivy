@@ -1,15 +1,11 @@
 Design
 ======
 
-This section is aimed at general users, who would like to learn how to use Ivy,
-and are less concerned about how it all works under the hood 🔧
+This section is aimed at general users, who would like to learn how to use Ivy, and are less concerned about how it all works under the hood 🔧
 
-The :ref:`Deep Dive` section is more targeted at potential contributors,
-and at users who would like to dive deeper into the weeds of the framework🌱,
-and gain a better understanding of what is actually going on behind the scenes 🎬
+The :ref:`Deep Dive` section is more targeted at potential contributors, and at users who would like to dive deeper into the weeds of the framework🌱, and gain a better understanding of what is actually going on behind the scenes 🎬
 
-If that sounds like you, feel free to check out the :ref:`Deep Dive` section
-after you've gone through the higher level overview which is covered in this *design* section!
+If that sounds like you, feel free to check out the :ref:`Deep Dive` section after you've gone through the higher level overview which is covered in this *design* section!
 
 | So, starting off with our higher level *design* section, Ivy can fulfill two distinct purposes:
 |
@@ -23,7 +19,7 @@ after you've gone through the higher level overview which is covered in this *de
 
 | All eight fall into one of the three categories as follows:
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/submodule_dependency_graph.png?raw=true
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/submodule_dependency_graph.png?raw=true
    :align: center
    :width: 100%
 

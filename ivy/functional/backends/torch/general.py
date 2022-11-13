@@ -1,35 +1,43 @@
 """Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature."""
-
 # global
-import ivy
+from functools import reduce
+from numbers import Number
+from operator import mul
+from typing import Optional, Union, Sequence, Callable, List
+import functorch
 import numpy as np
 import torch
-from operator import mul
-from functools import reduce
-from typing import Optional, Union, Sequence, Callable
-from numbers import Number
 
-import functorch
+# local
+import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.ivy.general import _parse_ellipsis
+from . import backend_version
 
 torch_scatter = None
 
 
-def _parse_ellipsis(so, ndims):
-    pre = list()
-    for s in so:
-        if s is Ellipsis:
-            break
-        pre.append(s)
-    post = list()
-    for s in reversed(so):
-        if s is Ellipsis:
-            break
-        post.append(s)
-    return tuple(
-        pre
-        + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
-        + list(reversed(post))
-    )
+def _parse_index(indices, ndims):
+    ind = list()
+    for so in indices:
+        pre = list()
+        for s in so:
+            if s == -1:
+                break
+            pre.append(s.item())
+        post = list()
+        for s in reversed(so):
+            if s == -1:
+                break
+            post.append(s.item())
+        ind.append(
+            tuple(
+                pre
+                + [slice(None, None, None) for _ in range(ndims - len(pre) - len(post))]
+                + list(reversed(post))
+            )
+        )
+    return ind
 
 
 def is_native_array(x, /, *, exclusive=False):
@@ -40,14 +48,10 @@ def is_native_array(x, /, *, exclusive=False):
     return False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def array_equal(x0: torch.Tensor, x1: torch.Tensor, /) -> bool:
-    dtype = torch.promote_types(x0.dtype, x1.dtype)
-    x0 = x0.type(dtype=dtype)
-    x1 = x1.type(dtype=dtype)
+    x0, x1 = ivy.promote_types_of_inputs(x0, x1)
     return torch.equal(x0, x1)
-
-
-array_equal.unsupported_dtypes = ("bfloat16",)
 
 
 def container_types():
@@ -67,7 +71,9 @@ def get_item(
     return x.__getitem__(query)
 
 
-def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
+def to_numpy(
+    x: Union[torch.Tensor, List[torch.Tensor]], /, *, copy: bool = True
+) -> Union[np.ndarray, List[np.ndarray]]:
     if isinstance(x, (float, int, bool)):
         return x
     elif isinstance(x, np.ndarray):
@@ -89,6 +95,8 @@ def to_numpy(x: torch.Tensor, /, *, copy: bool = True) -> np.ndarray:
             raise ivy.exceptions.IvyException(
                 "Overwriting the same address is not supported for torch."
             )
+    elif isinstance(x, list):
+        return [ivy.to_numpy(u) for u in x]
     raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
@@ -102,7 +110,15 @@ def to_list(x: torch.Tensor, /) -> list:
     if isinstance(x, np.ndarray):
         return x.tolist()
     elif torch.is_tensor(x):
-        return x.detach().cpu().tolist()
+        if x.dtype is torch.bfloat16:
+            default_dtype = ivy.default_float_dtype(as_native=True)
+            if default_dtype is torch.bfloat16:
+                x = x.to(torch.float32)
+            else:
+                x = x.to(default_dtype)
+            return x.detach().cpu().numpy().astype("bfloat16").tolist()
+        else:
+            return x.detach().cpu().numpy().tolist()
     raise ivy.exceptions.IvyException("Expected a pytorch tensor.")
 
 
@@ -112,23 +128,43 @@ def gather(
     /,
     *,
     axis: Optional[int] = -1,
+    batch_dims: Optional[int] = 0,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    sl = [slice(None)] * params.ndim
-    sl[axis] = indices.type(torch.int64)
-    return params[tuple(sl)]
+    axis = axis % len(params.shape)
+    batch_dims = batch_dims % len(params.shape)
+    ivy.assertions.check_gather_input_valid(params, indices, axis, batch_dims)
+    result = []
+    if batch_dims == 0:
+        result = params[
+            (slice(None),) * (axis % params.ndim) + (indices.type(torch.int64),)
+        ]
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = p[
+                (slice(None),) * ((axis - batch_dims) % p.ndim) + (i.type(torch.int64),)
+            ]
+            result.append(r)
+        result = torch.stack(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 
-def gather_nd(
-    params: torch.Tensor,
-    indices: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
+def gather_nd_helper(params, indices):
     indices_shape = indices.shape
     params_shape = params.shape
-    num_index_dims = indices_shape[-1]
+    if len(indices.shape) == 0:
+        num_index_dims = 1
+    else:
+        num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [
         reduce(mul, params_shape[i + 1 :], 1) for i in range(len(params_shape) - 1)
     ] + [1]
@@ -150,6 +186,36 @@ def gather_nd(
         flat_gather, list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     )
     return res
+
+
+def gather_nd(
+    params: torch.Tensor,
+    indices: torch.Tensor,
+    /,
+    *,
+    batch_dims: Optional[int] = 0,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    ivy.assertions.check_gather_nd_input_valid(params, indices, batch_dims)
+    batch_dims = batch_dims % len(params.shape)
+    result = []
+    if batch_dims == 0:
+        result = gather_nd_helper(params, indices)
+    else:
+        for b in range(batch_dims):
+            if b == 0:
+                zip_list = [(p, i) for p, i in zip(params, indices)]
+            else:
+                zip_list = [
+                    (p, i) for z in [zip(p1, i1) for p1, i1 in zip_list] for p, i in z
+                ]
+        for z in zip_list:
+            p, i = z
+            r = gather_nd_helper(p, i)
+            result.append(r)
+        result = torch.stack(result)
+        result = result.reshape([*params.shape[0:batch_dims], *result.shape[1:]])
+    return result
 
 
 def get_num_dims(
@@ -193,11 +259,13 @@ def inplace_update(
     val: Union[ivy.Array, torch.Tensor],
     ensure_in_backend: bool = False,
 ) -> ivy.Array:
+    ivy.assertions.check_inplace_sizes_valid(x, val)
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
         if ivy.is_ivy_array(x):
             x.data = x_native
+
         else:
             x = ivy.to_ivy(x_native)
         if ensure_in_backend:
@@ -219,6 +287,12 @@ def multiprocessing(context=None):
     return torch.multiprocessing.get_context(context)
 
 
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": ("bfloat16",),
+    },
+    backend_version,
+)
 def scatter_flat(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -274,9 +348,15 @@ def scatter_flat(
     return res
 
 
-scatter_flat.unsupported_dtypes = ("bfloat16",)
-
-
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def scatter_nd(
     indices: torch.Tensor,
     updates: torch.Tensor,
@@ -309,7 +389,13 @@ def scatter_nd(
             dim=-1,
         )
     elif isinstance(indices, (tuple, list)) and Ellipsis in indices:
-        shape = out.shape if ivy.exists(out) else updates.shape
+        shape = (
+            shape
+            if ivy.exists(shape)
+            else out.shape
+            if ivy.exists(out)
+            else updates.shape
+        )
         indices = _parse_ellipsis(indices, len(shape))
         indices = torch.stack(
             [
@@ -332,14 +418,46 @@ def scatter_nd(
             torch.Tensor(indices) if isinstance(indices, (tuple, list)) else indices
         )
         if len(indices.shape) < 2:
-            indices = torch.unsqueeze(indices, -1)
-
-        if len(updates.shape) < 2:
-            updates = torch.unsqueeze(updates, 0)
+            indices = torch.unsqueeze(indices, 0)
+        if torch.any(indices == -1):
+            shape = (
+                shape
+                if ivy.exists(shape)
+                else out.shape
+                if ivy.exists(out)
+                else updates.shape
+            )
+            indices = _parse_index(indices, len(shape))
+            indices = [
+                torch.stack(
+                    [
+                        torch.reshape(value, (-1,))
+                        for value in torch.meshgrid(
+                            *[
+                                torch.range(0, s - 1)
+                                if idx == slice(None, None, None)
+                                else torch.Tensor([idx % s])
+                                for s, idx in zip(shape, index)
+                            ],
+                            indexing="xy",
+                        )
+                    ],
+                    dim=-1,
+                )
+                for index in indices
+            ]
+            indices = torch.concat(indices, axis=0)
 
     # broadcast updates to indices
-    if updates.shape == ():
-        updates = torch.broadcast_to(updates, indices.shape[:1])
+    expected_shape = (
+        indices.shape[:-1] + out.shape[indices.shape[-1] :]
+        if ivy.exists(out)
+        else indices.shape[:-1] + tuple(shape[indices.shape[-1] :])
+    )
+    if sum(updates.shape) < sum(expected_shape):
+        updates = ivy.broadcast_to(updates, expected_shape)._data
+    elif sum(updates.shape) > sum(expected_shape):
+        indices = ivy.broadcast_to(indices, updates.shape[:1] + indices.shape[-1])._data
 
     # implementation
     target = out
@@ -362,12 +480,12 @@ def scatter_nd(
         if dtype.is_floating_point:
             initial_val = min(torch.finfo(dtype).max, 1e12)
         else:
-            initial_val = min(torch.iinfo(dtype).max, 1e12)
+            initial_val = int(min(torch.iinfo(dtype).max, 1e12))
     elif reduction == "max":
         if dtype.is_floating_point:
-            initial_val = max(torch.finfo(dtype).min, 1e-12)
+            initial_val = max(torch.finfo(dtype).min, -1e12)
         else:
-            initial_val = max(torch.iinfo(dtype).min, 1e-12)
+            initial_val = int(max(torch.iinfo(dtype).min, -1e12))
     else:
         raise ivy.exceptions.IvyException(
             'reduction is {}, but it must be one of "sum", "min" or "max"'.format(
@@ -419,7 +537,7 @@ def scatter_nd(
     return res
 
 
-scatter_nd.unsupported_dtypes = ("float16",)
+scatter_nd.support_native_out = True
 
 
 def shape(x: torch.Tensor, /, *, as_array: bool = False) -> Union[ivy.Shape, ivy.Array]:

@@ -1,6 +1,9 @@
 """Collection of Jax activation functions, wrapped to fit Ivy syntax and signature."""
 
+
 # global
+
+
 import jax
 import jax.numpy as jnp
 from typing import Optional, Union
@@ -64,5 +67,13 @@ def softplus(
             jnp.maximum(x_beta, 0).astype(x.dtype),
         )
     if threshold is not None:
-        return jnp.where(x_beta > threshold, x, res)
-    return res
+        return jnp.where(x_beta > threshold, x, res).astype(x.dtype)
+    return res.astype(x.dtype)
+
+
+def log_softmax(
+    x: JaxArray, /, *, axis: Optional[int] = None, out: Optional[JaxArray] = None
+):
+    if axis is None:
+        axis = -1
+    return jax.nn.log_softmax(x, axis)

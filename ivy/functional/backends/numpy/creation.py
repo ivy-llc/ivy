@@ -1,20 +1,20 @@
 # global
-import numpy
+from numbers import Number
+from typing import Union, Optional, List, Sequence
+
 import numpy as np
-from typing import Union, Tuple, Optional, List, Sequence
 
 # local
 import ivy
-from .data_type import as_native_dtype
-from ivy.functional.ivy import default_dtype
 from ivy.functional.backends.numpy.device import _to_device
-
-# noinspection PyProtectedMember
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
 )
+from .data_type import as_native_dtype
 
 
 # Array API Standard #
@@ -46,7 +46,7 @@ def arange(
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    object_in: Union[np.ndarray, List[float], Tuple[float]],
+    obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
     /,
     *,
     copy: Optional[bool] = None,
@@ -54,24 +54,23 @@ def asarray(
     device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    # If copy=none then try using existing memory buffer
-    if isinstance(object_in, np.ndarray) and dtype is None:
-        dtype = object_in.dtype
-    elif (
-        isinstance(object_in, (list, tuple, dict))
-        and len(object_in) != 0
-        and dtype is None
-    ):
+    if isinstance(obj, np.ndarray):
+        if dtype is not None:
+            obj = ivy.astype(obj, dtype, copy=False).to_native()
+        ret = np.copy(obj) if copy else obj
+        return _to_device(ret, device=device)
+    elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0 and dtype is None:
+        dtype = ivy.default_dtype(item=obj, as_native=True)
         if copy is True:
-            return _to_device(np.copy(np.asarray(object_in), device=device))
+            return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
         else:
-            return _to_device(np.asarray(object_in), device=device)
+            return _to_device(np.asarray(obj, dtype=dtype), device=device)
     else:
-        dtype = default_dtype(dtype=dtype, item=object_in)
+        dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
     if copy is True:
-        return _to_device(np.copy(np.asarray(object_in, dtype=dtype)), device=device)
+        return _to_device(np.copy(np.asarray(obj, dtype=dtype)), device=device)
     else:
-        return _to_device(np.asarray(object_in, dtype=dtype), device=device)
+        return _to_device(np.asarray(obj, dtype=dtype), device=device)
 
 
 def empty(
@@ -113,9 +112,7 @@ def eye(
         return _to_device(return_mat, device=device)
 
 
-# noinspection PyShadowingNames
 def from_dlpack(x, /, *, out: Optional[np.ndarray] = None):
-    # noinspection PyProtectedMember
     return np.from_dlpack(x)
 
 
@@ -166,15 +163,17 @@ def linspace(
     # Waiting for fix when start is -0.0: https://github.com/numpy/numpy/issues/21513
     if (
         ans.shape[0] >= 1
-        and (not isinstance(start, numpy.ndarray))
-        and (not isinstance(stop, numpy.ndarray))
+        and (not isinstance(start, np.ndarray))
+        and (not isinstance(stop, np.ndarray))
     ):
         ans[0] = start
     return _to_device(ans, device=device)
 
 
-def meshgrid(*arrays: np.ndarray, indexing: str = "xy") -> List[np.ndarray]:
-    return np.meshgrid(*arrays, indexing=indexing)
+def meshgrid(
+    *arrays: np.ndarray, sparse: bool = False, indexing: str = "xy"
+) -> List[np.ndarray]:
+    return np.meshgrid(*arrays, sparse=sparse, indexing=indexing)
 
 
 def ones(
@@ -253,9 +252,36 @@ def logspace(
 
 
 def one_hot(
-    indices: np.ndarray, depth: int, *, device: str, out: Optional[np.ndarray] = None
+    indices: np.ndarray,
+    depth: int,
+    /,
+    *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[np.dtype] = None,
+    device: str,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    res = np.eye(depth, dtype=indices.dtype)[
-        np.array(indices, dtype="int64").reshape(-1)
-    ]
-    return res.reshape(list(indices.shape) + [depth])
+    on_none = on_value is None
+    off_none = off_value is None
+
+    if dtype is None:
+        if on_none and off_none:
+            dtype = np.float32
+        else:
+            if not on_none:
+                dtype = np.array(on_value).dtype
+            elif not off_none:
+                dtype = np.array(off_value).dtype
+
+    res = np.eye(depth, dtype=dtype)[np.array(indices, dtype="int64").reshape(-1)]
+    res = res.reshape(list(indices.shape) + [depth])
+
+    if not on_none and not off_none:
+        res = np.where(res == 1, on_value, off_value)
+
+    if axis is not None:
+        res = np.moveaxis(res, -1, axis)
+
+    return res

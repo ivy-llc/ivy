@@ -1,7 +1,8 @@
 h5py==3.7.0
 pytest==7.1.2
 networkx==2.8.4
-hypothesis==6.48.2
+hypothesis==6.55.0
+redis==4.3.4
 matplotlib==3.5.2
 opencv-python==4.6.0.66 # mod_name=cv2
 jax==0.3.14
@@ -14,3 +15,6 @@ torch-scatter==2.0.9 # mod_name=torch_scatter
 functorch==0.1.1
 scipy==1.8.1
 dm-haiku==0.0.6 # mod_name=haiku
+pydriller
+tqdm
+coverage

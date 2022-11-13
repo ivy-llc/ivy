@@ -1,9 +1,7 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-import numpy as np
-from hypothesis import given
 from hypothesis import strategies as st
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # squeeze
@@ -19,41 +17,36 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.squeeze",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.squeeze"
-    ),
 )
 def test_numpy_squeeze(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
-        fn_tree="squeeze",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        fn_tree=fn_tree,
+        a=x[0],
         axis=axis,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.expand_dims",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -64,27 +57,22 @@ def test_numpy_squeeze(
         max_size=1,
         force_int=True,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.expand_dims"
-    ),
 )
 def test_numpy_expand_dims(
     dtype_and_x,
     axis,
     num_positional_args,
-    fw,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
-    input_dtype = [input_dtype]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=False,
+        as_variable_flags=[False],
         with_out=False,
-        native_array_flags=False,
         num_positional_args=num_positional_args,
-        fw=fw,
+        native_array_flags=[False],
         frontend="numpy",
-        fn_tree="expand_dims",
-        a=np.asarray(x, dtype=input_dtype[0]),
+        fn_tree=fn_tree,
+        a=x[0],
         axis=axis,
     )

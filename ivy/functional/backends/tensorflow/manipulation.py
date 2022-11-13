@@ -1,12 +1,17 @@
 # global
-import ivy
 import math
-import tensorflow as tf
 from numbers import Number
 from typing import Union, Tuple, Optional, List, Sequence
 
+import tensorflow as tf
+
+# local
+import ivy
+
 # noinspection PyProtectedMember
+from ivy.func_wrapper import with_supported_dtypes, with_unsupported_dtypes
 from ivy.functional.ivy.manipulation import _calculate_out_shape
+from . import backend_version
 
 
 # Array API Standard #
@@ -14,10 +19,10 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 
 
 def concat(
-    xs: List[tf.Tensor],
+    xs: Union[Tuple[tf.Tensor, ...], List[tf.Tensor]],
     /,
     *,
-    axis: int = 0,
+    axis: Optional[int] = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     is_tuple = type(xs) is tuple
@@ -31,7 +36,7 @@ def concat(
     for i in range(len(xs)):
         if is_axis_none:
             xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
+        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
     if is_axis_none:
         axis = 0
         if is_tuple:
@@ -44,7 +49,7 @@ def expand_dims(
     /,
     *,
     axis: Union[int, Sequence[int]] = 0,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     try:
         out_shape = _calculate_out_shape(axis, x.shape)
@@ -59,7 +64,7 @@ def flip(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     num_dims = len(x.shape)
     if not num_dims:
@@ -94,7 +99,7 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[tf.Tensor] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
@@ -131,14 +136,10 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        ivy.assertions.check_less(
-            x.shape[axis],
-            1,
-            allow_equal=True,
-            message="Expected dimension of size 1, but found dimension size {}".format(
-                x.shape[axis]
-            ),
-        )
+        if ivy.any(x.shape[axis] > 1):
+            raise ValueError(
+                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
+            )
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -155,7 +156,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ivy.exceptions.IvyException(
+                raise ValueError(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )
@@ -184,10 +185,10 @@ def split(
     x,
     /,
     *,
-    num_or_size_splits=None,
-    axis=0,
-    with_remainder=False,
-):
+    num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+    axis: Optional[int] = 0,
+    with_remainder: Optional[bool] = False,
+) -> List[tf.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise ivy.exceptions.IvyException(
@@ -198,7 +199,7 @@ def split(
         return [x]
     if num_or_size_splits is None:
         dim_size = tf.shape(x)[axis]
-        num_or_size_splits = dim_size
+        num_or_size_splits = int(dim_size)
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = math.floor(num_chunks)
@@ -207,9 +208,11 @@ def split(
             num_or_size_splits = [num_or_size_splits] * num_chunks_int + [
                 int(remainder * num_or_size_splits)
             ]
+
     return tf.split(x, num_or_size_splits, axis)
 
 
+@with_supported_dtypes({"2.9.1 and below": ("int32", "int64")}, backend_version)
 def repeat(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -221,12 +224,18 @@ def repeat(
     return tf.repeat(x, repeats, axis)
 
 
-repeat.supported_dtypes = (
-    "int32",
-    "int64",
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "int8",
+            "int16",
+        )
+    },
+    backend_version,
 )
-
-
 def tile(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -240,16 +249,17 @@ def tile(
         reps = [reps]
     if isinstance(reps, tf.Tensor) and reps.shape == ():
         reps = tf.reshape(reps, (-1,))
+    # code to unify behaviour with numpy and torch
+    if len(x.shape) < len(reps):
+        while len(x.shape) != len(reps):
+            x = tf.expand_dims(x, 0)
+    elif len(x.shape) > len(reps):
+        reps = list(reps)
+        while len(x.shape) != len(reps):
+            reps = [1] + reps
+    # TODO remove the unifying behaviour code if tensorflow handles this
+    # https://github.com/tensorflow/tensorflow/issues/58002
     return tf.tile(x, reps)
-
-
-tile.unsupported_dtypes = (
-    "uint8",
-    "uint16",
-    "uint32",
-    "int8",
-    "int16",
-)
 
 
 def constant_pad(
@@ -309,7 +319,7 @@ def clip(
 
 
 def unstack(
-    x: Union[tf.Tensor, tf.Variable], axis: int, keepdims: bool = False
+    x: Union[tf.Tensor, tf.Variable], /, *, axis: int = 0, keepdims: bool = False
 ) -> List[tf.Tensor]:
     if x.shape == ():
         return [x]

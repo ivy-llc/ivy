@@ -1,26 +1,36 @@
 # global
+
+from numbers import Number
+from typing import Union, List, Optional, Sequence
+
 import tensorflow as tf
-from typing import Union, Tuple, List, Optional, Sequence
 
 # local
 import ivy
-from ivy import (
-    as_native_dtype,
-    default_dtype,
-    as_ivy_dtype,
-)
-
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
     asarray_handle_nestable,
+    NestedSequence,
+    SupportsBufferProtocol,
 )
+from . import backend_version
 
 
 # Array API Standard #
 # -------------------#
 
 
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    backend_version,
+)
 def arange(
     start: float,
     /,
@@ -52,24 +62,20 @@ def arange(
             else:
                 return tf.range(start, stop, delta=step)
         else:
-            dtype = as_native_dtype(default_dtype(dtype=dtype))
+            dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
             if dtype in [tf.int8, tf.uint8, tf.int16, tf.uint16, tf.uint32, tf.uint64]:
                 return tf.cast(tf.range(start, stop, delta=step, dtype=tf.int64), dtype)
             else:
                 return tf.range(start, stop, delta=step, dtype=dtype)
 
 
-arange.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
 def asarray(
-    object_in: Union[tf.Tensor, tf.Variable, List[float], Tuple[float]],
+    obj: Union[
+        tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
+    ],
     /,
     *,
     copy: Optional[bool] = None,
@@ -79,48 +85,48 @@ def asarray(
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):
         if copy:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return tf.identity(object_in)
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return tf.identity(obj)
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    dtype = default_dtype(item=object_in, as_native=True)
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    dtype = ivy.default_dtype(item=obj, as_native=True)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
-                    dtype = default_dtype(dtype=dtype, item=object_in, as_native=True)
+                    dtype = ivy.default_dtype(dtype=dtype, item=obj, as_native=True)
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.identity(tf.cast(tensor, dtype))
         else:
-            if dtype is None and isinstance(object_in, tf.Tensor):
-                return object_in
-            if dtype is None and not isinstance(object_in, tf.Tensor):
+            if dtype is None and isinstance(obj, tf.Tensor):
+                return obj
+            if dtype is None and not isinstance(obj, tf.Tensor):
                 try:
-                    return tf.convert_to_tensor(object_in)
+                    return tf.convert_to_tensor(obj)
                 except (TypeError, ValueError):
-                    dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                    dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                     return tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
             else:
-                dtype = as_ivy_dtype(default_dtype(dtype=dtype, item=object_in))
+                dtype = ivy.as_ivy_dtype(ivy.default_dtype(dtype=dtype, item=obj))
                 try:
-                    tensor = tf.convert_to_tensor(object_in, dtype=dtype)
+                    tensor = tf.convert_to_tensor(obj, dtype=dtype)
                 except (TypeError, ValueError):
                     tensor = tf.convert_to_tensor(
-                        ivy.nested_map(object_in, lambda x: tf.cast(x, dtype)),
+                        ivy.nested_map(obj, lambda x: tf.cast(x, dtype)),
                         dtype=dtype,
                     )
                 return tf.cast(tensor, dtype)
@@ -149,6 +155,7 @@ def empty_like(
         return tf.experimental.numpy.empty_like(x, dtype=dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("uint16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -171,7 +178,7 @@ def eye(
 
         # k=index of the diagonal. A positive value refers to an upper diagonal,
         # a negative value to a lower diagonal, and 0 to the main diagonal.
-        # Default: 0.
+        # Default: ``0``.
         # value of k ranges from -n_rows < k < n_cols
 
         # k=0 refers to the main diagonal
@@ -197,9 +204,6 @@ def eye(
             return tf.tile(tf.reshape(mat, reshape_dims), tile_dims)
         else:
             return tf.zeros(batch_shape + [n_rows, n_cols], dtype=dtype)
-
-
-eye.unsupported_dtypes = ("uint16",)
 
 
 # noinspection PyShadowingNames
@@ -270,9 +274,22 @@ def linspace(
 
 
 def meshgrid(
-    *arrays: Union[tf.Tensor, tf.Variable], indexing: str = "xy"
+    *arrays: Union[tf.Tensor, tf.Variable], sparse: bool = False, indexing: str = "xy"
 ) -> List[Union[tf.Tensor, tf.Variable]]:
-    return tf.meshgrid(*arrays, indexing=indexing)
+    if not sparse:
+        return tf.meshgrid(*arrays, indexing=indexing)
+
+    sd = (1,) * len(arrays)
+    res = [
+        tf.reshape(tf.convert_to_tensor(a), (sd[:i] + (-1,) + sd[i + 1 :]))
+        for i, a in enumerate(arrays)
+    ]
+
+    if indexing == "xy" and len(arrays) > 1:
+        res[0] = tf.reshape(res[0], (1, -1) + sd[2:])
+        res[1] = tf.reshape(res[1], (-1, 1) + sd[2:])
+
+    return res
 
 
 def ones(
@@ -375,14 +392,29 @@ def logspace(
 def one_hot(
     indices: Union[tf.Tensor, tf.Variable],
     depth: int,
+    /,
     *,
+    on_value: Optional[Number] = None,
+    off_value: Optional[Number] = None,
+    axis: Optional[int] = None,
+    dtype: Optional[tf.DType] = None,
     device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     device = ivy.default_device(device)
-    dtype = indices.dtype
+
     if device is not None:
         indices = tf.cast(indices, tf.int64)
         with tf.device(ivy.as_native_dev(device)):
-            return tf.one_hot(indices, depth, dtype=dtype)
-    return tf.one_hot(indices, depth, dtype=dtype)
+            return tf.one_hot(
+                indices,
+                depth,
+                on_value=on_value,
+                off_value=off_value,
+                axis=axis,
+                dtype=dtype,
+            )
+
+    return tf.one_hot(
+        indices, depth, on_value=on_value, off_value=off_value, axis=axis, dtype=dtype
+    )

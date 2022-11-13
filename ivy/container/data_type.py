@@ -22,11 +22,11 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of 
+        """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
-        Casting floating-point ``NaN`` and ``infinity`` values to integral data types 
+        Casting floating-point ``NaN`` and ``infinity`` values to integral data types
         is not specified and is implementation-dependent.
 
         .. note::
@@ -44,25 +44,25 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches 
-            the data type of the input array ``x``. If ``True``, a newly allocated 
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
             array must always be returned. If ``False`` and the specified ``dtype``
             matches the data type of the input array, the input array must be returned;
             otherwise, a newly allocated must be returned. Default: ``True``.
         out
-            optional output array, for writing the result to. It must have a shape 
+            optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
 
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have 
+            an array having the specified data type. The returned array must have
             the same shape as ``x``.
 
         Examples
         --------
-        >>> c = ivy.Container(a=ivy.array([False,True,True]), \
-                                 b=ivy.array([3.14, 2.718, 1.618]))
+        >>> c = ivy.Container(a=ivy.array([False,True,True]),
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> ivy.Container.static_astype(c, ivy.int32)
         {
             a: ivy.array([0, 1, 1]),
@@ -92,7 +92,7 @@ class ContainerWithDataTypes(ContainerBase):
         copy: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """Copies an array to a specified data type irrespective of 
+        """Copies an array to a specified data type irrespective of
         :ref:`type-promotion` rules.
 
         .. note::
@@ -114,8 +114,8 @@ class ContainerWithDataTypes(ContainerBase):
         dtype
             desired data type.
         copy
-            specifies whether to copy an array when the specified ``dtype`` matches 
-            the data type of the input array ``x``. If ``True``, a newly allocated 
+            specifies whether to copy an array when the specified ``dtype`` matches
+            the data type of the input array ``x``. If ``True``, a newly allocated
             array must always be returned. If ``False`` and the specified ``dtype``
             matches the data type of the input array, the input array must be returned;
             otherwise, a newly allocated must be returned. Default: ``True``.
@@ -126,15 +126,15 @@ class ContainerWithDataTypes(ContainerBase):
         Returns
         -------
         ret
-            an array having the specified data type. The returned array must have 
+            an array having the specified data type. The returned array must have
             the same shape as ``x``.
 
         Examples
         --------
-        Using :code:`ivy.Container` instance method:
-        
-        >>> x = ivy.Container(a=ivy.array([False,True,True]), \
-                                b=ivy.array([3.14, 2.718, 1.618]))
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([False,True,True]),
+        ...                   b=ivy.array([3.14, 2.718, 1.618]))
         >>> print(x.astype(ivy.int32))
         {
             a: ivy.array([0, 1, 1]),
@@ -175,16 +175,16 @@ class ContainerWithDataTypes(ContainerBase):
             And Each array must have the same dtype as its
             corresponding input array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
             Whether to also map method to sequences (lists, tuples).
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -193,7 +193,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -207,7 +207,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.array([0.2, 3.])
@@ -253,20 +253,21 @@ class ContainerWithDataTypes(ContainerBase):
             Each array must have the same shape.
             Each array must have the same dtype as its corresponding input array.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
 
         Examples
         --------
-        With :code:`ivy.Container` inputs:
+        With :class:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
         >>> x2 = ivy.Container(a=ivy.array([-1.2, 0.4]), b=ivy.array([0, 1]))
@@ -280,7 +281,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0, 1])
         }]
 
-        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([4, 5]), b=ivy.array([2, -1]))
         >>> x2 = ivy.zeros(2)
@@ -336,9 +337,10 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code:`ivy.Container` static method:
-        >>> x = ivy.Container(a=ivy.array([1]),\
-            b=ivy.array([2]))
+        With :class:`ivy.Container` static method:
+
+        >>> x = ivy.Container(a=ivy.array([1]),
+        ...                   b=ivy.array([2]))
         >>> y = ivy.Container.static_broadcast_to(x,(3, 1))
         >>> print(y)
         {
@@ -393,9 +395,10 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        With :code: 'ivy.Container' instance method:
-        >>> x = ivy.Container(a=ivy.array([0, 0.5]),\
-            b=ivy.array([4, 5]))
+        With :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0, 0.5]),
+        ...                   b=ivy.array([4, 5]))
         >>> y = x.broadcast_to((3,2))
         >>> print(y)
         {
@@ -439,15 +442,16 @@ class ContainerWithDataTypes(ContainerBase):
         to
             desired data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -457,8 +461,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -498,15 +502,16 @@ class ContainerWithDataTypes(ContainerBase):
         to
             desired data type.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -516,8 +521,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), \
-            b=ivy.array([3, 4, 5]))
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3, 4, 5]))
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
 
@@ -561,6 +566,17 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
+        >>> y = x.dtype()
+        >>> print(y)
+        {
+            a: int32,
+            b: int32
+        }
+        """
         return self.static_dtype(
             self,
             as_native,
@@ -678,6 +694,17 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
+        """
+        Examples
+        --------
+        >>> c = ivy.Container(x=ivy.array([-9,1800,89], dtype=ivy.int16),
+        ...                   y=ivy.array([76,-81,16], dtype=ivy.int32))
+        >>> c.iinfo()
+        {
+            x: iinfo(min=-32768, max=32767, dtype=int16),
+            y: iinfo(min=-2147483648, max=2147483647, dtype=int32)
+        }
+        """
         return self.static_iinfo(
             self, key_chains, to_apply, prune_unapplied, map_sequences
         )
@@ -685,6 +712,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_bool_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -701,6 +729,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_bool_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -717,6 +746,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_float_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -743,7 +773,7 @@ class ContainerWithDataTypes(ContainerBase):
 
         map_sequences : bool
             Boolean indicating whether to map method
-            to sequences (list, tuple). Default is False.
+            to sequences (list, tuple). Default is ``False``.
 
         Returns
         -------
@@ -787,12 +817,11 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_float_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        out: ivy.Container = None,
     ) -> ivy.Container:
         """
         `ivy.Container` instance method variant of `ivy.is_float_dtype`.
@@ -807,19 +836,19 @@ class ContainerWithDataTypes(ContainerBase):
 
         key_chains : Union[List[str], Dict[str, str]]
             The key-chains to apply or not apply the method to.
-            Default is None.
+            Default is ``None``.
 
         to_apply : bool
             Boolean indicating whether to apply the
-            method to the key-chains. Default is False.
+            method to the key-chains. Default is ``False``.
 
         prune_unapplied : bool
             Boolean indicating whether to prune the
-            key-chains that were not applied. Default is False.
+            key-chains that were not applied. Default is ``False``.
 
         map_sequences : bool
             Boolean indicating whether to map method
-            to sequences (list, tuple). Default is False.
+            to sequences (list, tuple). Default is ``False``.
 
         Returns
         -------
@@ -863,6 +892,7 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_is_int_dtype(
         dtype_in: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -879,6 +909,7 @@ class ContainerWithDataTypes(ContainerBase):
 
     def is_int_dtype(
         self: ivy.Container,
+        /,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -944,15 +975,16 @@ class ContainerWithDataTypes(ContainerBase):
         arrays_and_dtypes
             an arbitrary number of input arrays and/or dtypes.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -961,8 +993,8 @@ class ContainerWithDataTypes(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.array([0, 1, 2]), \
-                              b = ivy.array([3., 4., 5.]))
+        >>> x = ivy.Container(a = ivy.array([0, 1, 2]),
+        ...                   b = ivy.array([3., 4., 5.]))
         >>> print(x.a.dtype, x.b.dtype)
         int32 float32
 
@@ -1001,15 +1033,16 @@ class ContainerWithDataTypes(ContainerBase):
         arrays_and_dtypes
             an arbitrary number of input arrays and/or dtypes.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------

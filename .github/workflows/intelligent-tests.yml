@@ -1,0 +1,175 @@
+name: intelligent-tests
+on:
+  workflow_dispatch:
+  push:
+permissions:
+  actions: read
+jobs:
+   run_tests_1:
+     runs-on: ubuntu-latest
+     steps:
+       - name: Checkout Ivy 🛎
+         uses: actions/checkout@v2
+         with:
+           path: ivy
+           persist-credentials: false
+           submodules: "recursive"
+           fetch-depth: 100
+
+       - name: Determine and Run Tests
+         id: tests
+         run: |
+           git clone -b master https://github.com/unifyai/Mapping.git --depth 1
+           pip install pydriller
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py
+           cd ..
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+           cd ivy
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+         continue-on-error: true
+
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1
+
+#   run_tests_2:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Ivy 🛎
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
+#           fetch-depth: 100
+#
+#       - name: Determine and Run Tests
+#         id: tests
+#         run: |
+#           git clone https://github.com/unifyai/Mapping_2.git
+#           pip install pydriller
+#           cp Mapping_2/tests.pbz2 ivy/
+#           cd ivy
+#           python determine_tests.py
+#           cd ..
+#           mkdir tests
+#           cp ivy/tests.pbz2 tests/
+#           cd ivy
+#           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+#         continue-on-error: true
+#
+#       - name: Push Mapping
+#         uses: cpina/github-action-push-to-another-repository@main
+#         env:
+#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY2 }}
+#         with:
+#           source-directory: tests/
+#           destination-github-username: 'unifyai'
+#           destination-repository-name: 'Mapping_2'
+#           user-email: rashul.chutani@gmail.com
+#           commit-message: Update Mapping
+#           target-branch: master
+#
+#       - name: Check on failures
+#         if: steps.tests.outcome != 'success'
+#         run: exit 1
+#
+#   run_tests_3:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Ivy 🛎
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
+#           fetch-depth: 100
+#
+#       - name: Determine and Run Tests
+#         id: tests
+#         run: |
+#           git clone https://github.com/unifyai/Mapping_3.git
+#           pip install pydriller
+#           cp Mapping_3/tests.pbz2 ivy/
+#           cd ivy
+#           python determine_tests.py
+#           cd ..
+#           mkdir tests
+#           cp ivy/tests.pbz2 tests/
+#           cd ivy
+#           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+#         continue-on-error: true
+#
+#       - name: Push Mapping
+#         uses: cpina/github-action-push-to-another-repository@main
+#         env:
+#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY3 }}
+#         with:
+#           source-directory: tests/
+#           destination-github-username: 'unifyai'
+#           destination-repository-name: 'Mapping_3'
+#           user-email: rashul.chutani@gmail.com
+#           commit-message: Update Mapping
+#           target-branch: master
+#
+#       - name: Check on failures
+#         if: steps.tests.outcome != 'success'
+#         run: exit 1
+#
+#
+#   run_tests_4:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Checkout Ivy 🛎
+#         uses: actions/checkout@v2
+#         with:
+#           path: ivy
+#           persist-credentials: false
+#           submodules: "recursive"
+#           fetch-depth: 100
+#
+#       - name: Determine and Run Tests
+#         id: tests
+#         run: |
+#           git clone https://github.com/unifyai/Mapping_4.git
+#           pip install pydriller
+#           cp Mapping_4/tests.pbz2 ivy/
+#           cd ivy
+#           python determine_tests.py
+#           cd ..
+#           mkdir tests
+#           cp ivy/tests.pbz2 tests/
+#           cd ivy
+#           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+#         continue-on-error: true
+#
+#       - name: Push Mapping
+#         uses: cpina/github-action-push-to-another-repository@main
+#         env:
+#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY4 }}
+#         with:
+#           source-directory: tests/
+#           destination-github-username: 'unifyai'
+#           destination-repository-name: 'Mapping_4'
+#           user-email: rashul.chutani@gmail.com
+#           commit-message: Update Mapping
+#           target-branch: master
+#
+#       - name: Check on failures
+#         if: steps.tests.outcome != 'success'
+#         run: exit 1

@@ -1,10 +1,9 @@
 # global
-import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # noinspection DuplicatedCode
@@ -65,82 +64,114 @@ def _array_idxes_n_dtype(draw, **kwargs):
 
 
 # cat
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.cat",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.cat"
-    ),
 )
 def test_torch_cat(
+    *,
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    with_out,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="cat",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         tensors=xs,
         dim=unique_idx,
-        out=None,
     )
 
 
 # concat
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.concat",
     xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.concat"
-    ),
 )
 def test_torch_concat(
+    *,
     xs_n_input_dtypes_n_unique_idx,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    with_out,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
-    xs = [np.asarray(x, dtype=dt) for x, dt in zip(xs, input_dtypes)]
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="concat",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         tensors=xs,
         dim=unique_idx,
-        out=None,
+    )
+
+
+# gather
+@handle_frontend_test(
+    fn_tree="torch.gather",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_gather(
+    *,
+    params_indices_others,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, input, indices, axis, batch_dims = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        dim=axis,
+        index=indices,
     )
 
 
 # nonzero
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nonzero",
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
     as_tuple=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nonzero"
-    ),
 )
 def test_torch_nonzero(
     *,
@@ -148,9 +179,11 @@ def test_torch_nonzero(
     as_tuple,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
-    fw,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input = dtype_and_values
     helpers.test_frontend_function(
@@ -159,31 +192,31 @@ def test_torch_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="nonzero",
-        input=np.asarray(input, dtype=dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
         as_tuple=as_tuple,
     )
 
 
 # permute
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.permute",
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.permute"
-    ),
 )
 def test_torch_permute(
+    *,
     dtype_values_axis,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     x, idxes, dtype = dtype_values_axis
     helpers.test_frontend_function(
@@ -192,17 +225,17 @@ def test_torch_permute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="permute",
-        input=np.asarray(x, dtype=dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
         dims=tuple(idxes),
     )
 
 
 # swapdims
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.swapdims",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
@@ -213,11 +246,9 @@ def test_torch_permute(
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.swapdims"
-    ),
 )
 def test_torch_swapdims(
+    *,
     dtype_and_values,
     dim0,
     dim1,
@@ -225,7 +256,9 @@ def test_torch_swapdims(
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -234,10 +267,10 @@ def test_torch_swapdims(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="swapdims",
-        input=np.asarray(value, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
         dim0=dim0,
         dim1=dim1,
     )
@@ -246,36 +279,39 @@ def test_torch_swapdims(
 # reshape
 @st.composite
 def dtypes_x_reshape(draw):
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
     dtypes, x = draw(
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
-            shape=helpers.get_shape(
-                allow_none=False,
-                min_num_dims=1,
-                max_num_dims=5,
-                min_dim_size=1,
-                max_dim_size=10,
-            ),
+            shape=shape,
         )
     )
-    shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
+    shape = draw(helpers.reshape_shapes(shape=shape))
     return dtypes, x, shape
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.reshape",
     dtypes_x_reshape=dtypes_x_reshape(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.reshape"
-    ),
 )
 def test_torch_reshape(
+    *,
     dtypes_x_reshape,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x, shape = dtypes_x_reshape
     helpers.test_frontend_function(
@@ -284,17 +320,17 @@ def test_torch_reshape(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="reshape",
-        input=np.asarray(x, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
         shape=shape,
     )
 
 
 # stack
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.stack",
     dtype_value_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays"),
@@ -303,38 +339,37 @@ def test_torch_reshape(
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.stack"
-    ),
 )
 def test_torch_stack(
+    *,
     dtype_value_shape,
     dim,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    with_out,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_value_shape
-    tensors = [np.asarray(x, dtype=dtype) for x, dtype in zip(value, input_dtype)]
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="stack",
-        tensors=tensors,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensors=value,
         dim=dim,
     )
 
 
 # transpose
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.transpose",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
@@ -345,11 +380,9 @@ def test_torch_stack(
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.transpose"
-    ),
 )
 def test_torch_transpose(
+    *,
     dtype_and_values,
     dim0,
     dim1,
@@ -357,7 +390,9 @@ def test_torch_transpose(
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -366,18 +401,18 @@ def test_torch_transpose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="transpose",
-        input=np.asarray(value, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
         dim0=dim0,
         dim1=dim1,
     )
 
 
 # squeeze
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.squeeze",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
@@ -386,18 +421,18 @@ def test_torch_transpose(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
         max_size=1,
     ).filter(lambda axis: isinstance(axis, int)),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.squeeze"
-    ),
 )
 def test_torch_squeeze(
+    *,
     dtype_and_values,
     dim,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -406,17 +441,17 @@ def test_torch_squeeze(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="squeeze",
-        input=np.asarray(value, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
         dim=dim,
     )
 
 
 # swapaxes
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.swapaxes",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
@@ -427,11 +462,9 @@ def test_torch_squeeze(
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
     ).filter(lambda axis: isinstance(axis, int)),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.swapaxes"
-    ),
 )
 def test_torch_swapaxes(
+    *,
     dtype_and_values,
     axis0,
     axis1,
@@ -439,7 +472,9 @@ def test_torch_swapaxes(
     with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_and_values
     helpers.test_frontend_function(
@@ -448,51 +483,230 @@ def test_torch_swapaxes(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="swapaxes",
-        input=np.asarray(value, dtype=input_dtype),
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
         axis0=axis0,
         axis1=axis1,
     )
 
 
 # chunk
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.chunk",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-        max_num_dims=5,
+        max_num_dims=4,
         min_dim_size=2,
-        max_dim_size=5,
+        max_dim_size=4,
     ),
-    chunks=helpers.ints(min_value=2, max_value=5),
+    chunks=helpers.ints(min_value=1, max_value=3),
     dim=helpers.ints(min_value=0, max_value=1),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.chunk"
-    ),
 )
 def test_torch_chunk(
+    *,
     dtype_value,
     chunks,
     dim,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        chunks=chunks,
+        dim=dim,
+    )
+
+
+# tile
+@handle_frontend_test(
+    fn_tree="torch.tile",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=False,
+        force_tuple=True,
+    ),
+)
+def test_torch_tile(
+    *,
+    dtype_value,
+    dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        dims=dim,
+    )
+
+
+# unsqueeze
+@handle_frontend_test(
+    fn_tree="torch.unsqueeze",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    ),
+)
+def test_torch_unsqueeze(
+    *,
+    dtype_value,
+    dim,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        dim=dim,
+    )
+
+
+# movedim
+@handle_frontend_test(
+    fn_tree="torch.movedim",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-100,
+        max_value=100,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+    ),
+    source=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
+    ),
+    destination=helpers.get_axis(
+        allow_none=False,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=3,
+                min_dim_size=1,
+                max_dim_size=3,
+            ),
+            key="a_s_d",
+        ),
+        min_size=1,
+        force_int=True,
+    ),
+)
+def test_torch_movedim(
+    dtype_and_input,
+    source,
+    destination,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, value = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="torch",
-        fn_tree="chunk",
-        input=np.asarray(value, dtype=input_dtype),
-        chunks=chunks,
-        dim=dim,
+        fn_tree="movedim",
+        input=value[0],
+        source=source,
+        destination=destination,
+    )
+
+
+# hstack
+@handle_frontend_test(
+    fn_tree="torch.hstack",
+    dtype_value_shape=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_hstack(
+    dtype_value_shape,
+    as_variable,
+    num_positional_args,
+    native_array,
+    with_out,
+):
+    input_dtype, value = dtype_value_shape
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="hstack",
+        tensors=value,
     )

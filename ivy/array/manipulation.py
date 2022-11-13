@@ -14,7 +14,7 @@ class ArrayWithManipulation(abc.ABC):
     def concat(
         self: ivy.Array,
         xs: Union[
-            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            Tuple[Union[ivy.Array, ivy.NativeArray], ...],
             List[Union[ivy.Array, ivy.NativeArray]],
         ],
         /,
@@ -35,7 +35,7 @@ class ArrayWithManipulation(abc.ABC):
         axis
             axis along which the arrays will be joined. If axis is None, arrays
             must be flattened before concatenation. If axis is negative, axis on
-            which to join arrays is determined by counting from the top. Default: 0.
+            which to join arrays is determined by counting from the top. Default: ``0``.
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -99,6 +99,38 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.flip also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis (or axes) along which to flip. If axis is None, all
+            input array axes are flipped. If axis is negative, axis
+            is counted from the last dimension. If provided more than
+            one axis, only the specified axes. Default: None.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type and
+            shape as``self`` and whose elements, relative
+            to ``self``, are reordered.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.flip()
+        >>> print(y)
+        ivy.array([3, 2, 1])
+
+        >>> x = ivy.array([4, 5, 6])
+        >>> y = x.flip(axis=0)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
         """
         return ivy.flip(self._data, axis=axis, out=out)
 
@@ -144,7 +176,7 @@ class ArrayWithManipulation(abc.ABC):
             If False, the function must never copy and must
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
-            and copy otherwise. Default: None.
+            and copy otherwise. Default: ``None``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -251,8 +283,21 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.stack. This method simply
         wraps the function, and so the docstring for ivy.stack also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])
+        >>> y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])
+        >>> x.stack([y],axis=1)
+        ivy.array([[1, 3, 5, 7],
+            [2, 4, 6, 8]])
+        >>> x.stack([y],axis=0)
+        ivy.array([[1, 2],
+            [3, 4],
+            [5, 6],
+            [7, 8]])
         """
-        return ivy.stack([self._data] + arrays, axis=axis, out=out)
+        return ivy.stack(self.concat(arrays), axis=axis, out=out)
 
     def clip(
         self: ivy.Array,
@@ -304,8 +349,15 @@ class ArrayWithManipulation(abc.ABC):
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.constant_pad. This method simply
-        wraps the function, and so the docstring for ivy.split also applies
+        wraps the function, and so the docstring for ivy.constant_pad also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.constant_pad(pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 0., 0., 0.])
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 
@@ -335,9 +387,9 @@ class ArrayWithManipulation(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        num_or_size_splits: Optional[Union[int, Iterable[int]]] = None,
-        axis: int = 0,
-        with_remainder: bool = False,
+        num_or_size_splits: Optional[Union[int, Sequence[int]]] = None,
+        axis: Optional[int] = 0,
+        with_remainder: Optional[bool] = False,
     ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.split. This method simply
@@ -353,10 +405,10 @@ class ArrayWithManipulation(abc.ABC):
             integer. The size of each split element if a sequence of integers. Default
             is to divide into as many 1-dimensional arrays as the axis dimension.
         axis
-            The axis along which to split, default is 0.
+            The axis along which to split, default is ``0``.
         with_remainder
             If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -421,7 +473,9 @@ class ArrayWithManipulation(abc.ABC):
         """
         return ivy.tile(self._data, reps=reps, out=out)
 
-    def unstack(self: ivy.Array, axis: int, /, *, keepdims: bool = False) -> ivy.Array:
+    def unstack(
+        self: ivy.Array, /, *, axis: int = 0, keepdims: bool = False
+    ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.unstack. This method simply
         wraps the function, and so the docstring for ivy.unstack also applies to
         this method with minimal changes.
@@ -433,7 +487,7 @@ class ArrayWithManipulation(abc.ABC):
         axis
             Axis for which to unpack the array.
         keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
 
         Returns
         -------
@@ -454,7 +508,7 @@ class ArrayWithManipulation(abc.ABC):
                 [3]]), ivy.array([[2],
                 [4]])]
         """
-        return ivy.unstack(self._data, axis, keepdims=keepdims)
+        return ivy.unstack(self._data, axis=axis, keepdims=keepdims)
 
     def zero_pad(
         self: ivy.Array,

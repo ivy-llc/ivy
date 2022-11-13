@@ -76,7 +76,7 @@ def conv1d_transpose(
         if len(output_shape) == 1:
             output_shape = [1, x.shape[0], output_shape[0], x.shape[-1]]
         else:
-            output_shape = [1] + output_shape
+            output_shape = [1] + list(output_shape)
     x_shape = (1,) + x.shape
     filter_shape = (1,) + filters.shape
     x_strides = (x.strides[0],) + x.strides
@@ -157,8 +157,8 @@ def conv2d(
     new_shape = [x_shape[0], new_h, new_w] + filter_shape + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[1],
-        x.strides[2] * strides[0],
+        x.strides[1] * strides[0],
+        x.strides[2] * strides[1],
         x.strides[1],
         x.strides[2],
         x.strides[3],
@@ -209,7 +209,7 @@ def conv2d_transpose(
         )
         output_shape = [x.shape[0], new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 2:
-        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
     if strides[1] > 1:
         x = _add_dilations(x, strides[1], axis=2)
     if strides[0] > 1:
@@ -353,9 +353,9 @@ def conv3d(
     new_shape = [x_shape[0], new_d, new_h, new_w] + filter_shape + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides[2],
+        x.strides[1] * strides[0],
         x.strides[2] * strides[1],
-        x.strides[3] * strides[0],
+        x.strides[3] * strides[2],
         x.strides[1],
         x.strides[2],
         x.strides[3],
@@ -408,7 +408,7 @@ def conv3d_transpose(
         )
         output_shape = [x.shape[0], new_d, new_h, new_w, filters.shape[-1]]
     elif len(output_shape) == 3:
-        output_shape = [x.shape[0]] + output_shape + [filters.shape[-1]]
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
 
     if strides[2] > 1:
         x = _add_dilations(x, strides[2], axis=3)
@@ -473,26 +473,28 @@ def conv_general_dilated(
     *,
     dims: int = 2,
     data_format: str = "channel_last",
+    feature_group_count: int = 1,
+    x_dilations: Union[int, Tuple[int], Tuple[int, int]] = 1,
     dilations: Union[int, Tuple[int, int, int]] = 1,
     out: np.ndarray = None,
 ) -> np.ndarray:
-    if isinstance(strides, int):
-        strides = [strides] * dims
+    strides = [strides] * dims if isinstance(strides, int) else strides
 
-    if isinstance(dilations, int):
-        dilations = [dilations] * dims
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+
+    x_dilations = [x_dilations] * dims if isinstance(x_dilations, int) else x_dilations
+
+    if data_format == "channel_first":
+        x = np.transpose(x, (0, *range(2, dims + 2), 1))
 
     for j in range(dims):
         if dilations[j] > 1:
-            filters = np.insert(
-                filters,
-                [i for i in range(1, filters.shape[j])] * (dilations[j] - 1),
-                values=0,
-                axis=j,
-            )
+            filters = _add_dilations(filters, dilations[j], axis=j)
+        if x_dilations[j] > 1:
+            x = _add_dilations(x, x_dilations[j], axis=j + 1)
+
     filter_shape = list(filters.shape[0:dims])
-    if data_format == "channel_first":
-        x = np.transpose(x, (0, *range(2, dims + 2), 1))
+
     x_shape = list(x.shape[1 : dims + 1])
     pad_specific = [
         ivy.handle_padding(x_shape[i], strides[i], filter_shape[i], padding)
@@ -517,26 +519,153 @@ def conv_general_dilated(
     new_shape = [
         (x_shape[i + 1] - filter_shape[i]) // strides[i] + 1 for i in range(dims)
     ]
+    res = []
     new_shape = [x_shape[0], *new_shape] + filter_shape + [input_dim]
-    normal_strides = [x.strides[i] for i in range(1, dims + 2)]
-    changed_strides = [x.strides[i] * strides[dims - i] for i in range(1, dims + 1)]
-    new_strides = (x.strides[0], *changed_strides, *normal_strides)
-    # B x OH x OW x KH x KW x I
-    sub_matrices = np.lib.stride_tricks.as_strided(
-        x, new_shape, new_strides, writeable=False
-    )
+    for i, j in zip(
+        range(0, x.shape[-1], input_dim),
+        range(0, output_dim, output_dim // feature_group_count),
+    ):
+        sliced_x = x[..., i : i + input_dim]
+        sliced_filters = filters[..., j : j + output_dim // feature_group_count]
+        normal_strides = [sliced_x.strides[i] for i in range(1, dims + 2)]
+        changed_strides = [
+            sliced_x.strides[i] * strides[i - 1] for i in range(1, dims + 1)
+        ]
+        new_strides = (x.strides[0], *changed_strides, *normal_strides)
+        # B x OH x OW x KH x KW x I
+        sub_matrices = np.lib.stride_tricks.as_strided(
+            sliced_x, new_shape, new_strides, writeable=False
+        )
 
-    # B x OH x OW x KH x KW x I x O
-    sub_matrices_w_output_dim = np.tile(
-        np.expand_dims(sub_matrices, -1), [1] * (dims * 2 + 2) + [output_dim]
-    )
-    # B x OH x OW x KH x KW x I x O
-    mult = sub_matrices_w_output_dim * filters.reshape(
-        [1] * (dims + 1) + filter_shape + [input_dim, output_dim]
-    )
+        # B x OH x OW x KH x KW x I x O
+        sub_matrices_w_output_dim = np.tile(
+            np.expand_dims(sub_matrices, -1),
+            [1] * (dims * 2 + 2) + [output_dim // feature_group_count],
+        )
+        # B x OH x OW x KH x KW x I x O
+        mult = sub_matrices_w_output_dim * sliced_filters.reshape(
+            [1] * (dims + 1)
+            + filter_shape
+            + [input_dim, output_dim // feature_group_count]
+        )
 
-    # B x OH x OW x O
-    res = np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)]))
+        # B x OH x OW x O
+        res.append(np.sum(mult, tuple([i for i in range(dims + 1, dims * 2 + 2)])))
+    res = np.concatenate(res, axis=-1)
+
     if data_format == "channel_first":
-        return np.transpose(res, (0, -1, *range(1, dims + 1)))
+        return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
+
+
+def conv_general_transpose(
+    x: np.ndarray,
+    filters: np.ndarray,
+    strides: Union[int, Tuple[int, int, int]],
+    padding: str,
+    /,
+    *,
+    dims: int = 2,
+    output_shape=None,
+    data_format: str = "channel_last",
+    dilations: Union[int, Tuple[int, int, int]] = 1,
+    feature_group_count: int = 1,
+    out: np.ndarray = None,
+) -> np.ndarray:
+
+    if data_format == "channel_first":
+        x = np.transpose(x, (0, *range(2, dims + 2), 1))
+    strides = [strides] * dims if isinstance(strides, int) else strides
+    dilations = [dilations] * dims if isinstance(dilations, int) else dilations
+    if output_shape is None:
+        new_shape = [
+            ivy.deconv_length(
+                x.shape[i + 1], strides[i], filters.shape[i], padding, dilations[i]
+            )
+            for i in range(dims)
+        ]
+        output_shape = [x.shape[0], *new_shape, filters.shape[-1]]
+    elif len(output_shape) == dims:
+        output_shape = [x.shape[0]] + list(output_shape) + [filters.shape[-1]]
+
+    for j in range(dims):
+        if dilations[j] > 1:
+            filters = _add_dilations(filters, dilations[j], axis=j)
+        if strides[j] > 1:
+            x = _add_dilations(x, strides[j], axis=j + 1)
+
+    pad_specific = [
+        ivy.handle_padding(output_shape[i + 1], strides[i], filters.shape[i], padding)
+        for i in range(dims)
+    ]
+    extra_pad = [
+        max(
+            0,
+            output_shape[i + 1]
+            - (x.shape[i + 1] + filters.shape[i] - 1 - pad_specific[i]),
+        )
+        for i in range(dims)
+    ]
+    pad_top = [filters.shape[i] - 1 - (pad_specific[i] // 2) for i in range(dims)]
+    pad_bot = [
+        filters.shape[i] - 1 - (pad_specific[i] - pad_specific[i] // 2) + extra_pad[i]
+        for i in range(dims)
+    ]
+    pad_list = [(pad_top[i], pad_bot[i]) for i in range(dims)]
+    x = np.pad(
+        x,
+        [
+            (0, 0),
+            *pad_list,
+            (0, 0),
+        ],
+        "constant",
+    )
+    x = np.flip(x, (*range(1, dims + 1),))
+    res = np.concatenate(
+        [
+            np.flip(
+                conv_general_dilated(
+                    x[..., j : j + filters.shape[-2] // feature_group_count],
+                    filters[..., j : j + filters.shape[-2] // feature_group_count, :],
+                    1,
+                    "VALID",
+                    dims=dims,
+                    data_format=ivy.get_x_data_format(dims, "channel_last"),
+                    dilations=1,
+                ),
+                (*range(1, dims + 1),),
+            )
+            for j in range(
+                0, filters.shape[-2], filters.shape[-2] // feature_group_count
+            )
+        ],
+        axis=-1,
+    )
+    if data_format == "channel_first":
+        return np.transpose(res, (0, dims + 1, *range(1, dims + 1)))
+    return res
+
+
+def dropout1d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCW":
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x

@@ -1,11 +1,11 @@
 import sys
-import os
 
-run = int(sys.argv[1])
+
 backends = ["numpy", "torch", "jax", "tensorflow"]
 submodules = [
     "activations",
     "converters",
+    "initializers",
     "layers",
     "modules",
     "norms",
@@ -13,6 +13,8 @@ submodules = [
     "sequential",
 ]
 
+
+run = int(sys.argv[1])
 N = len(backends)
 M = len(submodules)
 
@@ -25,5 +27,12 @@ j = run % M
 backend = backends[i]
 submodule = submodules[j]
 
-print(backend, submodule)
-os.system(f"./run_tests_CLI/test_ivy_stateful.sh {backend} test_{submodule}")
+
+with open("./fwsubmod.txt", "w") as outfile:
+    outfile.write(f"{backend}-{submodule}")
+
+with open("./backend.txt", "w") as f:
+    f.write(f"{backend}")
+
+with open("./submodule.txt", "w") as f:
+    f.write(f"test_{submodule}")

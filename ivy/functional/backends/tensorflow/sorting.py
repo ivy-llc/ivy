@@ -2,6 +2,9 @@
 import tensorflow as tf
 from typing import Union, Optional
 
+# local
+import ivy
+
 
 def argsort(
     x: Union[tf.Tensor, tf.Variable],
@@ -30,7 +33,8 @@ def sort(
     stable: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    # TODO: introduce stable sort when it's supported in tensorflow
+    # TODO: handle stable sort when it's supported in tensorflow
+    # currently it supports only quicksort (unstable)
     direction = "DESCENDING" if descending else "ASCENDING"
     x = tf.convert_to_tensor(x)
     is_bool = x.dtype.is_bool
@@ -43,7 +47,7 @@ def sort(
 
 
 def searchsorted(
-    x1: Union[tf.Tensor, tf.Variable],
+    x: Union[tf.Tensor, tf.Variable],
     v: Union[tf.Tensor, tf.Variable],
     /,
     *,
@@ -52,4 +56,34 @@ def searchsorted(
     ret_dtype=tf.int64,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.searchsorted(x1, v, side=side, out_type=ret_dtype)
+    assert ivy.is_int_dtype(ret_dtype), ValueError(
+        "only Integer data types are supported for ret_dtype."
+    )
+    is_supported_int_ret_dtype = ret_dtype in [tf.int32, tf.int64]
+    if sorter is not None:
+        assert ivy.is_int_dtype(sorter.dtype) and not ivy.is_uint_dtype(
+            sorter.dtype
+        ), TypeError(
+            f"Only signed integer data type for sorter is allowed, got {sorter.dtype}."
+        )
+        if sorter.dtype not in [tf.int32, tf.int64]:
+            sorter = tf.cast(sorter, tf.int32)
+        if len(x.shape) == 1:
+            x = tf.gather(x, sorter)
+        else:
+            x = tf.gather(x, sorter, batch_dims=-1)
+    if len(x.shape) == 1 and len(v.shape) != 1:
+        out_shape = v.shape
+        v = tf.reshape(v, (1, -1))  # Leading dims must be the same
+        if is_supported_int_ret_dtype:
+            return tf.reshape(
+                tf.searchsorted(x, v, side=side, out_type=ret_dtype), out_shape
+            )
+        else:
+            return tf.cast(
+                tf.reshape(tf.searchsorted(x, v, side=side), out_shape), ret_dtype
+            )
+    v = tf.cast(v, x.dtype)
+    if is_supported_int_ret_dtype:
+        return tf.searchsorted(x, v, side=side, out_type=ret_dtype)
+    return tf.cast(tf.searchsorted(x, v, side=side), ret_dtype)

@@ -1,12 +1,11 @@
 """Collection of tests for statistical functions."""
 # global
 import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 @st.composite
@@ -30,8 +29,8 @@ def statistical_dtype_values(draw, *, function):
             min_axes_size=1,
         )
     )
-    shape = np.asarray(values, dtype=dtype).shape
-    size = np.asarray(values, dtype=dtype).size
+    shape = values[0].shape
+    size = values[0].size
     max_correction = np.min(shape)
     if function == "var" or function == "std":
         if size == 1:
@@ -51,24 +50,43 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
+@st.composite
+def _get_castable_dtype(draw):
+    available_dtypes = helpers.get_dtypes("numeric")
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=1,
+            large_abs_safety_factor=4,
+            small_abs_safety_factor=4,
+            shape=shape,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, dtype2 = draw(helpers.get_castable_dtype(draw(available_dtypes), dtype[0]))
+    return dtype1, values, axis, dtype2
+
+
 # min
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.min",
     dtype_and_x=statistical_dtype_values(function="min"),
-    num_positional_args=helpers.num_positional_args(fn_name="min"),
     keep_dims=st.booleans(),
 )
 def test_min(
     *,
     dtype_and_x,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
@@ -77,19 +95,20 @@ def test_min(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="min",
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
 
 
 # max
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.max",
     dtype_and_x=statistical_dtype_values(function="max"),
     num_positional_args=helpers.num_positional_args(fn_name="max"),
     keep_dims=st.booleans(),
@@ -97,14 +116,16 @@ def test_min(
 def test_max(
     *,
     dtype_and_x,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
@@ -113,34 +134,36 @@ def test_max(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="max",
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
 
 
 # mean
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.mean",
     dtype_and_x=statistical_dtype_values(function="mean"),
-    num_positional_args=helpers.num_positional_args(fn_name="mean"),
     keep_dims=st.booleans(),
 )
 def test_mean(
     *,
     dtype_and_x,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
@@ -149,36 +172,38 @@ def test_mean(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="mean",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
 
 
 # var
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.var",
     dtype_and_x=statistical_dtype_values(function="var"),
-    num_positional_args=helpers.num_positional_args(fn_name="var"),
     keep_dims=st.booleans(),
 )
 def test_var(
     *,
     dtype_and_x,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
@@ -187,13 +212,14 @@ def test_var(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="var",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
-        atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        atol_=1e-1,
+        x=x[0],
         axis=axis,
         correction=correction,
         keepdims=keep_dims,
@@ -201,119 +227,104 @@ def test_var(
 
 
 # prod
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="prod"),
+@handle_test(
+    fn_tree="functional.ivy.prod",
+    dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_prod(
     *,
-    dtype_x_axis,
+    dtype_x_axis_castable,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
-    dtype,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="prod",
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=castable_dtype,
     )
 
 
 # sum
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="sum"),
+@handle_test(
+    fn_tree="functional.ivy.sum",
+    dtype_x_axis_castable=_get_castable_dtype(),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_sum(
     *,
-    dtype_x_axis,
+    dtype_x_axis_castable,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
-    dtype,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="sum",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=castable_dtype,
     )
 
 
 # std
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.std",
     dtype_and_x=statistical_dtype_values(function="std"),
-    num_positional_args=helpers.num_positional_args(fn_name="std"),
     keep_dims=st.booleans(),
 )
 def test_std(
     *,
     dtype_and_x,
+    keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    keep_dims,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
@@ -322,116 +333,107 @@ def test_std(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="std",
-        rtol_=1e-2,
-        atol_=1e-2,
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        rtol_=1e-1,
+        atol_=1e-1,
+        x=x[0],
         axis=axis,
         correction=correction,
         keepdims=keep_dims,
     )
 
 
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="cumsum"),
+@handle_test(
+    fn_tree="functional.ivy.cumsum",
+    dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
     reverse=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
 )
 def test_cumsum(
-    dtype_x_axis,
-    with_out,
+    *,
+    dtype_x_axis_castable,
+    exclusive,
+    reverse,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    exclusive,
-    reverse,
-    dtype,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="cumsum",
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
         axis=axis,
         exclusive=exclusive,
         reverse=reverse,
-        dtype=dtype,
+        dtype=castable_dtype,
     )
 
 
 # cumprod
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        valid_axis=True,
-        allow_neg_axes=False,
-        max_axes_size=1,
-        force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="cumprod"),
+@handle_test(
+    fn_tree="functional.ivy.cumprod",
+    dtype_x_axis_castable=_get_castable_dtype(),
     exclusive=st.booleans(),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    reverse=st.booleans(),
 )
 def test_cumprod(
-    dtype_x_axis,
-    with_out,
+    *,
+    dtype_x_axis_castable,
+    exclusive,
+    reverse,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
-    exclusive,
-    dtype,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
-        input_dtypes=input_dtype,
+        input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="cumprod",
-        x=np.asarray(x, dtype=input_dtype),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
         axis=axis,
         exclusive=exclusive,
-        dtype=dtype,
+        reverse=reverse,
+        dtype=castable_dtype,
     )
 
 
+# TODO: add more general tests and fix get instance method testing passing
 # einsum
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.einsum",
     eq_n_op_n_shp=st.sampled_from(
         [
             ("ii", (np.arange(25).reshape(5, 5),), ()),
@@ -440,36 +442,40 @@ def test_cumprod(
         ]
     ),
     dtype=helpers.get_dtypes("float", full=False),
-    with_out=st.booleans(),
-    tensor_fn=st.sampled_from([ivy.array, helpers.var_fn]),
 )
-def test_einsum(*, eq_n_op_n_shp, dtype, with_out, tensor_fn, fw, device):
-    # bfloat16 is not supported by numpy
-    assume(not ("bfloat16" in dtype))
-    # smoke test
+def test_einsum(
+    *,
+    eq_n_op_n_shp,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
     eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype=dtype, device=device) for op in operands]
-    if with_out:
-        out = ivy.zeros(true_shape, dtype=dtype)
-        ret = ivy.einsum(eq, *operands, out=out)
-    else:
-        ret = ivy.einsum(eq, *operands)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == true_shape
-    # value test
-    assert np.allclose(
-        ivy.to_numpy(ivy.einsum(eq, *operands)),
-        ivy.functional.backends.numpy.einsum(
-            eq, *[ivy.to_numpy(op) for op in operands]
-        ),
+    kw = {}
+    i = 0
+    for x_ in operands:
+        kw["x{}".format(i)] = x_
+        i += 1
+    # len(operands) + 1 because of the equation
+    num_positional_args = len(operands) + 1
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=False,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        equation=eq,
+        **kw,
     )
-    # out test
-    if with_out:
-        assert ret is out
-
-        # these backends do not support native inplace updates
-        assume(not (fw in ["tensorflow", "jax"]))
-
-        assert ret.data is out.data

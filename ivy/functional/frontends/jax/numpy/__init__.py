@@ -1,7 +1,7 @@
 # flake8: noqa
+from . import fft
+from . import linalg
 from . import name_space_functions
 from .name_space_functions import *
-from . import fft
-from .fft import *
-from . import linalg
-from .linalg import *
+
+from .._src.numpy.lax_numpy import _rewriting_take

@@ -1,7 +1,13 @@
 # global
 import ivy
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_casting_special,
+)
 
 
+@handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isfinite(
     x,
     /,
@@ -13,14 +19,14 @@ def isfinite(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.isfinite(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isinf(
     x,
     /,
@@ -32,14 +38,14 @@ def isinf(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.isinf(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
     return ret
 
 
+@handle_numpy_casting_special
+@to_ivy_arrays_and_back
 def isnan(
     x,
     /,
@@ -51,8 +57,6 @@ def isnan(
     dtype=None,
     subok=True,
 ):
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
     ret = ivy.isnan(x, out=out)
     if ivy.is_array(where):
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
