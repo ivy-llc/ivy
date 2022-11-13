@@ -244,10 +244,10 @@ def diff(
     *,
     out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.diff(x, out=out)
+    return np.diff(x)
 
 
-diff.support_native_out = True
+diff.support_native_out = False
 
 
 def allclose(
