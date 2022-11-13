@@ -121,7 +121,7 @@ class EagerTensor:
 
     def __or__(self, y, name="or"):
         return y.__ror__(self.data)
-        
+
     def __pow__(self, y, name="pow"):
         return tf_frontend.math.pow(x=self, y=y, name=name)
 
