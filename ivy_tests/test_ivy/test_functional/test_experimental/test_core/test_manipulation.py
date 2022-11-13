@@ -710,6 +710,7 @@ def test_vsplit(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
@@ -755,6 +756,7 @@ def test_dsplit(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
@@ -768,6 +770,7 @@ def test_dsplit(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
@@ -788,6 +791,7 @@ def test_dsplit(
     ),
 )
 def test_dstack(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
@@ -797,6 +801,7 @@ def test_dstack(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -809,25 +814,30 @@ def test_dstack(
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
         arrays=x,
     )
 
 
 # atleast_2d
-@handle_cmd_line_args
-@given(
+@handle_test(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
     ),
 )
 def test_atleast_2d(
+    *,
     dtype_and_x,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
     container,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -837,12 +847,13 @@ def test_atleast_2d(
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="atleast_2d",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         **kw,
     )
