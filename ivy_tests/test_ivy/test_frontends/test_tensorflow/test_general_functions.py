@@ -97,7 +97,12 @@ def test_tensorflow_eye(
 # sort
 @handle_cmd_line_args
 @given(
-    values=helpers.array_values(dtype=helpers.get_dtypes("valid"), shape=(5, 6), min_value=1, max_value=9),
+    values=helpers.array_values(
+        dtype=helpers.get_dtypes("valid"), 
+        shape=(5, 6), 
+        min_value=1, 
+        max_value=9
+        ),
     axis=helpers.ints(),
     direction=helpers.subsets(elements=["ASCENDING", "DESCENDING"]),
     num_positional_args=helpers.num_positional_args(
@@ -126,3 +131,4 @@ def test_tensorflow_sort(
         direction=direction,
         axis=axis,
     )
+
