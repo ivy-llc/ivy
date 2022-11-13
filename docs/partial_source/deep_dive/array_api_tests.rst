@@ -41,7 +41,7 @@ Instead, the change must be made to the array-api repository directly and then o
 and only *then* can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
 See the `git website`_ for further information on working with submodules.
 
-Running the tests
+Running the Tests
 -----------------
 
 The entire test suite is run independently `for each backend`_ on every push to the repo.
