@@ -50,6 +50,12 @@ def _selu_with_inplace(input, inplace=False):
     return ret
 
 
+def relu_(input):
+    ret = ivy.maximum(0, input)
+    ivy.inplace_update(input, ret)
+    return input
+
+
 def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
     if training:
         # alpha = ivy.random_uniform(low=lower, high=upper)

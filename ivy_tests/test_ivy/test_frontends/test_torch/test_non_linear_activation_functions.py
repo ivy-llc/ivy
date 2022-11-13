@@ -101,6 +101,40 @@ def test_torch_softmax(
     )
 
 
+# relu_
+@handle_cmd_line_args
+@given(
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.relu_"
+    ),
+    with_inplace=st.booleans(),
+)
+def test_torch_relu_(
+    dtype_and_input,
+    with_inplace,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    input_dtype, input = dtype_and_input
+    _filter_dtypes(input_dtype)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=with_inplace,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="torch",
+        fn_tree="nn.functional.relu_",
+        test_values=False,
+        input=input[0],
+    )
+
+
 # gelu
 @handle_frontend_test(
     fn_tree="torch.nn.functional.gelu",
