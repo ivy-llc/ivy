@@ -37,6 +37,6 @@ def slogdet(a):
 
 # trace
 @to_ivy_arrays_and_back
-def trace(a, offset=0, axis1=0, axis2=1, dtype=None, out=None):
-    ret = ivy.trace(a, offset, axis1, axis2, dtype, out)
+def trace(a, offset=0, axis1=0, axis2=1, out=None):
+    ret = ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
     return ret
