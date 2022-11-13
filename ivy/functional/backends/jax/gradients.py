@@ -22,11 +22,11 @@ from ivy.functional.ivy.gradients import (
 
 
 # ToDo: modify these functions to track whether variable() has been called
-def variable(x):
+def variable(x, /):
     return x
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
     return isinstance(
@@ -34,7 +34,7 @@ def is_variable(x, exclusive=False):
     )
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x
 
 
@@ -138,7 +138,7 @@ def value_and_grad(func):
 
 
 def stop_gradient(
-    x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, preserve_type: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jlax.stop_gradient(x)
 
