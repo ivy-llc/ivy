@@ -415,7 +415,7 @@ is_variable.computes_gradients = True
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
-def variable_data(x):
+def variable_data(x, /):
     """Some backends wrap arrays in a dedicated variable class. For those frameworks,
     this function returns that wrapped array. For frameworks which do not have a
     dedicated variable class, the function returns the data passed in.
