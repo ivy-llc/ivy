@@ -157,7 +157,10 @@ def dsplit(
 
 
 def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
-    return list(torch.atleast_1d(*arys))
+    transformed = torch.atleast_1d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
 
 
 def dstack(
