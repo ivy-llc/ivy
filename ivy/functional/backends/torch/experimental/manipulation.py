@@ -166,4 +166,7 @@ def dstack(
 
 
 def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
-    return list(torch.atleast_2d(*arys))
+    transformed = torch.atleast_2d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
