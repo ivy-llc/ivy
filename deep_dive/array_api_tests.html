@@ -63,7 +63,7 @@
 <li class="toctree-l2"><a class="reference internal" href="docstrings.html">Docstrings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docstring_examples.html">Docstring Examples</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Array API Tests</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#running-the-tests">Running the tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-tests">Running the Tests</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#using-terminal">Using Terminal</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#using-the-ide">Using the IDE</a></li>
 </ul>
@@ -184,7 +184,7 @@ git submodule update --recursive --remote --merge
 <p>and only <em>then</em> can changes to the submodule be pushed to ivy-master, i.e. only when these changes exist in the source array-api repository.
 See the <a class="reference external" href="https://www.git-scm.com/book/en/v2/Git-Tools-Submodules">git website</a> for further information on working with submodules.</p>
 <section id="running-the-tests">
-<h2>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading"></a></h2>
+<h2>Running the Tests<a class="headerlink" href="#running-the-tests" title="Permalink to this heading"></a></h2>
 <p>The entire test suite is run independently <a class="reference external" href="https://github.com/unifyai/ivy/tree/20d07d7887766bb0d1707afdabe6e88df55f27a5/.github/workflows">for each backend</a> on every push to the repo.
 Therefore, every function which exists in the standard is thoroughly tested for adherence to the standard on a continuous basis.</p>
 <p>You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy functions which are part of the standard.
