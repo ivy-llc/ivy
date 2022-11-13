@@ -4,6 +4,9 @@ from hypothesis import given, strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
+    _dtype_and_fill_value,
+)
 
 
 @st.composite
@@ -91,4 +94,37 @@ def test_tensorflow_eye(
         num_columns=n_cols,
         batch_shape=batch_shape,
         dtype=dtype,
+    )
+
+
+# full
+@handle_cmd_line_args
+@given(
+    shape=helpers.get_shape(),
+    input_dtype_and_fill_value=_dtype_and_fill_value(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.full"
+    ),
+)
+def test_tensorflow_full(
+    shape,
+    input_dtype_and_fill_value,
+    as_variable,
+    num_positional_args,
+    native_array,
+    fw,
+):
+    input_dtype, fill_value = input_dtype_and_fill_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="full",
+        shape=shape,
+        fill_value=fill_value,
+        dtype=input_dtype,
     )
