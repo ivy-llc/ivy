@@ -778,3 +778,38 @@ def test_dstack(
         fn_name="dstack",
         arrays=x,
     )
+
+
+# atleast_2d
+@handle_cmd_line_args
+@given(
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
+)
+def test_atleast_2d(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtypes, arrays = dtype_and_x
+    kw = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="atleast_2d",
+        **kw,
+    )
