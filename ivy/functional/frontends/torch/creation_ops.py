@@ -108,7 +108,7 @@ def range(
     device=None,
     requires_grad=False,
 ):
-    ret = arange(start, stop=end, step=step, dtype=dtype, device=device)
+    ret = arange(end, start=start, step=step, dtype=dtype, device=device)
     return ret
 
 
