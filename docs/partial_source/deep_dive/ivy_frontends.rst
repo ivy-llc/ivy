@@ -599,23 +599,33 @@ that should serve as a guide for handling duplicate functions. The following sub
 
 **Listing duplicate frontend functions on the ToDo lists**
 
-* if a function is duplicated across multiple namespaces then we should designate the function as an '(alias)' on each namespace list.
-This means that when creating ToDo lists, extra care should be taken to keep note of duplicate functions. Duplicate functions should have '(alias)' written beside the function name.
+When listing frontend functions, extra care should be taken to keep note of duplicate functions.
+If a function is duplicated across multiple namespaces then we should select one instance (in any namespace) to serve as the implementation by putting an `*` beside the function name on the ToDo list. All other instances of the duplicate should then be designated aliases of the implementation using the format `(alias of <frontend/namespace/function_name>)` written beside the function name.
 
 **Contributing duplicate frontend functions**
 
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
-If the function is an alias, you should check if there is an existing implementation already.
+If the function is an alias, you should check if the implementation designated with an `*` exists.
 
-* If an implementation exist then you should use the existing implementation as an alias in your implementation.
-* If there is no existing implementation, then feel free to contribute the function with its full implementation and tests.
-* If two PRs are implementing a duplicate function (and no alias for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the alias while the second implementation should be refactored to use the alias. Both contributors should be rewarded equally if need be.
+* If an implementation exist then simply import the implemented function in the location (namespace) where the duplicate is listed.
 
-Tests should be written for duplicate fronend functions using aliases. However, when defining the :code:`fn_name` in the test, be sure to use the full import path to the function.
+For example in the case of :func:`np.asarray`, the function is implemented `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5>`_ and we use it as an alias by importing `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/changing_kind_of_array.py>`_:
+
+.. code-block:: python
+
+   from ivy.functional.frontends.numpy.creation_routines import asarray
+
+* If the function has not been implemented, then feel free to contribute the implementation with its unit test.
+
+* If two PRs contribute the implementation for a duplicate function (and no implementation for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the implementation while the second PR should be refactored as an alias by importing the implementation as explained earlier. Both contributors should be rewarded equally if need be.
+
+**Testing duplicate functions**
+
+Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each identical alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.
 
 **Handling already contributed duplicates**
 
-In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation as the alias, then refactor all other instances of the duplicate to make use of the alias.
+In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation to serve as the function's implementation, then refactor all other instances of the duplicate as aliases.
 
 **Round Up**
 
