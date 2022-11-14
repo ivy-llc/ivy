@@ -6,6 +6,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -969,7 +970,7 @@ def test_sequential_layer(
     batch_shape, channels, target = bs_c_target
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     if method_as_variable_flags:
-        x = ivy.variable(
+        x = _variable(
             ivy.asarray(
                 ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
                 dtype=dtype,
@@ -987,26 +988,26 @@ def test_sequential_layer(
             {
                 "submodules": {
                     "v0": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
                                 device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
+                        "b": _variable(
                             ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },
                     "v2": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
                                 device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
+                        "b": _variable(
                             ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },

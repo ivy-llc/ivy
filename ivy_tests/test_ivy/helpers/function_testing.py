@@ -8,6 +8,7 @@ import inspect
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
@@ -76,7 +77,7 @@ def test_function(
         data types of the input arguments in order.
     as_variable_flags
         dictates whether the corresponding input argument should be treated
-        as an ivy Variable.
+        as a variable.
     with_out
         if True, the function is also tested with the optional out argument.
     num_positional_args
@@ -1049,7 +1050,7 @@ def test_frontend_method(
         data types of the input arguments to the method in order.
     method_as_variable_flags
         dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Variable.
+        be treated as a variable.
     method_num_positional_args
         number of input arguments that must be passed as positional arguments to the
         method.
@@ -1336,7 +1337,7 @@ def create_args_kwargs(
         data-types of the input arguments and keyword-arguments.
     as_variable_flags
         A list of booleans. if True for a corresponding input argument, it is called
-        as an Ivy Variable.
+        as an variable.
     native_array_flags
         if not None, the corresponding argument is called as a Native Array.
     container_flags
@@ -1353,7 +1354,7 @@ def create_args_kwargs(
         ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
     ]
     arg_array_vals = [
-        ivy.variable(x) if v else x
+        _variable(x) if v else x
         for x, v in zip(arg_array_vals, as_variable_flags[:num_arg_vals])
     ]
     if native_array_flags:
@@ -1375,7 +1376,7 @@ def create_args_kwargs(
         for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
     ]
     kwarg_array_vals = [
-        ivy.variable(x) if v else x
+        _variable(x) if v else x
         for x, v in zip(kwarg_array_vals, as_variable_flags[num_arg_vals:])
     ]
     if native_array_flags:
@@ -1494,8 +1495,8 @@ def as_cont(*, x):
 
 
 def var_fn(x, *, dtype=None, device=None):
-    """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
-    return ivy.variable(ivy.array(x, dtype=dtype, device=device))
+    """Returns x as a variable wrapping an Ivy Array with given dtype and device"""
+    return _variable(ivy.array(x, dtype=dtype, device=device))
 
 
 def gradient_incompatible_function(*, fn):
