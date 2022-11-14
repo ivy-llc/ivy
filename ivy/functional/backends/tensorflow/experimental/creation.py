@@ -94,3 +94,17 @@ def hann_window(
     return tf.signal.hann_window(
         window_length, periodic=periodic, dtype=dtype, name=None
     )
+
+
+def frombuffer(
+    buffer: int,
+    /,
+    count: int,
+    offset: int,
+    like: int,
+    *,
+    dtype: Optional[torch.dtype],
+    device: torch.device,
+    out: Optional[torch.tensor] = None,
+) -> torch.tensor:
+    return torch.frombuffer(buffer, count, offset, like, dtype=dtype, device=device)
