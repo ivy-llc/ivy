@@ -1,26 +1,23 @@
-# global
-from hypothesis import given
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# asarray
-@handle_cmd_line_args
-@given(
+# asarraya
+# TODO: dtype testing should be independent of input_dtype
+@handle_frontend_test(
+    fn_tree="numpy.asarray",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    as_variable=helpers.array_bools(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.manipulation_routines.asarray"
-    ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_asarray(
+    *,
     dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -29,8 +26,9 @@ def test_numpy_asarray(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="asarray",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x,
-        dtype=input_dtype,
+        dtype=input_dtype[0],
     )

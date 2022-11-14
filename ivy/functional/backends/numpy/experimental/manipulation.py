@@ -1,5 +1,15 @@
 # global
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 from numbers import Number
 import numpy as np
 
@@ -226,3 +236,7 @@ def dstack(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.dstack(arrays)
+
+
+def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
+    return np.atleast_2d(*arys)
