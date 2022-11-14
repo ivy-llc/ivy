@@ -1352,6 +1352,9 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
+<span class="n">Finfo</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">Iinfo</span> <span class="o">=</span> <span class="kc">None</span>
+
 
 <div class="viewcode-block" id="astype"><a class="viewcode-back" href="../../../functional/ivy/data_type/astype/astype_array.html#ivy.array.array_methods.astype">[docs]</a><span class="k">def</span> <span class="nf">astype</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
@@ -1534,11 +1537,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">as_native</span><span class="p">)</span>
 
-<div class="viewcode-block" id="finfo"><a class="viewcode-back" href="../../../functional/ivy/data_type/finfo/finfo_array.html#ivy.array.array_methods.finfo">[docs]</a><span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+<div class="viewcode-block" id="finfo"><a class="viewcode-back" href="../../../functional/ivy/data_type/finfo/finfo_array.html#ivy.array.array_methods.finfo">[docs]</a><span class="k">def</span> <span class="nf">finfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Finfo</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
-
-<div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../functional/ivy/data_type/iinfo/iinfo_array.html#ivy.array.array_methods.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+<div class="viewcode-block" id="iinfo"><a class="viewcode-back" href="../../../functional/ivy/data_type/iinfo/iinfo_array.html#ivy.array.array_methods.iinfo">[docs]</a><span class="k">def</span> <span class="nf">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iinfo</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1546,8 +1548,7 @@
 <span class="sd">    &gt;&gt;&gt; x.iinfo()</span>
 <span class="sd">    iinfo(min=-128, max=127, dtype=int8)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">iinfo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="is_bool_dtype"><a class="viewcode-back" href="../../../functional/ivy/data_type/is_bool_dtype/is_bool_dtype_array.html#ivy.array.array_methods.is_bool_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_bool_dtype</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span></div>
