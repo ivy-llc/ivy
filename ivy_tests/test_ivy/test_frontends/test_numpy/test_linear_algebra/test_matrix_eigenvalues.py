@@ -20,7 +20,7 @@ def test_numpy_eig(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="linalg.eig",
+        frontend=frontend,
+        fn_tree=fn_tree,
         a=x[0],
     )
