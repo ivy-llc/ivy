@@ -4,7 +4,7 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args , handle_frontend_test
 
 
 @st.composite
@@ -770,13 +770,17 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
 
 
 # local_response_normalization
-@handle_cmd_line_args
+@handle_frontend_test
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        max_value= 100,
+        min_value=0,
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
     ),
     depth_radius=st.integers(min_value=1,max_value=7),
     bias=st.floats(min_value=1e-4),
