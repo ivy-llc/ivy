@@ -1,6 +1,6 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_function
+from ivy_tests.test_ivy.helpers.hypothesis_helpers import handle_frontend_function
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
