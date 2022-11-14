@@ -289,4 +289,4 @@ def nextafter(
     return torch.nextafter(x1, x2)
 
 
-nextafter.support_natvie_out = True
+nextafter.support_native_out = True
