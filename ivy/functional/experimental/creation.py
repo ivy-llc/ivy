@@ -384,3 +384,21 @@ def hamming_window(
                 dtype=dtype,
                 out=out,
             )
+
+        
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def frombuffer(
+    buffer: Union[ivy.Array, ivy.NativeArray],
+    dtype:Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    count: Optional[int] = -1,
+    offset: Optional[int] = 0,
+    *,
+    like: Optional[int] = None
+) -> ivy.Array:
+    return ivy.current_backend().frombuffer(
+        buffer, dtype=dtype, count, offset, like
+    )
+    
