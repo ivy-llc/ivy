@@ -561,7 +561,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         )
 
     @staticmethod
-    def eigvalsh(
+    def static_eigvalsh(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
         *,
@@ -610,8 +610,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[[1.,2.,3.],[2.,4.,5.],[3.,5.,6.]]]),
-        ... b=ivy.array([[[1.,1.,2.],[1.,2.,1.],[2.,1.,1.]]]),
-        ... c=ivy.array([[[2.,2.,2.],[2.,3.,3.],[2.,3.,3.]]]))
+        ...                   b=ivy.array([[[1.,1.,2.],[1.,2.,1.],[2.,1.,1.]]]),
+        ...                   c=ivy.array([[[2.,2.,2.],[2.,3.,3.],[2.,3.,3.]]]))
         >>> e = ivy.Container.static_eigvalsh(x)
         >>> print(e)
         {
@@ -681,7 +681,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[[1.,2.],[2.,1.]]]),
-        ...                      b=ivy.array([[[2.,4.],[4.,2.]]]))
+        ...                   b=ivy.array([[[2.,4.],[4.,2.]]]))
         >>> y = ivy.eigvalsh(x)
         >>> print(y)
         {
