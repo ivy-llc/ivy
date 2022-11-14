@@ -1,46 +1,60 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # sum
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.sum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float")
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.sum"
-    ),
+    where=np_frontend_helpers.where(),
 )
 def test_numpy_sum(
     dtype_x_axis,
     dtype,
     keep_dims,
+    where,
     initial,
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     with_out,
 ):
     input_dtype, x, axis = dtype_x_axis
-    if initial is None:
-        where = True
+    if initial is not None:
+        (
+            where,
+            as_variable,
+            native_array,
+        ) = np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtype,
+            as_variable=as_variable,
+            native_array=native_array,
+        )
+    else:
+        where = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="sum",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -51,39 +65,53 @@ def test_numpy_sum(
 
 
 # prod
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.prod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float")
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     keep_dims=st.booleans(),
     initial=st.one_of(st.floats(), st.none()),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.prod"
-    ),
+    where=np_frontend_helpers.where(),
 )
 def test_numpy_prod(
     dtype_x_axis,
     dtype,
     keep_dims,
     initial,
+    where,
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     with_out,
 ):
-    (input_dtype, x, axis), where = dtype_x_axis
-    if initial is None:
-        where = True
+    input_dtype, x, axis = dtype_x_axis
+    if initial is not None:
+        (
+            where,
+            as_variable,
+            native_array,
+        ) = np_frontend_helpers.handle_where_and_array_bools(
+            where=where,
+            input_dtype=input_dtype,
+            as_variable=as_variable,
+            native_array=native_array,
+        )
+    else:
+        where = None
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="prod",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -94,8 +122,8 @@ def test_numpy_prod(
 
 
 # cumsum
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.cumsum",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -103,9 +131,6 @@ def test_numpy_prod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cumsum"
-    ),
 )
 def test_numpy_cumsum(
     dtype_and_x,
@@ -114,6 +139,9 @@ def test_numpy_cumsum(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -122,8 +150,9 @@ def test_numpy_cumsum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="cumsum",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -131,8 +160,8 @@ def test_numpy_cumsum(
 
 
 # cumprod
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.cumprod",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -140,9 +169,6 @@ def test_numpy_cumsum(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cumprod"
-    ),
 )
 def test_numpy_cumprod(
     dtype_and_x,
@@ -151,6 +177,9 @@ def test_numpy_cumprod(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -159,16 +188,18 @@ def test_numpy_cumprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="cumprod",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# nancumprod
+@handle_frontend_test(
+    fn_tree="numpy.nancumprod",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -176,9 +207,6 @@ def test_numpy_cumprod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nancumprod"
-    ),
 )
 def test_numpy_nancumprod(
     dtype_and_x,
@@ -187,6 +215,9 @@ def test_numpy_nancumprod(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -195,16 +226,18 @@ def test_numpy_nancumprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nancumprod",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# nancumsum
+@handle_frontend_test(
+    fn_tree="numpy.nancumsum",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -212,9 +245,6 @@ def test_numpy_nancumprod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nancumsum"
-    ),
 )
 def test_numpy_nancumsum(
     dtype_and_x,
@@ -223,6 +253,9 @@ def test_numpy_nancumsum(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, axis = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -231,16 +264,18 @@ def test_numpy_nancumsum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nancumsum",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# nanprod
+@handle_frontend_test(
+    fn_tree="numpy.nanprod",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -250,9 +285,6 @@ def test_numpy_nancumsum(
         safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nanprod"
-    ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
 )
@@ -263,6 +295,9 @@ def test_numpy_nanprod(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     where,
     keepdims,
 ):
@@ -279,8 +314,9 @@ def test_numpy_nanprod(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nanprod",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -289,8 +325,9 @@ def test_numpy_nanprod(
     )
 
 
-@handle_cmd_line_args
-@given(
+# nansum
+@handle_frontend_test(
+    fn_tree="numpy.nansum",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -300,9 +337,6 @@ def test_numpy_nanprod(
         safety_factor_scale="log",
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nansum"
-    ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
 )
@@ -313,6 +347,9 @@ def test_numpy_nansum(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     where,
     keepdims,
 ):
@@ -329,8 +366,9 @@ def test_numpy_nansum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nansum",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         dtype=dtype[0],

@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import torch
 
 # local
@@ -107,6 +107,36 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+def count_nonzero(
+    a: torch.Tensor,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
+    def _dtype_count_nonzero(a, axis, dtype):
+        if dtype is None:
+            return torch.count_nonzero(a, dim=axis)
+        return torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
+
+    x = _dtype_count_nonzero(a, axis, dtype)
+    if not keepdims:
+        return x
+    if isinstance(axis, tuple):
+        for d in sorted(axis, reverse=True):
+            x = x.unsqueeze(d)
+        return x
+    return x.unsqueeze(axis)
+
+
+count_nonzero.support_native_out = False
 
 
 def nansum(
@@ -222,3 +252,41 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def allclose(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[torch.Tensor] = None,
+) -> bool:
+    return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def fix(
+    x: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.fix(x, out=out)
+
+
+fix.support_native_out = True
+
+
+def nextafter(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.nextafter(x1, x2)
+
+
+nextafter.support_native_out = True

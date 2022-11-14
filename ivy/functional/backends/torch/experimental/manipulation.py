@@ -1,4 +1,4 @@
-from typing import Optional, Union, Sequence, Tuple, NamedTuple
+from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -134,3 +134,39 @@ def flatten(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
+
+
+def vsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dsplit(ary, indices_or_sections)
+
+
+def dstack(
+    arrays: Sequence[torch.Tensor],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.dstack(arrays, out=None)
+
+
+def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
+    transformed = torch.atleast_2d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed

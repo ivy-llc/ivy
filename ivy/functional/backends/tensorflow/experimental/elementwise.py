@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 from .. import backend_version
 
@@ -55,8 +55,10 @@ def fmax(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     temp = tf.constant(float("nan"))
-    x1 = tf.where(tf.math.equal(x1, temp), x2, x1)
-    x2 = tf.where(tf.math.equal(x2, temp), x1, x2)
+    tf.dtypes.cast(x1, tf.float64)
+    tf.dtypes.cast(x2, tf.float64)
+    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
     tf.experimental.numpy.experimental_enable_numpy_behavior()
     ret = tf.experimental.numpy.maximum(x1, x2)
     return ret
@@ -91,6 +93,22 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.pow(2, x, name=None)
+
+
+def count_nonzero(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if dtype is None:
+        return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
+    return tf.math.count_nonzero(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
+    )
 
 
 def nansum(
@@ -208,3 +226,39 @@ def signbit(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.signbit(x)
+
+
+def allclose(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> bool:
+    return tf.experimental.numpy.allclose(
+        x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+def fix(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.fix(x)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
+def nextafter(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nextafter(x1, x2)

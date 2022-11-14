@@ -22,35 +22,58 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self.data, other, alpha=alpha)
 
-    def asin(self, *, out=None):
-        return torch_frontend.asin(self.data, out=out)
+    def add_(self, other, *, alpha=1):
+        self.data = self.add(other, alpha=alpha)
+        return self.data
 
-    def sin(self, *, out=None):
-        return torch_frontend.sin(self.data, out=out)
+    def asin(self):
+        return torch_frontend.asin(self.data)
+
+    def asin_(self):
+        self.data = self.asin()
+        return self.data
+
+    def sin(self):
+        return torch_frontend.sin(self.data)
 
     def sin_(self):
         self.data = self.sin()
         return self.data
 
-    def sinh(self, *, out=None):
-        return torch_frontend.sinh(self.data, out=out)
+    def sinh(self):
+        return torch_frontend.sinh(self.data)
 
     def sinh_(self):
         self.data = self.sinh()
         return self.data
 
-    def cos(self, *, out=None):
-        return torch_frontend.cos(self.data, out=out)
+    def cos(self):
+        return torch_frontend.cos(self.data)
 
     def cos_(self):
         self.data = self.cos()
         return self.data
 
-    def arcsin(self, *, out=None):
-        return torch_frontend.arcsin(self.data, out=out)
+    def cosh(self):
+        return torch_frontend.cosh(self.data)
 
-    def atan(self, *, out=None):
-        return torch_frontend.atan(self.data, out=out)
+    def cosh_(self):
+        self.data = self.cosh()
+        return self.data
+
+    def arcsin(self):
+        return torch_frontend.arcsin(self.data)
+
+    def arcsin_(self):
+        self.data = self.arcsin()
+        return self.data
+
+    def atan(self):
+        return torch_frontend.atan(self.data)
+
+    def atan_(self):
+        self.data = self.atan()
+        return self.data
 
     def view(self, shape):
         self.data = torch_frontend.reshape(self.data, shape)
@@ -59,15 +82,40 @@ class Tensor:
     def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
 
-    def asinh(self, *, out=None):
-        return torch_frontend.asinh(self.data, out=out)
+    def asinh(self):
+        return torch_frontend.asinh(self.data)
 
     def asinh_(self):
         self.data = self.asinh()
         return self.data
 
-    def tan(self, *, out=None):
-        return torch_frontend.tan(self.data, out=out)
+    def tan(self):
+        return torch_frontend.tan(self.data)
+
+    def tan_(self):
+        self.data = self.tan()
+        return self.data
+
+    def tanh(self):
+        return torch_frontend.tanh(self.data)
+
+    def tanh_(self):
+        self.data = self.tanh()
+        return self.data
+
+    def atanh(self):
+        return torch_frontend.atanh(self.data)
+
+    def atanh_(self):
+        self.data = self.atanh()
+        return self.data
+
+    def arctanh(self):
+        return torch_frontend.arctanh(self.data)
+
+    def arctanh_(self):
+        self.data = self.arctanh()
+        return self.data
 
     def log(self):
         return ivy.log(self.data)
@@ -78,12 +126,15 @@ class Tensor:
     def amin(self, dim=None, keepdim=False):
         return torch_frontend.amin(self.data, dim=dim, keepdim=keepdim)
 
-    def abs(self, *, out=None):
-        return torch_frontend.abs(self.data, out=out)
+    def abs(self):
+        return torch_frontend.abs(self.data)
 
     def abs_(self):
         self.data = self.abs()
         return self.data
+
+    def bitwise_and(self, other):
+        return torch_frontend.bitwise_and(self.data, other)
 
     def contiguous(self, memory_format=None):
         return self.data
@@ -125,17 +176,27 @@ class Tensor:
     ):
         return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
 
-    def arctan(self, *, out=None):
-
-        return torch_frontend.atan(self, out=out)
+    def arctan(self):
+        return torch_frontend.atan(self.data)
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
         self.data = self.arctan()
         return self.data
 
-    def acos(self, *, out=None):
-        return torch_frontend.acos(self.data, out=out)
+    def acos(self):
+        return torch_frontend.acos(self.data)
+
+    def acos_(self):
+        self.data = self.acos()
+        return self.data
+
+    def arccos(self):
+        return torch_frontend.arccos(self.data)
+
+    def arccos_(self):
+        self.data = self.arccos()
+        return self.data
 
     def new_tensor(
         self,
@@ -150,7 +211,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
@@ -186,7 +246,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def new_empty(
@@ -202,7 +261,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def unfold(self, dimension, size, step):
@@ -220,14 +278,27 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def pow(self, other):
+        return ivy.pow(self.data, other)
+
+    def pow_(self, other):
+        self.data = self.pow(other)
+        return self.data
+
+    def argmax(self, dim=None, keepdim=False):
+        return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
     # Special Methods #
     # -------------------#
 
     def __add__(self, other, *, alpha=1):
-        return torch_frontend.add(self, other, alpha=alpha)
-    
+        return torch_frontend.add(self.data, other, alpha=alpha)
+
     def __mod__(self, other):
         return torch_frontend.remainder(self, other)
+
+    def __long__(self, memory_format=None):
+        return Tensor(ivy.astype(self.data, ivy.int64))
 
     def __getitem__(self, query):
         ret = ivy.get_item(self.data, query)

@@ -472,3 +472,148 @@ class ArrayWithManipulationExperimental(abc.ABC):
             out=out,
             **kwargs,
         )
+
+    def vsplit(
+        self: ivy.Array,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.vsplit. This method simply
+        wraps the function, and so the docstring for ivy.vsplit also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n along the 3rd axis, each section will be of
+            equal size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            input array split along the 3rd axis.
+
+        Examples
+        --------
+        >>> ary = ivy.array(
+            [[[0.,  1.],
+              [2.,  3.]],
+             [[4.,  5.],
+              [6.,  7.]]]
+            )
+        >>> ary.vsplit(2)
+        [ivy.array([[[0., 1.], [2., 3.]]]), ivy.array([[[4., 5.], [6., 7.]]])])
+        """
+        return ivy.vsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+
+    def dsplit(
+        self: ivy.Array,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dsplit. This method simply
+        wraps the function, and so the docstring for ivy.dsplit also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n along the 3rd axis, each section will be of
+            equal size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            input array split along the 3rd axis.
+
+        Examples
+        --------
+        >>> ary = ivy.array(
+            [[[ 0.,   1.,   2.,   3.],
+              [ 4.,   5.,   6.,   7.]],
+             [[ 8.,   9.,  10.,  11.],
+              [12.,  13.,  14.,  15.]]]
+        )
+        >>> ary.dsplit(2)
+        [ivy.array([[[ 0.,  1.], [ 4.,  5.]], [[ 8.,  9.], [12., 13.]]]),
+        ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
+        """
+        return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+
+    def dstack(
+        self: ivy.Array,
+        /,
+        arrays: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray]],
+            List[Union[ivy.Array, ivy.NativeArray]],
+        ],
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.dstack. This method simply
+        wraps the function, and so the docstring for ivy.dstack also applies
+        to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([2, 3, 4])
+        >>> x.dstack(y)
+        ivy.array([[[1, 2],
+                    [2, 3],
+                    [3, 4]]])
+        """
+        return ivy.dstack(self.concat(arrays), out=out)
+
+    def atleast_2d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.atleast_2d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_2d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Cannot be a scalar input.
+        arys
+            An arbitrary number of input arrays.
+
+        Returns
+        -------
+        ret
+            List of arrays, each with a.ndim >= 2. Copies are made
+            only if necessary.
+
+        Examples
+        --------
+        >>> a1 = ivy.array([[1,2,3]])
+        >>> a2 = ivy.array(4)
+        >>> a1.atleast_2d(a2,5,6)
+        [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]
+        """
+        return ivy.atleast_2d(self._data, *arys)
