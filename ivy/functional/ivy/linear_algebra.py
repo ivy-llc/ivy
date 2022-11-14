@@ -607,7 +607,6 @@ def eigvalsh(
 
     Examples
     --------
-
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
