@@ -29,6 +29,12 @@ def _x_and_filters(
         stride = dilations
     else:
         stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
+    if data_format == 'NWC' or data_format == 'NCW':
+        type = "1d"
+    elif data_format == 'NHWC' or data_format == 'NCHW':
+        type = "2d"
+    elif data_format == 'NDHWC' or data_format == 'NCDHW':
+        type = "3d"
     if type == "1d":
         if not transpose:
             filter_shape = draw(
@@ -212,254 +218,6 @@ def _x_and_filters(
     if not transpose:
         return dtype, x, filters, dilations, data_format, stride, padding
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
-
-
-def _get_dims_channel(data_format="NCHW"):
-    if data_format == "NWC":
-        dims = 1
-        data_format = "channel_last"
-        return dims, data_format
-    elif data_format == "NCW":
-        dims = 1
-        data_format = "channel_first"
-        return dims, data_format
-    if data_format == "NHWC":
-        dims = 2
-        data_format = "channel_last"
-        return dims, data_format
-    elif data_format == "NCHW":
-        dims = 2
-        data_format = "channel_first"
-        return dims, data_format
-    if data_format == "NDHWC":
-        dims = 3
-        data_format = "channel_last"
-        return dims, data_format
-    elif data_format == "NCDHW":
-        dims = 3
-        data_format = "channel_first"
-        return dims, data_format
-
-
-@st.composite
-def _x_and_filters_convolution_channel_last(
-        draw,
-        dtypes,
-        padding,
-        data_format,
-        stride_min=1,
-        stride_max=4,
-        dilation_min=1,
-        dilation_max=4,
-        type: str = "2d",
-        transpose=False,
-        atrous=False,
-):
-    data_format = draw(data_format)
-    dtype = draw(dtypes)
-    padding = draw(padding)
-    dilations = draw(helpers.ints(min_value=dilation_min, max_value=dilation_max))
-    if transpose and atrous:
-        stride = dilations
-    else:
-        stride = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
-
-    # Call _get_dims_channel() in order to get "dims" and "data_format".
-    dims, data_format = _get_dims_channel(data_format)
-
-    if dims == 1:
-        if not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-            min_x_width = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    st.integers(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-            min_x_width = 1
-        d_in = filter_shape[1]
-        if data_format == "channel_last":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_w = x_shape[1]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_w = x_shape[2]
-        if transpose:
-            output_shape = [
-                x_shape[0],
-                ivy.deconv_length(x_w, stride, filter_shape[0], padding, dilations),
-                d_in,
-            ]
-    elif dims == 2:
-        min_x_height = 1
-        min_x_width = 1
-        if type == "depthwise":
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-        elif not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-        if not transpose:
-            min_x_height = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-            min_x_width = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
-        d_in = filter_shape[2]
-        if data_format == "channel_last":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_h = x_shape[1]
-            x_w = x_shape[2]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_h = x_shape[2]
-            x_w = x_shape[3]
-        if transpose:
-            output_shape_h = ivy.deconv_length(
-                x_h, stride, filter_shape[0], padding, dilations
-            )
-            output_shape_w = ivy.deconv_length(
-                x_w, stride, filter_shape[1], padding, dilations
-            )
-            output_shape = [x_shape[0], output_shape_h, output_shape_w, d_in]
-    elif dims == 3:
-        if not transpose:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=1, max_value=3),
-                    helpers.ints(min_value=1, max_value=3),
-                )
-            )
-            min_x_depth = filter_shape[0] + (filter_shape[0] - 1) * (dilations - 1)
-            min_x_height = filter_shape[1] + (filter_shape[1] - 1) * (dilations - 1)
-            min_x_width = filter_shape[2] + (filter_shape[2] - 1) * (dilations - 1)
-        else:
-            filter_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    helpers.ints(min_value=3, max_value=5),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                    st.shared(helpers.ints(min_value=1, max_value=3), key="d_in"),
-                )
-            )
-            min_x_depth = 1
-            min_x_height = 1
-            min_x_width = 1
-        d_in = filter_shape[3]
-        if data_format == "channel_last":
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_height, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                )
-            )
-            x_d = x_shape[1]
-            x_h = x_shape[2]
-            x_w = x_shape[3]
-        else:
-            x_shape = draw(
-                st.tuples(
-                    helpers.ints(min_value=1, max_value=5),
-                    helpers.ints(min_value=d_in, max_value=d_in),
-                    helpers.ints(min_value=min_x_depth, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                    helpers.ints(min_value=min_x_width, max_value=100),
-                )
-            )
-            x_d = x_shape[2]
-            x_h = x_shape[3]
-            x_w = x_shape[4]
-        if transpose:
-            output_shape_d = ivy.deconv_length(
-                x_d, stride, filter_shape[0], padding, dilations
-            )
-            output_shape_h = ivy.deconv_length(
-                x_h, stride, filter_shape[1], padding, dilations
-            )
-            output_shape_w = ivy.deconv_length(
-                x_w, stride, filter_shape[2], padding, dilations
-            )
-            output_shape = [output_shape_d, output_shape_h, output_shape_w]
-    x = draw(
-        helpers.array_values(dtype=dtype[0], shape=x_shape, min_value=0, max_value=1)
-    )
-    filters = draw(
-        helpers.array_values(
-            dtype=dtype[0], shape=filter_shape, min_value=0, max_value=1
-        )
-    )
-    if not transpose:
-        return dtype, x, filters, dilations, data_format, stride, padding, dims
-    return (
-        dtype,
-        x,
-        filters,
-        dilations,
-        data_format,
-        stride,
-        padding,
-        dims,
-        output_shape,
-    )
 
 
 @handle_frontend_test(
@@ -855,7 +613,7 @@ def test_tensorflow_conv3d_transpose(
 
 
 @handle_frontend_test(
-    x_f_d_df=_x_and_filters_convolution_channel_last(
+    x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(['NWC', 'NCW', 'NHWC', 'NCHW', 'NDHWC', 'NCDHW']),
         padding=st.sampled_from(['VALID', 'SAME']),
@@ -867,7 +625,7 @@ def test_tensorflow_conv3d_transpose(
 def test_tensorflow_convolution(
     x_f_d_df, as_variable, num_positional_args, native_array
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding, dims = x_f_d_df
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -881,7 +639,6 @@ def test_tensorflow_convolution(
         strides=stride,
         padding=padding,
         data_format=data_format,
-        dims=dims,
         dilations=dilation,
     )
 
