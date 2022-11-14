@@ -241,7 +241,7 @@ Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle thes
         )
     )
 
-The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only, with consideration of the argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
+The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
 The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
 
 **PyTorch**
