@@ -2106,13 +2106,10 @@ def test_jax_numpy_kron(
 
 
 # sum
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="jax.numpy.sum",
     dtype_and_x=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric")
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.numpy.sum"
     ),
     initial=st.one_of(st.floats(), st.none()),
     where=np_helpers.where(),
@@ -2120,16 +2117,19 @@ def test_jax_numpy_kron(
     promote_integers=st.booleans(),
 )
 def test_jax_numpy_sum(
+    *,
     dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    keepdims,
     initial,
-    promote_integers,
     where,
-    fw,
+    keepdims,
+    promote_integers,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_frontend_function(
@@ -2138,9 +2138,9 @@ def test_jax_numpy_sum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="jax",
-        fn_tree="numpy.sum",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x,
         axis=axis,
         dtype=input_dtype,
@@ -2150,7 +2150,6 @@ def test_jax_numpy_sum(
         where=where,
         promote_integers=promote_integers,
     )
-
 
 
 # lcm

@@ -1712,11 +1712,11 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the evaluated result for each element in ``self``.
             The returned array must have the same data type as ``self``.
-        
+
         Examples
         --------
         With :class:`ivy.Array` input:
-        
+
          >>> x = ivy.array([2, 3 ,5, 7])
         >>> y = ivy.positive(x)
         >>> print(y)
