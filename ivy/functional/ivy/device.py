@@ -594,6 +594,8 @@ def num_gpus() -> int:
     Examples
     --------
     >>> print(ivy.num_gpus())
+    0
+    >>> print(ivy.num_gpus())
     1
 
     """
