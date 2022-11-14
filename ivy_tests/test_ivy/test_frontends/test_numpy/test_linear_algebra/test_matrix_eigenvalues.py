@@ -9,8 +9,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-@handle_cmd_line_args
-@given(
+
+@handle_frontend_function(
     dtype_and_x=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.linalg.eig"
