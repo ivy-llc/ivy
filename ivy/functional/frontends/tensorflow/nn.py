@@ -202,8 +202,8 @@ def local_response_normalization(
         /,
         *,
         depth_radius = 5,
-        bias = 1,
-        alpha = 1,
+        bias = 1.0,
+        alpha = 1.0,
         beta = 0.5,
         name=None):
     input_shape = ivy.shape(input)
@@ -217,7 +217,6 @@ def local_response_normalization(
     alpha = ivy.astype(ivy.array(alpha) , input.dtype)
     beta = ivy.astype(ivy.array(beta) , input.dtype)
     sqr_sum = ivy.astype(ivy.zeros_like(input_perm),input.dtype)
-    sqr_sum = ivy.zeros_like(input_perm)
     for p in range(input_shape[0]):
         sqr_sum[p] = [sum(ivy.pow(input_perm[p][max(c - depth_radius , 0): c + depth_radius + 1 ] , 2.0) )
                          for c in range(input_shape[3])]
