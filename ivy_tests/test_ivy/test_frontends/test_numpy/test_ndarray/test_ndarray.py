@@ -258,7 +258,6 @@ def test_numpy_ndarray_any(
         method_name="any",
     )
 
-
 # all
 @handle_cmd_line_args
 @given(
@@ -356,51 +355,6 @@ def test_numpy_instance_argsort(
 @handle_cmd_line_args
 @given(
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_axis=-1,
-        max_axis=0,
-        min_num_dims=1,
-        force_int_axis=True,
-    ),
-    keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.max"
-    ),
-)
-def test_numpy_instance_max(
-    dtype_x_axis,
-    keepdims,
-    as_variable,
-    num_positional_args_method,
-    native_array,
-):
-    input_dtype, x, axis = dtype_x_axis
-
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
-            "data": x[0],
-        },
-        all_as_kwargs_np_method={
-            "axis": axis,
-            "keepdims": keepdims,
-        },
-        frontend="numpy",
-        class_name="ndarray",
-        method_name="max",
-    )
-
-
-@handle_cmd_line_args
-@given(
-    dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
         max_axis=0,
@@ -486,7 +440,6 @@ def test_numpy_instance_min(
         method_name="min",
     )
 
-
 # argmin
 @handle_cmd_line_args
 @given(
@@ -568,8 +521,49 @@ def test_numpy_instance_clip(
         method_name="clip",
     )
 
+@handle_cmd_line_args
+@given(
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.max"
+    ),
+)
+def test_numpy_instance_max(
+    dtype_x_axis,
+    keepdims,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+):
+    input_dtype, x, axis = dtype_x_axis
 
-
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "keepdims": keepdims,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="max",
+    )
 
 @handle_cmd_line_args
 @given(
