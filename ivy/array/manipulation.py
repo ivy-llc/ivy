@@ -182,8 +182,8 @@ class ArrayWithManipulation(abc.ABC):
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
         order
-            Read the elements of x using this index order, and place the elements into
-            the reshaped array using this index order.
+            Read the elements of the input array using this index order,
+            and place the elements into the reshaped array using this index order.
             ‘C’ means to read / write the elements using C-like index order,
             with the last axis index changing fastest, back to the first axis index
             changing slowest.
