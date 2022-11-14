@@ -134,7 +134,7 @@ def test_fmod(
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
-        x2=x[0],
+        x2=x[1],
     )
 
 
@@ -179,7 +179,7 @@ def test_fmax(
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
-        x2=x[0],
+        x2=x[1],
     )
 
 
@@ -602,7 +602,7 @@ def test_isposinf(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        x=x[0],
     )
 
 
@@ -643,7 +643,7 @@ def test_isneginf(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        x=x[0],
     )
 
 

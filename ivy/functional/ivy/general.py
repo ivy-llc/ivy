@@ -15,6 +15,7 @@ import numpy as np
 # local
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
+from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
@@ -2279,7 +2280,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         b: false
     }
     """
-    if ivy.is_variable(x):
+    if _is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
