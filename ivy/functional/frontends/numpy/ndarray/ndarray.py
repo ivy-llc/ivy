@@ -32,9 +32,19 @@ class ndarray:
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
-    def transpose(self, /, axes=None):
+    def transpose(self, *axes):
+        if axes and isinstance(axes[0], tuple):
+            axes = axes[0]
         return np_frontend.transpose(self.data, axes=axes)
-    
+
+    @property
+    def T(self):
+        return np_frontend.transpose(self.data)
+
+    @property
+    def shape(self):
+        return np_frontend.shape(self)
+
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self.data, axis1, axis2)
 
@@ -236,10 +246,14 @@ class ndarray:
     def __lt__(self, value, /):
         return np_frontend.less(self.data, value)
 
-    def __int__(self,):
+    def __int__(
+        self,
+    ):
         return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.int64)[0]
 
-    def __float__(self,):
+    def __float__(
+        self,
+    ):
         return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.float64)[0]
 
     def __contains__(self, key, /):
@@ -265,3 +279,6 @@ class ndarray:
 
     def __ixor__(self, value, /):
         return np_frontend.logical_xor(self.data, value)
+
+    def __imod__(self, value, /):
+        return np_frontend.mod(self.data, value)

@@ -1,6 +1,6 @@
 ---
 name: Sub-Task
-about: Make a pull request for a sub-task.
+about: Reserve a sub-task from a ToDo list issue.
 title: "<TASK_NAME>"
 labels: Sub Task
 assignees: ''
