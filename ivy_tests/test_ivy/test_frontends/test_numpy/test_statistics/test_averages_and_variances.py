@@ -128,12 +128,9 @@ def test_numpy_nanmean(
 
 
 # nanmedian
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.nanmedian",
     dtype_and_a=statistical_dtype_values(function="median"),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nanmedian"
-    ),
     keep_dims=st.booleans(),
     overwrite_input=st.booleans()
 )
