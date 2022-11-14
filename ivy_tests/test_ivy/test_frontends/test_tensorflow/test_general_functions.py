@@ -100,8 +100,8 @@ def test_tensorflow_eye(
 
 
 # ones
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.ones",
     shape=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -110,9 +110,6 @@ def test_tensorflow_eye(
         max_dim_size=10,
     ),
     dtype=helpers.get_dtypes("valid", full=False),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.ones"
-    ),
 )
 def test_tensorflow_ones(
     shape,
@@ -120,7 +117,9 @@ def test_tensorflow_ones(
     as_variable,
     native_array,
     num_positional_args,
-    fw,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -128,9 +127,9 @@ def test_tensorflow_ones(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="tensorflow",
-        fn_tree="ones",
-        dims=shape,
-        dtype=dtype,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        dtype=dtype[0],
     )

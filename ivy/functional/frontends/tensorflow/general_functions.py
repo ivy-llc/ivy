@@ -25,5 +25,6 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
