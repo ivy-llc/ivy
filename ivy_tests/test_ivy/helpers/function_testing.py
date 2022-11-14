@@ -1051,7 +1051,7 @@ def test_frontend_method(
     method_as_variable_flags
         dictates whether the corresponding input argument passed to the method should
         be treated as a variable.
-    num_positional_args_method
+    method_num_positional_args
         number of input arguments that must be passed as positional arguments to the
         method.
     method_native_array_flags
