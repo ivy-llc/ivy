@@ -30,6 +30,11 @@ def concat(tensors, dim=0, *, out=None):
 
 @to_ivy_arrays_and_back
 def gather(input, dim, index, *, sparse_grad=False, out=None):
+    if sparse_grad:
+        raise ivy.exceptions.IvyException(
+            "Gather does not yet support the sparse grad functionality"
+        )
+
     dim = dim % len(input.shape)
     all_indices = ivy.argwhere(ivy.full(index.shape, True))
     gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
@@ -118,3 +123,13 @@ def tile(input, dims):
 @to_ivy_arrays_and_back
 def unsqueeze(input, dim=0):
     return ivy.expand_dims(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def movedim(input, source, destination):
+    return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def hstack(tensors, *, out=None):
+    return ivy.hstack(tensors, out=out)

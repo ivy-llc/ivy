@@ -1,3 +1,5 @@
+.. _`RWorks Graph Tracers`:
+
 Graph Tracers
 =============
 

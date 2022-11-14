@@ -5,7 +5,7 @@ In this section, we explain how Ivy compares to many other very important and re
 
 Firstly, we need to look at the overall ML stack, and understand how the high level frameworks relate to the low level components.
 
-In order to conceptualize this rather complex hierarchy, we have broken the ML stack into 9 groups, which are: :ref:`API Standards`, :ref:`Wrapper Frameworks`, :ref:`Frameworks`, :ref:`Graph Tracers`, :ref:`Exchange Formats`, :ref:`Compiler Infrastructure`, :ref:`Multi-Vendor Compiler Frameworks`, :ref:`Vendor-Specific APIs` and :ref:`Vendor-Specific Compilers`, going from high level to low level respectively.
+In order to conceptualize this rather complex hierarchy, we have broken the ML stack into 9 groups, which are: :ref:`RWorks API Standards`, :ref:`RWorks Wrapper Frameworks`, :ref:`RWorks Frameworks`, :ref:`RWorks Graph Tracers`, :ref:`RWorks Exchange Formats`, :ref:`RWorks Compiler Infrastructure`, :ref:`RWorks Multi-Vendor Compiler Frameworks`, :ref:`RWorks Vendor-Specific APIs` and :ref:`RWorks Vendor-Specific Compilers`, going from high level to low level respectively.
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/related_work/ml_stack.png?raw=true
    :width: 100%
@@ -18,37 +18,37 @@ We see these efforts as being very complimentary to Ivy's vision for high level 
 Finally, we discuss how Ivy compares to each of these important works at all levels within the ML stack.
 
 
-| (a) :ref:`API Standards` 🤝🏽
-|  Standardized APIs which similar libraries should adhere to
+| (a) :ref:`RWorks API Standards` 🤝🏽
+| Standardized APIs which similar libraries should adhere to
 |
-| (b) :ref:`Wrapper Frameworks` 🎁
+| (b) :ref:`RWorks Wrapper Frameworks` 🎁
 | Frameworks which wrap other ML frameworks
 |
-| (c) :ref:`Frameworks` 🔢
+| (c) :ref:`RWorks Frameworks` 🔢
 | Standalone ML Frameworks
 |
-| (d) :ref:`Graph Tracers` 🕸️
+| (d) :ref:`RWorks Graph Tracers` 🕸️
 | Extracting acyclic directed computation graphs from code
 |
-| (e) :ref:`Exchange Formats` 💱
+| (e) :ref:`RWorks Exchange Formats` 💱
 | File formats to exchange neural networks between frameworks
 |
-| (f) :ref:`Compiler Infrastructure` 🔟️🏗️
+| (f) :ref:`RWorks Compiler Infrastructure` 🔟️🏗️
 | Infrastructure and standards to simplify the lives of compiler designers
 |
-| (g) :ref:`Multi-Vendor Compiler Frameworks` 🖥️💻🔟
+| (g) :ref:`RWorks Multi-Vendor Compiler Frameworks` 🖥️💻🔟
 | Executing ML code on a variety of hardware targets
 |
-| (h) :ref:`Vendor-Specific APIs` 💻🔢
+| (h) :ref:`RWorks Vendor-Specific APIs` 💻🔢
 | Interfacing with specific hardware in an intuitive manner
 |
-| (i) :ref:`Vendor-Specific Compilers` 💻🔟
+| (i) :ref:`RWorks Vendor-Specific Compilers` 💻🔟
 | Compiling code to specific hardware
 |
-| (j) :ref:`ML-Unifying Companies` 📈
+| (j) :ref:`RWorks ML-Unifying Companies` 📈
 | Companies working towards unification in ML
 |
-| (k) :ref:`What does Ivy Add?` 🟢
+| (k) :ref:`RWorks What does Ivy Add?` 🟢
 | How does Ivy fit into all of this?
 
 .. toctree::

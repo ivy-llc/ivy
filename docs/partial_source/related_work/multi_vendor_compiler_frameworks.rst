@@ -1,3 +1,5 @@
+.. _`RWorks Multi-Vendor Compiler Frameworks`:
+
 Multi-Vendor Compiler Frameworks
 ================================
 
