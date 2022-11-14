@@ -52,11 +52,13 @@ def test_torch_cosine_similarity(
     fn_tree="torch.nn.functional.pairwise_distance",
     d_type_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=5,
-        min_dim_size=1,
-        max_dim_size=3,
         num_arrays=2,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_num_dims=2,
+        min_value=2,
+        max_value=5,
+        allow_inf=False,
     ),
     p=helpers.floats(
         min_value=0.0, max_value=3.0, allow_nan=False, allow_inf=False, exclude_min=True
