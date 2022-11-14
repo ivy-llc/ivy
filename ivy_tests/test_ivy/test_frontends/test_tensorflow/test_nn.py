@@ -834,8 +834,6 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        max_value= 100,
-        min_value=0,
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
