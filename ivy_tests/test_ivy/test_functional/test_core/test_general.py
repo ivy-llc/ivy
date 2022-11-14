@@ -1523,7 +1523,7 @@ def test_is_native_array(
     on_device,
 ):
     dtype, x = x_val_and_dtypes
-    helpers.test_funtion(
+    helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,

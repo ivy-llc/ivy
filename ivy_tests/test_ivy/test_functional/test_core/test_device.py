@@ -15,6 +15,7 @@ from hypothesis import strategies as st, assume
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -93,7 +94,7 @@ def test_dev(
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
         if as_variable and ivy.is_float_dtype(dtype[0]):
-            x = ivy.variable(x)
+            x = _variable(x)
 
         ret = ivy.dev(x)
         # type test
@@ -134,7 +135,7 @@ def test_as_ivy_dev(
     for device in _get_possible_devices():
         x = ivy.array(x, device=device)
         if as_variable and ivy.is_float_dtype(dtype[0]):
-            x = ivy.variable(x)
+            x = _variable(x)
 
         native_device = ivy.dev(x, as_native=True)
         ret = ivy.as_ivy_dev(native_device)
@@ -170,7 +171,7 @@ def test_as_native_dev(
     for device in _get_possible_devices():
         x = ivy.asarray(x, device=on_device)
         if as_variable:
-            x = ivy.variable(x)
+            x = _variable(x)
 
         device = ivy.as_native_dev(on_device)
         ret = ivy.as_native_dev(ivy.dev(x))
@@ -237,7 +238,7 @@ def test_to_device(
     x = np.random.uniform(size=tuple(array_shape)).astype(dtype[0])
     x = ivy.asarray(x)
     if as_variable and ivy.is_float_dtype(dtype[0]):
-        x = ivy.variable(x)
+        x = _variable(x)
 
     # create a dummy array for out that is broadcastable to x
     out = (
@@ -316,8 +317,8 @@ def test_split_func_call(
     x1 = ivy.asarray(x1)
     x2 = ivy.asarray(x2)
     if as_variable and ivy.is_float_dtype(dtype[0]):
-        x1 = ivy.variable(x1)
-        x2 = ivy.variable(x2)
+        x1 = _variable(x1)
+        x2 = _variable(x2)
 
     # function
     def func(t0, t1):
@@ -366,8 +367,8 @@ def test_split_func_call_with_cont_input(
     # inputs
 
     if as_variable and ivy.is_float_dtype(dtype[0]):
-        in0 = ivy.Container(cont_key=ivy.variable(x1))
-        in1 = ivy.Container(cont_key=ivy.variable(x2))
+        in0 = ivy.Container(cont_key=_variable(x1))
+        in1 = ivy.Container(cont_key=_variable(x2))
     else:
         in0 = ivy.Container(cont_key=x1)
         in1 = ivy.Container(cont_key=x2)

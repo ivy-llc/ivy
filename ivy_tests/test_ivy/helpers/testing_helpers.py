@@ -75,48 +75,6 @@ def num_positional_args(draw, *, fn_name: str = None):
     )
 
 
-@st.composite
-def num_positional_args_from_fn(draw, *, fn: str = None):
-    """Draws an integers randomly from the minimum and maximum number of positional
-    arguments a given function can take.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    fn
-        name of the function.
-
-    Returns
-    -------
-    A strategy that can be used in the @given hypothesis decorator.
-
-    Examples
-    --------
-    @given(
-        num_positional_args=num_positional_args_from_fn(fn="floor_divide")
-    )
-    @given(
-        num_positional_args=num_positional_args_from_fn(fn="add")
-    )
-    """
-    num_positional_only = 0
-    num_keyword_only = 0
-    total = 0
-    for param in inspect.signature(fn).parameters.values():
-        total += 1
-        if param.kind == param.POSITIONAL_ONLY:
-            num_positional_only += 1
-        elif param.kind == param.KEYWORD_ONLY:
-            num_keyword_only += 1
-        elif param.kind == param.VAR_KEYWORD:
-            num_keyword_only += 1
-    return draw(
-        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
-    )
-
-
 # Decorators helpers
 
 
