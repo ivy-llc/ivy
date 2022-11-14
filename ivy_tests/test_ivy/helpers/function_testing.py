@@ -285,6 +285,11 @@ def test_function(
     except Exception as e:
         ivy.unset_backend()
         raise e
+    hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
+    if hasattr_unsupported_gradients:
+        fw_list = fn.unsupported_gradients
+    else:
+        fw_list = None
     ivy.unset_backend()
     # gradient test
     if (
@@ -293,21 +298,46 @@ def test_function(
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        gradient_test(
-            fn_name=fn_name,
-            all_as_kwargs_np=all_as_kwargs_np,
-            args_np=args_np,
-            kwargs_np=kwargs_np,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-            container_flags=container_flags,
-            rtol_=rtol_,
-            atol_=atol_,
-            xs_grad_idxs=xs_grad_idxs,
-            ret_grad_idxs=ret_grad_idxs,
-            ground_truth_backend=ground_truth_backend,
-        )
+        if hasattr_unsupported_gradients and fw in fw_list:
+            if ivy.nested_argwhere(
+                all_as_kwargs_np,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            ):
+                pass
+            else:
+
+                gradient_test(
+                    fn_name=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    as_variable_flags=as_variable_flags,
+                    native_array_flags=native_array_flags,
+                    container_flags=container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
+
+        else:
+            gradient_test(
+                fn_name=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                as_variable_flags=as_variable_flags,
+                native_array_flags=native_array_flags,
+                container_flags=container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
