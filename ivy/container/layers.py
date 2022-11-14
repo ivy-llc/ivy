@@ -238,17 +238,17 @@ class ContainerWithLayers(ContainerBase):
 
     @staticmethod
     def static_dropout1d(
-            x: ivy.Container,
-            prob: float,
-            /,
-            *,
-            training: bool = True,
-            data_format: str = "NWC",
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "dropout1d",
@@ -264,17 +264,17 @@ class ContainerWithLayers(ContainerBase):
         )
 
     def dropout1d(
-            self: ivy.Container,
-            prob: float,
-            /,
-            *,
-            training: bool = True,
-            data_format: str = "NWC",
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_dropout1d(
             self,

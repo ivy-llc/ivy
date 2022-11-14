@@ -12,7 +12,7 @@ inf = float("inf")
 
 
 # noinspection PyMissingConstructor,PyMethodParameters
-class ContainerWithLinalg(ContainerBase):
+class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_matmul(
         x1: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1933,11 +1933,12 @@ class ContainerWithLinalg(ContainerBase):
     def static_vecdot(
         x1: Union[ivy.Container, ivy.Array, ivy.NativeArray],
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
@@ -1956,21 +1957,22 @@ class ContainerWithLinalg(ContainerBase):
     def vecdot(
         self: ivy.Container,
         x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
         axis: int = -1,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_vecdot(
             self,
             x2,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             axis=axis,
             out=out,
         )

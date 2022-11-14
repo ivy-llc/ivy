@@ -9,7 +9,7 @@ from .general import ArrayWithGeneralExperimental
 from .gradients import ArrayWithGradientsExperimental
 from .image import ArrayWithImageExperimental
 from .layers import ArrayWithLayersExperimental
-from .linalg import ArrayWithLinalgExperimental
+from .linear_algebra import ArrayWithLinearAlgebraExperimental
 from .losses import ArrayWithLossesExperimental
 from .manipulation import ArrayWithManipulationExperimental
 from .norms import ArrayWithNormsExperimental

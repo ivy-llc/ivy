@@ -1,15 +1,15 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st, assume
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # add
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -18,17 +18,18 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         safety_factor_scale="log",
     ),
     alpha=st.integers(min_value=1, max_value=5),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.add"
-    ),
 )
 def test_torch_add(
+    *,
     dtype_and_x,
     alpha,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -37,32 +38,33 @@ def test_torch_add(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="add",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-03,
         input=x[0],
         other=x[1],
         alpha=alpha,
-        out=None,
     )
 
 
 # tan
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.tan"
-    ),
 )
 def test_torch_tan(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -71,29 +73,30 @@ def test_torch_tan(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="tan",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # atan
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.atan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.atan"
-    ),
 )
 def test_torch_atan(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -103,29 +106,30 @@ def test_torch_atan(
         all_aliases=["arctan"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="atan",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # tanh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.tanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.tanh"
-    ),
 )
 def test_torch_tanh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -134,28 +138,30 @@ def test_torch_tanh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="tanh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
     )
 
 
 # abs
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.abs"
-    ),
 )
 def test_torch_abs(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -165,29 +171,30 @@ def test_torch_abs(
         all_aliases=["absolute"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="abs",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # cos
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.cos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.cos"
-    ),
 )
 def test_torch_cos(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -196,29 +203,30 @@ def test_torch_cos(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="cos",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # sin
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.sin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.sin"
-    ),
 )
 def test_torch_sin(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -227,29 +235,30 @@ def test_torch_sin(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="sin",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # acos
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.acos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.acos"
-    ),
 )
 def test_torch_acos(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -259,29 +268,30 @@ def test_torch_acos(
         all_aliases=["arccos"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="acos",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # sinh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.sinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.sinh"
-    ),
 )
 def test_torch_sinh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -290,29 +300,30 @@ def test_torch_sinh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="sinh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # acosh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.acosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.acosh"
-    ),
 )
 def test_torch_acosh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -321,16 +332,48 @@ def test_torch_acosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="acosh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
+    )
+
+
+# arccos
+@handle_frontend_test(
+    fn_tree="torch.arccos",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_arccos(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
 # subtract
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.subtract",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -339,17 +382,18 @@ def test_torch_acosh(
         safety_factor_scale="log",
     ),
     alpha=st.integers(min_value=1, max_value=5),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.subtract"
-    ),
 )
 def test_torch_subtract(
+    *,
     dtype_and_x,
     alpha,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -359,31 +403,32 @@ def test_torch_subtract(
         all_aliases=["sub"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="subtract",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
         alpha=alpha,
-        out=None,
     )
 
 
 # exp
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.exp",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.exp"
-    ),
 )
 def test_torch_exp(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -392,29 +437,30 @@ def test_torch_exp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="exp",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # asin
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.asin"
-    ),
 )
 def test_torch_asin(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -424,29 +470,94 @@ def test_torch_asin(
         all_aliases=["arcsin"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="asin",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
-# asinh
-@handle_cmd_line_args
-@given(
+# arccosh
+@handle_frontend_test(
+    fn_tree="torch.arccosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.asinh"
-    ),
 )
-def test_torch_asinh(
+def test_torch_arccosh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# arcsin
+@handle_frontend_test(
+    fn_tree="torch.arcsin",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_arcsin(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
+# asinh
+@handle_frontend_test(
+    fn_tree="torch.asinh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_asinh(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -456,29 +567,30 @@ def test_torch_asinh(
         all_aliases=["arcsinh"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="asinh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # cosh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.cosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.cosh"
-    ),
 )
 def test_torch_cosh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -487,29 +599,30 @@ def test_torch_cosh(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="cosh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # atanh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.atanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.atanh"
-    ),
 )
 def test_torch_atanh(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -519,29 +632,62 @@ def test_torch_atanh(
         all_aliases=["arctanh"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="atanh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
+    )
+
+
+# arctanh
+@handle_frontend_test(
+    fn_tree="torch.arctanh",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_arctanh(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
 # log2
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.log2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.log2"
-    ),
 )
 def test_torch_log2(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -550,29 +696,30 @@ def test_torch_log2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="log2",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=input[0],
-        out=None,
     )
 
 
 # square
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.square",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.square"
-    ),
 )
 def test_torch_square(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -581,30 +728,31 @@ def test_torch_square(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="square",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=input[0],
-        out=None,
     )
 
 
 # atan2
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.atan2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.atan2"
-    ),
 )
 def test_torch_atan2(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -613,31 +761,32 @@ def test_torch_atan2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="atan2",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # negative
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.negative",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.negative"
-    ),
 )
 def test_torch_negative(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -646,30 +795,31 @@ def test_torch_negative(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="negative",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # bitwise_and
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_and"
-    ),
 )
 def test_torch_bitwise_and(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -678,30 +828,31 @@ def test_torch_bitwise_and(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_and",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_not",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=1,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_not"
-    ),
 )
 def test_torch_bitwise_not(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -710,29 +861,30 @@ def test_torch_bitwise_not(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_not",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_or",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_xor"
     ),
 )
 def test_torch_bitwise_xor(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -741,30 +893,31 @@ def test_torch_bitwise_xor(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_xor",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_xor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=st.just(("bool",)) | helpers.get_dtypes("integer"),
         num_arrays=2,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_or"
-    ),
 )
 def test_torch_bitwise_or(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -773,31 +926,32 @@ def test_torch_bitwise_or(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_or",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_left_shift",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         array_api_dtypes=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_left_shift"
     ),
 )
 def test_torch_bitwise_left_shift(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -811,31 +965,32 @@ def test_torch_bitwise_left_shift(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_left_shift",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bitwise_right_shift",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         array_api_dtypes=True,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.bitwise_right_shift"
-    ),
 )
 def test_torch_bitwise_right_shift(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     # negative shifts will throw an exception
@@ -849,30 +1004,31 @@ def test_torch_bitwise_right_shift(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bitwise_right_shift",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # log10
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.log10",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.log10"
-    ),
 )
 def test_torch_log10(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -881,29 +1037,30 @@ def test_torch_log10(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="log10",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # trunc
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.trunc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.trunc"
-    ),
 )
 def test_torch_trunc(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -912,27 +1069,28 @@ def test_torch_trunc(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="trunc",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # sqrt
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.sqrt",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.sqrt"
-    ),
 )
 def test_torch_sqrt(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
@@ -941,29 +1099,30 @@ def test_torch_sqrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="sqrt",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=input[0],
-        out=None,
     )
 
 
 # sign
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.sign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.sign"
-    ),
 )
 def test_torch_sign(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -972,29 +1131,62 @@ def test_torch_sign(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="sign",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
+    )
+
+
+# absolute
+@handle_frontend_test(
+    fn_tree="torch.abs",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+)
+def test_torch_absolute(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
     )
 
 
 # logical not
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.logical_not",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.logical_not"
-    ),
 )
 def test_torch_logical_not(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1003,29 +1195,30 @@ def test_torch_logical_not(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="logical_not",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # logical and
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.logical_and",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.logical_and"
-    ),
 )
 def test_torch_logical_and(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1034,30 +1227,31 @@ def test_torch_logical_and(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="logical_and",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # logical or
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.logical_or",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.logical_or"
-    ),
 )
 def test_torch_logical_or(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1066,30 +1260,31 @@ def test_torch_logical_or(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="logical_or",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # logical xor
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.logical_xor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.logical_xor"
-    ),
 )
 def test_torch_logical_xor(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1098,30 +1293,31 @@ def test_torch_logical_xor(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="logical_xor",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # ceil
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.ceil"
-    ),
 )
 def test_torch_ceil(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1130,16 +1326,16 @@ def test_torch_ceil(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="ceil",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # round
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1155,6 +1351,8 @@ def test_torch_round(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1163,8 +1361,8 @@ def test_torch_round(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="round",
+        frontend=frontend,
+        fn_tree=fn_tree,
         input=x[0],
         decimals=decimals,
         out=None,
@@ -1212,19 +1410,20 @@ def _get_clip_inputs(draw):
 
 
 # clamp
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.clamp",
     input_and_ranges=_get_clip_inputs(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.clamp"
-    ),
 )
 def test_torch_clamp(
+    *,
     input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -1233,29 +1432,30 @@ def test_torch_clamp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="clamp",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         min=min,
         max=max,
-        out=None,
     )
 
 
 # clip
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.clip",
     input_and_ranges=_get_clip_inputs(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.clip"
-    ),
 )
 def test_torch_clip(
+    *,
     input_and_ranges,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -1264,18 +1464,18 @@ def test_torch_clip(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="clip",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         min=min,
         max=max,
-        out=None,
     )
 
 
 # mul
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.mul",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1283,12 +1483,16 @@ def test_torch_clip(
         max_value=1e04,
         allow_inf=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.mul"
-    ),
 )
 def test_torch_mul(
-    dtype_and_x, as_variable, with_out, num_positional_args, native_array, fw
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1298,18 +1502,18 @@ def test_torch_mul(
         all_aliases=["multiply"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="mul",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-03,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # div
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.div",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1317,21 +1521,19 @@ def test_torch_mul(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    rounding_mode=st.one_of(
-        st.sampled_from(["floor", "trunc"]),
-        st.none(),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.div"
-    ),
+    rounding_mode=st.sampled_from(["floor", "trunc"]) | st.none(),
 )
 def test_torch_div(
+    *,
     dtype_and_x,
     rounding_mode,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1345,19 +1547,49 @@ def test_torch_div(
         all_aliases=["divide"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="div",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         atol=1,
         input=x[0],
         other=x[1],
         rounding_mode=rounding_mode,
-        out=None,
+    )
+
+
+# reciprocal
+@handle_frontend_test(
+    fn_tree="torch.reciprocal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=1,
+    ),
+)
+def test_torch_reciprocal(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
     )
 
 
 # remainder
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.remainder",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1365,16 +1597,17 @@ def test_torch_div(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.remainder"
-    ),
 )
 def test_torch_remainder(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1384,18 +1617,18 @@ def test_torch_remainder(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="remainder",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         atol=1,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # flipud
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.flipud",
     dtype_and_m=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -1405,16 +1638,17 @@ def test_torch_remainder(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.flipud"
-    ),
 )
 def test_torch_flipud(
+    *,
     dtype_and_m,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
@@ -1423,28 +1657,30 @@ def test_torch_flipud(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="flipud",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=m[0],
     )
 
 
-# deg2grad
-@handle_cmd_line_args
-@given(
+# deg2rad
+@handle_frontend_test(
+    fn_tree="torch.deg2rad",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.deg2rad"
-    ),
 )
 def test_torch_deg2rad(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -1453,16 +1689,16 @@ def test_torch_deg2rad(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="deg2rad",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
-        out=None,
     )
 
 
 # true_divide
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.true_divide",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1470,16 +1706,17 @@ def test_torch_deg2rad(
         small_abs_safety_factor=2.5,
         safety_factor_scale="log",
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.true_divide"
-    ),
 )
 def test_torch_true_divide(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
@@ -1489,26 +1726,176 @@ def test_torch_true_divide(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="true_divide",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         other=x[1],
-        out=None,
     )
 
 
 # floor
+@handle_frontend_test(
+    fn_tree="torch.floor",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_floor(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        out=None,
+    )
+
+
+# log1p
+@handle_frontend_test(
+    fn_tree="torch.log1p",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_log1p(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
+        out=None,
+    )
+
+
+# addcdiv
+@handle_frontend_test(
+    fn_tree="torch.addcdiv",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+    value=st.floats(min_value=-100, max_value=100),
+)
+def test_torch_addcdiv(
+    dtype_and_x,
+    value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[2], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        input=x[0],
+        tensor1=x[1],
+        tensor2=x[2],
+        value=value,
+        out=None,
+    )
+
+
+# addcmul
+@handle_frontend_test(
+    fn_tree="torch.addcmul",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=3,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+        shared_dtype=True,
+    ),
+    value=st.floats(min_value=-10, max_value=10),
+)
+def test_torch_addcmul(
+    dtype_and_x,
+    value,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        atol=1e-2,
+        input=x[0],
+        tensor1=x[1],
+        tensor2=x[2],
+        value=value,
+        out=None,
+    )
+
+
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
     ),
+    alpha=st.integers(min_value=1, max_value=5),
     num_positional_args=helpers.num_positional_args(
-        fn_name="functional.frontends.torch.floor"
+        fn_name="functional.frontends.torch.pow"
     ),
 )
-def test_torch_floor(
+def test_torch_pow(
     dtype_and_x,
+    alpha,
     as_variable,
     with_out,
     num_positional_args,
@@ -1519,10 +1906,12 @@ def test_torch_floor(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["pow"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="torch",
-        fn_tree="floor",
+        fn_tree="pow",
+        rtol=1e-03,
         input=x[0],
-        out=None,
+        exponent=x[1]
     )

@@ -20,10 +20,10 @@ import ivy
 def _to_native(
     x: Any, inplace: bool = False, ignore_frontend_arrays: bool = False
 ) -> Any:
-    if ivy.is_frontend_array(x) and not ignore_frontend_arrays:
-        return _to_native(x.data)
     if isinstance(x, ivy.Array):
-        return _to_native(x.data)
+        return x.data
+    elif ivy.is_frontend_array(x) and not ignore_frontend_arrays:
+        return x.data.data
     elif isinstance(x, ivy.Container):
         return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
     return x
@@ -38,7 +38,7 @@ def _to_ivy(x: Any) -> Any:
 
 
 def _to_ivy_array(x: Any) -> ivy.Array:
-    if isinstance(x, (torch.Tensor, tf.Tensor, jnp.numpy.DeviceArray, numpy.ndarray)):
+    if isinstance(x, (torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray)):
         return ivy.array(numpy.array(x))
     return x
 
