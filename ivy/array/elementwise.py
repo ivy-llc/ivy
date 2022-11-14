@@ -1715,7 +1715,6 @@ class ArrayWithElementwise(abc.ABC):
         
         Examples
         --------
-
         With :class:`ivy.Array` input:
         
          >>> x = ivy.array([2, 3 ,5, 7])
