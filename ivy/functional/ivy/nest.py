@@ -781,6 +781,7 @@ def nested_map(
     _tuple_check_fn: Optional[Callable] = None,
     _list_check_fn: Optional[Callable] = None,
     _dict_check_fn: Optional[Callable] = None,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -817,6 +818,7 @@ def nested_map(
         nested.
 
     """
+    extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
         include_derived = {tuple: True, list: True, dict: True}
     elif not include_derived:
@@ -857,6 +859,7 @@ def nested_map(
                 tuple_check_fn,
                 list_check_fn,
                 dict_check_fn,
+                extra_nest_types,
             )
             for i in x
         ]
@@ -867,7 +870,9 @@ def nested_map(
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif list_check_fn(x, list):
+    elif list_check_fn(x, list) or isinstance(x, extra_nest_types):
+        if isinstance(x, (ivy.Array, ivy.NativeArray)):
+            return fn(x)
         return class_instance(
             [
                 nested_map(
@@ -880,6 +885,7 @@ def nested_map(
                     tuple_check_fn,
                     list_check_fn,
                     dict_check_fn,
+                    extra_nest_types,
                 )
                 for i in x
             ]
