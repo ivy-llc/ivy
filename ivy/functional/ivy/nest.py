@@ -913,7 +913,11 @@ def nested_map(
 
 @handle_exceptions
 def nested_any(
-    nest: Iterable, fn: Callable, check_nests: bool = False, _base: bool = True
+    nest: Iterable,
+    fn: Callable,
+    check_nests: bool = False,
+    _base: bool = True,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> bool:
     """Checks the leaf nodes of nest x via function fn, and returns True if any evaluate
     to True, else False.
@@ -937,15 +941,19 @@ def nested_any(
         A boolean, whether the function evaluates to true for any leaf node.
 
     """
-    if isinstance(nest, (tuple, list)):
+    extra_nest_types = ivy.default(extra_nest_types, ())
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            if ivy.any(fn(nest)):
+                return True
         for i, item in enumerate(nest):
-            if nested_any(item, fn, check_nests, False):
+            if nested_any(item, fn, check_nests, False, extra_nest_types):
                 return True
         if check_nests and fn(nest):
             return True
     elif isinstance(nest, dict):
         for k, v in nest.items():
-            if nested_any(v, fn, check_nests, False):
+            if nested_any(v, fn, check_nests, False, extra_nest_types):
                 return True
         if check_nests and fn(nest):
             return True
