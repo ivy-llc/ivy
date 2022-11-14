@@ -13,6 +13,16 @@ RUN apt-get update && \
     pip3 install --upgrade pip && \
     pip3 install setuptools==58.5.3
 
+## CUDA specific installations
+
+# Refer to https://forums.developer.nvidia.com/t/notice-cuda-linux-repository-key-rotation/212772
+RUN apt-get update && apt-get install -y wget
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
+RUN dpkg -i cuda-keyring_1.0-1_all.deb
+RUN apt-get update
+RUN apt-get install -y cuda-toolkit-11-7
+
+RUN pip3 install --upgrade jax[cuda11_cudnn82]==0.3.14 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 RUN pip3 install torch==1.11.0+cu113 --extra-index-url https://download.pytorch.org/whl/cu113
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.11.0+cpu.html
 
