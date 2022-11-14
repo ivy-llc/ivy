@@ -605,7 +605,11 @@ def nested_argwhere(
 
 @handle_exceptions
 def all_nested_indices(
-    nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True
+    nest: Iterable,
+    include_nests: bool = False,
+    _index: List = None,
+    _base: bool = True,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -631,9 +635,15 @@ def all_nested_indices(
 
     """
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)):
+    extra_nest_types = ivy.default(extra_nest_types, ())
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            _index = ivy.argwhere(ivy.ones_like(nest))
+            return [_index.to_list()]
         _indices = [
-            all_nested_indices(item, include_nests, _index + [i], False)
+            all_nested_indices(
+                item, include_nests, _index + [i], False, extra_nest_types
+            )
             for i, item in enumerate(nest)
         ]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
@@ -641,7 +651,7 @@ def all_nested_indices(
             _indices.append(_index)
     elif isinstance(nest, dict):
         _indices = [
-            all_nested_indices(v, include_nests, _index + [k], False)
+            all_nested_indices(v, include_nests, _index + [k], False, extra_nest_types)
             for k, v in nest.items()
         ]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
