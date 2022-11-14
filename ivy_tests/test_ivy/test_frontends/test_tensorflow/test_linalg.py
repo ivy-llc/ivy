@@ -80,6 +80,31 @@ def test_tensorflow_eigh(
         tensor=x[0],
     )
 
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.eigvals",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_tensorflow_eigvals(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        tensor=x[0],
+    )
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.eigvalsh",
