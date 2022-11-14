@@ -421,7 +421,7 @@ def matrix_transpose(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.swapaxes(x, -1, -2)
+    return tf.linalg.matrix_transpose(x)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
