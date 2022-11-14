@@ -112,3 +112,18 @@ def hann_window(
 
 
 hann_window.support_native_out = False
+
+
+def frombuffer(
+    buffer: torch.Tensor,
+    /,
+    count: int,
+    offset: int,
+    like: int,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.frombuffer(buffer, count, offset, like, dtype=dtype, device=device)
+    
