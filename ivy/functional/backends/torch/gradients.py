@@ -39,7 +39,9 @@ def execute_with_gradients(
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(
-        func_ret, idxs=ret_grad_idxs
+        func_ret,
+        idxs=ret_grad_idxs,
+        create_var=True,
     )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}

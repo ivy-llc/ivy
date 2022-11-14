@@ -211,7 +211,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
@@ -247,7 +246,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def new_empty(
@@ -263,7 +261,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def unfold(self, dimension, size, step):
