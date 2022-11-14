@@ -247,7 +247,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.unravel_index.
-        This method simply wraps the function, and so the docstring 
+        This method simply wraps the function, and so the docstring
         for ivy.unravel_index also applies to this method with minimal
         changes.
 

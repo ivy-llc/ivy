@@ -88,7 +88,7 @@ Following this, an inplace update is then also performed on the :class:`ivy.Arra
         ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if ivy.is_variable(x_native):
+        if _is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
                 x.data = x_native

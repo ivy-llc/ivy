@@ -1,10 +1,11 @@
 # global
+import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args, assert_all_close
+from ivy_tests.test_ivy.helpers import handle_frontend_method, assert_all_close
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -12,9 +13,11 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
-# argmax
-@handle_cmd_line_args
-@given(
+pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -24,32 +27,30 @@ def test_numpy_ndarray_argmax(
     dtype_and_x,
     as_variable,
     native_array,
-    fw,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        input_dtype_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=0,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        input_dtypes_method=[input_dtype[1]],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
+        method_input_dtypes=[input_dtype[1]],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": x[1],
         },
-        fw=fw,
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="argmax",
     )
 
 
-# reshape
 @st.composite
 def dtypes_x_reshape(draw):
     dtypes, x = draw(
@@ -68,48 +69,46 @@ def dtypes_x_reshape(draw):
     return dtypes, x, shape
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
 )
 def test_numpy_ndarray_reshape(
     dtypes_x_shape,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, shape = dtypes_x_shape
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=0,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
+        method_input_dtypes=[],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "shape": shape,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="reshape",
     )
 
 
-# transpose
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.transpose",
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
         min_num_dims=2,
         max_num_dims=5,
         min_dim_size=2,
         max_dim_size=10,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.transpose"
     ),
 )
 def test_numpy_ndarray_transpose(
@@ -117,32 +116,94 @@ def test_numpy_ndarray_transpose(
     as_variable,
     num_positional_args,
     native_array,
+    class_,
+    method_name,
 ):
     array, dtype, axes = array_and_axes
     helpers.test_frontend_method(
-        input_dtypes_init=dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=num_positional_args,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": np.array(array),
         },
-        input_dtypes_method=dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
+        method_input_dtypes=dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axes": axes,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="transpose",
     )
 
 
+# swapaxes
+@st.composite
+def dtype_values_and_axes(draw):
+    dtype, x, x_shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_num_dims=1,
+            max_num_dims=5,
+            ret_shape=True,
+        )
+    )
+    axis1, axis2 = draw(
+        helpers.get_axis(
+            shape=x_shape,
+            sorted=False,
+            unique=True,
+            min_size=2,
+            max_size=2,
+            force_tuple=True,
+        )
+    )
+    return dtype, x, axis1, axis2
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.swapaxes",
+    dtype_x_and_axes=dtype_values_and_axes(),
+)
+def test_numpy_ndarray_swapaxes(
+    dtype_x_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args_method,
+    frontend,
+    class_,
+    method_name,
+):
+    input_dtype, x, axis1, axis2 = dtype_x_and_axes
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis1": axis1,
+            "axis2": axis2,
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
 # any
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.any",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -154,11 +215,6 @@ def test_numpy_ndarray_transpose(
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
-    as_variable=helpers.array_bools(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.any"
-    ),
-    native_array=helpers.array_bools(),
 )
 def test_numpy_ndarray_any(
     dtype_x_axis,
@@ -167,6 +223,8 @@ def test_numpy_ndarray_any(
     as_variable,
     num_positional_args,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -176,32 +234,31 @@ def test_numpy_ndarray_any(
         native_array=native_array,
     )
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=num_positional_args,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "out": None,
             "keepdims": keepdims,
             "where": where,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="any",
     )
 
 
-# all
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -226,6 +283,8 @@ def test_numpy_ndarray_all(
     as_variable,
     num_positional_args,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
@@ -235,40 +294,37 @@ def test_numpy_ndarray_all(
         native_array=native_array,
     )
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=num_positional_args,
-        num_positional_args_method=num_positional_args,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "out": None,
             "keepdims": keepdims,
             "where": where,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="all",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.argsort"
     ),
 )
 def test_numpy_instance_argsort(
@@ -277,6 +333,8 @@ def test_numpy_instance_argsort(
     num_positional_args,
     native_array,
     fw,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -294,8 +352,8 @@ def test_numpy_instance_argsort(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.mean",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
@@ -303,15 +361,14 @@ def test_numpy_instance_argsort(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.mean"
-    ),
 )
 def test_numpy_ndarray_mean(
     dtype_x_axis,
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_method(
@@ -332,13 +389,13 @@ def test_numpy_ndarray_mean(
             "out": None,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="mean",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.min",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -347,9 +404,6 @@ def test_numpy_ndarray_mean(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.min"
-    ),
 )
 def test_numpy_instance_min(
     dtype_x_axis,
@@ -357,34 +411,35 @@ def test_numpy_instance_min(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "keepdims": keepdims,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="min",
     )
 
 
-# argmin
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.argmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -392,9 +447,6 @@ def test_numpy_instance_min(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.argmin"
-    ),
 )
 def test_numpy_ndarray_argmin(
     dtype_x_axis,
@@ -403,6 +455,8 @@ def test_numpy_ndarray_argmin(
     num_positional_args,
     native_array,
     fw,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -420,22 +474,18 @@ def test_numpy_ndarray_argmin(
             "data": x[0],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="argmin",
         frontend_class=np.ndarray,
         fn_tree="ndarray.argmin",
     )
-    
 
-# clip
-@handle_cmd_line_args
-@given(
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.clip",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.clip"
     ),
 )
 def test_numpy_instance_clip(
@@ -443,6 +493,8 @@ def test_numpy_instance_clip(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -457,18 +509,15 @@ def test_numpy_instance_clip(
         all_as_kwargs_np_init={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
-            "a_min": 0,
-            "a_max": 1
-        },
+        all_as_kwargs_np_method={"a_min": 0, "a_max": 1},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="clip",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.max",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -477,9 +526,6 @@ def test_numpy_instance_clip(
         force_int_axis=True,
     ),
     keepdims=st.booleans(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.max"
-    ),
 )
 def test_numpy_instance_max(
     dtype_x_axis,
@@ -487,33 +533,35 @@ def test_numpy_instance_max(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "keepdims": keepdims,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="max",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -522,9 +570,6 @@ def test_numpy_instance_max(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.cumprod"
-    ),
 )
 def test_numpy_instance_cumprod(
     dtype_x_axis,
@@ -532,34 +577,36 @@ def test_numpy_instance_cumprod(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "dtype": dtype[0],
             "out": None,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="cumprod",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.cumsum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -568,9 +615,6 @@ def test_numpy_instance_cumprod(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.cumsum"
-    ),
 )
 def test_numpy_instance_cumsum(
     dtype_x_axis,
@@ -578,34 +622,36 @@ def test_numpy_instance_cumsum(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
             "dtype": dtype[0],
             "out": None,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="cumsum",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.sort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
@@ -613,35 +659,34 @@ def test_numpy_instance_cumsum(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.sort"
-    ),
 )
 def test_numpy_instance_sort(
     dtype_x_axis,
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     ret, frontend_ret = helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="sort",
         test_values=False,
     )
@@ -655,14 +700,11 @@ def test_numpy_instance_sort(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.copy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.copy"
     ),
 )
 def test_numpy_instance_copy(
@@ -670,35 +712,34 @@ def test_numpy_instance_copy(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="copy",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.nonzero",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.nonzero"
     ),
 )
 def test_numpy_instance_nonzero(
@@ -706,35 +747,34 @@ def test_numpy_instance_nonzero(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, a = dtype_and_a
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": a[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="nonzero",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.ravel",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.ravel"
     ),
 )
 def test_numpy_instance_ravel(
@@ -742,30 +782,32 @@ def test_numpy_instance_ravel(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, a = dtype_and_a
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": a[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="ravel",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.repeat",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
@@ -773,9 +815,6 @@ def test_numpy_instance_ravel(
     ),
     repeats=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=1),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.repeat"
-    ),
 )
 def test_numpy_instance_repeat(
     dtype_and_x,
@@ -784,33 +823,35 @@ def test_numpy_instance_repeat(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "repeats": repeats,
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="repeat",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.searchsorted",
     dtype_x_v=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
         min_num_dims=1,
@@ -818,9 +859,6 @@ def test_numpy_instance_repeat(
         num_arrays=2,
     ),
     side=st.sampled_from(["left", "right"]),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.searchsorted"
-    ),
 )
 def test_numpy_instance_searchsorted(
     dtype_x_v,
@@ -828,34 +866,36 @@ def test_numpy_instance_searchsorted(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_x_v
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "v": xs[1],
             "side": side,
             "sorter": np.argsort(xs[0]),
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="searchsorted",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.squeeze",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
@@ -863,41 +903,40 @@ def test_numpy_instance_searchsorted(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.squeeze"
-    ),
 )
 def test_numpy_instance_squeeze(
     dtype_x_axis,
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x, axis = dtype_x_axis
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "axis": axis,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="squeeze",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -910,37 +949,36 @@ def test_numpy_instance_add__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__add__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__sub__"
     ),
 )
 def test_numpy_instance_sub__(
@@ -948,38 +986,37 @@ def test_numpy_instance_sub__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__sub__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__mul__"
     ),
 )
 def test_numpy_instance_mul__(
@@ -987,38 +1024,37 @@ def test_numpy_instance_mul__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__mul__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__and__"
     ),
 )
 def test_numpy_instance_and__(
@@ -1026,38 +1062,37 @@ def test_numpy_instance_and__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__and__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__or__"
     ),
 )
 def test_numpy_instance_or__(
@@ -1065,38 +1100,37 @@ def test_numpy_instance_or__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__or__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__xor__"
     ),
 )
 def test_numpy_instance_xor__(
@@ -1104,37 +1138,36 @@ def test_numpy_instance_xor__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__xor__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__matmul__"
-    ),
 )
 def test_numpy_instance_matmul__(
     x,
@@ -1142,40 +1175,39 @@ def test_numpy_instance_matmul__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     dtype1, x1 = x
     dtype2, x2 = y
     input_dtype = dtype1 + dtype2
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x1,
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": x2,
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__matmul__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__copy__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__copy__"
     ),
 )
 def test_numpy_instance_copy__(
@@ -1183,36 +1215,35 @@ def test_numpy_instance_copy__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__copy__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__neg__"
     ),
 )
 def test_numpy_instance_neg__(
@@ -1220,36 +1251,35 @@ def test_numpy_instance_neg__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__neg__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__pos__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__pos__"
     ),
 )
 def test_numpy_instance_pos__(
@@ -1257,36 +1287,35 @@ def test_numpy_instance_pos__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__pos__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__bool__"
     ),
 )
 def test_numpy_instance_bool__(
@@ -1294,36 +1323,35 @@ def test_numpy_instance_bool__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__bool__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__ne__"
     ),
 )
 def test_numpy_instance_ne__(
@@ -1331,38 +1359,37 @@ def test_numpy_instance_ne__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__ne__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__eq__"
     ),
 )
 def test_numpy_instance_eq__(
@@ -1370,38 +1397,37 @@ def test_numpy_instance_eq__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__eq__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__ge__"
     ),
 )
 def test_numpy_instance_ge__(
@@ -1409,38 +1435,37 @@ def test_numpy_instance_ge__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__ge__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__gt__"
     ),
 )
 def test_numpy_instance_gt__(
@@ -1448,38 +1473,37 @@ def test_numpy_instance_gt__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__gt__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__le__"
     ),
 )
 def test_numpy_instance_le__(
@@ -1487,38 +1511,37 @@ def test_numpy_instance_le__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_init=native_array,
-        as_variable_flags_method=as_variable,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": xs[0],
         },
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
             "value": xs[1],
         },
         frontend="numpy",
-        class_name="ndarray",
+        class_="ndarray",
         method_name="__le__",
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
-    num_positional_args_method=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ndarray.__lt__"
     ),
 )
 def test_numpy_instance_lt__(
@@ -1526,6 +1549,160 @@ def test_numpy_instance_lt__(
     as_variable,
     num_positional_args_method,
     native_array,
+    class_,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": xs[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_="ndarray",
+        method_name="__lt__",
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__int__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+)
+def test_numpy_instance_int__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={},
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__float__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+)
+def test_numpy_instance_float__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={},
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__contains__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_numpy_instance_contains__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "key": xs[0].reshape(-1)[0],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__iadd__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+)
+def test_numpy_instance_iadd__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1544,7 +1721,280 @@ def test_numpy_instance_lt__(
         all_as_kwargs_np_method={
             "value": xs[1],
         },
-        frontend="numpy",
-        class_name="ndarray",
-        method_name="__lt__",
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__isub__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+)
+def test_numpy_instance_isub__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__imul__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+    ),
+)
+def test_numpy_instance_imul__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ipow__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    power=helpers.ints(min_value=1, max_value=3),
+)
+def test_numpy_instance_ipow__(
+    dtype_and_x,
+    power,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": power,
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__iand__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_iand__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ior__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_ior__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__ixor__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("bool"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_ixor__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__imod__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=0,
+        exclude_min=True,
+    ),
+)
+def test_numpy_instance_imod__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    frontend,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": xs[0],
+        },
+        all_as_kwargs_np_method={
+            "value": xs[1],
+        },
+        frontend=frontend,
+        class_=class_,
+        method_name=method_name,
     )

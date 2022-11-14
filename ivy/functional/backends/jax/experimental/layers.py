@@ -7,7 +7,7 @@ import jax.numpy as jnp
 import math
 
 
-def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
+def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
 
     if isinstance(strides, int):
         strides = (strides,) * len(window_shape)
@@ -36,27 +36,6 @@ def _pool(inputs, init, reduce_fn, window_shape, strides, padding):
     return y
 
 
-def max_pool2d(
-    x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NHWC",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if data_format == "NCHW":
-        x = jnp.transpose(x, (0, 2, 3, 1))
-
-    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
-
-    if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
-
-    return res
-
-
 def max_pool1d(
     x: JaxArray,
     kernel: Union[int, Tuple[int]],
@@ -80,25 +59,32 @@ def max_pool1d(
     elif len(kernel) == 1:
         kernel = (kernel[0],)
 
-    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
 
     if data_format == "NCW":
         res = jnp.transpose(x, (0, 2, 1))
     return res
 
 
-def kaiser_window(
-    window_length: int,
-    periodic: bool = True,
-    beta: float = 12.0,
+def max_pool2d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
     *,
-    dtype: Optional[jnp.dtype] = None,
+    data_format: str = "NHWC",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if periodic is False:
-        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
-    else:
-        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
+
+    return res
 
 
 def max_pool3d(
@@ -115,11 +101,83 @@ def max_pool3d(
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
     if isinstance(kernel, int):
         kernel = (kernel,) * 3
-    res = _pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
+    res = general_pool(x, -jnp.inf, jlax.max, kernel, strides, padding)
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
 
+    return res
+
+
+def avg_pool1d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int]],
+    strides: Union[int, Tuple[int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if data_format == "NCW":
+        x = jnp.transpose(x, (0, 2, 1))
+
+    if isinstance(kernel, int):
+        kernel = (kernel,)
+    elif len(kernel) == 1:
+        kernel = (kernel[0],)
+
+    if isinstance(strides, int):
+        strides = (strides,)
+    elif len(strides) == 1:
+        strides = (strides[0],)
+
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    div_shape = x.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / general_pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
+    if data_format == "NCW":
+        res = jnp.transpose(x, (0, 2, 1))
+    return res
+
+
+def avg_pool2d(
+    x: JaxArray,
+    kernel: Union[int, Tuple[int], Tuple[int, int]],
+    strides: Union[int, Tuple[int], Tuple[int, int]],
+    padding: str,
+    /,
+    *,
+    data_format: str = "NHWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(kernel, int):
+        kernel = (kernel,) * 2
+    elif len(kernel) == 1:
+        kernel = (kernel[0],) * 2
+
+    if isinstance(strides, int):
+        strides = (strides,) * 2
+    elif len(strides) == 1:
+        strides = (strides[0],) * 2
+
+    if data_format == "NCHW":
+        x = jnp.transpose(x, (0, 2, 3, 1))
+
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
+    div_shape = x.shape[:-1] + (1,)
+    if len(div_shape) - 2 == len(kernel):
+        div_shape = (1,) + div_shape[1:]
+    res = res / general_pool(
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
+    )
+    if data_format == "NCHW":
+        return jnp.transpose(res, (0, 3, 1, 2))
     return res
 
 
@@ -163,51 +221,17 @@ def avg_pool3d(
         ],
         "edge",
     )
-    res = _pool(x, 0.0, jlax.add, kernel, strides, padding)
+    res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
     div_shape = res.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
-    res = res / _pool(jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding)
+    res = res / general_pool(
+        jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding
+    )
 
     if data_format == "NCDHW":
         res = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    return res
-
-
-def avg_pool2d(
-    x: JaxArray,
-    kernel: Union[int, Tuple[int], Tuple[int, int]],
-    strides: Union[int, Tuple[int], Tuple[int, int]],
-    padding: str,
-    /,
-    *,
-    data_format: str = "NHWC",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-
-    if isinstance(kernel, int):
-        kernel = (kernel,) * 2
-    elif len(kernel) == 1:
-        kernel = (kernel[0],) * 2
-
-    if isinstance(strides, int):
-        strides = (strides,) * 2
-    elif len(strides) == 1:
-        strides = (strides[0],) * 2
-
-    if data_format == "NCHW":
-        x = jnp.transpose(x, (0, 2, 3, 1))
-
-    res = _pool(x, 0.0, jlax.add, kernel, strides, padding)
-    div_shape = x.shape[:-1] + (1,)
-    if len(div_shape) - 2 == len(kernel):
-        div_shape = (1,) + div_shape[1:]
-    res = res / _pool(
-        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
-    )
-    if data_format == "NCHW":
-        return jnp.transpose(res, (0, 3, 1, 2))
     return res
 
 
@@ -283,3 +307,30 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
+
+
+def fft(
+    x: JaxArray,
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not isinstance(dim, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+    if n is None:
+        n = x.shape[dim]
+    if n < -len(x.shape):
+        raise ivy.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not isinstance(n, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+    if n <= 1:
+        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return jnp.fft(x, n, dim, norm)
