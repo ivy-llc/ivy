@@ -200,8 +200,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         With :class:`ivy.Array` inputs:
 
         >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
-        >>> e = ivy.eigvalsh(x)
-        >>> print(e)
+        >>> y = ivy.eigvalsh(x)
+        >>> print(y)
         ivy.array([[-1.,  3.]])
         """
         return ivy.eigvalsh(self._data, UPLO=UPLO, out=out)

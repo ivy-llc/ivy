@@ -601,7 +601,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the computed eigenvalues. The returned array must have shape
+            a container containing the computed eigenvalues.
+            The returned array must have shape
             (..., M) and have the same data type as x.
 
         Examples
@@ -671,7 +672,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Returns
         -------
         ret
-            a container containing the computed eigenvalues. The returned array must have shape
+            a container containing the computed eigenvalues.
+            The returned array must have shape            
             (..., M) and have the same data type as x.
 
         Examples
@@ -680,8 +682,8 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[1.,2.],[2.,1.]]]),
         ... b=ivy.array([[[2.,4.],[4.,2.]]]))
-        >>> e = ivy.eigvalsh(x)
-        >>> print(e)
+        >>> y = ivy.eigvalsh(x)
+        >>> print(y)
         {
             a: ivy.array([[-1., 3.]]),
             b: ivy.array([[-2., 6.]])

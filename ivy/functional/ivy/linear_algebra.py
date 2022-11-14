@@ -606,13 +606,13 @@ def eigvalsh(
     instances in place of any of the arguments.
 
     Examples
-    ------------------
+    --------
 
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
-    >>> e = ivy.eigvalsh(x)
-    >>> print(e)
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
     ivy.array([[-1.,  3.]])
 
     Using out
@@ -632,7 +632,7 @@ def eigvalsh(
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
-    >>> e = ivy.eigvalsh(x, UPLO="U")
+    >>> y = ivy.eigvalsh(x, UPLO="U")
     >>> print(y)
     ivy.array([[-1.45033181e+00,  1.02829754e+00,  1.54220343e+01],
        [-1.12647155e-15,  4.38447177e-01,  4.56155300e+00]])
@@ -640,8 +640,8 @@ def eigvalsh(
     With :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.native_array([[[1., 1., 2.], [1., 2., 1.], [1., 1., 2]]])
-    >>> e = ivy.eigvalsh(x)
-    >>> print(e)
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
     ivy.array([[0.26794919, 1.        , 3.7320509 ]])
 
     With :class:`ivy.Container` inputs:
@@ -649,8 +649,8 @@ def eigvalsh(
     >>> x = ivy.Container(a=ivy.array([[[1.,2.,3.],[2.,4.,5.],[3.,5.,6.]]]),
     ... b=ivy.array([[[1.,1.,2.],[1.,2.,1.],[2.,1.,1.]]]),
     ... c=ivy.array([[[2.,2.,2.],[2.,3.,3.],[2.,3.,3.]]]))
-    >>> e = ivy.eigvalsh(x)
-    >>> print(e)
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
     {
         a: ivy.array([[-0.51572949, 0.17091519, 11.3448143]]),
         b: ivy.array([[-1., 1., 4.]]),
