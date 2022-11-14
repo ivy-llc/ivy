@@ -612,8 +612,7 @@ def all_nested_indices(
     _base: bool = True,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
-    where the method evaluates as True.
+    """returns indices of all the elements in nest
 
     Parameters
     ----------
@@ -628,11 +627,14 @@ def all_nested_indices(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
     ret
-        A set of indices for the nest where the function evaluated as True.
+        A set of indices of all elements in nest
 
     """
     _index = list() if _index is None else _index
@@ -811,6 +813,9 @@ def nested_map(
         Placeholder for the list check function, do not set this parameter.
     _dict_check_fn
         Placeholder for the dict check function, do not set this parameter.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -905,6 +910,7 @@ def nested_map(
                     tuple_check_fn,
                     list_check_fn,
                     dict_check_fn,
+                    extra_nest_types,
                 )
                 for k, v in x.items()
             }
@@ -935,6 +941,9 @@ def nested_any(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -984,6 +993,9 @@ def copy_nest(
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
         Default is ``False``.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -1018,6 +1030,7 @@ def copy_nest(
     {'first': [23.0, 24.0, 25], 'second': [46.0, 48.0, 50]}
 
     """
+    extra_nest_types = ivy.default(extra_nest_types, ())
     class_instance = type(nest)
     check_fn = (
         (lambda x_, t: isinstance(nest, t))
