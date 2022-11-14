@@ -290,3 +290,16 @@ def nextafter(
 
 
 nextafter.support_native_out = True
+
+
+def zeta(
+    x: torch.Tensor,
+    q: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.zeta(x, q)
+
+
+zeta.support_native_out = False

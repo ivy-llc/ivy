@@ -277,3 +277,42 @@ def nextafter(
 
 
 nextafter.support_natvie_out = True
+
+
+def zeta(
+    x: np.ndarray, 
+    q: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    neg_indices = np.where(x < 0)
+    pos_indices = np.where(x >= 0)
+    array_shape = q.shape
+    q, x = q[pos_indices], x[pos_indices]
+    n, res = 1, 1 / q ** x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = np.round(res, decimals=4)
+    dum = np.zeros(shape=array_shape)
+    dum[pos_indices] = ret
+    dum[neg_indices] = np.nan
+    return dum
+
+
+zeta.support_native_out = False
+
+import torch
+a = [-1,5]
+b = [-5,3]
+torch.special.zeta(torch.tensor(a), torch.tensor(b))
+zeta(np.array(a), np.array(b))
+
+
+
+d = np.random.randint(-5, 10, size=(1,30))
+e = np.random.randint(-5, 10, size=(1,30))
+d[d > 0]
+e[d > 0]
+np.where(d < 0)[1]

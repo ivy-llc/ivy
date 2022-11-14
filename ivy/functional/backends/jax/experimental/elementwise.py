@@ -193,3 +193,25 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
+
+
+def zeta(
+    x: JaxArray,
+    q: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    neg_indices = jnp.where(x < 0)
+    pos_indices = jnp.where(x >= 0)
+    array_shape = q.shape
+    q, x = q[pos_indices], x[pos_indices]
+    n, res = 1, 1 / q ** x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = jnp.round(res, decimals=4)
+    dum = jnp.zeros(shape=array_shape)
+    dum = dum.at[pos_indices].set(ret)
+    dum = dum.at[neg_indices].set(jnp.nan)
+    return jnp.asarray(dum, dtype=q.dtype)
