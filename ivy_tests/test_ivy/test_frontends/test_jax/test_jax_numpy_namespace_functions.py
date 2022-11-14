@@ -2105,6 +2105,53 @@ def test_jax_numpy_kron(
     )
 
 
+# sum
+@handle_frontend_test(
+    fn_tree="jax.numpy.sum",
+    dtype_and_x=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    initial=st.one_of(st.floats(), st.none()),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+    promote_integers=st.booleans(),
+)
+def test_jax_numpy_sum(
+    *,
+    dtype_and_x,
+    initial,
+    where,
+    keepdims,
+    promote_integers,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        axis=axis,
+        dtype=input_dtype,
+        out=None,
+        keepdims=keepdims,
+        initial=initial,
+        where=where,
+        promote_integers=promote_integers,
+    )
+
+
 # lcm
 @handle_frontend_test(
     fn_tree="jax.numpy.lcm",
