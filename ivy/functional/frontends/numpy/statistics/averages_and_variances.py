@@ -74,7 +74,7 @@ def nanmedian(
 ):
     if overwrite_input:
         if 'nanmedian' in dir(a):
-            ret=a.nanmedian(axis=axis, keepdims=keepdims, out=out,overwrite_input=False)
+            ret=a.nanmedian(axis=axis, keepdims=keepdims, out=out,overwrite_input=overwrite_input)
             return ret
 
     axis = tuple(axis) if isinstance(axis, list) else axis
