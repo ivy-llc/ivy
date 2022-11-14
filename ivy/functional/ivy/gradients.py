@@ -23,18 +23,25 @@ from ivy.exceptions import handle_exceptions
 
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
-        if ivy.is_array(x, exclusive=True):
-            if ivy.is_int_dtype(x.dtype):
-                x = x.astype(ivy.default_float_dtype())
-            else:
-                x = ivy.stop_gradient(x)
-            return _variable(x)
-        return x
+        def inner_fn(x):
+            if ivy.is_array(x, exclusive=True):
+                if ivy.is_int_dtype(x.dtype):
+                    x = x.astype(ivy.default_float_dtype())
+                else:
+                    x = ivy.stop_gradient(x)
+
+                return _variable(x)
+            return x
+
+        return ivy.nested_map(x, fn=inner_fn, include_derived=True)
 
     if xs_grad_idxs is not None:
-        xs = xs.to_dict()
-        ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
-        xs = ivy.Container(xs)
+        if isinstance(xs, ivy.Container):
+            xs = xs.to_dict()
+            ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
+            xs = ivy.Container(xs)
+        else:
+            ivy.map_nest_at_indices(xs, xs_grad_idxs, map_fn)
         return xs
     else:
         return ivy.nested_map(xs, map_fn, include_derived=True)
@@ -93,10 +100,12 @@ def _idxs_to_str(idxs):
     return final_idxs
 
 
-def _get_native_variables_and_indices(x, reshape=True, idxs=None):
+def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=False):
     def map_fn(x_):
         if ivy.is_array(x_):
             x_ = ivy.to_ivy(x_) if ivy.is_native_array(x_) else x_
+            if create_var:
+                x_ = _variable(x_) if not _is_variable(x_, exclusive=True) else x_
             if len(x_.shape) == 0:
                 return ivy.to_native(x_)
             if reshape:
@@ -150,19 +159,24 @@ def _stop_grad_and_index(func_ret, retain_grads, grads):
 
 def _variable(x):
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(x, current_backend(x).variable, include_derived=True)
+    ret = ivy.nested_map(x, current_backend(x).variable, include_derived=True)
+    return ivy.nested_map(ret, ivy.to_ivy, include_derived=True)
 
 
-def _is_variable(x, exclusive) -> bool:
+def _is_variable(x, exclusive=False) -> bool:
     x = ivy.to_native(x, nested=True)
     return ivy.nested_map(
-        current_backend(x).is_variable(x, exclusive=exclusive), include_derived=True
+        x,
+        lambda x: current_backend(x).is_variable(x, exclusive=exclusive),
+        include_derived=True,
     )
 
 
 def _variable_data(x):
     x = ivy.to_native(x, nested=True)
-    return ivy.nested_map(current_backend(x).variable_data(x), include_derived=True)
+    return ivy.nested_map(
+        x, lambda x: current_backend(x).variable_data(x), include_derived=True
+    )
 
 
 # Extra #
