@@ -400,7 +400,14 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def sum(
-        a, axis=None, dtype=None, out=None, keepdims=False, initial=None, where=None, promote_integers=True
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
 ):
     if initial:
         s = ivy.shape(a, as_array=True)
