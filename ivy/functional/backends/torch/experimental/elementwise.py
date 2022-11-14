@@ -290,22 +290,3 @@ def nextafter(
 
 
 nextafter.support_native_out = True
-
-
-def arccos(
-    x: Union[torch.Tensor, list, tuple, float, int],
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if x in [float, int]:
-        x = torch.Tensor(x)
-        return torch.arccos(x).item()
-    elif x in [list, tuple]:
-        x = torch.Tensor(x)
-        return torch.arccos(x)
-    else:
-        return torch.arccos(x)
-
-
-arccos.support_native_out = True

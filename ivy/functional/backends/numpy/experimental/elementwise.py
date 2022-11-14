@@ -277,15 +277,3 @@ def nextafter(
 
 
 nextafter.support_natvie_out = True
-
-
-def arccos(
-    x: Union[np.ndarray, list, tuple, float, int],
-    /,
-    *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
-    return np.arccos(x, out=out)
-
-
-arccos.support_native_out = True

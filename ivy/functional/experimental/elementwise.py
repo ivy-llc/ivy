@@ -904,39 +904,3 @@ def nextafter(
     ivy.array([1.4013e-45., 3.4028e+38])
     """
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_nestable
-@handle_exceptions
-def arccos(
-    x: Union[ivy.Array, ivy.NativeArray, list, tuple, float, int],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
-) -> bool:
-    """
-    Computes the trigonometric inverse cosine, element-wise.
-
-    Parameters
-    ----------
-    x
-        Array-like input.
-    out
-        Alternate output array in which to place the result.
-        The default is None.
-
-    Returns
-    -------
-    ret
-        The angle of the ray intersecting the unit circle at the given x-coordinate
-        in radians [0, pi]. This is a scalar if x is a scalar.
-
-    Examples
-    --------
-    >>> x = ivy.array([1, -1])
-    >>> ivy.arccos(x)
-    ivy.array([ 0.   ,  3.14159265])
-    """
-    return ivy.current_backend(x).arccos(x, out=out)

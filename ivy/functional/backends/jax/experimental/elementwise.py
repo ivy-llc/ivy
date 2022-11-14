@@ -193,12 +193,3 @@ def nextafter(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
-
-
-def arccos(
-    x: Union[JaxArray, list, tuple, float, int],
-    /,
-    *,
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    return jnp.arccos(x)

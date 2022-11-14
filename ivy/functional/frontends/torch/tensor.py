@@ -288,6 +288,9 @@ class Tensor:
         self.data = self.pow(other)
         return self.data
 
+    def argmax(self, dim=None, keepdim=False):
+        return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
     # Special Methods #
     # -------------------#
 
