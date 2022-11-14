@@ -222,18 +222,18 @@ def eye(
     elif 0 < k < n_cols:
         mat = torch.concat(
             [
-                torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
+                torch.zeros([n_rows, k], dtype=dtype, device=device),
                 i[:, : n_cols - k],
             ],
             1,
         )
         ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        if out is not None:
+            return ivy.inplace_update(out, ret)
     else:
         ret = torch.zeros(
             batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
         )
-    if out is not None:
-        return ivy.inplace_update(out, ret)
     return ret
 
 
