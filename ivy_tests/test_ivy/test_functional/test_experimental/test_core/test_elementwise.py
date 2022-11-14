@@ -870,8 +870,8 @@ def test_nextafter(
 
 
 # diff
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.diff",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
