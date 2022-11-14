@@ -3,6 +3,7 @@
 # global
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
+import copy
 
 # local
 import ivy
@@ -968,6 +969,7 @@ def copy_nest(
     /,
     include_derived: bool = False,
     to_mutable: bool = False,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Copies a nest deeply, but without copying leaves of the nest, only the nest
     lists, tuples and dicts are copied.
@@ -1024,16 +1026,28 @@ def copy_nest(
     )
     if check_fn(nest, tuple):
         ret_list = [
-            copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+            copy_nest(
+                i,
+                include_derived=include_derived,
+                to_mutable=to_mutable,
+                extra_nest_types=extra_nest_types,
+            )
             for i in nest
         ]
         if to_mutable:
             return ret_list
         return class_instance(tuple(ret_list))
-    elif check_fn(nest, list):
+    elif check_fn(nest, list) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            return copy.deepcopy(nest)
         return class_instance(
             [
-                copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+                copy_nest(
+                    i,
+                    include_derived=include_derived,
+                    to_mutable=to_mutable,
+                    extra_nest_types=extra_nest_types,
+                )
                 for i in nest
             ]
         )
@@ -1041,7 +1055,12 @@ def copy_nest(
         class_instance = type(nest)
         return class_instance(
             {
-                k: copy_nest(v, include_derived=include_derived, to_mutable=to_mutable)
+                k: copy_nest(
+                    v,
+                    include_derived=include_derived,
+                    to_mutable=to_mutable,
+                    extra_nest_types=extra_nest_types,
+                )
                 for k, v in nest.items()
             }
         )
