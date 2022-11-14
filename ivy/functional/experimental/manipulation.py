@@ -649,10 +649,14 @@ def _slice_at_axis(sl, axis):
 
 
 def _set_pad_area(padded, axis, width_pair, value_pair):
-    left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
-    padded[left_slice] = value_pair[0]
-    right_slice = _slice_at_axis(slice(padded.shape[axis] - width_pair[1], None), axis)
-    padded[right_slice] = value_pair[1]
+    if width_pair[0] > 0:
+        left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
+        padded[left_slice] = value_pair[0]
+    if width_pair[1] > 0:
+        right_slice = _slice_at_axis(
+            slice(padded.shape[axis] - width_pair[1], None), axis
+        )
+        padded[right_slice] = value_pair[1]
     return padded
 
 
@@ -666,24 +670,27 @@ def _get_edges(padded, axis, width_pair):
     return left_edge, right_edge
 
 
-def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
-    edge_pair = _get_edges(padded, axis, width_pair)
-    left_ramp, right_ramp = (
-        ivy.linspace(
-            ivy.array(edge.squeeze(0)),
-            end_value,
-            num=width + 1,
-            dtype=padded.dtype,
+def _get_ramp(i, padded, axis, width_pair, end_value_pair, edge_pair):
+    if width_pair[i] > 0:
+        return ivy.linspace(
+            end_value_pair[i],
+            ivy.array(edge_pair[i].squeeze(axis)),
+            num=width_pair[i],
+            endpoint=False,
+            dtype=ivy.Dtype(str(padded.dtype)),
             axis=axis,
         )
-        for end_value, edge, width in zip(end_value_pair, edge_pair, width_pair)
+    else:
+        return ivy.empty((1,))
+
+
+def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
+    edge_pair = _get_edges(padded, axis, width_pair)
+    left_ramp = _get_ramp(0, padded, axis, width_pair, end_value_pair, edge_pair)
+    right_ramp = ivy.flip(
+        _get_ramp(1, padded, axis, width_pair, end_value_pair, edge_pair)
     )
-    right_ramp = right_ramp[_slice_at_axis(slice(1, None, None), axis)].to_numpy()
-    left_ramp = ivy.flip(
-        left_ramp[_slice_at_axis(slice(1, None, None), axis)],
-        axis=axis,
-    ).to_numpy()
-    return left_ramp, right_ramp
+    return left_ramp.to_numpy(), right_ramp.to_numpy()
 
 
 def _get_stats(padded, axis, width_pair, length_pair, stat_func):
