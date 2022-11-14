@@ -5828,6 +5828,19 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the evaluated result for each element in ``self``.</span>
 <span class="sd">            The returned container must have the same data type as ``self``.</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]),</span>
+<span class="sd">        ...                   b=ivy.array([3., 4., -5.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.positive(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">        a: ivy.array([0., 1., 2.]),</span>
+<span class="sd">        b: ivy.array([3., 4., -5.])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_positive</span><span class="p">(</span>

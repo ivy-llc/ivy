@@ -209,7 +209,7 @@ Following this, an inplace update is then also performed on the <code class="xre
     <span class="n">ensure_in_backend</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="p">(</span><span class="n">x_native</span><span class="p">,</span> <span class="n">val_native</span><span class="p">),</span> <span class="n">_</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">args_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x_native</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_is_variable</span><span class="p">(</span><span class="n">x_native</span><span class="p">):</span>
         <span class="n">x_native</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">val_native</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">x_native</span>

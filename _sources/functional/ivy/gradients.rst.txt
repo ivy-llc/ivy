@@ -16,9 +16,6 @@ Gradients
    gradients/with_grads.rst
    gradients/set_with_grads.rst
    gradients/unset_with_grads.rst
-   gradients/variable.rst
-   gradients/is_variable.rst
-   gradients/variable_data.rst
    gradients/stop_gradient.rst
    gradients/execute_with_gradients.rst
    gradients/value_and_grad.rst

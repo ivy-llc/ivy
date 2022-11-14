@@ -66,9 +66,6 @@
 <li class="toctree-l2"><a class="reference internal" href="with_grads.html">with_grads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_with_grads.html">set_with_grads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unset_with_grads.html">unset_with_grads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable.html">variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_variable.html">is_variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_data.html">variable_data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">value_and_grad</a></li>
@@ -167,7 +164,7 @@ input.</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.6</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.8</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">]]))</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.6</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.8</span><span class="p">,</span> <span class="mf">1.3</span><span class="p">,</span> <span class="mf">6.2</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">grad_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">value_and_grad</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">value_grad</span> <span class="o">=</span> <span class="n">grad_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

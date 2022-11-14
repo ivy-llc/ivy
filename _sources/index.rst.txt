@@ -202,7 +202,7 @@ You should then see output like the following:
    ivy.depthwise_conv2d(                  ivy.norm(                                 ivy.to_numpy(
    ivy.dtype(                             ivy.one_hot(                              ivy.transpose(
    ivy.execute_with_gradients(            ivy.ones(                                 ivy.unstack(
-   ivy.exp(                               ivy.ones_like(                            ivy.variable(
+   ivy.exp(                               ivy.ones_like(                            ivy.vector_norm(
    ivy.expand_dims(                       ivy.pinv(                                 ivy.vector_to_skew_symmetric_matrix(
    ivy.flip(                              ivy.randint(                              ivy.verbosity
    ivy.floor(                             ivy.random                                ivy.where(

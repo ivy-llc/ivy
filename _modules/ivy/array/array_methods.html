@@ -3417,6 +3417,29 @@
 <span class="sd">    ret</span>
 <span class="sd">        an array containing the evaluated result for each element in ``self``.</span>
 <span class="sd">        The returned array must have the same data type as ``self``.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+<span class="sd">    </span>
+<span class="sd">     &gt;&gt;&gt; x = ivy.array([2, 3 ,5, 7])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.positive(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2, 3, 5, 7])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, -1, -0.5, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(5)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.positive(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([0., -1., -0.5,  2.,  3.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
+<span class="sd">    ...                [-4.4, -5.5, -6.6]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.positive(x,out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[ 1.1,  2.2,  3.3],</span>
+<span class="sd">    [-4.4, -5.5, -6.6]])</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span></div>
 
@@ -5160,87 +5183,6 @@
 
 <span class="c1"># ToDo: implement all methods here as public instance methods</span>
 
-
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../functional/ivy/gradients/variable/variable_array.html#ivy.array.array_methods.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.variable. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.variable also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        An ivy array.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        An ivy array that supports gradient computation.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 4., -1.])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.variable()</span>
-<span class="sd">    &gt;&gt;&gt; y</span>
-<span class="sd">    ivy.array([ 2.,  4., -1.])</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">pass</span></div>
-
-
-<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../functional/ivy/gradients/is_variable/is_variable_array.html#ivy.array.array_methods.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.is_variable. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.is_variable also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        An ivy array.</span>
-<span class="sd">    exclusive</span>
-<span class="sd">        Whether to check if the data type is exclusively a variable, rather than an</span>
-<span class="sd">        array. For frameworks like JAX that do not have exclusive variable types,</span>
-<span class="sd">        the function will always return False if this flag is set, otherwise the</span>
-<span class="sd">        check is the same for general arrays. Default is ``False``.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Boolean, true if ``self`` is a trainable variable, false otherwise.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2], [3], [5]])</span>
-<span class="sd">    &gt;&gt;&gt; is_var = x.is_variable(exclusive=True)</span>
-<span class="sd">    &gt;&gt;&gt; print(is_var)</span>
-<span class="sd">    False</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="variable_data"><a class="viewcode-back" href="../../../functional/ivy/gradients/variable_data/variable_data_array.html#ivy.array.array_methods.variable_data">[docs]</a><span class="k">def</span> <span class="nf">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    ivy.Array instance method variant of ivy.variable_data. This method simply wraps</span>
-<span class="sd">    the function, and so the docstring for ivy.variable_data also applies to this</span>
-<span class="sd">    method with minimal changes.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    self</span>
-<span class="sd">        An ivy variable.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The internal data stored by the variable</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../functional/ivy/gradients/stop_gradient/stop_gradient_array.html#ivy.array.array_methods.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>

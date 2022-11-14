@@ -3581,7 +3581,7 @@
 
 <span class="sd">        With `ivy.Container` input and backend set as &#39;tensorflow&#39;:</span>
 
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),</span>
 <span class="sd">        ...                   b=ivy.array([0., 5.5, -8]))</span>
 <span class="sd">        &gt;&gt;&gt; ret = ivy.Container.static_supports_inplace_updates(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(ret)</span>
