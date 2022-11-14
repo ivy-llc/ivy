@@ -56,3 +56,19 @@ def hann_window(
 ) -> JaxArray:
     window_length = window_length + 1 if periodic is True else window_length
     return jnp.array(jnp.hanning(window_length), dtype=dtype)
+
+
+def frombuffer(
+    buffer: JaxArray,
+    /,
+    count: int,
+    offset: int,
+    like: int,
+    *,
+    dtype: jnp.dtype,
+    device: jaxlib.xla_extension.Device,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return _to_device(
+        jnp.frombuffer(buffer, count, offset, like, dtype=dtype), device=device,
+    )
