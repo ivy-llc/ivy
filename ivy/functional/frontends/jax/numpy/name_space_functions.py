@@ -499,3 +499,9 @@ def msort(a):
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
     return ivy.multiply(x1, x2)
+
+
+alltrue = all
+
+
+sometrue = any
