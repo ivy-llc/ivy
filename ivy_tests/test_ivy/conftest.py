@@ -1,32 +1,16 @@
 # global
 import os
 import pytest
-from typing import Dict, Union, Tuple
+from typing import Dict
 
 # local
-from ivy import clear_backend_stack, DefaultDevice
-from ivy_tests.test_ivy import helpers
+from ivy import DefaultDevice
+from ivy_tests.test_ivy.helpers import globals as test_globals
 
 
-MAX_EXAMPLES: int
-
-FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
-
-TEST_BACKENDS: Dict[str, callable] = {
-    "numpy": lambda: helpers.get_ivy_numpy(),
-    "jax": lambda: helpers.get_ivy_jax(),
-    "tensorflow": lambda: helpers.get_ivy_tensorflow(),
-    "torch": lambda: helpers.get_ivy_torch(),
-    "": lambda: None,
-}
-
-CONFIG_DICT: Dict[str, Union[Tuple[bool, bool], None, bool]] = {
-    "as_variable": None,
-    "native_array": None,
-    "with_out": None,
-    "container": None,
-    "instance_method": None,
-}
+GENERAL_CONFIG_DICT = {}
+UNSET_TEST_CONFIG = {"list": [], "flag": []}
+UNSET_TEST_API_CONFIG = {"list": [], "flag": []}
 
 TEST_PARAMS_CONFIG = []
 
@@ -45,7 +29,7 @@ def pytest_configure(config):
     # framework
     raw_value = config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = FW_STRS
+        backend_strs = ["numpy", "jax", "tensorflow", "torch"]
     else:
         backend_strs = raw_value.split(",")
 
@@ -73,67 +57,72 @@ def pytest_configure(config):
                     TEST_PARAMS_CONFIG.append(
                         (
                             device,
-                            TEST_BACKENDS[backend_str](),
+                            test_globals.FWS_DICT[backend_str](),
                             compile_graph,
                             implicit,
-                            backend_str,
                         )
                     )
 
+    process_cl_flags(config)
+
 
 @pytest.fixture(autouse=True)
-def run_around_tests(device, f, compile_graph, fw, implicit):
-    clear_backend_stack()
-    if f is not None:
-        with f.use:
-            with DefaultDevice(device):
+def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
+    if hasattr(request.function, "test_data"):
+        try:
+            test_globals.setup_api_test(request.function.test_data, backend_fw.backend)
+        except Exception as e:
+            test_globals.teardown_api_test()
+            raise RuntimeError(f"Setting up test for {request.function} failed.") from e
+        with backend_fw.use:
+            with DefaultDevice(on_device):
                 yield
+        test_globals.teardown_api_test()
     else:
-        with DefaultDevice(device):
-            yield
+        with backend_fw.use:
+            with DefaultDevice(on_device):
+                yield
 
 
 def pytest_generate_tests(metafunc):
-    metafunc.parametrize("device,f,compile_graph,implicit,fw", TEST_PARAMS_CONFIG)
+    metafunc.parametrize(
+        "on_device,backend_fw,compile_graph,implicit", TEST_PARAMS_CONFIG
+    )
 
 
-@pytest.fixture(scope="session")
-def fixt_frontend_str():  # ToDo, temporary till handle test decorator is updated.
-    return None
-
-
-@pytest.fixture(scope="session")
-def get_command_line_flags(request) -> Dict[str, bool]:
-    getopt = request.config.getoption
+def process_cl_flags(config) -> Dict[str, bool]:
+    getopt = config.getoption
     no_extra_testing = getopt("--no-extra-testing")
 
-    CONFIG_DICT["as_variable"] = (
-        getopt("--skip-variable-testing"),
-        getopt("--with-variable-testing"),
-    )
-    CONFIG_DICT["native_array"] = (
-        getopt("--skip-native-array-testing"),
-        getopt("--with-native-array-testing"),
-    )
-    CONFIG_DICT["with_out"] = (
-        getopt("--skip-out-testing"),
-        getopt("--with-out-testing"),
-    )
-    CONFIG_DICT["container"] = (
-        getopt("--skip-nestable-testing"),
-        getopt("--with-nestable-testing"),
-    )
-    CONFIG_DICT["instance_method"] = (
-        getopt("--skip-instance-method-testing"),
-        getopt("--with-instance-method-testing"),
-    )
-    CONFIG_DICT["test_gradients"] = (
-        getopt("--skip-gradient-testing"),
-        getopt("--with-gradient-testing"),
-    )
+    tmp_config = {
+        "as_variable": (
+            getopt("--skip-variable-testing"),
+            getopt("--with-variable-testing"),
+        ),
+        "native_array": (
+            getopt("--skip-native-array-testing"),
+            getopt("--with-native-array-testing"),
+        ),
+        "with_out": (
+            getopt("--skip-out-testing"),
+            getopt("--with-out-testing"),
+        ),
+        "container": (
+            getopt("--skip-nestable-testing"),
+            getopt("--with-nestable-testing"),
+        ),
+        "instance_method": (
+            getopt("--skip-instance-method-testing"),
+            getopt("--with-instance-method-testing"),
+        ),
+        "test_gradients": (
+            getopt("--skip-gradient-testing"),
+            getopt("--with-gradient-testing"),
+        ),
+    }
 
     # final mapping for hypothesis value generation
-    for k, v in CONFIG_DICT.items():
+    for k, v in tmp_config.items():
         # when both flags are true
         if v[0] and v[1]:
             raise Exception(
@@ -147,20 +136,25 @@ def get_command_line_flags(request) -> Dict[str, bool]:
             )
         # skipping a test
         if v[0] or no_extra_testing:
-            CONFIG_DICT[k] = False
+            GENERAL_CONFIG_DICT[k] = False
         # extra testing
         if v[1]:
-            CONFIG_DICT[k] = True
-        # default
+            GENERAL_CONFIG_DICT[k] = True
+        # let hypothesis generate it
         if not v[0] ^ v[1]:
-            CONFIG_DICT[k] = None
-
-    return CONFIG_DICT
+            if k in ["instance_method", "test_gradients"]:
+                UNSET_TEST_API_CONFIG["flag"].append(k)
+            elif k == "container":
+                UNSET_TEST_API_CONFIG["list"].append("container_flags")
+            elif k == "with_out":
+                UNSET_TEST_CONFIG["flag"].append(k)
+            else:
+                UNSET_TEST_CONFIG["list"].append(k)
 
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="")
+    parser.addoption("--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
 

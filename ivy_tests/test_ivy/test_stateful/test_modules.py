@@ -7,7 +7,6 @@ import numpy as np
 # local
 import ivy
 from ivy.functional.ivy.gradients import _variable
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy_tests.test_ivy.helpers as helpers
 
 
@@ -34,7 +33,6 @@ class TrainableModule(ivy.Module):
 
 
 # module training
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -42,7 +40,7 @@ class TrainableModule(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_training(batch_shape, input_channels, output_channels, device):
+def test_module_training(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -51,7 +49,7 @@ def test_module_training(batch_shape, input_channels, output_channels, device):
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = TrainableModule(input_channels, output_channels, device=device)
+    module = TrainableModule(input_channels, output_channels, device=on_device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -101,7 +99,6 @@ class TrainableModuleWithList(ivy.Module):
 
 
 # module with list training
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -109,7 +106,9 @@ class TrainableModuleWithList(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_w_list_training(batch_shape, input_channels, output_channels, device):
+def test_module_w_list_training(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -118,7 +117,7 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = TrainableModuleWithList(input_channels, output_channels, device=device)
+    module = TrainableModuleWithList(input_channels, output_channels, device=on_device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -153,7 +152,6 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
 
 
 # module with partial v
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -161,7 +159,7 @@ def test_module_w_list_training(batch_shape, input_channels, output_channels, de
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_w_partial_v(batch_shape, input_channels, output_channels, device):
+def test_module_w_partial_v(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -194,7 +192,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     )
     try:
         TrainableModule(
-            input_channels, output_channels, device=device, v=v, with_partial_v=True
+            input_channels, output_channels, device=on_device, v=v, with_partial_v=True
         )
         raise Exception(
             "TrainableModule did not raise exception desipite being passed "
@@ -212,7 +210,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
         }
     )
     try:
-        TrainableModule(input_channels, output_channels, device=device, v=v)
+        TrainableModule(input_channels, output_channels, device=on_device, v=v)
         raise Exception(
             "TrainableModule did not raise exception desipite being passed "
             "with wrongly shaped variables."
@@ -220,7 +218,7 @@ def test_module_w_partial_v(batch_shape, input_channels, output_channels, device
     except ivy.exceptions.IvyException:
         pass
     module = TrainableModule(
-        input_channels, output_channels, device=device, v=v, with_partial_v=True
+        input_channels, output_channels, device=on_device, v=v, with_partial_v=True
     )
     module(x)
 
@@ -235,7 +233,6 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 
 # module with none attribute
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -243,7 +240,9 @@ class ModuleWithNoneAttribute(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_w_none_attribute(batch_shape, input_channels, output_channels, device):
+def test_module_w_none_attribute(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -253,7 +252,7 @@ def test_module_w_none_attribute(batch_shape, input_channels, output_channels, d
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = ModuleWithNoneAttribute(device=device)
+    module = ModuleWithNoneAttribute(device=on_device)
     module(x)
 
 
@@ -279,7 +278,6 @@ class TrainableModuleWithDuplicate(ivy.Module):
 
 
 # module training with duplicate
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -287,7 +285,7 @@ class TrainableModuleWithDuplicate(ivy.Module):
     channels=st.integers(min_value=1, max_value=64),
     same_layer=st.booleans(),
 )
-def test_module_training_with_duplicate(batch_shape, channels, same_layer, device):
+def test_module_training_with_duplicate(batch_shape, channels, same_layer, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -295,7 +293,7 @@ def test_module_training_with_duplicate(batch_shape, channels, same_layer, devic
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), "float32"
     )
-    module = TrainableModuleWithDuplicate(channels, same_layer, device=device)
+    module = TrainableModuleWithDuplicate(channels, same_layer, device=on_device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -343,7 +341,6 @@ class TrainableModuleWithDict(ivy.Module):
 
 
 # module with dict training
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -351,7 +348,9 @@ class TrainableModuleWithDict(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_w_dict_training(batch_shape, input_channels, output_channels, device):
+def test_module_w_dict_training(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -360,7 +359,7 @@ def test_module_w_dict_training(batch_shape, input_channels, output_channels, de
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = TrainableModuleWithDict(input_channels, output_channels, device=device)
+    module = TrainableModuleWithDict(input_channels, output_channels, device=on_device)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -409,7 +408,6 @@ class WithCustomVarStructure(ivy.Module):
 
 
 # with custom var structure
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -418,13 +416,13 @@ class WithCustomVarStructure(ivy.Module):
     output_channels=st.integers(min_value=2, max_value=5),
 )
 def test_with_custom_var_structure(
-    batch_shape, input_channels, output_channels, device
+    batch_shape, input_channels, output_channels, on_device
 ):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    module = WithCustomVarStructure(input_channels, output_channels, device=device)
+    module = WithCustomVarStructure(input_channels, output_channels, device=on_device)
     assert "x" in module.v
     assert "y" in module.v
     assert "z" in module.v
@@ -456,7 +454,6 @@ class WithNestedModules(ivy.Module):
 
 
 # top variables
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -464,12 +461,12 @@ class WithNestedModules(ivy.Module):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_top_variables(batch_shape, input_channels, output_channels, device):
+def test_top_variables(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
     for key_chain in [
         "dl0",
         "dl0/l0",
@@ -499,7 +496,6 @@ def test_top_variables(batch_shape, input_channels, output_channels, device):
 
 
 # top module
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -507,13 +503,13 @@ def test_top_variables(batch_shape, input_channels, output_channels, device):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_top_module(batch_shape, input_channels, output_channels, device):
+def test_top_module(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
 
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # full depth
     assert module._dl0.top_mod() is module
@@ -532,7 +528,6 @@ def test_top_module(batch_shape, input_channels, output_channels, device):
 
 
 # v with top v key chains
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -540,13 +535,15 @@ def test_top_module(batch_shape, input_channels, output_channels, device):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, device):
+def test_v_with_top_v_key_chains(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
 
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # full depth
     v = module._dl0.v_with_top_v_key_chains()
@@ -597,7 +594,6 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
 
 
 # module depth
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -605,13 +601,13 @@ def test_v_with_top_v_key_chains(batch_shape, input_channels, output_channels, d
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_depth(batch_shape, input_channels, output_channels, device):
+def test_module_depth(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
 
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # depth 0
     assert module.mod_depth() == 0
@@ -628,7 +624,6 @@ def test_module_depth(batch_shape, input_channels, output_channels, device):
 
 
 # module height
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -636,13 +631,13 @@ def test_module_depth(batch_shape, input_channels, output_channels, device):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_height(batch_shape, input_channels, output_channels, device):
+def test_module_height(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
 
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # height 2
     assert module.mod_height() == 2
@@ -659,7 +654,6 @@ def test_module_height(batch_shape, input_channels, output_channels, device):
 
 
 # sub modules
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -667,13 +661,13 @@ def test_module_height(batch_shape, input_channels, output_channels, device):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_sub_modules(batch_shape, input_channels, output_channels, device):
+def test_sub_modules(batch_shape, input_channels, output_channels, on_device):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
         return
 
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # depth 0
     sub_mods = module.sub_mods(depth=0)
@@ -696,7 +690,6 @@ def test_sub_modules(batch_shape, input_channels, output_channels, device):
 
 
 # track submod returns
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -704,7 +697,9 @@ def test_sub_modules(batch_shape, input_channels, output_channels, device):
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_track_submod_rets(batch_shape, input_channels, output_channels, device):
+def test_module_track_submod_rets(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -714,7 +709,7 @@ def test_module_track_submod_rets(batch_shape, input_channels, output_channels, 
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
@@ -758,7 +753,6 @@ def test_module_track_submod_rets(batch_shape, input_channels, output_channels, 
 
 
 # check submod returns
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -766,7 +760,9 @@ def test_module_track_submod_rets(batch_shape, input_channels, output_channels, 
     input_channels=st.integers(min_value=2, max_value=5),
     output_channels=st.integers(min_value=2, max_value=5),
 )
-def test_module_check_submod_rets(batch_shape, input_channels, output_channels, device):
+def test_module_check_submod_rets(
+    batch_shape, input_channels, output_channels, on_device
+):
     # smoke test
     if ivy.current_backend_str() == "numpy":
         # NumPy does not support gradients
@@ -776,7 +772,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     # depth 1
     ret = module(x, track_submod_rets=True, submod_depth=1)
@@ -851,7 +847,6 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
 
 
 # track submod call order
-@handle_cmd_line_args
 @given(
     batch_shape=helpers.get_shape(
         min_num_dims=2, max_num_dims=2, min_dim_size=1, max_dim_size=2
@@ -860,7 +855,7 @@ def test_module_check_submod_rets(batch_shape, input_channels, output_channels, 
     output_channels=st.integers(min_value=2, max_value=5),
 )
 def test_module_track_submod_call_order(
-    batch_shape, input_channels, output_channels, device
+    batch_shape, input_channels, output_channels, on_device
 ):
     # smoke test
     if ivy.current_backend_str() == "numpy":
@@ -871,7 +866,7 @@ def test_module_track_submod_call_order(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
         "float32",
     )
-    module = WithNestedModules(input_channels, output_channels, device=device)
+    module = WithNestedModules(input_channels, output_channels, device=on_device)
 
     root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), "_") + "_0"
 
