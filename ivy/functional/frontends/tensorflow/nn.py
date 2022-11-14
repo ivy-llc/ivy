@@ -212,10 +212,14 @@ def local_response_normalization(
         4,
         message="4D input, but got input with sizes " + str(input_shape),
     )
-    input_perm = ivy.permute_dims(input , axes= [0 , 3 , 1 , 2 ])
+    input_perm = ivy.astype(ivy.permute_dims(input , axes= [0 , 3 , 1 , 2 ]),input.dtype)
+    bias = ivy.astype(ivy.array(bias) , input.dtype)
+    alpha = ivy.astype(ivy.array(alpha) , input.dtype)
+    beta = ivy.astype(ivy.array(beta) , input.dtype)
+    sqr_sum = ivy.astype(ivy.zeros_like(input_perm),input.dtype)
     sqr_sum = ivy.zeros_like(input_perm)
     for p in range(input_shape[0]):
         sqr_sum[p] = [sum(ivy.pow(input_perm[p][max(c - depth_radius , 0): c + depth_radius + 1 ] , 2.0) )
                          for c in range(input_shape[3])]
-    div = ivy.divide(input_perm, ivy.pow(ivy.add(math.scalar_mul(alpha,sqr_sum),bias), beta))
+    div = ivy.multiply(input_perm,ivy.pow(math.add(sqr_sum * alpha ,bias), -beta))
     return ivy.permute_dims(div,[ 0 , 2 , 3 , 1 ])
