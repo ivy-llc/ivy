@@ -429,7 +429,7 @@ def test_tensorflow_gelu(
 
 
 @handle_frontend_test(
-    fn_name="tensorflow.nn.avg_pool2d",
+    fn_tree="tensorflow.nn.avg_pool2d",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(["NHWC"]),
