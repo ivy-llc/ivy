@@ -285,3 +285,18 @@ def one_hot(
         res = np.moveaxis(res, -1, axis)
 
     return res
+
+
+def frombuffer(
+    buffer: np.ndarray,
+    /,
+    count: int,
+    offset: int,
+    like: int,
+    *,
+    dtype: np.dtype,
+    device:str,
+    out:Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return _to_device(np.nanquantile(buffer, count, offset, like, dtype=dtype), device=device)
+    
