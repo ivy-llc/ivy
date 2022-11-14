@@ -15,12 +15,15 @@ def solve(a, b):
 
 
 # inv
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def inv(a):
     return ivy.inv(a)
 
 
 # pinv
+# TODO: add hermitian functionality
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def pinv(a, rtol=1e-15, hermitian=False):
     return ivy.pinv(a, rtol=rtol)
