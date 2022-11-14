@@ -156,6 +156,7 @@ class ArrayWithManipulation(abc.ABC):
         *,
         copy: Optional[bool] = None,
         out: Optional[ivy.Array] = None,
+        order: Optional[str] = "C",
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.reshape. This method simply wraps the
@@ -180,6 +181,17 @@ class ArrayWithManipulation(abc.ABC):
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
+        order
+            Read the elements of x using this index order, and place the elements into
+            the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
 
         Returns
         -------
@@ -190,13 +202,21 @@ class ArrayWithManipulation(abc.ABC):
         Examples
         --------
         >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
-        >>> y = x.reshape((2,3))
+        >>> y = x.reshape((3,2))
         >>> print(y)
-        ivy.array([[0., 1., 2.],
-                   [3., 4., 5.]])
+        ivy.array([[0., 1.],
+                   [2., 3.],
+                   [4., 5.]])
+
+        >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+        >>> y = x.reshape((3,2), order='F')
+        >>> print(y)
+        ivy.array([[0., 4.],
+                   [3., 2.],
+                   [1., 5.]])
 
         """
-        return ivy.reshape(self._data, shape, copy=copy, out=out)
+        return ivy.reshape(self._data, shape, copy=copy, out=out, order=order)
 
     def roll(
         self: ivy.Array,

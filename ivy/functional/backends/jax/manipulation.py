@@ -75,11 +75,12 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[JaxArray] = None,
+    order: Optional[str] = "C",
 ) -> JaxArray:
     if copy:
         newarr = jnp.copy(x)
-        return jnp.reshape(newarr, shape)
-    return jnp.reshape(x, shape)
+        return jnp.reshape(newarr, shape, order=order)
+    return jnp.reshape(x, shape, order=order)
 
 
 def roll(

@@ -100,10 +100,15 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    order: Optional[str] = "C",
 ) -> Union[tf.Tensor, tf.Variable]:
     if copy:
         newarr = tf.experimental.numpy.copy(x)
+        if order == "F":
+            return tf.transpose(tf.reshape(newarr, shape[::-1]))
         return tf.reshape(newarr, shape)
+    if order == "F":
+        return tf.transpose(tf.reshape(x, shape[::-1]))
     return tf.reshape(x, shape)
 
 
