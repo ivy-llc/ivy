@@ -302,17 +302,3 @@ def zeta(
 
 
 zeta.support_native_out = False
-
-import torch
-a = [-1,5]
-b = [-5,3]
-torch.special.zeta(torch.tensor(a), torch.tensor(b))
-zeta(np.array(a), np.array(b))
-
-
-
-d = np.random.randint(-5, 10, size=(1,30))
-e = np.random.randint(-5, 10, size=(1,30))
-d[d > 0]
-e[d > 0]
-np.where(d < 0)[1]
