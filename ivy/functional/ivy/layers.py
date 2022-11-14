@@ -1328,6 +1328,8 @@ def conv_general_dilated(
     ret
         The result of the transpose convolution operation.
     """
+    if data_format != "channel_last" or data_format != "channel_first":
+        dims, data_format = _get_dims_channel(data_format)
     return current_backend(x).conv_general_dilated(
         x,
         filters,
@@ -1585,6 +1587,33 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+def _get_dims_channel(data_format="NCHW"):
+    if data_format == "NWC":
+        dims = 1
+        data_format = "channel_last"
+        return dims, data_format
+    elif data_format == "NCW":
+        dims = 1
+        data_format = "channel_first"
+        return dims, data_format
+    if data_format == "NHWC":
+        dims = 2
+        data_format = "channel_last"
+        return dims, data_format
+    elif data_format == "NCHW":
+        dims = 2
+        data_format = "channel_first"
+        return dims, data_format
+    if data_format == "NDHWC":
+        dims = 3
+        data_format = "channel_last"
+        return dims, data_format
+    elif data_format == "NCDHW":
+        dims = 3
+        data_format = "channel_first"
+        return dims, data_format
 
 
 @to_native_arrays_and_back
