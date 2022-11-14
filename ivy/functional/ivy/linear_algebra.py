@@ -585,6 +585,14 @@ def eigvalsh(
     x
         input array having shape (..., M, M) and whose innermost two dimensions form
         square matrices. Must have floating-point data type.
+    UPLO
+        optional string being 'L' or 'U', specifying whether the calculation is done with 
+        the lower triangular part of `a` ('L', default) or the upper triangular part ('U').
+        Irrespective of this value only the real parts of the diagonal will
+        be considered in the computation to preserve the notion of a Hermitian
+        matrix. It therefore follows that the imaginary part of the diagonal
+        will always be treated as zero.
+
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -604,6 +612,15 @@ def eigvalsh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1.0, 2.0], [2.0, 1.0]])
+    >>> print(x)
+    ivy.array([-1., -3.])
+
 
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
