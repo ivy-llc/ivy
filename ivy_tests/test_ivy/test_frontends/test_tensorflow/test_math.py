@@ -508,6 +508,7 @@ def test_tensorflow_reduce_logsumexp(
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmax",
     dtype_and_x=statistical_dtype_values(function="argmax"),
+    output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
 )
 def test_tensorflow_argmax(
     *,
@@ -518,6 +519,7 @@ def test_tensorflow_argmax(
     frontend,
     fn_tree,
     on_device,
+    output_type,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -533,7 +535,7 @@ def test_tensorflow_argmax(
         on_device=on_device,
         input=x[0],
         axis=axis,
-        output_type="int64",
+        output_type=output_type,
     )
 
 
