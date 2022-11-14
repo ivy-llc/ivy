@@ -428,18 +428,6 @@ class ContainerWithSearching(ContainerBase):
         Instance Method Examples
         ------------------------
 
-        Using :class:`ivy.Array` instance method:
-
-        >>> x = ivy.array([[1, 2], [3, 4]])
-        >>> res = x.argwhere()
-        >>> print(res)
-        ivy.array([[0, 0], [0, 1], [1, 0], [1, 1]])
-
-        >>> x = ivy.array([[0, 2], [3, 4]])
-        >>> res = x.argwhere()
-        >>> print(res)
-        ivy.array([[0, 1], [1, 0], [1, 1]])
-
         Using :class:`ivy.Container` instance method
 
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))

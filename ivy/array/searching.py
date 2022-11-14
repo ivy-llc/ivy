@@ -191,5 +191,20 @@ class ArrayWithSearching(abc.ABC):
         ret
             Indices for where the boolean array is True.
 
+        Instance Method Examples
+        ------------------------
+
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[1, 2], [3, 4]])
+        >>> res = x.argwhere()
+        >>> print(res)
+        ivy.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+
+        >>> x = ivy.array([[0, 2], [3, 4]])
+        >>> res = x.argwhere()
+        >>> print(res)
+        ivy.array([[0, 1], [1, 0], [1, 1]])
+
         """
         return ivy.argwhere(self._data, out=out)
