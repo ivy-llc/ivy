@@ -246,3 +246,45 @@ def test_hamming_window(
         beta=beta,
         dtype=dtype,
     )
+@handle_cmd_line_args
+@given(
+    buffer=helpers.get_dtypes("integer"),
+    dtype=helpers.get_dtypes("float"),
+    input_dtype=helpers.get_dtypes("integer"),
+    count=st.integers(),
+    offset = st.integers(),
+    like = helpers.get_dtypes("integer"),
+    num_positional_args=helpers.num_positional_args(fn_name="frombuffer"),
+)
+def test_frombuffer(
+    buffer,
+    dtype,
+    count,
+    offset,
+    like,
+    input_dtype,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="frombuffer",
+        buffer=buffer,
+        dtype=dtype,
+        count=count,
+        offset=offset,
+        like=like,
+    )
+    
