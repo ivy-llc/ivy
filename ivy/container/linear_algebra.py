@@ -681,7 +681,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         With :class:`ivy.Container` inputs:
 
         >>> x = ivy.Container(a=ivy.array([[[1.,2.],[2.,1.]]]),
-        ... b=ivy.array([[[2.,4.],[4.,2.]]]))
+        ...                      b=ivy.array([[[2.,4.],[4.,2.]]]))
         >>> y = ivy.eigvalsh(x)
         >>> print(y)
         {
