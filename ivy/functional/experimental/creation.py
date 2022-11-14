@@ -399,6 +399,6 @@ def frombuffer(
     like: Optional[int] = None
 ) -> ivy.Array:
     return ivy.current_backend().frombuffer(
-        buffer, dtype=dtype, count, offset, like
+        buffer, count, offset, like, dtype=dtype,
     )
     
