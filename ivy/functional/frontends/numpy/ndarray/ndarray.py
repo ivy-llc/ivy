@@ -51,7 +51,7 @@ class ndarray:
         return np_frontend.mean(
             self.data, axis=axis, dtype=dtype, out=out, keepdims=keepdims, where=where
         )
-    
+
     def max(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
         return np_frontend.amax(
             self.data,
@@ -64,7 +64,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self.data.dtype
+        return self.data.dtype   
     
     
     def min(self, *, axis=None, out=None, keepdims=False, initial=None, where=True):
@@ -266,7 +266,4 @@ class ndarray:
         return np_frontend.logical_xor(self.data, value)
 
     def __imod__(self, value, /):
-        return np_frontend.mod(self.data, value)
-
-
-    
+        return np_frontend.mod(self.data, value) 
