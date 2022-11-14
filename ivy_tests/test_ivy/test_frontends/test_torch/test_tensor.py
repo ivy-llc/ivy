@@ -2669,8 +2669,7 @@ def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
 
 
 # argmax
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
