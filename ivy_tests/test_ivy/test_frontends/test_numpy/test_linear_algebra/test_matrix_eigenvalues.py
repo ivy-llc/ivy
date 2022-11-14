@@ -7,10 +7,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 
 
 @handle_frontend_test(
+    fn_tree="numpy.linalg.eig",
     dtype_and_x=_get_dtype_and_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.eig"
-    ),
 )
 def test_numpy_eig(
     dtype_and_x, as_variable, native_array, num_positional_args
