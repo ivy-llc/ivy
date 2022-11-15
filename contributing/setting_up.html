@@ -63,7 +63,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#more-detailed-hypothesis-logs">More Detailed Hypothesis Logs</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#setting-up-for-free">Setting up for Free</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-for-free">Setting up for Free</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Windows</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Ubuntu</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#github-codespaces">GitHub Codespaces</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pre-commit">Pre-Commit</a></li>
 </ul>
@@ -491,7 +495,7 @@ To get more detailed information on errors in the code, we recommend doing the f
 </ol>
 <p>Now, if Hypothesis detects an error in the code it will return more detailed information on each of the failing examples:</p>
 <a class="reference internal image-reference" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true"><img alt="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/contributing/setting_up/more_detailed_hypothesis_logs/detailed_hypothesis_example.png?raw=true" style="width: 420px;" /></a>
-<p>For questions, please reach out on the <a href="#id7"><span class="problematic" id="id8">`setting up discussion`_</span></a>
+<p>For questions, please reach out on the <a href="#id9"><span class="problematic" id="id10">`setting up discussion`_</span></a>
 or on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/942114744691740772">docker channel</a>!</p>
 <p><strong>“Empty Suite” error fix:</strong></p>
 <p>Click on the “green arrow button” from where you run the funcion in PyCharm. Open “Modify Run Configuration…”, under “Target:” on the right side click on “…” it’ll open a new window, manually add the path to the specific function, For instance, for stateful -&gt; “test_stateful.test_submodule_name.test_function_name” and for functional -&gt; “test_submodule_name.test_function_name”, the function will pop up below, select that, click on “Apply” then “OK”. Now, do not run the test from the “green arrow button” in the left panel, run it from above where there is a “green arrow button” on the left side of the “debugger button” making sure you’ve selected the latest modified configuration of that specific test you want to run.</p>
@@ -503,6 +507,8 @@ or on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord
 The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension.
 You’ll hopefully be done with this in no time.
 The steps to be followed are listed below:</p>
+<section id="id6">
+<h3>Windows<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
 <ol class="arabic simple">
 <li><p>Install <a class="reference external" href="https://www.docker.com/products/docker-desktop">Docker Desktop</a></p></li>
 <li><p>Install <a class="reference external" href="https://code.visualstudio.com/">Visual Studio Code here</a></p></li>
@@ -515,12 +521,32 @@ In case the window doesn’t pop up, search for the “Dev Containers” extensi
 <li><p>Install the “Docker” extension for Visual Studio Code, you’ll easily find that searching “docker” in the extensions tab.</p></li>
 <li><p>Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to ” &gt;&lt; ” overlapped on each other.</p></li>
 <li><p>Clicking on that will open a bar at the top which will give you an option “Open Folder in Container…”, click on that.</p></li>
-<li><p>You’ll be inside the container now, where you can locally run the tests that you’ve modified by running the command, “pytest test_file_path::test_fn_name”</p></li>
+<li><p>You’ll be inside the container now, where you can locally run the tests that you’ve modified by running the command, “pytest test_file_path::test_fn_name”. Opening the container may take a long time, as the Docker image is very large (5+ GB).</p></li>
+</ol>
+</li>
+</ol>
+</section>
+<section id="id8">
+<h3>Ubuntu<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Install <a class="reference external" href="https://docs.docker.com/engine/install/ubuntu/">Docker Engine</a></p></li>
+<li><p>Install <a class="reference external" href="https://code.visualstudio.com/">Visual Studio Code</a></p></li>
+<li><p>Clone your fork of the Ivy repository.</p></li>
+<li><p>Open Visual Studio Code, open the Ivy repo folder and following the steps listed below:</p>
+<ol class="loweralpha simple">
+<li><p>Install the <code class="code docutils literal notranslate"><span class="pre">Dev</span> <span class="pre">Containers</span></code> and <code class="code docutils literal notranslate"><span class="pre">Docker</span></code> extensions.</p></li>
+<li><p>Open the <code class="code docutils literal notranslate"><span class="pre">.devcontainer/devcontainer.json</span></code> file.</p></li>
+<li><p>Add a comma (<code class="code docutils literal notranslate"><span class="pre">,</span></code>) to the end entry <code class="code docutils literal notranslate"><span class="pre">&quot;postCreateCommand&quot;:</span> <span class="pre">&quot;bash</span> <span class="pre">.devcontainer/post_create_commands.sh&quot;</span></code>, making it <code class="code docutils literal notranslate"><span class="pre">&quot;postCreateCommand&quot;:</span> <span class="pre">&quot;bash</span> <span class="pre">.devcontainer/post_create_commands.sh&quot;,</span></code>.</p></li>
+<li><p>Add in the line <code class="code docutils literal notranslate"><span class="pre">&quot;postStartCommand&quot;:</span> <span class="pre">&quot;git</span> <span class="pre">config</span> <span class="pre">--global</span> <span class="pre">--add</span> <span class="pre">safe.directory</span> <span class="pre">${containerWorkspaceFolder}&quot;</span></code> on the line immediately after the <code class="code docutils literal notranslate"><span class="pre">postCreateCommand</span></code> line.</p></li>
+<li><p>Click the remote explorer icon in the bottom left. It looks roughly like “&gt;&lt;” overlapped on each other.</p></li>
+<li><p>Click <code class="code docutils literal notranslate"><span class="pre">Reopen</span> <span class="pre">in</span> <span class="pre">Container</span></code> in the dropdown menu.</p></li>
+<li><p>You’ll be inside the container now, where you can locally run the tests running the command, <code class="code docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">test_fle_path::test_fn_name</span></code>. Opening the container may take a long time, as the Docker image is very large (5+ GB).</p></li>
 </ol>
 </li>
 </ol>
 <p><strong>Important Note</strong></p>
 <p>For windows users, the file path should be entered with “/” (forward-slashes), for other OS it would be the regular “\” (back-slashes).</p>
+</section>
 </section>
 <section id="github-codespaces">
 <h2>GitHub Codespaces<a class="headerlink" href="#github-codespaces" title="Permalink to this heading"></a></h2>
