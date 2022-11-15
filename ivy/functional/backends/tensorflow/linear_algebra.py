@@ -45,7 +45,6 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[tf.Tensor] = None,
 ) -> tf.Tensor:
-
     if ddof is not None and ddof != int(ddof):
         raise ValueError("ddof must be integer")
 

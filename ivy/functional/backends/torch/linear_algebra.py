@@ -52,7 +52,6 @@ def cov(
     dtype: Optional[type] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-
     if x1.dim() > 2:
         raise ValueError("x1 has more than 2 dimensions")
 
