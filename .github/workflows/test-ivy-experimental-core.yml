@@ -7,7 +7,7 @@ permissions:
   actions: read
 jobs:
    run-nightly-tests:
-     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Experimental')}}
+     if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Experimental')}}
      strategy:
        matrix:
          backends :  [numpy, torch, jax, tensorflow]
@@ -25,7 +25,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 2
 
-       name: Check Files Changed
+       - name: Check Files Changed
          shell: pwsh
          id: check_file_changed
          run: |
