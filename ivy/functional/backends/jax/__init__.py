@@ -22,7 +22,9 @@ config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
-    lambda c: tree_flatten(c.to_dict()),
+    def func1(a,c): 
+        tree_flatten = tree_flatten(c.to_dict())
+        return (tree_flatten)
     lambda a, c: ivy.Container(tree_unflatten(a, c)),
 )
 
