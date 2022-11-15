@@ -2,6 +2,7 @@ from typing import Union, Optional, Sequence, Tuple, NamedTuple, List
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import tensorflow as tf
+import ivy
 
 
 def moveaxis(
@@ -156,4 +157,14 @@ def take_along_axis(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    if axis < 0:
+        axis += arr.ndim
+    if axis < 0 or axis >= arr.ndim:
+        raise ivy.exceptions.IvyException("axis out of bounds")
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"        
+        )
+    
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
