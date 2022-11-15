@@ -345,8 +345,8 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 @to_ivy_arrays_and_back
-def argmin(input, axis, output_type=None, name=None):
-    if output_type in ["uint16", "int16", "int32", "int64"]:
+def argmin(input, axis=None, output_type="int64", name=None):
+    if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=axis), output_type)
     else:
         return ivy.astype(ivy.argmin(input, axis=axis), "int64")
