@@ -87,6 +87,7 @@ We start with the function :func:`lax.add` as an example.
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def add(x, y):
         return ivy.add(x, y)
 
@@ -100,6 +101,7 @@ In this case, the function will then simply return :func:`ivy.add`, which in tur
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def tan(x):
         return ivy.tan(x)
 
@@ -112,6 +114,8 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
     def add(
         x1,
         x2,
@@ -157,6 +161,7 @@ See the section "Unused Arguments" below for more details.
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
     @from_zero_dim_arrays_to_float
+    @to_ivy_arrays_and_back
     def tan(
         x,
         /,
@@ -184,6 +189,7 @@ In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`wh
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         return ivy.add(x, y)
 
@@ -199,6 +205,7 @@ Ivy does not support the unique naming of individual operations, and so we omit 
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def tan(x, name=None):
         return ivy.tan(x)
 
@@ -206,11 +213,43 @@ Likewise, :code:`tan` is also placed under :mod:`math`.
 By referring to the `tf.math.tan`_ documentation, we add the same arguments, and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
+**NOTE**
+
+Many of the functions in the :mod:`tf.raw_ops` module have identical behaviour to functions in the general TensorFlow namespace e.g :func:`tf.argmax`, with the exception of functions in the module :mod:`tf.raw_ops`. However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
+In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
+
+.. code-block:: python
+    
+    # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
+    def argmax(input, axis, output_type=None, name=None):
+        if output_type in ["uint16", "int16", "int32", "int64"]:
+            return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+        else:
+            return ivy.astype(ivy.argmax(input, axis=axis), "int64")
+
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`. In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument. 
+Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/tensorflow/raw_ops.py
+    ArgMax = to_ivy_arrays_and_back(
+        map_raw_ops_alias(
+            tf_frontend.math.argmax,
+            kwargs_to_update={"dimension": "axis"},
+        )
+    )
+
+The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
+The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
+
 **PyTorch**
 
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def add(input, other, *, alpha=None, out=None):
         return ivy.add(input, other, alpha=alpha, out=out)
 
@@ -222,6 +261,7 @@ We wrap :func:`ivy.add` as usual.
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def tan(input, *, out=None):
         return ivy.tan(input, out=out)
 
@@ -291,6 +331,7 @@ For example, we can simply reverse the result by calling :func:`ivy.flip` on the
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
         ret = ivy.cumprod(x, axis, exclusive)
         if reverse:
@@ -335,6 +376,7 @@ However, Ivy's `implementation <https://github.com/unifyai/ivy/blob/6089953297b4
 
 .. code-block:: python
 
+    @to_ivy_arrays_and_back
     def logical_and(x, y, name="LogicalAnd"):
         return ivy.logical_and(x, y)
 
@@ -393,6 +435,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @to_ivy_arrays_and_back
     def add(
     x1,
     x2,
@@ -440,6 +483,7 @@ The implementation for the :func:`tf_frontend.math.add` is shown as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
     return ivy.add(x, y)
 
@@ -499,6 +543,7 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
     # ivy/functional/frontends/tensorflow/math.py
     from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
     ...
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         x, y = promote_types_of_tensorflow_inputs(x, y)
         return ivy.add(x, y)
