@@ -821,6 +821,7 @@ def test_dstack(
 
 # atleast_2d
 @handle_test(
+    fn_tree="functional.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
@@ -856,4 +857,61 @@ def test_atleast_2d(
         fn_name=fn_name,
         on_device=on_device,
         **kw,
+    )
+
+
+# take_along_axis
+@handle_test(
+    fn_tree="functional.take_along_axis",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indices=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("int"),
+        min_value=0,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    axis=helpers.ints(min_value=0, max_value=2),
+)
+def test_take_along_axis(
+    *,
+    dtype_and_x,
+    indices,
+    axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    indices_dtype, indices = indices
+    helpers.test_function(
+        input_dtypes=[input_dtype, indices_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        arr=x[0],
+        indices=indices[0],
+        axis=axis,
     )
