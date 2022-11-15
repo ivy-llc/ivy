@@ -28,6 +28,48 @@ def _get_clip_inputs(draw):
     return x_dtype, x, min, max
 
 
+# argsort
+@handle_frontend_test(
+    fn_tree="tensorflow.argsort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    direction=st.sampled_from(["ASCENDING", "DESCENDING"])
+)
+def test_tensorflow_argsort(
+    *,
+    dtype_input_axis,
+    direction,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        values=input[0],
+        axis=axis,
+        direction=direction,
+    )
+
+
 # clip_by_value
 @handle_frontend_test(
     fn_tree="tensorflow.clip_by_value",
