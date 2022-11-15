@@ -1,5 +1,5 @@
 # local
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -101,9 +101,9 @@ def lcm(
     Parameters
     ----------
     x1
-        first input array.
+        first input array, must be integers
     x2
-        second input array
+        second input array, must be integers
     out
         optional output array, for writing the result to.
 
@@ -341,6 +341,61 @@ def exp2(
     ivy.array([32.,   64.,  128.])
     """
     return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def count_nonzero(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+    out: Optional[Union[int, ivy.Array]] = None,
+) -> ivy.Array:
+    """Counts the number of non-zero values in the array a.
+
+    Parameters
+    ----------
+    a
+        array for which to count non-zeros.
+    axis
+        optional axis or tuple of axes along which to count non-zeros. Default is
+        None, meaning that non-zeros will be counted along a flattened
+        version of the input array.
+    keepdims
+        optional, if this is set to True, the axes that are counted are left in the
+        result as dimensions with size one. With this option, the result
+        will broadcast correctly against the input array.
+    dtype
+        optional output dtype. Default is of type integer.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Number of non-zero values in the array along a given axis. Otherwise,
+        the total number of non-zero values in the array is returned.
+
+    Examples
+    --------
+    >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
+    >>> ivy.count_nonzero(a)
+    ivy.array(7)
+    >>> a = ivy.array([[0, 1, 2, 3],[4, 5, 6, 7]])
+    >>> ivy.count_nonzero(a, axis=0)
+    ivy.array([1, 2, 2, 2])
+    >>> a = ivy.array([[[0,1],[2,3]],[[4,5],[6,7]]])
+    >>> ivy.count_nonzero(a, axis=(0,1), keepdims=True)
+    ivy.array([[[3, 4]]])
+    """
+    return ivy.current_backend().count_nonzero(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+    )
 
 
 @to_native_arrays_and_back
@@ -703,3 +758,149 @@ def signbit(
     ivy.array([False, True, False])
     """
     return ivy.current_backend(x).signbit(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def allclose(
+    a: Union[ivy.Array, ivy.NativeArray],
+    b: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Returns a True if the two arrays are element-wise equal
+    within given tolerance; otherwise False.
+    The tolerance values are positive, typically very small numbers.
+    The relative difference (rtol * abs(x2)) and the absolute difference
+    atol are added together to compare against the absolute difference
+    between x1 and x2.
+    The default atol is not appropriate for comparing numbers that are
+    much smaller than one
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    rtol
+        The relative tolerance parameter.
+    atol
+        The absolute tolerance parameter.
+    equal_nan
+        Whether to compare NaN's as equal. If True, NaN's in x1 will be
+        considered equal to NaN's in x2 in the output array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Returns True if the two arrays are equal within the given tolerance;
+        False otherwise.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1e10, 1e-7])
+    >>> x2 = ivy.array([1.00001e10, 1e-8])
+    >>> y = ivy.allclose(x1, x2)
+    >>> print(y)
+    False
+
+    >>> x1 = ivy.array([1.0, ivy.nan])
+    >>> x2 = ivy.array([1.0, ivy.nan])
+    >>> y = ivy.allclose(x1, x2, equal_nan=True)
+    >>> print(y)
+    True
+
+    >>> x1 = ivy.array([1e-10, 1e-10])
+    >>> x2 = ivy.array([1.00001e-10, 1e-10])
+    >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
+    >>> print(y)
+    True
+
+    """
+    return ivy.current_backend().allclose(
+        a, b, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def fix(
+    x: Union[ivy.Array, ivy.NativeArray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Round an array of floats element-wise to nearest integer towards zero.
+    The rounded values are returned as floats.
+
+    Parameters
+    ----------
+    x
+        Array input.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        Array of floats with elements corresponding to input elements
+        rounded to nearest integer towards zero, element-wise.
+
+    Examples
+    --------
+    >>> x = ivy.array([2.1, 2.9, -2.1])
+    >>> ivy.fix(x)
+    ivy.array([ 2.,  2., -2.])
+    """
+    return ivy.current_backend(x).fix(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def nextafter(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Return the next floating-point value after x1 towards x2, element-wise.
+
+    Parameters
+    ----------
+    x1
+        First input array.
+    x2
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        The next representable values of x1 in the direction of x2.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([1.0e-50, 2.0e+50])
+    >>> x2 = ivy.array([2.0, 1.0])
+    >>> ivy.nextafter(x1, x2)
+    ivy.array([1.4013e-45., 3.4028e+38])
+    """
+    return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)

@@ -1,7 +1,9 @@
+# global
 from typing import Optional, Union, Tuple
 import torch
-from ivy.func_wrapper import with_unsupported_dtypes
 
+# local
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 

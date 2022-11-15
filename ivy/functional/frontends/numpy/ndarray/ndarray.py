@@ -32,8 +32,21 @@ class ndarray:
     def reshape(self, shape, order="C"):
         return np_frontend.reshape(self.data, shape)
 
-    def transpose(self, /, axes=None):
+    def transpose(self, *axes):
+        if axes and isinstance(axes[0], tuple):
+            axes = axes[0]
         return np_frontend.transpose(self.data, axes=axes)
+
+    @property
+    def T(self):
+        return np_frontend.transpose(self.data)
+
+    @property
+    def shape(self):
+        return np_frontend.shape(self)
+
+    def swapaxes(self, axis1, axis2, /):
+        return np_frontend.swapaxes(self.data, axis1, axis2)
 
     def all(self, axis=None, out=None, keepdims=False, *, where=True):
         return np_frontend.all(self.data, axis, out, keepdims, where=where)
@@ -87,6 +100,31 @@ class ndarray:
             axis=axis,
             keepdims=keepdims,
             out=out,
+        )
+
+    def clip(
+        self,
+        a_min,
+        a_max,
+        /,
+        out=None,
+        *,
+        where=True,
+        casting="same_kind",
+        order="k",
+        dtype=None,
+        subok=True,
+    ):
+        return np_frontend.clip(
+            self.data,
+            a_min,
+            a_max,
+            out=out,
+            where=where,
+            casting=casting,
+            order=order,
+            dtype=dtype,
+            subok=subok,
         )
 
     def cumprod(self, *, axis=None, dtype=None, out=None):
@@ -197,3 +235,40 @@ class ndarray:
 
     def __lt__(self, value, /):
         return np_frontend.less(self.data, value)
+
+    def __int__(
+        self,
+    ):
+        return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.int64)[0]
+
+    def __float__(
+        self,
+    ):
+        return ivy.array(ivy.reshape(self.data, -1), dtype=ivy.float64)[0]
+
+    def __contains__(self, key, /):
+        return key in ivy.reshape(self.data, -1)
+
+    def __iadd__(self, value, /):
+        return np_frontend.add(self.data, value)
+
+    def __isub__(self, value, /):
+        return np_frontend.subtract(self.data, value)
+
+    def __imul__(self, value, /):
+        return np_frontend.multiply(self.data, value)
+
+    def __ipow__(self, value, /):
+        return np_frontend.power(self.data, value)
+
+    def __iand__(self, value, /):
+        return np_frontend.logical_and(self.data, value)
+
+    def __ior__(self, value, /):
+        return np_frontend.logical_or(self.data, value)
+
+    def __ixor__(self, value, /):
+        return np_frontend.logical_xor(self.data, value)
+
+    def __imod__(self, value, /):
+        return np_frontend.mod(self.data, value)
