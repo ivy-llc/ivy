@@ -1,0 +1,4 @@
+Added implementation of std_mean function of PyTorch
+
+- Added implementation of std_mean function of PyTorch ivy Frontend
+- Added implementation test of the std_mean function
