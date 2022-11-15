@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _is_variable
 
 
 class IvyModule(ivy.Module):
@@ -64,7 +65,7 @@ class IvyModule(ivy.Module):
             if isinstance(v, ivy.Container):
                 # noinspection PyProtectedMember
                 native._modules[k] = self._replace_update_v(v, native._modules[k])
-            elif ivy.is_variable(v):
+            elif _is_variable(v):
                 if isinstance(v, torch.nn.Parameter):
                     # noinspection PyProtectedMember
                     native.__setattr__(k, v)
