@@ -34,7 +34,7 @@ def assert_all_close(
     None if the test passes, else marks the test as failed.
     """
     ret_dtype = str(ret_np.dtype)
-    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("longlong", "int64")
+    ret_from_gt_dtype = str(ret_from_gt_np.dtype).replace("int32", "int64")
     assert ret_dtype == ret_from_gt_dtype, (
         "the return with a {} backend produced data type of {}, while the return with"
         " a {} backend returned a data type of {}.".format(
