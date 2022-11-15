@@ -235,8 +235,6 @@ def take_along_axis(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    if axis < 0:
-        axis += arr.ndim
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"

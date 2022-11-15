@@ -865,7 +865,7 @@ def test_atleast_2d(
     fn_tree="functional.take_along_axis",
     dtype_x_indices_axis=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32","int64"],
+        indices_dtypes=["int32", "int64"],
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
