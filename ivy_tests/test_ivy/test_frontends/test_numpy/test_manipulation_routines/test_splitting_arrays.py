@@ -11,7 +11,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         fn_name="ivy.functional.frontends.numpy.split"
     ),
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    ),
 )
 def test_numpy_split(
     as_variable,
