@@ -758,7 +758,7 @@ class ContainerWithManipulation(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
         ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
-        >>> y = x.reshape((2,3))
+        >>> y = x.reshape((2,3), order='F')
         >>> print(y)
         {
             a: ivy.array([[0, 2, 4],
