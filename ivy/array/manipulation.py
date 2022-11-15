@@ -351,6 +351,13 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.constant_pad(pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 0., 0., 0.])
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 

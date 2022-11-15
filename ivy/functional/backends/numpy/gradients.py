@@ -5,7 +5,7 @@ import logging
 import ivy
 
 
-def variable(x):
+def variable(x, /):
     logging.warning(
         "NumPy does not support autograd, declaring a 'variable' "
         "is identical to declaring an 'array' when using numpy backend."
@@ -13,13 +13,13 @@ def variable(x):
     return x
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, /, *, exclusive=False):
     # NumPy does not support autograd, checking if x is a variable does have any meaning
     # for NumPy. Return False.
     return False
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x
 
 
@@ -80,7 +80,7 @@ def grad(func):
     return grad_fn
 
 
-def stop_gradient(x, preserve_type=True, *, out=None):
+def stop_gradient(x, /, *, preserve_type=True, out=None):
     logging.warning(
         "NumPy does not support autograd, 'stop_gradient' "
         "has no effect on the array, as gradients are not supported in the first place."
