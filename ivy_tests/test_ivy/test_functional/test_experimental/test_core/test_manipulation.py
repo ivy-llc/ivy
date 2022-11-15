@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -585,7 +586,7 @@ def test_flatten(
 
 def _st_tuples_or_int(n_pairs, min_val=0):
     return st.one_of(
-        st.tuples(
+        hypothesis_helpers.tuples(
             st.tuples(
                 st.integers(min_value=min_val, max_value=4),
                 st.integers(min_value=min_val, max_value=4),
@@ -647,7 +648,6 @@ def test_pad(
     reflect_type,
     num_positional_args,
     as_variable,
-    with_out,
     native_array,
     container_flags,
     instance_method,
@@ -824,6 +824,7 @@ def test_dstack(
 
 # atleast_2d
 @handle_test(
+    fn_tree="functional.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
@@ -834,7 +835,6 @@ def test_atleast_2d(
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
