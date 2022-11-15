@@ -896,8 +896,8 @@ def pad(
                to pad the beginning.
              - "empty": Pads with undefined values.
              - <function>: Pads with a user-defined padding function. The padding
-               function should modify a rank 1 array in-place following a signature
-               like `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:
+               function should modify a rank 1 array following the signature
+               `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:
                     - `vector` is a rank 1 array already padded with zeros. Padded
                       values are `vector[:iaxis_pad_width[0]]` and
                       `vector[-iaxis_pad_width[1]:]`.
