@@ -166,5 +166,5 @@ def take_along_axis(
             "arr and indices must have the same shape;"
             + f" got {arr.shape} vs {indices.shape}"        
         )
-    
+    indices = tf.dtypes.cast(indices, tf.int32)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
