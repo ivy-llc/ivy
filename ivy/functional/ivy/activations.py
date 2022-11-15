@@ -249,7 +249,7 @@ def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
@@ -259,8 +259,7 @@ def softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is ``-1``
-        which indicates the last dimension.
+        The dimension softmax would be performed on. The default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -304,7 +303,6 @@ def softmax(
     >>> y = x.softmax()
     >>> print(y)
     ivy.array([0.422, 0.155, 0.422])
-
     """
     return current_backend(x).softmax(x, axis=axis, out=out)
 
@@ -390,7 +388,7 @@ def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the log_softmax function element-wise.
@@ -400,8 +398,7 @@ def log_softmax(
     x
         Input array.
     axis
-        The dimension log_softmax would be performed on. The default is ``-1``
-        which indicates the last dimension.
+        The dimension log_softmax would be performed on. The default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
