@@ -939,6 +939,7 @@ def test_numpy_instance_squeeze(
     method_tree="numpy.ndarray.std",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        max_value=100,
         #min_num_dims=1,
         #max_num_dims=5,
         #min_dim_size=1,
