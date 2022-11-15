@@ -191,8 +191,8 @@ def test_jax_lax_eigh(
 
     
 # qr
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.linalg.qr",
     dtype_and_x =helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=3,
@@ -200,19 +200,20 @@ def test_jax_lax_eigh(
         min_dim_size=2,
         max_dim_size=5,
         min_value=2,
-        max_value=5
+        max_value=5,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.jax.lax.linalg.qr"
-    ),
-    mode=st.sampled_from(("reduced", "complete"))
+    mode=st.sampled_from(("reduced", "complete")),
 )
 def test_jax_lax_qr(
-        dtype_and_x,
-        mode,
-        as_variable,
-        native_array,
-        num_positional_args
+    *,
+    dtype_and_x,
+    mode,
+    as_variable,
+    native_array,
+    num_positional_args,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -223,8 +224,8 @@ def test_jax_lax_qr(
         native_array_flags=native_array,
         rtol=1e-01,
         atol=1e-01,
-        frontend="jax",
-        fn_tree="jax.linalg.qr",
+        frontend=frontend,
+        fn_tree=fn_tree,
         x=x,
         mode=mode
     )
