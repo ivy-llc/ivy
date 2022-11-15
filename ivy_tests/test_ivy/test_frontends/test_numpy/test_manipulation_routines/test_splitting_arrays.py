@@ -10,8 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.split"
     ),
-    dtype=helpers.get_dtypes(
-        available_dtypes=helpers.get_dtypes("numeric", full=False, none=True),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     ),
 )
 def test_numpy_split(
