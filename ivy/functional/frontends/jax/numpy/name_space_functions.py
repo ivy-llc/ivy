@@ -505,3 +505,8 @@ alltrue = all
 
 
 sometrue = any
+
+
+@to_ivy_arrays_and_back
+def not_equal(x1, x2):
+    return ivy.not_equal(x1, x2)
