@@ -101,9 +101,9 @@ def lcm(
     Parameters
     ----------
     x1
-        first input array.
+        first input array, must be integers
     x2
-        second input array
+        second input array, must be integers
     out
         optional output array, for writing the result to.
 
