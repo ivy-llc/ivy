@@ -609,11 +609,7 @@ If the function is an alias, you should check if the implementation designated w
 
 * If an implementation exist then simply import the implemented function in the location (namespace) where the duplicate is listed.
 
-For example in the case of :func:`np.asarray`, the function is implemented `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5>`_ and we use it as an alias by importing `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/changing_kind_of_array.py>`_:
-
-.. code-block:: python
-
-   from ivy.functional.frontends.numpy.creation_routines import asarray
+For example in the case of :func:`np.asarray`, the function is implemented `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5>`_ and we use it as an alias by importing `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/changing_kind_of_array.py>`_.
 
 * If the function has not been implemented, then feel free to contribute the implementation with its unit test.
 
