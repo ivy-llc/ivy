@@ -60,19 +60,13 @@ def test_torch_cosine_similarity(
         max_value=5,
         allow_inf=False,
     ),
-    p=helpers.floats(
-        min_value=0.0, max_value=3.0, allow_nan=False, allow_inf=False, exclude_min=True
-    ),
-    eps=helpers.floats(
-        min_value=1e-8, max_value=1e-4, allow_nan=False, allow_inf=False
-    ),
+    p=st.integers(min_value=0, max_value=2),
     keepdim=st.booleans(),
 )
 def test_torch_pairwise_distance(
     *,
     d_type_and_x,
     p,
-    eps,
     keepdim,
     as_variable,
     with_out,
@@ -96,6 +90,5 @@ def test_torch_pairwise_distance(
         x1=x[0],
         x2=x[1],
         p=p,
-        eps=eps,
         keepdim=keepdim,
     )
