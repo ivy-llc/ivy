@@ -509,13 +509,13 @@ def nested_argwhere(
     to_ignore = ivy.default(to_ignore, ())
     extra_nest_types = ivy.default(extra_nest_types, ())
     _index = list() if _index is None else _index
-    if (isinstance(nest, (tuple, list) + extra_nest_types)) and not isinstance(
-        nest, to_ignore
-    ):
+    if (
+        isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types)
+    ) and not isinstance(nest, to_ignore):
         if isinstance(nest, (ivy.Array, ivy.NativeArray)):
             cond_met = fn(nest)
             ind = ivy.argwhere(cond_met)
-            _indices = []
+            _indices = list()
             for i in range(len(ind)):
                 _indices.append(_index + ind.to_list()[i])
             return _indices
@@ -639,10 +639,13 @@ def all_nested_indices(
     """
     _index = list() if _index is None else _index
     extra_nest_types = ivy.default(extra_nest_types, ())
-    if isinstance(nest, (tuple, list) + extra_nest_types):
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
         if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-            _index = ivy.argwhere(ivy.ones_like(nest))
-            return [_index.to_list()]
+            ind = ivy.argwhere(ivy.ones_like(nest))
+            indices = list()
+            for i in range(len(ind)):
+                indices.append(_index + ind.to_list()[i])
+            return indices
         _indices = [
             all_nested_indices(
                 item, include_nests, _index + [i], False, extra_nest_types
@@ -952,7 +955,7 @@ def nested_any(
 
     """
     extra_nest_types = ivy.default(extra_nest_types, ())
-    if isinstance(nest, (tuple, list) + extra_nest_types):
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
         if isinstance(nest, (ivy.Array, ivy.NativeArray)):
             if ivy.any(fn(nest)):
                 return True
