@@ -272,3 +272,7 @@ class ndarray:
 
     def __imod__(self, value, /):
         return np_frontend.mod(self.data, value)
+
+    def __abs__(self):
+        return np_frontend.absolute(self.data)
+        
