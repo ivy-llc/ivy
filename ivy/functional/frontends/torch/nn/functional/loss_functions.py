@@ -107,6 +107,28 @@ def binary_cross_entropy(
     result = reduction(result)
     return result
 
+@to_ivy_arrays_and_back
+def binary_cross_entropy_with_logits(
+    input, target, weight=None, size_average=None, reduce=None, reduction='mean', pos_weight=None
+):
+    reduction = _get_reduction(reduction, size_average, reduce)
+
+    if pos_weight is not None:
+        max_val = ivy.max(input)
+        log_weight = (pos_weight - 1) * target + 1
+        result = (1 - target) * input + log_weight * (
+            ivy.log(ivy.exp(-max_val) + ivy.exp(-input - max_val)) + max_val
+        )
+    else:
+        input_sigmoid = ivy.sigmoid(input)
+        result = ivy.binary_cross_entropy(target, input_sigmoid, epsilon=0.0)
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+
+    result = reduction(result)
+    return result
+
 
 @to_ivy_arrays_and_back
 def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
