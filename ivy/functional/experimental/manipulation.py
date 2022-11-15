@@ -798,21 +798,6 @@ def _set_wrap_both(padded, axis, width_pair):
     return new_left_pad, new_right_pad, padded
 
 
-def _to_pairs(x, n):
-    if ivy.isscalar(x):
-        return ((x, x),) * n
-    elif ivy.asarray(list(x)).shape == (2,):
-        return ((x[0], x[1]),) * n
-    ivy.assertions.check_equal(
-        ivy.asarray(list(x)).shape,
-        (n, 2),
-        message="values should be an integer or an iterable "
-        "of ndim pairs where ndim is the number of "
-        "the input's dimensions",
-    )
-    return x
-
-
 def _pad_simple(array, pad_width, fill_value=None):
     new_shape = tuple(
         left + size + right for size, (left, right) in zip(array.shape, pad_width)
@@ -826,6 +811,85 @@ def _pad_simple(array, pad_width, fill_value=None):
     padded = padded.to_numpy()
     padded[original_area_slice] = array.to_numpy()
     return padded, original_area_slice
+
+
+def _to_pairs(x, n):
+    if ivy.isscalar(x):
+        return ((x, x),) * n
+    elif ivy.asarray(list(x)).shape == (2,):
+        return ((x[0], x[1]),) * n
+    else:
+        ivy.assertions.check_equal(
+            ivy.asarray(list(x)).shape,
+            (n, 2),
+            message="tuple argument should contain "
+            "ndim pairs where ndim is the number of "
+            "the input's dimensions",
+        )
+    return x
+
+
+def _check_tuple_arg(arg, name):
+    flag_assert = False
+    if isinstance(arg, tuple):
+        for nested in arg:
+            if isinstance(nested, tuple):
+                for sub_nested in nested:
+                    if not isinstance(sub_nested, int):
+                        flag_assert = True
+                        break
+            elif not isinstance(nested, int):
+                flag_assert = True
+    elif not isinstance(arg, int):
+        flag_assert = True
+    if flag_assert:
+        raise ivy.exceptions.IvyException(
+            name + " should be int, tuple of ints or tuple of int tuples"
+        )
+
+
+def _check_arguments(
+    mode,
+    pad_width,
+    stat_length,
+    constant_values,
+    end_values,
+    reflect_type,
+):
+    ivy.assertions.check_true(
+        callable(mode)
+        or mode
+        in [
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        message="the provided mode is not supported",
+    )
+    _check_tuple_arg(pad_width, "pad_width")
+    ivy.assertions.check_true(
+        all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
+        message="the pad_widths must be greater or equal to zero",
+    )
+    _check_tuple_arg(stat_length, "stat_length")
+    ivy.assertions.check_true(
+        all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+        message="the stat lengths must be greater than zero",
+    )
+    _check_tuple_arg(constant_values, "constant_values")
+    _check_tuple_arg(end_values, "end_values")
+    ivy.assertions.check_true(
+        reflect_type in ["even", "odd"],
+        message="the provided reflect_type is not supported",
+    )
 
 
 @to_native_arrays_and_back
@@ -1001,12 +1065,16 @@ def pad(
         b: ivy.array([0, 4, 5, 6, 0])
     }
     """
+    _check_arguments(
+        mode,
+        pad_width,
+        stat_length,
+        constant_values,
+        end_values,
+        reflect_type,
+    )
     input = ivy.asarray(input, dtype=input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
-    ivy.assertions.check_true(
-        all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
-        message="the pad_widths must be greater or equal to zero",
-    )
     if callable(mode):
         func = mode
         padded, _ = _pad_simple(input, pad_width, fill_value=0)
@@ -1047,19 +1115,10 @@ def pad(
                 ivy.is_float_dtype(input),
                 message="median interpolation is only supported for floats",
             )
-        else:
-            ivy.assertions.check_true(
-                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-                message="the stat lengths must be greater than zero",
-            )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
             stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
             padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
-        ivy.assertions.check_true(
-            reflect_type in ["even", "odd"],
-            message="the reflection type can be either odd or even",
-        )
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
             if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
@@ -1078,23 +1137,6 @@ def pad(
                 left_index, right_index, padded = _set_wrap_both(
                     padded, axis, (left_index, right_index)
                 )
-    else:
-        ivy.assertions.check_true(
-            False,
-            message="the supported modes are: "
-            "constant, "
-            "edge, "
-            "linear_ramp, "
-            "maximum, "
-            "mean, "
-            "median, "
-            "minimum, "
-            "reflect, "
-            "symmetric, "
-            "wrap, "
-            "empty, "
-            "and <function>",
-        )
     padded = ivy.array(padded).to_native()
     return padded
 
