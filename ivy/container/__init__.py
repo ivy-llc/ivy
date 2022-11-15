@@ -11,6 +11,9 @@ except ModuleNotFoundError:
 
 # local
 from .wrapping import add_ivy_container_instance_methods  # noqa
+from .wrapping import add_ivy_container_static_methods
+from .wrapping import add_ivy_container_special_methods
+from .wrapping import add_ivy_container_reverse_special_methods
 from .container import ContainerBase, Container  # noqa
 
 colorama.init(strip=False)
