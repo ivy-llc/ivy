@@ -831,9 +831,9 @@ def _to_pairs(x, n):
 
 def _check_tuple_arg(arg, name):
     flag_assert = False
-    if isinstance(arg, tuple):
+    if isinstance(arg, (tuple, list)):
         for nested in arg:
-            if isinstance(nested, tuple):
+            if isinstance(nested, (tuple, list)):
                 for sub_nested in nested:
                     if not isinstance(sub_nested, int):
                         flag_assert = True
@@ -879,13 +879,31 @@ def _check_arguments(
         all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
         message="the pad_widths must be greater or equal to zero",
     )
-    _check_tuple_arg(stat_length, "stat_length")
-    ivy.assertions.check_true(
-        all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
-        message="the stat lengths must be greater than zero",
-    )
-    _check_tuple_arg(constant_values, "constant_values")
-    _check_tuple_arg(end_values, "end_values")
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        if stat_length is None:
+            raise ivy.exceptions.IvyException(
+                "stat_length is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(stat_length, "stat_length")
+            ivy.assertions.check_true(
+                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+                message="the stat lengths must be greater than zero",
+            )
+    elif mode == "constant":
+        if constant_values is None:
+            raise ivy.exceptions.IvyException(
+                "constant_values is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(constant_values, "constant_values")
+    elif mode == "linear_ramp":
+        if end_values is None:
+            raise ivy.exceptions.IvyException(
+                "end_values is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(end_values, "end_values")
     ivy.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
@@ -920,8 +938,8 @@ def pad(
         ]
     ] = "constant",
     stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
+    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
     **kwargs: Optional[Any],
 ) -> ivy.Array:
