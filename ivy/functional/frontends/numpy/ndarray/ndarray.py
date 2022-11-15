@@ -275,4 +275,3 @@ class ndarray:
 
     def __abs__(self):
         return np_frontend.absolute(self.data)
-        

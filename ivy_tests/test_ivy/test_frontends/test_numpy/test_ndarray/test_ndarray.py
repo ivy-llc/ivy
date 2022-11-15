@@ -2034,4 +2034,3 @@ def test_numpy_instance_abs__(
         class_="ndarray",
         method_name="__abs__",
     )
-
