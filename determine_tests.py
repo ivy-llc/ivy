@@ -4,7 +4,7 @@ import os  # noqa
 import bz2
 import _pickle as cPickle
 
-MAX_TESTS = 2
+MAX_TESTS = 10
 if __name__ == "__main__":
     tests = bz2.BZ2File("tests.pbz2", "rb")
     tests = cPickle.load(tests)
