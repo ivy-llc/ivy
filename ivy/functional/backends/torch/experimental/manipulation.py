@@ -170,3 +170,14 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     if isinstance(transformed, tuple):
         return list(transformed)
     return transformed
+
+
+def take_along_axis(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    axis: int,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.take_along_dim(arr, indices, axis, out=out)

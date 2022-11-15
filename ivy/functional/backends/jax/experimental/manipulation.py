@@ -224,3 +224,14 @@ def dstack(
 
 def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
+
+
+def take_along_axis(
+    arr: JaxArray,
+    indices: JaxArray,
+    axis: int,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.take_along_axis(arr, indices, axis)
