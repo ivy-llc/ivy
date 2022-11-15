@@ -1648,7 +1648,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         arr
             container with array inputs.
         indices
-            container with array inputs.
+            container with indices of the values to extract.
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
@@ -1716,7 +1716,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         self
             container with array inputs.
         indices
-            container with array inputs.
+            container with indices of the values to extract.
         axis
             The axis over which to select values. If axis is None, then arr and indices
             must be 1-D sequences of the same length.
