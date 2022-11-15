@@ -1682,7 +1682,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             a: ivy.array([[1, 1],
                           [4, 4]]),
             b: ivy.array([[6, 5],
-                          [8, 8]])
+                          [8, 7]])
         }
         """
         return ContainerBase.multi_map_in_static_method(
@@ -1750,7 +1750,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             a: ivy.array([[1, 1],
                           [4, 4]]),
             b: ivy.array([[6, 5],
-                            [8, 8]])
+                            [8, 7]])
         }]
         """
         return self.static_take_along_axis(

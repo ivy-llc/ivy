@@ -617,3 +617,42 @@ class ArrayWithManipulationExperimental(abc.ABC):
         [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]
         """
         return ivy.atleast_2d(self._data, *arys)
+
+    def take_along_axis(
+        self: ivy.Array,
+        indices: ivy.Array,
+        axis: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.take_along_axis. This method simply
+        wraps the function, and so the docstring for ivy.take_along_axis also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The source array.
+        indices
+            The indices of the values to extract.
+        axis
+            The axis over which to select values.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The returned array has the same shape as indices.
+
+        Examples
+        --------
+        >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+        >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+        >>> y = arr.take_along_axis(indices, 1)
+        >>> print(y)
+        ivy.array([[4, 3, 3], [1, 1, 1]])
+        """
+        return ivy.take_along_axis(self._data, indices, axis, out=out)
