@@ -399,6 +399,41 @@ def kron(a, b):
 
 
 @to_ivy_arrays_and_back
+def sum(
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+):
+    if initial:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([a, header], axis=axis)
+
+    result_dtype = dtype or ivy.dtype(a)
+
+    if dtype is None and promote_integers:
+        if ivy.is_bool_dtype(result_dtype):
+            result_dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                result_dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                result_dtype = ivy.default_int_dtype()
+
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)))
+
+    return ivy.sum(a, axis=axis, dtype=result_dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
 def lcm(x1, x2):
     return ivy.lcm(x1, x2)
 
@@ -464,3 +499,9 @@ def msort(a):
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
     return ivy.multiply(x1, x2)
+
+
+alltrue = all
+
+
+sometrue = any
