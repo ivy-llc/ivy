@@ -22,11 +22,11 @@ from ivy.functional.ivy.gradients import (
 
 
 # ToDo: modify these functions to track whether variable() has been called
-def variable(x):
+def variable(x, /):
     return x
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, /, *, exclusive=False):
     if exclusive:
         return False
     return isinstance(
@@ -34,7 +34,7 @@ def is_variable(x, exclusive=False):
     )
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x
 
 
@@ -74,7 +74,9 @@ def execute_with_gradients(
     func_ret = func(xs)
     xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
     xs = ivy.to_native(xs)
-    ret_idxs, ret_values = _get_native_variables_and_indices(func_ret)
+    ret_idxs, ret_values = _get_native_variables_and_indices(
+        func_ret, idxs=ret_grad_idxs
+    )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}
     if isinstance(ret_values, list) and len(ret_values) == 1 and ret_grad_idxs is None:
@@ -118,7 +120,7 @@ def execute_with_gradients(
         lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
     grads = ivy.to_ivy(grads)
     return func_ret, grads
 
@@ -136,7 +138,7 @@ def value_and_grad(func):
 
 
 def stop_gradient(
-    x: JaxArray, preserve_type: bool = True, *, out: Optional[JaxArray] = None
+    x: JaxArray, /, *, preserve_type: bool = True, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jlax.stop_gradient(x)
 
