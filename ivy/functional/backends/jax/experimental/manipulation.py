@@ -110,6 +110,19 @@ def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
+def _to_nested_tuple(nested_list):
+    ret = ()
+    if hasattr(nested_list, "__iter__"):
+        for inner_list in nested_list:
+            if hasattr(inner_list, "__iter__"):
+                ret += (tuple(inner_list),)
+            else:
+                ret += (inner_list,)
+        return ret
+    if ret == ():
+        return nested_list
+
+
 def pad(
     input: JaxArray,
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
@@ -140,6 +153,13 @@ def pad(
     out: Optional[JaxArray] = None,
     **kwargs: Optional[Any],
 ) -> JaxArray:
+    pad_width = _to_nested_tuple(pad_width)
+    stat_length = _to_nested_tuple(stat_length)
+    constant_values = _to_nested_tuple(constant_values)
+    end_values = _to_nested_tuple(end_values)
+    input_dtype = input.dtype
+    if jnp.issubdtype(input_dtype, jnp.integer):
+        input = input.astype(jnp.float64)
     if callable(mode):
         return jnp.pad(
             _flat_array_to_1_dim_array(input),
