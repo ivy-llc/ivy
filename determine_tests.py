@@ -35,7 +35,7 @@ if __name__ == "__main__":
             # Now Update the Tests and compute the tests to run
             for line in deleted:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= 20:
                     continue
                 tests_to_run.update(tests_file_line)
             for line in sorted(deleted, reverse=True):
