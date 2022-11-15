@@ -172,6 +172,7 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return transformed
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
     indices: torch.Tensor,
@@ -181,3 +182,6 @@ def take_along_axis(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.take_along_dim(arr, indices, axis, out=out)
+
+
+take_along_axis.support_native_out = True
