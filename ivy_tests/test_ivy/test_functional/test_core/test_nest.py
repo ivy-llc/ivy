@@ -293,7 +293,6 @@ def test_copy_nest_w_extra_nest_types():
     assert nest["b"]["c"][0] is not nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is not nest_copy["b"]["c"][1]
 
-    # non-copied arrays
     assert nest["a"][0][0] is not nest_copy["a"][0][0]
     assert nest["a"][1][0] is not nest_copy["a"][1][0]
     assert nest["b"]["c"][0][0] is not nest_copy["b"]["c"][0][0]
