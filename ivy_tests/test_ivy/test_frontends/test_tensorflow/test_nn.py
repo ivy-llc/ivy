@@ -830,7 +830,7 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
 
 
 # local_response_normalization
-@handle_cmd_line_args
+@handle_frontend_test
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
