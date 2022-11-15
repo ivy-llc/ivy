@@ -99,6 +99,7 @@ def reshape(
     out: Optional[torch.Tensor] = None,
     order: Optional[str] = "C",
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = torch.clone(x)
         if order == "F":

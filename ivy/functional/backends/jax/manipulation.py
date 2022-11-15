@@ -77,6 +77,7 @@ def reshape(
     out: Optional[JaxArray] = None,
     order: Optional[str] = "C",
 ) -> JaxArray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = jnp.copy(x)
         return jnp.reshape(newarr, shape, order=order)
