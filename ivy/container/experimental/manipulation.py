@@ -1626,3 +1626,140 @@ class ContainerWithManipulationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
         )
+
+    @staticmethod
+    def static_take_along_axis(
+        arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        axis: int,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.take_along_axis. This method simply
+        wraps the function, and so the docstring for ivy.take_along_axis also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        arr
+            container with array inputs.
+        indices
+            container with array inputs.
+        axis
+            The axis over which to select values. If axis is None, then arr and indices
+            must be 1-D sequences of the same length.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container with arrays of the same shape as those in indices.
+
+        Examples
+        --------
+        >>> arr = ivy.Container(a=ivy.array([[1, 2], [3, 4]]),\
+                                b=ivy.array([[5, 6], [7, 8]]))
+        >>> indices = ivy.Container(a=ivy.array([[0, 0], [1, 1]]),\
+                                    b=ivy.array([[1, 0], [1, 0]]))
+        >>> ivy.Container.static_take_along_axis(arr, indices, axis=1)
+        {
+            a: ivy.array([[1, 1],
+                          [4, 4]]),
+            b: ivy.array([[6, 5],
+                          [8, 8]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "take_along_axis",
+            arr,
+            indices,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def take_along_axis(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        indices: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        axis: int,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.take_along_axis. This method simply
+        wraps the function, and so the docstring for ivy.take_along_axis also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with array inputs.
+        indices
+            container with array inputs.
+        axis
+            The axis over which to select values. If axis is None, then arr and indices
+            must be 1-D sequences of the same length.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            a container with arrays of the same shape as those in indices.
+
+        Examples
+        --------
+        >>> arr = ivy.Container(a=ivy.array([[1, 2], [3, 4]]),\
+                                b=ivy.array([[5, 6], [7, 8]]))
+        >>> indices = ivy.Container(a=ivy.array([[0, 0], [1, 1]]),\
+                                    b=ivy.array([[1, 0], [1, 0]]))
+        >>> arr.take_along_axis(indices, axis=1)
+        [{
+            a: ivy.array([[1, 1],
+                          [4, 4]]),
+            b: ivy.array([[6, 5],
+                            [8, 8]])
+        }]
+        """
+        return self.static_take_along_axis(
+            self,
+            indices,
+            axis,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
