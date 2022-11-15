@@ -830,10 +830,12 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
 
 
 # local_response_normalization
-@handle_frontend_test
+@handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value= 0,
+        max_value= 20,
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
@@ -841,9 +843,9 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         small_abs_safety_factor=1.5,
     ),
     depth_radius=st.integers(min_value=1,max_value=7),
-    bias=st.floats(min_value=1e-4),
-    alpha=st.floats(min_value=0.1),
-    beta=st.floats(min_value=0.011),
+    bias=st.floats(min_value=0.1, max_value=30),
+    alpha=st.floats(min_value=0.1 , max_value=20),
+    beta=st.floats(min_value=0.1,max_value=5),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.nn.local_response_normalization"
     ),
@@ -868,6 +870,8 @@ def test_tensorflow_local_response_normalization(
         native_array_flags=native_array,
         frontend="tensorflow",
         fn_tree="nn.local_response_normalization",
+        rtol=1e-3,
+        atol=1e-3,
         input=input,
         depth_radius=depth_radius,
         bias=bias,
