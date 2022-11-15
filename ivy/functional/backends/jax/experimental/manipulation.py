@@ -237,8 +237,6 @@ def take_along_axis(
 ) -> JaxArray:
     if axis < 0:
         axis += arr.ndim
-    if axis < 0 or axis >= arr.ndim:
-        raise ivy.exceptions.IvyException("axis out of bounds")
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
