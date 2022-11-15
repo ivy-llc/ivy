@@ -1999,6 +1999,7 @@ def test_numpy_instance_imod__(
         method_name=method_name,
     )
 
+
 @handle_frontend_method(
     method_tree="numpy.ndarray.__abs__",
     dtype_and_x=helpers.dtype_and_values(
@@ -2033,4 +2034,4 @@ def test_numpy_instance_abs__(
         class_="ndarray",
         method_name="__abs__",
     )
-    
+
