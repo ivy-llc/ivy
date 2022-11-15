@@ -547,7 +547,14 @@ def test_tensorflow_argmax(
     ),
 )
 def test_tensorflow_reduce_max(
-    dtype_and_x, as_variable, num_positional_args, native_array
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -556,8 +563,9 @@ def test_tensorflow_reduce_max(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="math.reduce_max",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -813,8 +821,9 @@ def test_tensorflow_scalar_mul(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="math.scalar_mul",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         scalar=scalar[0][0],
         x=x[0],
     )

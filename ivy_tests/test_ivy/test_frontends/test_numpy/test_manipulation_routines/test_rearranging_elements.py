@@ -93,10 +93,14 @@ def test_numpy_flip(
     ),
 )
 def test_numpy_fliplr(
+    *,
     dtype_and_m,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_frontend_function(
@@ -105,8 +109,9 @@ def test_numpy_fliplr(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="fliplr",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         m=m[0],
     )
 
