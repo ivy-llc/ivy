@@ -160,7 +160,6 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[JaxArray] = None,
     **kwargs: Optional[Any],
 ) -> JaxArray:
     pad_width = _to_nested_tuple(pad_width)

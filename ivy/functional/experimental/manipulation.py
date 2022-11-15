@@ -859,7 +859,6 @@ def pad(
     constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
     end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[ivy.Array] = None,
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """Pads an array.
@@ -937,9 +936,6 @@ def pad(
         unaltered reflection around the edge value. For the "odd" style, the extended
         part of the array is created by subtracting the reflected values from two
         times the edge value.
-    out
-        optional output array, for writing the result to. It must have a shape that
-        the input broadcasts to.
 
     Returns
     -------
