@@ -60,12 +60,12 @@ if __name__ == "__main__":
             # Now Compute the Tests to Run
             for line in updated:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= 20:
                     continue
                 tests_to_run.update(tests_file_line)
             for line in added:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= 20:
                     continue
                 tests_to_run.update(tests_file_line)
         break
