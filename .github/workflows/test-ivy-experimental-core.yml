@@ -25,7 +25,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 2
 
-       name: Check Files Changed
+       - name: Check Files Changed
          shell: pwsh
          id: check_file_changed
          run: |
