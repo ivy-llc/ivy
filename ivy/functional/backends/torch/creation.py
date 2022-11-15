@@ -324,7 +324,7 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
-    if "int" in str(dtype):
+    if "int" in str(dtype) and torch.is_floating_point(ans):
         ans = torch.floor(ans)
     return ans.to(dtype)
 

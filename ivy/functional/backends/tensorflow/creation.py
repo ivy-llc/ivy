@@ -278,7 +278,7 @@ def linspace(
             )
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
-        if dtype.is_integer:
+        if dtype.is_integer and ans.dtype.is_floating:
             ans = tf.math.floor(ans)
         return tf.cast(ans, dtype)
 
