@@ -670,26 +670,33 @@ def _get_edges(padded, axis, width_pair):
     return left_edge, right_edge
 
 
-def _get_ramp(i, padded, axis, width_pair, end_value_pair, edge_pair):
-    if width_pair[i] > 0:
-        return ivy.linspace(
-            end_value_pair[i],
-            ivy.array(edge_pair[i].squeeze(axis)),
-            num=width_pair[i],
+def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
+    edge_pair = _get_edges(padded, axis, width_pair)
+    if width_pair[0] > 0:
+        left_ramp = ivy.linspace(
+            end_value_pair[0],
+            ivy.array(edge_pair[0].squeeze(axis)),
+            num=width_pair[0],
             endpoint=False,
             dtype=ivy.Dtype(str(padded.dtype)),
             axis=axis,
         )
     else:
-        return ivy.empty((1,))
-
-
-def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
-    edge_pair = _get_edges(padded, axis, width_pair)
-    left_ramp = _get_ramp(0, padded, axis, width_pair, end_value_pair, edge_pair)
-    right_ramp = ivy.flip(
-        _get_ramp(1, padded, axis, width_pair, end_value_pair, edge_pair)
-    )
+        left_ramp = ivy.empty((0,))
+    if width_pair[1] > 0:
+        right_ramp = ivy.flip(
+            ivy.linspace(
+                end_value_pair[1],
+                ivy.array(edge_pair[1].squeeze(axis)),
+                num=width_pair[1],
+                endpoint=False,
+                dtype=ivy.Dtype(str(padded.dtype)),
+                axis=axis,
+            ),
+            axis=axis,
+        )
+    else:
+        right_ramp = ivy.empty((0,))
     return left_ramp.to_numpy(), right_ramp.to_numpy()
 
 
