@@ -4,7 +4,7 @@ import os  # noqa
 import bz2
 import _pickle as cPickle
 
-
+MAX_TESTS = 10
 if __name__ == "__main__":
     tests = bz2.BZ2File("tests.pbz2", "rb")
     tests = cPickle.load(tests)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
             # Now Update the Tests and compute the tests to run
             for line in deleted:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= MAX_TESTS:
                     continue
                 tests_to_run.update(tests_file_line)
             for line in sorted(deleted, reverse=True):
@@ -60,12 +60,12 @@ if __name__ == "__main__":
             # Now Compute the Tests to Run
             for line in updated:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= MAX_TESTS:
                     continue
                 tests_to_run.update(tests_file_line)
             for line in added:
                 tests_file_line = tests_file[line]
-                if len(tests_file_line) >= 100:
+                if len(tests_file_line) >= MAX_TESTS:
                     continue
                 tests_to_run.update(tests_file_line)
         break

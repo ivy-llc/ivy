@@ -663,12 +663,16 @@ def test_torch_unsqueeze(
     ),
 )
 def test_torch_movedim(
+    *,
     dtype_and_input,
     source,
     destination,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_and_input
     helpers.test_frontend_function(
@@ -677,8 +681,9 @@ def test_torch_movedim(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="movedim",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=value[0],
         source=source,
         destination=destination,
@@ -693,11 +698,15 @@ def test_torch_movedim(
     ),
 )
 def test_torch_hstack(
+    *,
     dtype_value_shape,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    with_out,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, value = dtype_value_shape
     helpers.test_frontend_function(
@@ -706,7 +715,8 @@ def test_torch_hstack(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="hstack",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         tensors=value,
     )
