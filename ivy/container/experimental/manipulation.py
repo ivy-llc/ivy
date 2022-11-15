@@ -1188,7 +1188,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1205,7 +1205,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1215,7 +1215,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ivy.Container.static_vsplit(ary, 2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
@@ -1254,7 +1254,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1272,7 +1272,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1282,16 +1282,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ary.vsplit(2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
         return self.static_vsplit(
-            self,
-            indices_or_sections=indices_or_sections,
-            out=out
+            self, indices_or_sections=indices_or_sections, out=out
         )
 
     @staticmethod
@@ -1322,7 +1320,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1339,7 +1337,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1349,7 +1347,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ivy.Container.static_dsplit(ary, 2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
@@ -1388,7 +1386,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
             If indices_or_sections is a tuple of ints, then input is split at each of
-            the indices in the tuple. 
+            the indices in the tuple.
         out
             optional output container, for writing the result to.
 
@@ -1406,7 +1404,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
                       [2.,  3.]],
                       [[4.,  5.],
                       [6.,  7.]]]
-                ), 
+                ),
             b=ivy.array(
                     [[ 0.,  1.,  2.,  3.],
                      [ 4.,  5.,  6.,  7.],
@@ -1416,14 +1414,215 @@ class ContainerWithManipulationExperimental(ContainerBase):
             )
         >>> ary.dsplit(2)
         {
-            a: [ivy.array([[[0., 1.], [2., 3.]]]), 
+            a: [ivy.array([[[0., 1.], [2., 3.]]]),
                 ivy.array([[[4., 5.], [6., 7.]]])],
             b: [ivy.array([[0., 1., 2., 3.], [4., 5., 6., 7.]]),
                 ivy.array([[ 8.,  9., 10., 11.], [12., 13., 14., 15.]])]
         }
         """
         return self.static_dsplit(
+            self, indices_or_sections=indices_or_sections, out=out
+        )
+
+    def dstack(
+        self: ivy.Container,
+        /,
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.stack. This method
+        simply wraps the function, and so the docstring for ivy.stack
+        also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0, 1], [2,3]]), b=ivy.array([[4, 5]]))
+        >>> y = ivy.Container(a=ivy.array([[3, 2], [1,0]]), b=ivy.array([[1, 0]]))
+        >>> x.dstack([y])
+        {
+            a: ivy.array([[[0, 3],
+                           [1, 2]],
+                          [[2, 1],
+                           [3, 0]]]),
+            b: ivy.array([[[4, 1]],
+                           [[5, 0]]])
+        }
+        """
+        new_xs = xs.copy()
+        new_xs.insert(0, self.copy())
+        return self.static_dstack(
+            new_xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_dstack(
+        xs: Union[
+            Tuple[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+            List[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        ],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.stack. This method simply wraps the
+        function, and so the docstring for ivy.dstack also applies to this method
+        with minimal changes.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> c = ivy.Container(a=[ivy.array([1,2,3]), ivy.array([0,0,0])],
+                              b=ivy.arange(3))
+        >>> ivy.Container.static_dstack(c)
+        {
+            a: ivy.array([[1, 0],
+                          [2, 0]
+                          [3,0]]),
+            b: ivy.array([[0, 1, 2])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "dstack",
+            xs,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_atleast_2d(
+        *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.atleast_2d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_2d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 2D. Copies are made only if necessary.
+
+        Examples
+        --------
+        >>> ary = ivy.Container(a=ivy.array(1), b=ivy.array([3,4,5]),\
+                        c=ivy.array([[3]]))
+        >>> ivy.Container.static_atleast_2d(ary)
+        {
+            a: ivy.array([[1]]),
+            b: ivy.array([[3, 4, 5]]),
+            c: ivy.array([[3]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "atleast_2d",
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def atleast_2d(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """ivy.Container instance method variant of ivy.atleast_2d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_2d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with array inputs.
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 2D. Copies are made only if necessary.
+
+        Examples
+        --------
+        >>> ary1 = ivy.Container(a=ivy.array(1), b=ivy.array([3,4]),\
+                            c=ivy.array([[5]]))
+        >>> ary2 = ivy.Container(a=ivy.array(9), b=ivy.array(2),\
+                            c=ivy.array(3))
+        >>> ary1.atleast_2d(ary2)
+        [{
+            a: ivy.array([[1]]),
+            b: ivy.array([[3, 4]]),
+            c: ivy.array([[5]])
+        }, {
+            a: ivy.array([[9]]),
+            b: ivy.array([[2]]),
+            c: ivy.array([[3]])
+        }]
+        """
+        return self.static_atleast_2d(
             self,
-            indices_or_sections=indices_or_sections,
-            out=out
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )

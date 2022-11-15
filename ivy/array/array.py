@@ -18,7 +18,7 @@ from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
 from .layers import ArrayWithLayers
-from .linalg import ArrayWithLinalg
+from .linear_algebra import ArrayWithLinearAlgebra
 from .losses import ArrayWithLosses
 from .manipulation import ArrayWithManipulation
 from .norms import ArrayWithNorms
@@ -41,7 +41,7 @@ class Array(
     ArrayWithGradients,
     ArrayWithImage,
     ArrayWithLayers,
-    ArrayWithLinalg,
+    ArrayWithLinearAlgebra,
     ArrayWithLosses,
     ArrayWithManipulation,
     ArrayWithNorms,
@@ -61,7 +61,7 @@ class Array(
     ArrayWithGradientsExperimental,
     ArrayWithImageExperimental,
     ArrayWithLayersExperimental,
-    ArrayWithLinalgExperimental,
+    ArrayWithLinearAlgebraExperimental,
     ArrayWithLossesExperimental,
     ArrayWithManipulationExperimental,
     ArrayWithNormsExperimental,
@@ -82,7 +82,7 @@ class Array(
         ArrayWithGradients.__init__(self)
         ArrayWithImage.__init__(self)
         ArrayWithLayers.__init__(self)
-        ArrayWithLinalg.__init__(self)
+        ArrayWithLinearAlgebra.__init__(self)
         ArrayWithLosses.__init__(self)
         ArrayWithManipulation.__init__(self)
         ArrayWithNorms.__init__(self)
@@ -102,7 +102,7 @@ class Array(
         ArrayWithGradientsExperimental.__init__(self),
         ArrayWithImageExperimental.__init__(self),
         ArrayWithLayersExperimental.__init__(self),
-        ArrayWithLinalgExperimental.__init__(self),
+        ArrayWithLinearAlgebraExperimental.__init__(self),
         ArrayWithLossesExperimental.__init__(self),
         ArrayWithManipulationExperimental.__init__(self),
         ArrayWithNormsExperimental.__init__(self),
@@ -239,11 +239,11 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        rep = (
-            ivy.vec_sig_fig(np.array(self._data), sig_fig)
-            if self._size > 0
-            else np.array(self._data)
+        backend = (
+            ivy.get_backend(self.backend) if self.backend else ivy.current_backend()
         )
+        arr_np = backend.to_numpy(self._data)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             return (
                 self._pre_repr

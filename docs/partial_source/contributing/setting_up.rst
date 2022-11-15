@@ -409,10 +409,14 @@ Click on the "green arrow button" from where you run the funcion in PyCharm. Ope
 Setting up for Free
 -------------------
 
+
 Visual Studio Code is a recommended free alternative to setting up, especially if you're not eligible for a student license with PyCharm Professional.
 The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension.
 You'll hopefully be done with this in no time.
 The steps to be followed are listed below:
+
+Windows
+*******
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 #. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
@@ -425,7 +429,23 @@ The steps to be followed are listed below:
    b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
    c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
    d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
-   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name"
+   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
+
+Ubuntu
+*******
+
+#. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_
+#. Clone your fork of the Ivy repository.
+#. Open Visual Studio Code, open the Ivy repo folder and following the steps listed below:
+
+   a. Install the :code:`Dev Containers` and :code:`Docker` extensions.
+   b. Open the :code:`.devcontainer/devcontainer.json` file.
+   c. Add a comma (:code:`,`) to the end entry :code:`"postCreateCommand": "bash .devcontainer/post_create_commands.sh"`, making it :code:`"postCreateCommand": "bash .devcontainer/post_create_commands.sh",`.
+   d. Add in the line :code:`"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"` on the line immediately after the :code:`postCreateCommand` line.
+   e. Click the remote explorer icon in the bottom left. It looks roughly like "><" overlapped on each other.
+   f. Click :code:`Reopen in Container` in the dropdown menu.
+   g. You'll be inside the container now, where you can locally run the tests running the command, :code:`pytest test_fle_path::test_fn_name`. Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 **Important Note**
 
