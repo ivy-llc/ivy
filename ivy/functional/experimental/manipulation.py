@@ -1298,4 +1298,4 @@ def take_along_axis(
     >>> print(y)
     ivy.array([[4, 3, 3], [1, 1, 1]])
     """
-    return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
+    return ivy.current_backend().take_along_axis(arr, indices, axis, out=out)
