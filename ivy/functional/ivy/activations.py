@@ -46,7 +46,7 @@ def relu(
         ``x``.
 
     Examples
-    -------------------
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
@@ -108,8 +108,8 @@ def leaky_relu(
     ret
         The input array with leaky relu applied element-wise.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
 
     With :class:`ivy.Array` input:
 
