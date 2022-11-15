@@ -153,6 +153,28 @@ class ArrayWithLinearAlgebra(abc.ABC):
             self._data, offset=offset, axis1=axis1, axis2=axis2, out=out
         )
 
+    def diag(
+        self: ivy.Array,
+        /,
+        *,
+        k: int = 0,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.diag.
+        This method simply wraps the function, and so the docstring for
+        ivy.diag also applies to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0, 1, 2],
+        >>>                [3, 4, 5],
+        >>>                [6, 7, 8]])
+        >>> x.diag(k=1)
+        ivy.array([1, 5])
+        """
+        return ivy.diag(self._data, k=k, out=out)
+
     def eigh(
         self: ivy.Array,
     ) -> Tuple[ivy.Array]:
@@ -201,6 +223,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         ivy.Array instance method variant of ivy.matrix_norm.
         This method simply wraps the function, and so the docstring for
         ivy.matrix_norm also applies to this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -313,6 +336,35 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def matrix_transpose(
         self: ivy.Array, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
+        """
+        Transposes a matrix (or a stack of matrices) ``x``.
+
+        Parameters
+        ----------
+        x
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form ``MxN`` matrices.
+        out
+            optional output array, for writing the result to. It must have
+            a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the transpose for each matrix and having shape
+            ``(..., N, M)``. The returned array must have the same data
+            type as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance inputs:
+
+        >>> x = ivy.array([[1., 2.], [0., 3.]])
+        >>> y = ivy.matrix_transpose(x)
+        >>> print(y)
+        ivy.array([[1., 0.],
+                   [2., 3.]])
+        """
         return ivy.matrix_transpose(self._data, out=out)
 
     def outer(
@@ -478,6 +530,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vecdot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         axis: int = -1,
         out: Optional[ivy.Array] = None,

@@ -1,14 +1,17 @@
 # local
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # global
 import math
 
 
+@to_ivy_arrays_and_back
 def cat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
 
+@to_ivy_arrays_and_back
 def chunk(input, chunks, dim=0):
     shape = ivy.shape(input)[dim]
     if chunks > shape:
@@ -20,10 +23,36 @@ def chunk(input, chunks, dim=0):
     )
 
 
+@to_ivy_arrays_and_back
 def concat(tensors, dim=0, *, out=None):
     return ivy.concat(tensors, axis=dim, out=out)
 
 
+@to_ivy_arrays_and_back
+def gather(input, dim, index, *, sparse_grad=False, out=None):
+    if sparse_grad:
+        raise ivy.exceptions.IvyException(
+            "Gather does not yet support the sparse grad functionality"
+        )
+
+    dim = dim % len(input.shape)
+    all_indices = ivy.argwhere(ivy.full(index.shape, True))
+    gather_locations = ivy.reshape(index, [ivy.prod(ivy.array(index.shape))])
+
+    gather_indices = []
+    for axis in range(len(index.shape)):
+        if axis == dim:
+            gather_indices.append(ivy.array(gather_locations, dtype=index.dtype))
+        else:
+            gather_indices.append(ivy.array(all_indices[:, axis], dtype=index.dtype))
+
+    gather_indices = ivy.stack(gather_indices, axis=-1)
+    gathered = ivy.gather_nd(input, gather_indices)
+    reshaped = ivy.reshape(gathered, index.shape)
+    return reshaped
+
+
+@to_ivy_arrays_and_back
 def nonzero(input, *, out=None, as_tuple=False):
     ret = ivy.nonzero(input)
     if as_tuple is False:
@@ -34,14 +63,17 @@ def nonzero(input, *, out=None, as_tuple=False):
     return ret
 
 
+@to_ivy_arrays_and_back
 def permute(input, dims):
     return ivy.permute_dims(input, axes=dims)
 
 
+@to_ivy_arrays_and_back
 def reshape(input, shape):
     return ivy.reshape(input, shape)
 
 
+@to_ivy_arrays_and_back
 def squeeze(input, dim):
     if isinstance(dim, int):
         if input.shape[dim] > 1:
@@ -49,22 +81,27 @@ def squeeze(input, dim):
     return ivy.squeeze(input, dim)
 
 
+@to_ivy_arrays_and_back
 def stack(tensors, dim=0, *, out=None):
     return ivy.stack(tensors, axis=dim, out=out)
 
 
+@to_ivy_arrays_and_back
 def swapaxes(input, axis0, axis1):
     return ivy.swapaxes(input, axis0, axis1)
 
 
+@to_ivy_arrays_and_back
 def swapdims(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
 
 
+@to_ivy_arrays_and_back
 def transpose(input, dim0, dim1):
     return ivy.swapaxes(input, dim0, dim1)
 
 
+@to_ivy_arrays_and_back
 def tile(input, dims):
     try:
         tup = tuple(dims)
@@ -81,3 +118,18 @@ def tile(input, dims):
     else:
         res = ivy.tile(input, reps=dims, out=None)
     return res
+
+
+@to_ivy_arrays_and_back
+def unsqueeze(input, dim=0):
+    return ivy.expand_dims(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def movedim(input, source, destination):
+    return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def hstack(tensors, *, out=None):
+    return ivy.hstack(tensors, out=out)

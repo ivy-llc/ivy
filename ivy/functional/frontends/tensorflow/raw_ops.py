@@ -2,14 +2,18 @@
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    map_raw_ops_alias,
+)
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
 def AddN(*, inputs, name="AddN"):
-    inputs = ivy.array(inputs)
-    return ivy.sum(inputs, axis=0, dtype=inputs.dtype)
+    return ivy.sum(inputs, dtype=inputs.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -22,10 +26,15 @@ def Acosh(*, x, name="Acosh"):
     return ivy.acosh(x)
 
 
-Add = tf_frontend.math.add
+Add = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.add))
 
 
-ArgMax = tf_frontend.math.argmax
+ArgMax = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.argmax,
+        kwargs_to_update={"dimension": "axis"},
+    )
+)
 
 
 @to_ivy_arrays_and_back
@@ -83,6 +92,7 @@ def Ceil(*, x, name=None):
     return ivy.ceil(x)
 
 
+@to_ivy_arrays_and_back
 def Concat(*, concat_dim, values, name="Concat"):
     return ivy.concat(values, axis=concat_dim)
 
@@ -93,18 +103,19 @@ def Cos(*, x, name="Cos"):
 
 
 @to_ivy_arrays_and_back
-def Cosh(*, x, name="cosh"):
+def Cosh(*, x, name="Cosh"):
     return ivy.cosh(x)
 
 
-Div = tf_frontend.math.divide
+Div = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.divide))
 
 
+@to_ivy_arrays_and_back
 def Diag(*, diagonal, name="Diag"):
     return ivy.astype(ivy.diag(diagonal), diagonal.dtype)
 
 
-Cumprod = tf_frontend.math.cumprod
+Cumprod = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumprod))
 
 
 @to_ivy_arrays_and_back
@@ -146,6 +157,11 @@ def FloorDiv(*, x, y, name="FloorDiv"):
 
 
 @to_ivy_arrays_and_back
+def Gather(*, params, indices, validate_indices=None, name="Gather"):
+    return ivy.gather(params, indices, axis=0, batch_dims=0)
+
+
+@to_ivy_arrays_and_back
 def Greater(*, x, y, name="Greater"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.greater(x, y)
@@ -170,6 +186,11 @@ def IdentityN(*, input, name="IdentityN"):
 @to_ivy_arrays_and_back
 def Inv(*, x, name="Inv"):
     return ivy.astype(ivy.reciprocal(x), x.dtype)
+
+
+@to_ivy_arrays_and_back
+def Reciprocal(*, x, name=None):
+    return ivy.reciprocal(x)
 
 
 @to_ivy_arrays_and_back
@@ -221,20 +242,42 @@ def MatMul(*, a, b, transpose_a=False, transpose_b=False, name="MatMul"):
     return ivy.matmul(a, b, transpose_a=transpose_a, transpose_b=transpose_b)
 
 
-MatrixDeterminant = tf_frontend.linalg.det
-
-
 @to_ivy_arrays_and_back
-def Max(*, input, axis, keep_dims=False, name="Max"):
-    return ivy.astype(ivy.max(input, axis=axis, keepdims=keep_dims), input.dtype)
+def MatrixInverse(*, input, adjoint=False, name="MatrixInverse"):
+    return ivy.inv(input, adjoint=adjoint)
 
 
-Maximum = tf_frontend.math.maximum
+MatrixDeterminant = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.linalg.det))
 
 
-@to_ivy_arrays_and_back
-def Min(*, input, axis, keep_dims=False, name="Min"):
-    return ivy.astype(ivy.min(input, axis=axis, keepdims=keep_dims), input.dtype)
+Max = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.reduce_max,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+        },
+    )
+)
+
+
+Maximum = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.maximum,
+        kwargs_to_update={"x": "a", "y": "b"},
+    )
+)
+
+
+Min = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.reduce_min,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+        },
+    )
+)
 
 
 @to_ivy_arrays_and_back
@@ -242,10 +285,10 @@ def Minimum(*, x, y, name="Minimum"):
     return ivy.minimum(x, y)
 
 
-Mul = tf_frontend.math.multiply
+Mul = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.multiply))
 
 
-Neg = tf_frontend.math.negative
+Neg = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.negative))
 
 
 @to_ivy_arrays_and_back
@@ -271,8 +314,16 @@ def OnesLike(*, x, name="OnesLike"):
 
 
 @to_ivy_arrays_and_back
-def Relu(features, name="Relu"):
-    return ivy.relu(features)
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
+
+
+Relu = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.keras.activations.relu,
+        kwargs_to_update={"features": "x"},
+    )
+)
 
 
 @to_ivy_arrays_and_back
@@ -283,6 +334,11 @@ def Reshape(*, tensor, shape, name="Reshape"):
 @to_ivy_arrays_and_back
 def RightShift(*, x, y, name="RightShift"):
     return ivy.bitwise_right_shift(x, y)
+
+
+@to_ivy_arrays_and_back
+def Round(*, x, name="Round"):
+    return ivy.round(x)
 
 
 @to_ivy_arrays_and_back
@@ -310,7 +366,12 @@ def Square(*, x, name="Square"):
     return ivy.square(x)
 
 
-Sub = tf_frontend.math.subtract
+@to_ivy_arrays_and_back
+def Squeeze(*, input, axis, name="Squeeze"):
+    return ivy.squeeze(input, axis=axis)
+
+
+Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
 
 
 @to_ivy_arrays_and_back
@@ -318,9 +379,7 @@ def Sum(*, input, axis, keep_dims=False, name="Sum"):
     return ivy.astype(ivy.sum(input, axis=axis, keepdims=keep_dims), input.dtype)
 
 
-@to_ivy_arrays_and_back
-def Tan(*, x, name="Tan"):
-    return tf_frontend.math.tan(x)
+Tan = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.tan))
 
 
 @to_ivy_arrays_and_back
@@ -334,7 +393,7 @@ def Transpose(*, x, perm, name="Transpose"):
     return ret
 
 
-Cumsum = tf_frontend.math.cumsum
+Cumsum = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.cumsum))
 
 
 @to_ivy_arrays_and_back
@@ -342,15 +401,64 @@ def TruncateDiv(*, x, y, name="TruncateDiv"):
     return ivy.astype(ivy.trunc_divide(x, y), x.dtype)
 
 
+@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def Unpack(*, value, num, axis=0, name="Unpack"):
+    return ivy.unstack(value, axis=axis)[:num]
+
+
 @to_ivy_arrays_and_back
 def ZerosLike(*, x, name="ZerosLike"):
     return ivy.zeros_like(x)
 
 
+Mean = to_ivy_arrays_and_back(
+    map_raw_ops_alias(
+        tf_frontend.math.reduce_mean,
+        kwargs_to_update={
+            "input": "input_tensor",
+            "keep_dims": "keepdims",
+        },
+    )
+)
+
+
 @to_ivy_arrays_and_back
-def Mean(*, input, axis, keep_dims=False, name="Mean"):
-    return ivy.astype(ivy.mean(input, axis=axis, keepdims=keep_dims), input.dtype)
+def Pow(*, x, y, name="Pow"):
+    return ivy.pow(x, y)
 
 
+@to_ivy_arrays_and_back
 def Relu6(features, name="Relu6"):
     return ivy.clip(features, 0, 6)
+
+
+Sigmoid = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.keras.activations.sigmoid)
+)
+
+
+@to_ivy_arrays_and_back
+def Softplus(features, name="Softplus"):
+    return ivy.softplus(features)
+
+
+@to_ivy_arrays_and_back
+def Xdivy(*, x, y, name="Xdivy"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def Xlog1py(*, x, y, name="Xlog1py"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.multiply(x, ivy.log1p(y))
+
+
+@to_ivy_arrays_and_back
+def Xlogy(*, x, y, name="Xlogy"):
+    if (x == 0).all():
+        return 0.0
+    return ivy.multiply(x, ivy.log(y))

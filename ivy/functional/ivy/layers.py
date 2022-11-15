@@ -209,6 +209,48 @@ def dropout(
     return x
 
 
+@handle_exceptions
+@to_native_arrays_and_back
+def dropout1d(
+    x: Union[ivy.Array, ivy.NativeArray],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Randomly zero out entire channels with probability prob using samples from
+     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
+     In this case, dropout1d performs a channel-wise dropout but assumes
+     a channel is a 1D feature map.
+
+    Parameters
+    ----------
+    x
+        a 2D or 3D input array. Should have a floating-point data type.
+    prob
+        probability of a channel to be zero-ed.
+    training
+        controls whether dropout1d is performed during training or ignored
+        during testing.
+    data_format
+        "NWC" or "NCW". Defaults to "NWC".
+    out
+        optional output array, for writing the result to.
+        It must have a shape that the inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        an array with some channels zero-ed and the rest of channels are
+         scaled by (1/1-prob).
+    """
+    return current_backend(x).dropout1d(
+        x, prob, training=training, data_format=data_format, out=out
+    )
+
+
 # Attention #
 
 
@@ -648,7 +690,13 @@ def conv1d(
     }
     """
     return current_backend(x).conv1d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -698,7 +746,14 @@ def conv1d_transpose(
 
     """
     return current_backend(x).conv1d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -781,6 +836,7 @@ def conv2d(
     }
 
     With multiple :class:`ivy.Container` inputs:
+
     >>> x = ivy.Container(a = ivy.eye(3, 3).reshape((1, 3, 3, 1)),
     ...                   b = ivy.eye(4, 4).reshape((1, 4, 4, 1)),
     ...                   c = ivy.eye(5, 5).reshape((1, 5, 5, 1)))
@@ -814,7 +870,13 @@ def conv2d(
 
     """
     return current_backend(x).conv2d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -864,7 +926,14 @@ def conv2d_transpose(
 
     """
     return current_backend(x).conv2d_transpose(
-        x, filters, strides, padding, output_shape, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -991,7 +1060,13 @@ def depthwise_conv2d(
 
     """
     return current_backend(x).depthwise_conv2d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -1055,7 +1130,13 @@ def conv3d(
 
     """
     return current_backend(x).conv3d(
-        x, filters, strides, padding, data_format, dilations, out=out
+        x,
+        filters,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+        out=out,
     )
 
 
@@ -1218,7 +1299,8 @@ def conv_general_dilated(
     dilations: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 1-D, 2-D, and 3-D convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -1278,7 +1360,8 @@ def conv_general_transpose(
     feature_group_count: int = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+    """Computes a 1-D, 2-D, and 3-D transpose convolution given 3-D, 4-D and 5-D
+    input x respectively and filters arrays.
 
     Parameters
     ----------
@@ -1502,3 +1585,68 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+def fft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Computes the one dimensional discrete Fourier transform given input at least
+    1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT.
+    dim
+        The dimension along which to take the one dimensional FFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing FFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT operation.
+
+    Examples
+    --------
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
+    ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
+            2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,
+            9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,
+            1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
+    ivy.array([-3.44509285e-16+1.14423775e-17j,  1.00000000e+00+5.02733949e+00j,
+        8.00000000e+00-8.11483250e-16j,  1.00000000e+00-5.02733949e+00j,
+        2.33486982e-16+1.22464680e-16j,  1.00000000e+00-1.49660576e+00j,
+        0.00000000e+00+1.22464680e-16j,  1.00000000e+00-6.68178638e-01j,
+        9.95799250e-17+2.33486982e-16j,  1.00000000e+00-1.98912367e-01j,
+        0.00000000e+00+7.66951701e-17j,  1.00000000e+00+1.98912367e-01j,
+        1.14423775e-17+1.22464680e-16j,  1.00000000e+00+6.68178638e-01j,
+        0.00000000e+00+1.22464680e-16j,  1.00000000e+00+1.49660576e+00j])
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
+    ivy.array([-1.21802426e-16+4.04549134e-18j,  2.82842712e+00-2.86902654e-16j,
+        8.25501143e-17+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j,
+        3.52068201e-17+8.25501143e-17j,  0.00000000e+00+2.71158374e-17j,
+        4.04549134e-18+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j])
+    """
+    return current_backend(x).fft(x, dim, norm=norm, n=n, out=out)

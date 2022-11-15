@@ -1,7 +1,11 @@
-# local
-from typing import Tuple, Union
-import ivy
+# global
+from typing import Tuple, Union, Optional
 import abc
+
+# local
+import ivy
+from ivy.functional.ivy.gradients import _variable
+
 
 # Initializer #
 # ----------- #
@@ -22,9 +26,9 @@ class Initializer(abc.ABC):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ) -> ivy.Array:
         """
         Create internal variables for the layer
@@ -53,7 +57,7 @@ class Initializer(abc.ABC):
 
 
 class Constant(Initializer):
-    def __init__(self, constant):
+    def __init__(self, constant: float):
         """
         Constant initializer, will fill in all values with the value of `constant`.
 
@@ -68,11 +72,11 @@ class Constant(Initializer):
         self,
         var_shape: Tuple[int, int],
         device: Union[ivy.Device, ivy.NativeDevice],
-        fan_out: float = None,
-        fan_in: float = None,
-        dtype: Union[ivy.Dtype, ivy.NativeDtype] = None,
+        fan_out: Optional[float] = None,
+        fan_in: Optional[float] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ) -> ivy.Array:
-        return ivy.variable(
+        return _variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
         )
 
@@ -193,7 +197,7 @@ class Uniform(Initializer):
                 "fan_sum | fan_avg ] "
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(
+        return _variable(
             ivy.random_uniform(
                 low=-wlim, high=wlim, shape=var_shape, device=device, dtype=dtype
             ),
@@ -334,7 +338,7 @@ class KaimingNormal(Initializer):
                 "fan_sum | fan_avg ] "
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
-        return ivy.variable(
+        return _variable(
             ivy.random_normal(
                 mean=self._mean, std=std, shape=var_shape, device=device, dtype=dtype
             )

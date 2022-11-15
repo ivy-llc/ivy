@@ -13,6 +13,21 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+# Helpers #
+# --------#
+
+
+def _get_promoted_type_of_operands(operands):
+    dtype = None
+    for operand in operands:
+        operand_dtype = ivy.as_ivy_dtype(operand.dtype)
+        if dtype is None:
+            dtype = operand_dtype
+        else:
+            dtype = ivy.promote_types(dtype, operand_dtype)
+    return ivy.as_native_dtype(dtype)
+
+
 # Array API Standard #
 # -------------------#
 
@@ -28,33 +43,34 @@ def min(
     keepdims: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the minimum value of the input array x.
+    """Calculates the minimum value of the input array ``x``.
 
     .. note::
-    When the number of elements over which to compute the minimum value is zero, the
-    minimum value is implementation-defined. Specification-compliant libraries may
-    choose to raise an error, return a sentinel value (e.g., if x is a floating-point
-    input array, return NaN), or return the maximum possible value for the input array x
-    data type (e.g., if x is a floating-point array, return +infinity).
+       When the number of elements over which to compute the minimum value is zero, the
+       minimum value is implementation-defined. Specification-compliant libraries may
+       choose to raise an error, return a sentinel value (e.g., if ``x`` is a floating-point
+       input array, return ``NaN``), or return the maximum possible value for the input array ``x``
+       data type (e.g., if ``x`` is a floating-point array, return ``+infinity``).
 
     **Special Cases**
 
     For floating-point operands,
 
-    If x_i is NaN, the minimum value is NaN (i.e., NaN values propagate).
+    -   If ``x_i`` is ``NaN``, the minimum value is ``NaN`` (i.e., ``NaN`` values propagate).
 
     Parameters
     ----------
     x
-        Input array containing elements to min.
+        Input array. Should have a real-valued data type.
     axis
-         axis or axes along which minimum values must be computed. By default, the
-         minimum value must be computed over the entire array. If a tuple of integers,
-         minimum values must be computed over multiple axes. Default: ``None``.
+        axis or axes along which minimum values must be computed. By default, the
+        minimum value must be computed over the entire array. If a tuple of integers,
+        minimum values must be computed over multiple axes. Default: ``None``.
+
     keepdims
-        optional boolean, if True, the reduced axes (dimensions) must be included in the
+        optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
         result as singleton dimensions, and, accordingly, the result must be compatible
-        with the input array (see Broadcasting). Otherwise, if False, the reduced axes
+        with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
         (dimensions) must not be included in the result. Default: ``False``.
     out
         optional output array, for writing the result to.
@@ -65,10 +81,10 @@ def min(
         if the minimum value was computed over the entire array, a zero-dimensional
         array containing the minimum value; otherwise, a non-zero-dimensional array
         containing the minimum values. The returned array must have the same data type
-        as x.
+        as ``x``.
 
 
-    This method conforms to the `Array API Standard
+    This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.statistical_functions.min.html>`_  # noqa
     in the standard.
@@ -83,7 +99,7 @@ def min(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
-    >>> z = x.min()
+    >>> z = ivy.min(x)
     >>> print(z)
     ivy.array(1)
 
@@ -105,16 +121,8 @@ def min(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = ivy.min(x)
-    >>> print(y)
-    {
-        a: ivy.array(0.),
-        b: ivy.array(3.)
-    }
-
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]), b=ivy.array([2, 3, 4]))
-    >>> z = x.min()
+    >>> z = ivy.min(x)
     >>> print(z)
     {
         a: ivy.array(1),
@@ -192,12 +200,12 @@ def max(
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
-    >>> z = x.max()
+    >>> z = ivy.max(x)
     >>> print(z)
     ivy.array(3)
 
     >>> x = ivy.array([0, 1, 2])
-    >>> z = ivy.array([0,0,0])
+    >>> z = ivy.array([0])
     >>> y = ivy.max(x, out=z)
     >>> print(z)
     ivy.array(2)
@@ -206,11 +214,6 @@ def max(
     >>> y = ivy.max(x, axis=0, keepdims=True)
     >>> print(y)
     ivy.array([[4, 6, 10]])
-
-    >>> x = ivy.native_array([[0, 1, 2], [4, 6, 10]])
-    >>> y = ivy.max(x)
-    >>> print(y)
-    ivy.array(10)
 
     With :class:`ivy.Container` input:
 
@@ -224,7 +227,7 @@ def max(
 
     >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
     ...                   b=ivy.array([2, 3, 4]))
-    >>> z = x.max()
+    >>> z = ivy.max(x)
     >>> print(z)
     {
         a: ivy.array(3),

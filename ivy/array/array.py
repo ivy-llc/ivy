@@ -14,7 +14,6 @@ from .creation import ArrayWithCreation
 from .data_type import ArrayWithDataTypes
 from .device import ArrayWithDevice
 from .elementwise import ArrayWithElementwise
-from .extensions import ArrayWithExtensions
 from .general import ArrayWithGeneral
 from .gradients import ArrayWithGradients
 from .image import ArrayWithImage
@@ -29,6 +28,7 @@ from .set import ArrayWithSet
 from .sorting import ArrayWithSorting
 from .statistical import ArrayWithStatistical
 from .utility import ArrayWithUtility
+from .experimental import *
 
 
 class Array(
@@ -37,7 +37,6 @@ class Array(
     ArrayWithDataTypes,
     ArrayWithDevice,
     ArrayWithElementwise,
-    ArrayWithExtensions,
     ArrayWithGeneral,
     ArrayWithGradients,
     ArrayWithImage,
@@ -52,6 +51,26 @@ class Array(
     ArrayWithSorting,
     ArrayWithStatistical,
     ArrayWithUtility,
+    ArrayWithActivationsExperimental,
+    ArrayWithConversionsExperimental,
+    ArrayWithCreationExperimental,
+    ArrayWithData_typeExperimental,
+    ArrayWithDeviceExperimental,
+    ArrayWithElementWiseExperimental,
+    ArrayWithGeneralExperimental,
+    ArrayWithGradientsExperimental,
+    ArrayWithImageExperimental,
+    ArrayWithLayersExperimental,
+    ArrayWithLinearAlgebraExperimental,
+    ArrayWithLossesExperimental,
+    ArrayWithManipulationExperimental,
+    ArrayWithNormsExperimental,
+    ArrayWithRandomExperimental,
+    ArrayWithSearchingExperimental,
+    ArrayWithSetExperimental,
+    ArrayWithSortingExperimental,
+    ArrayWithStatisticalExperimental,
+    ArrayWithUtilityExperimental,
 ):
     def __init__(self, data):
         ArrayWithActivations.__init__(self)
@@ -73,6 +92,26 @@ class Array(
         ArrayWithSorting.__init__(self)
         ArrayWithStatistical.__init__(self)
         ArrayWithUtility.__init__(self)
+        ArrayWithActivationsExperimental.__init__(self),
+        ArrayWithConversionsExperimental.__init__(self),
+        ArrayWithCreationExperimental.__init__(self),
+        ArrayWithData_typeExperimental.__init__(self),
+        ArrayWithDeviceExperimental.__init__(self),
+        ArrayWithElementWiseExperimental.__init__(self),
+        ArrayWithGeneralExperimental.__init__(self),
+        ArrayWithGradientsExperimental.__init__(self),
+        ArrayWithImageExperimental.__init__(self),
+        ArrayWithLayersExperimental.__init__(self),
+        ArrayWithLinearAlgebraExperimental.__init__(self),
+        ArrayWithLossesExperimental.__init__(self),
+        ArrayWithManipulationExperimental.__init__(self),
+        ArrayWithNormsExperimental.__init__(self),
+        ArrayWithRandomExperimental.__init__(self),
+        ArrayWithSearchingExperimental.__init__(self),
+        ArrayWithSetExperimental.__init__(self),
+        ArrayWithSortingExperimental.__init__(self),
+        ArrayWithStatisticalExperimental.__init__(self),
+        ArrayWithUtilityExperimental.__init__(self),
         self._init(data)
 
     def _init(self, data):
@@ -96,7 +135,6 @@ class Array(
         else:
             self._post_repr = ")"
         self.backend = ivy.current_backend_str()
-        self._is_variable = ivy.is_variable(self._data)
 
     # Properties #
     # ---------- #
@@ -161,11 +199,6 @@ class Array(
         ivy.assertions.check_equal(len(self._data.shape), 2)
         return ivy.matrix_transpose(self._data)
 
-    @property
-    def is_variable(self) -> bool:
-        """Determine whether the array is a trainable variable or not."""
-        return self._is_variable
-
     # Setters #
     # --------#
 
@@ -206,11 +239,11 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        rep = (
-            ivy.vec_sig_fig(ivy.to_numpy(self._data), sig_fig)
-            if self._size > 0
-            else ivy.to_numpy(self._data)
+        backend = (
+            ivy.get_backend(self.backend) if self.backend else ivy.current_backend()
         )
+        arr_np = backend.to_numpy(self._data)
+        rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             return (
                 self._pre_repr
@@ -432,10 +465,10 @@ class Array(
         return ivy.remainder(self._data, other)
 
     def __divmod__(self, other):
-        return divmod(self._data, other)
+        return tuple([ivy.divide(self._data, other), ivy.remainder(self._data, other)])
 
     def __rdivmod__(self, other):
-        return divmod(other, self._data)
+        return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
 
     def __truediv__(self, other):
         return ivy.divide(self._data, other)

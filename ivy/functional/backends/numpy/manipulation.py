@@ -38,7 +38,7 @@ def concat(
     highest_dtype = xs[0].dtype
     for i in xs:
         highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-    return ret.astype(highest_dtype)
+    return ivy.astype(ret, highest_dtype, copy=False)
 
 
 concat.support_native_out = True

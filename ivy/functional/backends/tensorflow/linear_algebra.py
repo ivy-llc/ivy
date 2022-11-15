@@ -3,7 +3,6 @@
 from typing import Union, Optional, Tuple, Literal, List, NamedTuple, Sequence
 from collections import namedtuple
 
-
 import tensorflow as tf
 
 # local
@@ -232,10 +231,9 @@ def matmul(
         elif len(x2.shape) == 1 and len(x1.shape) >= 2:
             x2 = tf.expand_dims(x2, axis=1)
             x2_padded = True
-
         ret = tf.matmul(x1, x2)
 
-    ret = tf.cast(ret, dtype=dtype_from)
+    ret = ivy.astype(ret, dtype_from, copy=False).to_native()
     if x1_padded_2:
         ret = ret[0]
     elif x1_padded:
@@ -325,8 +323,23 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if len(x.shape) < 2:
-        return tf.constant(0, dtype=x.dtype)
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return tf.constant(0, dtype=x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return tf.constant(0, dtype=x.dtype)
     axis = None
     ret_shape = x.shape[:-2]
     if len(x.shape) == 2:
@@ -343,18 +356,48 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return tf.constant(0, dtype=x.dtype)
     max_values = tf.math.reduce_max(singular_values, axis=axis)
-    if atol and rtol is None:
-        ret = tf.experimental.numpy.sum(singular_values > atol, axis=axis)
-    elif rtol and atol is None:
-        ret = tf.experimental.numpy.sum(singular_values > max_values * rtol, axis=axis)
-    elif rtol and atol:
-        tol = tf.maximum(atol, max_values * rtol)
-        ret = tf.experimental.numpy.sum(singular_values > tol, axis=axis)
-    else:
-        ret = tf.experimental.numpy.sum(singular_values != 0, axis=axis)
+    if atol is None:
+        if rtol is None:
+            ret = ivy.sum(singular_values != 0, axis=axis)
+        else:
+            try:
+                max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
+                    rtol, dtype=tf.float32
+                )
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = tf.cast(max_values, dtype=tf.float32) * tf.cast(
+                        rtol, dtype=tf.float32
+                    )
+            if not isinstance(rtol, float) and tf.size(rtol) > 1:
+                if ivy.all(
+                    tf.math.equal(
+                        max_rtol, tf.fill(max_rtol.shape, dim_reduction(max_rtol))
+                    )
+                ):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and tf.size(max_values) > 1:
+                if ivy.all(
+                    tf.math.equal(max_values, tf.fill(max_values.shape, max_values[0]))
+                ):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(
+                tf.cast(singular_values, dtype=tf.float32)
+                > tf.cast(max_rtol, dtype=tf.float32),
+                axis=axis,
+            )
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = ivy.sum(singular_values > atol, axis=axis)
+        else:
+            tol = tf.experimental.numpy.max(atol, max_values * rtol)
+            ret = ivy.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
-        ret = tf.reshape(ret, ret_shape)
-    return tf.cast(ret, x.dtype)
+        ret = ivy.reshape(ret, ret_shape)
+    return ivy.astype(ret, x.dtype)
 
 
 @with_unsupported_dtypes(
@@ -378,7 +421,7 @@ def matrix_transpose(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.swapaxes(x, -1, -2)
+    return tf.linalg.matrix_transpose(x)
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
@@ -403,16 +446,12 @@ def pinv(
     if rtol is None:
         ret = tf.linalg.pinv(x)
     else:
+        x, rtol = ivy.promote_types_of_inputs(x, rtol)
         ret = tf.linalg.pinv(x, rtol)
     return ret
 
 
-pinv.unsupported_dtypes = (
-    "float16",
-    "bfloat16",
-)
-
-
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def qr(x: Union[tf.Tensor, tf.Variable], mode: str = "reduced") -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -468,6 +507,10 @@ def solve(
     else:
         x1 = tf.broadcast_to(x1, output_shape + x1.shape[-2:])
         x2 = tf.broadcast_to(x2, output_shape + x2.shape[-2:])
+        if tf.math.reduce_any(tf.linalg.det(x1) == 0) or (
+            x2.shape[-1] == x2.shape[-2] and tf.math.reduce_any(tf.linalg.det(x2) == 0)
+        ):
+            return x1
         ret = tf.linalg.solve(x1, x2)
 
     if expanded_last:
@@ -539,23 +582,26 @@ def trace(
     axis2: int = 1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    ret = tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
-    return ret
+    if not isinstance(x, tf.Variable):
+        if len(x) == 0:
+            return ivy.array([])
+    return tf.experimental.numpy.trace(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("bfloat16", "float16", "float32", "float64")}, backend_version
-)
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float16")}, backend_version)
 def vecdot(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
     if dtype != "float64":
         x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
+    else:
+        x1, x2 = tf.cast(x1, tf.float64), tf.cast(x2, tf.float64)
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
@@ -597,27 +643,10 @@ def diag(
     x: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
-):
-    if num_rows is None:
-        num_rows = -1
-    if num_cols is None:
-        num_cols = -1
-
-    return tf.linalg.diag(
-        x,
-        name="diag",
-        k=offset,
-        num_rows=num_rows,
-        num_cols=num_rows,
-        padding_value=padding_value,
-        align=align,
-    )
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.diag(x, k=k)
 
 
 def vander(

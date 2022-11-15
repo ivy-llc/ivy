@@ -99,6 +99,38 @@ class ArrayWithManipulation(abc.ABC):
         wraps the function, and so the docstring for ivy.flip also applies
         to this method with minimal changes.
 
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis (or axes) along which to flip. If axis is None, all
+            input array axes are flipped. If axis is negative, axis
+            is counted from the last dimension. If provided more than
+            one axis, only the specified axes. Default: None.
+        out
+            optional output array, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output array having the same data type and
+            shape as``self`` and whose elements, relative
+            to ``self``, are reordered.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.flip()
+        >>> print(y)
+        ivy.array([3, 2, 1])
+
+        >>> x = ivy.array([4, 5, 6])
+        >>> y = x.flip(axis=0)
+        >>> print(y)
+        ivy.array([6, 5, 4])
+
         """
         return ivy.flip(self._data, axis=axis, out=out)
 
@@ -319,6 +351,13 @@ class ArrayWithManipulation(abc.ABC):
         ivy.Array instance method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies
         to this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.array([1., 2., 3.])
+        >>> y = x.constant_pad(pad_width = [[2, 3]])
+        >>> print(y)
+        ivy.array([0., 0., 1., 2., 3., 0., 0., 0.])
         """
         return ivy.constant_pad(self._data, pad_width=pad_width, value=value, out=out)
 

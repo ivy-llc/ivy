@@ -126,7 +126,7 @@ class ArrayWithGeneral(abc.ABC):
         arrays = [self] + [x for x in x2]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
-    def has_nans(self: ivy.Array, include_infs: bool = True):
+    def has_nans(self: ivy.Array, /, *, include_infs: bool = True):
         """
         ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
         function, and so the docstring for ivy.has_nans also applies to this method
@@ -152,7 +152,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         False
         """
-        return ivy.has_nans(self, include_infs)
+        return ivy.has_nans(self, include_infs=include_infs)
 
     def gather(
         self: ivy.Array,
@@ -433,7 +433,7 @@ class ArrayWithGeneral(abc.ABC):
         """
         return ivy.einops_repeat(self._data, pattern, out=out, **axes_lengths)
 
-    def to_numpy(self: ivy.Array) -> np.ndarray:
+    def to_numpy(self: ivy.Array, /, *, copy: bool = True) -> np.ndarray:
         """
         ivy.Array instance method variant of ivy.to_numpy. This method simply wraps
         the function, and so the docstring for ivy.to_numpy also applies to this method
@@ -449,10 +449,26 @@ class ArrayWithGeneral(abc.ABC):
         ret
             a numpy array copying all the element of the array ``self``.
 
-        """
-        return ivy.to_numpy(self)
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
 
-    def to_list(self: ivy.Array) -> List:
+        >>> x = ivy.array([-1, 0, 1])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [-1  0  1]
+
+        >>> x = ivy.array([[-1, 0, 1],[-1, 0, 1], [1,0,-1]])
+        >>> y = x.to_numpy()
+        >>> print(y)
+        [[-1  0  1]
+        [-1  0  1]
+        [ 1  0 -1]]
+
+        """
+        return ivy.to_numpy(self, copy=copy)
+
+    def to_list(self: ivy.Array, /) -> List:
         """
         ivy.Array instance method variant of ivy.to_list. This method simply wraps
         the function, and so the docstring for ivy.to_list also applies to this method
@@ -657,29 +673,6 @@ class ArrayWithGeneral(abc.ABC):
 
         """
         return ivy.array_equal(self, x)
-
-    def arrays_equal(
-        self: ivy.Array, x: List[Union[ivy.Array, ivy.NativeArray]]
-    ) -> bool:
-        """
-        ivy.Array instance method variant of ivy.arrays_equal. This method simply wraps
-        the function, and so the docstring for ivy.arrays_equal also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            input array
-        x
-            input list of arrays to compare to ``self``
-
-        Returns
-        -------
-        ret
-            Boolean, whether the input arrays are equal
-
-        """
-        return ivy.arrays_equal([self] + x)
 
     def assert_supports_inplace(self: ivy.Array) -> bool:
         """

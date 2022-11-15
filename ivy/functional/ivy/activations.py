@@ -1,6 +1,7 @@
 """Collection of Ivy activation functions."""
 
-from typing import Union, Optional
+from typing import Union, Optional, Callable
+import sys
 
 # local
 import ivy
@@ -137,9 +138,9 @@ def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    approximate=True,
+    approximate: bool = False,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """Applies the Gaussian error linear unit (GELU) activation function.
 
     Parameters
@@ -248,7 +249,7 @@ def softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the softmax function element-wise.
@@ -258,8 +259,7 @@ def softmax(
     x
         Input array.
     axis
-        The dimension softmax would be performed on. The default is ``-1``
-        which indicates the last dimension.
+        The dimension softmax would be performed on. The default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -303,7 +303,6 @@ def softmax(
     >>> y = x.softmax()
     >>> print(y)
     ivy.array([0.422, 0.155, 0.422])
-
     """
     return current_backend(x).softmax(x, axis=axis, out=out)
 
@@ -389,7 +388,7 @@ def log_softmax(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    axis: Optional[int] = -1,
+    axis: Optional[int] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Applies the log_softmax function element-wise.
@@ -399,8 +398,7 @@ def log_softmax(
     x
         Input array.
     axis
-        The dimension log_softmax would be performed on. The default is ``-1``
-        which indicates the last dimension.
+        The dimension log_softmax would be performed on. The default is ``None``.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -449,3 +447,126 @@ def log_softmax(
     }
     """
     return current_backend(x).log_softmax(x, axis=axis, out=out)
+
+
+@handle_exceptions
+def deserialize(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
+
+    Parameters
+    ----------
+    name
+        The name of the activation function.
+    custom_objects
+        Optional dictionary listing user-provided activation functions.
+
+    Returns
+    -------
+    ret
+        Corresponding activation function.
+
+    Examples
+    --------
+    With :str: input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.deserialize(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+
+    With :str and dict: input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.deserialize(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().deserialize(name, custom_objects=custom_objects)
+
+    if name is None:
+        return None
+
+    module_name = "ivy.functional.ivy.activations"
+    activation_functions = {}
+    module = sys.modules[module_name]
+
+    for fn_name in dir(module):
+        obj = getattr(module, fn_name)
+        if callable(obj) and fn_name in ACTIVATION_FUNCTIONS:
+            activation_functions[fn_name] = obj
+
+    if isinstance(name, str):
+        if custom_objects and name in custom_objects:
+            fn_obj = custom_objects.get(name)
+        else:
+            fn_obj = activation_functions.get(name)
+            if fn_obj is None:
+                raise ValueError(f"Unknown activation function: {name}.")
+        return fn_obj
+
+    else:
+        raise ValueError(f"Could not interpret serialized activation function: {name}")
+
+
+ACTIVATION_FUNCTIONS = [
+    "gelu",
+    "leaky_relu",
+    "log_softmax",
+    "relu",
+    "sigmoid",
+    "softmax",
+    "softplus",
+]
+
+
+@handle_exceptions
+def get(
+    name: Union[str, None], /, *, custom_objects=Union[ivy.Dict, None]
+) -> Union[Callable, None]:
+    """Returns activation function given a string identifier.
+
+    Parameters
+    ----------
+    name
+        The name of the activation function.
+    custom_objects
+        Optional dictionary listing user-provided activation functions.
+
+    Returns
+    -------
+    ret
+        Corresponding activation function.
+
+    Examples
+    --------
+    With :str: input:
+
+    >>> name = "sigmoid"
+    >>> sigmoid = ivy.get(name)
+    >>> print(sigmoid)
+    <function sigmoid at XXXXXXXXXXXXXX>
+
+    >>> name = None
+    >>> linear = ivy.get(name)
+    >>> print(linear)
+    <function linear at XXXXXXXXXXXXXX>
+
+    With :str and dict: input:
+
+    >>> name = "custom_fn"
+    >>> objects = {"custom_fn": lambda x: x}
+    >>> custom_fn = ivy.get(name, custom_objects=objects)
+    >>> print(custom_fn)
+    <function custom_fn at XXXXXXXXXXXXXX>
+    """
+    if current_backend().__name__.split(".")[-1] == "tensorflow":
+        return current_backend().get(name, custom_objects=custom_objects)
+
+    if name is None:
+        return ivy.linear
+
+    return ivy.deserialize(name, custom_objects=custom_objects)

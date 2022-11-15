@@ -3,8 +3,7 @@
 # global
 import numpy as np
 import importlib
-import pytest
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 import typing
 
 # local
@@ -14,12 +13,12 @@ import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
 import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # dtype objects
-@handle_cmd_line_args
-def test_dtype_instances(device):
+@handle_test(fn_tree="functional.ivy.exists")  # dummy fn_tree
+def test_dtype_instances():
     assert ivy.exists(ivy.int8)
     assert ivy.exists(ivy.int16)
     assert ivy.exists(ivy.int32)
@@ -77,20 +76,22 @@ def astype_helper(draw):
 
 
 # astype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.astype",
     dtype_and_x_and_cast_dtype=astype_helper(),
-    num_positional_args=helpers.num_positional_args(fn_name="astype"),
 )
 def test_astype(
+    *,
     dtype_and_x_and_cast_dtype,
-    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x, cast_dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
@@ -99,14 +100,15 @@ def test_astype(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="astype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-3,
         atol_=1e-3,
         x=x[0],
-        dtype=cast_dtype,
+        dtype=cast_dtype[0],
     )
 
 
@@ -123,21 +125,26 @@ def broadcastable_arrays(draw, dtypes):
     return arrays
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.broadcast_arrays",
     arrays=broadcastable_arrays(dtypes_shared("num_arrays")),
     input_dtypes=dtypes_shared("num_arrays"),
 )
 def test_broadcast_arrays(
+    *,
     arrays,
     input_dtypes,
     as_variable,
+    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    if fw == "torch":
+    if backend_fw.current_backend_str() == "torch":
         for input_dtype in input_dtypes:
             if input_dtype == "bfloat16" or (
                 "uint" in input_dtype and "uint8" not in input_dtype
@@ -153,35 +160,38 @@ def test_broadcast_arrays(
     helpers.test_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="broadcast_arrays",
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
         **kw,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.broadcast_to",
     array_and_shape=helpers.array_and_broadcastable_shape(dtype_shared),
     input_dtype=dtype_shared,
-    num_positional_args=helpers.num_positional_args(fn_name="broadcast_to"),
 )
 def test_broadcast_to(
+    *,
     array_and_shape,
     input_dtype,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    if fw == "torch":
+    if backend_fw.current_backend_str() == "torch":
         if input_dtype == "bfloat16" or (
             "uint" in input_dtype and "uint8" not in input_dtype
         ):
@@ -196,45 +206,50 @@ def test_broadcast_to(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="broadcast_to",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=array,
         shape=to_shape,
     )
 
 
 # can_cast
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.can_cast",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True), num_arrays=1
+        available_dtypes=helpers.get_dtypes("valid"), num_arrays=1
     ),
     to_dtype=helpers.get_dtypes("valid", full=False),
-    num_positional_args=helpers.num_positional_args(fn_name="can_cast"),
 )
 def test_can_cast(
+    *,
     dtype_and_x,
     to_dtype,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="can_cast",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         from_=x[0],
         to=to_dtype[0],
     )
@@ -251,7 +266,7 @@ def _array_or_type(draw, float_or_int):
             (
                 draw(
                     helpers.dtype_and_values(
-                        available_dtypes=valid_dtypes, num_arrays=1
+                        available_dtypes=valid_dtypes,
                     )
                 ),
                 draw(st.sampled_from(valid_dtypes)),
@@ -261,15 +276,22 @@ def _array_or_type(draw, float_or_int):
 
 
 # finfo
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.finfo",
     type=_array_or_type("float"),
-    num_positional_args=helpers.num_positional_args(fn_name="finfo"),
 )
 def test_finfo(
+    *,
     type,
+    as_variable,
     num_positional_args,
-    fw,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     if isinstance(type, str):
         input_dtype = [type]
@@ -278,14 +300,15 @@ def test_finfo(
         type = x[0]
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[False],
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=[False],
-        container_flags=[False],
-        instance_method=False,
-        fw=fw,
-        fn_name="finfo",
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         type=type,
         test_values=False,
     )
@@ -299,15 +322,22 @@ def test_finfo(
 
 
 # iinfo
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.iinfo",
     type=_array_or_type("int"),
-    num_positional_args=helpers.num_positional_args(fn_name="iinfo"),
 )
 def test_iinfo(
+    *,
     type,
+    as_variable,
     num_positional_args,
-    fw,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     if isinstance(type, str):
         input_dtype = [type]
@@ -316,14 +346,15 @@ def test_iinfo(
         type = x[0]
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[False],
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=[False],
-        container_flags=[False],
-        instance_method=False,
-        fw=fw,
-        fn_name="iinfo",
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         type=type,
         test_values=False,
     )
@@ -333,26 +364,30 @@ def test_iinfo(
     mach_lims, mach_lims_np = ret
     assert mach_lims.min == mach_lims_np.min
     assert mach_lims.max == mach_lims_np.max
-    assert mach_lims.dtype == mach_lims_np.dtype
     assert mach_lims.bits == mach_lims_np.bits
 
 
 # result_type
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.result_type",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=st.shared(helpers.ints(min_value=2, max_value=5), key="num_arrays"),
         shared_dtype=False,
     ),
 )
 def test_result_type(
+    *,
     dtype_and_x,
     as_variable,
+    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
@@ -362,13 +397,14 @@ def test_result_type(
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="result_type",
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
         **kw,
     )
 
@@ -378,11 +414,12 @@ def test_result_type(
 
 
 # as_ivy_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.as_ivy_dtype",
     input_dtype=st.sampled_from(ivy.valid_dtypes),
 )
 def test_as_ivy_dtype(
+    *,
     input_dtype,
 ):
     res = ivy.as_ivy_dtype(input_dtype)
@@ -410,10 +447,17 @@ _valid_dtype_in_all_frameworks = [
 
 
 # as_native_dtype
-@handle_cmd_line_args
-@given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
+@handle_test(
+    fn_tree="functional.ivy.as_native_dtype",
+    input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks),
+)
 def test_as_native_dtype(
+    *,
     input_dtype,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
@@ -429,11 +473,11 @@ def test_as_native_dtype(
 
 
 # closest_valid_dtypes
-@handle_cmd_line_args
-@given(input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks))
-def test_closest_valid_dtype(
-    input_dtype,
-):
+@handle_test(
+    fn_tree="functional.ivy.closest_valid_dtype",
+    input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks),
+)
+def test_closest_valid_dtype(*, input_dtype, with_out, backend_fw, fn_name, on_device):
     res = ivy.closest_valid_dtype(input_dtype)
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
     assert isinstance(res, ivy.Dtype) or isinstance(
@@ -442,17 +486,15 @@ def test_closest_valid_dtype(
 
 
 # default_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.default_dtype",
     input_dtype=helpers.get_dtypes("valid", full=False),
-    as_native=st.booleans(),
 )
 def test_default_dtype(
-    input_dtype,
-    as_native,
+    *, input_dtype, native_array, with_out, backend_fw, fn_name, on_device
 ):
     input_dtype = input_dtype[0]
-    res = ivy.default_dtype(dtype=input_dtype, as_native=as_native)
+    res = ivy.default_dtype(dtype=input_dtype, as_native=native_array)
     assert (
         isinstance(input_dtype, ivy.Dtype)
         or isinstance(input_dtype, str)
@@ -464,8 +506,9 @@ def test_default_dtype(
 
 
 # dtype
-@handle_cmd_line_args
-@given(
+# TODO: fix instance method
+@handle_test(
+    fn_tree="functional.ivy.dtype",
     array=helpers.array_values(
         dtype=dtype_shared,
         shape=helpers.lists(
@@ -477,19 +520,22 @@ def test_default_dtype(
     ),
     input_dtype=dtype_shared,
     as_native=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="dtype"),
 )
 def test_dtype(
+    *,
     array,
     input_dtype,
     as_native,
     as_variable,
     num_positional_args,
     native_array,
-    container,
-    fw,
+    container_flags,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
-    if fw == "torch":
+    if backend_fw.current_backend_str() == "torch":
         if input_dtype == "bfloat16" or (
             "uint" in input_dtype and "uint8" not in input_dtype
         ):
@@ -500,13 +546,14 @@ def test_dtype(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=False,
-        fw=fw,
-        fn_name="dtype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x=array,
         as_native=as_native,
         test_values=False,
@@ -514,26 +561,34 @@ def test_dtype(
 
 
 # dtype_bits
-@handle_cmd_line_args
-@given(
+# TODO: fix instance method
+@handle_test(
+    fn_tree="functional.ivy.dtype_bits",
     input_dtype=helpers.get_dtypes("valid", full=False),
-    num_positional_args=helpers.num_positional_args(fn_name="dtype_bits"),
 )
 def test_dtype_bits(
+    *,
     input_dtype,
+    as_variable,
     num_positional_args,
-    fw,
+    native_array,
+    container_flags,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     ret = helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[False],
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=[True],
-        container_flags=[False],
+        native_array_flags=native_array,
+        container_flags=container_flags,
         instance_method=False,
-        fw=fw,
-        fn_name="dtype_bits",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         dtype_in=input_dtype[0],
         test_values=False,
     )
@@ -544,150 +599,170 @@ def test_dtype_bits(
 
 
 # is_bool_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.is_bool_dtype",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="is_bool_dtype"),
 )
 def test_is_bool_dtype(
+    *,
     dtype_x,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="is_bool_dtype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         dtype_in=x[0],
     )
 
 
 # is_float_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.is_float_dtype",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="is_float_dtype"),
 )
 def test_is_float_dtype(
+    *,
     dtype_x,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="is_float_dtype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         dtype_in=x[0],
     )
 
 
 # is_int_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.is_int_dtype",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="is_int_dtype"),
 )
 def test_is_int_dtype(
+    *,
     dtype_x,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="is_int_dtype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         dtype_in=x[0],
     )
 
 
 # is_uint_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.is_uint_dtype",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=False)
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="is_uint_dtype"),
 )
 def test_is_uint_dtype(
+    *,
     dtype_x,
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     dtype, x = dtype_x
     helpers.test_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="is_uint_dtype",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         dtype_in=x[0],
     )
 
 
 # promote_types
-@handle_cmd_line_args
-@given(
+# TODO: fix instance method
+@handle_test(
+    fn_tree="functional.ivy.promote_types",
     dtype_and_values=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="promote_types"),
 )
 def test_promote_types(
+    *,
     dtype_and_values,
     as_variable,
     num_positional_args,
     native_array,
-    container,
-    fw,
+    container_flags,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     types, arrays = dtype_and_values
     type1, type2 = types
@@ -695,13 +770,14 @@ def test_promote_types(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=False,
-        fw=fw,
-        fn_name="promote_types",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         type1=type1,
         type2=type2,
         test_values=False,
@@ -709,33 +785,39 @@ def test_promote_types(
 
 
 # type_promote_arrays
-@handle_cmd_line_args
-@given(
+# TODO: fix container method
+@handle_test(
+    fn_tree="functional.ivy.type_promote_arrays",
     dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
+        available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
         shared_dtype=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="type_promote_arrays"),
 )
 def test_type_promote_arrays(
+    *,
     dtype_and_values,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     types, arrays = dtype_and_values
     helpers.test_function(
         input_dtypes=types,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=[False],
-        instance_method=False,
-        fw=fw,
-        fn_name="type_promote_arrays",
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         x1=arrays[0],
         x2=arrays[1],
         test_values=True,
@@ -743,20 +825,22 @@ def test_type_promote_arrays(
 
 
 # default_float_dtype
-@pytest.mark.parametrize("float_dtype", [ivy.float16, ivy.float32, ivy.float64, None])
-@pytest.mark.parametrize(
-    "input",
-    [
-        [(5.0, 25.0), (6.0, 36.0), (7.0, 49.0)],
-        np.array([10.0, 0.0, -3.0]),
-        10,
-        None,
-    ],
+@handle_test(
+    fn_tree="functional.ivy.default_float_dtype",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
-@pytest.mark.parametrize("as_native", [True, False])
-def test_default_float_dtype(*, input, float_dtype, as_native):
+def test_default_float_dtype(
+    *,
+    dtype_x,
+    native_array,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    float_dtype, x = dtype_x
     res = ivy.default_float_dtype(
-        input=input, float_dtype=float_dtype, as_native=as_native
+        input=input, float_dtype=float_dtype[0], as_native=native_array
     )
     assert (
         isinstance(res, ivy.Dtype)
@@ -773,20 +857,19 @@ def test_default_float_dtype(*, input, float_dtype, as_native):
 
 
 # default_int_dtype
-@pytest.mark.parametrize("int_dtype", [ivy.int16, ivy.int32, ivy.int64, None])
-@pytest.mark.parametrize(
-    "input",
-    [
-        [(5, 25), (6, 36), (7, 49)],
-        np.array([10, 0, -3]),
-        10,
-        10.0,
-        None,
-    ],
+@handle_test(
+    fn_tree="functional.ivy.default_int_dtype",
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("integer")),
 )
-@pytest.mark.parametrize("as_native", [True, False])
-def test_default_int_dtype(*, input, int_dtype, as_native):
-    res = ivy.default_int_dtype(input=input, int_dtype=int_dtype, as_native=as_native)
+def test_default_int_dtype(
+    *,
+    dtype_x,
+    native_array,
+):
+    int_dtype, x = dtype_x
+    res = ivy.default_int_dtype(
+        input=input, int_dtype=int_dtype[0], as_native=native_array
+    )
     assert (
         isinstance(res, ivy.Dtype)
         or isinstance(res, typing.get_args(ivy.NativeDtype))
@@ -822,48 +905,16 @@ def _composition_2():
 
 
 # function_unsupported_dtypes
-@pytest.mark.parametrize(
-    "func, expected",
-    [
-        (
-            _composition_1,
-            [
-                "bool",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "uint16",
-                "uint32",
-                "uint64",
-                "bfloat16",
-                "float16",
-                "float32",
-                "float64",
-            ],
-        ),
-        (
-            _composition_2,
-            [
-                "bool",
-                "int8",
-                "int16",
-                "int32",
-                "int64",
-                "uint8",
-                "uint16",
-                "uint32",
-                "uint64",
-                "bfloat16",
-                "float16",
-                "float32",
-                "float64",
-            ],
-        ),
-    ],
+@handle_test(
+    fn_tree="functional.ivy.function_supported_dtypes",
+    func=st.sampled_from([_composition_1, _composition_2]),
+    expected=helpers.get_dtypes("valid"),
 )
-def test_function_supported_dtypes(func, expected):
+def test_function_supported_dtypes(
+    *,
+    func,
+    expected,
+):
     res = ivy.function_supported_dtypes(func)
     exp = set.intersection(set(expected), set(ivy.valid_dtypes))
 
@@ -875,20 +926,16 @@ def test_function_supported_dtypes(func, expected):
 
 
 # function_unsupported_dtypes
-@pytest.mark.parametrize(
-    "func, expected",
-    [
-        (
-            _composition_1,
-            [],
-        ),
-        (
-            _composition_2,
-            [],
-        ),
-    ],
+@handle_test(
+    fn_tree="functional.ivy.function_unsupported_dtypes",
+    func=st.sampled_from([_composition_1, _composition_2]),
+    expected=st.just([]),
 )
-def test_function_unsupported_dtypes(func, expected):
+def test_function_unsupported_dtypes(
+    *,
+    func,
+    expected,
+):
     res = ivy.function_unsupported_dtypes(func)
     exp = set.union(set(expected), set(ivy.invalid_dtypes))
 
@@ -899,21 +946,33 @@ def test_function_unsupported_dtypes(func, expected):
     assert set(tuple(exp)) == set(res)
 
 
-@pytest.mark.parametrize(
-    "func_and_version",
-    [
-        {
-            "torch": {
-                "cumsum": {"1.11.0": {"bfloat16", "uint8", "float16"}, "1.12.1": set()}
-            }
-        },
-    ],
+# function_dtype_versioning
+@handle_test(
+    fn_tree="functional.ivy.function_unsupported_dtypes",  # dummy fn_tree
+    func_and_version=st.just(
+        [
+            {
+                "torch": {
+                    "cumsum": {
+                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "1.12.1": set(),
+                    }
+                }
+            },
+        ],
+    ),
 )
-def test_function_dtype_versioning(func_and_version, fw):
+def test_function_dtype_versioning(
+    *,
+    func_and_version,
+    backend_fw,
+):
     for key in func_and_version:
-        if key != fw:
+        if key != backend_fw:
             continue
-        var = ivy.get_backend().version
+        var = ivy.get_backend().backend_version
+
+        # key --> framework
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:
@@ -926,37 +985,44 @@ def test_function_dtype_versioning(func_and_version, fw):
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 
 
-@pytest.mark.parametrize(
-    "func_and_version",
-    [
-        {
-            "torch": {
-                "cumsum": {"1.11.0": {"bfloat16", "uint8", "float16"}, "1.12.1": set()}
-            }
-        },
-    ],
+# function_dtype_versioning_frontend
+@handle_test(
+    fn_tree="functional.ivy.function_unsupported_dtypes",  # dummy fn_tree
+    func_and_version=st.just(
+        [
+            {
+                "torch": {
+                    "cumsum": {
+                        "1.11.0": {"bfloat16", "uint8", "float16"},
+                        "1.12.1": set(),
+                    }
+                }
+            },
+        ],
+    ),
 )
-def test_function_dtype_versioning_frontend(func_and_version, fw):
-    # todo need to devise a method to hack into the versions dict
-    # change stuff before importing. Currently the decorators are executed
-    # as soon as the module is loaded and modifying the dictionary doesn't
-    # help as the attributes have already been assigned
+def test_function_dtype_versioning_frontend(
+    *,
+    func_and_version,
+    backend_fw,
+):
+    fw = backend_fw.current_backend_str()
     for key in func_and_version:
         if key != fw:
             continue
-        frontend = importlib.import_module("ivy.functional.frontends." + fw)
+        frontend = importlib.import_module("ivy.functional.frontends")
         var = frontend.versions
 
         for key1 in func_and_version[key]:
             for key2 in func_and_version[key][key1]:
                 var[fw] = key2
-                print(key2)
-                fn = getattr(frontend, key1)
+                fn = getattr(
+                    importlib.import_module("ivy.functional.frontends." + fw), key1
+                )
                 expected = func_and_version[key][key1][key2]
                 res = fn.unsupported_dtypes
                 if res is None:
@@ -964,18 +1030,22 @@ def test_function_dtype_versioning_frontend(func_and_version, fw):
                 else:
                     res = set(res)
                 if res != expected:
-                    print(res, expected)
                     raise Exception
         return True
 
 
 # invalid_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.invalid_dtype",
     dtype_in=st.sampled_from(ivy.valid_dtypes),
 )
-def test_invalid_dtype(dtype_in, fw):
+def test_invalid_dtype(
+    *,
+    dtype_in,
+    backend_fw,
+):
     res = ivy.invalid_dtype(dtype_in)
+    fw = backend_fw.current_backend_str()
     fw_invalid_dtypes = {
         "torch": ivy_torch.invalid_dtypes,
         "tensorflow": ivy_tf.invalid_dtypes,
@@ -993,12 +1063,15 @@ def test_invalid_dtype(dtype_in, fw):
         )
 
 
-# unset_default_dtype()
-@handle_cmd_line_args
-@given(
+# unset_default_dtype
+@handle_test(
+    fn_tree="functional.ivy.unset_default_dtype",
     dtype=st.sampled_from(ivy.valid_dtypes),
 )
-def test_unset_default_dtype(dtype):
+def test_unset_default_dtype(
+    *,
+    dtype,
+):
     stack_size_before = len(ivy.default_dtype_stack)
     ivy.set_default_dtype(dtype)
     ivy.unset_default_dtype()
@@ -1008,12 +1081,19 @@ def test_unset_default_dtype(dtype):
     ), f"Default dtype not unset. Stack size= {stack_size_after!r}"
 
 
-# unset_default_float_dtype()
-@handle_cmd_line_args
-@given(
+# unset_default_float_dtype
+@handle_test(
+    fn_tree="functional.ivy.unset_default_float_dtype",
     dtype=st.sampled_from(ivy.valid_float_dtypes),
 )
-def test_unset_default_float_dtype(dtype):
+def test_unset_default_float_dtype(
+    *,
+    dtype,
+    with_out,
+    backend_fw,
+    fn_name,
+    on_device,
+):
     stack_size_before = len(ivy.default_float_dtype_stack)
     ivy.set_default_float_dtype(dtype)
     ivy.unset_default_float_dtype()
@@ -1023,12 +1103,15 @@ def test_unset_default_float_dtype(dtype):
     ), f"Default float dtype not unset. Stack size= {stack_size_after!r}"
 
 
-# unset_default_int_dtype()
-@handle_cmd_line_args
-@given(
+# unset_default_int_dtype
+@handle_test(
+    fn_tree="functional.ivy.unset_default_int_dtype",
     dtype=st.sampled_from(ivy.valid_int_dtypes),
 )
-def test_unset_default_int_dtype(dtype):
+def test_unset_default_int_dtype(
+    *,
+    dtype,
+):
     stack_size_before = len(ivy.default_int_dtype_stack)
     ivy.set_default_int_dtype(dtype)
     ivy.unset_default_int_dtype()
@@ -1039,12 +1122,17 @@ def test_unset_default_int_dtype(dtype):
 
 
 # valid_dtype
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.valid_dtype",
     dtype_in=st.sampled_from(ivy.valid_dtypes),
 )
-def test_valid_dtype(dtype_in, fw):
+def test_valid_dtype(
+    *,
+    dtype_in,
+    backend_fw,
+):
     res = ivy.valid_dtype(dtype_in)
+    fw = backend_fw.current_backend_str()
     fw_valid_dtypes = {
         "torch": ivy_torch.valid_dtypes,
         "tensorflow": ivy_tf.valid_dtypes,

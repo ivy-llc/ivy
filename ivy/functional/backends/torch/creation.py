@@ -2,22 +2,13 @@
 
 from typing import Union, List, Optional, Sequence
 
-
 import numpy as np
 import torch
 from torch import Tensor
 
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
-
-
-from . import version
-
-# noinspection PyProtectedMember
-
-
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -25,6 +16,10 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+from . import backend_version
+
+
+# noinspection PyProtectedMember
 
 
 # Array API Standard #
@@ -46,7 +41,7 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
     return res
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, version)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
@@ -81,6 +76,7 @@ def arange(
 arange.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 @asarray_to_native_arrays_and_back
 @asarray_infer_device
 @asarray_handle_nestable
@@ -101,8 +97,12 @@ def asarray(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+
     if isinstance(obj, torch.Tensor) and dtype is None:
-        dtype = obj.dtype
+        if copy is True:
+            return obj.clone().detach().to(device)
+        else:
+            return obj.to(device) if obj.device != device else obj
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
         if dtype is None:
             dtype = ivy.default_dtype(item=obj, as_native=True)
@@ -142,9 +142,11 @@ def asarray(
             return torch.as_tensor(obj.tolist(), dtype=dtype).to(device)
 
     if copy is True:
-        return torch.as_tensor(obj, dtype=dtype).clone().detach().to(device)
+        ret = torch.as_tensor(obj, dtype=dtype).clone().detach()
+        return ret.to(device) if ret.device != device else ret
     else:
-        return torch.as_tensor(obj, dtype=dtype).to(device)
+        ret = torch.as_tensor(obj, dtype=dtype)
+        return ret.to(device) if ret.device != device else ret
 
 
 def empty(
@@ -176,6 +178,7 @@ def empty_like(
     return torch.empty_like(x, dtype=dtype, device=device)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def eye(
     n_rows: int,
     n_cols: Optional[int] = None,
@@ -219,23 +222,22 @@ def eye(
     elif 0 < k < n_cols:
         mat = torch.concat(
             [
-                torch.zeros([n_rows, k], dtype=dtype, device=device, out=out),
+                torch.zeros([n_rows, k], dtype=dtype, device=device),
                 i[:, : n_cols - k],
             ],
             1,
         )
         ret = torch.reshape(mat, reshape_dims).repeat(tile_dims)
+        if out is not None:
+            return ivy.inplace_update(out, ret)
     else:
         ret = torch.zeros(
             batch_shape + [n_rows, n_cols], dtype=dtype, device=device, out=out
         )
-    if out is not None:
-        return ivy.inplace_update(out, ret)
     return ret
 
 
 eye.support_native_out = True
-eye.unsupported_dtypes = ("bfloat16",)
 
 
 def from_dlpack(x, /, *, out: Optional[torch.Tensor] = None):
@@ -280,8 +282,12 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def linspace(
     start: Union[torch.Tensor, float],
@@ -295,11 +301,15 @@ def linspace(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if axis is None:
+        axis = -1
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)
-        ans = ans[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device)
+        if axis < 0:
+            axis += len(ans.shape)
+        ans = ans[_slice_at_axis(slice(None, -1), axis)]
     else:
-        ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
+        ans = linspace_helper(start, stop, num, axis, device=device)
     if (
         endpoint
         and ans.shape[0] > 1
@@ -314,13 +324,15 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
-    return ans
+    if "int" in str(dtype) and torch.is_floating_point(ans):
+        ans = torch.floor(ans)
+    return ans.to(dtype)
 
 
 linspace.support_native_out = True
 
 
-def linspace_helper(start, stop, num, axis=None, *, device, dtype):
+def linspace_helper(start, stop, num, axis=None, *, device):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
@@ -364,7 +376,7 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             res.append(stop)
         else:
             res = [
-                linspace_method(strt, stp, num, device=device, dtype=dtype)
+                linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
         torch.cat(res, -1).reshape(start_shape + [num])
@@ -375,27 +387,21 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start, device=device, dtype=dtype) * stop)
+            res.append(torch.ones_like(start, device=device) * stop)
         else:
-            res = [
-                linspace_method(strt, stop, num, device=device, dtype=dtype)
-                for strt in start
-            ]
+            res = [linspace_method(strt, stop, num, device=device) for strt in start]
     elif not start_is_array and stop_is_array:
         if num < stop.shape[0]:
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop, device=device, dtype=dtype) * start]
+            res = [torch.ones_like(stop, device=device) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [
-                linspace_method(start, stp, num, device=device, dtype=dtype)
-                for stp in stop
-            ]
+            res = [linspace_method(start, stp, num, device=device) for stp in stop]
     else:
-        return linspace_method(start, stop, num, device=device, dtype=dtype)
+        return linspace_method(start, stop, num, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
@@ -510,7 +516,7 @@ def copy_array(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.
 
 
 @with_unsupported_device_and_dtypes(
-    {"1.11.0 and below": {"cpu": ("float16",)}}, version
+    {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
 )
 def logspace(
     start: Union[torch.Tensor, int],

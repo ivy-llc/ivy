@@ -36,7 +36,7 @@ def concat(
     for i in range(len(xs)):
         if is_axis_none:
             xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
+        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
     if is_axis_none:
         axis = 0
         if is_tuple:
@@ -136,14 +136,10 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        ivy.assertions.check_less(
-            x.shape[axis],
-            1,
-            allow_equal=True,
-            message="Expected dimension of size 1, but found dimension size {}".format(
-                x.shape[axis]
-            ),
-        )
+        if ivy.any(x.shape[axis] > 1):
+            raise ValueError(
+                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
+            )
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -160,7 +156,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ivy.exceptions.IvyException(
+                raise ValueError(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )

@@ -1,14 +1,14 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 import ivy
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_method
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Constant.create_variables",
     var_shape=helpers.get_shape(),
     constant=helpers.floats(
         large_abs_safety_factor=4, small_abs_safety_factor=4, safety_factor_scale="log"
@@ -21,26 +21,26 @@ def test_constant(
     constant,
     init_with_v,
     method_with_v,
-    as_variable,
-    native_array,
+    class_name,
+    method_name,
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={"constant": constant},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={"constant": constant},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
         },
-        class_name="Constant",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -52,30 +52,30 @@ def test_constant(
     assert ivy.all(ivy.equal(ret_ivy, ivy.array(constant)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Zeros.create_variables",
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_zeros(var_shape, init_with_v, method_with_v, as_variable, native_array):
+def test_zeros(var_shape, init_with_v, method_with_v, class_name, method_name):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
         },
-        class_name="Zeros",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -87,30 +87,30 @@ def test_zeros(var_shape, init_with_v, method_with_v, as_variable, native_array)
     assert ivy.all(ivy.equal(ret_ivy, ivy.array(0.0)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Ones.create_variables",
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_ones(var_shape, init_with_v, method_with_v, as_variable, native_array):
+def test_ones(var_shape, init_with_v, method_with_v, class_name, method_name):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
         },
-        class_name="Ones",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -122,15 +122,15 @@ def test_ones(var_shape, init_with_v, method_with_v, as_variable, native_array):
     assert ivy.all(ivy.equal(ret_ivy, ivy.array(1.0)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Uniform.create_variables",
     numerator=helpers.floats(min_value=1.0, max_value=10.0),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
-    power=helpers.floats(min_value=0.1, max_value=3.0),
-    gain=helpers.floats(min_value=0.1, max_value=10.0),
+    power=helpers.floats(min_value=1.0, max_value=3.0),
+    gain=helpers.floats(min_value=1.0, max_value=10.0),
     var_shape=helpers.get_shape(),
-    fan_in=helpers.ints(min_value=1, safety_factor=4),
-    fan_out=helpers.ints(min_value=1, safety_factor=4),
+    fan_in=helpers.ints(min_value=1),
+    fan_out=helpers.ints(min_value=1),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
@@ -144,33 +144,33 @@ def test_uniform(
     fan_out,
     init_with_v,
     method_with_v,
-    as_variable,
-    native_array,
+    class_name,
+    method_name,
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={
             "numerator": numerator,
             "fan_mode": fan_mode,
             "power": power,
             "gain": gain,
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
             "fan_in": fan_in,
             "fan_out": fan_out,
         },
-        class_name="Uniform",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -191,8 +191,8 @@ def test_uniform(
     assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="GlorotUniform.create_variables",
     var_shape=helpers.get_shape(),
     fan_in=helpers.ints(min_value=1),
     fan_out=helpers.ints(min_value=1),
@@ -200,33 +200,27 @@ def test_uniform(
     method_with_v=st.booleans(),
 )
 def test_glorot_uniform(
-    var_shape,
-    fan_in,
-    fan_out,
-    init_with_v,
-    method_with_v,
-    as_variable,
-    native_array,
+    var_shape, fan_in, fan_out, init_with_v, method_with_v, class_name, method_name
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
             "fan_in": fan_in,
             "fan_out": fan_out,
         },
-        class_name="GlorotUniform",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -239,8 +233,8 @@ def test_glorot_uniform(
     assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="FirstLayerSiren.create_variables",
     var_shape=helpers.get_shape(),
     fan_in=helpers.ints(
         min_value=1,
@@ -255,27 +249,27 @@ def test_first_layer_siren(
     fan_in,
     init_with_v,
     method_with_v,
-    as_variable,
-    native_array,
+    class_name,
+    method_name,
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
             "fan_in": fan_in,
         },
-        class_name="FirstLayerSiren",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -288,8 +282,8 @@ def test_first_layer_siren(
     assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Siren.create_variables",
     var_shape=helpers.get_shape(),
     w0=helpers.floats(min_value=1.0, max_value=100.0),
     fan_in=st.integers(min_value=1),
@@ -302,27 +296,27 @@ def test_siren(
     fan_in,
     init_with_v,
     method_with_v,
-    as_variable,
-    native_array,
+    class_name,
+    method_name,
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={"w0": w0},
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={"w0": w0},
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
             "fan_in": fan_in,
         },
-        class_name="Siren",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
@@ -335,8 +329,8 @@ def test_siren(
     assert ivy.all(ivy.less(ivy.abs(ret_ivy), ivy.array(bound)))
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="KaimingNormal.create_variables",
     mean=helpers.floats(large_abs_safety_factor=4, small_abs_safety_factor=4),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
     var_shape=helpers.get_shape(),
@@ -358,24 +352,24 @@ def test_kaiming_normal(
     dtype,
     init_with_v,
     method_with_v,
-    as_variable,
-    native_array,
+    class_name,
+    method_name,
 ):
     ret_ivy, ret_gt = helpers.test_method(
-        input_dtypes_init=[],
-        as_variable_flags_init=[],
-        num_positional_args_init=0,
-        native_array_flags_init=[],
-        all_as_kwargs_np_init={
+        init_input_dtypes=[],
+        init_as_variable_flags=[],
+        init_num_positional_args=0,
+        init_native_array_flags=[],
+        init_all_as_kwargs_np={
             "mean": mean,
             "fan_mode": fan_mode,
         },
-        input_dtypes_method=[],
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        container_flags_method=[False],
-        all_as_kwargs_np_method={
+        method_input_dtypes=[],
+        method_as_variable_flags=[],
+        method_num_positional_args=0,
+        method_native_array_flags=[],
+        method_container_flags=[False],
+        method_all_as_kwargs_np={
             "var_shape": var_shape,
             "device": "cpu",
             "fan_in": fan_in,
@@ -383,8 +377,8 @@ def test_kaiming_normal(
             "negative_slope": negative_slope,
             "dtype": dtype,
         },
-        class_name="KaimingNormal",
-        method_name="create_variables",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
