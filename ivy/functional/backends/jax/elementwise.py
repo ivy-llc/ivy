@@ -346,8 +346,7 @@ def remainder(
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
         return jnp.round(diff * x2).astype(x1.dtype)
-    # jnp.remainder hasn't been used as it results in inconsistent gradients
-    return x1 - x2 * jnp.floor_divide(x1, x2)
+    return jnp.remainder(x1, x2)
 
 
 def round(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:

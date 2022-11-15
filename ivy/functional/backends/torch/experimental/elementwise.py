@@ -13,7 +13,6 @@ def lcm(
     x2: torch.Tensor,
     /,
     *,
-    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.abs(torch.lcm(x1, x2, out=out))
@@ -289,4 +288,4 @@ def nextafter(
     return torch.nextafter(x1, x2)
 
 
-nextafter.support_natvie_out = True
+nextafter.support_native_out = True
