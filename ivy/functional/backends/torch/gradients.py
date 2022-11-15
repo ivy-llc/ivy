@@ -17,7 +17,7 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x):
+def variable(x, /):
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()
@@ -27,7 +27,7 @@ def is_variable(x, /, *, exclusive: bool = False):
     return isinstance(x, torch.Tensor) and x.requires_grad
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x.data
 
 
@@ -39,7 +39,9 @@ def execute_with_gradients(
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(
-        func_ret, idxs=ret_grad_idxs
+        func_ret,
+        idxs=ret_grad_idxs,
+        create_var=True,
     )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}
@@ -123,7 +125,7 @@ def execute_with_gradients(
         lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,
         include_derived=True,
     )
-    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads, ret_grad_idxs)
+    func_ret, grads = _stop_grad_and_index(func_ret, retain_grads, grads)
     grads = ivy.to_ivy(grads)
     return func_ret, grads
 
@@ -159,8 +161,9 @@ def value_and_grad(func):
 
 def stop_gradient(
     x: Optional[torch.Tensor],
-    preserve_type: bool = True,
+    /,
     *,
+    preserve_type: bool = True,
     out: Optional[torch.Tensor] = None,
 ):
     if is_variable(x) and preserve_type:

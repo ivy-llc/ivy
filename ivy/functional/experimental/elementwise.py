@@ -101,9 +101,9 @@ def lcm(
     Parameters
     ----------
     x1
-        first input array.
+        first input array, must be integers
     x2
-        second input array
+        second input array, must be integers
     out
         optional output array, for writing the result to.
 
@@ -876,7 +876,6 @@ def nextafter(
     x2: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
@@ -904,6 +903,4 @@ def nextafter(
     >>> ivy.nextafter(x1, x2)
     ivy.array([1.4013e-45., 3.4028e+38])
     """
-    return ivy.current_backend(x1, x2).nextafter(
-        x1, x2, out=out
-    )
+    return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
