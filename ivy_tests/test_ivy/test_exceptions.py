@@ -1,6 +1,66 @@
+import sys
+import os
+import contextlib
 import pytest
 
 import ivy
+
+
+@pytest.mark.parametrize("backend", ["numpy", "torch", "jax", "tensorflow"])
+@pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
+@pytest.mark.parametrize("show_func_wrapper", [True, False])
+def test_trace_modes(backend, trace_mode, show_func_wrapper):
+    filename = "excep_out.txt"
+    orig_stdout = sys.stdout
+    f = open(filename, "w")
+    sys.stdout = f
+    ivy.set_backend(backend)
+    ivy.set_exception_trace_mode(trace_mode)
+    ivy.set_show_func_wrapper_trace_mode(show_func_wrapper)
+    x = ivy.array([])
+    y = ivy.array([1.0, 3.0, 4.0])
+    lines = ""
+    with pytest.raises(Exception):
+        ivy.functional.frontends.torch.div(x, y)
+
+    sys.stdout = orig_stdout
+    f.close()
+
+    with open(filename) as f:
+        lines += f.read()
+
+    if trace_mode == "full" and show_func_wrapper is False:
+        if backend == "numpy" or backend == "torch":
+            assert "/func_wrapper.py" not in lines
+            assert "/ivy/functional/backends" in lines
+        else:
+            assert "/func_wrapper.py" not in lines
+            assert "/ivy/functional/backends" in lines
+            assert "/site-packages" in lines
+
+    if trace_mode == "full" and show_func_wrapper is True:
+        if backend == "numpy" or backend == "torch":
+            assert "/func_wrapper.py" in lines
+            assert "/ivy/functional/backends" in lines
+        else:
+            assert "/func_wrapper.py" in lines
+            assert "/ivy/functional/backends" in lines
+            assert "/site-packages" in lines
+
+    if (trace_mode == "ivy" or trace_mode == "frontend") and show_func_wrapper is False:
+        assert "/func_wrapper.py" not in lines
+        assert "/site-packages" not in lines
+
+    if (trace_mode == "ivy" or trace_mode == "frontend") and show_func_wrapper is True:
+        if trace_mode == "ivy":
+            assert "/func_wrapper.py" in lines
+            assert "/site-packages" not in lines
+        if trace_mode == "frontend":
+            assert "/ivy/functional/backends" not in lines
+            assert "/site-packages" not in lines
+
+    with contextlib.suppress(FileNotFoundError):
+        os.remove(filename)
 
 
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
