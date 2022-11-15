@@ -138,9 +138,9 @@ def gelu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    approximate=True,
+    approximate: bool = False,
     out: Optional[ivy.Array] = None,
-):
+) -> ivy.Array:
     """Applies the Gaussian error linear unit (GELU) activation function.
 
     Parameters
