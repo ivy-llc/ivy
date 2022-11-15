@@ -90,13 +90,13 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-def cumprod(*, x, axis, exclusive=False, reverse=False, name=None):
+def cumprod(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
-def cumsum(*, x, axis, exclusive=False, reverse=False, name=None):
+def cumsum(x, axis, exclusive=False, reverse=False, name=None):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
@@ -119,12 +119,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def maximum(a, b, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
-    # Cast inputs to ivy array
-    a = ivy.array(a)
-    b = ivy.array(b)
-    return ivy.maximum(a, b)
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -197,6 +193,16 @@ def polyval(coeffs, x, name=None):
     for c in coeffs[1:]:
         p = c + p * x
     return p
+
+
+@to_ivy_arrays_and_back
+def pow(x, y, name="pow"):
+    if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
+        x = x.data
+    if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
+        y = y.data
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.pow(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -285,7 +291,7 @@ def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_varian
 @to_ivy_arrays_and_back
 def scalar_mul(scalar, x, name="scalar_mul"):
     scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
-    return ivy.multiply(x, ivy.array([scalar])).astype(x.dtype)
+    return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -347,6 +353,3 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
-
-
-# TODO: Ibeta for Future Release

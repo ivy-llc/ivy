@@ -1543,7 +1543,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1560,7 +1560,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1578,7 +1578,7 @@ class ArrayWithElementwise(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Array] = None,
     ):
         """
@@ -1591,7 +1591,7 @@ class ArrayWithElementwise(abc.ABC):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -1712,6 +1712,29 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the evaluated result for each element in ``self``.
             The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+         >>> x = ivy.array([2, 3 ,5, 7])
+        >>> y = ivy.positive(x)
+        >>> print(y)
+        ivy.array([2, 3, 5, 7])
+
+        >>> x = ivy.array([0, -1, -0.5, 2, 3])
+        >>> y = ivy.zeros(5)
+        >>> ivy.positive(x, out=y)
+        >>> print(y)
+        ivy.array([0., -1., -0.5,  2.,  3.])
+
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [-4.4, -5.5, -6.6]])
+        >>> ivy.positive(x,out=x)
+        >>> print(x)
+        ivy.array([[ 1.1,  2.2,  3.3],
+        [-4.4, -5.5, -6.6]])
+
         """
         return ivy.positive(self._data, out=out)
 
@@ -2135,7 +2158,14 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the rounded result for each element in ``self``.
-            The returned array must have the same data type as ``self``.
+            The returned array must have the same data type as ``self``
+
+        Examples
+        --------
+        >>> x = ivy.array([-1, 0.54, 3.67, -0.025])
+        >>> y = x.trunc()
+        >>> print(y)
+        ivy.array([-1.,  0.,  3., -0.])
         """
         return ivy.trunc(self._data, out=out)
 

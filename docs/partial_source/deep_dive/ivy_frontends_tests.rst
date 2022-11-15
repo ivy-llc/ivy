@@ -15,20 +15,22 @@ Ivy Frontend Tests
 Introduction
 ------------
 
-Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder
-`test ivy`_. In this section of the deep dive we are going to jump into Ivy Frontend Tests!
+Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test ivy`_.
+In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
 **Writing Ivy Tests**
 
-The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail
-in the Ivy Tests section of the Deep Dive. We assume knowledge of hypothesis data generation strategies and how to
-implement them for testing.
+The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
+We assume knowledge of hypothesis data generation strategies and how to implement them for testing.
 
 **Important Helper Functions**
 
-* :func:`handle_cmd_line_args` a decorator that should be added to every test function. For more information, visit the `Function Wrapping`_ section of the docs.
+* :func:`handle_cmd_line_args` a decorator that should be added to every test function.
+  For more information, visit the `Function Wrapping`_ section of the docs.
 
-* :func:`helpers.test_frontend_function` helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy! one of the many `Function Testing Helpers`_ It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
+* :func:`helpers.test_frontend_function` helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy!
+  One of the many `Function Testing Helpers`_.
+  It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.
 
 * :func:`helpers.get_dtypes` helper function that returns either a full list of data types or a single data type, we should **always** be using `helpers.get_dtypes` to sample data types.
 
@@ -44,17 +46,19 @@ implement them for testing.
 
 **Useful Notes**
 
-* We should always ensure that our data type generation is complete. Generating float data types only for a function that accepts all numeric data types is not complete, a complete set would include **all** numeric data types.
+* We should always ensure that our data type generation is complete.
+  Generating float data types only for a function that accepts all numeric data types is not complete, a complete set would include **all** numeric data types.
 
-* The :func:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name. For example :func:`lax.tan` is needed for some functions in Jax, :func:`nn.functional.relu` is needed for some functions in PyTorch etc.
+* The :func:`test_frontend_function` argument :code:`fn_tree` refers to the frontend function's reference in its native namespace not just the function name.
+  For example :func:`lax.tan` is needed for some functions in Jax, :func:`nn.functional.relu` is needed for some functions in PyTorch etc.
 
 To get a better understanding for writing frontend tests lets run through some examples!
 
 Frontend Test Examples
 -----------------------
 
-Before you begin writing a frontend test, make sure you are placing it in the correct location. See the
-'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
+Before you begin writing a frontend test, make sure you are placing it in the correct location.
+See the 'Where to place a frontend function' sub-section of the frontend APIs `open task`_ for more details.
 
 ivy.tan()
 ^^^^^^^^^
@@ -238,7 +242,8 @@ ivy.tan()
 ivy.full()
 ^^^^^^^^^^
 
-Here we are going to look at an example of a function that does not consume an :code:`array`. This is the creation
+Here we are going to look at an example of a function that does not consume an :code:`array`.
+This is the creation
 function :func:`full`, which takes an array shape as an argument to create an array and filled with elements of a given value.
 This function requires us to create extra functions for generating :code:`shape` and :code:`fill value`, these use the :code:`shared` hypothesis strategy.
 
@@ -300,7 +305,8 @@ This function requires us to create extra functions for generating :code:`shape`
 
 * The custom function we use is :code:`_fill_value` which generates a :code:`fill_value` to use for the :code:`fill_value` argument but handles the complications of :code:`int` and :code:`uint` types correctly.
 * We use the helper function :func:`helpers.get_shape` to generate :code:`shape`.
-* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax. This is used to specify the data type of the output array.
+* We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Jax.
+  This is used to specify the data type of the output array.
 * :func:`full` does not consume :code:`array`, we set :code:`as_variable_flags`, :code:`native_array_flags` to :code:`[False]` and :code:`with_out` :code:`False`.
 
 
@@ -483,14 +489,15 @@ This function requires us to create extra functions for generating :code:`shape`
             requires_grad=requires_grad,
         )
 
-* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument. This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
+* Here we created another extra function, :code:`_requires_grad()`, to accommodate the :code:`requires_grad` argument.
+  This is because when the dtype is an integer or unsigned integer the :code:`requires_grad` argument is not supported.
 * We use :code:`helpers.get_dtypes` to generate :code:`dtype`, these are valid numeric data types specifically for Torch.
 * :func:`torch.full` supports :code:`out` so we generate :code:`with_out`.
 
 Alias functions
 ^^^^^^^^^^^^^^^
 Let's take a quick walkthrough on testing the function alias as we know that such functions have the same behavior as original functions.
-Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`
+Taking an example of :func:`torch_frontend.greater` has an alias function :func:`torch_frontend.gt` which we need to make sure that it is working same as the targeted framework function :func:`torch.greater` and :func:`torch.gt`.
 
 Code example for alias function:
 
@@ -553,16 +560,16 @@ Code example for alias function:
 Frontend Instance Method Tests
 ------------------------------
 
-The frontend instance method tests are similar to the frontend function test, but instead 
-of testing the function directly we test the instance method of the frontend class.
+The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
 
 **Important Helper Functions**
 
-:func:`helpers.test_frontend_instance_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
+:func:`helpers.test_frontend_instance_method` is used to test frontend instance methods.
+It is used in the same way as :func:`helpers.test_frontend_function`.
 
 **Useful Notes**
-The :func:`helpers.test_frontend_instance_method` takes an argument :code:`frontend_class`
-which is the frontend class to test. This is the relevant Ivy frontend class and not the native framework class.
+The :func:`helpers.test_frontend_instance_method` takes an argument :code:`frontend_class` which is the frontend class to test.
+This is the relevant Ivy frontend class and not the native framework class.
 
 
 Frontend Instance Method Test Examples
@@ -653,7 +660,8 @@ ivy.add()
             method_name="add",
         )
 
-* We use :func:`np_frontend_helpers.test_frontend_array_instance_method` to test the instance method. This handles the :code:`where` argument.
+* We use :func:`np_frontend_helpers.test_frontend_array_instance_method` to test the instance method.
+  This handles the :code:`where` argument.
 * We import the frontend class :class:`ndarray` from :code:`frontends.numpy.ndarray` and pass it to the :code:`frontend_class` argument.
 * We specify the :code:`fn_tree` to be :meth:`ndarray.add` which is the path to the function in the frontend class.
     
@@ -747,8 +755,7 @@ ivy.add()
 Frontend Special Method Tests
 -----------------------------
 
-The implementation for the frontend special method tests are somewhat a little different from how the instance methods
-are being tested.
+The implementation for the frontend special method tests are somewhat a little different from how the instance methods are being tested.
 
 **Important Helper Function**
 
@@ -798,41 +805,22 @@ ivy.add()
 Hypothesis Helpers
 ------------------
 
-Naturally, many of the functions in the various frontend APIs are very similar to many
-of the functions in the Ivy API. Therefore, the unit tests will follow very similar
-structures with regards to the data generated for testing.
-There are many data generation helper functions defined in the Ivy API test files,
-such as :func:`_arrays_idx_n_dtypes` defined in
-:mod:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`.
-This helper generates: a set of concatenation-compatible arrays,
-the index for the concatenation, and the data types of each array.
-Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown
-`here <https://github.com/unifyai/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
+Naturally, many of the functions in the various frontend APIs are very similar to many of the functions in the Ivy API.
+Therefore, the unit tests will follow very similar structures with regards to the data generated for testing.
+There are many data generation helper functions defined in the Ivy API test files, such as :func:`_arrays_idx_n_dtypes` defined in :mod:`ivy/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`.
+This helper generates: a set of concatenation-compatible arrays, the index for the concatenation, and the data types of each array.
+Not surprisingly, this helper is used for testing :func:`ivy.concat`, as shown `here <https://github.com/unifyai/ivy/blob/86287f4e45bbe581fe54e37d5081c684130cba2b/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py#L53>`_.
 
-Clearly, this helper would also be very useful for testing the various frontend
-concatenation functions, such as :code:`jax.numpy.concatenate`,
-:code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
-We could simply copy and paste the implementation from
-:mod:`/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py`
-into each file
-:mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`,
-but this would result in needless duplication.
-Instead, we should simply import the helper function from the ivy test file into the
-frontend test file, like so :code:`from ivy_tests.test_ivy.test_frontends.test_manipulation import _arrays_idx_n_dtypes`.
+Clearly, this helper would also be very useful for testing the various frontend concatenation functions, such as :code:`jax.numpy.concatenate`, :code:`numpy.concatenate`, :code:`tensorflow.concat` and :code:`torch.cat`.
+We could simply copy and paste the implementation from :mod:`/ivy_tests/test_ivy/test_functional/test_core/test_manipulation.py` into each file :mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`, but this would result in needless duplication.
+Instead, we should simply import the helper function from the ivy test file into the frontend test file, like so :code:`from ivy_tests.test_ivy.test_frontends.test_manipulation import _arrays_idx_n_dtypes`.
 
-In cases where a helper function is uniquely useful for a frontend function without
-being useful for an Ivy function, then it should be implemented directly in
-:mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py`
-rather than in
-:mod:`/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
-However, as shown above, in many cases the same helper function can be shared between
-the Ivy API tests and the frontend tests,
-and we should strive for as much sharing as possible to minimize the amount of code.
+In cases where a helper function is uniquely useful for a frontend function without being useful for an Ivy function, then it should be implemented directly in :mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py` rather than in :mod:`/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
+However, as shown above, in many cases the same helper function can be shared between the Ivy API tests and the frontend tests, and we should strive for as much sharing as possible to minimize the amount of code.
 
 
 **Round Up**
 
 These examples have hopefully given you a good understanding of Ivy Frontend Tests!
 
-If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_
-or in the `ivy frontends tests forum`_!
+If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!

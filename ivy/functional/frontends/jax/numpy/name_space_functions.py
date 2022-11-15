@@ -36,7 +36,7 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def argmax(a, axis=None, out=None, keepdims=None):
+def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
@@ -188,6 +188,7 @@ def tanh(x):
     return ivy.tanh(x)
 
 
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.uint16)
 
@@ -279,8 +280,18 @@ def bitwise_and(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def bitwise_not(x):
+    return ivy.bitwise_invert(x)
+
+
+@to_ivy_arrays_and_back
 def bitwise_or(x1, x2):
     return ivy.bitwise_or(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def bitwise_xor(x1, x2):
+    return ivy.bitwise_xor(x1, x2)
 
 
 @to_ivy_arrays_and_back
@@ -300,6 +311,11 @@ def power(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def arange(start, stop=None, step=None, dtype=None):
+    return ivy.arange(start, stop, step=step, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
@@ -315,3 +331,207 @@ def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.uint8
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
+def trunc(x):
+    return ivy.trunc(x)
+
+
+@to_ivy_arrays_and_back
+def ceil(x):
+    return ivy.ceil(x)
+
+
+@to_ivy_arrays_and_back
+def float_power(x1, x2):
+    return ivy.float_power(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def cumsum(a, axis=0, dtype=None, out=None):
+    if dtype is None:
+        dtype = ivy.uint8
+    return ivy.cumsum(a, axis, dtype=dtype, out=out)
+
+
+cumproduct = cumprod
+
+
+@to_ivy_arrays_and_back
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def deg2rad(x):
+    return ivy.deg2rad(x)
+
+
+@to_ivy_arrays_and_back
+def exp2(x):
+    return ivy.exp2(x)
+
+
+@to_ivy_arrays_and_back
+def gcd(x1, x2):
+    return ivy.gcd(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def i0(x):
+    return ivy.i0(x)
+
+
+@to_ivy_arrays_and_back
+def isneginf(x, out=None):
+    return ivy.isneginf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def isposinf(x, out=None):
+    return ivy.isposinf(x, out=out)
+
+
+@to_ivy_arrays_and_back
+def kron(a, b):
+    return ivy.kron(a, b)
+
+
+@to_ivy_arrays_and_back
+def sum(
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+):
+    if initial:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([a, header], axis=axis)
+
+    result_dtype = dtype or ivy.dtype(a)
+
+    if dtype is None and promote_integers:
+        if ivy.is_bool_dtype(result_dtype):
+            result_dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                result_dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                result_dtype = ivy.default_int_dtype()
+
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)))
+
+    return ivy.sum(a, axis=axis, dtype=result_dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def lcm(x1, x2):
+    return ivy.lcm(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def logaddexp2(x1, x2):
+    return ivy.logaddexp2(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def trapz(y, x=None, dx=1.0, axis=-1, out=None):
+    return ivy.trapz(y, x=x, dx=dx, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def any(a, axis=None, keepdims=False, *, where=True):
+    ret = ivy.any(a, axis=axis, keepdims=keepdims)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
+    return ret
+
+
+@to_ivy_arrays_and_back
+def diag(v, k=0):
+    return ivy.diag(v, k=k)
+
+
+@to_ivy_arrays_and_back
+def flip(m, axis=None):
+    return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m)
+
+
+@to_ivy_arrays_and_back
+def hstack(x, dtype=None):
+    return ivy.hstack(x)
+
+
+@to_ivy_arrays_and_back
+def arctanh(x):
+    return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def maximum(x1, x2):
+    return ivy.maximum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def minimum(x1, x2):
+    return ivy.minimum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def msort(a):
+    return ivy.msort(a)
+
+
+@to_ivy_arrays_and_back
+def multiply(x1, x2):
+    return ivy.multiply(x1, x2)
+
+
+alltrue = all
+
+
+sometrue = any
+
+
+@to_ivy_arrays_and_back
+def not_equal(x1, x2):
+    return ivy.not_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less(x1, x2):
+    return ivy.less(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less_equal(x1, x2):
+    return ivy.less_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater(x1, x2):
+    return ivy.greater(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x1, x2):
+    return ivy.greater_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def equal(x1, x2):
+    return ivy.equal(x1, x2)

@@ -917,21 +917,41 @@ def default_float_dtype(
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
-    """Summary.
-
+    """
     Parameters
     ----------
     input
-         (Default value = None)
+        (Default value = None) Number or array for inferring float dtype.
     float_dtype
-
+        (Default value = None) float type to be returned.
     as_native
-         (Default value = None)
+        (Default value = None) Whether to return the float dtype as native
+        dtype.
 
     Returns
     -------
-        Return the input float dtype if provided, otherwise return the global default
-        float dtype.
+        Return the input float dtype as native or ivy dtype if provided, else
+        if an input is given, return its float dtype, otherwise return the
+        global default float dtype.
+
+    Examples
+    --------
+    >>> ivy.default_float_dtype()
+    'float32'
+
+    >>> ivy.set_default_float_dtype(ivy.FloatDtype("float64"))
+    >>> ivy.default_float_dtype()
+    'float64'
+
+    >>> ivy.default_float_dtype(float_dtype=ivy.FloatDtype("float16"))
+    'float16'
+
+    >>> ivy.default_float_dtype(input=4294.967346)
+    'float32'
+
+    >>> x = ivy.array([9.8,8.9], dtype="float16")
+    >>> ivy.default_float_dtype(input=x)
+    'float16'
     """
     if ivy.exists(float_dtype):
         if as_native is True:
@@ -1841,7 +1861,18 @@ def unset_default_dtype():
 
 @handle_exceptions
 def unset_default_float_dtype():
-    """"""
+    """Reset the current default float dtype to the previous state.
+
+    Examples
+    --------
+    >>> ivy.set_default_float_dtype(ivy.float32)
+    >>> ivy.set_default_float_dtype(ivy.float64)
+    >>> ivy.default_float_dtype_stack
+    ['float32','float64']
+    >>> ivy.unset_default_float_dtype()
+    >>> ivy.default_float_dtype_stack
+    ['float32']
+    """
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
@@ -1849,7 +1880,25 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """"""
+    """
+
+    Reset the current default int dtype to the previous state.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.unset_default_int_dtype()
+    >>> ivy.default_int_dtype()
+    'int32'
+
+    """
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)

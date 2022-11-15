@@ -205,7 +205,7 @@ For some Windows users, it might be necessary to enable virtualisation from the 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video">
+    src="https://www.youtube.com/embed/7I_46c2AvJg" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -239,7 +239,7 @@ If Docker's latest version causes error, try using an earlier version by visitin
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video">
+    src="https://www.youtube.com/embed/5BxizBIC-GQ" class="video" allowfullscreen="true">
     </iframe>
 
 
@@ -311,7 +311,7 @@ For questions, please reach out on `discord`_ in the `docker channel`_!
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video">
+    src="https://www.youtube.com/embed/UHeSnZu0pAI" class="video" allowfullscreen="true">
     </iframe>
 
 Setting Up Testing
@@ -402,13 +402,21 @@ Now, if Hypothesis detects an error in the code it will return more detailed inf
 For questions, please reach out on the `setting up discussion`_
 or on `discord`_ in the `docker channel`_!
 
+**"Empty Suite" error fix:**
+
+Click on the "green arrow button" from where you run the funcion in PyCharm. Open "Modify Run Configuration...", under "Target:" on the right side click on "..." it'll open a new window, manually add the path to the specific function, For instance, for stateful -> "test_stateful.test_submodule_name.test_function_name" and for functional -> "test_submodule_name.test_function_name", the function will pop up below, select that, click on "Apply" then "OK". Now, do not run the test from the "green arrow button" in the left panel, run it from above where there is a "green arrow button" on the left side of the "debugger button" making sure you've selected the latest modified configuration of that specific test you want to run.
+
 Setting up for Free
 -------------------
+
 
 Visual Studio Code is a recommended free alternative to setting up, especially if you're not eligible for a student license with PyCharm Professional.
 The most easiest and the most efficient way would be using Visual Studio Code with the Docker extension.
 You'll hopefully be done with this in no time.
 The steps to be followed are listed below:
+
+Windows
+*******
 
 #. Install `Docker Desktop <https://www.docker.com/products/docker-desktop>`_
 #. Install `Visual Studio Code here <https://code.visualstudio.com/>`_
@@ -421,7 +429,23 @@ The steps to be followed are listed below:
    b. Install the "Docker" extension for Visual Studio Code, you'll easily find that searching "docker" in the extensions tab.
    c. Once done, restart Visual Studio Code, at the bottom left corner there would be an icon similar to " >< " overlapped on each other.
    d. Clicking on that will open a bar at the top which will give you an option "Open Folder in Container...", click on that.
-   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name"
+   e. You'll be inside the container now, where you can locally run the tests that you've modified by running the command, "pytest test_file_path::test_fn_name". Opening the container may take a long time, as the Docker image is very large (5+ GB).
+
+Ubuntu
+*******
+
+#. Install `Docker Engine <https://docs.docker.com/engine/install/ubuntu/>`_
+#. Install `Visual Studio Code <https://code.visualstudio.com/>`_
+#. Clone your fork of the Ivy repository.
+#. Open Visual Studio Code, open the Ivy repo folder and following the steps listed below:
+
+   a. Install the :code:`Dev Containers` and :code:`Docker` extensions.
+   b. Open the :code:`.devcontainer/devcontainer.json` file.
+   c. Add a comma (:code:`,`) to the end entry :code:`"postCreateCommand": "bash .devcontainer/post_create_commands.sh"`, making it :code:`"postCreateCommand": "bash .devcontainer/post_create_commands.sh",`.
+   d. Add in the line :code:`"postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}"` on the line immediately after the :code:`postCreateCommand` line.
+   e. Click the remote explorer icon in the bottom left. It looks roughly like "><" overlapped on each other.
+   f. Click :code:`Reopen in Container` in the dropdown menu.
+   g. You'll be inside the container now, where you can locally run the tests running the command, :code:`pytest test_fle_path::test_fn_name`. Opening the container may take a long time, as the Docker image is very large (5+ GB).
 
 **Important Note**
 
@@ -540,21 +564,16 @@ The steps are as following to setup testing on VS Code when using a new Codespac
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_03.png?raw=true
    :width: 420
 
-4. As of 01/08/2022, the conftest.py file in the array_api_tests folder must also be commented out in order to run ivy_tests in the test suite.
-This will cause the array_api_tests to fail and therefore they must be run via the terminal.
+4. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/contributing/setting_up/vs_code_testing_setup/vs_testing_04.png?raw=true
-   :width: 420
-
-5. Following all of this you should refresh the test suite and you should now be able to run tests right from VS Code!
-
+Note: Currently you do not need to comment out the :code:`conftest.py` file in the :code:`array_api_tests` directory.
 
 **Video**
 
 .. raw:: html
 
     <iframe width="420" height="315"
-    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video">
+    src="https://www.youtube.com/embed/8rDcMMIl8dM" class="video" allowfullscreen="true">
     </iframe>
 
 

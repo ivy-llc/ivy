@@ -2,6 +2,8 @@
 import functools
 from typing import Callable
 
+import torch
+
 
 # local
 import ivy
@@ -24,6 +26,16 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
     return x
 
 
+def _from_torch_tensor_to_ivy_array(x):
+    if isinstance(x, torch.Tensor):
+        return ivy.array(x)
+    return x
+
+
+def _to_ivy_array(x):
+    return _from_torch_frontend_tensor_to_ivy_array(_from_torch_tensor_to_ivy_array(x))
+
+
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
@@ -42,12 +54,12 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
             args,
-            _from_torch_frontend_tensor_to_ivy_array,
+            _to_ivy_array,
             include_derived={tuple: True},
         )
         new_kwargs = ivy.nested_map(
             kwargs,
-            _from_torch_frontend_tensor_to_ivy_array,
+            _to_ivy_array,
             include_derived={tuple: True},
         )
         # add the original out argument back to the keyword arguments
