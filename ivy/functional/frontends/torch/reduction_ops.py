@@ -106,3 +106,10 @@ def max(input, dim=None, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
+
+    return (ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out),
+            ivy.mean(input, axis=dim, keepdims=keepdim, out=out))
