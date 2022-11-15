@@ -535,6 +535,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Gives a new shape to an array without changing its data.</span>
 
@@ -556,6 +557,17 @@
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
 <span class="sd">        inputs broadcast to.</span>
+<span class="sd">    order</span>
+<span class="sd">        Read the elements of x using this index order, and place the elements into</span>
+<span class="sd">        the reshaped array using this index order.</span>
+<span class="sd">        ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">        with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">        changing slowest.</span>
+<span class="sd">        ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">        the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">        Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">        of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">        Default order is &#39;C&#39;</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -583,6 +595,12 @@
 <span class="sd">               [2., 3.],</span>
 <span class="sd">               [4., 5.]])</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0., 1., 2.],[3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.reshape(x,(3,2), order=&#39;F&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[0., 4.],</span>
+<span class="sd">               [3., 2.],</span>
+<span class="sd">               [1., 5.]])</span>
 
 <span class="sd">    With :class:`ivy.NativeArray` input:</span>
 
@@ -623,7 +641,8 @@
 <span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;F&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="roll"><a class="viewcode-back" href="../../../../functional/ivy/manipulation/roll/roll_functional.html#ivy.functional.ivy.manipulation.roll">[docs]</a><span class="nd">@to_native_arrays_and_back</span>

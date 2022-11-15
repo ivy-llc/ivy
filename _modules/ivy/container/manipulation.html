@@ -708,6 +708,7 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container static method variant of ivy.reshape. This method simply wraps the</span>
@@ -744,6 +745,17 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
+<span class="sd">        order</span>
+<span class="sd">            Read the elements of x using this index order, and place the elements into</span>
+<span class="sd">            the reshaped array using this index order.</span>
+<span class="sd">            ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">            with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">            changing slowest.</span>
+<span class="sd">            ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">            the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">            Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">            of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">            Default order is &#39;C&#39;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -768,6 +780,19 @@
 <span class="sd">                          [4, 5]])</span>
 <span class="sd">        }</span>
 
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),</span>
+<span class="sd">        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_reshape(x, (3,2), order=&#39;F&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0, 3],</span>
+<span class="sd">                          [1, 4],</span>
+<span class="sd">                          [2, 5]]),</span>
+<span class="sd">            b: ivy.array([[0, 3],</span>
+<span class="sd">                          [1, 4],</span>
+<span class="sd">                          [2, 5]])</span>
+<span class="sd">        }</span>
+
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -780,6 +805,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithManipulation.reshape"><a class="viewcode-back" href="../../../data_classes/container/manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation.reshape">[docs]</a>    <span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span>
@@ -793,6 +819,7 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">copy</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="s2">&quot;C&quot;</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        ivy.Container instance method variant of ivy.reshape. This method</span>
@@ -828,6 +855,17 @@
 <span class="sd">        out</span>
 <span class="sd">            optional output container, for writing the result to. It must have a shape</span>
 <span class="sd">            that the inputs broadcast to.</span>
+<span class="sd">        order</span>
+<span class="sd">            Read the elements of the input container using this index order,</span>
+<span class="sd">            and place the elements into the reshaped array using this index order.</span>
+<span class="sd">            ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">            with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">            changing slowest.</span>
+<span class="sd">            ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">            the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">            Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">            of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">            Default order is &#39;C&#39;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -847,6 +885,17 @@
 <span class="sd">            b: ivy.array([[0, 1, 2],</span>
 <span class="sd">                          [3, 4, 5]])</span>
 <span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),</span>
+<span class="sd">        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.reshape((2,3), order=&#39;F&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0, 2, 4],</span>
+<span class="sd">                          [1, 3, 5]]),</span>
+<span class="sd">            b: ivy.array([[0, 2, 4],</span>
+<span class="sd">                          [1, 3, 5]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_reshape</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -857,6 +906,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithManipulation.static_roll"><a class="viewcode-back" href="../../../data_classes/container/manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation.static_roll">[docs]</a>    <span class="nd">@staticmethod</span>
