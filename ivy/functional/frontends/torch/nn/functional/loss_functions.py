@@ -149,7 +149,7 @@ def smooth_l1_loss(
 
     return ret
 
-ivy/functional/frontends/torch/nn/functional/loss_functions.py
+
 @to_ivy_arrays_and_back
 def huber_loss(
         input,
