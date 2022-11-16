@@ -1039,11 +1039,12 @@
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span><span class="o">.</span><span class="n">closest_valid_dtype</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype/default_float_dtype_functional.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="default_float_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_float_dtype/default_float_dtype_functional.html#ivy.functional.ivy.data_type.default_float_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">default_float_dtype</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">float_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">FloatDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
@@ -1051,17 +1052,16 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input</span>
-<span class="sd">        (Default value = None) Number or array for inferring float dtype.</span>
+<span class="sd">        Number or array for inferring the float dtype.</span>
 <span class="sd">    float_dtype</span>
-<span class="sd">        (Default value = None) float type to be returned.</span>
+<span class="sd">        The float dtype to be returned.</span>
 <span class="sd">    as_native</span>
-<span class="sd">        (Default value = None) Whether to return the float dtype as native</span>
-<span class="sd">        dtype.</span>
+<span class="sd">        Whether to return the float dtype as native dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input float dtype as native or ivy dtype if provided, else</span>
-<span class="sd">        if an input is given, return its float dtype, otherwise return the</span>
+<span class="sd">        Return ``float_dtype`` as native or ivy dtype if provided, else</span>
+<span class="sd">        if ``input`` is given, return its float dtype, otherwise return the</span>
 <span class="sd">        global default float dtype.</span>
 
 <span class="sd">    Examples</span>
@@ -1169,24 +1169,28 @@
     <span class="k">return</span> <span class="n">default_dtype</span></div>
 
 
-<div class="viewcode-block" id="default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_dtype.html#ivy.functional.ivy.data_type.default_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="default_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_dtype.html#ivy.functional.ivy.data_type.default_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">default_dtype</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">item</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">item</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Summary.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    dtype</span>
-
+<span class="sd">        The dtype to be returned.</span>
 <span class="sd">    item</span>
-<span class="sd">         (Default value = None)</span>
+<span class="sd">        Number or array for inferring the dtype.</span>
 <span class="sd">    as_native</span>
-<span class="sd">         (Default value = None)</span>
-
+<span class="sd">        Whether to return the dtype as native dtype.</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input dtype if provided, otherwise return the global default dtype.</span>
+<span class="sd">        Return ``dtype`` as native or ivy dtype if provided, else</span>
+<span class="sd">        if ``item`` is given, return its dtype, otherwise return the</span>
+<span class="sd">        global default dtype.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dtype</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">as_native</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -1220,27 +1224,29 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_int_dtype.html#ivy.functional.ivy.data_type.default_int_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="default_int_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_int_dtype.html#ivy.functional.ivy.data_type.default_int_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">default_int_dtype</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">int_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input</span>
-<span class="sd">       (Default value = None) Number or array for inferring default int dtype.</span>
+<span class="sd">        Number or array for inferring the int dtype.</span>
 <span class="sd">    int_dtype</span>
-<span class="sd">       (Default value = None) Uint dtype to be returned as default.</span>
+<span class="sd">        The int dtype to be returned.</span>
 <span class="sd">    as_native</span>
-<span class="sd">       (Default value = None) Whether to return the default int dtype as native dtype.</span>
+<span class="sd">        Whether to return the int dtype as native dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input int dtype if provided, otherwise return the global default</span>
-<span class="sd">        int dtype.</span>
+<span class="sd">        Return ``int_dtype`` as native or ivy dtype if provided, else</span>
+<span class="sd">        if ``input`` is given, return its int dtype, otherwise return the</span>
+<span class="sd">        global default int dtype.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1319,29 +1325,29 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">IntDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="default_uint_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_uint_dtype.html#ivy.functional.ivy.data_type.default_uint_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="default_uint_dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/default_uint_dtype.html#ivy.functional.ivy.data_type.default_uint_dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">default_uint_dtype</span><span class="p">(</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="nb">input</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">uint_dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">UintDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">as_native</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">UintDtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the default uint dtype currently set. If input number or array is</span>
-<span class="sd">    given, returns uint dtype according to input, else uint32 by default.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input</span>
-<span class="sd">        Number or array for inferring default uint dtype. Optional.</span>
+<span class="sd">        Number or array for inferring the uint dtype.</span>
 <span class="sd">    uint_dtype</span>
-<span class="sd">        Uint dtype to be returned as defualt. Optional.</span>
+<span class="sd">        The uint dtype to be returned.</span>
 <span class="sd">    as_native</span>
-<span class="sd">        Whether to return the default uint dtype as native dtype. Optional.</span>
+<span class="sd">        Whether to return the uint dtype as native dtype.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        Return the input uint dtype if provided, otherwise return the global default</span>
-<span class="sd">        uint dtype.</span>
+<span class="sd">        Return ``uint_dtype`` as native or ivy dtype if provided, else</span>
+<span class="sd">        if ``input`` is given, return its uint dtype, otherwise return the</span>
+<span class="sd">        global default uint dtype.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -1402,7 +1408,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">UintDtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dtype</span><span class="p">(</span><span class="n">ret</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../functional/ivy/data_type/dtype/dtype_functional.html#ivy.functional.ivy.data_type.dtype">[docs]</a><span class="nd">@inputs_to_native_arrays</span>
+<span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="o">*</span><span class="p">,</span> <span class="n">as_native</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
