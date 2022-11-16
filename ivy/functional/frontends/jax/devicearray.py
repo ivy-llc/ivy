@@ -132,4 +132,4 @@ class DeviceArray:
         return jax_frontend.lax.shift_right_logical(other, self)
 
     def __getitem__(self, index):
-        return ivy.get_item(arr, idx)
+        return ivy.get_item(self, index)
