@@ -1,5 +1,15 @@
 # global
-from typing import Optional, Union, Sequence, Tuple, NamedTuple, Literal, Callable, Any
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 from numbers import Number
 import numpy as np
 
@@ -153,7 +163,6 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[np.ndarray] = None,
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if callable(mode):
@@ -226,3 +235,7 @@ def dstack(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     return np.dstack(arrays)
+
+
+def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
+    return np.atleast_2d(*arys)

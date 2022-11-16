@@ -1,20 +1,19 @@
 """Collection of general Ivy functions."""
 
+# global
 import gc
 import inspect
 import math
-
-# global
 from functools import wraps
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
-
 import einops
 import numpy as np
 
 # local
 import ivy
 from ivy.backend_handler import current_backend, backend_stack
+from ivy.functional.ivy.gradients import _is_variable
 from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
@@ -35,6 +34,11 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+trace_mode_dict = dict()
+trace_mode_dict["frontend"] = "ivy/functional/frontends"
+trace_mode_dict["ivy"] = "ivy/"
+trace_mode_dict["full"] = ""
+show_func_wrapper_trace_mode_stack = list()
 
 
 def _parse_ellipsis(so, ndims):
@@ -184,18 +188,6 @@ def is_ivy_array(
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
-def is_frontend_array(x: Any) -> bool:
-    return isinstance(
-        x,
-        (
-            ivy.functional.frontends.torch.Tensor,
-            ivy.functional.frontends.tensorflow.EagerTensor,
-            ivy.functional.frontends.numpy.ndarray,
-            ivy.functional.frontends.jax.DeviceArray,
-        ),
-    )
-
-
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array, a Native Array
@@ -214,10 +206,8 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     ret
         Boolean, whether or not x is an array.
     """
-    return (
-        ivy.is_ivy_array(x, exclusive=exclusive)
-        or ivy.is_native_array(x, exclusive=exclusive)
-        or ivy.is_frontend_array(x)
+    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
+        x, exclusive=exclusive
     )
 
 
@@ -368,8 +358,72 @@ def get_nestable_mode() -> bool:
 
 
 @handle_exceptions
-def set_exception_trace_mode(mode: bool) -> None:
-    """Set the mode of whether to show the full exception stack trace
+def set_exception_trace_mode(mode: str) -> None:
+    """Set the mode of whether to show frontend-truncated exception stack traces,
+    ivy-truncated exception stack traces or full exception stack traces
+
+    Parameter
+    ---------
+    mode
+        str exeption trace mode, one of `ivy`, `full` or `frontend`
+
+    Examples
+    --------
+    >>> ivy.set_exception_trace_mode("ivy")
+    >>> ivy.get_exception_trace_mode()
+    'ivy'
+
+    >>> ivy.set_exception_trace_mode("full")
+    >>> ivy.get_exception_trace_mode()
+    'full'
+    """
+    global exception_trace_mode_stack
+    trace_modes = list(trace_mode_dict.keys())
+    ivy.assertions.check_elem_in_list(
+        mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
+    )
+    exception_trace_mode_stack.append(mode)
+
+
+@handle_exceptions
+def unset_exception_trace_mode() -> None:
+    """Reset the trace mode to the previously set mode
+
+    Examples
+    --------
+    >>> ivy.set_exception_trace_mode("ivy")
+    >>> ivy.get_exception_trace_mode()
+    'ivy'
+
+    >>> ivy.unset_exception_trace_mode()
+    >>> ivy.get_exception_trace_mode()
+    'full'
+    """
+    global exception_trace_mode_stack
+    if exception_trace_mode_stack:
+        exception_trace_mode_stack.pop(-1)
+
+
+@handle_exceptions
+def get_exception_trace_mode() -> str:
+    """Get the current state of exception_trace_mode
+
+    Examples
+    --------
+    >>> ivy.set_exception_trace_mode("full")
+    >>> ivy.get_exception_trace_mode()
+    'full'
+    """
+    global exception_trace_mode_stack
+    if not exception_trace_mode_stack:
+        return "full"
+    return exception_trace_mode_stack[-1]
+
+
+@handle_exceptions
+def set_show_func_wrapper_trace_mode(mode: bool) -> None:
+    """Set the mode of whether to show the full stack trace with function
+    wrapping traces
 
     Parameter
     ---------
@@ -378,55 +432,57 @@ def set_exception_trace_mode(mode: bool) -> None:
 
     Examples
     --------
-    >>> ivy.set_exception_trace_mode(False)
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
     False
 
-    >>> ivy.set_exception_trace_mode(True)
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.set_show_func_wrapper_trace_mode(True)
+    >>> ivy.get_show_func_wrapper_trace_mode()
     True
     """
-    global exception_trace_mode_stack
+    global show_func_wrapper_trace_mode_stack
     ivy.assertions.check_isinstance(mode, bool)
-    exception_trace_mode_stack.append(mode)
+    show_func_wrapper_trace_mode_stack.append(mode)
 
 
 @handle_exceptions
-def unset_exception_trace_mode() -> None:
-    """Reset the mode of whether to show the full exception stack trace
+def unset_show_func_wrapper_trace_mode() -> None:
+    """Reset the mode of whether to show the full stack trace with function
+    wrapping traces
 
     Examples
     --------
-    >>> ivy.set_exception_trace_mode(False)
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
     False
 
-    >>> ivy.unset_exception_trace_mode()
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.unset_show_func_wrapper_trace_mode()
+    >>> ivy.get_show_func_wrapper_trace_mode()
     True
     """
-    global exception_trace_mode_stack
-    if exception_trace_mode_stack:
-        exception_trace_mode_stack.pop(-1)
+    global show_func_wrapper_trace_mode_stack
+    if show_func_wrapper_trace_mode_stack:
+        show_func_wrapper_trace_mode_stack.pop(-1)
 
 
 @handle_exceptions
-def get_exception_trace_mode() -> bool:
-    """Get the current state of exception_trace_mode
+def get_show_func_wrapper_trace_mode() -> bool:
+    """Get the current state of whether to show the full stack trace with function
+    wrapping traces. Default is True (function wrapping traces are shown)
 
     Examples
     --------
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.get_show_func_wrapper_trace_mode()
     True
 
-    >>> ivy.set_exception_trace_mode(False)
-    >>> ivy.get_exception_trace_mode()
+    >>> ivy.set_show_func_wrapper_trace_mode(False)
+    >>> ivy.get_show_func_wrapper_trace_mode()
     False
     """
-    global exception_trace_mode_stack
-    if not exception_trace_mode_stack:
+    global show_func_wrapper_trace_mode_stack
+    if not show_func_wrapper_trace_mode_stack:
         return True
-    return exception_trace_mode_stack[-1]
+    return show_func_wrapper_trace_mode_stack[-1]
 
 
 @inputs_to_native_arrays
@@ -2213,7 +2269,7 @@ def supports_inplace_updates(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
         b: false
     }
     """
-    if ivy.is_variable(x):
+    if _is_variable(x):
         return ivy.inplace_variables_supported()
     elif ivy.is_native_array(x):
         return ivy.inplace_arrays_supported()
