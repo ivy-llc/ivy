@@ -155,14 +155,14 @@ def _ivy_to_numpy(x: Any) -> Any:
         return x
 
 
-def _numpy_array_to_ivy_array(x):
+def _native_to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _numpy_frontend_to_ivy(_numpy_array_to_ivy_array(x))
+    return _numpy_frontend_to_ivy(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
