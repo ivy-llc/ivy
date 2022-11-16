@@ -335,3 +335,8 @@ def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
+
+
+@to_ivy_arrays_and_back
+def pow(input, exponent, *, out=None):
+    return ivy.pow(input, exponent, out=out)

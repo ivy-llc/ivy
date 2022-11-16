@@ -1,14 +1,14 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # cross_entropy
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=1e-04,
@@ -32,7 +32,6 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
     epsilon=helpers.floats(min_value=0, max_value=0.49),
-    num_positional_args=helpers.num_positional_args(fn_name="cross_entropy"),
 )
 def test_cross_entropy(
     dtype_and_true,
@@ -41,12 +40,15 @@ def test_cross_entropy(
     axis,
     epsilon,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -57,13 +59,14 @@ def test_cross_entropy(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="cross_entropy",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-02,
         atol_=1e-02,
-        test_gradients=True,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         axis=axis,
@@ -73,8 +76,8 @@ def test_cross_entropy(
 
 
 # binary_cross_entropy
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.binary_cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
@@ -97,7 +100,6 @@ def test_cross_entropy(
     ),
     reduction=st.sampled_from(["none", "sum", "mean"]),
     epsilon=helpers.floats(min_value=0, max_value=0.49),
-    num_positional_args=helpers.num_positional_args(fn_name="binary_cross_entropy"),
 )
 def test_binary_cross_entropy(
     dtype_and_true,
@@ -105,12 +107,15 @@ def test_binary_cross_entropy(
     reduction,
     epsilon,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
@@ -120,13 +125,14 @@ def test_binary_cross_entropy(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="binary_cross_entropy",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-1,
         atol_=1e-1,
-        test_gradients=True,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         epsilon=epsilon,
@@ -135,8 +141,8 @@ def test_binary_cross_entropy(
 
 
 # sparse_cross_entropy
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.sparse_cross_entropy",
     dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         min_value=0,
@@ -161,7 +167,6 @@ def test_binary_cross_entropy(
     reduction=st.sampled_from(["none", "sum", "mean"]),
     axis=helpers.ints(min_value=-1, max_value=0),
     epsilon=helpers.floats(min_value=0.01, max_value=0.49),
-    num_positional_args=helpers.num_positional_args(fn_name="sparse_cross_entropy"),
 )
 def test_sparse_cross_entropy(
     dtype_and_true,
@@ -170,12 +175,15 @@ def test_sparse_cross_entropy(
     axis,
     epsilon,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    test_gradients,
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
@@ -185,11 +193,12 @@ def test_sparse_cross_entropy(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="sparse_cross_entropy",
-        test_gradients=True,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        test_gradients=test_gradients,
         true=true[0],
         pred=pred[0],
         axis=axis,

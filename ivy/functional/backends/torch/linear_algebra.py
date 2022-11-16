@@ -385,8 +385,9 @@ def trace(
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))

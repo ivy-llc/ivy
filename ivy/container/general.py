@@ -21,7 +21,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_native_array.
@@ -46,9 +45,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -63,7 +59,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_native_array(
@@ -75,7 +70,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -100,9 +94,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -116,7 +107,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -129,7 +119,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_ivy_array.
@@ -154,9 +143,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -171,7 +157,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_ivy_array(
@@ -183,7 +168,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -208,9 +192,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -224,7 +205,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -237,7 +217,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_array.
@@ -279,7 +258,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_array(
@@ -291,7 +269,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_array.
@@ -316,9 +293,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -332,7 +306,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -344,7 +317,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_ivy_container.
@@ -366,9 +338,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -382,7 +351,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_ivy_container(
@@ -393,7 +361,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_ivy_container.
@@ -415,9 +382,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -430,7 +394,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -1852,8 +1815,8 @@ class ContainerWithGeneral(ContainerBase):
             "scatter_flat",
             indices,
             updates,
-            size,
-            reduction,
+            size=size,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -3488,7 +3451,7 @@ class ContainerWithGeneral(ContainerBase):
 
         With `ivy.Container` input and backend set as 'tensorflow':
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
+        >>> x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),
         ...                   b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)

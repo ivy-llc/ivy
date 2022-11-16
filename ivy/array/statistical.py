@@ -27,10 +27,10 @@ class ArrayWithStatistical(abc.ABC):
         >>> print(y)
         ivy.array(3.)
 
-        >>> x = ivy.array([-1, 0, 1])
-        >>> y = x.min()
+        >>> x = ivy.array([[-1, 0, 1], [2, 3, 4]])
+        >>> y = x.min(axis=1)
         >>> print(y)
-        ivy.array(-1)
+        ivy.array([-1,  2])
 
         >>> x = ivy.array([0.1, 1.1, 2.1])
         >>> y = ivy.array(0.)
