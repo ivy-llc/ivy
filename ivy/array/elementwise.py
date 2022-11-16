@@ -609,6 +609,11 @@ class ArrayWithElementwise(abc.ABC):
         >>> ivy.cos(x, out=y)
         >>> print(y)
         ivy.array([-0.99,  1.  , -0.99])
+
+        >>> x = ivy.array([[0., 1.,], [2., 3.]])
+        >>> y = x.cos()
+        >>> print(y)
+        ivy.array([[1., 0.540], [-0.416, -0.990]])
         """
         return ivy.cos(self._data, out=out)
 
