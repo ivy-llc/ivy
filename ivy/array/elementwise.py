@@ -603,7 +603,7 @@ class ArrayWithElementwise(abc.ABC):
         >>> y = x.cos()
         >>> print(y)
         ivy.array([0.54, 1., -0.416])
-        
+
         >>> x = ivy.array([-3., 0., 3.])
         >>> y = ivy.zeros(3)
         >>> ivy.cos(x, out=y)
