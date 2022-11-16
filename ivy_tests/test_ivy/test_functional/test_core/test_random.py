@@ -197,8 +197,8 @@ def test_multinomial(
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
-    if backend_fw == "tensorflow":
-        assume(replace is True)
+    if backend_fw == ivy.functional.backends.tensorflow:
+        assume(replace)
 
     def call():
         return helpers.test_function(
