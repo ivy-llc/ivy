@@ -120,6 +120,19 @@ def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
+def _to_nested_tuple(nested_list):
+    ret = ()
+    if hasattr(nested_list, "__iter__"):
+        for inner_list in nested_list:
+            if hasattr(inner_list, "__iter__"):
+                ret += (tuple(inner_list),)
+            else:
+                ret += (inner_list,)
+        return ret
+    if ret == ():
+        return nested_list
+
+
 def pad(
     input: JaxArray,
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
@@ -147,50 +160,59 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[JaxArray] = None,
     **kwargs: Optional[Any],
 ) -> JaxArray:
+    pad_width = _to_nested_tuple(pad_width)
+    stat_length = _to_nested_tuple(stat_length)
+    constant_values = _to_nested_tuple(constant_values)
+    end_values = _to_nested_tuple(end_values)
+    input_dtype = input.dtype
+    if jnp.issubdtype(input_dtype, jnp.integer):
+        input = input.astype(jnp.float64)
     if callable(mode):
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             **kwargs,
         )
-    if mode in ["maximum", "mean", "median", "minimum"]:
-        return jnp.pad(
+    elif mode in ["maximum", "mean", "median", "minimum"]:
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             stat_length=stat_length,
         )
     elif mode == "constant":
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             constant_values=constant_values,
         )
     elif mode == "linear_ramp":
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             end_values=end_values,
         )
     elif mode in ["reflect", "symmetric"]:
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             reflect_type=reflect_type,
         )
     else:
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
         )
+    if jnp.issubdtype(input_dtype, jnp.integer):
+        ret = jnp.floor(ret).astype(input_dtype)
+    return ret
 
 
 def vsplit(
