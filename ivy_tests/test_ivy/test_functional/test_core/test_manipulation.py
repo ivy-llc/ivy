@@ -233,11 +233,13 @@ def test_permute_dims(
     reshape=helpers.reshape_shapes(
         shape=st.shared(helpers.get_shape(), key="value_shape")
     ),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_reshape(
     *,
     dtype_value,
     reshape,
+    order,
     as_variable,
     with_out,
     num_positional_args,
@@ -263,6 +265,7 @@ def test_reshape(
         on_device=on_device,
         x=value[0],
         shape=reshape,
+        order=order,
     )
 
 
