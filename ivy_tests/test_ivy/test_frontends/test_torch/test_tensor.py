@@ -2087,24 +2087,43 @@ def test_torch_instance_device(dtype_and_x, as_variable, native_array):
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
-    copy=st.booleans(),
+    size=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
     device=st.booleans(),
 )
-def test_torch_instance_is_cuda(dtype_and_x, copy, device):
+def test_torch_instance_is_cuda(
+    dtype_and_x, size, dtypes, requires_grad, device, as_variable, native_array
+):
     input_dtype, x = dtype_and_x
-    x: Tensor = Tensor(data=x[0]).to(
-        **{
-            "device": ivy.Device("cpu" if device is False else "gpu:0"),
-            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
-            "non_blocking": False,
-            "copy": copy,
-            "memory_format": torch.preserve_format,
-        }
+    device = "cpu" if device is False else "gpu:0"
+    x = Tensor(data=x[0]).new_ones(
+        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
     )
-    if device:
-        assert x.is_cuda is True
-    else:
-        assert x.is_cuda is False
+
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x,
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_name="tensor",
+        method_name="is_cuda",
+    )
 
 
 # bitwise_and

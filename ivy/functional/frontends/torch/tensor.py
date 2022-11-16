@@ -282,7 +282,7 @@ class Tensor:
         return ivy.dev(self.data)
 
     def is_cuda(self):
-        return self.device == "gpu"
+        return ivy.dev(self.data) == "gpu"
 
     def pow(self, other):
         return ivy.pow(self.data, other)
