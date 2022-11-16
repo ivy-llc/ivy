@@ -748,6 +748,37 @@ def test_tensorflow_Squeeze(
     )
 
 
+# Sign
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Sign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_Sign(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # Sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sqrt",
