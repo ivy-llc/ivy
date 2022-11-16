@@ -1,14 +1,12 @@
 """Collection of general Ivy functions."""
 
+# global
 import gc
 import inspect
 import math
-
-# global
 from functools import wraps
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional, Sequence
-
 import einops
 import numpy as np
 
@@ -186,18 +184,6 @@ def is_ivy_array(
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
-def is_frontend_array(x: Any) -> bool:
-    return isinstance(
-        x,
-        (
-            ivy.functional.frontends.torch.Tensor,
-            ivy.functional.frontends.tensorflow.EagerTensor,
-            ivy.functional.frontends.numpy.ndarray,
-            ivy.functional.frontends.jax.DeviceArray,
-        ),
-    )
-
-
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array, a Native Array
@@ -216,10 +202,8 @@ def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     ret
         Boolean, whether or not x is an array.
     """
-    return (
-        ivy.is_ivy_array(x, exclusive=exclusive)
-        or ivy.is_native_array(x, exclusive=exclusive)
-        or ivy.is_frontend_array(x)
+    return ivy.is_ivy_array(x, exclusive=exclusive) or ivy.is_native_array(
+        x, exclusive=exclusive
     )
 
 
