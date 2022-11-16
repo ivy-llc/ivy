@@ -23,14 +23,14 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
     return x
 
 
-def _from_torch_tensor_to_ivy_array(x):
+def _from_native_to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _from_torch_frontend_tensor_to_ivy_array(_from_torch_tensor_to_ivy_array(x))
+    return _from_torch_frontend_tensor_to_ivy_array(_from_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
