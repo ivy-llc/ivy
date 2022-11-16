@@ -5,7 +5,7 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # split
-@handle_cmd_line_args
+@handle_frontend_function
 @given(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.split"
