@@ -1129,18 +1129,14 @@ inputs broadcast to.</p></li>
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">get_exception_trace_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#get_exception_trace_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.get_exception_trace_mode" title="Permalink to this definition"></a></dt>
 <dd><p>Get the current state of exception_trace_mode</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="s2">&quot;full&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">False</span>
+<span class="go">&#39;full&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1887,20 +1883,21 @@ outputs back to ivy.Array</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.set_exception_trace_mode">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">set_exception_trace_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#set_exception_trace_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.set_exception_trace_mode" title="Permalink to this definition"></a></dt>
-<dd><p>Set the mode of whether to show the full exception stack trace</p>
+<dd><p>Set the mode of whether to show frontend-truncated exception stack traces,
+ivy-truncated exception stack traces or full exception stack traces</p>
 <dl class="simple">
-<dt>mode</dt><dd><p>boolean whether to perform ivy.Array conversions</p>
+<dt>mode</dt><dd><p>str exeption trace mode, one of <cite>ivy</cite>, <cite>full</cite> or <cite>frontend</cite></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="s2">&quot;ivy&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">False</span>
+<span class="go">&#39;ivy&#39;</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="s2">&quot;full&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">True</span>
+<span class="go">&#39;full&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -2601,16 +2598,16 @@ outputs back to ivy.Array to the previous state</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.general.unset_exception_trace_mode">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">unset_exception_trace_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/general.html#unset_exception_trace_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.general.unset_exception_trace_mode" title="Permalink to this definition"></a></dt>
-<dd><p>Reset the mode of whether to show the full exception stack trace</p>
+<dd><p>Reset the trace mode to the previously set mode</p>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_exception_trace_mode</span><span class="p">(</span><span class="s2">&quot;ivy&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">False</span>
+<span class="go">&#39;ivy&#39;</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_exception_trace_mode</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">get_exception_trace_mode</span><span class="p">()</span>
-<span class="go">True</span>
+<span class="go">&#39;full&#39;</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
