@@ -22,10 +22,14 @@ config.update("jax_enable_x64", True)
 
 register_pytree_node(
     ivy.Container,
-    def func1(a,c): 
+    def func1(c): 
         tree_flatten = tree_flatten(c.to_dict())
-        return (tree_flatten)
-    lambda a, c: ivy.Container(tree_unflatten(a, c)),
+        return (tree_flatten),
+    #lambda c: tree_flatten(c.dict())
+    def func1(a,c):
+        container = ivy.container(tree_unflatten(a, c))
+        return (container),
+    #lambda a, c: ivy.Container(tree_unflatten(a, c))
 )
 
 # noinspection PyUnresolvedReferences
