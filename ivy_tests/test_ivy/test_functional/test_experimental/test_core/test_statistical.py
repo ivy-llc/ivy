@@ -71,9 +71,11 @@ def test_median(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -111,9 +113,11 @@ def test_nanmean(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -166,10 +170,12 @@ def test_unravel_index(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype_and_x, shape = dtype_x_shape
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

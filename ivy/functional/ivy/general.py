@@ -22,6 +22,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like
 )
 from ivy.functional.ivy.device import dev
 
@@ -488,6 +489,7 @@ def get_show_func_wrapper_trace_mode() -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def array_equal(
     x0: Union[ivy.Array, ivy.NativeArray],
     x1: Union[ivy.Array, ivy.NativeArray],
@@ -624,6 +626,7 @@ def all_equal(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_numpy(
     x: Union[ivy.Array, ivy.NativeArray], /, *, copy: bool = True
 ) -> np.ndarray:
@@ -692,6 +695,7 @@ def isscalar(x: Any, /) -> bool:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
     """Converts an array with a single element into a scalar.
 
@@ -745,6 +749,7 @@ def to_scalar(x: Union[ivy.Array, ivy.NativeArray], /) -> Number:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
     """Creates a (possibly nested) list from input array.
 
@@ -816,6 +821,7 @@ def to_list(x: Union[ivy.Array, ivy.NativeArray], /) -> List:
 @handle_nestable
 @outputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def clip_vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -902,6 +908,7 @@ def clip_vector_norm(
 
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def clip_matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     max_norm: float,
@@ -981,6 +988,7 @@ def clip_matrix_norm(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def fourier_encode(
     x: Union[ivy.Array, ivy.NativeArray],
     max_freq: Union[float, ivy.Array, ivy.NativeArray],
@@ -1058,6 +1066,7 @@ def fourier_encode(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def value_is_nan(
     x: Union[ivy.Array, ivy.NativeArray, Number],
     /,
@@ -1116,6 +1125,7 @@ def value_is_nan(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def has_nans(
     x: Union[ivy.Array, ivy.NativeArray], /, *, include_infs: bool = True
 ) -> bool:
@@ -1621,6 +1631,7 @@ def current_backend_str() -> Union[str, None]:
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def einops_rearrange(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1659,6 +1670,7 @@ def einops_rearrange(
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def einops_reduce(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1726,6 +1738,7 @@ einops_reduce.unsupported_dtypes = {"torch": ("float16",)}
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def einops_repeat(
     x: Union[ivy.Array, ivy.NativeArray],
     pattern: str,
@@ -1884,6 +1897,7 @@ def set_min_base(val: float) -> None:
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def stable_divide(
     numerator: Union[Number, ivy.Array, ivy.NativeArray],
     denominator: Union[Number, ivy.Array, ivy.NativeArray],
@@ -1982,6 +1996,7 @@ def stable_divide(
 @inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def stable_pow(
     base: Union[Number, ivy.Array, ivy.NativeArray],
     exponent: Union[Number, ivy.Array, ivy.NativeArray],
@@ -2303,6 +2318,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @to_native_arrays_and_back
+@handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
     query: Union[ivy.Array, ivy.NativeArray],
@@ -2504,6 +2520,7 @@ def inplace_increment(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def scatter_flat(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2543,6 +2560,7 @@ def scatter_flat(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def scatter_nd(
     indices: Union[ivy.Array, ivy.NativeArray],
     updates: Union[ivy.Array, ivy.NativeArray],
@@ -2623,6 +2641,7 @@ def scatter_nd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def gather(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2728,6 +2747,7 @@ def gather(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def gather_nd(
     params: Union[ivy.Array, ivy.NativeArray],
     indices: Union[ivy.Array, ivy.NativeArray],
@@ -2820,6 +2840,7 @@ def multiprocessing(context: str = None):
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def shape(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> Union[ivy.Shape, ivy.NativeShape]:
@@ -2830,7 +2851,7 @@ def shape(
     x
         Input array to infer the shape of.
     as_array
-        Whether to return the shape as a array, default False.
+        Whether to return the shape as an array, default False.
 
     Returns
     -------
@@ -2916,6 +2937,7 @@ def shape_array_mode() -> bool:
 
 @to_native_arrays_and_back
 @handle_nestable
+@handle_array_like
 def get_num_dims(
     x: Union[ivy.Array, ivy.NativeArray], /, *, as_array: bool = False
 ) -> int:
