@@ -50,9 +50,9 @@
 <li class="toctree-l2"><a class="reference internal" href="frameworks.html">Frameworks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="graph_tracers.html">Graph Tracers</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Exchange Formats</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">ONNX</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#nnef">NNEF</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">CoreML</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#onnx-onnx">ONNX </a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nnef-nnef">NNEF </a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coreml-coreml">CoreML </a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="compiler_infrastructure.html">Compiler Infrastructure</a></li>
@@ -154,22 +154,22 @@
 <p>Neural network exchange formats define a standardized file representation specifically for neural networks.
 The idea is that these can be used as an intermediate representation for communicating or “exchanging” neural network architectures between different ML frameworks or between ML frameworks and the target hardware.
 The focus is generally on simplifying deployment of neural networks, with a typical workflow being: train the model, save in an exchange format, use this exchange format to communicate with the target compilers and hardware for model inference.</p>
-<section id="id1">
-<h2>ONNX<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<section id="onnx-onnx">
+<h2>ONNX <a class="reference internal" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/onnx.png"><img alt="onnx" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/onnx.png" style="height: 20pt;" /></a><a class="headerlink" href="#onnx-onnx" title="Permalink to this heading"></a></h2>
 <p>The <a class="reference external" href="https://onnx.ai/">Open Neural Network Exchange (ONNX)</a> is a standardized static file format which fully defines the structure of a neural network and all of its weights.
 Third parties can implement their own bindings to the ONNX standard format, which then enables the model to be saved to disk in the standard ONNX file format, and be deployed on any hardware which supports the ONNX format.
 Some frameworks have also added support to “load in” ONNX models from disk, as well as support for exporting to the format.
 This enables some degree of model conversion between frameworks, but generally only for model deployment and not training.
 ONNX focuses on core neural network operations, with limited support for other more general array processing functions such as high order optimization, signal processing, and advanced linear algebra.</p>
 </section>
-<section id="nnef">
-<h2>NNEF<a class="headerlink" href="#nnef" title="Permalink to this heading"></a></h2>
+<section id="nnef-nnef">
+<h2>NNEF <a class="reference internal" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/nnef.png"><img alt="nnef" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/nnef.png" style="height: 15pt;" /></a><a class="headerlink" href="#nnef-nnef" title="Permalink to this heading"></a></h2>
 <p>Similar to <a class="reference external" href="https://onnx.ai/">ONNX</a>, the <a class="reference external" href="https://www.khronos.org/nnef">Neural Network Exchange Format (NNEF)</a> is also a standardized static file format which fully defines the structure of a neural network and all of its weights, with some support also for training tools.
 The format was developed and is maintained by the <a class="reference external" href="https://www.khronos.org/">Khronos Group</a>.
 Overall, NNEF shares a lot of similarities with ONNX, but has not reached the same level of adoption.</p>
 </section>
-<section id="id2">
-<h2>CoreML<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<section id="coreml-coreml">
+<h2>CoreML <a class="reference internal" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/coreml.png"><img alt="coreml" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/exchange_formats/coreml.png" style="height: 20pt;" /></a><a class="headerlink" href="#coreml-coreml" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://developer.apple.com/documentation/coreml">CoreML</a> itself is not an exchange format, it is a framework which enables models to be trained and deployed on <a class="reference external" href="https://www.apple.com/">Apple</a> devices with a simple zero-code interactive interface.
 However, CoreML is built upon its own Core ML format, and Apple have open sourced <code class="code docutils literal notranslate"><span class="pre">coremltools</span></code>, which provides a set of tools to convert ML models from various frameworks into the Core ML format.
 The Core ML format is itself an exchange format, albeit with the sole purpose of exchanging to Apple’s CoreML framework, rather than enabling exchanges between multiple different parties as is the case for the other exchange formats.</p>

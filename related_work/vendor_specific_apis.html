@@ -53,8 +53,8 @@
 <li class="toctree-l2"><a class="reference internal" href="compiler_infrastructure.html">Compiler Infrastructure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_vendor_compiler_frameworks.html">Multi-Vendor Compiler Frameworks</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Vendor-Specific APIs</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">TensorRT</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">CUDA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorrt-tensorrt">TensorRT </a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cuda-cuda">CUDA </a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="vendor_specific_compilers.html">Vendor-Specific Compilers</a></li>
@@ -153,15 +153,15 @@
 <p>Vendor-specific APIs provide an interface to define customized operations for hardware from specific vendors.
 The libraries are written exclusively for hardware from this vendor, and so the code is clearly not generalized nor is it intended to be.
 These APIs are often used by higher level multi-vendor compilers and frameworks, and most machine learning practitioners will not interface with these low level vendor-specific APIs directly.</p>
-<section id="id1">
-<h2>TensorRT<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<section id="tensorrt-tensorrt">
+<h2>TensorRT <a class="reference internal" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png"><img alt="tensorrt" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/tensorrt.png" style="height: 15pt;" /></a><a class="headerlink" href="#tensorrt-tensorrt" title="Permalink to this heading"></a></h2>
 <p>Built on top of <a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">CUDA</a>, <a class="reference external" href="https://developer.nvidia.com/tensorrt">TensorRT</a> is a C++ library for high performance inference on <a class="reference external" href="https://www.nvidia.com/">NVIDIA</a> GPUs and deep learning accelerators.
 It is integrated with <a class="reference external" href="https://pytorch.org/">PyTorch</a> and TensorFlow.
 When conducting deep learning training in a proprietary or custom framework, then the TensorRT C++ API can be used to import and accelerate models.
 Several optimizations contribute to the high performance: reduced mixed precision maximizes throughput, layer and tensor fusion optimizes device memory, kernel autotuning selects the best data layers and algorithms, time fusion optimizes recurrent neural networks, multi-stream execution manages input streams, and dynamic tensor memory optimizes memory consumption.</p>
 </section>
-<section id="id2">
-<h2>CUDA<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<section id="cuda-cuda">
+<h2>CUDA <a class="reference internal" href="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/cuda.png"><img alt="cuda" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/related_work/vendor_specific_apis/cuda.png" style="height: 20pt;" /></a><a class="headerlink" href="#cuda-cuda" title="Permalink to this heading"></a></h2>
 <p><a class="reference external" href="https://developer.nvidia.com/cuda-toolkit">Compute Unified Device Architecture (CUDA)</a> is a parallel computing platform and application programming interface (API) that allows software to use certain types of graphics processing units (GPUs) for general purpose processing, an approach called general-purpose computing on GPUs (GPGPU).
 It is a software layer that gives direct access to the GPU’s virtual instruction set and parallel computational elements, for the execution of compute kernels.
 It is designed to work with programming languages such as C, C++, and Fortran.</p>
