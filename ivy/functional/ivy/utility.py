@@ -19,6 +19,7 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def all(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -136,6 +137,7 @@ def all(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def any(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
