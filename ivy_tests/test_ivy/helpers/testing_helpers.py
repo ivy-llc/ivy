@@ -186,10 +186,12 @@ def handle_test(
                     _given_kwargs[flag] = st.booleans()
 
             wrapped_test = given(**_given_kwargs)(test_fn)
+            partial_kwargs = {"ground_truth_backend": ground_truth_backend}
             if "fn_name" in param_names:
-                _name = wrapped_test.__name__
-                wrapped_test = partial(wrapped_test, fn_name=fn_name)
-                wrapped_test.__name__ = _name
+                partial_kwargs["fn_name"] = fn_name
+            _name = wrapped_test.__name__
+            wrapped_test = partial(wrapped_test, **partial_kwargs)
+            wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 
@@ -198,8 +200,8 @@ def handle_test(
             fn_tree=fn_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
-            ground_truth_backend=ground_truth_backend,
         )
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
@@ -291,7 +293,10 @@ def handle_method(
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
             wrapped_test = partial(
-                wrapped_test, class_name=class_name, method_name=method_name
+                wrapped_test,
+                class_name=class_name,
+                method_name=method_name,
+                ground_truth_backend=ground_truth_backend,
             )
             wrapped_test.__name__ = _name
         else:
@@ -302,8 +307,8 @@ def handle_method(
             fn_tree=method_tree,
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
-            ground_truth_backend=ground_truth_backend,
         )
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
