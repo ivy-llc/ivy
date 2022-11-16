@@ -253,6 +253,9 @@ def neg(x):
 def pow(x, y):
     return ivy.pow(x, y)
 
+@to_ivy_arrays_and_back
+def int16(x):
+    return ivy.int16(x)
 
 @to_ivy_arrays_and_back
 def reciprocal(x):
