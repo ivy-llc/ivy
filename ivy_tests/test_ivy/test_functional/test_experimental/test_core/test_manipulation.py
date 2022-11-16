@@ -821,6 +821,7 @@ def test_dstack(
 
 # atleast_2d
 @handle_test(
+    fn_tree="functional.experimental.atleast_2d",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=helpers.ints(min_value=1, max_value=5),
