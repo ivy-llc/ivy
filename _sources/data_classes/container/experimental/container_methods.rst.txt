@@ -23,6 +23,8 @@ Container methods
    container_methods/kaiser_bessel_derived_window.rst
    container_methods/static_hamming_window.rst
    container_methods/hamming_window.rst
+   container_methods/static_vorbis_window.rst
+   container_methods/vorbis_window.rst
    container_methods/static_sinc.rst
    container_methods/sinc.rst
    container_methods/static_lcm.rst
