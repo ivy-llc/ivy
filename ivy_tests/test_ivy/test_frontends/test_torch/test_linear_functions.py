@@ -1,9 +1,9 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -35,34 +35,34 @@ def x_and_linear(draw, dtypes):
 
 
 # linear
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.linear",
     dtype_x_weight_bias=x_and_linear(
         dtypes=helpers.get_dtypes("float", full=False),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.linear"
     ),
 )
 def test_linear(
     *,
     dtype_x_weight_bias,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
 
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.linear",
-        rtol=1e-02,
-        atol=1e-02,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         weight=weight,
         bias=bias,

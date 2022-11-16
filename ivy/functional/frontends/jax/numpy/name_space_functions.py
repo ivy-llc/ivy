@@ -36,7 +36,7 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def argmax(a, axis=None, out=None, keepdims=None):
+def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
@@ -149,13 +149,14 @@ def floor(x):
 
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    a = ivy.array(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
+    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
     if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype, copy=False)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -188,6 +189,7 @@ def tanh(x):
     return ivy.tanh(x)
 
 
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.uint16)
 
@@ -398,6 +400,41 @@ def kron(a, b):
 
 
 @to_ivy_arrays_and_back
+def sum(
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+):
+    if initial:
+        s = ivy.shape(a, as_array=True)
+        s[axis] = 1
+        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        a = ivy.concat([a, header], axis=axis)
+
+    result_dtype = dtype or ivy.dtype(a)
+
+    if dtype is None and promote_integers:
+        if ivy.is_bool_dtype(result_dtype):
+            result_dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                result_dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(result_dtype):
+            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                result_dtype = ivy.default_int_dtype()
+
+    if ivy.is_array(where):
+        a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)))
+
+    return ivy.sum(a, axis=axis, dtype=result_dtype, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
 def lcm(x1, x2):
     return ivy.lcm(x1, x2)
 
@@ -413,10 +450,10 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, out=None, keepdims=False, *, where=True):
+def any(a, axis=None, keepdims=False, *, where=True):
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
+        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
     return ret
 
 
@@ -458,3 +495,68 @@ def minimum(x1, x2):
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.msort(a)
+
+
+@to_ivy_arrays_and_back
+def multiply(x1, x2):
+    return ivy.multiply(x1, x2)
+
+
+alltrue = all
+
+
+sometrue = any
+
+
+@to_ivy_arrays_and_back
+def not_equal(x1, x2):
+    return ivy.not_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less(x1, x2):
+    return ivy.less(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less_equal(x1, x2):
+    return ivy.less_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater(x1, x2):
+    return ivy.greater(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x1, x2):
+    return ivy.greater_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def equal(x1, x2):
+    return ivy.equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def min(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.min(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+amin = min
+
+
+@to_ivy_arrays_and_back
+def max(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+amax = max

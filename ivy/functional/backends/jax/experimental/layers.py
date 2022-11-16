@@ -205,28 +205,12 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
-
-    x = jnp.pad(
-        x,
-        [
-            (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
-    )
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
     div_shape = res.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
     )
 
     if data_format == "NCDHW":
@@ -307,3 +291,30 @@ def dct(
         if norm == "ortho":
             dct_out *= math.sqrt(0.5) * jlax.rsqrt(axis_dim_float)
     return dct_out
+
+
+def fft(
+    x: JaxArray,
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Union[int, Tuple[int]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if not isinstance(dim, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(dim)}")
+    if n is None:
+        n = x.shape[dim]
+    if n < -len(x.shape):
+        raise ivy.exceptions.IvyError(
+            f"Invalid dim {dim}, expecting ranging"
+            " from {-len(x.shape)} to {len(x.shape)-1}  "
+        )
+    if not isinstance(n, int):
+        raise ivy.exceptions.IvyError(f"Expecting <class 'int'> instead of {type(n)}")
+    if n <= 1:
+        raise ivy.exceptions.IvyError(f"Invalid data points {n}, expecting more than 1")
+    if norm != "backward" and norm != "ortho" and norm != "forward":
+        raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
+    return jnp.fft(x, n, dim, norm)

@@ -405,6 +405,7 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[ivy.Array] = None,
+    order: Optional[str] = "C",
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
 
@@ -426,6 +427,17 @@ def reshape(
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
+    order
+        Read the elements of x using this index order, and place the elements into
+        the reshaped array using this index order.
+        ‘C’ means to read / write the elements using C-like index order,
+        with the last axis index changing fastest, back to the first axis index
+        changing slowest.
+        ‘F’ means to read / write the elements using Fortran-like index order, with
+        the first index changing fastest, and the last index changing slowest.
+        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        of the underlying array, and only refer to the order of indexing.
+        Default order is 'C'
 
     Returns
     -------
@@ -453,6 +465,12 @@ def reshape(
                [2., 3.],
                [4., 5.]])
 
+    >>> x = ivy.array([[0., 1., 2.],[3., 4., 5.]])
+    >>> y = ivy.reshape(x,(3,2), order='F')
+    >>> print(y)
+    ivy.array([[0., 4.],
+               [3., 2.],
+               [1., 5.]])
 
     With :class:`ivy.NativeArray` input:
 
@@ -493,7 +511,8 @@ def reshape(
     }
 
     """
-    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out)
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    return current_backend(x).reshape(x, shape=shape, copy=copy, out=out, order=order)
 
 
 @to_native_arrays_and_back
