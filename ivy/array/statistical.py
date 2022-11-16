@@ -18,6 +18,33 @@ class ArrayWithStatistical(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
+        Calculates the minimum value of the input array ``x``.
+
+        Parameters
+        ----------
+        x
+            Input array. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed. By default, the
+            minimum value must be computed over the entire array. If a tuple of integers,
+            minimum values must be computed over multiple axes. Default: ``None``.
+
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
+            result as singleton dimensions, and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array, a zero-dimensional
+            array containing the minimum value; otherwise, a non-zero-dimensional array
+            containing the minimum values. The returned array must have the same data type
+            as ``x``.
+
         Examples
         --------
         With :code:`ivy.Array` input:
@@ -49,6 +76,55 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.max. This method simply
+        wraps the function, and so the docstring for ivy.max also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array. Should have a numeric data type.
+        axis
+            axis or axes along which maximum values must be computed. By default, the
+            maximum value must be computed over the entire array. If a tuple of integers,
+            maximum values must be computed over multiple axes. Default: ``None``.
+        keepdims
+            if ``True``, the reduced axes (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result must be compatible with the
+            input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the maximum value was computed over the entire array, a zero-dimensional
+            array containing the maximum value; otherwise, a non-zero-dimensional array
+            containing the maximum values. The returned array must have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = x.max()
+        >>> print(z)
+        ivy.array(3)
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> z = ivy.array([0])
+        >>> y = x.max(out=z)
+        >>> print(z)
+        ivy.array(2)
+
+        >>> x = ivy.array([[0, 1, 2], [4, 6, 10]])
+        >>> y = x.max(axis=0, keepdims=True)
+        >>> print(y)
+        ivy.array([[4, 6, 10]])
+        """
         return ivy.max(self._data, axis=axis, keepdims=keepdims, out=out)
 
     def mean(
