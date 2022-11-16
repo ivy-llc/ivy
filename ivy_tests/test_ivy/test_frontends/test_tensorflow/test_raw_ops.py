@@ -780,7 +780,7 @@ def test_tensorflow_Sign(
 
 
 @st.composite
-def _get_splits(draw, with_list=False):
+def _get_splits(draw, as_list=False):
     """
     Generate valid splits, either by generating an integer that evenly divides the axis
     or a list of splits that sum to the length of the axis being split.
@@ -813,8 +813,8 @@ def _get_splits(draw, with_list=False):
             num_or_size_splits.append(split_value)
         return num_or_size_splits
 
-    if with_list:
-        return draw(get_list_split() | st.none()), draw(get_int_split() | st.none())
+    if as_list:
+        return draw(get_list_split())
     else:
         return draw(get_int_split())
 
@@ -860,6 +860,51 @@ def test_tensorflow_Split(
         value=value[0],
         axis=axis,
         num_split=num_splits,
+    )
+
+
+# SplitV
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.SplitV",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    size_splits=_get_splits(as_list=True),
+)
+def test_tensorflow_SplitV(
+    *,
+    dtype_and_x,
+    axis,
+    size_splits,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, value = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        axis=axis,
+        size_splits=size_splits,
+        num_split=len(size_splits),
     )
 
 
