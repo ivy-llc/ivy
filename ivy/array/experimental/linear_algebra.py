@@ -6,7 +6,7 @@ from typing import Optional, Union
 import ivy
 
 
-class ArrayWithLinalgExperimental(abc.ABC):
+class ArrayWithLinearAlgebraExperimental(abc.ABC):
     def diagflat(
         self: Union[ivy.Array, ivy.NativeArray],
         *,

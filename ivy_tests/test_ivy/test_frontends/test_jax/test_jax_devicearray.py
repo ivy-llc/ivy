@@ -5,15 +5,12 @@ from hypothesis import given, strategies as st
 import jax.numpy as jnp
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
 # __pos__
-@handle_cmd_line_args
 @given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
 def test_jax_special_pos(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = +DeviceArray(x[0])
@@ -29,11 +26,9 @@ def test_jax_special_pos(
 
 
 # __neg__
-@handle_cmd_line_args
 @given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
 def test_jax_special_neg(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = -DeviceArray(x[0])
@@ -49,7 +44,6 @@ def test_jax_special_neg(
 
 
 # __eq__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
@@ -57,7 +51,6 @@ def test_jax_special_neg(
 )
 def test_jax_special_eq(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) == DeviceArray(x[1])
@@ -75,7 +68,6 @@ def test_jax_special_eq(
 
 
 # __ne__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
@@ -83,7 +75,6 @@ def test_jax_special_eq(
 )
 def test_jax_special_ne(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) != DeviceArray(x[1])
@@ -101,7 +92,6 @@ def test_jax_special_ne(
 
 
 # __lt__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
@@ -109,7 +99,6 @@ def test_jax_special_ne(
 )
 def test_jax_special_lt(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) < DeviceArray(x[1])
@@ -127,7 +116,6 @@ def test_jax_special_lt(
 
 
 # __le__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
@@ -135,7 +123,6 @@ def test_jax_special_lt(
 )
 def test_jax_special_le(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) <= DeviceArray(x[1])
@@ -153,7 +140,6 @@ def test_jax_special_le(
 
 
 # __gt__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
@@ -161,7 +147,6 @@ def test_jax_special_le(
 )
 def test_jax_special_gt(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) > DeviceArray(x[1])
@@ -179,7 +164,6 @@ def test_jax_special_gt(
 
 
 # __ge__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
@@ -187,7 +171,6 @@ def test_jax_special_gt(
 )
 def test_jax_special_ge(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) >= DeviceArray(x[1])
@@ -205,11 +188,9 @@ def test_jax_special_ge(
 
 
 # __abs__
-@handle_cmd_line_args
 @given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
 def test_jax_special_abs(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = abs(DeviceArray(x[0]))
@@ -234,11 +215,9 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
 
 
 # __pow__
-@handle_cmd_line_args
 @given(dtype_x_pow=_get_dtype_x_and_int())
 def test_jax_special_pow(
     dtype_x_pow,
-    fw,
 ):
     x_dtype, x, pow = dtype_x_pow
     ret = DeviceArray(x[0]) ** pow
@@ -254,11 +233,9 @@ def test_jax_special_pow(
 
 
 # __rpow__
-@handle_cmd_line_args
 @given(dtype_x_pow=_get_dtype_x_and_int())
 def test_jax_special_rpow(
     dtype_x_pow,
-    fw,
 ):
     x_dtype, x, pow = dtype_x_pow
     ret = DeviceArray(pow).__rpow__(DeviceArray(x[0]))
@@ -274,7 +251,6 @@ def test_jax_special_rpow(
 
 
 # __and__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -282,7 +258,6 @@ def test_jax_special_rpow(
 )
 def test_jax_special_and(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) & DeviceArray(x[1])
@@ -300,7 +275,6 @@ def test_jax_special_and(
 
 
 # __rand__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -308,7 +282,6 @@ def test_jax_special_and(
 )
 def test_jax_special_rand(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__rand__(DeviceArray(x[0]))
@@ -326,7 +299,6 @@ def test_jax_special_rand(
 
 
 # __or__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -334,7 +306,6 @@ def test_jax_special_rand(
 )
 def test_jax_special_or(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) | DeviceArray(x[1])
@@ -352,7 +323,6 @@ def test_jax_special_or(
 
 
 # __ror__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -360,7 +330,6 @@ def test_jax_special_or(
 )
 def test_jax_special_ror(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__ror__(DeviceArray(x[0]))
@@ -378,7 +347,6 @@ def test_jax_special_ror(
 
 
 # __xor__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -386,7 +354,6 @@ def test_jax_special_ror(
 )
 def test_jax_special_xor(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) ^ DeviceArray(x[1])
@@ -404,7 +371,6 @@ def test_jax_special_xor(
 
 
 # __rxor__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
@@ -412,7 +378,6 @@ def test_jax_special_xor(
 )
 def test_jax_special_rxor(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[1]).__rxor__(DeviceArray(x[0]))
@@ -430,7 +395,6 @@ def test_jax_special_rxor(
 
 
 # __invert__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer")
@@ -438,7 +402,6 @@ def test_jax_special_rxor(
 )
 def test_jax_special_invert(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = ~DeviceArray(x[0])
@@ -454,11 +417,9 @@ def test_jax_special_invert(
 
 
 # __lshift__
-@handle_cmd_line_args
 @given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
 def test_jax_special_lshift(
     dtype_x_shift,
-    fw,
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(x[0]) << shift
@@ -474,11 +435,9 @@ def test_jax_special_lshift(
 
 
 # __rlshift__
-@handle_cmd_line_args
 @given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
 def test_jax_special_rlshift(
     dtype_x_shift,
-    fw,
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(shift).__rlshift__(DeviceArray(x[0]))
@@ -494,11 +453,9 @@ def test_jax_special_rlshift(
 
 
 # __rshift__
-@handle_cmd_line_args
 @given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
 def test_jax_special_rshift(
     dtype_x_shift,
-    fw,
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(x[0]) >> shift
@@ -514,11 +471,9 @@ def test_jax_special_rshift(
 
 
 # __rrshift__
-@handle_cmd_line_args
 @given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
 def test_jax_special_rrshift(
     dtype_x_shift,
-    fw,
 ):
     input_dtype, x, shift = dtype_x_shift
     ret = DeviceArray(shift).__rrshift__(DeviceArray(x[0]))
@@ -534,7 +489,6 @@ def test_jax_special_rrshift(
 
 
 # __add__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -544,7 +498,6 @@ def test_jax_special_rrshift(
 )
 def test_jax_special_add(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) + DeviceArray(x[1])
@@ -560,7 +513,6 @@ def test_jax_special_add(
 
 
 # __radd__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -570,7 +522,6 @@ def test_jax_special_add(
 )
 def test_jax_special_radd(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -590,7 +541,6 @@ def test_jax_special_radd(
 
 
 # __sub__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -600,7 +550,6 @@ def test_jax_special_radd(
 )
 def test_jax_special_sub(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) - DeviceArray(x[1])
@@ -618,7 +567,6 @@ def test_jax_special_sub(
 
 
 # __rsub__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -628,7 +576,6 @@ def test_jax_special_sub(
 )
 def test_jax_special_rsub(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -648,7 +595,6 @@ def test_jax_special_rsub(
 
 
 # __mul__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -658,7 +604,6 @@ def test_jax_special_rsub(
 )
 def test_jax_special_mul(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) * DeviceArray(x[1])
@@ -676,7 +621,6 @@ def test_jax_special_mul(
 
 
 # __rmul__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -686,7 +630,6 @@ def test_jax_special_mul(
 )
 def test_jax_special_rmul(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -706,7 +649,6 @@ def test_jax_special_rmul(
 
 
 # __div__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -716,7 +658,6 @@ def test_jax_special_rmul(
 )
 def test_jax_special_div(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     ret = DeviceArray(x[0]) / DeviceArray(x[1])
@@ -734,7 +675,6 @@ def test_jax_special_div(
 
 
 # __rdiv__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -744,7 +684,6 @@ def test_jax_special_div(
 )
 def test_jax_special_rdiv(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -764,7 +703,6 @@ def test_jax_special_rdiv(
 
 
 # __truediv__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -774,7 +712,6 @@ def test_jax_special_rdiv(
 )
 def test_jax_special_truediv(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -794,7 +731,6 @@ def test_jax_special_truediv(
 
 
 # __rtruediv__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
@@ -804,7 +740,6 @@ def test_jax_special_truediv(
 )
 def test_jax_special_rtruediv(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -823,7 +758,6 @@ def test_jax_special_rtruediv(
 
 
 # __mod__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
@@ -833,7 +767,6 @@ def test_jax_special_rtruediv(
 )
 def test_jax_special_mod(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -854,7 +787,6 @@ def test_jax_special_mod(
 
 
 # __rmod__
-@handle_cmd_line_args
 @given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
@@ -864,7 +796,6 @@ def test_jax_special_mod(
 )
 def test_jax_special_rmod(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -901,13 +832,11 @@ def _get_dtype_input_and_vectors(draw):
 
 
 # __matmul__
-@handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_matmul(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])
@@ -925,13 +854,11 @@ def test_jax_special_matmul(
 
 
 # __rmatmul__
-@handle_cmd_line_args
 @given(
     dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_rmatmul(
     dtype_x,
-    fw,
 ):
     input_dtype, x = dtype_x
     data = DeviceArray(x[0])

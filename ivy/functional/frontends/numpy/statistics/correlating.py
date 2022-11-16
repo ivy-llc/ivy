@@ -29,7 +29,7 @@ def correlate(a, v, mode=None, *, old_behavior=False):
         else:
             raise ivy.exceptions.IvyException("invalid mode")
         ret = ivy.array(
-            [(v[:n] * ivy.roll(a, -t)[:n]).sum().tolist() for t in range(0, r)],
+            [ivy.to_list((v[:n] * ivy.roll(a, -t)[:n]).sum()) for t in range(0, r)],
             dtype=max(dtypes),
         )
     else:
@@ -51,7 +51,7 @@ def correlate(a, v, mode=None, *, old_behavior=False):
             raise ivy.exceptions.IvyException("invalid mode")
         ret = ivy.flip(
             ivy.array(
-                [(a[:n] * ivy.roll(v, -t)[:n]).sum().tolist() for t in range(0, r)],
+                [ivy.to_list((a[:n] * ivy.roll(v, -t)[:n]).sum()) for t in range(0, r)],
                 dtype=max(dtypes),
             )
         )

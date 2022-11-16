@@ -1,14 +1,11 @@
-# global
-from hypothesis import given
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # msort
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.msort",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -18,28 +15,32 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_value=-100,
         max_value=100,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="msort"),
 )
 def test_msort(
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="msort",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )

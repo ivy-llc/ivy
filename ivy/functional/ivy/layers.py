@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like
 )
 from ivy.exceptions import handle_exceptions
 
@@ -22,6 +23,7 @@ from ivy.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_array_like
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -165,6 +167,7 @@ def linear(
 
 
 @handle_exceptions
+@handle_array_like
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -211,6 +214,7 @@ def dropout(
 
 @handle_exceptions
 @to_native_arrays_and_back
+@handle_array_like
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -255,6 +259,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_array_like
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -513,6 +518,7 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
+@handle_array_like
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
     scale,
@@ -619,6 +625,7 @@ def multi_head_attention(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -704,6 +711,7 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -760,6 +768,7 @@ def conv1d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -884,6 +893,7 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -941,6 +951,7 @@ def conv2d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1074,6 +1085,7 @@ def depthwise_conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv3d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1144,6 +1156,7 @@ def conv3d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1285,6 +1298,7 @@ def conv3d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1346,6 +1360,7 @@ def conv_general_dilated(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1405,6 +1420,7 @@ def conv_general_transpose(
 
 @handle_out_argument
 @handle_exceptions
+@handle_array_like
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1455,6 +1471,7 @@ def conv(
 
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_like
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1585,3 +1602,69 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_exceptions
+@handle_array_like
+def fft(
+    x: Union[ivy.Array, ivy.NativeArray],
+    dim: int,
+    /,
+    *,
+    norm: Optional[str] = "backward",
+    n: Optional[Union[int, Tuple[int]]] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    r"""Computes the one dimensional discrete Fourier transform given input at least
+    1-D input x.
+
+    Parameters
+    ----------
+    x
+        Input volume *[...,d_in,...]*,
+        where d_in indicates the dimension that needs FFT.
+    dim
+        The dimension along which to take the one dimensional FFT.
+    norm
+        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
+        "backward" indicates no normalization.
+        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
+        "forward" indicates normalization by $\frac{1}{n}$.
+    n
+        Optional argument indicating the sequence length, if given, the input would be
+        padded with zero or truncated to length n before performing FFT.
+        Should be a integer greater than 1.
+    out
+        Optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        The result of the FFT operation.
+
+    Examples
+    --------
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
+    ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
+            2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,
+            9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,
+            1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
+    ivy.array([-3.44509285e-16+1.14423775e-17j,  1.00000000e+00+5.02733949e+00j,
+        8.00000000e+00-8.11483250e-16j,  1.00000000e+00-5.02733949e+00j,
+        2.33486982e-16+1.22464680e-16j,  1.00000000e+00-1.49660576e+00j,
+        0.00000000e+00+1.22464680e-16j,  1.00000000e+00-6.68178638e-01j,
+        9.95799250e-17+2.33486982e-16j,  1.00000000e+00-1.98912367e-01j,
+        0.00000000e+00+7.66951701e-17j,  1.00000000e+00+1.98912367e-01j,
+        1.14423775e-17+1.22464680e-16j,  1.00000000e+00+6.68178638e-01j,
+        0.00000000e+00+1.22464680e-16j,  1.00000000e+00+1.49660576e+00j])
+    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
+    ivy.array([-1.21802426e-16+4.04549134e-18j,  2.82842712e+00-2.86902654e-16j,
+        8.25501143e-17+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j,
+        3.52068201e-17+8.25501143e-17j,  0.00000000e+00+2.71158374e-17j,
+        4.04549134e-18+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j])
+    """
+    return current_backend(x).fft(x, dim, norm=norm, n=n, out=out)

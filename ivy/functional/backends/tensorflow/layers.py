@@ -445,7 +445,7 @@ def dropout1d(
     /,
     *,
     training: bool = True,
-    data_format: str = 'NWC',
+    data_format: str = "NWC",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if training:

@@ -1,7 +1,6 @@
 # global
 import functools
 from typing import Callable
-import jax
 
 # local
 import ivy
@@ -13,9 +12,7 @@ def _is_jax_frontend_array(x):
 
 
 def _from_jax_frontend_array_to_ivy_array(x):
-    if len(ivy.backend_stack) != 0 and isinstance(x, ivy.NativeArray):
-        raise ivy.exceptions.IvyException("input must be Ivy Jax DeviceArray")
-    elif isinstance(x, jax_frontend.DeviceArray):
+    if isinstance(x, jax_frontend.DeviceArray):
         return x.data
     return x
 
@@ -28,14 +25,14 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
     return x
 
 
-def _jax_array_to_ivy_array(x):
-    if isinstance(x, jax.numpy.DeviceArray):
+def _native_to_ivy_array(x):
+    if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _from_jax_frontend_array_to_ivy_array(_jax_array_to_ivy_array(x))
+    return _from_jax_frontend_array_to_ivy_array(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:

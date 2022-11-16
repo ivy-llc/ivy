@@ -51,7 +51,9 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.mean(x, axis=axis, keepdims=keepdims, out=out).astype(x.dtype)
+    return ivy.astype(
+        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
+    )
 
 
 mean.support_native_out = True
@@ -139,18 +141,24 @@ def var(
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if isinstance(correction, int):
-        return np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out).astype(
-            x.dtype
+        return ivy.astype(
+            np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out),
+            x.dtype,
+            copy=False,
         )
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return np.multiply(
-        np.var(x, axis=axis, keepdims=keepdims, out=out),
-        ivy.stable_divide(size, (size - correction)),
-    ).astype(x.dtype)
+    return ivy.astype(
+        np.multiply(
+            np.var(x, axis=axis, keepdims=keepdims, out=out),
+            ivy.stable_divide(size, (size - correction)),
+        ),
+        x.dtype,
+        copy=False,
+    )
 
 
 var.support_native_out = True

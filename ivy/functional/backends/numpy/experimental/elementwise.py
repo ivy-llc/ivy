@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
@@ -109,6 +109,26 @@ def exp2(
 exp2.support_native_out = True
 
 
+@_scalar_output_to_0d_array
+def count_nonzero(
+    x: np.ndarray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[np.dtype] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if dtype is None:
+        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+
+
+count_nonzero.support_native_out = False
+
+
 def nansum(
     x: np.ndarray,
     /,
@@ -216,3 +236,44 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def allclose(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[np.ndarray] = None,
+) -> bool:
+    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+isclose.support_native_out = False
+
+
+def fix(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.fix(x, out=out)
+
+
+fix.support_native_out = True
+
+
+def nextafter(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.nextafter(x1, x2)
+
+
+nextafter.support_natvie_out = True
