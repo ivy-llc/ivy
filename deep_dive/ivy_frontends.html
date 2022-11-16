@@ -75,6 +75,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#classes-and-instance-methods">Classes and Instance Methods</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#frontend-data-type-promotion-rules">Frontend Data Type Promotion Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#numpy-special-argument-casting">NumPy Special Argument - Casting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frontends-duplicate-policy">Frontends Duplicate Policy</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
@@ -661,8 +662,33 @@ An example of the <code class="xref py py-func docutils literal notranslate"><sp
     <span class="k">return</span> <span class="n">ret</span>
 </pre></div>
 </div>
+</section>
+<section id="frontends-duplicate-policy">
+<h2>Frontends Duplicate Policy<a class="headerlink" href="#frontends-duplicate-policy" title="Permalink to this heading"></a></h2>
+<p>Some frontend functions appear in multiple namespaces within the original framework that the frontend is replicating.
+For example the <code class="xref py py-func docutils literal notranslate"><span class="pre">np.asarray()</span></code> function appears in <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.array-manipulation.html#">Array manipulation routines</a> and also in <a class="reference external" href="https://numpy.org/doc/stable/reference/routines.array-creation.html">Array creation routines</a>.
+Thus, rather than implementing these functions as duplicates in their respective namespaces in Ivy, this section outlines a policy
+that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:</p>
+<p><strong>Listing duplicate frontend functions on the ToDo lists</strong></p>
+<p>When listing frontend functions, extra care should be taken to keep note of duplicate functions.
+If a function is duplicated across multiple namespaces then we should select one instance (in any namespace) to serve as the implementation by putting an <cite>*</cite> beside the function name on the ToDo list. All other instances of the duplicate should then be designated aliases of the implementation using the format <cite>(alias of &lt;frontend/namespace/function_name&gt;)</cite> written beside the function name.</p>
+<p><strong>Contributing duplicate frontend functions</strong></p>
+<p>Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
+If the function is an alias, you should check if the implementation designated with an <cite>*</cite> exists.</p>
+<ul class="simple">
+<li><p>If an implementation exist then simply import the implemented function in the <cite>init.py</cite> file for the namespace where the duplicate is listed.</p></li>
+</ul>
+<p>For example in the case of <code class="xref py py-func docutils literal notranslate"><span class="pre">np.asarray()</span></code>, the function is implemented <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5">here</a> and we use it as an alias by importing <a class="reference external" href="https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/init.py">here</a>.</p>
+<ul class="simple">
+<li><p>If the function has not been implemented, then feel free to contribute the implementation with its unit test.</p></li>
+<li><p>If two PRs contribute the implementation for a duplicate function (and no implementation for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the implementation while the second PR should be refactored as an alias by importing the implementation as explained earlier. Both contributors should be rewarded equally if need be.</p></li>
+</ul>
+<p><strong>Testing duplicate functions</strong></p>
+<p>Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each identical alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.</p>
+<p><strong>Handling already contributed duplicates</strong></p>
+<p>In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation to serve as the function’s implementation, then refactor all other instances of the duplicate as aliases.</p>
 <p><strong>Round Up</strong></p>
-<p>This should hopefully have given you a better grasp on the what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
+<p>This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short <a class="reference external" href="https://www.youtube.com/watch?v=72kBVJTpzIw&amp;list=PLwNuX3xB_tv-wTpVDMSJr7XW6IP_qZH0t">YouTube tutorial series</a> on this as well if you prefer a video explanation!</p>
 <p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/998782045494976522">ivy frontends channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297849735229540">ivy frontends forum</a>!</p>
 <p><strong>Video</strong></p>
