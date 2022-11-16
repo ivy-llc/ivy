@@ -28,7 +28,6 @@ def mean(
 
 
 @from_zero_dim_arrays_to_float
-@to_ivy_arrays_and_back
 def nanmean(
         a,
         /,
@@ -42,7 +41,7 @@ def nanmean(
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    if not ivy.any(is_nan):
+    if not any(is_nan):
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
         ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
@@ -64,23 +63,30 @@ def nanmean(
 
 
 @from_zero_dim_arrays_to_float
-def std(
-        x,
+@to_ivy_arrays_and_back
+def average(
+        a,
         /,
         *,
         axis=None,
-        correction=0.0,
-        keepdims=False,
-        out=None,
-        dtype=None,
-        where=True,
+        weights=None,
+        returned=False,
+        keepdims=False
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
-    if dtype:
-        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
 
-    ret = ivy.std(x, axis=axis, correction=correction, keepdims=keepdims, out=out)
-    if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    if keepdims is None:
+        keepdims_kw = {}
+    else:
+        keepdims_kw = {'keepdims': keepdims}
 
-    return ret
+    weights = ivy.broadcast_to(weights, (a.ndim - 1) * (1,) + weights.shape)
+    weights = weights.swapaxes(-1, axis)
+    weights_sum = weights.sum(axis=axis, **keepdims_kw)
+    avg = ivy.multiply(a, weights).sum(axis, **keepdims_kw) / weights_sum
+    if returned:
+        if weights_sum.shape != avg.shape:
+            weights_sum = ivy.broadcast_to(weights_sum, avg.shape).copy()
+        return avg, weights_sum
+    else:
+        return avg
