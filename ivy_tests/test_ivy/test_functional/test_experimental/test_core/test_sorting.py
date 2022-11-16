@@ -27,9 +27,11 @@ def test_msort(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
