@@ -4,10 +4,6 @@ instances.
 
 # global
 from typing import Any, Union, Tuple, Dict, Iterable, Optional
-import torch
-import numpy
-from jax import numpy as jnp
-import tensorflow as tf
 
 # local
 import ivy
@@ -35,12 +31,6 @@ def _to_ivy(x: Any) -> Any:
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
     return ivy.Array(x) if ivy.is_native_array(x) else x
-
-
-def _to_ivy_array(x: Any) -> ivy.Array:
-    if isinstance(x, (torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray)):
-        return ivy.array(numpy.array(x))
-    return x
 
 
 # Wrapped #
@@ -76,38 +66,6 @@ def to_ivy(
     if nested:
         return ivy.nested_map(x, _to_ivy, include_derived)
     return _to_ivy(x)
-
-
-def to_ivy_array(
-    x: Union[torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray],
-    nested: bool = False,
-    include_derived: Optional[Dict[type, bool]] = None,
-) -> ivy.Array:
-    """Returns the input array converted to an ivy.Array instance if it is an array
-    type, otherwise the input is returned unchanged. If nested is set, the check is
-    applied to all nested leafs of tuples, lists and dicts contained within x.
-
-    Parameters
-    ----------
-    x
-        The input to maybe convert.
-    nested
-        Whether to apply the conversion on arguments in a nested manner. If so, all
-        dicts, lists and tuples will be traversed to their lowest leaves in search of
-        ivy.Array instances. Default is ``False``.
-    include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default
-        is False.
-
-    Returns
-    -------
-     ret
-        the input in ivy.Array form.
-    """
-    if nested:
-        return ivy.nested_map(x, _to_ivy_array, include_derived)
-    return _to_ivy_array(x)
-
 
 def args_to_ivy(
     *args: Iterable[Any],

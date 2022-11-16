@@ -2,9 +2,6 @@
 import functools
 from typing import Callable
 
-import torch
-
-
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -27,7 +24,7 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
 
 
 def _from_torch_tensor_to_ivy_array(x):
-    if isinstance(x, torch.Tensor):
+    if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
