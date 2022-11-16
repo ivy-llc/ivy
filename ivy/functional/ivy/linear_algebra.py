@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like
 )
 from ivy.exceptions import handle_exceptions
 
@@ -23,6 +24,7 @@ inf = float("inf")
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def cholesky(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -160,6 +162,7 @@ def cholesky(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def cross(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -250,6 +253,7 @@ def cross(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def det(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -318,6 +322,7 @@ def det(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def diagonal(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -499,6 +504,7 @@ def diagonal(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -562,6 +568,7 @@ def eigh(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def eigvalsh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -613,6 +620,7 @@ def eigvalsh(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def inner(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -650,6 +658,7 @@ def inner(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def inv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -742,6 +751,7 @@ def inv(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def matmul(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -884,6 +894,7 @@ def matmul(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def matrix_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1030,6 +1041,7 @@ def matrix_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def matrix_power(
     x: Union[ivy.Array, ivy.NativeArray], n: int, /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1070,6 +1082,7 @@ def matrix_power(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def matrix_rank(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1172,6 +1185,7 @@ def matrix_rank(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def matrix_transpose(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1254,6 +1268,7 @@ def matrix_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def outer(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1340,6 +1355,7 @@ def outer(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def pinv(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1408,6 +1424,7 @@ def pinv(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def qr(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1465,6 +1482,7 @@ def qr(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1536,6 +1554,7 @@ def slogdet(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def solve(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1588,6 +1607,7 @@ def solve(
 @to_native_arrays_and_back
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def svd(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -1719,6 +1739,7 @@ def svd(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def svdvals(
     x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
@@ -1841,6 +1862,7 @@ def svdvals(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def tensordot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -1922,6 +1944,7 @@ def tensordot(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def trace(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2035,6 +2058,7 @@ def trace(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def vecdot(
     x1: Union[ivy.Array, ivy.NativeArray],
     x2: Union[ivy.Array, ivy.NativeArray],
@@ -2100,6 +2124,7 @@ def vecdot(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def vector_norm(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2197,6 +2222,7 @@ def vector_norm(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def diag(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2276,6 +2302,7 @@ def diag(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def vander(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2347,6 +2374,7 @@ def vander(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def vector_to_skew_symmetric_matrix(
     vector: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
