@@ -232,7 +232,12 @@ def test_torch_binary_cross_entropy_with_logits(
     weight_dtype, weight = dtype_and_weight
     pos_weight_dtype, pos_weight = dtype_and_pos_weight
     helpers.test_frontend_function(
-        input_dtypes=[pred_dtype[0], true_dtype[0], weight_dtype[0], pos_weight_dtype[0]],
+        input_dtypes=[
+            pred_dtype[0], 
+            true_dtype[0], 
+            weight_dtype[0], 
+            pos_weight_dtype[0],
+            ],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
