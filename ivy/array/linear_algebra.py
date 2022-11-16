@@ -530,6 +530,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vecdot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         axis: int = -1,
         out: Optional[ivy.Array] = None,
