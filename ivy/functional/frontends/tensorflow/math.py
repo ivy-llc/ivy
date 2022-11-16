@@ -345,6 +345,14 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 @to_ivy_arrays_and_back
+def argmin(input, axis=None, output_type="int64", name=None):
+    if output_type in ["int32", "int64"]:
+        return ivy.astype(ivy.argmin(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmin(input, axis=axis), "int64")
+
+  
+@to_ivy_arrays_and_back
 def truediv(x, y, name="truediv"):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     x_dtype = ivy.dtype(x)
