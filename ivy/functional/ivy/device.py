@@ -22,6 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like
 )
 from ivy.exceptions import handle_exceptions
 
@@ -750,6 +751,7 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
