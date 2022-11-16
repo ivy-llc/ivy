@@ -95,7 +95,6 @@ def min(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -228,13 +227,13 @@ def max(
         b: ivy.array(5.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                   b=ivy.array([2, 3, 4]))
-    >>> z = ivy.max(x)
+    >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+    ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+    >>> z = ivy.max(x, axis=1)
     >>> print(z)
     {
-        a: ivy.array(3),
-        b: ivy.array(4)
+        a: ivy.array([3, 2]),
+        b: ivy.array([4, 2])
     }
     """
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)

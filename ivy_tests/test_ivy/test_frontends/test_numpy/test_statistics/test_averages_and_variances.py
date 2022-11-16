@@ -128,8 +128,8 @@ def test_numpy_nanmean(
 
 
 # std
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.std",
     dtype_and_x=statistical_dtype_values(function="std"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
