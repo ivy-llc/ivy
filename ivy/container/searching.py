@@ -425,7 +425,7 @@ class ContainerWithSearching(ContainerBase):
         ret
             Indices for where the boolean array is True.
 
-        Instance Method Examples
+        Examples
         ------------------------
 
         Using :class:`ivy.Container` instance method

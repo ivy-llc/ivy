@@ -533,7 +533,7 @@ def argwhere(
     ret
         Indices of non-zero elements.
 
-    Functional Examples
+    Examples
     -------------------
 
     With :class:`ivy.Array` input:
