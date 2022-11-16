@@ -27,6 +27,7 @@ class TestData:
     fn_tree: str
     fn_name: str
     supported_device_dtypes: dict = None
+    ground_truth_backend: str = None
 
 
 class InterruptedTest(BaseException):

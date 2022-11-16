@@ -159,7 +159,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 possible_fixtures = ["backend_fw", "on_device"]
 
 
-def handle_test(*, fn_tree: str, **_given_kwargs):
+def handle_test(
+    *, fn_tree: str, ground_truth_backend: str = "tensorflow", **_given_kwargs
+):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
     given_kwargs = _given_kwargs
@@ -196,6 +198,7 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
             fn_tree=fn_tree,
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
+            ground_truth_backend=ground_truth_backend,
         )
 
         return wrapped_test
@@ -251,7 +254,9 @@ def _import_method(method_tree: str):
     return _method, method_name, _class, class_name, _mod
 
 
-def handle_method(*, method_tree, **_given_kwargs):
+def handle_method(
+    *, method_tree, ground_truth_backend: str = "tensorflow", **_given_kwargs
+):
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
@@ -297,6 +302,7 @@ def handle_method(*, method_tree, **_given_kwargs):
             fn_tree=method_tree,
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
+            ground_truth_backend=ground_truth_backend,
         )
 
         return wrapped_test
