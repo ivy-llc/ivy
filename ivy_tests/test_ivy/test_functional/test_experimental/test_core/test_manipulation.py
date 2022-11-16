@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -583,12 +584,9 @@ def test_flatten(
     )
 
 
-def _st_tuples_or_int(n_pairs, exclude_zero=False):
-    min_val = 0
-    if exclude_zero:
-        min_val = 1
+def _st_tuples_or_int(n_pairs, min_val=0):
     return st.one_of(
-        st.tuples(
+        hypothesis_helpers.tuples(
             st.tuples(
                 st.integers(min_value=min_val, max_value=4),
                 st.integers(min_value=min_val, max_value=4),
@@ -618,16 +616,22 @@ def _pad_helper(draw):
             ]
         )
     )
+    if mode == "median":
+        dtypes = "float"
+    else:
+        dtypes = "numeric"
     dtype, input, shape = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes(dtypes),
             ret_shape=True,
             min_num_dims=1,
-        ).filter(lambda x: x[0][0] not in ["bfloat16"])
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
     )
     ndim = len(shape)
     pad_width = draw(_st_tuples_or_int(ndim))
-    stat_length = draw(_st_tuples_or_int(ndim, exclude_zero=True))
+    stat_length = draw(_st_tuples_or_int(ndim, min_val=2))
     constant_values = draw(_st_tuples_or_int(ndim))
     end_values = draw(_st_tuples_or_int(ndim))
     return dtype, input[0], pad_width, stat_length, constant_values, end_values, mode
@@ -644,7 +648,6 @@ def test_pad(
     reflect_type,
     num_positional_args,
     as_variable,
-    with_out,
     native_array,
     container_flags,
     instance_method,
@@ -832,7 +835,6 @@ def test_atleast_2d(
     dtype_and_x,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     container,
     instance_method,
