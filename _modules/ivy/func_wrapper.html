@@ -130,6 +130,7 @@
   <h1>Source code for ivy.func_wrapper</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
 <span class="kn">import</span> <span class="nn">typing</span>
@@ -147,6 +148,7 @@
     <span class="s2">&quot;handle_nestable&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_exceptions&quot;</span><span class="p">,</span>
     <span class="s2">&quot;with_unsupported_dtypes&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;handle_nans&quot;</span><span class="p">,</span>
     <span class="s2">&quot;handle_array_like&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
@@ -728,6 +730,71 @@
         <span class="k">return</span> <span class="n">_wrapped</span>
 
     <span class="k">return</span> <span class="n">_wrapper_outer</span>
+
+
+<span class="c1"># nans Handling #</span>
+<span class="c1"># --------------#</span>
+
+
+<span class="k">def</span> <span class="nf">_leaf_has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">has_nans</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">x</span> <span class="ow">is</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span> <span class="nf">_nest_has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_any</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_leaf_has_nans</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="handle_nans"><a class="viewcode-back" href="../../func_wrapper/handle_nans.html#ivy.func_wrapper.handle_nans">[docs]</a><span class="k">def</span> <span class="nf">handle_nans</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks for the existence of nans in all arrays in the `args`</span>
+<span class="sd">        and `kwargs`. The presence of nans is then handled depending</span>
+<span class="sd">        on the enabled `nan_policy`.</span>
+
+<span class="sd">        Following policies apply:</span>
+<span class="sd">        raise_exception: raises an exception in case nans are present</span>
+<span class="sd">        warns: warns a user in case nans are present</span>
+<span class="sd">        nothing: does nothing</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        args</span>
+<span class="sd">            The arguments to be passed to the function.</span>
+<span class="sd">        kwargs</span>
+<span class="sd">            The keyword arguments to be passed to the function.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">            The return of the function, with handling of inputs based</span>
+<span class="sd">            on the selected `nan_policy`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">nan_policy</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_nan_policy</span><span class="p">()</span>
+        <span class="c1"># skip the check if the current nan policy is `nothing``</span>
+        <span class="k">if</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;nothing&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># check all args and kwards for presence of nans</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_nest_has_nans</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">or</span> <span class="n">_nest_has_nans</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">result</span><span class="p">:</span>
+            <span class="c1"># handle nans based on the selected policy</span>
+            <span class="k">if</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;raise_exception&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+                    <span class="s2">&quot;Nans are not allowed in `raise_exception` policy.&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;warns&quot;</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Nans are present in the input.&quot;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_nans</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">new_fn</span></div>
 
 
 <span class="c1"># Decorators to allow for versioned attributes</span>
