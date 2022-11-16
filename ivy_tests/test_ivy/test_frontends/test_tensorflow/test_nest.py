@@ -40,3 +40,31 @@ def test_tensorflow_flatten(
         structure=np.array(x, dtype=input_dtype) if use_array else x,
         expand_composites=expand_composite,
     )
+# inverse_stft function
+
+
+def test_tensorflow_inverse_stft(
+    dtype_and_x,
+    dtype,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree="signal.inverse_stft",
+        stfts=x[0],
+        frame_length=x[1],
+        frame_step=x[2],
+        fft_length=x[3],
+        window_fn=x[4],
+        dtype=dtype[0],
+    )
