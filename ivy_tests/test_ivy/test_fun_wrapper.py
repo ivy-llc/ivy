@@ -24,11 +24,15 @@ def fn4(x: Union[Sequence[ivy.Array], ivy.Array]):
     return x
 
 
-@pytest.mark.parametrize(("fn", "x", "expected_type"),
-                         [(fn1, (1, 2), tuple),
-                          (fn2, (1, 2), ivy.Array),
-                          (fn2, [1, 2], ivy.Array),
-                          (fn3, [1, 2], list),
-                          (fn4, [1, 2], list)])
+@pytest.mark.parametrize(
+    ("fn", "x", "expected_type"),
+    [
+        (fn1, (1, 2), tuple),
+        (fn2, (1, 2), ivy.Array),
+        (fn2, [1, 2], ivy.Array),
+        (fn3, [1, 2], list),
+        (fn4, [1, 2], list),
+    ],
+)
 def test_handle_array_like(fn, x, expected_type):
     assert isinstance(fn(x), expected_type)

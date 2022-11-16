@@ -1281,8 +1281,8 @@ def test_tensorflow_pow(
         x=x[0],
         y=x[1],
     )
-    
-  
+
+
 # argmin
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmin",
@@ -1315,4 +1315,4 @@ def test_tensorflow_argmin(
         input=x[0],
         axis=axis,
         output_type=output_type,
-    )   
+    )
