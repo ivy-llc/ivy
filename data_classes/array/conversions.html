@@ -84,7 +84,6 @@
 <li class="toctree-l2"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Conversions</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="conversions/to_ivy.html">to_ivy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="conversions/to_ivy_array.html">to_ivy_array</a></li>
 <li class="toctree-l3"><a class="reference internal" href="conversions/args_to_ivy.html">args_to_ivy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="conversions/to_native.html">to_native</a></li>
 <li class="toctree-l3"><a class="reference internal" href="conversions/args_to_native.html">args_to_native</a></li>
@@ -238,32 +237,6 @@ is False.</p></li>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – the input in its native framework form in the case of ivy.Array or instances.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.conversions.to_ivy_array">
-<span class="sig-prename descclassname"><span class="pre">ivy.array.conversions.</span></span><span class="sig-name descname"><span class="pre">to_ivy_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nested</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_derived</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/conversions.html#to_ivy_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.conversions.to_ivy_array" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the input array converted to an ivy.Array instance if it is an array
-type, otherwise the input is returned unchanged. If nested is set, the check is
-applied to all nested leafs of tuples, lists and dicts contained within x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<doc<doc<doc-builder-) – The input to maybe convert.</p></li>
-<li><p><strong>nested</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to apply the conversion on arguments in a nested manner. If so, all (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-dicts, lists and tuples will be traversed to their lowest leaves in search of
-ivy.Array instances. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>include_derived</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">type</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]]) – Whether to also recursive for classes derived from tuple, list and dict. Default (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – the input in ivy.Array form.</p>
 </dd>
 </dl>
 </dd></dl>
