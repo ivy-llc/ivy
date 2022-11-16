@@ -46,12 +46,14 @@ def test_random_uniform(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=low_dtype + high_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -117,12 +119,14 @@ def test_random_normal(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=mean_dtype + std_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -180,6 +184,7 @@ def _pop_size_num_samples_replace_n_probs(draw):
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
+    ground_truth_backend="numpy",
 )
 def test_multinomial(
     *,
@@ -194,6 +199,7 @@ def test_multinomial(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
@@ -202,6 +208,7 @@ def test_multinomial(
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=prob_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -213,7 +220,6 @@ def test_multinomial(
             fw=backend_fw,
             fn_name=fn_name,
             test_values=False,
-            ground_truth_backend="numpy",
             population_size=population_size,
             num_samples=num_samples,
             batch_size=batch_size,
@@ -282,11 +288,13 @@ def test_randint(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, low, high = dtype_low_high
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -350,11 +358,13 @@ def test_shuffle(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
