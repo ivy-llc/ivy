@@ -156,7 +156,7 @@ def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
 @to_ivy_arrays_and_back
