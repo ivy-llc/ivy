@@ -22,9 +22,38 @@ class ContainerWithStatistical(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
+        ivy.Container instance method variant of ivy.min.
+        This method simply wraps the function, and so
+        the docstring for ivy.min also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input cotainer. Should have a real-valued data type.
+        axis
+            axis or axes along which minimum values must be computed. By default, the
+            minimum value must be computed over the entire array. If a tuple of integers,
+            minimum values must be computed over multiple axes. Default: ``None``.
+
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
+            result as singleton dimensions, and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the minimum value was computed over the entire array, a zero-dimensional
+            array containing the minimum value; otherwise, a non-zero-dimensional array
+            containing the minimum values. The returned array must have the same data type
+            as ``x``.
+
         Examples
         --------
-
         With :class:`ivy.Container` input:
 
         >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
@@ -32,8 +61,17 @@ class ContainerWithStatistical(ContainerBase):
         >> > z = x.min()
         >> > print(z)
         {
-            a: ivy.array(3),
-            b: ivy.array(4)
+            a: ivy.array(1),
+            b: ivy.array(2)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+        ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+        >>> z = x.min(axis=1)
+        >>> print(z)
+        {
+            a: ivy.array([1, 0]),
+            b: ivy.array([2, 0])
         }
         """
         return self.handle_inplace(
@@ -61,6 +99,57 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.max.
+        This method simply wraps the function, and so
+        the docstring for ivy.max also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container. Should have a real-valued data type.
+        axis
+            axis or axes along which max values must be computed. By default, the
+            maximum value must be computed over the entire array. If a tuple of integers,
+            maximum values must be computed over multiple axes. Default: ``None``.
+
+        keepdims
+            optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
+            result as singleton dimensions, and, accordingly, the result must be compatible
+            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            if the maximum value was computed over the entire array, a zero-dimensional
+            array containing the maximum value; otherwise, a non-zero-dimensional array
+            containing the maximum values. The returned array must have the same data type
+            as ``x``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
+                               b=ivy.array([2, 3, 4]))
+        >> > z = x.max()
+        >> > print(z)
+        {
+            a: ivy.array(3),
+            b: ivy.array(4)
+        }
+        >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+        ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+        >>> z = x.max(axis=1)
+        >>> print(z)
+        {
+            a: ivy.array([3, 2]),
+            b: ivy.array([4, 2])
+        }
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.max(x_, axis=axis, keepdims=keepdims)
@@ -94,7 +183,7 @@ class ContainerWithStatistical(ContainerBase):
         Parameters
         ----------
         self
-            input array. Should have a floating-point data type.
+            input container. Should have a floating-point data type.
         axis
             axis or axes along which arithmetic means must be computed. By default,
             the mean must be computed over the entire array. If a Sequence of
