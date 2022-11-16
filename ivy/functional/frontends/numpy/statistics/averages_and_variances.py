@@ -28,6 +28,7 @@ def mean(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def nanmean(
     a,
     /,

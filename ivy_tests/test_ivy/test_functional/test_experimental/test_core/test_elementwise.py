@@ -378,7 +378,7 @@ def _get_dtype_values_axis_for_count_nonzero(
 
 # count_nonzero
 @handle_test(
-    fn_tree="functional.experimental.ount_nonzero",
+    fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
         in_available_dtypes="numeric",
         out_available_dtypes="numeric",
