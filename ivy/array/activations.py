@@ -50,7 +50,7 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        approximate: bool = True,
+        approximate: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

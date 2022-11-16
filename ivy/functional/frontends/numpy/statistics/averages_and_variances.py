@@ -28,6 +28,7 @@ def mean(
 
 
 @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
 def nanmean(
     a,
     /,
@@ -41,7 +42,7 @@ def nanmean(
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
-    if not any(is_nan):
+    if not ivy.any(is_nan):
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
         ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)

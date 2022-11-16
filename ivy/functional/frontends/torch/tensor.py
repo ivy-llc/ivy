@@ -103,6 +103,20 @@ class Tensor:
         self.data = self.tanh()
         return self.data
 
+    def atanh(self):
+        return torch_frontend.atanh(self.data)
+
+    def atanh_(self):
+        self.data = self.atanh()
+        return self.data
+
+    def arctanh(self):
+        return torch_frontend.arctanh(self.data)
+
+    def arctanh_(self):
+        self.data = self.arctanh()
+        return self.data
+
     def log(self):
         return ivy.log(self.data)
 
@@ -197,7 +211,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
@@ -233,7 +246,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def new_empty(
@@ -249,7 +261,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def unfold(self, dimension, size, step):
@@ -267,6 +278,16 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def pow(self, other):
+        return ivy.pow(self.data, other)
+
+    def pow_(self, other):
+        self.data = self.pow(other)
+        return self.data
+
+    def argmax(self, dim=None, keepdim=False):
+        return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
     # Special Methods #
     # -------------------#
 
@@ -277,7 +298,7 @@ class Tensor:
         return torch_frontend.remainder(self, other)
 
     def __long__(self, memory_format=None):
-        return ivy.astype(self, ivy.int64)
+        return Tensor(ivy.astype(self.data, ivy.int64))
 
     def __getitem__(self, query):
         ret = ivy.get_item(self.data, query)

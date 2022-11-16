@@ -4688,6 +4688,9 @@ def pow(
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
 
 
+pow.unsupported_gradients = {"torch": ["float16"]}
+
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

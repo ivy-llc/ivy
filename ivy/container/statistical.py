@@ -25,8 +25,7 @@ class ContainerWithStatistical(ContainerBase):
         Examples
         --------
 
-        With: code:`ivy.Container`
-        input:
+        With :class:`ivy.Container` input:
 
         >> > x = ivy.Container(a=ivy.array([1, 2, 3]), \
                                b=ivy.array([2, 3, 4]))

@@ -2,6 +2,7 @@ import ivy
 import functools
 from types import FunctionType
 from typing import Callable
+import typing
 
 
 # for wrapping (sequence matters)
@@ -16,6 +17,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
+    "handle_array_like",
 ]
 
 
@@ -43,6 +45,37 @@ def _get_first_array(*args, **kwargs):
 
 # Array Handling #
 # ---------------#
+
+
+def handle_array_like(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        args = list(args)
+        num_args = len(args)
+        type_hints = typing.get_type_hints(fn)
+        parameters = type_hints
+        annotations = type_hints.values()
+
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if "Array" in annotation_str and all(
+                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            ):
+
+                if i < num_args:
+                    if isinstance(arg, (list, tuple)):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if isinstance(kwarg, (list, tuple)):
+                        kwargs[parameter] = ivy.array(kwarg)
+
+        return fn(*args, **kwargs)
+
+    new_fn.handle_array_like = True
+    return new_fn
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
@@ -441,7 +474,7 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         `to_wrap` appropriately wrapped if `to_wrap` is a function, otherwise just the
         input is returned.
     """
-    if key == "linear_algebra":
+    if key == "linalg":
         for linalg_k, linalg_v in to_wrap.__dict__.items():
             if (
                 isinstance(linalg_v, FunctionType)

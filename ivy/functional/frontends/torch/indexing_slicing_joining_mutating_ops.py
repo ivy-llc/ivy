@@ -123,3 +123,18 @@ def tile(input, dims):
 @to_ivy_arrays_and_back
 def unsqueeze(input, dim=0):
     return ivy.expand_dims(input, axis=dim)
+
+
+@to_ivy_arrays_and_back
+def movedim(input, source, destination):
+    return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def hstack(tensors, *, out=None):
+    return ivy.hstack(tensors, out=out)
+
+
+@to_ivy_arrays_and_back
+def dstack(tensors, *, out=None):
+    return ivy.dstack(tensors, out=out)
