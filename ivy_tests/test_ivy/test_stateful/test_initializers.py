@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_method
 
 @handle_method(
     method_tree="Constant.create_variables",
+    ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
     constant=helpers.floats(
         large_abs_safety_factor=4, small_abs_safety_factor=4, safety_factor_scale="log"
@@ -23,8 +24,10 @@ def test_constant(
     method_with_v,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -44,7 +47,6 @@ def test_constant(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -54,12 +56,16 @@ def test_constant(
 
 @handle_method(
     method_tree="Zeros.create_variables",
+    ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_zeros(var_shape, init_with_v, method_with_v, class_name, method_name):
+def test_zeros(
+    var_shape, init_with_v, method_with_v, class_name, method_name, ground_truth_backend
+):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -79,7 +85,6 @@ def test_zeros(var_shape, init_with_v, method_with_v, class_name, method_name):
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -89,12 +94,16 @@ def test_zeros(var_shape, init_with_v, method_with_v, class_name, method_name):
 
 @handle_method(
     method_tree="Ones.create_variables",
+    ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
 )
-def test_ones(var_shape, init_with_v, method_with_v, class_name, method_name):
+def test_ones(
+    var_shape, init_with_v, method_with_v, class_name, method_name, ground_truth_backend
+):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -114,7 +123,6 @@ def test_ones(var_shape, init_with_v, method_with_v, class_name, method_name):
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
 
     assert ret_ivy.shape == ret_gt.shape
@@ -124,6 +132,7 @@ def test_ones(var_shape, init_with_v, method_with_v, class_name, method_name):
 
 @handle_method(
     method_tree="Uniform.create_variables",
+    ground_truth_backend="numpy",
     numerator=helpers.floats(min_value=1.0, max_value=10.0),
     fan_mode=st.sampled_from(["fan_in", "fan_out", "fan_sum", "fan_avg"]),
     power=helpers.floats(min_value=1.0, max_value=3.0),
@@ -146,8 +155,10 @@ def test_uniform(
     method_with_v,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -174,7 +185,6 @@ def test_uniform(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
     if fan_mode == "fan_in":
         fan = fan_in
@@ -193,6 +203,7 @@ def test_uniform(
 
 @handle_method(
     method_tree="GlorotUniform.create_variables",
+    ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
     fan_in=helpers.ints(min_value=1),
     fan_out=helpers.ints(min_value=1),
@@ -200,9 +211,17 @@ def test_uniform(
     method_with_v=st.booleans(),
 )
 def test_glorot_uniform(
-    var_shape, fan_in, fan_out, init_with_v, method_with_v, class_name, method_name
+    var_shape,
+    fan_in,
+    fan_out,
+    init_with_v,
+    method_with_v,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -224,7 +243,6 @@ def test_glorot_uniform(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
 
     bound = (6 / (fan_in + fan_out)) ** 0.5
@@ -235,6 +253,7 @@ def test_glorot_uniform(
 
 @handle_method(
     method_tree="FirstLayerSiren.create_variables",
+    ground_truth_backend="jax",
     var_shape=helpers.get_shape(),
     fan_in=helpers.ints(
         min_value=1,
@@ -251,8 +270,10 @@ def test_first_layer_siren(
     method_with_v,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -273,7 +294,6 @@ def test_first_layer_siren(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="jax",
     )
 
     bound = fan_in
@@ -284,6 +304,7 @@ def test_first_layer_siren(
 
 @handle_method(
     method_tree="Siren.create_variables",
+    ground_truth_backend="numpy",
     var_shape=helpers.get_shape(),
     w0=helpers.floats(min_value=1.0, max_value=100.0),
     fan_in=st.integers(min_value=1),
@@ -298,8 +319,10 @@ def test_siren(
     method_with_v,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -320,7 +343,6 @@ def test_siren(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
 
     bound = ((6 / fan_in) ** 0.5) / w0
@@ -341,6 +363,7 @@ def test_siren(
     dtype=st.sampled_from([None, "float64", "float32", "float16"]),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
+    ground_truth_backend="numpy",
 )
 def test_kaiming_normal(
     mean,
@@ -354,8 +377,10 @@ def test_kaiming_normal(
     method_with_v,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ret_ivy, ret_gt = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=[],
         init_as_variable_flags=[],
         init_num_positional_args=0,
@@ -382,7 +407,6 @@ def test_kaiming_normal(
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         test_values=False,
-        ground_truth_backend="numpy",
     )
     assert ret_ivy.shape == ret_gt.shape
     assert ret_ivy.dtype == ret_gt.dtype
