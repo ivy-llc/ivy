@@ -34,6 +34,10 @@ array_mode_stack = list()
 shape_array_mode_stack = list()
 nestable_mode_stack = list()
 exception_trace_mode_stack = list()
+trace_mode_dict = dict()
+trace_mode_dict["frontend"] = "ivy/functional/frontends"
+trace_mode_dict["ivy"] = "ivy/"
+trace_mode_dict["full"] = ""
 show_func_wrapper_trace_mode_stack = list()
 
 
@@ -354,42 +358,46 @@ def get_nestable_mode() -> bool:
 
 
 @handle_exceptions
-def set_exception_trace_mode(mode: bool) -> None:
-    """Set the mode of whether to show the full exception stack trace
+def set_exception_trace_mode(mode: str) -> None:
+    """Set the mode of whether to show frontend-truncated exception stack traces,
+    ivy-truncated exception stack traces or full exception stack traces
 
     Parameter
     ---------
     mode
-        boolean whether to perform ivy.Array conversions
+        str exeption trace mode, one of `ivy`, `full` or `frontend`
 
     Examples
     --------
-    >>> ivy.set_exception_trace_mode(False)
+    >>> ivy.set_exception_trace_mode("ivy")
     >>> ivy.get_exception_trace_mode()
-    False
+    'ivy'
 
-    >>> ivy.set_exception_trace_mode(True)
+    >>> ivy.set_exception_trace_mode("full")
     >>> ivy.get_exception_trace_mode()
-    True
+    'full'
     """
     global exception_trace_mode_stack
-    ivy.assertions.check_isinstance(mode, bool)
+    trace_modes = list(trace_mode_dict.keys())
+    ivy.assertions.check_elem_in_list(
+        mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
+    )
     exception_trace_mode_stack.append(mode)
 
 
 @handle_exceptions
 def unset_exception_trace_mode() -> None:
-    """Reset the mode of whether to show the full exception stack trace
+    """Reset the trace mode to the previously set mode
 
     Examples
     --------
-    >>> ivy.set_exception_trace_mode(False)
+    >>> ivy.set_exception_trace_mode("ivy")
     >>> ivy.get_exception_trace_mode()
-    False
+    'ivy'
 
     >>> ivy.unset_exception_trace_mode()
     >>> ivy.get_exception_trace_mode()
-    True
+    'full'
     """
     global exception_trace_mode_stack
     if exception_trace_mode_stack:
@@ -397,21 +405,18 @@ def unset_exception_trace_mode() -> None:
 
 
 @handle_exceptions
-def get_exception_trace_mode() -> bool:
+def get_exception_trace_mode() -> str:
     """Get the current state of exception_trace_mode
 
     Examples
     --------
+    >>> ivy.set_exception_trace_mode("full")
     >>> ivy.get_exception_trace_mode()
-    True
-
-    >>> ivy.set_exception_trace_mode(False)
-    >>> ivy.get_exception_trace_mode()
-    False
+    'full'
     """
     global exception_trace_mode_stack
     if not exception_trace_mode_stack:
-        return True
+        return "full"
     return exception_trace_mode_stack[-1]
 
 
