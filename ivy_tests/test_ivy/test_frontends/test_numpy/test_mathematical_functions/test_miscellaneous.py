@@ -485,8 +485,8 @@ def test_numpy_interp(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.convolve",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
         min_num_dims=1,
@@ -495,9 +495,6 @@ def test_numpy_interp(
         shared_dtype=True,
     ),
     mode=st.sampled_from(["valid", "same", "full"]),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.convolve"
-    ),
 )
 def test_numpy_convolve(
     dtype_and_x,
@@ -505,6 +502,9 @@ def test_numpy_convolve(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, xs = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -513,8 +513,9 @@ def test_numpy_convolve(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="correlate",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=xs[0],
         v=xs[1],
         mode=mode,
