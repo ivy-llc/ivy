@@ -1266,14 +1266,17 @@ def dstack(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Stack arrays in sequence depth wise (along third axis).
+
     Parameters
     ----------
     arrays
         Sequence of arrays to be stacked.
+
     Returns
     -------
     ret
         The array formed by stacking the given arrays.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 3])
