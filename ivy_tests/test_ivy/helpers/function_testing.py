@@ -63,7 +63,7 @@ def test_function(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     on_device: str = "cpu",
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
@@ -681,7 +681,7 @@ def gradient_test(
     atol_: float = 1e-06,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -788,7 +788,7 @@ def test_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     device_: str = "cpu",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
