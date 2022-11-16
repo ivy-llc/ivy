@@ -143,13 +143,9 @@
 <span class="c1"># --------#</span>
 
 
-<span class="k">def</span> <span class="nf">_to_native</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_frontend_arrays</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span>
-    <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_frontend_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore_frontend_arrays</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">data</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">),</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
@@ -196,6 +192,7 @@
     <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_to_ivy</span><span class="p">,</span> <span class="n">include_derived</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">_to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="args_to_ivy"><a class="viewcode-back" href="../../../data_classes/array/conversions/args_to_ivy.html#ivy.array.conversions.args_to_ivy">[docs]</a><span class="k">def</span> <span class="nf">args_to_ivy</span><span class="p">(</span>
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
@@ -268,7 +265,6 @@
     <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
     <span class="n">include_derived</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">type</span><span class="p">,</span> <span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cont_inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">ignore_frontend_arrays</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns args and keyword args in their native backend framework form for all</span>
@@ -296,16 +292,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">native_args</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
         <span class="n">args</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">,</span> <span class="n">ignore_frontend_arrays</span><span class="o">=</span><span class="n">ignore_frontend_arrays</span>
-        <span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span>
         <span class="n">include_derived</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
         <span class="n">kwargs</span><span class="p">,</span>
-        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">,</span> <span class="n">ignore_frontend_arrays</span><span class="o">=</span><span class="n">ignore_frontend_arrays</span>
-        <span class="p">),</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">cont_inplace</span><span class="p">),</span>
         <span class="n">include_derived</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>

@@ -130,15 +130,13 @@
   <h1>Source code for ivy.functional.ivy.general</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;Collection of general Ivy functions.&quot;&quot;&quot;</span>
 
+<span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">gc</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">math</span>
-
-<span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
-
 <span class="kn">import</span> <span class="nn">einops</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -316,18 +314,6 @@
     <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_frontend_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_frontend_array.html#ivy.functional.ivy.general.is_frontend_array">[docs]</a><span class="k">def</span> <span class="nf">is_frontend_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="n">tensorflow</span><span class="o">.</span><span class="n">EagerTensor</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">frontends</span><span class="o">.</span><span class="n">jax</span><span class="o">.</span><span class="n">DeviceArray</span><span class="p">,</span>
-        <span class="p">),</span>
-    <span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../../functional/ivy/general/is_array/is_array_functional.html#ivy.functional.ivy.general.is_array">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Determines whether the input x is either an Ivy Array, a Native Array</span>
@@ -346,10 +332,8 @@
 <span class="sd">    ret</span>
 <span class="sd">        Boolean, whether or not x is an array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_frontend_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span> <span class="ow">or</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span>
     <span class="p">)</span></div>
 
 

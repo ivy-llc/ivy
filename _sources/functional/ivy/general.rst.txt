@@ -16,7 +16,6 @@ General
    general/get_referrers_recursive.rst
    general/is_native_array.rst
    general/is_ivy_array.rst
-   general/is_frontend_array.rst
    general/is_array.rst
    general/is_ivy_container.rst
    general/set_array_mode.rst
