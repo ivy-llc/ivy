@@ -618,8 +618,23 @@ def eigvalsh(
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0], [2.0, 1.0]])
-    >>> print(x)
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
     ivy.array([-1., -3.])
+
+    With :class:`ivy.Container` inputs
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2.], [2., 1.]]),
+    ...                   b=ivy.array([[1., 1.], [1., 1.]]))
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    ivy.array([-1., -3.])
+    {
+        a: ivy.array([-1., -3.]),
+        b: ivy.array([0. 2.])
+    }
+
+    
 
 
     """
