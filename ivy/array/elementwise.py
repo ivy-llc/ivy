@@ -578,7 +578,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.cos. This method simply wraps the
         function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
-        
+          
         Parameters
         ----------
         self
@@ -594,7 +594,7 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the cosine of each element in ``self``. The returned
             array must have a floating-point data type determined by
             :ref:`type-promotion`.
-        
+
         Examples
         --------
         With :class:`ivy.Array` input:
