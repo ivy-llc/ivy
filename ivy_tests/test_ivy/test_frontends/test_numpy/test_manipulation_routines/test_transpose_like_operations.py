@@ -11,9 +11,9 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
 @handle_frontend_test(
     fn_tree="numpy.transpose",
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
-        min_num_dims=2,
+        min_num_dims=0,
         max_num_dims=5,
-        min_dim_size=2,
+        min_dim_size=0,
         max_dim_size=10,
     ),
 )

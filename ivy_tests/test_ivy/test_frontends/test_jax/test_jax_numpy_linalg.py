@@ -632,8 +632,11 @@ def test_jax_numpy_tensorsolve(
     *,
     a_and_b,
     as_variable,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x, y = a_and_b
     helpers.test_frontend_function(
@@ -642,8 +645,9 @@ def test_jax_numpy_tensorsolve(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="jax",
-        fn_tree="numpy.linalg.tensorsolve",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x,
         b=y,
     )

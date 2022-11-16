@@ -1,4 +1,5 @@
 # global
+import pytest
 from hypothesis import strategies as st
 
 # local
@@ -11,16 +12,25 @@ from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
 )
 
 
+pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
+
+
 # __add__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__add__",
+    method_tree="tensorflow.EagerTensor.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_add(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_add(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -44,7 +54,7 @@ def test_tensorflow_instance_add(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__div__",
+    method_tree="tensorflow.EagerTensor.__div__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -55,6 +65,8 @@ def test_tensorflow_instance_div(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -79,14 +91,20 @@ def test_tensorflow_instance_div(
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.get_shape",
+    method_tree="tensorflow.EagerTensor.get_shape",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
         min_dim_size=1,
     ),
 )
-def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_get_shape(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -108,13 +126,19 @@ def test_tensorflow_instance_get_shape(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__eq__",
+    method_tree="tensorflow.EagerTensor.__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
     ),
 )
-def test_tensorflow_instance_eq(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_eq(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -138,14 +162,20 @@ def test_tensorflow_instance_eq(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__floordiv__",
+    method_tree="tensorflow.EagerTensor.__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_floordiv(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_floordiv(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -169,14 +199,20 @@ def test_tensorflow_instance_floordiv(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__ge__",
+    method_tree="tensorflow.EagerTensor.__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ge(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_ge(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -200,14 +236,20 @@ def test_tensorflow_instance_ge(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__gt__",
+    method_tree="tensorflow.EagerTensor.__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_gt(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_gt(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -231,14 +273,20 @@ def test_tensorflow_instance_gt(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__le__",
+    method_tree="tensorflow.EagerTensor.__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_le(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_le(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -262,14 +310,20 @@ def test_tensorflow_instance_le(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__lt__",
+    method_tree="tensorflow.EagerTensor.__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_lt(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_lt(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -293,7 +347,7 @@ def test_tensorflow_instance_lt(dtype_and_x, as_variable, native_array):
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__mul__",
+    method_tree="tensorflow.EagerTensor.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -304,6 +358,8 @@ def test_tensorflow_instance_mul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -329,7 +385,7 @@ def test_tensorflow_instance_mul(
 
 # __sub__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__sub__",
+    method_tree="tensorflow.EagerTensor.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
@@ -338,7 +394,13 @@ def test_tensorflow_instance_mul(
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_sub(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_sub(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -363,14 +425,20 @@ def test_tensorflow_instance_sub(dtype_and_x, as_variable, native_array):
 
 # __ne__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__ne__",
+    method_tree="tensorflow.EagerTensor.__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ne(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_ne(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -395,14 +463,20 @@ def test_tensorflow_instance_ne(dtype_and_x, as_variable, native_array):
 
 # __radd__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__radd__",
+    method_tree="tensorflow.EagerTensor.__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_radd(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_radd(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -427,14 +501,20 @@ def test_tensorflow_instance_radd(dtype_and_x, as_variable, native_array):
 
 # __rfloordiv__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rfloordiv__",
+    method_tree="tensorflow.EagerTensor.__rfloordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_rfloordiv(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -459,14 +539,20 @@ def test_tensorflow_instance_rfloordiv(dtype_and_x, as_variable, native_array):
 
 # __rsub__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rsub__",
+    method_tree="tensorflow.EagerTensor.__rsub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rsub(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_rsub(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -491,14 +577,20 @@ def test_tensorflow_instance_rsub(dtype_and_x, as_variable, native_array):
 
 # __and__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__add__",
+    method_tree="tensorflow.EagerTensor.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_and(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_and(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -523,14 +615,20 @@ def test_tensorflow_instance_and(dtype_and_x, as_variable, native_array):
 
 # __rand__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rand__",
+    method_tree="tensorflow.EagerTensor.__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rand(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_rand(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -555,14 +653,20 @@ def test_tensorflow_instance_rand(dtype_and_x, as_variable, native_array):
 
 # __or__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__or__",
+    method_tree="tensorflow.EagerTensor.__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_or(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_or(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -587,14 +691,20 @@ def test_tensorflow_instance_or(dtype_and_x, as_variable, native_array):
 
 # __ror__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__ror__",
+    method_tree="tensorflow.EagerTensor.__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_ror(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_ror(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -619,14 +729,20 @@ def test_tensorflow_instance_ror(dtype_and_x, as_variable, native_array):
 
 # __truediv__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__truediv__",
+    method_tree="tensorflow.EagerTensor.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_truediv(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_truediv(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -651,14 +767,20 @@ def test_tensorflow_instance_truediv(dtype_and_x, as_variable, native_array):
 
 # __rtruediv__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rtruediv__",
+    method_tree="tensorflow.EagerTensor.__rtruediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_rtruediv(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -683,7 +805,7 @@ def test_tensorflow_instance_rtruediv(dtype_and_x, as_variable, native_array):
 
 # __bool__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__bool__",
+    method_tree="tensorflow.EagerTensor.__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
@@ -693,6 +815,8 @@ def test_tensorflow_instance_bool(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -716,7 +840,7 @@ def test_tensorflow_instance_bool(
 
 # __nonzero__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__nonzero__",
+    method_tree="tensorflow.EagerTensor.__nonzero__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
@@ -726,6 +850,8 @@ def test_tensorflow_instance_nonzero(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -749,7 +875,7 @@ def test_tensorflow_instance_nonzero(
 
 # __neg__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__neg__",
+    method_tree="tensorflow.EagerTensor.__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float32",
@@ -765,6 +891,8 @@ def test_tensorflow_instance_neg(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -788,7 +916,7 @@ def test_tensorflow_instance_neg(
 
 # __rxor__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rxor__",
+    method_tree="tensorflow.EagerTensor.__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -799,6 +927,8 @@ def test_tensorflow_instance_rxor(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -824,7 +954,7 @@ def test_tensorflow_instance_rxor(
 
 # __xor__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__xor__",
+    method_tree="tensorflow.EagerTensor.__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -835,6 +965,8 @@ def test_tensorflow_instance_xor(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -860,7 +992,7 @@ def test_tensorflow_instance_xor(
 
 # __matmul__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__matmul__",
+    method_tree="tensorflow.EagerTensor.__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -878,6 +1010,8 @@ def test_tensorflow_instance_matmul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -903,7 +1037,7 @@ def test_tensorflow_instance_matmul(
 
 # __rmatmul__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rmatmul__",
+    method_tree="tensorflow.EagerTensor.__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -921,6 +1055,8 @@ def test_tensorflow_instance_rmatmul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -946,7 +1082,7 @@ def test_tensorflow_instance_rmatmul(
 
 # __array__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__array__",
+    method_tree="tensorflow.EagerTensor.__array__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
@@ -955,6 +1091,8 @@ def test_tensorflow_instance_array(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -978,7 +1116,7 @@ def test_tensorflow_instance_array(
 
 # __invert__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__invert__",
+    method_tree="tensorflow.EagerTensor.__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer")
     ),
@@ -987,6 +1125,8 @@ def test_tensorflow_instance_invert(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1010,7 +1150,7 @@ def test_tensorflow_instance_invert(
 
 # __rmul__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rmul__",
+    method_tree="tensorflow.EagerTensor.__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1023,6 +1163,8 @@ def test_tensorflow_instance_rmul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1048,10 +1190,16 @@ def test_tensorflow_instance_rmul(
 
 # __rpow__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__rpow__",
+    method_tree="tensorflow.EagerTensor.__rpow__",
     dtype_and_x=_pow_helper_shared_dtype(),
 )
-def test_tensorflow_instance_rpow(dtype_and_x, as_variable, native_array):
+def test_tensorflow_instance_rpow(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1089,7 +1237,14 @@ def test_tensorflow_instance_rpow(dtype_and_x, as_variable, native_array):
         shared_dtype=True,
     ),
 )
-def test_tensorflow_instance_pow(dtype_and_x, as_variable, native_array, fw):
+def test_tensorflow_instance_pow(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    fw,
+    class_,
+    method_name,
+):
     input_dtype, x = dtype_and_x
     if x[1].dtype == "int32" or x[1].dtype == "int64":
         if x[1].ndim == 0:
@@ -1175,13 +1330,15 @@ def _array_and_index(
 
 # __getitem__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__getitem__",
+    method_tree="tensorflow.EagerTensor.__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_tensorflow_instance_getitem(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
@@ -1248,7 +1405,7 @@ def _array_and_shape(
 
 
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.set_shape",
+    method_tree="tensorflow.EagerTensor.set_shape",
     dtype_and_x=_array_and_shape(
         min_num_dims=0,
         max_num_dims=5,
@@ -1258,6 +1415,8 @@ def test_tensorflow_instance_set_shape(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1279,7 +1438,7 @@ def test_tensorflow_instance_set_shape(
 
 # __len__
 @handle_frontend_method(
-    method_tree="tensorflow.Tensor.__len__",
+    method_tree="tensorflow.EagerTensor.__len__",
     dtype_and_x=_array_and_shape(
         min_num_dims=1,
         max_num_dims=5,
@@ -1289,6 +1448,8 @@ def test_tensorflow_instance_len(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(

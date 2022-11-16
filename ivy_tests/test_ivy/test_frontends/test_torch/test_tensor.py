@@ -1,4 +1,5 @@
 # global
+import pytest
 import ivy
 import torch
 from hypothesis import assume, strategies as st
@@ -7,6 +8,9 @@ import hypothesis.extra.numpy as hnp
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+
+
+pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
 
 
 # Helper functions
@@ -47,6 +51,8 @@ def test_torch_instance_add(
     alpha,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -90,9 +96,11 @@ def test_torch_instance_new_ones(
     size,
     dtypes,
     requires_grad,
-    device,
+    on_device,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -111,7 +119,7 @@ def test_torch_instance_new_ones(
             "size": size,
             "dtype": dtypes[0],
             "requires_grad": requires_grad,
-            "device": device,
+            "device": on_device,
         },
         frontend="torch",
         class_="tensor",
@@ -134,6 +142,8 @@ def test_torch_instance_reshape(
     shape,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -169,6 +179,8 @@ def test_torch_instance_sin(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -202,6 +214,8 @@ def test_torch_instance_arcsin(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -235,6 +249,8 @@ def test_torch_instance_atan(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -268,6 +284,8 @@ def test_torch_instance_sin_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -301,6 +319,8 @@ def test_torch_instance_cos(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -334,6 +354,8 @@ def test_torch_instance_cos_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -368,6 +390,8 @@ def test_torch_instance_sinh(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -401,6 +425,8 @@ def test_torch_instance_sinh_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -434,6 +460,8 @@ def test_torch_instance_cosh(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -467,6 +495,8 @@ def test_torch_instance_cosh_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -504,6 +534,8 @@ def test_torch_instance_view(
     shape,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -537,6 +569,8 @@ def test_torch_instance_float(
     dtype_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -572,6 +606,8 @@ def test_torch_instance_asinh(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -607,6 +643,8 @@ def test_torch_instance_asinh_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -642,6 +680,8 @@ def test_torch_instance_tan(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -675,6 +715,8 @@ def test_torch_instance_tanh(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -707,6 +749,8 @@ def test_torch_instance_tanh_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -740,6 +784,8 @@ def test_torch_instance_asin(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -772,6 +818,8 @@ def test_torch_instance_amax(
     dtype_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -804,6 +852,8 @@ def test_torch_instance_abs(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -836,6 +886,8 @@ def test_torch_instance_abs_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -868,6 +920,8 @@ def test_torch_instance_amin(
     dtype_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -901,6 +955,8 @@ def test_torch_instance_contiguous(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -936,6 +992,8 @@ def test_torch_instance_log(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -978,6 +1036,8 @@ def test_torch_special_add(
     alpha,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1017,6 +1077,8 @@ def test_torch_special_long(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1058,6 +1120,8 @@ def test_torch_special_radd(
     alpha,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1102,6 +1166,8 @@ def test_torch_special_sub(
     alpha,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1141,6 +1207,8 @@ def test_torch_special_mul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1179,6 +1247,8 @@ def test_torch_special_rmul(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1220,6 +1290,8 @@ def test_torch_special_truediv(
     rounding_mode,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1257,6 +1329,8 @@ def test_torch_instance_to_with_device(
     copy,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1297,6 +1371,8 @@ def test_torch_instance_to_with_dtype(
     copy,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1335,6 +1411,8 @@ def test_torch_instance_arctan(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1368,6 +1446,8 @@ def test_torch_instance_arctan_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1401,6 +1481,8 @@ def test_torch_instance_acos(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1548,6 +1630,8 @@ def test_torch_instance_view_as(
     dtype_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -1589,6 +1673,8 @@ def test_torch_instance_unsqueeze(
     dim,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -1630,6 +1716,8 @@ def test_torch_instance_unsqueeze_(
     dim,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_value
     helpers.test_frontend_method(
@@ -1866,6 +1954,8 @@ def test_torch_instance_expand(
     dtype_x_shape,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
 
     input_dtype, x, shape = dtype_x_shape
@@ -1964,6 +2054,8 @@ def test_torch_special_mod(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
@@ -2000,6 +2092,8 @@ def test_torch_instance_long(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2032,6 +2126,8 @@ def test_torch_instance_max(
     dtype_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -2093,6 +2189,8 @@ def test_torch_instance_bitwise_and(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2220,6 +2318,8 @@ def test_torch_instance_acos_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2254,6 +2354,8 @@ def test_torch_instance_asin_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2317,6 +2419,8 @@ def test_torch_instance_atan_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2350,6 +2454,8 @@ def test_torch_instance_tan_(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2506,6 +2612,8 @@ def test_torch_instance_pow(
     dtype_and_x,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -2557,4 +2665,49 @@ def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
         frontend="torch",
         class_name="tensor",
         method_name="pow_",
+    )
+
+
+# argmax
+@handle_frontend_method(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        min_value=1,
+        max_value=5,
+        valid_axis=True,
+        allow_neg_axes=True,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_argmax(
+    dtype_input_axis,
+    as_variable,
+    native_array,
+    keepdim,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "dim": axis,
+            "keepdim": keepdim,
+        },
+        frontend="torch",
+        class_name="tensor",
+        method_name="argmax",
     )

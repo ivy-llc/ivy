@@ -8,6 +8,7 @@ import inspect
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
 from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
@@ -50,7 +51,7 @@ def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: List[bool],
     with_out: bool,
-    num_positional_args: List[bool],
+    num_positional_args: int,
     native_array_flags: List[bool],
     container_flags: List[bool],
     instance_method: bool,
@@ -62,7 +63,7 @@ def test_function(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     on_device: str = "cpu",
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
@@ -76,7 +77,7 @@ def test_function(
         data types of the input arguments in order.
     as_variable_flags
         dictates whether the corresponding input argument should be treated
-        as an ivy Variable.
+        as a variable.
     with_out
         if True, the function is also tested with the optional out argument.
     num_positional_args
@@ -284,29 +285,60 @@ def test_function(
     except Exception as e:
         ivy.unset_backend()
         raise e
+    hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
+    if hasattr_unsupported_gradients:
+        fw_list = fn.unsupported_gradients
+    else:
+        fw_list = None
     ivy.unset_backend()
     # gradient test
+    fw = ivy.current_backend_str()
     if (
         test_gradients
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        gradient_test(
-            fn_name=fn_name,
-            all_as_kwargs_np=all_as_kwargs_np,
-            args_np=args_np,
-            kwargs_np=kwargs_np,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-            container_flags=container_flags,
-            rtol_=rtol_,
-            atol_=atol_,
-            xs_grad_idxs=xs_grad_idxs,
-            ret_grad_idxs=ret_grad_idxs,
-            ground_truth_backend=ground_truth_backend,
-        )
+        if hasattr_unsupported_gradients and fw in fw_list:
+            if ivy.nested_argwhere(
+                all_as_kwargs_np,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            ):
+                pass
+            else:
+
+                gradient_test(
+                    fn_name=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    as_variable_flags=as_variable_flags,
+                    native_array_flags=native_array_flags,
+                    container_flags=container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
+
+        else:
+            gradient_test(
+                fn_name=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                as_variable_flags=as_variable_flags,
+                native_array_flags=native_array_flags,
+                container_flags=container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -330,7 +362,7 @@ def test_frontend_function(
     with_out: bool,
     with_inplace: bool = False,
     all_aliases: List[str] = None,
-    num_positional_args: List[bool],
+    num_positional_args: int,
     native_array_flags: List[bool],
     on_device="cpu",
     frontend: str,
@@ -649,7 +681,7 @@ def gradient_test(
     atol_: float = 1e-06,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -739,12 +771,12 @@ def test_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
     init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: List[bool] = 0,
+    init_num_positional_args: int = 0,
     init_native_array_flags: List[bool] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     method_as_variable_flags: List[bool],
-    method_num_positional_args: List[bool],
+    method_num_positional_args: int,
     method_native_array_flags: List[bool],
     method_container_flags: List[bool],
     method_all_as_kwargs_np: dict,
@@ -756,7 +788,7 @@ def test_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     device_: str = "cpu",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
@@ -1012,12 +1044,12 @@ def test_frontend_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
     init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: List[bool] = 0,
+    init_num_positional_args: int = 0,
     init_native_array_flags: List[bool] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     method_as_variable_flags: List[bool],
-    method_num_positional_args: List[bool],
+    method_num_positional_args: int,
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
@@ -1049,7 +1081,7 @@ def test_frontend_method(
         data types of the input arguments to the method in order.
     method_as_variable_flags
         dictates whether the corresponding input argument passed to the method should
-        be treated as an ivy.Variable.
+        be treated as a variable.
     method_num_positional_args
         number of input arguments that must be passed as positional arguments to the
         method.
@@ -1336,7 +1368,7 @@ def create_args_kwargs(
         data-types of the input arguments and keyword-arguments.
     as_variable_flags
         A list of booleans. if True for a corresponding input argument, it is called
-        as an Ivy Variable.
+        as an variable.
     native_array_flags
         if not None, the corresponding argument is called as a Native Array.
     container_flags
@@ -1353,7 +1385,7 @@ def create_args_kwargs(
         ivy.array(x, dtype=d) for x, d in zip(arg_np_vals, input_dtypes[:num_arg_vals])
     ]
     arg_array_vals = [
-        ivy.variable(x) if v else x
+        _variable(x) if v else x
         for x, v in zip(arg_array_vals, as_variable_flags[:num_arg_vals])
     ]
     if native_array_flags:
@@ -1375,7 +1407,7 @@ def create_args_kwargs(
         for x, d in zip(kwarg_np_vals, input_dtypes[num_arg_vals:])
     ]
     kwarg_array_vals = [
-        ivy.variable(x) if v else x
+        _variable(x) if v else x
         for x, v in zip(kwarg_array_vals, as_variable_flags[num_arg_vals:])
     ]
     if native_array_flags:
@@ -1494,8 +1526,8 @@ def as_cont(*, x):
 
 
 def var_fn(x, *, dtype=None, device=None):
-    """Returns x as an Ivy Variable wrapping an Ivy Array with given dtype and device"""
-    return ivy.variable(ivy.array(x, dtype=dtype, device=device))
+    """Returns x as a variable wrapping an Ivy Array with given dtype and device"""
+    return _variable(ivy.array(x, dtype=dtype, device=device))
 
 
 def gradient_incompatible_function(*, fn):

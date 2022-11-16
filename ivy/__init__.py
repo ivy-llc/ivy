@@ -196,6 +196,7 @@ class Node(str):
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
+nan_policy_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -663,6 +664,7 @@ globals = GlobalsDict(
         "default_float_dtype_stack": data_type.default_float_dtype_stack,
         "default_int_dtype_stack": data_type.default_int_dtype_stack,
         "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+        "nan_policy_stack": nan_policy_stack,
     }
 )
 
@@ -850,3 +852,47 @@ def warn(warning_message, stacklevel=0):
     warn_level = warning_level()
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
+
+
+# nan policy #
+
+
+def get_nan_policy():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current nan policy, default is "nothing"
+
+    """
+    global nan_policy_stack
+    if not nan_policy_stack:
+        ret = "nothing"
+    else:
+        ret = nan_policy_stack[-1]
+    return ret
+
+
+def set_nan_policy(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    nan_policy
+        string for the nan policy to be set, one of 
+        "nothing", "warns", "raise_exception"
+
+    """
+    global nan_policy_stack
+    if warn_level not in ["nothing", "warns", "raise_exception"]:
+        raise ivy.exceptions.IvyException(
+            "nan_policy must be one of 'nothing', 'warns', 'raise_exception'")
+    nan_policy_stack.append(warn_level)
+
+
+def unset_nan_policy():
+    """"""
+    global nan_policy_stack
+    if nan_policy_stack:
+        nan_policy_stack.pop(-1)
