@@ -11,6 +11,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     infer_dtype,
+    handle_array_like
 )
 
 
