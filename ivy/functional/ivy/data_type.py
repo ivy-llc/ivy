@@ -1056,6 +1056,7 @@ def default_dtype(
         Number or array for inferring the dtype.
     as_native
         Whether to return the dtype as native dtype.
+
     Returns
     -------
         Return ``dtype`` as native or ivy dtype if provided, else
