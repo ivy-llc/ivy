@@ -48,7 +48,6 @@ def _get_first_array(*args, **kwargs):
 
 
 def handle_array_like(fn: Callable) -> Callable:
-
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
         args = list(args)
@@ -57,13 +56,13 @@ def handle_array_like(fn: Callable) -> Callable:
         parameters = type_hints
         annotations = type_hints.values()
 
-        for i, (annotation, parameter, arg) in enumerate(zip(annotations,
-                                                             parameters,
-                                                             args)):
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
             annotation_str = str(annotation)
             if "Array" in annotation_str and all(
-                    sq not in annotation_str
-                    for sq in ["Sequence", "List", "Tuple"]):
+                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            ):
 
                 if i < num_args:
                     if isinstance(arg, (list, tuple)):
