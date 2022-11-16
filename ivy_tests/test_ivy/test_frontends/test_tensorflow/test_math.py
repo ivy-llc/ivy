@@ -1281,3 +1281,38 @@ def test_tensorflow_pow(
         x=x[0],
         y=x[1],
     )
+    
+  
+# argmin
+@handle_frontend_test(
+    fn_tree="tensorflow.math.argmin",
+    dtype_and_x=statistical_dtype_values(function="argmin"),
+    output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
+)
+def test_tensorflow_argmin(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    output_type,
+):
+    input_dtype, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        output_type=output_type,
+    )   
