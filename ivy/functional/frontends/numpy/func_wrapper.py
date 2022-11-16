@@ -2,8 +2,6 @@
 import functools
 from typing import Callable, Any
 
-import numpy
-
 # local
 import ivy
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
@@ -158,7 +156,7 @@ def _ivy_to_numpy(x: Any) -> Any:
 
 
 def _numpy_array_to_ivy_array(x):
-    if isinstance(x, numpy.ndarray):
+    if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
