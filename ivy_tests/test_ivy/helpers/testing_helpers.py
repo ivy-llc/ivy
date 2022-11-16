@@ -186,9 +186,12 @@ def handle_test(
                     _given_kwargs[flag] = st.booleans()
 
             wrapped_test = given(**_given_kwargs)(test_fn)
-            partial_kwargs = {"ground_truth_backend": ground_truth_backend}
-            if "fn_name" in param_names:
-                partial_kwargs["fn_name"] = fn_name
+            possible_arguments = {
+                "fn_name": fn_name,
+                "ground_truth_backend": ground_truth_backend,
+            }
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
             _name = wrapped_test.__name__
             wrapped_test = partial(wrapped_test, **partial_kwargs)
             wrapped_test.__name__ = _name
