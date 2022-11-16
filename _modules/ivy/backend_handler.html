@@ -177,7 +177,7 @@
 
 
 <span class="c1"># Backend Getting/Setting #</span>
-<span class="c1"># ------------------------#</span>
+<span class="c1"># ----------------------- #</span>
 
 
 <span class="k">def</span> <span class="nf">_determine_backend_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -240,7 +240,7 @@
 <span class="sd">        specific function</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: add docstring and tests</span>
+    <span class="c1"># TODO: add tests</span>
     <span class="n">version</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">version</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
         <span class="n">version</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">version</span><span class="p">[:</span> <span class="n">version</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)))</span>
@@ -273,18 +273,15 @@
 
 <div class="viewcode-block" id="set_backend_to_specific_version"><a class="viewcode-back" href="../../backend_handler/set_backend_to_specific_version.html#ivy.backend_handler.set_backend_to_specific_version">[docs]</a><span class="k">def</span> <span class="nf">set_backend_to_specific_version</span><span class="p">(</span><span class="n">backend</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Updates the backend dict to make the original function</span>
+<span class="sd">    name point to the version specific one.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    backend</span>
 <span class="sd">        the backend module for which we provide the version support</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">        The function doesn&#39;t return anything and updates the backend __dict__</span>
-<span class="sd">        to make the original function name to point to the version specific one.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: add docstring, functionality and tests</span>
+    <span class="c1"># TODO: add functionality and tests</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">backend</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
     <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;backends&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">9</span> <span class="p">:]</span>
 
