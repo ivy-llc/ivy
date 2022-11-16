@@ -1,5 +1,6 @@
 import ivy
 import functools
+import logging
 from types import FunctionType
 from typing import Callable
 import typing
@@ -17,6 +18,7 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
+    "handle_nans",
     "handle_array_like",
 ]
 
@@ -598,6 +600,71 @@ def _dtype_device_wrapper_creator(attrib, t):
         return _wrapped
 
     return _wrapper_outer
+
+
+# nans Handling #
+# --------------#
+
+
+def _leaf_has_nans(x):
+    if isinstance(x, ivy.Container):
+        return x.has_nans()
+    elif ivy.is_array(x):
+        return ivy.isnan(x).any()
+    elif x is float("nan"):
+        return True
+    return False
+
+
+def _nest_has_nans(x):
+    return ivy.nested_any(x, _leaf_has_nans)
+
+
+def handle_nans(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Checks for the existence of nans in all arrays in the `args`
+        and `kwargs`. The presence of nans is then handled depending
+        on the enabled `nan_policy`.
+
+        Following policies apply:
+        raise_exception: raises an exception in case nans are present
+        warns: warns a user in case nans are present
+        nothing: does nothing
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with handling of inputs based
+            on the selected `nan_policy`.
+        """
+        nan_policy = ivy.get_nan_policy()
+        # skip the check if the current nan policy is `nothing``
+        if nan_policy == "nothing":
+            return fn(*args, **kwargs)
+
+        # check all args and kwards for presence of nans
+        result = _nest_has_nans(args) or _nest_has_nans(kwargs)
+
+        if result:
+            # handle nans based on the selected policy
+            if nan_policy == "raise_exception":
+                raise ivy.exceptions.IvyException(
+                    "Nans are not allowed in `raise_exception` policy.")
+            elif nan_policy == "warns":
+                logging.warning("Nans are present in the input.")
+        
+        return fn(*args, **kwargs)
+
+    new_fn.handle_nans = True
+    return new_fn
 
 
 # Decorators to allow for versioned attributes
