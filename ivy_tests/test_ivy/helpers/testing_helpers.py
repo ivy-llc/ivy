@@ -275,6 +275,7 @@ def handle_method(
 
         if is_hypothesis_test:
             fn_args = typing.get_type_hints(test_fn)
+            param_names = inspect.signature(test_fn).parameters.keys()
 
             for k, v in fn_args.items():
                 if (
@@ -294,12 +295,17 @@ def handle_method(
                         )
 
             wrapped_test = given(**_given_kwargs)(test_fn)
+            possible_arguments = {
+                "class_name": class_name,
+                "method_name": method_name,
+                "ground_truth_backend": ground_truth_backend,
+            }
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
             _name = wrapped_test.__name__
             wrapped_test = partial(
                 wrapped_test,
-                class_name=class_name,
-                method_name=method_name,
-                ground_truth_backend=ground_truth_backend,
+                **partial_kwargs,
             )
             wrapped_test.__name__ = _name
         else:
