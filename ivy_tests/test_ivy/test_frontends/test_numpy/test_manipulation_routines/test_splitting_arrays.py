@@ -1,10 +1,10 @@
 from hypothesis import given
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_functions
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # split
-@handle_frontend_function
+@handle_frontend_test
 @given(
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.split"
