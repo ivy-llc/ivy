@@ -3,7 +3,6 @@ import pytest
 import numpy as np
 from hypothesis import strategies as st
 
-import ivy
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method, assert_all_close
@@ -12,7 +11,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
-
 
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
 
@@ -935,23 +933,20 @@ def test_numpy_instance_squeeze(
         method_name="squeeze",
     )
 
+
 @handle_frontend_method(
     method_tree="numpy.ndarray.std",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         max_value=100,
-        #min_num_dims=1,
-        #max_num_dims=5,
-        #min_dim_size=1,
         valid_axis=True,
         force_int_axis=True,
-        #allow_neg_axes=True,
     ),
     keepdims=st.booleans(),
     where=np_frontend_helpers.where(),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.ndarray.std"
-    )
+    ),
 )
 def test_numpy_instance_std(
     dtype_x_axis,
@@ -985,7 +980,7 @@ def test_numpy_instance_std(
         all_as_kwargs_np_method={
             "axis": axis,
             "out": None,
-            "ddof" : 0,
+            "ddof": 0,
             "keepdims": keepdims,
             "where": where,
         },
@@ -993,7 +988,6 @@ def test_numpy_instance_std(
         class_name="ndarray",
         method_name="std",
     )
-
 
 
 @handle_frontend_method(
