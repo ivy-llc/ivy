@@ -29,29 +29,23 @@ def test_trace_modes(backend, trace_mode, show_func_wrapper):
     with open(filename) as f:
         lines += f.read()
 
-    if trace_mode == "full" and show_func_wrapper is False:
-        if backend == "numpy" or backend == "torch":
-            assert "/func_wrapper.py" not in lines
-            assert "/ivy/functional/backends" in lines
-        else:
-            assert "/func_wrapper.py" not in lines
-            assert "/ivy/functional/backends" in lines
+    if trace_mode == "full" and not show_func_wrapper:
+        assert "/func_wrapper.py" not in lines
+        assert "/ivy/functional/backends" in lines
+        if backend not in ["torch", "numpy"]:
             assert "/site-packages" in lines
 
-    if trace_mode == "full" and show_func_wrapper is True:
-        if backend == "numpy" or backend == "torch":
-            assert "/func_wrapper.py" in lines
-            assert "/ivy/functional/backends" in lines
-        else:
-            assert "/func_wrapper.py" in lines
-            assert "/ivy/functional/backends" in lines
+    if trace_mode == "full" and show_func_wrapper:
+        assert "/func_wrapper.py" in lines
+        assert "/ivy/functional/backends" in lines
+        if backend not in ["torch", "numpy"]:
             assert "/site-packages" in lines
 
-    if (trace_mode == "ivy" or trace_mode == "frontend") and show_func_wrapper is False:
+    if (trace_mode == "ivy" or trace_mode == "frontend") and not show_func_wrapper:
         assert "/func_wrapper.py" not in lines
         assert "/site-packages" not in lines
 
-    if (trace_mode == "ivy" or trace_mode == "frontend") and show_func_wrapper is True:
+    if (trace_mode == "ivy" or trace_mode == "frontend") and show_func_wrapper:
         if trace_mode == "ivy":
             assert "/func_wrapper.py" in lines
             assert "/site-packages" not in lines

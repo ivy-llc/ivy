@@ -393,9 +393,9 @@ def set_exception_trace_mode(mode: str) -> None:
     'full'
     """
     global exception_trace_mode_stack
-    ivy.assertions.check_false(
-        isinstance(mode, str) and mode not in trace_mode_dict,
-        "trace mode must be one of {}".format(list(trace_mode_dict.keys())),
+    trace_modes = list(trace_mode_dict.keys())
+    ivy.assertions.check_elem_in_list(
+        mode, trace_modes, "trace mode must be one of {}".format(trace_modes)
     )
     exception_trace_mode_stack.append(mode)
 

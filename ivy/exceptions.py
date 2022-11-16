@@ -16,19 +16,19 @@ def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode)
             msg,
             "call `ivy.set_exception_trace_mode('full')` to view the full trace>",
         )
-    if func_wrapper_trace_mode is False:
+    if not func_wrapper_trace_mode:
         print(
             "<func_wrapper.py stack trace is squashed,",
             "call `ivy.set_show_func_wrapper_traces(True)` in order to view this>",
         )
     new_stack_trace = []
     for st in old_stack_trace:
-        if trace_mode == "full" and func_wrapper_trace_mode is False:
+        if trace_mode == "full" and not func_wrapper_trace_mode:
             if "func_wrapper.py" not in repr(st):
                 new_stack_trace.append(st)
         else:
             if ivy.trace_mode_dict[trace_mode] in repr(st):
-                if func_wrapper_trace_mode is False and "func_wrapper.py" in repr(st):
+                if not func_wrapper_trace_mode and "func_wrapper.py" in repr(st):
                     continue
                 new_stack_trace.append(st)
     print("".join(tb.format_list(new_stack_trace)))
@@ -37,9 +37,9 @@ def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode)
 def _custom_exception_handle(type, value, tb_history):
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
-    if trace_mode == "full" and func_wrapper_trace_mode is True:
+    if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(tb_history)))
-    elif trace_mode == "full" and func_wrapper_trace_mode is False:
+    elif trace_mode == "full" and not func_wrapper_trace_mode:
         _print_new_stack_trace(
             tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode
         )
@@ -53,9 +53,9 @@ def _custom_exception_handle(type, value, tb_history):
 def _print_traceback_history():
     trace_mode = ivy.get_exception_trace_mode()
     func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
-    if trace_mode == "full" and func_wrapper_trace_mode is True:
+    if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(sys.exc_info()[2])))
-    elif trace_mode == "full" and func_wrapper_trace_mode is False:
+    elif trace_mode == "full" and not func_wrapper_trace_mode:
         _print_new_stack_trace(
             tb.extract_tb(sys.exc_info()[2]), trace_mode, func_wrapper_trace_mode
         )
