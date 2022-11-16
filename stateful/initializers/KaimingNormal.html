@@ -144,67 +144,6 @@
              
   <section id="kaimingnormal">
 <h1>KaimingNormal<a class="headerlink" href="#kaimingnormal" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">KaimingNormal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fan_in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#KaimingNormal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="Initializer.html#ivy.stateful.initializers.Initializer" title="ivy.stateful.initializers.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mean</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'fan_in'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#KaimingNormal.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>A Kaiming normal initializer, also known as He Initialization, is an
-method for initializing layers that takes into account the non-linearity
-of activation functions. It uses a normal distibution centered at <cite>mean</cite> with
-standard distribution <cite>sqrt(2 / ((1 + negative_slope^2) * fan))</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mean</strong> – Sets the expected value, average, and center of the normal distribution.</p></li>
-<li><p><strong>fan_mode</strong> – <p>Determines how <cite>fan</cite> is calculated.
-- <cite>fan_out</cite> sets <cite>fan</cite> to the number of output features of this neuron.</p>
-<blockquote>
-<div><p>This is useful when training using back-propogation.</p>
-</div></blockquote>
-<ul>
-<li><p><cite>fan_in</cite> sets <cite>fan</cite> to the number of input features of this neuron.
-This is useful when training using forward-propogation.</p></li>
-<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the sum of the number of input features and
-output features of this neuron.</p></li>
-<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the average of the number of input features and
-output features of this neuron.</p></li>
-</ul>
-</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.initializers.KaimingNormal.create_variables">
-<span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">negative_slope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#KaimingNormal.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.KaimingNormal.create_variables" title="Permalink to this definition"></a></dt>
-<dd><p>Create internal variables for the layer</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>var_shape</strong> – <dl class="simple">
-<dt>Tuple representing the shape of the desired array. If considering</dt><dd><p>the array as a rectangular matrix, this tuple is represented as
-‘(ROWS, COLUMNS)’.</p>
-</dd>
-</dl>
-</p></li>
-<li><p><strong>device</strong> – Device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
-etc. Default is cpu.</p></li>
-<li><p><strong>fan_out</strong> – The number of nodes in the next layer.</p></li>
-<li><p><strong>fan_in</strong> – The number of nodes in the previous layer.</p></li>
-<li><p><strong>negative_slope</strong> – How much a higher <cite>fan</cite> should lower the standard deviation. A value of <cite>0</cite>
-gives a relationship proportional to <cite>1/fan</cite>.</p></li>
-<li><p><strong>dtype</strong> – Desired data type.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

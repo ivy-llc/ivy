@@ -144,64 +144,6 @@
              
   <section id="ivy-container-static-any">
 <h1>ivy.Container.static_any<a class="headerlink" href="#ivy-container-static-any" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_any">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_any</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/utility.html#ContainerWithUtility.static_any"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_any" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of <a href="../any/any_functional.html">ivy.any</a>. This method simply wraps the
-function, and so the docstring for <a href="../any/any_functional.html">ivy.any</a> also applies to this method
-with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – input container.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>], <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]]) – axis or axes along which to perform a logical OR reduction. By default, a (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-logical OR reduction must be performed over the entire array. If a tuple of
-integers, logical OR reductions must be performed over multiple axes. A
-valid <code class="docutils literal notranslate"><span class="pre">axis</span></code> must be an integer on the interval <code class="docutils literal notranslate"><span class="pre">[-N,</span> <span class="pre">N)</span></code>, where <code class="docutils literal notranslate"><span class="pre">N</span></code>
-is the rank(number of dimensions) of <code class="docutils literal notranslate"><span class="pre">self</span></code>. If an <code class="docutils literal notranslate"><span class="pre">axis</span></code> is specified
-as a negative integer, the function must determine the axis along which to
-perform a reduction by counting backward from the last dimension (where
-<code class="docutils literal notranslate"><span class="pre">-1</span></code> refers to the last dimension). If provided an invalid <code class="docutils literal notranslate"><span class="pre">axis</span></code>, the
-function must raise an exception. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-singleton dimensions, and, accordingly, the result must be compatible with
-the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise, if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the
-reduced axes(dimensions) must not be included in the result.
-Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-the inputs broadcast to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – if a logical OR reduction was performed over the entire array, the returned
-container must be a zero-dimensional array containing the test result;
-otherwise, the returned container must have non-zero-dimensional arrays
-containing the test results. The returned container must have a data type of
-<code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_any</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array(True),</span>
-<span class="go">    b: ivy.array(True)</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

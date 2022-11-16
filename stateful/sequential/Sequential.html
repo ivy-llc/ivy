@@ -136,30 +136,6 @@
              
   <section id="sequential">
 <h1>Sequential<a class="headerlink" href="#sequential" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.sequential.Sequential">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.sequential.</span></span><span class="sig-name descname"><span class="pre">Sequential</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">sub_modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/sequential.html#Sequential"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.sequential.Sequential" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.sequential.Sequential.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">sub_modules</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/sequential.html#Sequential.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.sequential.Sequential.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>A sequential container. Modules will be added to it in the order they are
-passed in the constructor.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>submodules</strong> – Submodules to chain together into a sequence.</p></li>
-<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]]) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-etc.</p></li>
-<li><p><strong>v</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeVariable</span></code>]]) – the variables for each submodule in the sequence, constructed internally by (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-default.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
