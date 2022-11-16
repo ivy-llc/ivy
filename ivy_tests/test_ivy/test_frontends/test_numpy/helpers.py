@@ -95,11 +95,11 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     ret, frontend_ret = values
     ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=ret, fw=kwargs["fw"])
+        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
     ]
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw(ret=frontend_ret, fw=kwargs["frontend"])
+        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
     ]
     helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
@@ -154,3 +154,41 @@ def handle_dtype_and_casting(
                 key=get_dtypes_key,
             )
     return dtype, dtypes, casting
+
+
+@st.composite
+def get_dtype_and_values_and_casting(
+    draw,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    **kwargs,
+):
+    input_dtype, x = draw(helpers.dtype_and_values(**kwargs))
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    if casting in ["no", "equiv"]:
+        dtype = input_dtype[0]
+        input_dtype = [dtype for x in input_dtype]
+        return input_dtype, [dtype], x, casting
+    dtype = draw(
+        helpers.get_dtypes(
+            get_dtypes_kind,
+            index=get_dtypes_index,
+            full=False,
+            none=get_dtypes_none,
+            key=get_dtypes_key,
+        )
+    )
+    if casting in ["safe", "same_kind"]:
+        while not ivy.all([ivy.can_cast(x, dtype[0]) for x in input_dtype]):
+            dtype = draw(
+                helpers.get_dtypes(
+                    get_dtypes_kind,
+                    index=get_dtypes_index,
+                    full=False,
+                    none=get_dtypes_none,
+                    key=get_dtypes_key,
+                )
+            )
+    return input_dtype, dtype, x, casting

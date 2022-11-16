@@ -3,30 +3,43 @@ import sys
 from pydriller import Repository
 import pickle  # noqa
 from tqdm import tqdm
+from random import shuffle
 import bz2
 import _pickle as cPickle
 
 
 # Shared Map
 tests = {}
+BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 4
+N = 32
 run_iter = int(sys.argv[1])
 
 os.system(
-    "pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
+    "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
 )
+test_names_without_backend = []
 test_names = []
 with open("test_names") as f:
     i = 0
     for line in f:
-        i += 1
-        if i <= 5:
+        if "ERROR" in line:
+            break
+        if not line.startswith("ivy_tests"):
             continue
-        test_names.append(line[:-1])
+        test_name = line[:-1]
+        pos = test_name.find("[")
+        if pos != -1:
+            test_name = test_name[:pos]
+        test_names_without_backend.append(test_name)
 
-test_names = test_names[:-3]
+shuffle(test_names_without_backend)
+for test_name in test_names_without_backend:
+    for backend in BACKENDS:
+        test_backend = test_name + "," + backend
+        test_names.append(test_backend)
+
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
@@ -83,12 +96,14 @@ if __name__ == "__main__":
     tests_per_run = num_tests // N
     start = run_iter * tests_per_run
     end = num_tests if run_iter == N - 1 else (run_iter + 1) * tests_per_run
-    for test_name in tqdm(test_names[start:end]):
-        os.system(
-            f"coverage run --source=ivy,ivy_tests -m pytest {test_name} "
-            "--disable-warnings > coverage_output"
+    for test_backend in tqdm(test_names[start:end]):
+        test_name, backend = test_backend.split(",")
+        command = (
+            f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+            f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
+            f'annotate > coverage_output" '
         )
-        os.system("coverage annotate > coverage_output")
+        os.system(command)
         for directory in directories:
             for file_name in os.listdir(directory):
                 if file_name.endswith("cover"):
@@ -103,7 +118,7 @@ if __name__ == "__main__":
                         for line in f:
                             if line[0] == ">":
                                 tests[file_name][i].add(
-                                    tests["tests_mapping"][test_name]
+                                    tests["tests_mapping"][test_backend]
                                 )
                             i += 1
         os.system("find . -name \\*cover -type f -delete")

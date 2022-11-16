@@ -14,6 +14,12 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+def _reshape_fortran_torch(x, shape):
+    if len(x.shape) > 0:
+        x = x.permute(*reversed(range(len(x.shape))))
+    return x.reshape(*reversed(shape)).permute(*reversed(range(len(shape))))
+
+
 # Array API Standard #
 # -------------------#
 
@@ -59,13 +65,13 @@ def flip(
     axis: Optional[Union[int, Sequence[int]]] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    num_dims: int = len(x.shape)
+    num_dims = len(x.shape)
     if not num_dims:
         return x
     if axis is None:
-        new_axis: List[int] = list(range(num_dims))
+        new_axis = list(range(num_dims))
     else:
-        new_axis: List[int] = axis
+        new_axis = axis
     if isinstance(new_axis, int):
         new_axis = [new_axis]
     else:
@@ -91,10 +97,16 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
+    order: Optional[str] = "C",
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = torch.clone(x)
+        if order == "F":
+            return _reshape_fortran_torch(newarr, shape)
         return torch.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_torch(x, shape)
     return torch.reshape(x, shape)
 
 

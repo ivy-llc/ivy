@@ -1,11 +1,11 @@
 # global
 import random
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -88,28 +88,31 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
     return dtype, vals, filters, bias, dilations, strides, padding, fc
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.conv1d",
     dtype_vals=x_and_filters(dim=1),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv1d"
-    ),
 )
 def test_torch_conv1d(
+    *,
     dtype_vals,
-    num_positional_args,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.conv1d",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vals,
         weight=weight,
         bias=bias,
@@ -120,28 +123,31 @@ def test_torch_conv1d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.conv2d",
     dtype_vals=x_and_filters(dim=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv2d"
-    ),
 )
 def test_torch_conv2d(
+    *,
     dtype_vals,
-    num_positional_args,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.conv2d",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vals,
         weight=weight,
         bias=bias,
@@ -152,28 +158,31 @@ def test_torch_conv2d(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.conv3d",
     dtype_vals=x_and_filters(dim=3),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.conv3d"
-    ),
 )
 def test_torch_conv3d(
+    *,
     dtype_vals,
-    num_positional_args,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vals, weight, bias, dilations, strides, padding, fc = dtype_vals
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.conv3d",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vals,
         weight=weight,
         bias=bias,
@@ -201,8 +210,8 @@ def _int_or_tuple(draw, min_val, max_val):
     return val
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.unfold",
     dtype_and_input_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=(1, 3, 6, 6),
@@ -211,31 +220,32 @@ def _int_or_tuple(draw, min_val, max_val):
     dilation=_int_or_tuple(1, 3),
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.unfold"
-    ),
 )
 def test_torch_unfold(
+    *,
     dtype_and_input_and_shape,
     kernel_size,
     dilation,
     padding,
     stride,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     args_dtypes = list([dtype_and_input_and_shape[0]] + ["uint8"] * 4)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="nn.functional.unfold",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=dtype_and_input_and_shape[1],
         kernel_size=kernel_size,
         dilation=dilation,
@@ -244,8 +254,8 @@ def test_torch_unfold(
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.fold",
     dtype_and_input_and_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shape=(1, 12, 12),
@@ -255,11 +265,9 @@ def test_torch_unfold(
     dilation=_int_or_tuple(1, 3),
     padding=_int_or_tuple(0, 2),
     stride=_int_or_tuple(1, 3),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.fold"
-    ),
 )
 def test_torch_fold(
+    *,
     dtype_and_input_and_shape,
     output_size,
     kernel_size,
@@ -267,20 +275,23 @@ def test_torch_fold(
     padding,
     stride,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     args_dtypes = list([dtype_and_input_and_shape[0]] + ["uint8"] * 5)
     helpers.test_frontend_function(
         input_dtypes=args_dtypes,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="torch",
-        fn_tree="nn.functional.fold",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=dtype_and_input_and_shape[1],
         output_size=output_size,
         kernel_size=kernel_size,
