@@ -237,7 +237,7 @@ def test_torch_binary_cross_entropy_with_logits(
             true_dtype[0], 
             weight_dtype[0], 
             pos_weight_dtype[0],
-            ],
+        ],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
