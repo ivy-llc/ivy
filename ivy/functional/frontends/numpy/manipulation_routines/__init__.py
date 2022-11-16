@@ -19,3 +19,4 @@ from . import tiling_arrays
 from .tiling_arrays import *
 from . import transpose_like_operations
 from .transpose_like_operations import *
+from ivy.functional.frontends.numpy.creation_routines import asarray

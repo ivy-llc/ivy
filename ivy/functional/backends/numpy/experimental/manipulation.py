@@ -163,7 +163,6 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[np.ndarray] = None,
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if callable(mode):

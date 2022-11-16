@@ -292,6 +292,7 @@ def test_function(
         fw_list = None
     ivy.unset_backend()
     # gradient test
+    fw = ivy.current_backend_str()
     if (
         test_gradients
         and not fw == "numpy"
