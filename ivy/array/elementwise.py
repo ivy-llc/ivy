@@ -578,7 +578,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.Array instance method variant of ivy.cos. This method simply wraps the
         function, and so the docstring for ivy.cos also applies to this method
         with minimal changes.
-          
+
         Parameters
         ----------
         self
