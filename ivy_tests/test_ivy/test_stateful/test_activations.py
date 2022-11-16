@@ -31,9 +31,11 @@ def test_gelu(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=input_dtype,
         init_as_variable_flags=init_as_variable,
         init_num_positional_args=init_num_positional_args,
@@ -72,11 +74,13 @@ def test_geglu(
     method_container_flags: pf.ContainerFlags,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     # last dim must be even, this could replaced with a private helper
     assume(x[0].shape[-1] % 2 == 0)
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=input_dtype,
         init_num_positional_args=num_positional_args_init,
         method_input_dtypes=input_dtype,
