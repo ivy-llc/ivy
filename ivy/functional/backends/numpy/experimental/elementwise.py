@@ -286,19 +286,19 @@ def zeta(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    neg_indices = np.where(x < 0)
-    pos_indices = np.where(x >= 0)
-    array_shape = q.shape
-    q, x = q[pos_indices], x[pos_indices]
+    inf_indices = np.union1d(
+        np.array(np.where(x == 1.)),
+        np.array(np.where(q <= 0))
+    )
+    nan_indices = np.where(x <= 0)
     n, res = 1, 1 / q ** x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
     ret = np.round(res, decimals=4)
-    dum = np.zeros(shape=array_shape)
-    dum[pos_indices] = ret
-    dum[neg_indices] = np.nan
-    return dum
+    ret[inf_indices] = np.inf
+    ret[nan_indices] = np.nan
+    return ret
 
 
 zeta.support_native_out = False
