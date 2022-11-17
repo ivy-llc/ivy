@@ -367,10 +367,11 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
