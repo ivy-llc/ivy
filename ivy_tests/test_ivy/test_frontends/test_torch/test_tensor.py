@@ -2796,3 +2796,36 @@ def test_torch_instance_argmax(
         class_name="tensor",
         method_name="argmax",
     )
+
+
+@handle_frontend_method(
+    method_tree="torch.tensor.ceil",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_ceil(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend="torch",
+        class_="tensor",
+        method_name="ceil",
+    )
