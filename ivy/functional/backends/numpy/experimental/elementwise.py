@@ -72,6 +72,7 @@ def fmax(
 fmax.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def trapz(
     y: np.ndarray,
     /,
