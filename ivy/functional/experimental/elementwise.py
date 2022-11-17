@@ -354,7 +354,7 @@ def copysign(
     x2: Union[ivy.Array, ivy.NativeArray, Number],
     /,
     *,
-    out: Union[ivy.Array, ivy.NativeArray],
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Change the signs of x1 to match x2
     x1 and x2 must be broadcastable to a common shape
