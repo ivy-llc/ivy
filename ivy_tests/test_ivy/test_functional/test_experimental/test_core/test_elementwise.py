@@ -42,6 +42,7 @@ def test_sinc(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="jax",
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -74,7 +75,6 @@ def test_lcm(
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -86,9 +86,10 @@ def test_lcm(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
+        ground_truth_backend="jax",
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
+        test_gradients=False,
         x1=x[0],
         x2=x[1],
     )
@@ -378,7 +379,7 @@ def _get_dtype_values_axis_for_count_nonzero(
 
 # count_nonzero
 @handle_test(
-    fn_tree="functional.experimental.ount_nonzero",
+    fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
         in_available_dtypes="numeric",
         out_available_dtypes="numeric",

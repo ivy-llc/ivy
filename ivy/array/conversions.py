@@ -4,10 +4,6 @@ instances.
 
 # global
 from typing import Any, Union, Tuple, Dict, Iterable, Optional
-import torch
-import numpy
-from jax import numpy as jnp
-import tensorflow as tf
 
 # local
 import ivy
@@ -17,13 +13,9 @@ import ivy
 # --------#
 
 
-def _to_native(
-    x: Any, inplace: bool = False, ignore_frontend_arrays: bool = False
-) -> Any:
+def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
         return x.data
-    elif ivy.is_frontend_array(x) and not ignore_frontend_arrays:
-        return x.data.data
     elif isinstance(x, ivy.Container):
         return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
     return x
@@ -35,12 +27,6 @@ def _to_ivy(x: Any) -> Any:
     elif isinstance(x, ivy.Container):
         return x.to_ivy()
     return ivy.Array(x) if ivy.is_native_array(x) else x
-
-
-def _to_ivy_array(x: Any) -> ivy.Array:
-    if isinstance(x, (torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray)):
-        return ivy.array(numpy.array(x))
-    return x
 
 
 # Wrapped #
@@ -76,37 +62,6 @@ def to_ivy(
     if nested:
         return ivy.nested_map(x, _to_ivy, include_derived)
     return _to_ivy(x)
-
-
-def to_ivy_array(
-    x: Union[torch.Tensor, tf.Tensor, jnp.DeviceArray, numpy.ndarray],
-    nested: bool = False,
-    include_derived: Optional[Dict[type, bool]] = None,
-) -> ivy.Array:
-    """Returns the input array converted to an ivy.Array instance if it is an array
-    type, otherwise the input is returned unchanged. If nested is set, the check is
-    applied to all nested leafs of tuples, lists and dicts contained within x.
-
-    Parameters
-    ----------
-    x
-        The input to maybe convert.
-    nested
-        Whether to apply the conversion on arguments in a nested manner. If so, all
-        dicts, lists and tuples will be traversed to their lowest leaves in search of
-        ivy.Array instances. Default is ``False``.
-    include_derived
-        Whether to also recursive for classes derived from tuple, list and dict. Default
-        is False.
-
-    Returns
-    -------
-     ret
-        the input in ivy.Array form.
-    """
-    if nested:
-        return ivy.nested_map(x, _to_ivy_array, include_derived)
-    return _to_ivy_array(x)
 
 
 def args_to_ivy(
@@ -180,7 +135,6 @@ def args_to_native(
     *args: Iterable[Any],
     include_derived: Dict[type, bool] = None,
     cont_inplace: bool = False,
-    ignore_frontend_arrays: bool = False,
     **kwargs: Dict[str, Any],
 ) -> Tuple[Iterable[Any], Dict[str, Any]]:
     """Returns args and keyword args in their native backend framework form for all
@@ -208,16 +162,12 @@ def args_to_native(
     """
     native_args = ivy.nested_map(
         args,
-        lambda x: _to_native(
-            x, inplace=cont_inplace, ignore_frontend_arrays=ignore_frontend_arrays
-        ),
+        lambda x: _to_native(x, inplace=cont_inplace),
         include_derived,
     )
     native_kwargs = ivy.nested_map(
         kwargs,
-        lambda x: _to_native(
-            x, inplace=cont_inplace, ignore_frontend_arrays=ignore_frontend_arrays
-        ),
+        lambda x: _to_native(x, inplace=cont_inplace),
         include_derived,
     )
     return native_args, native_kwargs
