@@ -592,7 +592,6 @@ def eigvalsh(
         be considered in the computation to preserve the notion of a Hermitian
         matrix. It therefore follows that the imaginary part of the diagonal
         will always be treated as zero.
-
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -618,9 +617,26 @@ def eigvalsh(
     With :class:`ivy.Array` inputs:
 
     >>> x = ivy.array([[1.0, 2.0], [2.0, 1.0]])
-    >>> y = ivy.eigvalsh(x)
+    >>> y = ivy.eigvalsh(x, UPLO = "L")
     >>> print(y)
     ivy.array([-1., -3.])
+
+    >>> z = ivy.eigvalsh(x, UPLO = "U")
+    ivy.array([-1., -3.])
+
+    >>> x = ivy.array([[1.0, 2.0], [0.0, 3.0]])
+    >>> y = ivy.eigvalsh(x, UPLO = "U")
+    >>> print(y)
+    ivy.array([-0.23606798  4.23606798])
+
+
+    Using inplace
+
+    >>> x = ivy.array([[1.0, 2.0], [0.0, 3.0]])
+    >>> ivy.eigvalsh(x, UPLO = "L", out=x)
+    >>> print(x)
+    ivy.array([1. 3.])
+
 
     With :class:`ivy.Container` inputs
 
@@ -628,14 +644,10 @@ def eigvalsh(
     ...                   b=ivy.array([[1., 1.], [1., 1.]]))
     >>> y = ivy.eigvalsh(x)
     >>> print(y)
-    ivy.array([-1., -3.])
     {
         a: ivy.array([-1., -3.]),
         b: ivy.array([0. 2.])
     }
-
-    
-
 
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
