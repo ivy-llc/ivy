@@ -592,6 +592,9 @@ def eigvalsh(
     x
         input array having shape (..., M, M) and whose innermost two dimensions form
         square matrices. Must have floating-point data type.
+    UPLO
+        optional string being 'L' or 'U', specifying whether the calculation is done with 
+        the lower triangular part of `x` ('L', default) or the upper triangular part ('U').
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.

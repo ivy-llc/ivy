@@ -24,7 +24,12 @@ def leaky_relu(
     return tf.nn.leaky_relu(x, alpha)
 
 
-def relu(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
+def relu(
+    x: Tensor,
+    /,
+    *,
+    out: Optional[Tensor] = None
+) -> Tensor:
     return tf.nn.relu(x)
 
 
