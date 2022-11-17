@@ -1,5 +1,11 @@
+# global
+from typing import Any
+
+# local
 import ivy
+from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def indices(dimensions, dtype=None, sparse=False):
     return ivy.indices(dimensions)
