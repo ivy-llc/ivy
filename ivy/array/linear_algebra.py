@@ -14,6 +14,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        transpose_a: bool = False,
+        transpose_b: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -28,7 +30,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(z)
         ivy.array(11.)
         """
-        return ivy.matmul(self._data, x2, out=out)
+        return ivy.matmul(
+            self._data, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+        )
 
     def cholesky(
         self: ivy.Array,

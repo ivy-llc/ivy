@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like
 )
 
 # Helpers #
@@ -395,6 +396,7 @@ def ones(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -499,6 +501,7 @@ def full_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -615,6 +618,7 @@ def ones_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -729,6 +733,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -776,6 +781,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -872,6 +878,7 @@ def empty(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -986,6 +993,7 @@ def eye(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1460,6 +1468,7 @@ def native_array(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1521,6 +1530,7 @@ def one_hot(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],
