@@ -53,9 +53,29 @@ def _handle_nestable_dtype_info(fn):
     return new_fn
 
 
+# Unindent every line in the source such that
+# class methods can be compiled as normal methods
+def _lstrip_lines(source: str) -> str:
+    source = source.lstrip().split("\n")
+
+    # If the first line is a decorator
+    if source[0][0] == "@":
+        # If the second line is a function definition
+        if source[1].lstrip()[0:3] == "def":
+            # Work out how many whitespace chars to remove
+            num_chars_to_remove = source[1].find("d")
+
+            # The first string needs no changes
+            for i in range(1, len(source)):
+                source[i] = source[i][num_chars_to_remove:]
+
+    source = "\n".join(source)
+    return source
+
+
 # Get the list of function used the function
 def _get_function_list(func):
-    tree = ast.parse(inspect.getsource(func).lstrip())
+    tree = ast.parse(_lstrip_lines(inspect.getsource(func)))
     names = set()
     # Extract all the call names
     for node in ast.walk(tree):
@@ -101,11 +121,14 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
         # if it's einops, we need to recurse
+
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
-        elif "frontend" in fn.__module__ or "einops" in fn.__name__:
+        elif "frontend" in fn.__module__ or (
+            hasattr(fn, "__name__") and "einops" in fn.__name__
+        ):
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
