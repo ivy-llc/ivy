@@ -2,8 +2,9 @@ import math
 from typing import Optional
 import jax.numpy as jnp
 from ivy.functional.backends.jax import JaxArray
-
+import jax
 import ivy
+import numpy
 
 
 def diagflat(
@@ -90,3 +91,16 @@ def kron(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.kron(a, b)
+
+
+def matrix_exp(
+    x: JaxArray,
+    /,
+    *,
+    max_squarings: Optional[int] = None,
+    out: Optional[JaxArray] = None,
+) -> numpy.ndarray:
+    if max_squarings is not None:
+        return jax.scipy.linalg.expm(x, max_squarings=max_squarings)
+    else:
+        return jax.scipy.linalg.expm(x)

@@ -123,3 +123,18 @@ def kron(
     ivy.array([3, 4, 6, 8])
     """
     return current_backend(a, b).kron(a, b, out=out)
+
+    
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def matrix_exp(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    max_squarings: Optional[int] = None,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    return current_backend(x).matrix_exp(x, max_squarings=max_squarings, out=out)

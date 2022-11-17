@@ -47,3 +47,33 @@ def kron(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.kron(a, b)
+
+def matrix_exp(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    max_squarings: Optional[int] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if max_squarings is not None:
+        c = 0
+        if x.dtype == tf.float32:
+            c = 1.97
+        elif x.dtype == tf.float64:
+            c = 2.42
+        else:
+            return tf.linalg.expm(x)
+
+        if (
+            max(
+                0,
+                tf.math.ceil(
+                    tf.experimental.numpy.log2(tf.norm(x, ord="euclidean")) - c
+                ),
+            )
+            > max_squarings
+        ):
+            return tf.constant(float("NaN"), dtype=tf.float32)
+        else:
+            return tf.linalg.expm(x)
+    return tf.linalg.expm(x)

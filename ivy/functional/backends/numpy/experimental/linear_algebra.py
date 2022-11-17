@@ -1,7 +1,7 @@
 import math
 from typing import Optional
 import numpy as np
-
+import scipy
 import ivy
 
 
@@ -89,3 +89,26 @@ def kron(
 
 
 kron.support_native_out = False
+
+
+def matrix_exp(
+    x: np.ndarray,
+    /,
+    *,
+    max_squarings: Optional[int] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if max_squarings is not None:
+        c = 0
+        if x.dtype == np.float32:
+            c = 1.97
+        elif x.dtype == np.float64:
+            c = 2.42
+        else:
+            return scipy.linalg.expm(x)
+
+        if max(0, np.ceil(np.log2(np.linalg.norm(x, ord=1)) - c)) > max_squarings:
+            return np.full((1), float("NaN"), dtype=np.float32)
+        else:
+            return scipy.linalg.expm(x)
+    return scipy.linalg.expm(x)

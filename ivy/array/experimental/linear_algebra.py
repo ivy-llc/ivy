@@ -60,3 +60,12 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array([3, 4, 6, 8])
         """
         return ivy.kron(self._data, b, out=out)
+    
+    def matrix_exp(
+        self: ivy.Array,
+        /,
+        *,
+        max_squarings: Optional[int] = None,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.matrix_exp(self._data, max_squarings=max_squarings, out=out)

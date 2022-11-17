@@ -213,3 +213,39 @@ def test_kron(
         a=x[0],
         b=x[1],
     )
+
+# matrix_exp
+@handle_test(
+    fn_tree="functional.experimental.matrix_exp",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=2,
+        min_dim_size=1,
+        max_dim_size=50,
+    ),
+)
+def test_matrix_exp(
+    *,
+    dtype_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="matrix_exp",
+        x=x[0],
+    )

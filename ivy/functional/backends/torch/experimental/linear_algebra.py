@@ -1,9 +1,7 @@
 # global
-import math
-
 import torch
 from typing import Optional
-
+import math
 import ivy
 
 
@@ -100,3 +98,29 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def matrix_exp(
+    x: torch.Tensor,
+    /,
+    *,
+    max_squarings: Optional[int] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if max_squarings is not None:
+        c = 0
+        if x.dtype == torch.float32:
+            c = 1.97
+        elif x.dtype == torch.float64:
+            c = 2.42
+        else:
+            return torch.linalg.matrix_exp(x)
+
+        if (
+            max(0, torch.ceil(torch.log2(torch.linalg.norm(x, ord=1)) - c))
+            > max_squarings
+        ):
+            return torch.full((1, 1), float("NaN"), dtype=torch.float32)
+        else:
+            return torch.linalg.matrix_exp(x)
+    return torch.linalg.matrix_exp(x)
