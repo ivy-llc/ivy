@@ -236,7 +236,14 @@ def matrix_transpose(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxAr
     return jnp.swapaxes(x, -1, -2)
 
 
-def outer(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def outer(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return jnp.outer(x1, x2)
 

@@ -425,6 +425,7 @@ def matrix_transpose(
 
 
 # noinspection PyUnusedLocal,PyShadowingBuiltins
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
