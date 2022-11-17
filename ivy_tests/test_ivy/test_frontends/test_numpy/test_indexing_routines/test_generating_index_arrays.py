@@ -1,14 +1,9 @@
-#global
-import ivy
-import numpy as np
-from hypothesis import given, assume, strategies as st
+from hypothesis import given, strategies as st
 
-# local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
-#indicies
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
