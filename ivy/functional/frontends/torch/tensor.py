@@ -1,8 +1,8 @@
 # local
-
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
+import weakref
 
 
 class Tensor:
@@ -76,8 +76,8 @@ class Tensor:
         return self.data
 
     def view(self, shape):
-        self.data = torch_frontend.reshape(self.data, shape)
-        return self.data
+        view = torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
+        return view
 
     def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
@@ -288,6 +288,19 @@ class Tensor:
         self.data = self.pow(other)
         return self.data
 
+    def size(self, dim=None):
+        shape = ivy.shape(self.data, as_array=True)
+        if dim is None:
+            return shape
+        else:
+            try:
+                return shape[dim]
+            except IndexError:
+                raise IndexError(
+                    "Dimension out of range (expected to be in range of [{}, {}], "
+                    "but got {}".format(len(shape), len(shape) - 1, dim)
+                )
+
     # Special Methods #
     # -------------------#
 
@@ -314,7 +327,7 @@ class Tensor:
         return torch_frontend.mul(other, self)
 
     def __sub__(self, other, *, alpha=1):
-        return torch_frontend.subtract(self, other, alpha=alpha)
+        return torch_frontend.subtract(self.data, other, alpha=alpha)
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
