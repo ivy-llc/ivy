@@ -1,6 +1,6 @@
 import ivy
 
-def numpy_diagonal(a, offset, axis1, axis2):
+def diagonal(a, offset, axis1, axis2):
     ivy.assertions.check_equal(axis1==axis2,message="Both axis values should not be the same"
     )
     ivy.assertions.check_equal(

@@ -43,9 +43,9 @@ import ivy
     #where=np_frontend_helpers.where(),
 
 )
-def test_numpy_diagonal(
+def test_diagonal(
         dtype_and_x,as_variable,num_positional_args,native_array,where,
-        fw,offset,axis1,axis2):
+        offset,axis1,axis2, with_out):
     input_dtype, x = dtype_and_x
     as_variable = as_variable
 
@@ -53,10 +53,10 @@ def test_numpy_diagonal(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         where=where,
-        with_out=without,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
+        #fw=fw,
         frontend="numpy",
         fn_tree="diagonal",
         a=x,
