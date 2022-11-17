@@ -1,10 +1,14 @@
-from hypothesis import given, strategies as st
+#global
+import ivy
+import numpy as np
+from hypothesis import given, assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
 
+#indicies
 @handle_cmd_line_args
 @given(
     dtype_and_x=helpers.dtype_and_values(
@@ -33,7 +37,7 @@ def test_numpy_indices(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend="numpy",
-        fn_tree="numpy.indices",
+        fn_tree="indices",
         pred=pred_cond,
         operand=x[0],
         sparse=False,
