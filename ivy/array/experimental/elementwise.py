@@ -1,6 +1,7 @@
 # global
 import abc
 from typing import Optional, Union, Tuple
+from numbers import Number
 
 # local
 import ivy
@@ -273,6 +274,29 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([32.,   64.,  128.])
         """
         return ivy.exp2(self._data, out=out)
+
+    def copysign(
+        self: Union[ivy.Array, ivy.NativeArray, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, Number],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """TODO
+
+        Parameters
+        ----------
+        TODO
+
+        Returns
+        -------
+        TODO
+
+        Examples
+        --------
+        >>> TODO
+        """
+        return ivy.copysign(self._data, x2, out=out)
 
     def count_nonzero(
         self: ivy.Array,

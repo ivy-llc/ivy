@@ -1,5 +1,6 @@
 # global
 from typing import Optional, Union, List, Dict, Tuple
+from numbers import Number
 
 # local
 import ivy
@@ -605,6 +606,73 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_exp2(self, out=out)
 
     @staticmethod
+    def static_copysign(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.copysign. This method simply wraps
+        the function, and so the docstring for ivy.copysign also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        TODO
+
+        Returns
+        -------
+        TODO
+
+        Examples
+        --------
+        >>> TODO
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "copysign",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def copysign(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.exp2. This method simply
+        wraps the function, and so the docstring for ivy.exp2 also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with the base input arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        TODO
+
+        Examples
+        --------
+        >>> TODO
+        """
+        return self.static_copysign(self, out=out)
+
+    @staticmethod
     def static_count_nonzero(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -803,7 +871,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.nansum. This method simply wraps
         the function, and so the docstring for ivy.nansum also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -820,13 +888,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -874,7 +942,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -891,13 +959,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
