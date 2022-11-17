@@ -192,7 +192,7 @@ class ArrayWithSearching(abc.ABC):
             Indices for where the boolean array is True.
 
         Examples
-        ------------------------
+        --------
 
         Using :class:`ivy.Array` instance method:
 

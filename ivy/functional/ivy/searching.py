@@ -540,7 +540,7 @@ def argwhere(
         Indices of non-zero elements.
 
     Examples
-    -------------------
+    --------
 
     With :class:`ivy.Array` input:
 
