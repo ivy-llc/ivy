@@ -159,7 +159,9 @@ def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
 possible_fixtures = ["backend_fw", "on_device"]
 
 
-def handle_test(*, fn_tree: str, **_given_kwargs):
+def handle_test(
+    *, fn_tree: str, ground_truth_backend: str = "tensorflow", **_given_kwargs
+):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
     given_kwargs = _given_kwargs
@@ -184,10 +186,15 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
                     _given_kwargs[flag] = st.booleans()
 
             wrapped_test = given(**_given_kwargs)(test_fn)
-            if "fn_name" in param_names:
-                _name = wrapped_test.__name__
-                wrapped_test = partial(wrapped_test, fn_name=fn_name)
-                wrapped_test.__name__ = _name
+            possible_arguments = {
+                "fn_name": fn_name,
+                "ground_truth_backend": ground_truth_backend,
+            }
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
+            _name = wrapped_test.__name__
+            wrapped_test = partial(wrapped_test, **partial_kwargs)
+            wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
 
@@ -197,6 +204,7 @@ def handle_test(*, fn_tree: str, **_given_kwargs):
             fn_name=fn_name,
             supported_device_dtypes=supported_device_dtypes,
         )
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
@@ -251,7 +259,9 @@ def _import_method(method_tree: str):
     return _method, method_name, _class, class_name, _mod
 
 
-def handle_method(*, method_tree, **_given_kwargs):
+def handle_method(
+    *, method_tree, ground_truth_backend: str = "tensorflow", **_given_kwargs
+):
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
@@ -265,6 +275,7 @@ def handle_method(*, method_tree, **_given_kwargs):
 
         if is_hypothesis_test:
             fn_args = typing.get_type_hints(test_fn)
+            param_names = inspect.signature(test_fn).parameters.keys()
 
             for k, v in fn_args.items():
                 if (
@@ -284,9 +295,17 @@ def handle_method(*, method_tree, **_given_kwargs):
                         )
 
             wrapped_test = given(**_given_kwargs)(test_fn)
+            possible_arguments = {
+                "class_name": class_name,
+                "method_name": method_name,
+                "ground_truth_backend": ground_truth_backend,
+            }
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
             _name = wrapped_test.__name__
             wrapped_test = partial(
-                wrapped_test, class_name=class_name, method_name=method_name
+                wrapped_test,
+                **partial_kwargs,
             )
             wrapped_test.__name__ = _name
         else:
@@ -298,6 +317,7 @@ def handle_method(*, method_tree, **_given_kwargs):
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
         )
+        wrapped_test.ground_truth_backend = ground_truth_backend
 
         return wrapped_test
 
