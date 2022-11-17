@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 
 @handle_test(
     fn_tree="functional.experimental.max_pool2d",
+    ground_truth_backend="jax",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=4, max_dims=4, min_side=1, max_side=4),
 )
 def test_max_pool2d(
@@ -22,9 +23,11 @@ def test_max_pool2d(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -36,7 +39,6 @@ def test_max_pool2d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="jax",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -46,6 +48,7 @@ def test_max_pool2d(
 
 @handle_test(
     fn_tree="functional.experimental.max_pool1d",
+    ground_truth_backend="jax",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
 )
 def test_max_pool1d(
@@ -59,9 +62,11 @@ def test_max_pool1d(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -73,7 +78,6 @@ def test_max_pool1d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="jax",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -83,6 +87,7 @@ def test_max_pool1d(
 
 @handle_test(
     fn_tree="functional.experimental.avg_pool1d",
+    ground_truth_backend="jax",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
 )
 def test_avg_pool1d(
@@ -95,9 +100,11 @@ def test_avg_pool1d(
     container_flags,
     instance_method,
     backend_fw,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -109,7 +116,6 @@ def test_avg_pool1d(
         fn_name="avg_pool1d",
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="jax",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -119,6 +125,7 @@ def test_avg_pool1d(
 
 @handle_test(
     fn_tree="functional.experimental.max_pool3d",
+    ground_truth_backend="jax",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
 )
 def test_max_pool3d(
@@ -132,9 +139,11 @@ def test_max_pool3d(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -146,7 +155,6 @@ def test_max_pool3d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="jax",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -156,6 +164,7 @@ def test_max_pool3d(
 
 @handle_test(
     fn_tree="functional.experimental.avg_pool3d",
+    ground_truth_backend="jax",
     x_k_s_p=helpers.arrays_for_pooling(min_dims=5, max_dims=5, min_side=1, max_side=4),
 )
 def test_avg_pool3d(
@@ -169,9 +178,11 @@ def test_avg_pool3d(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -183,7 +194,6 @@ def test_avg_pool3d(
         fn_name=fn_name,
         rtol_=1e-1,
         atol_=1e-1,
-        ground_truth_backend="jax",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -206,9 +216,11 @@ def test_avg_pool2d(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x, kernel, stride, pad = x_k_s_p
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -220,7 +232,6 @@ def test_avg_pool2d(
         fn_name=fn_name,
         rtol_=1e-2,
         atol_=1e-2,
-        ground_truth_backend="tensorflow",
         x=x[0],
         kernel=kernel,
         strides=stride,
@@ -270,9 +281,11 @@ def test_dct(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtype, x, type, n, axis, norm = dtype_x_and_args
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

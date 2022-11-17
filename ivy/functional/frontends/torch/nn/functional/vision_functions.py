@@ -130,9 +130,9 @@ def _pad_handle_padding_shape(padding, n, mode):
 
 
 @to_ivy_arrays_and_back
-def pad(input, padding, mode="constant", value=0):
-    check_torch_pad_input_valid(padding)
-    padding = _pad_handle_padding_shape(padding, len(input.shape), mode)
+def pad(input, pad, mode="constant", value=0):
+    check_torch_pad_input_valid(pad)
+    padding = _pad_handle_padding_shape(pad, len(input.shape), mode)
     if mode == "constant":
         return ivy.pad(input, padding, mode="constant", constant_values=value)
     elif mode == "reflect":
