@@ -404,6 +404,7 @@ def test_count_nonzero(
     native_array,
     container,
     instance_method,
+    on_device,
     fw,
 ):
     i_o_dtype, a, axis = dtype_values_axis
@@ -415,6 +416,7 @@ def test_count_nonzero(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        on_device=on_device,
         fw=fw,
         ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
@@ -451,6 +453,8 @@ def test_nansum(
     with_out,
     native_array,
     container_flags,
+    on_device,
+    fn_name,
     instance_method,
     backend_fw,
 ):
@@ -464,8 +468,9 @@ def test_nansum(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
+        on_device=on_device,
         ground_truth_backend="tensorflow",
-        fn_name="nansum",
+        fn_name=fn_name,
         x=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -562,6 +567,7 @@ def test_isclose(
         container_flags=container_flags,
         instance_method=instance_method,
         ground_truth_backend="tensorflow",
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],
