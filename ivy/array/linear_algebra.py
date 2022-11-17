@@ -588,6 +588,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def vector_norm(
         self: ivy.Array,
+        /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,

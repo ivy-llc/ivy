@@ -2128,17 +2128,18 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_vector_norm(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        r"""
+        """
         ivy.Container static method variant of ivy.vector_norm.
         This method simply wraps the function, and so the docstring for
         ivy.vector_norm also applies to this method with minimal changes.
@@ -2228,14 +2229,15 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def vector_norm(
         self: ivy.Container,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
+        /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,
         ord: Union[int, float, Literal[inf, -inf]] = 2,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         r"""
@@ -2313,13 +2315,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
         """
         return self.static_vector_norm(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
             axis=axis,
             keepdims=keepdims,
             ord=ord,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
