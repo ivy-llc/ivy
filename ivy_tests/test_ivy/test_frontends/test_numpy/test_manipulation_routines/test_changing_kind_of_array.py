@@ -61,4 +61,3 @@ def test_numpy_asanyarray(
         a=x,
         dtype=input_dtype[0],
     )
-    

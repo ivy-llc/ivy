@@ -8,5 +8,4 @@ def asanyarray(
     order=None,
     like=None
 ):
-    return ivy.asanyarray(a, dtype=dtype, order=order, like=like
-    )
+    return ivy.asanyarray(a, dtype=dtype, order=order, like=like)
