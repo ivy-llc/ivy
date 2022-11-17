@@ -25,24 +25,28 @@ class ArrayWithStatistical(abc.ABC):
         x
             Input array. Should have a real-valued data type.
         axis
-            axis or axes along which minimum values must be computed. By default, the
-            minimum value must be computed over the entire array. If a tuple of integers,
-            minimum values must be computed over multiple axes. Default: ``None``.
+            axis or axes along which minimum values must be computed.
+            By default, the minimum value must be computed over the
+            entire array. If a tuple of integers,minimum values must be
+            computed over multiple axes. Default: ``None``.
 
         keepdims
-            optional boolean, if ``True``, the reduced axes (dimensions) must be included in the
-            result as singleton dimensions, and, accordingly, the result must be compatible
-            with the input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
-            (dimensions) must not be included in the result. Default: ``False``.
+            optional boolean, if ``True``, the reduced axes (dimensions)
+            must be included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the input
+            array (see :ref:`broadcasting`). Otherwise, if ``False``, the
+            reduced axes (dimensions) must not be included in the
+            result. Default: ``False``.
         out
             optional output array, for writing the result to.
 
         Returns
         -------
         ret
-            if the minimum value was computed over the entire array, a zero-dimensional
-            array containing the minimum value; otherwise, a non-zero-dimensional array
-            containing the minimum values. The returned array must have the same data type
+            if the minimum value was computed over the entire array, a
+            zero-dimensional array containing the minimum value; otherwise,
+            a non-zero-dimensional array containing the minimum values.
+            The returned array must have the same data type
             as ``x``.
 
         Examples
@@ -86,13 +90,15 @@ class ArrayWithStatistical(abc.ABC):
         x
             input array. Should have a numeric data type.
         axis
-            axis or axes along which maximum values must be computed. By default, the
-            maximum value must be computed over the entire array. If a tuple of integers,
-            maximum values must be computed over multiple axes. Default: ``None``.
+            axis or axes along which maximum values must be computed.
+            By default, the maximum value must be computed over the
+            entire array. If a tuple of integers, maximum values must
+            be computed over multiple axes. Default: ``None``.
         keepdims
-            if ``True``, the reduced axes (dimensions) must be included in the result as
-            singleton dimensions, and, accordingly, the result must be compatible with the
-            input array (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
+            if ``True``, the reduced axes (dimensions) must be included
+            in the result as singleton dimensions, and, accordingly, the
+            result must be compatible with the input array
+            (see :ref:`broadcasting`). Otherwise, if ``False``, the reduced axes
             (dimensions) must not be included in the result. Default: ``False``.
         out
             optional output array, for writing the result to.
@@ -100,9 +106,11 @@ class ArrayWithStatistical(abc.ABC):
         Returns
         -------
         ret
-            if the maximum value was computed over the entire array, a zero-dimensional
-            array containing the maximum value; otherwise, a non-zero-dimensional array
-            containing the maximum values. The returned array must have the same data type
+            if the maximum value was computed over the entire array,
+            a zero-dimensional array containing the maximum value;
+            otherwise, a non-zero-dimensional array
+            containing the maximum values. The returned array must
+            have the same data type
             as ``x``.
 
         Examples
