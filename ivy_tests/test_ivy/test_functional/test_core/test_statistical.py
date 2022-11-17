@@ -87,9 +87,11 @@ def test_min(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -126,9 +128,11 @@ def test_max(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -164,9 +168,11 @@ def test_mean(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -204,9 +210,11 @@ def test_var(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -245,9 +253,11 @@ def test_prod(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -284,9 +294,11 @@ def test_sum(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -325,9 +337,11 @@ def test_std(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, correction = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -367,9 +381,11 @@ def test_cumsum(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -409,9 +425,11 @@ def test_cumprod(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis, castable_dtype = dtype_x_axis_castable
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=[input_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -456,6 +474,7 @@ def test_einsum(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     eq, operands, true_shape = eq_n_op_n_shp
     kw = {}
@@ -466,6 +485,7 @@ def test_einsum(
     # len(operands) + 1 because of the equation
     num_positional_args = len(operands) + 1
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

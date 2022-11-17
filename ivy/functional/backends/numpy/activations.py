@@ -15,7 +15,12 @@ except (ImportError, ModuleNotFoundError):
 
 
 @_scalar_output_to_0d_array
-def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def relu(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.maximum(x, 0, out=out, dtype=x.dtype)
 
 
@@ -30,7 +35,7 @@ def leaky_relu(
 
 @_scalar_output_to_0d_array
 def gelu(
-    x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
+    x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ivy.assertions.check_exists(
         erf,

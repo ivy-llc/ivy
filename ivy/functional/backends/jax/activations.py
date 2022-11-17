@@ -16,7 +16,7 @@ def gelu(
     x: JaxArray,
     /,
     *,
-    approximate: bool = True,
+    approximate: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)
@@ -28,7 +28,12 @@ def leaky_relu(
     return jnp.asarray(jnp.where(x > 0, x, jnp.multiply(x, alpha)), x.dtype)
 
 
-def relu(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
+def relu(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None
+) -> JaxArray:
     return jnp.maximum(x, 0)
 
 
