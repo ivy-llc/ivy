@@ -291,6 +291,9 @@ class Tensor:
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
 
+    def ceil(self):
+        return torch_frontend.ceil(self.data)
+
     # Special Methods #
     # -------------------#
 
