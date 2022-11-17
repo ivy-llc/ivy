@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     integer_arrays_to_float,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
