@@ -65,9 +65,11 @@ def test_concat(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -110,10 +112,12 @@ def test_expand_dims(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -156,10 +160,12 @@ def test_flip(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -205,10 +211,12 @@ def test_permute_dims(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -249,10 +257,12 @@ def test_reshape(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -316,6 +326,7 @@ def test_roll(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     value_dtype, value = dtype_value
     shift_dtype, shift_val = shift
@@ -328,6 +339,7 @@ def test_roll(
         shift_val = tuple(shift_val[0].tolist())
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype + shift_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -377,10 +389,12 @@ def test_squeeze(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -434,10 +448,12 @@ def test_stack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtypes, arrays = dtypes_arrays
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -488,9 +504,11 @@ def test_clip(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtypes, (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes[0],
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -546,10 +564,12 @@ def test_constant_pad(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value, pad_width = dtype_value_pad_width_constant
     constant = float(value[0].flat[0])  # just use the first value as fill value
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -627,6 +647,7 @@ def test_repeat(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     value_dtype, value = dtype_value
 
@@ -639,6 +660,7 @@ def test_repeat(
         axis = axis[0]
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -723,10 +745,12 @@ def test_split(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -772,10 +796,12 @@ def test_swapaxes(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -820,10 +846,12 @@ def test_tile(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value = dtype_value
     repeat_dtype, repeat_list = repeat
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype + repeat_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -856,9 +884,11 @@ def test_zero_pad(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, value, pad_width = dtype_value_pad_width
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -898,12 +928,14 @@ def test_unstack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     # smoke test
     dtype, x, axis = x_n_dtype_axis
     if axis >= len(x[0].shape):
         axis = len(x[0].shape) - 1
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
