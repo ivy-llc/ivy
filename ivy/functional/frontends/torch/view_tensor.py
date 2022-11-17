@@ -1,5 +1,6 @@
 # local
 import ivy
+import weakref
 import functools
 from typing import Callable
 from ivy.functional.frontends.torch.tensor import Tensor
@@ -9,7 +10,7 @@ def _merge_from_original(method: Callable) -> Callable:
     @functools.wraps(method)
     def new_method(self, *args, **kwargs):
         if self.ref() is not None:
-            self.fetch_from()
+            self.fetch_from(checked=True)
         return method(self, *args, **kwargs)
 
     return new_method
@@ -17,7 +18,7 @@ def _merge_from_original(method: Callable) -> Callable:
 
 def _update_original(self, method, *args, **kwargs):
     ret = method(*args, **kwargs)
-    self.chain_merge_to()
+    self.chain_merge_to(checked=True)
     return ret
 
 
@@ -52,8 +53,6 @@ class ViewTensor:
             )
 
         self.ref = ref
-        self.shape = shape
-        self.from_shape = ref().size()
 
     def __getattr__(self, item):
         if not hasattr(self.delegate, item):
@@ -62,7 +61,7 @@ class ViewTensor:
         if self.ref() is None:
             return getattr(self.delegate, item)
 
-        self.fetch_from()
+        self.fetch_from(checked=True)
         attr = getattr(self.delegate, item)
         if callable(attr):
             if len(item) > 1 and item[-1] == "_":
@@ -70,40 +69,48 @@ class ViewTensor:
 
         return attr
 
-    def fetch_from(self):
-        if isinstance(self.ref(), Tensor):
-            self.delegate = Tensor(ivy.reshape(self.ref().data, self.shape, copy=True))
-        elif isinstance(self.ref(), ViewTensor):
-            self.ref().fetch_from()
-            self.ref().delegate = Tensor(
-                ivy.reshape(self.ref().delegate.data, self.shape, copy=True)
-            )
-        else:
-            raise AttributeError(
-                "'ViewTensor' object is not referring to a 'Tensor' or "
-                "'ViewTensor' object"
-            )
+    def fetch_from(self, *, checked=False):
+        if (self.ref() is not None) or checked:
+            if isinstance(self.ref(), Tensor):
+                self.delegate = Tensor(
+                    ivy.reshape(self.ref().data, self.size(), copy=True)
+                )
+            elif isinstance(self.ref(), ViewTensor):
+                self.ref().fetch_from()
+                self.delegate = Tensor(
+                    ivy.reshape(self.ref().delegate.data, self.size(), copy=True)
+                )
+            else:
+                raise AttributeError(
+                    "'ViewTensor' object is not referring to a 'Tensor' or "
+                    "'ViewTensor' object"
+                )
 
-    def chain_merge_to(self):
-        if isinstance(self.ref(), Tensor):
-            self.ref().data = ivy.reshape(
-                self.delegate.data, self.from_shape, copy=True
-            )
-        elif isinstance(self.ref(), ViewTensor):
-            self.ref().delegate.data = ivy.reshape(
-                self.delegate.data, self.from_shape, copy=True
-            )
-            self.ref().chain_merge_to()
-        else:
-            raise AttributeError(
-                "'ViewTensor' object is not referring to a 'Tensor' or "
-                "'ViewTensor' object"
-            )
+    def chain_merge_to(self, *, checked=False):
+        if (self.ref() is not None) or checked:
+            if isinstance(self.ref(), Tensor):
+                self.ref().data = ivy.reshape(
+                    self.delegate.data, self.ref().size(), copy=True
+                )
+            elif isinstance(self.ref(), ViewTensor):
+                self.ref().delegate.data = ivy.reshape(
+                    self.delegate.data, self.ref().size(), copy=True
+                )
+                self.ref().chain_merge_to()
+            else:
+                raise AttributeError(
+                    "'ViewTensor' object is not referring to a 'Tensor' or "
+                    "'ViewTensor' object"
+                )
 
     # Class Invariance #
     # ---------------- #
-    # size
-    # resize
+    def view(self, shape):
+        view = ViewTensor(weakref.ref(self), shape=shape)
+        return view
+
+    def size(self):
+        return self.delegate.size()
 
     # Special Methods #
     # --------------- #

@@ -130,7 +130,7 @@ class Tensor:
         return torch_frontend.abs(self.data)
 
     def abs_(self):
-        self.data = self.abs()
+        self.data = self.abs().data
         return self.data
 
     def bitwise_and(self, other):
