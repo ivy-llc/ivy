@@ -193,7 +193,6 @@ class ArrayWithSearching(abc.ABC):
 
         Examples
         --------
-
         Using :class:`ivy.Array` instance method:
 
         >>> x = ivy.array([[1, 2], [3, 4]])
