@@ -7,7 +7,6 @@ from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
 
-@to_ivy_arrays_and_back
 def _compute_allclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.all(
@@ -18,7 +17,6 @@ def _compute_allclose_with_tol(input, other, rtol, atol):
     )
 
 
-@to_ivy_arrays_and_back
 def _compute_isclose_with_tol(input, other, rtol, atol):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.less_equal(

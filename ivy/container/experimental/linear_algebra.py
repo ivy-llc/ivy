@@ -6,7 +6,7 @@ from ivy.container.base import ContainerBase
 import ivy
 
 
-class ContainerWithLinalgExperimental(ContainerBase):
+class ContainerWithLinearAlgebraExperimental(ContainerBase):
     @staticmethod
     def static_diagflat(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],

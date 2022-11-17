@@ -1,10 +1,10 @@
 # global
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -25,19 +25,20 @@ def dtypes_x_reshape(draw):
 
 
 # reshape
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.reshape"
-    ),
 )
 def test_numpy_reshape(
+    *,
     dtypes_x_shape,
-    with_out,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtypes, x, shape = dtypes_x_shape
     helpers.test_frontend_function(
@@ -46,29 +47,31 @@ def test_numpy_reshape(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="reshape",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         newshape=shape,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.broadcast_to",
     dtype_x_shape=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"), ret_shape=True
     ),
     factor=helpers.ints(min_value=1, max_value=5),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.broadcast_to"
-    ),
 )
 def test_numpy_broadcast_to(
+    *,
     dtype_x_shape,
     factor,
     as_variable,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x, shape = dtype_x_shape
     broadcast_shape = (factor,) + shape
@@ -78,25 +81,27 @@ def test_numpy_broadcast_to(
         with_out=False,
         native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        frontend="numpy",
-        fn_tree="broadcast_to",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         array=x[0],
         shape=broadcast_shape,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.ravel",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ravel"
-    ),
 )
 def test_numpy_ravel(
+    *,
     dtype_and_x,
     as_variable,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -105,15 +110,16 @@ def test_numpy_ravel(
         with_out=False,
         native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        frontend="numpy",
-        fn_tree="ravel",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )
 
 
 # moveaxis
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-100,
@@ -158,17 +164,18 @@ def test_numpy_ravel(
         min_size=1,
         force_int=True,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.moveaxis"
-    ),
 )
 def test_numpy_moveaxis(
+    *,
     dtype_and_a,
     source,
     destination,
     as_variable,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
@@ -177,8 +184,9 @@ def test_numpy_moveaxis(
         with_out=False,
         native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        frontend="numpy",
-        fn_tree="moveaxis",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=a[0],
         source=source,
         destination=destination,

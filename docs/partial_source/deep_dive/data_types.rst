@@ -44,7 +44,9 @@ The data types supported by Ivy are as follows:
 * float64
 * bool
 
-These are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
+Note that Ivy does not currently support complex data types, these will hopefully be added in a future implementation.
+
+The supported data types are all defined at `import time`_, with each of these set as an `ivy.Dtype`_ instance.
 The :class:`ivy.Dtype` class derives from :class:`str`, and has simple logic in the constructor to verify that the string formatting is correct.
 All data types can be queried as attributes of the :mod:`ivy` namespace, such as ``ivy.float32`` etc.
 
@@ -338,6 +340,16 @@ For Frontend Functions:
 
 For compositional functions, the supported and unsupported data types can then be inferred automatically using the helper functions `function_supported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1370>`_ and `function_unsupported_dtypes <https://github.com/unifyai/ivy/blob/9e71fc2b589bf8f6b7a0762602723ac084bb5d9e/ivy/functional/ivy/data_type.py#L1407>`_ respectively, which traverse the abstract syntax tree of the compositional function and evaluate the relevant attributes for each primary function in the composition.
 The same approach applies for most stateful methods, which are themselves compositional.
+
+It is also possible to add supported and unsupported dtypes as a combination of both class and individual dtypes. The allowed dtype classes are: ``valid``, ``numeric``, ``float``, ``integer``, and ``unsigned``.
+
+For example, using the decorator:
+
+.. code-block:: python
+
+    @with_unsupported_dtypes{{"1.11.0 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
+
+would consider all the unsigned integer dtypes (``uint8``, ``uint16``, ``uint32``, ``uint64``), ``bfloat16`` and ``float16`` as unsupported for the function.
 
 In order to get the supported and unsupported devices and dtypes for a function, the corresponding documentation of that function for that specific framework can be referred.
 However, sometimes new unsupported dtypes are discovered while testing too.

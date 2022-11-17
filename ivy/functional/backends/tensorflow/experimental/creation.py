@@ -37,3 +37,60 @@ def triu_indices(
             return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
 
     return tuple(tf.convert_to_tensor(ret, dtype=tf.int64))
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if periodic is False:
+        return tf.signal.kaiser_window(
+            window_length, beta, dtype=tf.dtypes.float32, name=None
+        )
+    else:
+        return tf.signal.kaiser_window(window_length + 1, beta, dtype=dtype, name=None)[
+            :-1
+        ]
+
+
+def kaiser_bessel_derived_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if periodic is True:
+        return tf.signal.kaiser_bessel_derived_window(
+            window_length + 1, beta, dtype, name=None
+        )[:-1]
+    else:
+        return tf.signal.kaiser_bessel_derived_window(
+            window_length, beta, dtype, name=None
+        )
+
+
+def vorbis_window(
+    window_length: Union[tf.Tensor, tf.Variable],
+    *,
+    dtype: Optional[tf.DType] = tf.dtypes.float32,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.vorbis_window(window_length, dtype=dtype, name=None)
+
+
+def hann_window(
+    window_length: int,
+    periodic: Optional[bool] = True,
+    dtype: Optional[tf.DType] = None,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.signal.hann_window(
+        window_length, periodic=periodic, dtype=dtype, name=None
+    )

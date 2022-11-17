@@ -418,7 +418,7 @@ def maximum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -432,7 +432,7 @@ def minimum(
     x2: Union[float, JaxArray],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

@@ -17,6 +17,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like,
 )
 
 # Helpers #
@@ -62,16 +63,11 @@ def asarray_handle_nestable(fn: Callable) -> Callable:
 def _ivy_to_native(x):
     # checks the first element of the leaf list and
     # converts it to a native array if it is an ivy array
-    if (
-        isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple))
-    ) or (isinstance(x, np.ndarray) and x.ndim > 1):
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
             x[i] = _ivy_to_native(item)
     else:
-        if (
-            (isinstance(x, (list, tuple)) and len(x) > 0)
-            or (isinstance(x, np.ndarray) and x.ndim >= 1 and x.size != 0)
-        ) and ivy.is_ivy_array(x[0]):
+        if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
             x = ivy.to_native(x, nested=True)
         elif ivy.is_ivy_array(x):
             x = ivy.to_native(x)
@@ -400,6 +396,7 @@ def ones(
 @infer_dtype
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -504,6 +501,7 @@ def full_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def ones_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -512,7 +510,7 @@ def ones_like(
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array filled with ones and having the same shape as an input 
+    """Returns a new array filled with ones and having the same shape as an input
     array ``x``.
 
     Parameters
@@ -620,6 +618,7 @@ def ones_like(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def zeros_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -734,6 +733,7 @@ def zeros_like(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def tril(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -781,6 +781,7 @@ def tril(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def triu(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -877,6 +878,7 @@ def empty(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def empty_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -991,6 +993,7 @@ def eye(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def linspace(
     start: Union[ivy.Array, ivy.NativeArray, float],
     stop: Union[ivy.Array, ivy.NativeArray, float],
@@ -1465,6 +1468,7 @@ def native_array(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def one_hot(
     indices: Union[ivy.Array, ivy.NativeArray],
     depth: int,
@@ -1526,6 +1530,7 @@ def one_hot(
 @infer_device
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def logspace(
     start: Union[ivy.Array, ivy.NativeArray, int],
     stop: Union[ivy.Array, ivy.NativeArray, int],

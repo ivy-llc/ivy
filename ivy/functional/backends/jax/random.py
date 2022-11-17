@@ -15,6 +15,8 @@ from ivy.functional.ivy.random import (
 )
 from ivy.functional.backends.jax import JaxArray
 from ivy.functional.backends.jax.device import to_device
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Extra #
 # ------#
@@ -90,6 +92,7 @@ def random_normal(
     )
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("bfloat16")}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
