@@ -14,7 +14,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_arrays,
     handle_nestable,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
