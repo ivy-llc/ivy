@@ -106,7 +106,7 @@ def copysign(
     signs = tf.math.sign(tf.convert_to_tensor(x2))
     # All unsigned zeroes should be considered positive
     signs = tf.where(tf.equal(signs, 0), tf.ones_like(signs), signs)
-    return tf.math.multiply(tf.convert_to_tensor(x1), signs)
+    return tf.math.multiply(tf.math.abs(tf.convert_to_tensor(x1)), signs)
 
 
 def count_nonzero(
