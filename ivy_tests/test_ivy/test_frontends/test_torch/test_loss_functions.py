@@ -176,7 +176,7 @@ def test_torch_binary_cross_entropy(
     ),
     dtype_and_pred=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.0,
+        min_value=1.0013580322265625e-05,
         max_value=1.0,
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
