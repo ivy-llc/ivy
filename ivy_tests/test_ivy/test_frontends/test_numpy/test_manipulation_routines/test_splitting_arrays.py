@@ -1,10 +1,12 @@
+from hypothesis import given
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # split
-@handle_frontend_test(
+@handle_frontend_test
+@given(
     fn_tree="numpy.split",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
