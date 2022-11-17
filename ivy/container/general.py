@@ -3451,7 +3451,7 @@ class ContainerWithGeneral(ContainerBase):
 
         With `ivy.Container` input and backend set as 'tensorflow':
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
+        >>> x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),
         ...                   b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)

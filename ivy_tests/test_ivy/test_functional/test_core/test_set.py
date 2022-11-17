@@ -30,11 +30,13 @@ def test_unique_values(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -72,11 +74,13 @@ def test_unique_all(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -114,11 +118,13 @@ def test_unique_counts(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -156,11 +162,13 @@ def test_unique_inverse(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,

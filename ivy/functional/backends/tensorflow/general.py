@@ -11,6 +11,7 @@ import tensorflow as tf
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _is_variable
 from ivy.functional.ivy.general import _parse_ellipsis
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -156,7 +157,7 @@ def inplace_decrement(
     x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
+    if _is_variable(x_native):
         x_native.assign(x_native - val_native)
         if ivy.is_ivy_array(x):
             x.data = x_native
@@ -174,7 +175,7 @@ def inplace_increment(
     x: Union[ivy.Array, tf.Tensor], val: Union[ivy.Array, tf.Tensor]
 ) -> ivy.Array:
     (x_native, val_native), _ = ivy.args_to_native(x, val)
-    if ivy.is_variable(x_native):
+    if _is_variable(x_native):
         x_native.assign(x_native + val_native)
         if ivy.is_ivy_array(x):
             x.data = x_native
@@ -197,7 +198,7 @@ def inplace_update(
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
         x_native.data = val_native
-        if ivy.is_variable(x_native):
+        if _is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
                 x.data = x_native

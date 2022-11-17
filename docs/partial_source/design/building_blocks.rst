@@ -1,6 +1,8 @@
 Building Blocks
 ===============
 
+.. _`out argument`: https://lets-unify.ai/ivy/deep_dive/inplace_updates.html#out-argument
+ 
 Here we explain the components of Ivy which are fundamental to it’s usage either as a code converter or as a fully-fledged framework-agnostic ML framework.
 These are the 4 parts labelled as (a) in the image below:
 
@@ -21,50 +23,57 @@ There are separate backend modules for JAX, TensorFlow, PyTorch and NumPy, and s
 
    # ivy/functional/backends/jax/manipulation.py:
     def stack(
-        x: Union[Tuple[JaxArray], List[JaxArray]],
-        axis: Optional[int] = None,
+        arrays: Union[Tuple[JaxArray], List[JaxArray]],
+        /,
         *,
+        axis: int = 0,
         out: Optional[JaxArray] = None,
     ) -> JaxArray:
-        if axis is None:
-            axis = 0
-        ret = jnp.stack(x, axis=axis)
-        return ret
+        return jnp.stack(arrays, axis=axis)
 
 .. code-block:: python
 
    # ivy/functional/backends/numpy/manipulation.py:
     def stack(
-        x: Union[Tuple[np.ndarray], List[np.ndarray]],
-        axis: int =0,
+        arrays: Union[Tuple[np.ndarray], List[np.ndarray]],
+        /,
         *,
+        axis: int = 0,
         out: Optional[np.ndarray] = None,
     ) -> np.ndarray:
-        return np.stack(x, axis, out=out)
+        return np.stack(arrays, axis, out=out)
+
+
+    stack.support_native_out = True
 
 .. code-block:: python
 
    # ivy/functional/backends/tensorflow/manipulation.py:
     def stack(
-        x: Union[Tuple[tf.Tensor], List[tf.Tensor]],
-        axis: int =0,
+        arrays: Union[Tuple[tf.Tensor], List[tf.Tensor]],
+        /,
+        *,
+        axis: int = 0,
+        out: Optional[Union[tf.Tensor, tf.Variable]] = None,
     ) -> Union[tf.Tensor, tf.Variable]:
-        ret = tf.experimental.numpy.stack(x, axis)
-        return ret
+        return tf.experimental.numpy.stack(arrays, axis)
 
 .. code-block:: python
 
    # ivy/functional/backends/torch/manipulation.py:
     def stack(
-        x: Union[Tuple[torch.Tensor], List[torch.Tensor]],
-        axis: int =0,
+        arrays: Union[Tuple[torch.Tensor], List[torch.Tensor]],
+        /,
         *,
+        axis: int = 0,
         out: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
-        ret = torch.stack(x, axis, out=out)
-        return ret
+        return torch.stack(arrays, axis, out=out)
 
-There were no changes required for this function except a minor axis check for JAX.
+
+    stack.support_native_out = True
+
+There were no changes required for this function, however NumPy and PyTorch both had to be marked as supporting the `out argument`_ natively.
 
 For more complicated functions, we need to do more than simply wrap and maybe change the name.
 For functions with differing behavior then we must modify the function to fit the unified in-out behavior of Ivy’s API.
@@ -436,7 +445,7 @@ Let's take another example, but compile to Tensorflow, NumPy and JAX:
 
 +------------------------------------+
 |.. code-block:: python              |
-|                                    | 
+|                                    |
 | def ivy_func(x, y):                |
 |     w = ivy.diag(x)                |
 |     z = ivy.matmul(w, y)           |
@@ -471,7 +480,7 @@ The example above further emphasizes that the graph compiler creates a computati
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.
 However, when compiling native framework code, we are only able to compile a graph for that same framework.
 For example, we cannot take torch code and compile this into tensorflow code.
-However, we can transpile torch code into tensorflow code (see :ref:Ivy as a Transpiler for more details).
+However, we can transpile torch code into tensorflow code (see :ref:`Ivy as a Transpiler` for more details).
 
 The graph compiler does not compile to C++, CUDA or any other lower level language.
 It simply traces the backend functional methods in the graph, stores this graph, and then efficiently traverses this graph at execution time, all in Python.

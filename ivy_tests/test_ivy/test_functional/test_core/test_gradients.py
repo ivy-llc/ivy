@@ -7,6 +7,7 @@ import numpy as np
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
@@ -79,104 +80,6 @@ def test_unset_with_grads(grads):
     assert with_grads_stack[0:-1] == ivy.with_grads_stack
 
 
-# variable
-@handle_test(
-    fn_tree="functional.ivy.variable",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_variable(
-    *,
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
-
-
-# is_variable
-@handle_test(
-    fn_tree="functional.ivy.is_variable",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    exclusive=st.booleans(),
-)
-def test_is_variable(
-    *,
-    dtype_and_x,
-    exclusive,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=[True],
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-        exclusive=exclusive,
-    )
-
-
-# variable data
-@handle_test(
-    fn_tree="functional.ivy.variable_data",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-)
-def test_variable_data(
-    *,
-    dtype_and_x,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-):
-    dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=dtype,
-        with_out=with_out,
-        as_variable_flags=[True],
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        x=x[0],
-    )
-
-
 # stop_gradient
 @handle_test(
     fn_tree="functional.ivy.stop_gradient",
@@ -195,9 +98,11 @@ def test_stop_gradient(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -236,6 +141,7 @@ def test_execute_with_gradients(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     def func(xs):
         if isinstance(xs, ivy.Container):
@@ -252,6 +158,7 @@ def test_execute_with_gradients(
 
     dtype, xs = dtype_and_xs
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -282,7 +189,7 @@ def test_value_and_grad(x, dtype, func, backend_fw):
     if fw == "numpy":
         return
     ivy.set_backend(fw)
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.value_and_grad(func)
     value, grad = fn(var)
     value_np, grad_np = helpers.flatten_and_to_np(ret=value), helpers.flatten_and_to_np(
@@ -290,7 +197,7 @@ def test_value_and_grad(x, dtype, func, backend_fw):
     )
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.value_and_grad(func)
     value_gt, grad_gt = fn(var)
     value_np_from_gt, grad_np_from_gt = helpers.flatten_and_to_np(
@@ -317,13 +224,13 @@ def test_jac(x, dtype, func, backend_fw):
     if fw == "numpy":
         return
     ivy.set_backend(fw)
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.jac(func)
     jacobian = fn(var)
     jacobian_np = helpers.flatten_and_to_np(ret=jacobian)
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.jac(func)
     jacobian_gt = fn(var)
     jacobian_np_from_gt = helpers.flatten_and_to_np(ret=jacobian_gt)
@@ -345,13 +252,13 @@ def test_grad(x, dtype, func, backend_fw):
     if fw == "numpy":
         return
     ivy.set_backend(fw)
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
     grad = fn(var)
     grad_np = helpers.flatten_and_to_np(ret=grad)
     ivy.unset_backend()
     ivy.set_backend("tensorflow")
-    var = ivy.variable(ivy.array(x, dtype=dtype))
+    var = _variable(ivy.array(x, dtype=dtype))
     fn = ivy.grad(func)
     grad_gt = fn(var)
     grad_np_from_gt = helpers.flatten_and_to_np(ret=grad_gt)
@@ -392,6 +299,7 @@ def test_adam_step(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
     (
@@ -400,6 +308,7 @@ def test_adam_step(
         epsilon,
     ) = beta1_n_beta2_n_epsilon
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -440,9 +349,11 @@ def test_optimizer_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -480,9 +391,11 @@ def test_gradient_descent_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -524,12 +437,14 @@ def test_lars_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
     if "bfloat16" in input_dtypes:
         return
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -576,11 +491,13 @@ def test_adam_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     stop_gradients = stopgrad
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -644,6 +561,7 @@ def test_lamb_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     (
@@ -654,6 +572,7 @@ def test_lamb_update(
     ) = beta1_n_beta2_n_epsilon_n_lambda
     max_trust_ratio, stop_gradients = mtr, stopgrad
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
