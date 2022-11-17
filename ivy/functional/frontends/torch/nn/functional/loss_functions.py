@@ -162,3 +162,24 @@ def l1_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
     return ret
+
+
+@to_ivy_arrays_and_back
+def nll_loss(
+    input,
+    target,
+    weight=None,
+    size_average=None,
+    ignore_index=-100,
+    reduce=None,
+    reduction='mean'
+):
+    y = target.reshape(len(target), 1)
+    loss = -y * ivy.log(input) - (1 - y) * ivy.log(1 - input)
+    loss[loss == -ivy.inf] = 0
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+
+    return ret
