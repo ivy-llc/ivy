@@ -6,7 +6,7 @@ import ivy
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
-    handle_nestable,
+    handle_nestable
 )
 
 
