@@ -541,7 +541,6 @@ def argwhere(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[1, 2], [3, 4]])
