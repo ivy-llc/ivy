@@ -183,9 +183,29 @@
     <span class="k">return</span> <span class="n">new_fn</span>
 
 
+<span class="c1"># Unindent every line in the source such that</span>
+<span class="c1"># class methods can be compiled as normal methods</span>
+<span class="k">def</span> <span class="nf">_lstrip_lines</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># If the first line is a decorator</span>
+    <span class="k">if</span> <span class="n">source</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;@&quot;</span><span class="p">:</span>
+        <span class="c1"># If the second line is a function definition</span>
+        <span class="k">if</span> <span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;def&quot;</span><span class="p">:</span>
+            <span class="c1"># Work out how many whitespace chars to remove</span>
+            <span class="n">num_chars_to_remove</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;d&quot;</span><span class="p">)</span>
+
+            <span class="c1"># The first string needs no changes</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">source</span><span class="p">)):</span>
+                <span class="n">source</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">source</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">num_chars_to_remove</span><span class="p">:]</span>
+
+    <span class="n">source</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">source</span>
+
+
 <span class="c1"># Get the list of function used the function</span>
 <span class="k">def</span> <span class="nf">_get_function_list</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-    <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">())</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">_lstrip_lines</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">func</span><span class="p">)))</span>
     <span class="n">names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="c1"># Extract all the call names</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
@@ -231,11 +251,14 @@
         <span class="c1"># if it&#39;s in the backend, we can get the dtypes directly</span>
         <span class="c1"># if it&#39;s in the front end, we need to recurse</span>
         <span class="c1"># if it&#39;s einops, we need to recurse</span>
+
         <span class="k">if</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
             <span class="n">f_supported</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
             <span class="k">continue</span>
-        <span class="k">elif</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">or</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="s2">&quot;frontend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__name__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;einops&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="p">):</span>
             <span class="n">f_supported</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
