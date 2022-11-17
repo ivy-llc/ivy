@@ -453,8 +453,6 @@ def test_nansum(
     container_flags,
     instance_method,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -467,9 +465,8 @@ def test_nansum(
         instance_method=instance_method,
         fw=backend_fw,
         ground_truth_backend="tensorflow",
-        fn_name=fn_name,
-        on_device=on_device,
-        input=x[0],
+        fn_name="nansum",
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
