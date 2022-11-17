@@ -110,7 +110,6 @@ def leaky_relu(
 
     Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.39, -0.85])
