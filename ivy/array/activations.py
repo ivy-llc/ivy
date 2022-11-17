@@ -10,7 +10,12 @@ import ivy
 
 
 class ArrayWithActivations(abc.ABC):
-    def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method
@@ -50,7 +55,7 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        approximate: bool = True,
+        approximate: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

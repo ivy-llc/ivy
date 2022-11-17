@@ -211,7 +211,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
@@ -247,7 +246,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def new_empty(
@@ -263,7 +261,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def unfold(self, dimension, size, step):
@@ -280,6 +277,9 @@ class Tensor:
 
     def device(self):
         return ivy.dev(self.data)
+
+    def is_cuda(self):
+        return "gpu" in ivy.dev(self.data)
 
     def pow(self, other):
         return ivy.pow(self.data, other)
@@ -300,6 +300,12 @@ class Tensor:
                     "Dimension out of range (expected to be in range of [{}, {}], "
                     "but got {}".format(len(shape), len(shape) - 1, dim)
                 )
+
+    def argmax(self, dim=None, keepdim=False):
+        return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
+    def ceil(self):
+        return torch_frontend.ceil(self.data)
 
     # Special Methods #
     # -------------------#
@@ -339,3 +345,6 @@ class Tensor:
 
 # Tensor (alias)
 tensor = Tensor
+
+# ex_tensor = tensor(data=[3, 4])
+# print(ex_tensor)
