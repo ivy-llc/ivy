@@ -54,7 +54,10 @@ def handle_array_like(fn: Callable) -> Callable:
     def new_fn(*args, **kwargs):
         args = list(args)
         num_args = len(args)
-        type_hints = typing.get_type_hints(fn)
+        try:
+            type_hints = typing.get_type_hints(fn)
+        except TypeError:
+            return fn(*args, **kwargs)
         parameters = type_hints
         annotations = type_hints.values()
 
