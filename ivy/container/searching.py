@@ -427,7 +427,6 @@ class ContainerWithSearching(ContainerBase):
 
         Examples
         --------
-
         Using :class:`ivy.Container` instance method
 
         >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
