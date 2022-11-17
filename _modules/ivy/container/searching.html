@@ -554,6 +554,27 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            Indices for where the boolean array is True.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :class:`ivy.Container` instance method</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; res = x.argwhere()</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0], [1]]),</span>
+<span class="sd">            b: ivy.array([[0], [1]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; res = x.argwhere()</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0]]),</span>
+<span class="sd">            b: ivy.array([[0], [1]])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_argwhere</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
