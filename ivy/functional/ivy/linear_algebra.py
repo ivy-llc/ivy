@@ -587,7 +587,7 @@ def eigvalsh(
         square matrices. Must have floating-point data type.
     UPLO
         optional string being 'L' or 'U', specifying whether the calculation is done with 
-        the lower triangular part of `a` ('L', default) or the upper triangular part ('U').
+        the lower triangular part of `x` ('L', default) or the upper triangular part ('U').
         Irrespective of this value only the real parts of the diagonal will
         be considered in the computation to preserve the notion of a Hermitian
         matrix. It therefore follows that the imaginary part of the diagonal
