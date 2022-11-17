@@ -7,7 +7,7 @@ import ivy
 from ivy.func_wrapper import (
     inputs_to_ivy_arrays,
     integer_arrays_to_float,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 

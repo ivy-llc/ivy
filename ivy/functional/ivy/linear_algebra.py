@@ -8,7 +8,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -592,6 +592,9 @@ def eigvalsh(
     x
         input array having shape (..., M, M) and whose innermost two dimensions form
         square matrices. Must have floating-point data type.
+    UPLO
+        optional string being 'L' or 'U', specifying whether the calculation is done with 
+        the lower triangular part of `x` ('L', default) or the upper triangular part ('U').
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -611,6 +614,57 @@ def eigvalsh(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    ivy.array([[-1.,  3.]])
+
+    Using out
+
+    >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
+    >>> y = ivy.zeros([1,2])
+    >>> ivy.eigvalsh(x, out=y)
+    >>> print(y)
+    ivy.array([[1., 5.]])
+
+    >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
+    >>> ivy.eigvalsh(x, out=x)
+    >>> print(x)
+    ivy.array([[1., 5.]])
+
+    Using UPLO
+
+    >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
+    ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
+    >>> y = ivy.eigvalsh(x, UPLO="U")
+    >>> print(y)
+    ivy.array([[-1.45033181e+00,  1.02829754e+00,  1.54220343e+01],
+       [-1.12647155e-15,  4.38447177e-01,  4.56155300e+00]])
+
+    With :class:`ivy.NativeArray` inputs:
+
+    >>> x = ivy.native_array([[[1., 1., 2.], [1., 2., 1.], [1., 1., 2]]])
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    ivy.array([[0.26794919, 1.        , 3.7320509 ]])
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[1.,2.,3.],[2.,4.,5.],[3.,5.,6.]]]),
+    ...                      b=ivy.array([[[1.,1.,2.],[1.,2.,1.],[2.,1.,1.]]]),
+    ...                      c=ivy.array([[[2.,2.,2.],[2.,3.,3.],[2.,3.,3.]]]))
+    >>> y = ivy.eigvalsh(x)
+    >>> print(y)
+    {
+        a: ivy.array([[-0.51572949, 0.17091519, 11.3448143]]),
+        b: ivy.array([[-1., 1., 4.]]),
+        c: ivy.array([[-8.88178420e-16, 5.35898387e-01, 7.46410179e+00]])
+    }
 
     """
     return current_backend(x).eigvalsh(x, UPLO=UPLO, out=out)
