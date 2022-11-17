@@ -10,7 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -580,8 +580,7 @@ def multi_head_attention(
     instances in place of any of the arguments.
 
     Examples
-    -------------------
-
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([[[0.2, 1.],
@@ -614,8 +613,12 @@ def multi_head_attention(
 
     >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1], [2.2, 3.4], [4.4, 5.6]]]),
     ...                   b=ivy.array([[[1.4, 0.3], [1.2, 3.9], [0.4, 3.7]]]))
-    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2], [2.2, 3.3, 0.9, 3.6], [4.4, 5.6, 2.2, 0.4]]]),
-    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6], [1.2, 3.9, 4.2, 5.1], [0.4, 3.7, 4.3, 5.3]]]))
+    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2],
+    ...                                       [2.2, 3.3, 0.9, 3.6],
+    ...                                       [4.4, 5.6, 2.2, 0.4]]]),
+    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6],
+    ...                                       [1.2, 3.9, 4.2, 5.1],
+    ...                                       [0.4, 3.7, 4.3, 5.3]]]))
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
     {
@@ -650,8 +653,12 @@ def multi_head_attention(
     >>> x = ivy.array([[[0.2, 1.],
     ...                 [2.2, 3.],
     ...                 [4.4, 5.6]]])
-    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2], [2.2, 3.3, 0.9, 3.6], [4.4, 5.6, 2.2, 0.4]]]),
-    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6], [1.2, 3.9, 4.2, 5.1], [0.4, 3.7, 4.3, 5.3]]]))
+    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2],
+    ...                                       [2.2, 3.3, 0.9, 3.6],
+    ...                                       [4.4, 5.6, 2.2, 0.4]]]),
+    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6],
+    ...                                       [1.2, 3.9, 4.2, 5.1],
+    ...                                       [0.4, 3.7, 4.3, 5.3]]]))
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
     >>> print(result)
     {
@@ -688,7 +695,8 @@ def multi_head_attention(
     ...                       [4.4, 5.6, 2.2, 0.4]]])
     >>> to_q_fn = lambda n, v: n
     >>> to_kv_fn = lambda n, v: ivy.split(n, num_or_size_splits=2, axis=-1)
-    >>> result = layers.multi_head_attention(x, 1, 2, context = context, to_q_fn=to_q_fn, to_kv_fn=to_kv_fn)
+    >>> result = layers.multi_head_attention(x, 1, 2, context=context,
+    ...                                      to_q_fn=to_q_fn, to_kv_fn=to_kv_fn)
     >>> print(result)
     ivy.array([[[1.5678761 , 0.65441847],
     ...         [2.18969631, 0.40131447],
