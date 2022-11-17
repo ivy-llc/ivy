@@ -19,6 +19,8 @@ Ivy Frontends
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
+.. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
@@ -632,9 +634,43 @@ An example function using this is the :func:`numpy.isfinite` function.
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
+
+Frontends Duplicate Policy
+--------------------------
+Some frontend functions appear in multiple namespaces within the original framework that the frontend is replicating.
+For example the :func:`np.asarray` function appears in `Array manipulation routines`_ and also in `Array creation routines`_.
+Thus, rather than implementing these functions as duplicates in their respective namespaces in Ivy, this section outlines a policy
+that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:
+
+**Listing duplicate frontend functions on the ToDo lists**
+
+When listing frontend functions, extra care should be taken to keep note of duplicate functions.
+If a function is duplicated across multiple namespaces then we should select one instance (in any namespace) to serve as the implementation by putting an `*` beside the function name on the ToDo list. All other instances of the duplicate should then be designated aliases of the implementation using the format `(alias of <frontend/namespace/function_name>)` written beside the function name.
+
+**Contributing duplicate frontend functions**
+
+Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
+If the function is an alias, you should check if the implementation designated with an `*` exists.
+
+* If an implementation exist then simply import the implemented function in the `init.py` file for the namespace where the duplicate is listed.
+
+For example in the case of :func:`np.asarray`, the function is implemented `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5>`_ and we use it as an alias by importing `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/init.py>`_.
+
+* If the function has not been implemented, then feel free to contribute the implementation with its unit test.
+
+* If two PRs contribute the implementation for a duplicate function (and no implementation for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the implementation while the second PR should be refactored as an alias by importing the implementation as explained earlier. Both contributors should be rewarded equally if need be.
+
+**Testing duplicate functions**
+
+Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each identical alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.
+
+**Handling already contributed duplicates**
+
+In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation to serve as the function's implementation, then refactor all other instances of the duplicate as aliases.
+
 **Round Up**
 
-This should hopefully have given you a better grasp on the what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
+This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_ or in the `ivy frontends forum`_!
