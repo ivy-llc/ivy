@@ -139,5 +139,69 @@ def sort(
     return ivy.current_backend(x).sort(x, axis, descending, stable, out=out)
 
 
-# Extra #
-# ------#
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def searchsorted(
+    x: Union[ivy.Array, ivy.NativeArray],
+    v: Union[ivy.Array, ivy.NativeArray],
+    side="left",
+    sorter=None,
+    ret_dtype=ivy.int64,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the indices of the inserted elements in a sorted array.
+    Parameters
+    ----------
+    x
+        Input array. If `sorter` is None, then it must be sorted in ascending order,
+        otherwise `sorter` must be an array of indices that sort it.
+    v
+        specific elements to insert in array x1
+    side
+        The specific elements' index is at the 'left' side or
+        'right' side in the sorted array x1. If the side is 'left', the
+        index of the first suitable location located is given. If
+        'right', return the last such index.
+    ret_dtype
+        the data type for the return value, Default: ivy.int64,
+        only integer data types is allowed.
+    sorter
+        optional array of integer indices that sort array x into ascending order,
+        typically the result of argsort.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+         An array of insertion points.
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+    >>> x = ivy.array([1, 2, 3])
+    >>> v = ivy.array([2])
+    >>> y  = ivy.searchsorted(x, v)
+    >>> print(y)
+    ivy.array([1])
+    >>> x = ivy.array([0, 1, 2, 3])
+    >>> v = ivy.array([3])
+    >>> y  = ivy.searchsorted(x, v, side='right')
+    >>> print(y)
+    ivy.array([4])
+    >>> x = ivy.array([0, 1, 2, 3, 4, 5])
+    >>> v = ivy.array([[3, 1], [10, 3], [-2, -1]])
+    >>> y  = ivy.searchsorted(x, v)
+    >>> print(y)
+    ivy.array([[3, 1],
+       [6, 3],
+       [0, 0]])
+    """
+    return ivy.current_backend(x, v).searchsorted(
+        x,
+        v,
+        side=side,
+        sorter=sorter,
+        out=out,
+        ret_dtype=ret_dtype,
+    )
