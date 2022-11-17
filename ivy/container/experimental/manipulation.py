@@ -965,6 +965,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
         out: Optional[ivy.Container] = None,
+        order: Optional[str] = "C",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.flatten. This method simply wraps the
@@ -979,6 +980,17 @@ class ContainerWithManipulationExperimental(ContainerBase):
             first dim to flatten. If not set, defaults to 0.
         end_dim
             last dim to flatten. If not set, defaults to -1.
+        order
+            Read the elements of the input container using this index order,
+            and place the elements into the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
 
         Returns
         -------
@@ -996,6 +1008,14 @@ class ContainerWithManipulationExperimental(ContainerBase):
             a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> ivy.flatten(x, order="F")
+        [{
+            a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])
+            b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])
+        }]
         """
         return ContainerBase.multi_map_in_static_method(
             "flatten",
@@ -1007,6 +1027,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             start_dim=start_dim,
             end_dim=end_dim,
             out=out,
+            order=order,
         )
 
     def flatten(
@@ -1015,6 +1036,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
         out: Optional[ivy.Container] = None,
+        order: Optional[str] = "C",
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.flatten. This method simply
         wraps the function, and so the docstring for ivy.flatten also applies to this
@@ -1028,6 +1050,17 @@ class ContainerWithManipulationExperimental(ContainerBase):
             first dim to flatten. If not set, defaults to 0.
         end_dim
             last dim to flatten. If not set, defaults to -1.
+        order
+            Read the elements of the input container using this index order,
+            and place the elements into the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
 
         Returns
         -------
@@ -1040,13 +1073,23 @@ class ContainerWithManipulationExperimental(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
         ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-        >>> ivy.flatten(x)
+        >>> x.flatten()
         [{
             a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
             b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])
         }]
+
+        >>> x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+        >>> x.flatten(order="F")
+        [{
+            a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])
+            b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])
+        }]
         """
-        return self.static_flatten(self, start_dim=start_dim, end_dim=end_dim, out=out)
+        return self.static_flatten(
+            self, start_dim=start_dim, end_dim=end_dim, out=out, order=order
+        )
 
     @staticmethod
     def static_pad(

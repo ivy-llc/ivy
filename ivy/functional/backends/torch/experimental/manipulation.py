@@ -1,4 +1,6 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+
+import ivy.functional.experimental
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -132,7 +134,13 @@ def flatten(
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     out: Optional[torch.Tensor] = None,
+    order: Optional[str] = "C",
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return ivy.functional.experimental.flatten(
+            x, start_dim=start_dim, end_dim=end_dim, order=order
+        )
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 

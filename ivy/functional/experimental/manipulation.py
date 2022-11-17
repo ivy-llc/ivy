@@ -32,6 +32,7 @@ def flatten(
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
     out: Optional[ivy.Array] = None,
+    order: Optional[str] = "C",
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
         If start_dim or end_dim are passed, only dimensions starting
@@ -46,6 +47,19 @@ def flatten(
         first dim to flatten. If not set, defaults to 0.
     end_dim
         last dim to flatten. If not set, defaults to -1.
+    out
+        optional output array, for writing the result to.
+    order
+        Read the elements of the input container using this index order,
+        and place the elements into the reshaped array using this index order.
+        ‘C’ means to read / write the elements using C-like index order,
+        with the last axis index changing fastest, back to the first axis index
+        changing slowest.
+        ‘F’ means to read / write the elements using Fortran-like index order, with
+        the first index changing fastest, and the last index changing slowest.
+        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        of the underlying array, and only refer to the order of indexing.
+        Default order is 'C'
 
     Returns
     -------
@@ -65,9 +79,13 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([1,2], [3,4])
+    >>> x = np.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
+
+    >>> x = np.array([[1,2], [3,4]])
+    >>> ivy.flatten(x, order='F')
+    ivy.array([1, 3, 2, 4])
 
     >>> x = np.array(
         [[[[ 5,  5,  0,  6],
@@ -119,6 +137,7 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if start_dim == end_dim and len(x.shape) != 0:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
@@ -144,7 +163,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst))
+    return ivy.reshape(x, tuple(lst), order=order)
 
 
 @to_native_arrays_and_back
