@@ -6,6 +6,7 @@ import operator
 import ivy
 from .activations import ContainerWithActivations
 from .base import ContainerBase
+from .conversions import ContainerWithConversions
 from .creation import ContainerWithCreation
 from .data_type import ContainerWithDataTypes
 from .device import ContainerWithDevice
@@ -24,10 +25,33 @@ from .set import ContainerWithSet
 from .sorting import ContainerWithSorting
 from .statistical import ContainerWithStatistical
 from .utility import ContainerWithUtility
+from ivy.container.experimental import (
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinearAlgebraExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
+)
 
 
 class Container(
     ContainerWithActivations,
+    ContainerWithConversions,
     ContainerWithCreation,
     ContainerWithDataTypes,
     ContainerWithDevice,
@@ -46,6 +70,26 @@ class Container(
     ContainerWithSorting,
     ContainerWithStatistical,
     ContainerWithUtility,
+    ContainerWithActivationExperimental,
+    ContainerWithConversionExperimental,
+    ContainerWithCreationExperimental,
+    ContainerWithData_typeExperimental,
+    ContainerWithDeviceExperimental,
+    ContainerWithElementWiseExperimental,
+    ContainerWithGeneralExperimental,
+    ContainerWithGradientsExperimental,
+    ContainerWithImageExperimental,
+    ContainerWithLayersExperimental,
+    ContainerWithLinearAlgebraExperimental,
+    ContainerWithLossesExperimental,
+    ContainerWithManipulationExperimental,
+    ContainerWithNormsExperimental,
+    ContainerWithRandomExperimental,
+    ContainerWithSearchingExperimental,
+    ContainerWithSetExperimental,
+    ContainerWithSortingExperimental,
+    ContainerWithStatisticalExperimental,
+    ContainerWithUtilityExperimental,
 ):
     def __init__(
         self,
@@ -93,15 +137,17 @@ class Container(
         return self
 
     def __neg__(self):
-        return self.map(lambda x, kc: -x)
+        return self.map(lambda x, kc: -x, map_sequences=True)
 
     def __pow__(self, power):
         if isinstance(power, ivy.Container):
-            return self.reduce([self, power], lambda xs: pow(xs[0], xs[1]))
-        return self.map(lambda x, kc: x**power)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
+            )
+        return self.map(lambda x, kc: x**power, map_sequences=True)
 
     def __rpow__(self, power):
-        return self.map(lambda x, kc: power**x)
+        return self.map(lambda x, kc: power**x, map_sequences=True)
 
     def __add__(self, other):
         """
@@ -115,7 +161,7 @@ class Container(
         other
             second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`). Should have a numeric data type.
-        
+
         Returns
         -------
         ret
@@ -135,12 +181,12 @@ class Container(
             b: 6
         }
 
-        With :code:`ivy.Array` instances at the leaves:
+        With :class:`ivy.Array` instances at the leaves:
 
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),\
-                              b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([4, 5, 6]), \
-                              b=ivy.array([5, 6, 7]))
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([5, 6, 7]))
         >>> z = x + y
         >>> print(z)
         {
@@ -148,10 +194,10 @@ class Container(
             b: ivy.array([7, 9, 11])
         }
 
-        With a mix of :code:`ivy.Container` and :code:`ivy.Array` instances:
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
 
-        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),\
-                              b=ivy.array([[5.], [6.], [7.]]))
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
         >>> y = ivy.array([[1.1, 2.3, -3.6]])
         >>> z = x + y
         >>> print(z)
@@ -203,122 +249,360 @@ class Container(
         )
 
     def __sub__(self, other):
-        return self.static_subtract(self, other)
+        """
+        ivy.Container special method for the subtract operator, calling
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: -2,
+            b: -2
+        }
+
+        With :class:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([6, 5, 4]))
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: ivy.array([-3, -3, -3]),
+            b: ivy.array([-2, -2, -2])
+        }
+
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
+
+        >>> x = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),
+        ...                   b=ivy.array([[5.], [6.], [7.]]))
+        >>> y = ivy.array([[1.1, 2.3, -3.6]])
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: ivy.array([[2.9, 1.7, 7.6],
+                          [3.9, 2.7, 8.6],
+                          [4.9, 3.7, 9.6]]),
+            b: ivy.array([[3.9, 2.7, 8.6],
+                          [4.9, 3.7, 9.6],
+                          [5.9, 4.7, 10.6]])
+        }
+        """
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rsub__(self, other):
-        return self.static_subtract(other, self)
+        """
+        ivy.Container reverse special method for the subtract operator, calling
+        :code:`operator.sub` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = 1
+        >>> y = ivy.Container(a=3, b=4)
+        >>> z = x - y
+        >>> print(z)
+        {
+            a: -2,
+            b: -3
+        }
+        """
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.sub(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __mul__(self, other):
-        return self.static_multiply(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rmul__(self, other):
-        return self.static_multiply(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.mul(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __truediv__(self, other):
-        return self.static_divide(self, other)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
+        )
 
     def __rtruediv__(self, other):
-        return self.static_divide(other, self)
+        return ivy.Container.multi_map(
+            lambda xs, _: operator.truediv(xs[0], xs[1]), [other, self], map_nests=True
+        )
 
     def __floordiv__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce(
-                [self, other], lambda xs: operator.floordiv(xs[0], xs[1])
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.floordiv(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
             )
-        return self.map(lambda x, kc: x // other)
+        return self.map(lambda x, kc: x // other, map_sequences=True)
 
     def __rfloordiv__(self, other):
-        return self.map(lambda x, kc: other // x)
+        return self.map(lambda x, kc: other // x, map_sequences=True)
 
     def __abs__(self):
-        return self.map(lambda x, kc: self._ivy.abs(x))
+        return self.map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.lt(xs[0], xs[1]))
-        return self.map(lambda x, kc: x < other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.lt(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x < other, map_sequences=True)
 
     def __le__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.le(xs[0], xs[1]))
-        return self.map(lambda x, kc: x <= other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x <= other, map_sequences=True)
 
     def __eq__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.eq(xs[0], xs[1]))
-        return self.map(lambda x, kc: x == other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.eq(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x == other, map_sequences=True)
 
     def __ne__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.ne(xs[0], xs[1]))
-        return self.map(lambda x, kc: x != other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x != other, map_sequences=True)
 
     def __gt__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.gt(xs[0], xs[1]))
-        return self.map(lambda x, kc: x > other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.gt(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x > other, map_sequences=True)
 
     def __ge__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda xs: operator.ge(xs[0], xs[1]))
-        return self.map(lambda x, kc: x >= other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.ge(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x >= other, map_sequences=True)
 
     def __and__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] and x[1])
-        return self.map(lambda x, kc: x and other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.and_(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x and other, map_sequences=True)
 
     def __rand__(self, other):
-        return self.map(lambda x, kc: other and x)
+        return self.map(lambda x, kc: other and x, map_sequences=True)
 
     def __or__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] or x[1])
-        return self.map(lambda x, kc: x or other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.or_(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: x or other, map_sequences=True)
 
     def __ror__(self, other):
-        return self.map(lambda x, kc: other or x)
+        return self.map(lambda x, kc: other or x, map_sequences=True)
 
     def __invert__(self):
-        return self.map(lambda x, kc: operator.not_(x))
+        return self.map(lambda x, kc: operator.not_(x), map_sequences=True)
 
     def __xor__(self, other):
         if isinstance(other, ivy.Container):
-            return self.reduce([self, other], lambda x: x[0] != x[1])
-        return self.map(lambda x, kc: x != other)
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True
+            )
+        return self.map(lambda x, kc: operator.xor(x, other), map_sequences=True)
 
     def __rxor__(self, other):
-        return self.map(lambda x, kc: other != x)
+        return self.map(lambda x, kc: other != x, map_sequences=True)
+
+    def __rshift__(self, other):
+        """
+        ivy.Container special method for the right shift operator, calling
+        :code:`operator.rshift` for each of the corresponding leaves of the
+        two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have an integer data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer data type.
+            Each element must be greater than or equal to ``0``.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned array
+            must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=128, b=43)
+        >>> y = ivy.Container(a=5, b=3)
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: 4,
+            b: 5
+        }
+
+        With :class:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
+        ...                   b=ivy.array([15, 45, 143]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([0, 3, 4]))
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: ivy.array([8, 10, 15]),
+            b: ivy.array([15, 5, 8])
+        }
+
+        With a mix of :class:`ivy.Container` and :class:`ivy.Array` instances:
+
+        >>> x = ivy.Container(a=ivy.array([16, 40, 120]),
+        ...                   b=ivy.array([15, 45, 143]))
+        >>> y = ivy.array([1, 2, 3])
+        >>> z = x >> y
+        >>> print(z)
+        {
+            a: ivy.array([8, 10, 15]),
+            b: ivy.array([7, 11, 17])
+        }
+        """
+        if isinstance(other, ivy.Container):
+            return ivy.Container.multi_map(
+                lambda xs, _: operator.rshift(xs[0], xs[1]),
+                [self, other],
+                map_nests=True,
+            )
+        return self.map(lambda x, kc: operator.rshift(x, other), map_sequences=True)
+
+    def __rrshift__(self, other):
+        """
+        ivy.Container reverse special method for the right shift operator, calling
+        :code:`operator.rshift` for each of the corresponding leaves of the two
+        containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have an integer data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have an integer data type. Each element
+            must be greater than or equal to ``0``.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. The returned array
+            must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> a = 64
+        >>> b = ivy.Container(a = ivy.array([0, 1, 2]),
+        ...                   b = ivy.array([3, 4, 5]))
+        >>> y = a >> b
+        >>> print(y)
+        {
+            a: ivy.array([64, 32, 16]),
+            b: ivy.array([8, 4, 2])
+        }
+        """
+        return self.map(lambda x, kc: other >> x, map_sequences=True)
 
     def __getstate__(self):
         state_dict = copy.copy(self.__dict__)
-        state_dict["_local_ivy"] = ivy.try_else_none(
-            lambda: state_dict["_local_ivy"].current_backend_str()
+        state_dict["_local_ivy"] = (
+            state_dict["_local_ivy"].current_backend_str()
+            if state_dict["_local_ivy"] is not None
+            else None
         )
         config_in = copy.copy(state_dict["_config_in"])
-        config_in["ivyh"] = ivy.try_else_none(
-            lambda: config_in["ivyh"].current_backend_str()
+        config_in["ivyh"] = (
+            config_in["ivyh"].current_backend_str()
+            if config_in["ivyh"] is not None
+            else None
         )
         state_dict["_config_in"] = config_in
         config = copy.copy(state_dict["_config"])
-        config["ivyh"] = ivy.try_else_none(lambda: config["ivyh"].current_backend_str())
+        config["ivyh"] = (
+            config["ivyh"].current_backend_str() if config["ivyh"] is not None else None
+        )
         state_dict["_config"] = config
         return state_dict
 
     def __setstate__(self, state_dict):
         if "_local_ivy" in state_dict:
             if ivy.exists(state_dict["_local_ivy"]):
-                state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+                if len(state_dict["_local_ivy"]) > 0:
+                    state_dict["_local_ivy"] = ivy.get_backend(state_dict["_local_ivy"])
+                else:
+                    state_dict["_local_ivy"] = ivy
         if "_config_in" in state_dict:
             config_in = copy.copy(state_dict["_config_in"])
             if "ivyh" in config_in:
                 if ivy.exists(config_in["ivyh"]):
-                    config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+                    if len(config_in["ivyh"]) > 0:
+                        config_in["ivyh"] = ivy.get_backend(config_in["ivyh"])
+                    else:
+                        config_in["ivyh"] = ivy
             state_dict["_config_in"] = config_in
         if "_config" in state_dict:
             config = copy.copy(state_dict["_config"])
             if "ivyh" in config:
                 if ivy.exists(config["ivyh"]):
-                    config["ivyh"] = ivy.get_backend(config["ivyh"])
+                    if len(config["ivyh"]) > 0:
+                        config["ivyh"] = ivy.get_backend(config["ivyh"])
+                    else:
+                        config["ivyh"] = ivy
             state_dict["_config"] = config
         self.__dict__.update(state_dict)

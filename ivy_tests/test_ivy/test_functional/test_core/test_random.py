@@ -1,193 +1,390 @@
 """Collection of tests for unified reduction functions."""
 
 # global
-import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # random_uniform
-@given(
-    data=st.data(),
-    shape=helpers.get_shape(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+@handle_test(
+    fn_tree="functional.ivy.random_uniform",
+    dtype_and_low=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1000,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+    ),
+    dtype_and_high=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=101,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
 )
-def test_random_uniform(data, shape, dtype, as_variable, device, call):
-    low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    low_tnsr = ivy.array(low, dtype=dtype, device=device) if low is not None else None
-    high_tnsr = (
-        ivy.array(high, dtype=dtype, device=device) if high is not None else None
-    )
-    if as_variable and (low is not None):
-        low_tnsr = ivy.variable(low_tnsr)
-    if as_variable and (high is not None):
-        high_tnsr = ivy.variable(high_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
-    }
-    if shape is not None:
-        kwargs["shape"] = shape
-    ret = ivy.random_uniform(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
-    else:
-        assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.random_uniform, **kwargs, device=device)
-    assert (
-        np.min((ret_np <= (high + abs(high) * 0.01 if high else 1.01)).astype(np.int32))
-        == 1
-    )
-    assert (
-        np.min((ret_np >= (low - abs(low) * 0.01 if low else -0.01)).astype(np.int32))
-        == 1
-    )
+def test_random_uniform(
+    *,
+    dtype_and_low,
+    dtype_and_high,
+    dtype,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    low_dtype, low = dtype_and_low
+    high_dtype, high = dtype_and_high
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=low_dtype + high_dtype,
+            num_positional_args=num_positional_args,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            low=low[0],
+            high=high[0],
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt2 = call()
+        assert ivy.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
 
 
 # random_normal
-@given(
-    data=st.data(),
-    shape=helpers.get_shape(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    as_variable=st.booleans(),
+@handle_test(
+    fn_tree="functional.ivy.random_normal",
+    dtype_and_mean=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1000,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+    ),
+    dtype_and_std=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=1000,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=2,
+    ),
+    dtype=helpers.get_dtypes("float", full=False),
+    seed=helpers.ints(min_value=0, max_value=100),
 )
-def test_random_normal(data, shape, dtype, as_variable, device, call):
-    mean, std = data.draw(helpers.get_mean_std(dtype=dtype))
-    ivy.seed(0)
-    # smoke test
-    if as_variable and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        return
-    mean_tnsr = (
-        ivy.array(mean, dtype=dtype, device=device) if mean is not None else None
-    )
-    std_tnsr = ivy.array(std, dtype=dtype, device=device) if std is not None else None
-    if as_variable and (mean is not None):
-        mean_tnsr = ivy.variable(mean_tnsr)
-    if as_variable and (std is not None):
-        std_tnsr = ivy.variable(std_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["mean", "std"], [mean_tnsr, std_tnsr]) if v is not None
-    }
-    if shape is not None:
-        kwargs["shape"] = shape
-    ret = ivy.random_normal(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    if shape is None:
-        assert ret.shape == ()
+def test_random_normal(
+    dtype_and_mean,
+    dtype_and_std,
+    dtype,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    mean_dtype, mean = dtype_and_mean
+    std_dtype, std = dtype_and_std
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=mean_dtype + std_dtype,
+            num_positional_args=num_positional_args,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            mean=mean[0],
+            std=std[0],
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert u.dtype == v.dtype
+
+
+@st.composite
+def _pop_size_num_samples_replace_n_probs(draw):
+    prob_dtype = draw(helpers.get_dtypes("float", full=False))
+    batch_size = draw(helpers.ints(min_value=1, max_value=5))
+    population_size = draw(helpers.ints(min_value=1, max_value=20))
+    replace = draw(st.booleans())
+    if replace:
+        num_samples = draw(helpers.ints(min_value=1, max_value=20))
     else:
-        assert ret.shape == shape
+        num_samples = draw(helpers.ints(min_value=1, max_value=population_size))
+    probs = draw(
+        helpers.array_values(
+            dtype=prob_dtype[0],
+            shape=[batch_size, num_samples],
+            min_value=1.0013580322265625e-05,
+            max_value=1.0,
+            exclude_min=True,
+            large_abs_safety_factor=2,
+            safety_factor_scale="linear",
+        )
+    )
+    return prob_dtype, batch_size, population_size, num_samples, replace, probs
 
 
 # multinomial
-@given(
-    data=st.data(),
-    num_samples=st.integers(1, 2),
-    replace=st.booleans(),
-    dtype=st.sampled_from(ivy_np.valid_float_dtypes),
-    tensor_fn=st.sampled_from([ivy.array]),
+@handle_test(
+    fn_tree="functional.ivy.multinomial",
+    everything=_pop_size_num_samples_replace_n_probs(),
+    seed=helpers.ints(min_value=0, max_value=100),
+    ground_truth_backend="numpy",
 )
-def test_multinomial(data, num_samples, replace, dtype, tensor_fn, device, call):
-    probs, population_size = data.draw(helpers.get_probs(dtype=dtype))
-    if (
-        call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call]
-        and not replace
-        or dtype == "float64"
-    ):
-        # mxnet and tenosorflow do not support multinomial without replacement
+def test_multinomial(
+    *,
+    everything,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
+    # tensorflow does not support multinomial without replacement
+    if backend_fw == ivy.functional.backends.tensorflow:
+        assume(replace)
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=prob_dtype,
+            num_positional_args=num_positional_args,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            population_size=population_size,
+            num_samples=num_samples,
+            batch_size=batch_size,
+            probs=probs[0] if probs is not None else probs,
+            replace=replace,
+            seed=seed,
+        )
+
+    ret = call()
+
+    if not ivy.exists(ret):
         return
-    # smoke test
-    probs = tensor_fn(probs, dtype=dtype, device=device) if probs is not None else probs
-    batch_size = probs.shape[0] if probs is not None else 2
-    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == tuple([batch_size] + [num_samples])
+
+    ret_np, ret_from_np = ret
+    if seed:
+        ret_np1, ret_from_np1 = call()
+
+        assert ivy.any(ret_np == ret_np1)
+
+    ret_np = helpers.flatten_and_to_np(ret=ret_np)
+    ret_from_np = helpers.flatten_and_to_np(ret=ret_from_np)
+    for (u, v) in zip(ret_np, ret_from_np):
+        assert u.dtype == v.dtype
+
+
+@st.composite
+def _gen_randint_data(draw):
+    dtype = draw(helpers.get_dtypes("signed_integer", full=False))
+    dim1 = draw(helpers.ints(min_value=1, max_value=5))
+    dim2 = draw(helpers.ints(min_value=2, max_value=8))
+    low = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim1, dim2),
+            min_value=-100,
+            max_value=25,
+        )
+    )
+    high = draw(
+        helpers.array_values(
+            dtype=dtype[0],
+            shape=(dim1, dim2),
+            min_value=26,
+            max_value=100,
+        )
+    )
+    return dtype, low, high
 
 
 # randint
-@given(
-    data=st.data(),
-    shape=helpers.get_shape(allow_none=False),
-    dtype=st.sampled_from(ivy_np.valid_int_dtypes),
-    as_variable=st.booleans(),
+@handle_test(
+    fn_tree="functional.ivy.randint",
+    dtype_low_high=_gen_randint_data(),
+    seed=helpers.ints(min_value=0, max_value=100),
 )
-def test_randint(data, shape, dtype, as_variable, device, call):
-    # smoke test
-    low, high = data.draw(helpers.get_bounds(dtype=dtype))
-    if (
-        call in [helpers.mx_call, helpers.torch_call]
-        and as_variable
-        or dtype == "uint64"
-        or call == helpers.torch_call
-        and dtype[0] == "u"
-    ):
-        # PyTorch and MXNet do not support non-float variables
-        return
-    low_tnsr = ivy.array(low, dtype=dtype, device=device)
-    high_tnsr = ivy.array(high, dtype=dtype, device=device)
-    if as_variable:
-        low_tnsr, high_tnsr = ivy.variable(low_tnsr), ivy.variable(high_tnsr)
-    kwargs = {
-        k: v for k, v in zip(["low", "high"], [low_tnsr, high_tnsr]) if v is not None
-    }
-    kwargs["shape"] = shape
-    ret = ivy.randint(**kwargs, device=device)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == shape
-    # value test
-    ret_np = call(ivy.randint, **kwargs, device=device)
-    assert np.min((ret_np < high).astype(np.int64)) == 1
-    assert np.min((ret_np >= low).astype(np.int64)) == 1
+def test_randint(
+    *,
+    dtype_low_high,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    dtype, low, high = dtype_low_high
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype,
+            num_positional_args=num_positional_args,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            low=low,
+            high=high,
+            shape=None,
+            dtype=dtype[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(u >= low) and ivy.all(u < high)
+        assert ivy.all(v >= low) and ivy.all(v < high)
 
 
 # seed
-@given(
-    seed_val=st.integers(min_value=0, max_value=2147483647),
+@handle_test(
+    fn_tree="functional.ivy.seed",
+    seed_val=helpers.ints(min_value=0, max_value=2147483647),
 )
 def test_seed(seed_val):
     # smoke test
-    ivy.seed(seed_val)
+    ivy.seed(seed_value=seed_val)
 
 
 # shuffle
-@given(
+@handle_test(
+    fn_tree="functional.ivy.shuffle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=ivy_np.valid_float_dtypes, min_num_dims=1
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        min_num_dims=1,
+        min_dim_size=2,
     ),
-    as_variable=st.booleans(),
+    seed=helpers.ints(min_value=0, max_value=100),
 )
-def test_shuffle(dtype_and_x, as_variable, device, call):
-    # smoke test
+def test_shuffle(
+    *,
+    dtype_and_x,
+    seed,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
     dtype, x = dtype_and_x
-    x = ivy.array(x, dtype=dtype, device=device)
-    if as_variable:
-        x = ivy.variable(x)
-    ret = ivy.shuffle(x)
-    # type test
-    assert ivy.is_ivy_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    ivy.seed(0)
-    first_shuffle = call(ivy.shuffle, x)
-    ivy.seed(0)
-    second_shuffle = call(ivy.shuffle, x)
-    assert np.array_equal(first_shuffle, second_shuffle)
+
+    def call():
+        return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
+            input_dtypes=dtype,
+            num_positional_args=num_positional_args,
+            as_variable_flags=as_variable,
+            with_out=with_out,
+            native_array_flags=native_array,
+            container_flags=container_flags,
+            instance_method=instance_method,
+            on_device=on_device,
+            fw=backend_fw,
+            fn_name=fn_name,
+            test_values=False,
+            x=x[0],
+            seed=seed,
+        )
+
+    ret, ret_gt = call()
+    if seed:
+        ret1, ret_gt1 = call()
+        assert ivy.any(ret == ret1)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))

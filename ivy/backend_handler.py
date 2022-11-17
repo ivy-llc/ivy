@@ -1,6 +1,5 @@
 # global
 import ivy
-import logging
 import importlib
 import numpy as np
 from ivy import verbosity
@@ -33,25 +32,22 @@ _array_types["jax.interpreters.xla"] = "ivy.functional.backends.jax"
 _array_types["jaxlib.xla_extension"] = "ivy.functional.backends.jax"
 _array_types["tensorflow.python.framework.ops"] = "ivy.functional.backends.tensorflow"
 _array_types["torch"] = "ivy.functional.backends.torch"
-_array_types["mxnet.ndarray.ndarray"] = "ivy.functional.backends.mxnet"
 
 _backend_dict = dict()
 _backend_dict["numpy"] = "ivy.functional.backends.numpy"
 _backend_dict["jax"] = "ivy.functional.backends.jax"
 _backend_dict["tensorflow"] = "ivy.functional.backends.tensorflow"
 _backend_dict["torch"] = "ivy.functional.backends.torch"
-_backend_dict["mxnet"] = "ivy.functional.backends.mxnet"
 
 _backend_reverse_dict = dict()
 _backend_reverse_dict["ivy.functional.backends.numpy"] = "numpy"
 _backend_reverse_dict["ivy.functional.backends.jax"] = "jax"
 _backend_reverse_dict["ivy.functional.backends.tensorflow"] = "tensorflow"
 _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
-_backend_reverse_dict["ivy.functional.backends.mxnet"] = "mxnet"
 
 
 # Backend Getting/Setting #
-# ------------------------#
+# ----------------------- #
 
 
 def _determine_backend_from_args(args):
@@ -98,6 +94,78 @@ def _determine_backend_from_args(args):
                 return importlib.import_module(module_name)
 
 
+def fn_name_from_version_specific_fn_name(name, version):
+    """
+    Parameters
+    ----------
+    name
+        the version specific name of the function for which the version support
+        is to be provided.
+    version
+        the version of the current framework for which the support is to be
+        provided, the version is inferred by importing the framework
+    Returns
+    -------
+        the name of the original function which will then point to the version
+        specific function
+
+    """
+    # TODO: add tests
+    version = str(version)
+    if version.find("+") != -1:
+        version = tuple(map(int, version[: version.index("+")].split(".")))
+    else:
+        version = tuple(map(int, version.split(".")))
+    if "_to_" in name:
+        i = name.index("_v_")
+        e = name.index("_to_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        version_end = name[e + 4 :]
+        version_end = tuple(map(int, version_end.split("p")))
+        if version_start <= version <= version_end:
+            return name[0:i]
+    elif "_and_above" in name:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        if version >= version_start:
+            return name[0:i]
+    else:
+        i = name.index("_v_")
+        e = name.index("_and_")
+        version_start = name[i + 3 : e]
+        version_start = tuple(map(int, version_start.split("p")))
+        if version <= version_start:
+            return name[0:i]
+
+
+def set_backend_to_specific_version(backend):
+    """
+    Updates the backend dict to make the original function
+    name point to the version specific one.
+
+    Parameters
+    ----------
+    backend
+        the backend module for which we provide the version support
+    """
+    # TODO: add functionality and tests
+    f = str(backend.__name__)
+    f = f[f.index("backends") + 9 :]
+
+    f = importlib.import_module(f)
+    f_version = f.__version__
+
+    for key in list(backend.__dict__):
+        if "_v_" in key:
+            orig_name = fn_name_from_version_specific_fn_name(key, f_version)
+            if orig_name:
+                backend.__dict__[orig_name] = backend.__dict__[key]
+                backend.__dict__[orig_name].__name__ = orig_name
+
+
 def current_backend(*args, **kwargs):
     """Returns the current backend. Priorities:
     global_backend > argument's backend.
@@ -116,6 +184,7 @@ def current_backend(*args, **kwargs):
     Examples
     --------
     If no global backend is set, then the backend is inferred from the arguments:
+
     >>> import numpy as np
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
@@ -123,12 +192,12 @@ def current_backend(*args, **kwargs):
 
     The global backend set in set_backend has priority over any arguments
     passed to current_backend:
+
     >>> import numpy as np
     >>> ivy.set_backend("jax")
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-
     """
     global implicit_backend
     # if a global backend has been set with set_backend then this will be returned
@@ -167,12 +236,11 @@ def set_backend(backend: str):
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
-
     """
-    if isinstance(backend, str) and backend not in _backend_dict:
-        raise ValueError(
-            "backend must be one from {}".format(list(_backend_dict.keys()))
-        )
+    ivy.assertions.check_false(
+        isinstance(backend, str) and backend not in _backend_dict,
+        "backend must be one from {}".format(list(_backend_dict.keys())),
+    )
     ivy.locks["backend_setter"].acquire()
     global ivy_original_dict
     if not backend_stack:
@@ -186,8 +254,10 @@ def set_backend(backend: str):
             backend_stack.append(fw)
     if backend.current_backend_str() == "numpy":
         ivy.set_default_device("cpu")
+    elif backend.current_backend_str() == "jax":
+        ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
     backend_stack.append(backend)
-
+    set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
@@ -201,6 +271,29 @@ def set_backend(backend: str):
     ivy.locks["backend_setter"].release()
 
 
+def set_numpy_backend():
+    """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""
+    set_backend("numpy")
+
+
+def set_jax_backend():
+    """Sets JAX to be the global backend. equivalent to `ivy.set_backend("jax")`."""
+    set_backend("jax")
+
+
+def set_tensorflow_backend():
+    """
+    Sets TensorFlow to be the global backend. equivalent to
+    `ivy.set_backend("tensorflow")`.
+    """
+    set_backend("tensorflow")
+
+
+def set_torch_backend():
+    """Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`."""
+    set_backend("torch")
+
+
 def get_backend(backend: Optional[str] = None):
     """Returns Ivy's backend for `backend` if specified, or if it isn't specified it
     returns the Ivy backend associated with the current globally set backend.
@@ -209,7 +302,7 @@ def get_backend(backend: Optional[str] = None):
     ----------
     backend
         The backend for which we want to retrieve Ivy's backend i.e. one of 'jax',
-        'torch', 'tensorflow', 'numpy', 'mxnet'.
+        'torch', 'tensorflow', 'numpy'.
 
     Returns
     -------
@@ -231,7 +324,6 @@ def get_backend(backend: Optional[str] = None):
     >>> ivy_jax = ivy.get_backend()
     >>> print(ivy_jax)
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-
     """
     # ToDo: change this so that it doesn't depend at all on the global ivy. Currently
     #  all backend-agnostic implementations returned in this module will still
@@ -243,6 +335,8 @@ def get_backend(backend: Optional[str] = None):
     # otherwise `backend` argument will be used
     if backend is None:
         backend = ivy.current_backend()
+        if not backend_stack:
+            return ""
     elif isinstance(backend, str):
         backend = importlib.import_module(_backend_dict[backend])
     for k, v in ivy_original_dict.items():
@@ -281,7 +375,6 @@ def unset_backend():
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class'tensorflow.python.framework.ops.EagerTensor'>
-
     """
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`
@@ -289,17 +382,26 @@ def unset_backend():
         backend = backend_stack.pop(-1)  # remove last backend from the stack
         if backend.current_backend_str() == "numpy":
             ivy.unset_default_device()
+        elif backend.current_backend_str() == "jax":
+            ivy.del_global_attr("RNG")
         # the new backend is the backend that was set before the one we just removed
         # from the stack, or Ivy if there was no previously set backend
+        if backend_stack:
+            new_backend = backend_stack[-1]
+            if new_backend.current_backend_str() == "numpy":
+                ivy.set_default_device("cpu")
+            elif new_backend.current_backend_str() == "jax":
+                ivy.set_global_attr("RNG", ivy.functional.backends.jax.random.RNG)
         new_backend_dict = (
             backend_stack[-1].__dict__ if backend_stack else ivy_original_dict
         )
         # wrap backend functions if there still is a backend, and add functions
         # to ivy namespace
         for k, v in new_backend_dict.items():
-            if backend_stack and k in ivy.__dict__:
-                v = _wrap_function(k, v, ivy.__dict__[k])
-            ivy.__dict__[k] = v
+            if backend_stack and k in ivy_original_dict:
+                v = _wrap_function(k, v, ivy_original_dict[k])
+            if k in ivy_original_dict:
+                ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     return backend
@@ -310,100 +412,18 @@ def clear_backend_stack():
         unset_backend()
 
 
-# Backend Getters #
-# ----------------#
-
-
-def try_import_ivy_jax(warn=False):
-    try:
-        import ivy.functional.backends.jax
-
-        return ivy.functional.backends.jax
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nEither jax or jaxlib appear to not be installed, "
-            "ivy.functional.backends.jax can therefore not be imported.\n".format(e)
-        )
-
-
-def try_import_ivy_tf(warn=False):
-    try:
-        import ivy.functional.backends.tensorflow
-
-        return ivy.functional.backends.tensorflow
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\ntensorflow does not appear to be installed, "
-            "ivy.functional.backends.tensorflow can therefore not be "
-            "imported.\n".format(e)
-        )
-
-
-def try_import_ivy_torch(warn=False):
-    try:
-        import ivy.functional.backends.torch
-
-        return ivy.functional.backends.torch
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\ntorch does not appear to be installed, "
-            "ivy.functional.backends.torch can therefore not be imported.\n".format(e)
-        )
-
-
-def try_import_ivy_mxnet(warn=False):
-    try:
-        import ivy.functional.backends.mxnet
-
-        return ivy.functional.backends.mxnet
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nmxnet does not appear to be installed, "
-            "ivy.functional.backends.mxnet can therefore not be imported.\n".format(e)
-        )
-
-
-def try_import_ivy_numpy(warn=False):
-    try:
-        import ivy.functional.backends.numpy
-
-        return ivy.functional.backends.numpy
-    except (ImportError, ModuleNotFoundError) as e:
-        if not warn:
-            return
-        logging.warning(
-            "{}\n\nnumpy does not appear to be installed, "
-            "ivy.functional.backends.numpy can therefore not be imported.\n".format(e)
-        )
-
-
-FW_DICT = {
-    "jax": try_import_ivy_jax,
-    "tensorflow": try_import_ivy_tf,
-    "torch": try_import_ivy_torch,
-    "mxnet": try_import_ivy_mxnet,
-    "numpy": try_import_ivy_numpy,
-}
-
-
 def choose_random_backend(excluded=None):
     excluded = list() if excluded is None else excluded
     while True:
-        if len(excluded) == 5:
-            raise Exception(
-                "Unable to select backend, all backends are either excluded "
-                "or not installed."
-            )
+        ivy.assertions.check_equal(
+            len(excluded),
+            4,
+            inverse=True,
+            message="""Unable to select backend, all backends are excluded,\
+            or not installed.""",
+        )
         f = np.random.choice(
-            [f_srt for f_srt in list(FW_DICT.keys()) if f_srt not in excluded]
+            [f_srt for f_srt in list(_backend_dict.keys()) if f_srt not in excluded]
         )
         if f is None:
             excluded.append(f)

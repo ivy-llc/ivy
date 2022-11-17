@@ -6,8 +6,9 @@
 
    background.rst
    design.rst
+   related_work.rst
    extensions.rst
-   roadmap.rst
    contributing.rst
    deep_dive.rst
    faq.rst
+   glossary.rst

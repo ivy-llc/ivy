@@ -10,9 +10,11 @@ class ArrayWithLosses(abc.ABC):
     def cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
+        reduction: str = "sum",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.cross_entropy. This method simply
@@ -50,13 +52,17 @@ class ArrayWithLosses(abc.ABC):
         >>> print(z)
         ivy.array(1.3862944)
         """
-        return ivy.cross_entropy(self._data, pred, axis=axis, epsilon=epsilon, out=out)
+        return ivy.cross_entropy(
+            self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
+        )
 
     def binary_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
-        epsilon: float = 1e-7,
+        /,
         *,
+        epsilon: float = 1e-7,
+        reduction: str = "none",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.binary_cross_entropy. This method
@@ -90,14 +96,18 @@ class ArrayWithLosses(abc.ABC):
         >>> print(z)
         ivy.array([0.357, 0.223, 0.223])
         """
-        return ivy.binary_cross_entropy(self._data, pred, epsilon=epsilon, out=out)
+        return ivy.binary_cross_entropy(
+            self._data, pred, epsilon=epsilon, reduction=reduction, out=out
+        )
 
     def sparse_cross_entropy(
         self: ivy.Array,
         pred: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = -1,
         epsilon: float = 1e-7,
-        *,
+        reduction: str = "sum",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -136,5 +146,5 @@ class ArrayWithLosses(abc.ABC):
         ivy.array([0.223, 0.223, 0.357])
         """
         return ivy.sparse_cross_entropy(
-            self._data, pred, axis=axis, epsilon=epsilon, out=out
+            self._data, pred, axis=axis, epsilon=epsilon, reduction=reduction, out=out
         )

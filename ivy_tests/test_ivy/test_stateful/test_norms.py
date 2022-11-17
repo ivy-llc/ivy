@@ -1,56 +1,57 @@
 """Collection of tests for normalization layers."""
 
 # global
-import pytest
-import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy
-from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers import handle_method
 
 
-# layer norm
-@pytest.mark.parametrize(
-    "x_n_ns_n_target",
-    [
-        (
-            [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]],
-            [3],
-            [[-1.2247356, 0.0, 1.2247356], [-1.2247356, 0.0, 1.2247356]],
-        ),
-    ],
+@handle_method(
+    method_tree="LayerNorm.__call__",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    new_std=st.floats(min_value=0.0, max_value=1.0),
+    init_with_v=st.booleans(),
+    method_with_v=st.booleans(),
 )
-@pytest.mark.parametrize("with_v", [True, False])
-@pytest.mark.parametrize("dtype", ["float32"])
-@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_layer_norm_layer(
-    x_n_ns_n_target, with_v, dtype, tensor_fn, device, compile_graph, call
+    *,
+    dtype_and_x,
+    new_std,
+    init_with_v,
+    method_with_v,
+    init_num_positional_args: pf.NumPositionalArg,
+    method_as_variable: pf.AsVariableFlags,
+    method_native_array: pf.NativeArrayFlags,
+    method_container: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
-    # smoke test
-    x, normalized_shape, target = x_n_ns_n_target
-    x = tensor_fn(x, dtype=dtype, device=device)
-    target = tensor_fn(target, dtype=dtype, device=device)
-    if with_v:
-        v = Container(
-            {
-                "scale": ivy.variable(ivy.ones(normalized_shape)),
-                "offset": ivy.variable(ivy.zeros(normalized_shape)),
-            }
-        )
-    else:
-        v = None
-    norm_layer = ivy.LayerNorm(normalized_shape, device=device, v=v)
-    ret = norm_layer(x)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    if not with_v:
-        return
-    assert np.allclose(call(norm_layer, x), ivy.to_numpy(target))
-    # compilation test
-    if call in [helpers.torch_call]:
-        # this is not a backend implemented function
-        return
+    input_dtype, x = dtype_and_x
+    helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=init_num_positional_args,
+        init_all_as_kwargs_np={
+            "normalized_shape": x[0].shape,
+            "epsilon": ivy._MIN_BASE,
+            "elementwise_affine": True,
+            "new_std": new_std,
+            "device": on_device,
+            "dtype": input_dtype[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable,
+        method_num_positional_args=5,
+        method_native_array_flags=method_native_array,
+        method_container_flags=method_container,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
+        init_with_v=init_with_v,
+        method_with_v=method_with_v,
+    )

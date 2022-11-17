@@ -1,12 +1,17 @@
 """Base Container Object."""
 
 # global
+import inspect
+from itertools import chain
 import re
 import abc
 import copy
 import termcolor
 import numpy as np
 import json
+
+from ivy.exceptions import IvyBackendException, IvyException
+
 
 try:
     # noinspection PyPackageRequirements
@@ -17,7 +22,7 @@ import pickle
 import random
 from operator import mul
 from functools import reduce
-from typing import Union, Iterable, Dict
+from typing import Union, Tuple
 from builtins import set
 
 # local
@@ -68,14 +73,14 @@ class ContainerBase(dict, abc.ABC):
         Parameters
         ----------
         dict_in
-            the dictionary the container should wrap around. Default is None.
+            the dictionary the container should wrap around. Default is ``None``.
         queues
             Sequence of multiprocessing queues, each of which returns containers.
             This enables the current container to be passed around asynchronously while
-            waiting for data. Default is None.
+            waiting for data. Default is ``None``.
         queue_load_sizes
             Size of leading dimension of the containers returned by each queue.
-            Default is None.
+            Default is ``None``.
         container_combine_method
             The method to use for combining containers arriving from different queues.
             Default is ivy.Container.list_join
@@ -85,15 +90,15 @@ class ContainerBase(dict, abc.ABC):
         print_limit
             The total array size limit when printing the container. Default is 10.
         key_length_limit
-            The maximum key length when printing the container. Default is None.
+            The maximum key length when printing the container. Default is ``None``.
         print_indent
             The number of whitespaces to use for indenting when printing the container.
             Default is 4.
         print_line_spacing
             The number of extra newlines to use between keys when printing the
-            container. Default is 0.
+            container. Default is ``0``.
         ivyh
-            Handle to ivy module to use for the calculations. Default is None, which
+            Handle to ivy module to use for the calculations. Default is ``None``, which
             results in the global ivy.
         default_key_color
             The default key color for printing the container to the terminal.
@@ -103,15 +108,15 @@ class ContainerBase(dict, abc.ABC):
             container. (Default value = None)
         rebuild_child_containers
             Whether to rebuild container found in dict_in with these constructor params.
-            Default is False, in which case the original container are kept as are.
+            Default is ``False``, in which case the original container are kept as are.
         types_to_iteratively_nest
             The data types to nest iteratively in the dict structure, each type must be
-            iterable. Default is None.
+            iterable. Default is ``None``.
         alphabetical_keys
             Whether to sort the container keys alphabetically, or preserve the dict
-            order. Default is True.
+            order. Default is ``True``.
         kwargs
-            keyword arguments for dict creation. Default is None.
+            keyword arguments for dict creation. Default is ``None``.
 
         """
         self._queues = queues
@@ -124,14 +129,14 @@ class ContainerBase(dict, abc.ABC):
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = np.cumsum(queue_load_sizes)
-            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.get_queue_timeout())
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
             else:
                 dict_in = dict()
         elif kwargs:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "dict_in and **kwargs cannot both be specified for ivy.Container "
                 "constructor, please specify one or the other, not both."
             )
@@ -148,7 +153,7 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=alphabetical_keys,
         )
         self._config = dict()
-        self.inplace_update(dict_in, **self._config_in)
+        self.cont_inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
     # --------------#
@@ -163,11 +168,11 @@ class ContainerBase(dict, abc.ABC):
         map_sequences=None,
         out=None,
         **kwargs,
-    ) -> ivy.Container:
-        arg_cont_idxs = ivy.nested_indices_where(
+    ) -> Union[Tuple[ivy.Container, ivy.Container], ivy.Container]:
+        arg_cont_idxs = ivy.nested_argwhere(
             args, ivy.is_ivy_container, to_ignore=ivy.Container
         )
-        kwarg_cont_idxs = ivy.nested_indices_where(
+        kwarg_cont_idxs = ivy.nested_argwhere(
             kwargs, ivy.is_ivy_container, to_ignore=ivy.Container
         )
         # retrieve all the containers in args and kwargs
@@ -175,22 +180,34 @@ class ContainerBase(dict, abc.ABC):
         num_arg_conts = len(arg_conts)
         kwarg_conts = ivy.multi_index_nest(kwargs, kwarg_cont_idxs)
         # Combine the retrieved containers from args and kwargs into a single list
-        conts = arg_conts + kwarg_conts
-        if not conts:
-            raise Exception("no containers found in arguments")
+        with_out = (
+            inspect.signature(ivy.__dict__[fn_name]).parameters.get("out") is not None
+            and out is not None
+        )
+        if with_out:
+            conts = arg_conts + kwarg_conts + [out]
+        else:
+            conts = arg_conts + kwarg_conts
+        ivy.assertions.check_exists(conts, message="no containers found in arguments")
         cont0 = conts[0]
         # Get the function with the name fn_name, enabling containers to specify
         # their backends irrespective of global ivy's backend
         fn = cont0.ivy.__dict__[fn_name]
 
         def map_fn(vals, _):
+            if with_out:
+                out = vals[-1]
+                del vals[-1]
             arg_vals = vals[:num_arg_conts]
             a = ivy.copy_nest(args, to_mutable=True)
             ivy.set_nest_at_indices(a, arg_cont_idxs, arg_vals)
             kwarg_vals = vals[num_arg_conts:]
             kw = ivy.copy_nest(kwargs, to_mutable=True)
             ivy.set_nest_at_indices(kw, kwarg_cont_idxs, kwarg_vals)
-            return fn(*a, **kw)
+            if with_out:
+                return fn(*a, out=out, **kw)
+            else:
+                return fn(*a, **kw)
 
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
@@ -212,7 +229,7 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(values, list):
                 for v in values:
                     if ivy.is_ivy_array(v):
-                        return ret.unstack(0)
+                        return ret.unstack_conts(0)
         return ret
 
     @staticmethod
@@ -304,7 +321,7 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def _concat_unify(containers, device, axis=0):
         return ivy.concat(
-            [cont.to_device(device) for cont in containers.values()], axis
+            [cont.to_device(device) for cont in containers.values()], axis=axis
         )
 
     @staticmethod
@@ -333,7 +350,7 @@ class ContainerBase(dict, abc.ABC):
             The mode by which to unify, must be one of [ concat | mean | sum ]
         axis
             The axis along which to concattenate the container, if concat mode is set.
-            Default is 0.
+            Default is ``0``.
 
         Returns
         -------
@@ -423,16 +440,17 @@ class ContainerBase(dict, abc.ABC):
             Default is all.
         diff_keys
             The key/keys to add to the returned container when differences are found.
-            Default is "diff".
+            Default is ``"diff"``.
         detect_key_diffs
             Whether to treat different keys as detected differences. If not, the keys
             among the input containers are simply combined without flagging differences.
-            Default is True.
+            Default is ``True``.
         detect_value_diffs
-            Whether to treat different values as detected differences. Default is True.
+            Whether to treat different values as detected differences.
+            Default is ``True``.
         detect_shape_diffs
             Whether to treat different array shapes as detected differences.
-            Default is True.
+            Default is ``True``.
         config
             The configuration for the containers. Default is the same as container0.
         *containers
@@ -443,11 +461,7 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-        if mode not in ["all", "same_only", "diff_only"]:
-            raise Exception(
-                'mode must be one of [ "all" | "same_only" | "diff_only" ], '
-                "but found {}".format(mode)
-            )
+        ivy.assertions.check_elem_in_list(mode, ["all", "same_only", "diff_only"])
 
         # if inputs are not dicts, then compare their values to determine the diff dict
         num_containers = len(containers)
@@ -478,7 +492,7 @@ class ContainerBase(dict, abc.ABC):
                 idxs_added = list()
                 for idx in cont_range:
                     if idx not in idxs_added:
-                        idxs_to_add = ivy.indices_where(equal_mat[idx])
+                        idxs_to_add = ivy.argwhere(equal_mat[idx])
                         idxs_to_add_list = sorted(
                             ivy.to_numpy(idxs_to_add).reshape(-1).tolist()
                         )
@@ -487,7 +501,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             key = diff_keys[idx]
                         else:
-                            raise Exception(
+                            raise ivy.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -536,7 +550,7 @@ class ContainerBase(dict, abc.ABC):
                         elif isinstance(diff_keys, (list, tuple)):
                             diff_dict[diff_keys[i]] = cont[key]
                         else:
-                            raise Exception(
+                            raise ivy.exceptions.IvyException(
                                 "diff_keys must be either a string or list of strings,"
                                 "but found {} of type {}".format(
                                     diff_keys, type(diff_keys)
@@ -573,10 +587,10 @@ class ContainerBase(dict, abc.ABC):
         detect_key_diffs
             Whether to treat different keys as detected differences.
             If not, the keys among the input containers are simply combined without
-            flagging differences. Default is True.
+            flagging differences. Default is ``True``.
         detect_shape_diffs
             Whether to treat different array shapes as detected differences.
-            Default is True.
+            Default is ``True``.
         config
             The configuration for the containers. Default is the same as container0.
         *containers
@@ -618,19 +632,20 @@ class ContainerBase(dict, abc.ABC):
         containers
             containers to map.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied,
-            otherwise the leftmost container value is used. Default is False.
+            otherwise the leftmost container value is used. Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
         config
             The configuration for the containers. Default is the same as container0.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         assert_identical
             Whether to assert that the input containers are identical or not.
 
@@ -644,10 +659,10 @@ class ContainerBase(dict, abc.ABC):
             if isinstance(cont, ivy.Container):
                 container0 = cont
                 break
-        if container0 is None:
-            raise Exception(
-                "No containers found in the inputs to " "ivy.Container.multi_map"
-            )
+        ivy.assertions.check_exists(
+            container0,
+            message="No containers found in the inputs to ivy.Container.multi_map",
+        )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
         return_dict = dict()
@@ -684,8 +699,10 @@ class ContainerBase(dict, abc.ABC):
                     )
                     if ret:
                         return_dict[key] = ret
-                elif isinstance(value0, (list, tuple)) and map_nests:
-                    ret = ivy.nested_multi_map(lambda x, _: func(x, None), values)
+                elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
+                    ret = ivy.nested_multi_map(
+                        lambda x, _: func(x, None), values, to_ivy=False
+                    )
                     if prune_unapplied and not ret:
                         continue
                     return_dict[key] = ret
@@ -742,23 +759,23 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
         check_types
             Whether to check if the datatypes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         check_shapes
             Whether to check if the shapes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         same_arrays
             Whether to check if the arrays are the exact same instances.
-            Default is True.
+            Default is ``True``.
         arrays_equal
-            Whether to check if the arrays have equal values. Default is True.
+            Whether to check if the arrays have equal values. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
 
@@ -796,7 +813,7 @@ class ContainerBase(dict, abc.ABC):
                     if not min([id_n == id_0 for id_n in ids]):
                         return False
                 elif arrays_equal:
-                    if not ivy.arrays_equal(values):
+                    if not ivy.all_equal(*values):
                         return False
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
@@ -835,36 +852,39 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
         check_types
             Whether to check if the datatypes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         check_shapes
             Whether to check if the shapes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         same_arrays
             Whether to check if the arrays are the exact same instances.
-            Default is True.
+            Default is ``True``.
         arrays_equal
-            Whether to check if the arrays have equal values. Default is True.
+            Whether to check if the arrays have equal values. Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
-        assert ivy.Container.identical(
-            containers,
-            check_types,
-            check_shapes,
-            same_arrays,
-            arrays_equal,
-            key_chains,
-            to_apply,
-            partial,
-        ), "Containers were not identical:\n\n{}".format(
-            ivy.Container.diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical(
+                containers,
+                check_types,
+                check_shapes,
+                same_arrays,
+                arrays_equal,
+                key_chains,
+                to_apply,
+                partial,
+            ),
+            "Containers were not identical:\n\n{}".format(
+                ivy.Container.diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -886,18 +906,18 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
         check_types
             Whether to also check whether the datatypes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         check_shapes
             Whether to also check whether the shapes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
 
@@ -936,24 +956,27 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
         check_types
             Whether to also check whether the datatypes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         check_shapes
             Whether to also check whether the shapes of the leaf nodes are the same.
-            Default is True.
+            Default is ``True``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
-        assert ivy.Container.identical_structure(
-            containers, check_types, check_shapes, key_chains, to_apply, partial
-        ), "Containers did not have identical structure:\n\n{}".format(
-            ivy.Container.structural_diff(*containers)
+        ivy.assertions.check_true(
+            ivy.Container.identical_structure(
+                containers, check_types, check_shapes, key_chains, to_apply, partial
+            ),
+            "Containers did not have identical structure:\n\n{}".format(
+                ivy.Container.structural_diff(*containers)
+            ),
         )
 
     @staticmethod
@@ -967,7 +990,7 @@ class ContainerBase(dict, abc.ABC):
             containers to check.
 
         """
-        assert len(containers) > 1
+        ivy.assertions.check_greater(len(containers), 1)
         configs = [cont.config for cont in containers]
         config0 = configs[0]
         for k, v in config0.items():
@@ -1023,9 +1046,9 @@ class ContainerBase(dict, abc.ABC):
             slice object to slice all h5 elements. (Default value = slice(None))
         alphabetical_keys
             Whether to sort the container keys alphabetically, or preserve the dict
-            order. Default is True.
+            order. Default is ``True``.
         ivyh
-            Handle to ivy module to use for the calculations. Default is None, which
+            Handle to ivy module to use for the calculations. Default is ``None``, which
             results in the global ivy.
 
         Returns
@@ -1033,11 +1056,11 @@ class ContainerBase(dict, abc.ABC):
             Container loaded from disk
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to load hdf5 files from "
-                "disk into a container."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to load hdf5 \
+            files from disk into a container.",
+        )
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
@@ -1054,7 +1077,7 @@ class ContainerBase(dict, abc.ABC):
                     list(value[slice_obj])
                 )
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return ivy.Container(container_dict, ivyh=ivyh)
@@ -1068,7 +1091,7 @@ class ContainerBase(dict, abc.ABC):
         pickle_filepath
             Filepath where the container object is saved to disk.
         ivyh
-            Handle to ivy module to use for the calculations. Default is None, which
+            Handle to ivy module to use for the calculations. Default is ``None``, which
             results in the global ivy.
 
         Returns
@@ -1092,7 +1115,7 @@ class ContainerBase(dict, abc.ABC):
         json_filepath
             Filepath where the container object is saved to disk.
         ivyh
-            Handle to ivy module to use for the calculations. Default is None, which
+            Handle to ivy module to use for the calculations. Default is ``None``, which
             results in the global ivy.
 
         Returns
@@ -1117,11 +1140,11 @@ class ContainerBase(dict, abc.ABC):
             Size of h5 file contents, and batch size.
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to determine the size "
-                "of hdf5 files."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to determine \
+            the size of hdf5 files.",
+        )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, "r")
         else:
@@ -1138,7 +1161,7 @@ class ContainerBase(dict, abc.ABC):
                 size += reduce(mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         return size, batch_size
@@ -1156,11 +1179,11 @@ class ContainerBase(dict, abc.ABC):
             random seed to use for array shuffling (Default value = 0)
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to "
-                "shuffle hdf5 files on disk."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to shuffle \
+            hdf5 files on disk.",
+        )
         if seed_value is None:
             seed_value = random.randint(0, 1000)
         if type(h5_obj_or_filepath) is str:
@@ -1176,7 +1199,7 @@ class ContainerBase(dict, abc.ABC):
                 # noinspection PyTypeChecker
                 random.shuffle(value)
             else:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     "Item found inside h5_obj which was neither a Group nor a Dataset."
                 )
         if isinstance(h5_obj, h5py.File):
@@ -1216,7 +1239,7 @@ class ContainerBase(dict, abc.ABC):
             try:
                 return reduction(containers)
             except Exception as e:
-                raise Exception(
+                raise ivy.exceptions.IvyException(
                     str(e)
                     + "\nContainer reduce operation only valid for containers of arrays"
                 )
@@ -1265,12 +1288,14 @@ class ContainerBase(dict, abc.ABC):
     @staticmethod
     def trim_key(key, max_length):
         """Summary.
+        Returns a trimmed key with a maximum length of max_length.
 
         Parameters
         ----------
         key
-            param max_length:
+            key to trim
         max_length
+            maximum length of key
 
         """
         key_len = len(key)
@@ -1455,13 +1480,34 @@ class ContainerBase(dict, abc.ABC):
     # Public Methods #
     # ---------------#
 
+    def duplicate_array_keychains(self):
+        duplciates = ()
+        key_chains = self.all_key_chains()
+        skips = set()
+        for i in range(len(key_chains)):
+            temp_duplicates = ()
+            if key_chains[i] in skips:
+                continue
+            for j in range(i + 1, len(key_chains)):
+                if key_chains[j] in skips:
+                    continue
+                if self[key_chains[i]] is self[key_chains[j]]:
+                    if key_chains[i] not in temp_duplicates:
+                        temp_duplicates += (key_chains[i],)
+                    if key_chains[j] not in temp_duplicates:
+                        temp_duplicates += (key_chains[j],)
+            if len(temp_duplicates) > 0:
+                duplciates += (temp_duplicates,)
+            skips = chain.from_iterable(duplciates)
+        return duplciates
+
     def update_config(self, **config):
         new_config = dict()
         for k, v in config.items():
             att_name = "_" + k
             if k in self._config_in:
                 if k == "types_to_iteratively_nest":
-                    v = ivy.default(lambda: tuple(v), (), True)
+                    v = ivy.default(lambda: tuple(v), (), catch_exceptions=True)
                 elif k == "keyword_color_dict":
                     v = ivy.default(v, {})
                 elif k == "ivyh":
@@ -1471,7 +1517,7 @@ class ContainerBase(dict, abc.ABC):
 
         self._config = new_config
 
-    def inplace_update(
+    def cont_inplace_update(
         self, dict_in: Union[ivy.Container, dict], **config
     ) -> ivy.Container:
         """Update the contents of this container inplace, using either a new dict or
@@ -1504,7 +1550,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
         else:
-            raise Exception("invalid input {}".format(dict_in))
+            raise ivy.exceptions.IvyException("invalid input {}".format(dict_in))
         items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
         for key, value in items:
             if (
@@ -1516,19 +1562,10 @@ class ContainerBase(dict, abc.ABC):
             ) or isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = ivy.Container(value, **self._config)
             else:
-                self[key] = value
-
-    def set_framework(self, ivyh):
-        """Update the framework to use for the container.
-
-        Parameters
-        ----------
-        ivyh
-
-        """
-        self._ivy = ivyh
-        self._config["ivyh"] = ivyh
-        return self
+                if key in self and isinstance(self[key], ivy.Container):
+                    self[key].cont_inplace_update(value)
+                else:
+                    self[key] = value
 
     def all_true(
         self,
@@ -1546,15 +1583,16 @@ class ContainerBase(dict, abc.ABC):
             Whether or not to assert each entry is of type Boolean.
             (Default value = False)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1592,15 +1630,16 @@ class ContainerBase(dict, abc.ABC):
             Whether or not to assert each entry is of type Boolean.
             (Default value = False)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -1621,344 +1660,6 @@ class ContainerBase(dict, abc.ABC):
                 ]
             )
         )
-
-    def minimum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise minimum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        x2
-            The other container or number to compute the minimum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the minimum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.minimum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def maximum(
-        self,
-        x2,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise maximum between this container and another container
-        or number.
-
-        Parameters
-        ----------
-        other
-            The other container or number to compute the maximum against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the maximum values computed.
-
-        """
-        is_container = isinstance(x2, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.maximum(x, x2[kc] if is_container else x2)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def clip(
-        self,
-        x_min,
-        x_max,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        out=None,
-    ):
-        """Computes the elementwise clipped values between this container and clip_min
-        and clip_max containers or numbers.
-
-        Parameters
-        ----------
-        x_min
-            The minimum container or number to clip against.
-        x_max
-            The maximum container or number to clip against.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays having the clipped values returned.
-
-        """
-        min_is_container = isinstance(x_min, ivy.Container)
-        max_is_container = isinstance(x_max, ivy.Container)
-        return self.handle_inplace(
-            self.map(
-                lambda x, kc: self._ivy.clip(
-                    x,
-                    x_min[kc] if min_is_container else x_min,
-                    x_max[kc] if max_is_container else x_max,
-                )
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else x,
-                key_chains,
-                to_apply,
-                prune_unapplied,
-                map_sequences,
-            ),
-            out,
-        )
-
-    def vector_norm(
-        self,
-        ord=2,
-        axis=None,
-        keepdims=False,
-        global_norm=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute vector p-norm for each array in the container.
-
-        Parameters
-        ----------
-        ord
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            vector norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        global_norm
-            Whether to compute the norm across all the concattenated sub-arrays.
-            Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with the vector norms for each sub-array returned.
-
-        """
-        p_is_container = isinstance(ord, ivy.Container)
-        if global_norm:
-            if p_is_container:
-                raise Exception(
-                    "global_norm can only be computed for scalar p argument,"
-                    "but found {} of type {}".format(ord, type(ord))
-                )
-            return sum(
-                [
-                    v
-                    for k, v in self.map(
-                        lambda x, kc: self._ivy.sum(x**ord)
-                    ).to_iterator()
-                ]
-            ) ** (1 / ord)
-        return self.map(
-            lambda x, kc: self._ivy.vector_norm(
-                x, axis, keepdims, ord[kc] if p_is_container else ord
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def matrix_norm(
-        self,
-        ord=2,
-        keepdims=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Compute matrix p-norm for each array in the container.
-
-        Parameters
-        ----------
-        p
-            Order of the norm. Default is 2.
-        axis
-            If axis is an integer, it specifies the axis of x along which to compute the
-            matrix norms. Default is None, in which case the flattened array is
-            considered.
-        keepdims
-            If this is set to True, the axes which are normed over are left in the
-            result as dimensions with size one. With this option the result will
-            broadcast correctly against the original x. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        ord
-            Default value = 2)
-
-        Returns
-        -------
-            Container object with the matrix norms for each sub-array returned.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.matrix_norm(x, ord, keepdims)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def shuffle(
-        self,
-        seed_value=None,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        key_chain="",
-    ):
-        """Shuffle entries in all sub-arrays, such that they are still aligned along
-        axis 0.
-
-        Parameters
-        ----------
-        seed_value
-            random seed to use for array shuffling (Default value = None)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        key_chain
-            Chain of keys for this dict entry (Default value = '')
-
-        """
-        return_dict = dict()
-        if seed_value is None:
-            seed_value = self._ivy.to_numpy(
-                self._ivy.random.randint(0, 1000, ())
-            ).item()
-        for key, value in self.items():
-            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
-            if isinstance(value, ivy.Container):
-                ret = value.shuffle(
-                    seed_value,
-                    key_chains,
-                    to_apply,
-                    prune_unapplied,
-                    map_sequences,
-                    this_key_chain,
-                )
-                if ret:
-                    return_dict[key] = ret
-            elif isinstance(value, (list, tuple)) and map_sequences:
-
-                def _shuffle(v):
-                    self._ivy.seed(seed_value)
-                    return self._ivy.shuffle(v)
-
-                ret = ivy.nested_map(value, _shuffle)
-                if ret:
-                    return_dict[key] = ret
-            else:
-                if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                        this_key_chain not in key_chains and to_apply
-                    ):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value
-                        continue
-                self._ivy.seed(seed_value)
-                return_dict[key] = self._ivy.shuffle(value)
-        return ivy.Container(return_dict, **self._config)
 
     def slice_via_key(self, slice_key):
         """Get slice of container, based on key.
@@ -1983,72 +1684,6 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
 
-    def as_ones(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Return arrays of ones for all nested arrays in the container.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with ones.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.ones_like(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_zeros(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Return arrays of zeros for all nested arrays in the container.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with zeros.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.zeros_like(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
     def as_bools(
         self,
         assert_is_bool=False,
@@ -2065,15 +1700,16 @@ class ContainerBase(dict, abc.ABC):
             Whether or not to assert the entry is of type Boolean.
             (Default value = False)
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2083,7 +1719,7 @@ class ContainerBase(dict, abc.ABC):
 
         def _ret_bool(x):
             if assert_is_bool:
-                assert isinstance(x, bool)
+                ivy.assertions.check_isinstance(x, bool)
                 return x
             return bool(x)
 
@@ -2095,181 +1731,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         )
 
-    def as_random_uniform(
-        self,
-        low=0.0,
-        high=1.0,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return arrays of random uniform values for all nested arrays in the
-        container.
-
-        Parameters
-        ----------
-        low
-            Lower boundary of the output interval. All values generated will be greater
-            than or equal to low. The default value is 0.
-        high
-            Upper boundary of the output interval. All values generated will be less
-            than high. The default value is 1.0.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays filled with random uniform values.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.random_uniform(
-                low, high, x.shape, device=self._ivy.dev(x)
-            )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def to_native(
-        self,
-        nested=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return native framework arrays for all nested arrays in the container.
-
-        Parameters
-        ----------
-        nested
-            Whether to apply the conversion on arguments in a nested manner. If so, all
-            dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-arrays converted to their native format.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.to_native(x, nested=nested),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def to_ivy(
-        self,
-        nested=False,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Return ivy arrays for all nested native framework arrays in the container.
-
-        Parameters
-        ----------
-        nested
-            Whether to apply the conversion on arguments in a nested manner. If so, all
-            dicts, lists and tuples will be traversed to their lowest leaves in search
-            of ivy.Array and ivy.Variable instances. Default is False.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all native sub-arrays converted to their ivy.Array
-            instances.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.to_ivy(x, nested=nested),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def dev_clone(self, devices):
-        """Clone the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices on which to clone the container.
-
-        Returns
-        -------
-            a set of cloned containers across the specified devices.
-
-        """
-        return self._ivy.DevClonedItem(
-            {device: self.to_device(device=device) for device in devices}
-        )
-
-    def dev_dist(self, devices: Union[Iterable[str], Dict[str, int]], axis=0):
-        """Distribute the current container across multiple devices.
-
-        Parameters
-        ----------
-        devs
-            The devices along which to distribute the container.
-        axis
-            The axis along which to split the arrays at the container leaves.
-            Default is 0.
-
-        Returns
-        -------
-            a set of distributed sub-containers across the specified devices.
-
-        """
-        split_arg = (
-            list(devices.values()) if isinstance(devices, dict) else len(devices)
-        )
-        return self._ivy.DevDistItem(
-            {
-                device: cont.to_device(device)
-                for cont, device in zip(
-                    self.split(split_arg, axis, with_remainder=True), devices
-                )
-            }
-        )
-
-    def unstack(self, axis, keepdims=False, dim_size=None):
+    def unstack_conts(self, axis, keepdims=False, dim_size=None):
         """Unstack containers along specified dimension.
 
         Parameters
@@ -2277,7 +1739,7 @@ class ContainerBase(dict, abc.ABC):
         axis
             Dimensions along which to unstack.
         keepdims
-            Whether to keep dimension 1 in the unstack dimensions. Default is False.
+            Whether to keep dimension 1 in the unstack dimensions. Default is ``False``.
         dim_size
             Size of the dimension to unstack. Determined from inputs by default.
 
@@ -2287,7 +1749,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if dim_size is None:
-            dim_size = self.shape[axis]
+            dim_size = self.shared_shape[axis]
         if keepdims:
             # noinspection PyTypeChecker
             return [
@@ -2304,7 +1766,7 @@ class ContainerBase(dict, abc.ABC):
             for i in range(dim_size)
         ]
 
-    def split(
+    def split_conts(
         self,
         num_or_size_splits=None,
         axis=0,
@@ -2324,20 +1786,21 @@ class ContainerBase(dict, abc.ABC):
             integer. The size of each split element if a sequence of integers. Default
             is to divide into as many 1-dimensional arrays as the axis dimension.
         axis
-            The axis along which to split, default is 0.
+            The axis along which to split, default is ``0``.
         with_remainder
             If the tensor does not split evenly, then store the last remainder entry.
-            Default is False.
+            Default is ``False``.
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
+            be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied. Default
             is False.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
 
         Returns
         -------
@@ -2351,390 +1814,19 @@ class ContainerBase(dict, abc.ABC):
         )
         # noinspection PyTypeChecker
         return self.map(
-            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder)
+            lambda x, kc: self._ivy.split(
+                x,
+                num_or_size_splits=num_or_size_splits,
+                axis=axis,
+                with_remainder=with_remainder,
+            )
             if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
             to_apply,
             prune_unapplied,
             map_sequences,
-        ).unstack(0, dim_size=dim_size)
-
-    def gather(
-        self,
-        indices,
-        axis=-1,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Gather slices from all container params at axis according to indices.
-
-        Parameters
-        ----------
-        indices
-            Index array.
-        axis
-            The axis from which to gather from. Default is -1.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions gathered along the axis.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.gather(x, indices, axis)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def gather_nd(
-        self,
-        indices,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Gather slices from all container params into a arrays with shape specified by
-        indices.
-
-        Parameters
-        ----------
-        indices
-            Index array.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            Container object with all sub-array dimensions gathered.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.gather_nd(x, indices)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def einops_rearrange(
-        self,
-        pattern,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        **axes_lengths,
-    ):
-        """Perform einops rearrange operation on each sub array in the container.
-
-        Parameters
-        ----------
-        pattern
-            Rearrangement pattern.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
-
-        Returns
-        -------
-            ivy.Container with each array having einops.rearrange applied.
-
-        """
-        return self.map(
-            lambda x, kc: ivy.einops_rearrange(x, pattern, **axes_lengths)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def einops_reduce(
-        self,
-        pattern,
-        reduction,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        **axes_lengths,
-    ):
-        """Perform einops reduce operation on each sub array in the container.
-
-        Parameters
-        ----------
-        pattern
-            Reduction pattern.
-        reduction
-            One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or
-            callable.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
-        Returns
-        -------
-            ivy.Container with each array having einops.reduce applied.
-
-        """
-        return self.map(
-            lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def einops_repeat(
-        self,
-        pattern,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        **axes_lengths,
-    ):
-        """Perform einops repeat operation on each sub array in the container.
-
-        Parameters
-        ----------
-        pattern
-            Rearrangement pattern.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        axes_lengths
-            Any additional specifications for dimensions.
-        **axes_lengths
-
-        Returns
-        -------
-            ivy.Container with each array having einops.repeat applied.
-
-        """
-        return self.map(
-            lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def to_device(
-        self,
-        device,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Move the container arrays to the desired device, specified by device string.
-
-        Parameters
-        ----------
-        dev
-            device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device
-            if None.
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            The container, but with each sub-array now placed on the target device.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(self._ivy.to_device(x, device=device))
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def stop_gradients(
-        self,
-        preserve_type=True,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-    ):
-        """Stop gradients of all array entries in the container.
-
-        Parameters
-        ----------
-        preserve_type
-            Whether to preserve the input type (ivy.Variable or ivy.Array),
-            otherwise an array is always returned. Default is True.
-        preserve_type
-            bool, optional (Default value = True)
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each array having their gradients stopped.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, preserve_type)
-            if self._ivy.is_variable(x)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_variables(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested arrays to variables, which support gradient computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each array converted to a variable.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.variable(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-
-    def as_arrays(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested variables to arrays, which do not support gradient
-        computation.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each variable converted to an array.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.stop_gradient(x, False)
-            if self._ivy.is_variable(x)
-            else (
-                x
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-                else self._ivy.array(x)
-            ),
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
+        ).unstack_conts(0, dim_size=dim_size)
 
     def num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
@@ -2748,7 +1840,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return sum(
-            self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values()
+            self.map(
+                lambda x, kc: ivy.is_array(x, exclusive=exclusive)
+            ).to_iterator_values()
         )
 
     def size_ordered_arrays(self, exclusive=False):
@@ -2765,7 +1859,7 @@ class ContainerBase(dict, abc.ABC):
         array_dict = {
             ivy.Container.flatten_key_chain(kc): v
             for kc, v in self.to_iterator()
-            if ivy.is_array(v, exclusive)
+            if ivy.is_array(v, exclusive=exclusive)
         }
         return ivy.Container(
             dict(
@@ -2774,118 +1868,6 @@ class ContainerBase(dict, abc.ABC):
                 )
             ),
             alphabetical_keys=False,
-        )
-
-    def to_numpy(
-        self,
-        key_chains=None,
-        to_apply=True,
-        prune_unapplied=False,
-        map_sequences=False,
-        update_backend=True,
-    ):
-        """Converts all nested ivy arrays to numpy arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-        update_backend
-            Whether to update the ivy backend of the returned container to numpy.
-            Default is True.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        import ivy.functional.backends.numpy
-
-        ret = self.map(
-            lambda x, kc: self._ivy.to_numpy(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        if update_backend:
-            ret.set_ivy_backend(ivy.get_backend("numpy"))
-        return ret
-
-    def from_numpy(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested numpy arrays to native backend arrays.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each ivy array converted to a numpy array.
-
-        """
-        ret = self.map(
-            lambda x, kc: self._ivy.array(x) if isinstance(x, np.ndarray) else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
-        )
-        return ret
-
-    def arrays_as_lists(
-        self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False
-    ):
-        """Converts all nested arrays to lists, a useful intermediate step for
-        conversion to other framework array types.
-
-        Parameters
-        ----------
-        key_chains
-            The key-chains to apply or not apply the method to. Default is None.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains will
-            be skipped. Default is True.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied. Default
-            is False.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
-
-        Returns
-        -------
-            container with each array converted to a list.
-
-        """
-        return self.map(
-            lambda x, kc: self._ivy.to_list(x)
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
-            else x,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
         )
 
     def to_disk_as_hdf5(
@@ -2908,11 +1890,11 @@ class ContainerBase(dict, abc.ABC):
             appending to file. (Default value = None)
 
         """
-        if not ivy.exists(h5py):
-            raise Exception(
-                "You must install python package h5py in order to save containers "
-                "to disk as hdf5 files."
-            )
+        ivy.assertions.check_exists(
+            h5py,
+            message="You must install python package h5py in order to save \
+            containers to disk as hdf5 files.",
+        )
         if type(h5_obj_or_filepath) is str:
             h5_obj = h5py.File(h5_obj_or_filepath, mode)
         else:
@@ -2984,11 +1966,11 @@ class ContainerBase(dict, abc.ABC):
         with open(json_filepath, "w+") as json_data_file:
             json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
-    def to_list(self):
+    def to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_list())
+                return_list.append(value.to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list
@@ -2999,7 +1981,7 @@ class ContainerBase(dict, abc.ABC):
         Returns
         -------
         ret
-             Container data in it's raw form.
+             Container data in its raw form.
 
         """
         return_item = dict()
@@ -3210,7 +2192,7 @@ class ContainerBase(dict, abc.ABC):
             The sub-container to find.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
         key_chain_found = False
@@ -3243,7 +2225,7 @@ class ContainerBase(dict, abc.ABC):
             The sub-container to check.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -3266,19 +2248,19 @@ class ContainerBase(dict, abc.ABC):
             The sub-container to check.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
         try:
-            assert self.contains_sub_container(sub_cont, partial)
-        except AssertionError:
+            ivy.assertions.check_true(self.contains_sub_container(sub_cont, partial))
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
                     ivy.Container.diff(self[key_chain], sub_cont)
                 )
@@ -3292,10 +2274,10 @@ class ContainerBase(dict, abc.ABC):
         sub_struc_to_find
             The sub-container to find.
         check_shapes
-            Whether to check array shapes in the sub-structure. Default is True.
+            Whether to check array shapes in the sub-structure. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
         key_chain_found = False
@@ -3337,10 +2319,10 @@ class ContainerBase(dict, abc.ABC):
         sub_cont
             The sub-container to check.
         check_shapes
-            Whether to check array shapes in the sub-structure. Default is True.
+            Whether to check array shapes in the sub-structure. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
         return (
@@ -3358,22 +2340,24 @@ class ContainerBase(dict, abc.ABC):
         sub_cont
             The sub-container to check.
         check_shapes
-            Whether to check array shapes in the sub-structure. Default is True.
+            Whether to check array shapes in the sub-structure. Default is ``True``.
         partial
             Whether to also check for partially complete sub-containers.
-            Default is False.
+            Default is ``False``.
 
         """
         try:
-            assert self.contains_sub_structure(sub_cont, check_shapes, partial)
-        except AssertionError:
+            ivy.assertions.check_true(
+                self.contains_sub_structure(sub_cont, check_shapes, partial)
+            )
+        except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
                 key_chain = ""
             # noinspection PyTypeChecker
-            raise AssertionError(
+            raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
                     ivy.Container.structural_diff(
                         self[key_chain],
@@ -3385,30 +2369,6 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
 
-    def has_nans(self, include_infs=True, leafwise=False):
-        """Determine whether arrays in the container contain any nans, as well as infs
-        or -infs if specified.
-
-        Parameters
-        ----------
-        include_infs
-            Whether to include infs and -infs in the check. Default is True.
-        leafwise
-            Whether to apply the check leaf-wise, and return a container of booleans.
-            Default is False, in which case the check is applied across the entire
-            container, returning a single boolean.
-
-        Returns
-        -------
-            Whether the container has any nans, applied either leafwise or across the
-            entire container.
-
-        """
-        leafwise_res = self.map(lambda x, kc: ivy.has_nans(x, include_infs))
-        if leafwise:
-            return leafwise_res
-        return max([v for k, v in leafwise_res.to_iterator()])
-
     def at_keys(
         self, queries, ignore_none=True, containing=False, ignore_key_errors=False
     ):
@@ -3419,13 +2379,13 @@ class ContainerBase(dict, abc.ABC):
         queries
             The keys to query.
         ignore_none
-            Whether to ignore None input. Default is True.
+            Whether to ignore None input. Default is ``True``.
         containing
             Whether to include keys which only contain the query substrings.
-            Default is False.
+            Default is ``False``.
         ignore_key_errors
             Whether to ignore Key-errors when trying to access the dict.
-            Default is False.
+            Default is ``False``.
 
         Returns
         -------
@@ -3477,7 +2437,7 @@ class ContainerBase(dict, abc.ABC):
             except KeyError as e:
                 if ignore_key_errors:
                     return
-                raise e
+                raise ivy.exceptions.IvyException(repr(e))
         return ret
 
     def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
@@ -3514,7 +2474,7 @@ class ContainerBase(dict, abc.ABC):
                 [key_chains], ignore_key_errors=ignore_key_errors
             )
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict"
                 " or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -3627,17 +2587,19 @@ class ContainerBase(dict, abc.ABC):
             cont = self.copy()
         sub_cont = cont
         for key in keys[:-1]:
-            if key not in sub_cont:
-                raise Exception(
-                    "key chain must already exist in container in order "
-                    "to call overwrite_at_key_chain"
-                )
-            sub_cont = sub_cont[key]
-        if keys[-1] not in sub_cont:
-            raise Exception(
-                "key chain must already exist in container in order "
-                "to call overwrite_at_key_chain"
+            ivy.assertions.check_elem_in_list(
+                key,
+                sub_cont,
+                message="key chain must already exist in container in order to \
+                call overwrite_at_key_chain",
             )
+            sub_cont = sub_cont[key]
+        ivy.assertions.check_elem_in_list(
+            keys[-1],
+            sub_cont,
+            message="key chain must already exist in container in order to \
+            call overwrite_at_key_chain",
+        )
         sub_cont[keys[-1]] = val
         return cont
 
@@ -3696,11 +2658,12 @@ class ContainerBase(dict, abc.ABC):
             else:
                 return_dict = self.copy()
         for k, v in target_dict.items():
-            if k not in return_dict:
-                raise Exception(
-                    "key chain must already exist in container in order "
-                    "to call overwrite_at_key_chains"
-                )
+            ivy.assertions.check_elem_in_list(
+                k,
+                return_dict,
+                message="key chain must already exist in container in order to \
+                call overwrite_at_key_chain",
+            )
             if isinstance(v, dict):
                 return_dict[k] = self.overwrite_at_key_chains(
                     v, return_dict[k], inplace
@@ -3808,7 +2771,7 @@ class ContainerBase(dict, abc.ABC):
         elif isinstance(key_chains, str):
             return self._prune_key_chains_input_as_seq([key_chains])
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict "
                 "or ivy.Container, but found type {}".format(type(key_chains))
             )
@@ -3889,10 +2852,14 @@ class ContainerBase(dict, abc.ABC):
             removed from the chain.
 
         """
-        if not absolute and not containing:
-            raise Exception(
-                "At least one of absolute or containing arguments must be specified."
-            )
+        ivy.assertions.check_all_or_any_fn(
+            absolute,
+            containing,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at least one of absolute or containing must be specified",
+        )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
             if (absolute and key == absolute) or (containing and containing in key):
@@ -3924,10 +2891,14 @@ class ContainerBase(dict, abc.ABC):
             key chains removed from the chain.
 
         """
-        if not absolute and not containing:
-            raise Exception(
-                "At least one of absolute or containing arguments must be specified."
-            )
+        ivy.assertions.check_all_or_any_fn(
+            absolute,
+            containing,
+            fn=ivy.exists,
+            type="any",
+            limit=[1, 2],
+            message="at least one of absolute or containing must be specified",
+        )
         out_cont = ivy.Container(**self._config)
         for key, value in self.items():
             if (absolute and key in absolute) or (
@@ -3953,9 +2924,9 @@ class ContainerBase(dict, abc.ABC):
             A dict with keys as old key-chains and values as new key-chains.
         keep_orig
             Whether to keep the original keys, or start from a new empty container.
-            Default is True.
+            Default is ``True``.
         replace
-            Whether to replace the old key-chains by the new ones. Default is True.
+            Whether to replace the old key-chains by the new ones. Default is ``True``.
 
         """
         new_cont = self.copy() if keep_orig else ivy.Container()
@@ -3978,9 +2949,9 @@ class ContainerBase(dict, abc.ABC):
             A dict with keys as old key-chains and values as new key-chains.
         keep_orig
             Whether to keep the original keys, are start from a new container.
-            Default is True.
+            Default is ``True``.
         replace
-            Whether to replace the old key-chains by the new ones. Default is True.
+            Whether to replace the old key-chains by the new ones. Default is ``True``.
 
         """
         new_cont = self.copy() if keep_orig else ivy.Container()
@@ -4045,6 +3016,9 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
+    def __deepcopy__(self, memo):
+        return self.deep_copy()
+
     def map(
         self,
         func,
@@ -4062,20 +3036,21 @@ class ContainerBase(dict, abc.ABC):
         func
             Function to apply to each container entry
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map method to sequences (lists, tuples). Default is False.
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
         inplace
             Whether to apply the mapping inplace, or return a new container.
-            Default is False.
+            Default is ``False``.
         map_sequences
-            Whether to also map to sequences (lists and tuples). Default is False.
+            Whether to also map to sequences (lists and tuples). Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
 
@@ -4117,7 +3092,7 @@ class ContainerBase(dict, abc.ABC):
                         continue
                 return_dict[key] = func(value, this_key_chain)
         if inplace:
-            return
+            return self
         return ivy.Container(return_dict, **self._config)
 
     def map_conts(
@@ -4137,21 +3112,21 @@ class ContainerBase(dict, abc.ABC):
         func
             Function to apply to each sub-container
         key_chains
-            The key-chains to apply or not apply the method to. Default is None.
+            The key-chains to apply or not apply the method to. Default is ``None``.
         to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is True.
+            will be skipped. Default is ``True``.
         prune_unapplied
             Whether to prune key_chains for which the function was not applied.
-            Default is False.
+            Default is ``False``.
         inplace
             Whether to apply the mapping inplace, or return a new container.
-            Default is False.
+            Default is ``False``.
         key_chain
             Chain of keys for this dict entry (Default value = '')
         include_self
             Whether to also apply the (possiby in-place) function to this container.
-            Default is True.
+            Default is ``True``.
 
         Returns
         -------
@@ -4187,22 +3162,11 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def dtype(self):
-        """Summary.
-
-        Returns
-        -------
-        ret
-             New datatype container
-
-        """
-        return self.map(lambda x, _: self._ivy.dtype(x))
-
     def with_entries_as_lists(self):
         def to_list(x, _=""):
             try:
                 return self._ivy.to_list(x)
-            except (AttributeError, ValueError):
+            except (IvyBackendException):
                 return x
 
         return self.map(to_list)
@@ -4278,7 +3242,7 @@ class ContainerBase(dict, abc.ABC):
         """
         try:
             return self[key]
-        except KeyError:
+        except IvyException:
             return self
 
     def cutoff_at_depth(self, depth_cutoff, inplace=False):
@@ -4335,8 +3299,8 @@ class ContainerBase(dict, abc.ABC):
     def _slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
-            assert len(key_slice) == 3 and key_slice[1] == ":"
-            assert self._alphabetical_keys
+            ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
+            ivy.assertions.check_true(self._alphabetical_keys)
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
@@ -4507,25 +3471,24 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_ivy_backend(self, ivy_backend):
+    def with_ivy_backend(self, ivy_backend: str, inplace=False):
         """Summary.
 
         Parameters
         ----------
+        self
+            input Container
         ivy_backend
-
+            backend to use
+        inplace
+            whether to modify the container or return a copy
         """
-        return ivy.Container(self, ivyh=ivy_backend)
-
-    def set_ivy_backend(self, ivy_backend):
-        """Summary.
-
-        Parameters
-        ----------
-        ivy_backend
-
-        """
-        self._local_ivy = ivy_backend
+        if inplace:
+            self._ivy = ivy_backend
+            self._config["ivyh"] = ivy_backend
+            return self
+        else:
+            return ivy.Container(self, ivyh=ivy_backend)
 
     def show(self):
 
@@ -4648,6 +3611,9 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
+            uniform_indent_wo_overflow_list = list(
+                filter(None, uniform_indent_wo_overflow.split("\\n"))
+            )
             uniform_indent = "\n".join(
                 [
                     local_indent_str + extra_indent + " " + s
@@ -4662,7 +3628,7 @@ class ContainerBase(dict, abc.ABC):
                         if (not s[0].isspace() and s[0] != '"')
                         else s
                     )
-                    for s in uniform_indent_wo_overflow.split("\\n")
+                    for s in uniform_indent_wo_overflow_list
                 ]
             )
             indented = uniform_indent
@@ -4703,12 +3669,42 @@ class ContainerBase(dict, abc.ABC):
                     and v
                     and (self._ivy.is_native_array(v[0]) or isinstance(v[0], ivy.Array))
                 ):
-                    rep = (
-                        "list[{}]".format(len(v)),
-                        type(v[0]),
-                        "shape=",
-                        list(v[0].shape),
-                    )
+                    if (
+                        isinstance(v, tuple)
+                        and hasattr(v, "_asdict")
+                        and hasattr(v, "_fields")
+                    ):
+                        if len(v) <= self._print_limit:
+                            rep = tuple(
+                                [
+                                    "{} = {}".format(name, v[i])
+                                    if v[i].size < self._print_limit
+                                    else "{} = {}, shape={}".format(
+                                        name, type(v[i]), list(v[i].shape)
+                                    )
+                                    for i, name in enumerate(v._fields)
+                                ],
+                            )
+                        else:
+                            rep = (
+                                "NamedTuple({})".format(len(v)),
+                                type(v[0]),
+                                "shape={}".format(list(v[0].shape)),
+                            )
+
+                    elif isinstance(v, tuple):
+                        rep = (
+                            "tuple({})".format(len(v)),
+                            type(v[0]),
+                            "shape={}".format(list(v[0].shape)),
+                        )
+                    else:
+                        rep = (
+                            "list[{}]".format(len(v)),
+                            type(v[0]),
+                            "shape={}".format(list(v[0].shape)),
+                        )
+
                 else:
                     rep = v
             new_dict[k] = rep
@@ -4808,12 +3804,26 @@ class ContainerBase(dict, abc.ABC):
         return list(super.__dir__(self)) + list(self.keys())
 
     # noinspection PyProtectedMember
-    def __getattr__(self, item):
+    def __getattr__(self, item, *args, **kwargs):
         try:
             ret = dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
-            ret = super.__getattr__(item)
+            ret = ivy.Container()
+            for k, v in self.items():
+                if isinstance(v, ivy.Container):
+                    result = v.__getattr__(item, *args, **kwargs)
+                else:
+                    # raise error
+                    if not hasattr(v, item):
+                        raise AttributeError(
+                            "'{}' object has no attribute '{}'".format(
+                                type(v).__module__, item
+                            )
+                        )
+                    attr = getattr(v, item)
+                    result = attr(*args, **kwargs) if callable(attr) else attr
+                ret.__setitem__(k, result)
         return ret
 
     def __setattr__(self, name, value):
@@ -4834,7 +3844,7 @@ class ContainerBase(dict, abc.ABC):
                 range(query[0].start, query[0].stop, ivy.default(query[0].step, 1))
             )
         else:
-            raise Exception(
+            raise ivy.exceptions.IvyException(
                 "Invalid slice type, must be one of integer, slice "
                 "or sequences of slices."
             )
@@ -4988,7 +3998,7 @@ class ContainerBase(dict, abc.ABC):
     # public
 
     @property
-    def shape(self):
+    def shared_shape(self):
         """The shape of the arrays in the container, with None placed in indices which
         are not consistent across arrays.
         """

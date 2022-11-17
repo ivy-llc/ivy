@@ -16,6 +16,8 @@ from jax.tree_util import tree_flatten, tree_unflatten
 # local
 import ivy
 
+backend_version = {"version": jax.__version__}
+
 config.update("jax_enable_x64", True)
 
 register_pytree_node(
@@ -44,6 +46,15 @@ NativeDevice = jaxlib.xla_extension.Device
 NativeDtype = jnp.dtype
 NativeShape = tuple
 
+NativeSparseArray = None
+
+
+# devices
+valid_devices = ("cpu",)
+
+invalid_devices = ("gpu", "tpu")
+
+
 # native data types
 native_int8 = jnp.dtype("int8")
 native_int16 = jnp.dtype("int16")
@@ -57,10 +68,13 @@ native_bfloat16 = jnp.dtype("bfloat16")
 native_float16 = jnp.dtype("float16")
 native_float32 = jnp.dtype("float32")
 native_float64 = jnp.dtype("float64")
-# noinspection PyShadowingBuiltins
+native_complex64 = jnp.dtype("complex64")
+native_complex128 = jnp.dtype("complex128")
+native_double = native_float64
 native_bool = jnp.dtype("bool")
 
 # valid data types
+# ToDo: Add complex dtypes to valid_dtypes and fix all resulting failures.
 valid_dtypes = (
     ivy.int8,
     ivy.int16,
@@ -102,6 +116,7 @@ valid_int_dtypes = (
 )
 valid_float_dtypes = (ivy.bfloat16, ivy.float16, ivy.float32, ivy.float64)
 valid_uint_dtypes = (ivy.uint8, ivy.uint16, ivy.uint32, ivy.uint64)
+valid_complex_dtypes = (ivy.complex64, ivy.complex128)
 
 # invalid data types
 invalid_dtypes = ()
@@ -109,8 +124,11 @@ invalid_numeric_dtypes = ()
 invalid_int_dtypes = ()
 invalid_float_dtypes = ()
 invalid_uint_dtypes = ()
+invalid_complex_dtypes = (ivy.complex256,)
 
 native_inplace_support = False
+
+supports_gradients = True
 
 
 def closest_valid_dtype(type):
@@ -125,6 +143,7 @@ def closest_valid_dtype(type):
 
 
 backend = "jax"
+
 
 # local sub-modules
 from . import activations
@@ -163,3 +182,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *
