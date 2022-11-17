@@ -1,18 +1,18 @@
 # Testing Function
-import ivy
-import numpy as np
-from hypothesis import given, strategies as st
-from hypothesis import assume
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+# global
+from hypothesis import strategies as st
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.diagonal",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
@@ -33,14 +33,14 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
     offset = st.integers(min_value=0),#,max_value=10),
 
-    axis1 = st.integers(min_value=0,max_value=1),
-    axis2 = st.integers(min_value=0,max_value=1),
-
-    #dtype=helpers.get_dtypes("float", full=False, none=True),
-    #where=np_frontend_helpers.where(),
+    axis1 = st.integers(min_value=-2,max_value=2),
+    axis2 = st.integers(min_value=-2,max_value=2),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.diagonal"
     ),
+
+    #dtype=helpers.get_dtypes("float", full=False, none=True),
+    #where=np_frontend_helpers.where(),
 
 )
 def test_numpy_diagonal(
