@@ -100,40 +100,40 @@ def test_tensorflow_eye(
 
 
 # sort
-@handle_cmd_line_args
-@given(
-    values=helpers.array_values(
-        dtype=helpers.get_dtypes("valid"), 
-        shape=(5, 6), 
-        min_value=1, 
-        max_value=9
+@handle_frontend_test(
+    fn_tree="tensorflow.sort",
+    vals_n_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        min_axis=-1,
+        max_axis=0
         ),
-    axis=helpers.ints(),
-    direction=helpers.subsets(elements=["ASCENDING", "DESCENDING"]),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.sort"
-    ),
-    datatype=helpers.get_dtypes("valid")
+    direction=st.sampled_from(['ASCENDING', 'DESCENDING'])
 )
 def test_tensorflow_sort(
-    values,
-    axis,
+    *,
+    vals_n_axis,
     direction,
     as_variable,
-    native_array,
+    with_out,
     num_positional_args,
-    datatype
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
+    datatype, vals, axis = vals_n_axis
     helpers.test_frontend_function(
         input_dtypes=datatype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="sort",
-        values=values,
-        direction=direction,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        values=vals[0],
         axis=axis,
+        direction=direction,
     )
 

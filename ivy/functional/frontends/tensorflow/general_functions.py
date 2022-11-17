@@ -24,6 +24,10 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
-@with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
 def sort(values, axis=-1, direction='ASCENDING', name=None):
-    return ivy.sort(values, axis, direction)
+    if direction == 'DESCENDING':
+        descending = True
+    else:
+        descending = False
+    return ivy.sort(values, axis=axis, descending=descending)
