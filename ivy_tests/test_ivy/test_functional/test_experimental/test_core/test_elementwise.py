@@ -870,8 +870,8 @@ def test_nextafter(
 
 
 # zeta
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.zeta",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=2),
         num_arrays=2,
@@ -881,7 +881,6 @@ def test_nextafter(
         min_num_dims=1,
         max_num_dims=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="zeta"),
 )
 def test_zeta(
     dtype_and_x,
