@@ -349,7 +349,7 @@ For example, using the decorator:
 
     @with_unsupported_dtypes{{"1.11.0 and below": ("unsigned", "bfloat16", "float16")}, backend_version)
 
-would consider all the unsigned integer dtypes (uint8, uint16, uint32, uint64), bfloat16 and float16 as unsupported for the function.
+would consider all the unsigned integer dtypes (``uint8``, ``uint16``, ``uint32``, ``uint64``), ``bfloat16`` and ``float16`` as unsupported for the function.
 
 In order to get the supported and unsupported devices and dtypes for a function, the corresponding documentation of that function for that specific framework can be referred.
 However, sometimes new unsupported dtypes are discovered while testing too.
