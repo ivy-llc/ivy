@@ -246,19 +246,16 @@ def sort(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-@handle_exceptions
-@handle_array_like
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
-    side="left",
-    sorter=None,
-    ret_dtype=ivy.int64,
+    side = "left",
+    sorter = None,
+    ret_dtype = ivy.int64,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
-    
     Parameters
     ----------
     x
@@ -279,11 +276,12 @@ def searchsorted(
         typically the result of argsort.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
          An array of insertion points.
-         
+
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -304,8 +302,5 @@ def searchsorted(
     ivy.array([[3, 1],
        [6, 3],
        [0, 0]])
-       
     """
-    return ivy.current_backend(x, v).searchsorted(
-        x, v, side=side, sorter=sorter, out=out, ret_dtype=ret_dtype,
-    )
+    return ivy.current_backend(x, v).searchsorted(x, v, side=side, sorter=sorter, ret_dtype=ret_dtype, out=out)
