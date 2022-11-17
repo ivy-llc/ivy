@@ -2164,7 +2164,7 @@ def test_jax_numpy_sum(
     )
 
     np_helpers.test_frontend_function(
-        input_dtypes=x_dtype,
+        input_dtypes=[x_dtype],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -2178,10 +2178,9 @@ def test_jax_numpy_sum(
         axis=axis,
         dtype=castable_dtype,
         out=None,
-        keepdim=keepdims,
+        keepdims=keepdims,
         initial=initial,
         where=where,
-        promote_integers=promote_integers,
     )
 
 

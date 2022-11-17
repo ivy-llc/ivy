@@ -420,7 +420,8 @@ def sum(
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
-    if promote_integers:
+    # TODO: There is no promote_integers in jnp.sum function signature
+    if dtype is None and promote_integers:
         if ivy.is_bool_dtype(dtype):
             dtype = ivy.default_int_dtype()
         elif ivy.is_uint_dtype(dtype):
