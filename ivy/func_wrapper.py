@@ -589,6 +589,20 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version):
+
+        typesets = {
+            "valid": ivy.valid_dtypes,
+            "numeric": ivy.valid_numeric_dtypes,
+            "float": ivy.valid_float_dtypes,
+            "integer": ivy.valid_int_dtypes,
+            "unsigned": ivy.valid_uint_dtypes,
+            "complex": ivy.valid_complex_dtypes,
+        }
+        for key, value in version_dict.items():
+            for i, v in enumerate(value):
+                if v in ["valid", "numeric", "float", "integer", "unsigned", "complex"]:
+                    version_dict[key] = version_dict[key][:i] + typesets[v] + version_dict[key][i+1:]
+
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
