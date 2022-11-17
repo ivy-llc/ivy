@@ -33,6 +33,7 @@ def test_numpy_asarray(
         dtype=input_dtype[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="numpy.asanyarray",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -60,3 +61,4 @@ def test_numpy_asanyarray(
         a=x,
         dtype=input_dtype[0],
     )
+    
