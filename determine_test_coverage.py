@@ -49,8 +49,14 @@ for i in range(len(test_names)):
 
 
 if __name__ == "__main__":
-    directories = [x[0] for x in os.walk("ivy")] + [x[0] for x in os.walk("ivy_tests/test_ivy")] + ["ivy_tests"]
-    directories_filtered = [x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)]
+    directories = (
+        [x[0] for x in os.walk("ivy")]
+        + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+        + ["ivy_tests"]
+    )
+    directories_filtered = [
+        x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+    ]
     directories = set(directories_filtered)
     num_tests = len(test_names)
     tests_per_run = num_tests // N

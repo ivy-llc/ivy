@@ -657,10 +657,11 @@ def handle_nans(fn: Callable) -> Callable:
             # handle nans based on the selected policy
             if nan_policy == "raise_exception":
                 raise ivy.exceptions.IvyException(
-                    "Nans are not allowed in `raise_exception` policy.")
+                    "Nans are not allowed in `raise_exception` policy."
+                )
             elif nan_policy == "warns":
                 logging.warning("Nans are present in the input.")
-        
+
         return fn(*args, **kwargs)
 
     new_fn.handle_nans = True
