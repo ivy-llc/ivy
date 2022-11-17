@@ -42,6 +42,7 @@ def test_sinc(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="jax",
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
