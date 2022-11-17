@@ -1,5 +1,4 @@
 # global
-from typing import Any
 
 # local
 import ivy
