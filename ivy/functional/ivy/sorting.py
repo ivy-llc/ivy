@@ -152,6 +152,7 @@ def searchsorted(
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
+    
     Parameters
     ----------
     x
