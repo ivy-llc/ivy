@@ -787,10 +787,11 @@
             <span class="c1"># handle nans based on the selected policy</span>
             <span class="k">if</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;raise_exception&quot;</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
-                    <span class="s2">&quot;Nans are not allowed in `raise_exception` policy.&quot;</span><span class="p">)</span>
+                    <span class="s2">&quot;Nans are not allowed in `raise_exception` policy.&quot;</span>
+                <span class="p">)</span>
             <span class="k">elif</span> <span class="n">nan_policy</span> <span class="o">==</span> <span class="s2">&quot;warns&quot;</span><span class="p">:</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Nans are present in the input.&quot;</span><span class="p">)</span>
-        
+
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_nans</span> <span class="o">=</span> <span class="kc">True</span>
