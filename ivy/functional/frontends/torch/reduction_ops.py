@@ -110,6 +110,8 @@ def moveaxis(input, source, destination):
 
 @to_ivy_arrays_and_back
 def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
-    temp_std = ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
+    temp_std = ivy.std(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return temp_std, temp_mean
