@@ -95,7 +95,6 @@ def min(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -228,13 +227,13 @@ def max(
         b: ivy.array(5.)
     }
 
-    >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                   b=ivy.array([2, 3, 4]))
-    >>> z = ivy.max(x)
+    >>> x = ivy.Container(a=ivy.array([[1, 2, 3],[-1,0,2]]),
+    ...                   b=ivy.array([[2, 3, 4], [0, 1, 2]]))
+    >>> z = ivy.max(x, axis=1)
     >>> print(z)
     {
-        a: ivy.array(3),
-        b: ivy.array(4)
+        a: ivy.array([3, 2]),
+        b: ivy.array([4, 2])
     }
     """
     return current_backend(x).max(x, axis=axis, keepdims=keepdims, out=out)
@@ -802,20 +801,17 @@ def var(
     >>> print(y)
     ivy.array(0.07472222)
 
-    >>> x = ivy.array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
-    >>> ivy.var(x, out=x)
-    >>> print(x)
-    ivy.array(0.07472222)
+    >>> x = ivy.array([[0.1, 0.2, 0.3], [0.3, 0.9, 0.10]])
+    >>> print(ivy.var(x, axis=1, keepdims=True))
+    ivy.array([[0.00666667],
+       [0.11555555]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.1, 0.2, 0.3, 0.3, 0.9, 0.10])
-    >>> y = ivy.var(x)
+    >>> x = ivy.array([[0.1, 0.2, 0.3], [0.3, 0.9, 0.10]])
+    >>> y = ivy.var(x, correction=1)
     >>> print(y)
-    ivy.array(0.07472222)
+    ivy.array(0.08966666)
 
     With :class:`ivy.Container` input:
-
     >>> x = ivy.Container(a=ivy.array([0.1, 0.2, 0.9]),
     ...                   b=ivy.array([0.7, 0.1, 0.9]))
     >>> y = ivy.var(x)
@@ -823,62 +819,6 @@ def var(
     {
         a: ivy.array(0.12666667),
         b: ivy.array(0.11555555)
-    }
-
-    Functional Examples
-    -------------------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
-    >>> y = ivy.var(x)
-    >>> print(y)
-    ivy.array(6.6666665)
-
-    >>> x = ivy.array([0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0])
-    >>> y = ivy.array(0.0)
-    >>> ivy.var(x, out=y)
-    >>> print(y)
-    ivy.array(6.6666665)
-
-    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
-    >>> y = ivy.array(0.0)
-    >>> ivy.var(x, out=y)
-    >>> print(y)
-    ivy.array(6.6666665)
-
-    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0],[6.0, 7.0, 8.0]])
-    >>> y = ivy.zeros(3)
-    >>> ivy.var(x, axis=1, out=y)
-    >>> print(y)
-    ivy.array([0.667, 0.667, 0.667])
-
-    >>> x = ivy.array([[0.0, 1.0, 2.0], [3.0, 4.0, 5.0], [6.0, 7.0, 8.0]])
-    >>> y = ivy.zeros(3)
-    >>> ivy.var(x, axis=0, out=y)
-    >>> print(y)
-    ivy.array([6., 6., 6.])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
-    >>> y = ivy.var(x)
-    >>> print(y)
-    ivy.array(0.5)
-
-    >>> x = ivy.native_array([1.0, 2.0, 2.0, 3.0])
-    >>> y = ivy.array(0.0)
-    >>> ivy.var(x, out=y)
-    >>> print(y)
-    ivy.array(0.5)
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0.0, 1.0, 2.0]), b=ivy.array([3.0, 4.0, 5.0]))
-    >>> y = ivy.var(x)
-    >>> print(y)
-    {
-        a: ivy.array(0.6666667),
-        b: ivy.array(0.6666667)
     }
 
     """
