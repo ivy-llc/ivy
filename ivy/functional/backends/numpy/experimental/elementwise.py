@@ -1,9 +1,12 @@
 from typing import Optional, Union, Tuple
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 

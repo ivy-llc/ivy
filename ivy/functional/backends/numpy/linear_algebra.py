@@ -76,9 +76,13 @@ def eigh(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
-    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
+    x: np.ndarray,
+    /,
+    *,
+    UPLO: Optional[str] = "L",
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.linalg.eigvalsh(x)
+    return np.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 @_scalar_output_to_0d_array
@@ -363,10 +367,11 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:

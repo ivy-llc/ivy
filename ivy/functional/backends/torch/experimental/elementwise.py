@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float",)}, backend_version)
 def lcm(
     x1: torch.Tensor,
     x2: torch.Tensor,
