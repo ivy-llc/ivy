@@ -539,6 +539,11 @@ def equal(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def triu(m, k=0):
+    return ivy.triu(m, k=k)
+
+
+@to_ivy_arrays_and_back
 def min(a, axis=None, out=None, keepdims=False, where=None):
     ret = ivy.min(a, axis=axis, out=out, keepdims=keepdims)
     if ivy.is_array(where):
