@@ -604,8 +604,7 @@ def _dtype_device_wrapper_creator(attrib, t):
                     first_param = version_dict[key][:i]
                     typeset = typesets[v]
                     ver_dict = version_dict[key][i + 1:]
-                    version_dict[key] = first_param + typeset + ver_dict
-                                        
+                    version_dict[key] = first_param + typeset + ver_dic
 
         def _wrapped(func):
             val = _versioned_attribute_factory(
