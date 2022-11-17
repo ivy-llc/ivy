@@ -203,6 +203,9 @@ def ge(x, y):
 def gt(x, y):
     return ivy.greater(x, y)
 
+@to_ivy_arrays_and_back
+def int16(x):
+    return ivy.int16(x)
 
 @to_ivy_arrays_and_back
 def le(x, y):
