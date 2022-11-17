@@ -4,6 +4,10 @@ eigvalsh
 .. autofunction:: ivy.functional.ivy.linear_algebra.eigvalsh
 
 .. autofunction:: ivy.array.array_methods.eigvalsh
+
+.. autofunction:: ivy.container.container_methods.static_eigvalsh
+
+.. autofunction:: ivy.container.container_methods.eigvalsh
 |
 | **Supported Frameworks:**
 
@@ -32,4 +36,6 @@ eigvalsh
 
    eigvalsh/eigvalsh_functional.rst
    eigvalsh/eigvalsh_array.rst
+   eigvalsh/eigvalsh_container.rst
+   eigvalsh/static_eigvalsh_container.rst
 
