@@ -194,4 +194,4 @@ def l1_loss(
     loss = ivy.abs(input - target)
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
-    return
+    return ret
