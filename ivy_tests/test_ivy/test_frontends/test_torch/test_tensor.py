@@ -7,6 +7,7 @@ import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
@@ -1317,7 +1318,7 @@ def test_torch_special_truediv(
     )
 
 
-# to_with_device
+# _to_with_device
 @handle_frontend_method(
     method_tree="torch.tensor.to",
     dtype_x=helpers.dtype_and_values(
@@ -1359,7 +1360,7 @@ def test_torch_instance_to_with_device(
     )
 
 
-# to_with_dtype
+# _to_with_dtype
 @handle_frontend_method(
     method_tree="torch.tensor.to",
     dtype_x=helpers.dtype_and_values(
@@ -2191,6 +2192,57 @@ def test_torch_instance_device(
         frontend="torch",
         class_="tensor",
         method_name="device",
+    )
+
+
+# is_cuda
+@handle_frontend_method(
+    method_tree="torch.tensor.is_cuda",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    size=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+    device=st.booleans(),
+)
+def test_torch_instance_is_cuda(
+    dtype_and_x,
+    size,
+    dtypes,
+    requires_grad,
+    device,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    device = "cpu" if device is False else "gpu:0"
+    x = Tensor(data=x[0]).new_ones(
+        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
+    )
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=[],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend="torch",
+        class_="tensor",
+        method_name="is_cuda",
     )
 
 

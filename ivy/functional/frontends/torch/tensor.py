@@ -278,6 +278,9 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def is_cuda(self):
+        return "gpu" in ivy.dev(self.data)
+
     def pow(self, other):
         return ivy.pow(self.data, other)
 
@@ -326,3 +329,6 @@ class Tensor:
 
 # Tensor (alias)
 tensor = Tensor
+
+# ex_tensor = tensor(data=[3, 4])
+# print(ex_tensor)
