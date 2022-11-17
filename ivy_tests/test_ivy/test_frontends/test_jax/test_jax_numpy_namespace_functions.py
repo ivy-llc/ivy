@@ -2123,10 +2123,9 @@ def test_jax_numpy_kron(
 @handle_frontend_test(
     fn_tree="jax.numpy.sum",
     dtype_x_axis_castable=_get_castable_dtype(),
-    initial=st.one_of(st.floats(), st.none()),
+    initial=st.none() | st.floats(-10.0, 10.0),
     where=np_helpers.where(),
     keepdims=st.booleans(),
-    promote_integers=st.booleans(),
 )
 def test_jax_numpy_sum(
     *,
@@ -2134,7 +2133,6 @@ def test_jax_numpy_sum(
     initial,
     where,
     keepdims,
-    promote_integers,
     with_out,
     num_positional_args,
     as_variable,

@@ -412,9 +412,9 @@ def sum(
     promote_integers=True,
 ):
     if initial:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        s = ivy.shape(a)
+        axis = -1
+        header = ivy.full(s, initial)
         a = ivy.concat([a, header], axis=axis)
 
     if dtype is None:
