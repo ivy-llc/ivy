@@ -26,7 +26,10 @@ from ivy.exceptions import handle_exceptions
 @handle_exceptions
 @handle_array_like
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 
@@ -44,8 +47,8 @@ def relu(
         an array containing the rectified linear unit activation of each element in
         ``x``.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 0., 1.])
@@ -65,6 +68,16 @@ def relu(
     >>> y = ivy.relu(x)
     >>> print(y)
     ivy.array([0., 0., 2.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.relu(x, out = x)
+    >>> print(x)
+    {
+    a: ivy.array([1., 0.]),
+    b: ivy.array([0.40000001, 0.])
+    }
     """
     return current_backend(x).relu(x, out=out)
 
@@ -98,9 +111,8 @@ def leaky_relu(
     ret
         The input array with leaky relu applied element-wise.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0.39, -0.85])
