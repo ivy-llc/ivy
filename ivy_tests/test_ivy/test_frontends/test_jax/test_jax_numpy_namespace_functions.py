@@ -3,9 +3,13 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
+    statistical_dtype_values,
+)
 
 
 # abs
@@ -457,18 +461,10 @@ def test_jax_numpy_concat(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.mean",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
-        force_int_axis=True,
-        valid_axis=True,
-    ),
-    dtype=helpers.get_dtypes("numeric", full=False),
-    keepdims=st.booleans(),
+    dtype_x_axis=statistical_dtype_values(function="mean"),
+    dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_helpers.where(),
+    keepdims=st.booleans(),
 )
 def test_jax_numpy_mean(
     *,
@@ -485,12 +481,24 @@ def test_jax_numpy_mean(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
+    x_array = ivy.array(x[0])
+
+    if len(x_array.shape) == 2:
+        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
+    elif len(x_array.shape) == 1:
+        where = ivy.ones((1,), dtype=ivy.bool)
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(where, tuple) or isinstance(where, list):
+        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
         as_variable=as_variable,
         native_array=native_array,
     )
+
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
@@ -503,8 +511,9 @@ def test_jax_numpy_mean(
         a=x[0],
         axis=axis,
         dtype=dtype[0],
+        out=None,
         keepdims=keepdims,
-        where=where[0],
+        where=where,
     )
 
 
@@ -2659,4 +2668,304 @@ def test_jax_numpy_multiply(
         fn_tree=fn_tree,
         x1=x[0],
         x2=x[1],
+    )
+
+
+# not_equal
+@handle_frontend_test(
+    fn_tree="jax.numpy.not_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_not_equal(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# less
+@handle_frontend_test(
+    fn_tree="jax.numpy.less",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_less(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# less_equal
+@handle_frontend_test(
+    fn_tree="jax.numpy.less_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_less_equal(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# greater
+@handle_frontend_test(
+    fn_tree="jax.numpy.greater",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_greater(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# greater_equal
+@handle_frontend_test(
+    fn_tree="jax.numpy.greater_equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_greater_equal(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# equal
+@handle_frontend_test(
+    fn_tree="jax.numpy.equal",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_equal(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# minx
+@handle_frontend_test(
+    fn_tree="jax.numpy.min",
+    dtype_x_axis=statistical_dtype_values(function="min"),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_min(
+    *,
+    dtype_x_axis,
+    keepdims,
+    where,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, axis = dtype_x_axis
+    x_array = ivy.array(x[0])
+
+    if len(x_array.shape) == 2:
+        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
+    elif len(x_array.shape) == 1:
+        where = ivy.ones((1,), dtype=ivy.bool)
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(where, tuple) or isinstance(where, list):
+        where = where[0]
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["jax.numpy.amin"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keepdims,
+        where=where,
+    )
+
+
+# max
+@handle_frontend_test(
+    fn_tree="jax.numpy.max",
+    dtype_x_axis=statistical_dtype_values(function="max"),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_max(
+    *,
+    dtype_x_axis,
+    keepdims,
+    where,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, axis = dtype_x_axis
+    x_array = ivy.array(x[0])
+
+    if len(x_array.shape) == 2:
+        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
+    elif len(x_array.shape) == 1:
+        where = ivy.ones((1,), dtype=ivy.bool)
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(where, tuple) or isinstance(where, list):
+        where = where[0]
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["jax.numpy.amax"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        out=None,
+        keepdims=keepdims,
+        where=where,
     )

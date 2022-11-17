@@ -25,8 +25,10 @@ def test_triu_indices(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=["int32"],
         as_variable_flags=[False],
         with_out=False,
@@ -65,9 +67,11 @@ def test_vorbis_window(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=[False],
         with_out=with_out,
@@ -106,8 +110,10 @@ def test_hann_window(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -152,9 +158,11 @@ def test_kaiser_window(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -200,9 +208,11 @@ def test_kaiser_bessel_derived_window(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -247,8 +257,10 @@ def test_hamming_window(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
