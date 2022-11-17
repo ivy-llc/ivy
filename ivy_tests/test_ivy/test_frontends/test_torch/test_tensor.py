@@ -2712,6 +2712,7 @@ def test_torch_instance_argmax(
         method_name="argmax",
     )
 
+
 @handle_frontend_method(
     method_tree="torch.tensor.ceil",
     dtype_and_x=helpers.dtype_and_values(
