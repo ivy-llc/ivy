@@ -613,17 +613,22 @@ def test_tensorflow_conv3d_transpose(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.nn.convolution",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
         data_format=st.sampled_from(['NWC', 'NCW', 'NHWC', 'NCHW', 'NDHWC', 'NCDHW']),
         padding=st.sampled_from(['VALID', 'SAME']),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.nn.convolution"
-    ),
 )
 def test_tensorflow_convolution(
-    x_f_d_df, as_variable, num_positional_args, native_array
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
     helpers.test_frontend_function(
@@ -632,8 +637,9 @@ def test_tensorflow_convolution(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="nn.convolution",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
         filters=filters,
         strides=stride,
