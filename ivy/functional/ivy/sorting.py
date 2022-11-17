@@ -145,9 +145,9 @@ def sort(
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
-    side = "left",
-    sorter = None,
-    ret_dtype = ivy.int64,
+    side="left",
+    sorter=None,
+    ret_dtype=ivy.int64,
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
