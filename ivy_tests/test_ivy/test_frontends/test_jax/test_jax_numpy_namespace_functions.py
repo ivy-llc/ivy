@@ -9,6 +9,7 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
+    _get_castable_dtype,
 )
 
 
@@ -2121,9 +2122,7 @@ def test_jax_numpy_kron(
 # sum
 @handle_frontend_test(
     fn_tree="jax.numpy.sum",
-    dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")
-    ),
+    dtype_x_axis_castable=_get_castable_dtype(),
     initial=st.one_of(st.floats(), st.none()),
     where=np_helpers.where(),
     keepdims=st.booleans(),
@@ -2131,22 +2130,41 @@ def test_jax_numpy_kron(
 )
 def test_jax_numpy_sum(
     *,
-    dtype_and_x,
+    dtype_x_axis_castable,
     initial,
     where,
     keepdims,
     promote_integers,
-    num_positional_args,
     with_out,
+    num_positional_args,
     as_variable,
     native_array,
     on_device,
     fn_tree,
     frontend,
 ):
-    input_dtype, x, axis = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+    x_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+
+    x_array = ivy.array(x[0])
+
+    if len(x_array.shape) == 2:
+        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
+    elif len(x_array.shape) == 1:
+        where = ivy.ones((1,), dtype=ivy.bool)
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    if isinstance(where, tuple) or isinstance(where, list):
+        where = where[0]
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    np_helpers.test_frontend_function(
+        input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -2154,11 +2172,13 @@ def test_jax_numpy_sum(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x,
+        rtol=1e-1,
+        atol=1e-2,
+        a=x[0],
         axis=axis,
-        dtype=input_dtype,
+        dtype=castable_dtype,
         out=None,
-        keepdims=keepdims,
+        keepdim=keepdims,
         initial=initial,
         where=where,
         promote_integers=promote_integers,
