@@ -562,6 +562,7 @@ def test_tensorflow_l2_normalize(
 
 # trace
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.trace",
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.linalg.trace"
