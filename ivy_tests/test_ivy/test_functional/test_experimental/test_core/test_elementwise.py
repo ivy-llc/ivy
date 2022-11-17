@@ -474,7 +474,7 @@ def test_nansum(
 
 # gcd
 @handle_test(
-    fn_tree="functional.experimental.nansum",
+    fn_tree="functional.experimental.gcd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
