@@ -42,6 +42,7 @@ def test_sinc(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="jax",
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -74,7 +75,6 @@ def test_lcm(
     backend_fw,
     fn_name,
     on_device,
-    test_gradients,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -86,9 +86,10 @@ def test_lcm(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
+        ground_truth_backend="jax",
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
+        test_gradients=False,
         x1=x[0],
         x2=x[1],
     )
@@ -131,6 +132,7 @@ def test_fmod(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -177,6 +179,7 @@ def test_fmax(
         instance_method=instance_method,
         on_device=on_device,
         fw=backend_fw,
+        ground_truth_backend="tensorflow",
         fn_name=fn_name,
         x1=x[0],
         x2=x[1],
@@ -258,6 +261,7 @@ def test_trapz(
         instance_method=instance_method,
         on_device=on_device,
         fw=backend_fw,
+        ground_truth_backend="tensorflow",
         fn_name=fn_name,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
@@ -303,6 +307,7 @@ def test_float_power(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
@@ -345,6 +350,7 @@ def test_exp2(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
@@ -396,9 +402,10 @@ def test_count_nonzero(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    on_device,
+    backend_fw,
 ):
     i_o_dtype, a, axis = dtype_values_axis
     helpers.test_function(
@@ -407,9 +414,11 @@ def test_count_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
         a=a,
         axis=axis,
@@ -444,10 +453,10 @@ def test_nansum(
     with_out,
     native_array,
     container_flags,
+    on_device,
+    fn_name,
     instance_method,
     backend_fw,
-    fn_name,
-    on_device,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -459,9 +468,10 @@ def test_nansum(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        fn_name=fn_name,
         on_device=on_device,
-        input=x[0],
+        ground_truth_backend="tensorflow",
+        fn_name=fn_name,
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
@@ -469,7 +479,7 @@ def test_nansum(
 
 # gcd
 @handle_test(
-    fn_tree="functional.experimental.nansum",
+    fn_tree="functional.experimental.gcd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -503,6 +513,7 @@ def test_gcd(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -555,6 +566,8 @@ def test_isclose(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         a=x[0],
@@ -599,6 +612,7 @@ def test_isposinf(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -640,6 +654,7 @@ def test_isneginf(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -693,6 +708,7 @@ def test_nan_to_num(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
+        ground_truth_backend="tensorflow",
         x=x[0],
         copy=copy,
         nan=nan,
@@ -737,6 +753,7 @@ def test_logaddexp2(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
@@ -784,6 +801,7 @@ def test_allclose(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
+        ground_truth_backend="tensorflow",
         fw=fw,
         fn_name="allclose",
         x1=x[0],
@@ -813,7 +831,7 @@ def test_fix(
     native_array,
     container,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -824,7 +842,8 @@ def test_fix(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        fw=fw,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
         fn_name="fix",
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
@@ -851,7 +870,7 @@ def test_nextafter(
     native_array,
     container,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -862,7 +881,8 @@ def test_nextafter(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        fw=fw,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
         fn_name="nextafter",
         x1=x[0],
         x2=x[1],

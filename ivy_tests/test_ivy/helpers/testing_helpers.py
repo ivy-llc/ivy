@@ -231,7 +231,10 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
             wrapped_test = given(**_given_kwargs)(test_fn)
             if "fn_tree" in param_names:
                 _name = wrapped_test.__name__
-                wrapped_test = partial(wrapped_test, fn_tree=fn_tree)
+                possible_arguments = {"fn_tree": fn_tree}
+                filtered_args = set(param_names).intersection(possible_arguments.keys())
+                partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
+                wrapped_test = partial(wrapped_test, **partial_kwargs)
                 wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
@@ -337,6 +340,7 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
         )
 
         if is_hypothesis_test:
+            param_names = inspect.signature(test_fn).parameters.keys()
             fn_args = typing.get_type_hints(test_fn)
 
             for k, v in fn_args.items():
@@ -356,7 +360,13 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
-            wrapped_test = partial(wrapped_test, class_=class_, method_name=method_name)
+            possible_arguments = {
+                "class_": class_,
+                "method_name": method_name,
+            }
+            filtered_args = set(param_names).intersection(possible_arguments.keys())
+            partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
+            wrapped_test = partial(wrapped_test, **partial_kwargs)
             wrapped_test.__name__ = _name
         else:
             wrapped_test = test_fn
