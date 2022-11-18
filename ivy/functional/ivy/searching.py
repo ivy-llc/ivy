@@ -10,7 +10,6 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
-    infer_dtype,
     handle_array_like,
 )
 
@@ -135,7 +134,6 @@ def argmax(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
-@infer_dtype
 @handle_array_like
 def argmin(
     x: Union[ivy.Array, ivy.NativeArray],
