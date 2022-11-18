@@ -920,7 +920,44 @@
 <span class="sd">        &gt;&gt;&gt; x1.nextafter(x2)</span>
 <span class="sd">        ivy.array([1.4013e-45., 3.4028e+38])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nextafter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementWiseExperimental.zeta"><a class="viewcode-back" href="../../../../data_classes/array/experimental/elementwise/ArrayWithElementWiseExperimental.html#ivy.array.experimental.elementwise.ArrayWithElementWiseExperimental.zeta">[docs]</a>    <span class="k">def</span> <span class="nf">zeta</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">q</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.zeta. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.zeta also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            First input array.</span>
+<span class="sd">        x2</span>
+<span class="sd">            Second input array.</span>
+<span class="sd">        out</span>
+<span class="sd">            Alternate output array in which to place the result.</span>
+<span class="sd">            The default is None.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Array with values computed from zeta function from</span>
+<span class="sd">            input arrays&#39; values.            </span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([5.0, 3.0])</span>
+<span class="sd">        &gt;&gt;&gt; q = ivy.array([2.0])</span>
+<span class="sd">        &gt;&gt;&gt; x.zeta(q)</span>
+<span class="sd">        ivy.array([0.0369, 0.2021])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

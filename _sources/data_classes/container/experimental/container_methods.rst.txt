@@ -61,6 +61,8 @@ Container methods
    container_methods/fix.rst
    container_methods/static_nextafter.rst
    container_methods/nextafter.rst
+   container_methods/static_zeta.rst
+   container_methods/zeta.rst
    container_methods/static_max_pool1d.rst
    container_methods/max_pool1d.rst
    container_methods/static_max_pool2d.rst
