@@ -34,3 +34,16 @@ def switch(index, branches, *operands, operand=None):
     index = max(index, 0)
     index = min(len(branches) - 1, index)
     return branches[index](*operands)
+
+@to_ivy_arrays_and_back
+def while_loop(cond_fun, body_fun, init_val):
+    if not (callable(body_fun) and callable(cond_fun)):
+        raise ivy.exceptions.IvyException(
+            "lax.while_loop: body_fun and cond_fun arguments should be callable."
+        )
+
+    val = init_val
+
+    while cond_fun(val):
+        val = body_fun(val)
+    return val
