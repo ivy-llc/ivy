@@ -169,7 +169,7 @@ def mod(x1, x2):
 
 @to_ivy_arrays_and_back_with_order_manipulation
 def reshape(a, newshape, order="C"):
-    return ivy.reshape(a, newshape, order=order)
+    return ivy.reshape(a, shape=newshape, order=order)
 
 
 @to_ivy_arrays_and_back

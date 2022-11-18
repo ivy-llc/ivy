@@ -174,6 +174,17 @@ class ndarray:
         else:
             return np_frontend.ravel(self.data, order="C")
 
+    def flatten(self, order="C"):
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.ravel(self.data, order="F")
+        else:
+            return np_frontend.ravel(self.data, order="C")
+
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
 

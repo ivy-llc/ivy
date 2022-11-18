@@ -29,9 +29,11 @@ def _from_ivy_array_to_jax_frontend_array_order_F(
     x, nested=False, include_derived=None
 ):
     if nested:
-        return ivy.nested_map(x, _from_ivy_array_to_jax_frontend_array, include_derived)
+        return ivy.nested_map(
+            x, _from_ivy_array_to_jax_frontend_array_order_F, include_derived
+        )
     elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x)
+        return jax_frontend.DeviceArray(x, f_contiguous=True)
     return x
 
 

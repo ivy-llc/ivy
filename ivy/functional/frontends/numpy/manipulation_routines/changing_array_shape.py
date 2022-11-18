@@ -18,7 +18,7 @@ def broadcast_to(array, shape, subok=False):
 
 @to_ivy_arrays_and_back_with_order_manipulation
 def ravel(a, order="C"):
-    return ivy.reshape(a, (-1,), order=order)
+    return ivy.reshape(a, shape=(-1,), order=order)
 
 
 @to_ivy_arrays_and_back

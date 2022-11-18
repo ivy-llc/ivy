@@ -301,5 +301,5 @@ def outputs_to_numpy_arrays_with_order_manipulation(fn: Callable) -> Callable:
         else:
             return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
 
-    new_fn.outputs_to_numpy_arrays = True
+    new_fn.outputs_to_numpy_arrays_with_order_manipulation = True
     return new_fn
