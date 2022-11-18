@@ -412,27 +412,32 @@ def sum(
     promote_integers=True,
 ):
     if initial:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        s = ivy.shape(a)
+        axis = -1
+        header = ivy.full(s, initial)
         a = ivy.concat([a, header], axis=axis)
 
-    result_dtype = dtype or ivy.dtype(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
+    # TODO: promote_integers is only supported from JAX v0.3.14
     if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(result_dtype):
-            result_dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(result_dtype):
-            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                result_dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(result_dtype):
-            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                result_dtype = ivy.default_int_dtype()
+        if ivy.is_bool_dtype(dtype):
+            dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                dtype = ivy.default_int_dtype()
+
+    ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
 
     if ivy.is_array(where):
-        a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
-    return ivy.sum(a, axis=axis, dtype=result_dtype, keepdims=keepdims, out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
 
 
 @to_ivy_arrays_and_back

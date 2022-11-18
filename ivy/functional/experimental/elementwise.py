@@ -904,3 +904,43 @@ def nextafter(
     ivy.array([1.4013e-45., 3.4028e+38])
     """
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def zeta(
+    x: Union[ivy.Array, ivy.NativeArray],
+    q: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Compute the Hurwitz zeta function. 
+
+    Parameters
+    ----------
+    x
+        First input array.
+    q
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Array with values computed from zeta function from
+        input arrays' values.
+
+    Examples
+    --------
+    >>> x = ivy.array([5.0, 3.0])
+    >>> q = ivy.array([2.0])
+    >>> ivy.zeta(x, q)
+    ivy.array([0.0369, 0.2021])
+    """
+    return ivy.current_backend(x, q).zeta(x, q, out=out)
