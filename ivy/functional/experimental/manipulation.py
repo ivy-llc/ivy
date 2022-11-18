@@ -842,8 +842,9 @@ def _check_tuple_arg(arg, name):
                 arg[i] = list(nested)
             if isinstance(arg[i], list):
                 for j, sub_nested in enumerate(nested):
-                    if (not isinstance(sub_nested, int))\
-                            and (not ivy.is_native_array(sub_nested)):
+                    if (not isinstance(sub_nested, int)) and (
+                        not ivy.is_native_array(sub_nested)
+                    ):
                         flag_assert = True
                         break
                     elif ivy.is_native_array(sub_nested):
