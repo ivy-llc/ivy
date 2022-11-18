@@ -92,9 +92,11 @@ def test_astype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, cast_dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -143,6 +145,7 @@ def test_broadcast_arrays(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     if backend_fw.current_backend_str() == "torch":
         for input_dtype in input_dtypes:
@@ -158,6 +161,7 @@ def test_broadcast_arrays(
         kw["x{}".format(i)] = np.asarray(array, dtype=dtype)
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -190,6 +194,7 @@ def test_broadcast_to(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     if backend_fw.current_backend_str() == "torch":
         if input_dtype == "bfloat16" or (
@@ -201,6 +206,7 @@ def test_broadcast_to(
 
     array, to_shape = array_and_shape
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -237,9 +243,11 @@ def test_can_cast(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -292,6 +300,7 @@ def test_finfo(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     if isinstance(type, str):
         input_dtype = [type]
@@ -299,6 +308,7 @@ def test_finfo(
         input_dtype, x = type
         type = x[0]
     ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -338,6 +348,7 @@ def test_iinfo(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     if isinstance(type, str):
         input_dtype = [type]
@@ -345,6 +356,7 @@ def test_iinfo(
         input_dtype, x = type
         type = x[0]
     ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -388,6 +400,7 @@ def test_result_type(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = helpers.as_lists(*dtype_and_x)
     kw = {}
@@ -395,6 +408,7 @@ def test_result_type(
         kw["x{}".format(i)] = x_
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -421,6 +435,7 @@ def test_result_type(
 def test_as_ivy_dtype(
     *,
     input_dtype,
+    ground_truth_backend,
 ):
     res = ivy.as_ivy_dtype(input_dtype)
     if isinstance(input_dtype, str):
@@ -458,6 +473,7 @@ def test_as_native_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
@@ -534,6 +550,7 @@ def test_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     if backend_fw.current_backend_str() == "torch":
         if input_dtype == "bfloat16" or (
@@ -544,6 +561,7 @@ def test_dtype(
             return
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -577,8 +595,10 @@ def test_dtype_bits(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -617,9 +637,11 @@ def test_is_bool_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -653,9 +675,11 @@ def test_is_float_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -689,9 +713,11 @@ def test_is_int_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -725,9 +751,11 @@ def test_is_uint_dtype(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -763,11 +791,13 @@ def test_promote_types(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     types, arrays = dtype_and_values
     type1, type2 = types
     input_dtype = [type1, type2]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -805,9 +835,11 @@ def test_type_promote_arrays(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     types, arrays = dtype_and_values
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=types,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -914,6 +946,7 @@ def test_function_supported_dtypes(
     *,
     func,
     expected,
+    ground_truth_backend,
 ):
     res = ivy.function_supported_dtypes(func)
     exp = set.intersection(set(expected), set(ivy.valid_dtypes))
@@ -935,6 +968,7 @@ def test_function_unsupported_dtypes(
     *,
     func,
     expected,
+    ground_truth_backend,
 ):
     res = ivy.function_unsupported_dtypes(func)
     exp = set.union(set(expected), set(ivy.invalid_dtypes))
