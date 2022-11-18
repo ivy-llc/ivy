@@ -11,6 +11,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_numpy_split(
     as_variable,
     dtype_and_x,
+    native_array,
     num_positional_args,
 ):
     indices_or_sections, ary, axis, input_dtypes = dtype_and_x, dtype_and_x, dtype_and_x, dtype_and_x
