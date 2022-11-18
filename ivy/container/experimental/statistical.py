@@ -369,9 +369,9 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None
-    ) -> ivy.Array:
+    ) -> ivy.Container:
 
-        return ivy.static_quantile(
+        return self.static_quantile(
             self,
             q,
             axis=axis,

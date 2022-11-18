@@ -179,7 +179,7 @@ def test_unravel_index(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     backend_fw,
     fn_name,
@@ -194,7 +194,7 @@ def test_unravel_index(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
@@ -204,36 +204,42 @@ def test_unravel_index(
 
 
 @handle_test(
-    dtype_x_axis=statistical_dtype_values(function="quantile"),
+    fn_tree="functional.experimental.quantile",
+    dtype_and_x=statistical_dtype_values(function="quantile"),
     keep_dims=st.booleans(),
     num_positional_args=helpers.num_positional_args(fn_name="quantile")
 )
 def test_quantile(    
     *,
-    dtype_x_axis,
+    dtype_and_x,
     keep_dims,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
+    with_out,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
-    input_dtype, x, axis, interpolation, q = dtype_x_axis
+    input_dtype, x, axis, interpolation, q = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="quantile",
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
         a=x[0],
         axis=axis,
         q=q,
         interpolation=interpolation,
-        keepdims=keep_dims
+        keepdims=keep_dims,
+        on_device=on_device,
     )
