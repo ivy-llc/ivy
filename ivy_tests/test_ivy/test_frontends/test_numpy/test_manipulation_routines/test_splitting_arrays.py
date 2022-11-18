@@ -21,6 +21,7 @@ def test_numpy_split(
         num_positional_args=num_positional_args,
         frontend="numpy",
         fn_tree="split",
+        native_array_flags=native_array,
         ary=ary[0],
         axis=axis,
         indices_or_sections=indices_or_sections[0],
