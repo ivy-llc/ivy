@@ -5,6 +5,7 @@ from typing import (
     List,
     Dict,
     Tuple,
+    Sequence
 )
 
 # local
@@ -324,3 +325,61 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
         """
         return self.static_unravel_index(self, shape, out=out)
+
+    @staticmethod
+    def static_quantile(
+        a: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Container:
+
+        return ContainerBase.multi_map_in_static_method(
+            "quantile",
+            a,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def quantile(
+        self: ivy.Container,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None
+    ) -> ivy.Array:
+
+        return ivy.static_quantile(
+            self,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out
+        )

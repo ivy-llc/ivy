@@ -50,6 +50,19 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
+
+    if function == "quantile":
+        q = draw(helpers.array_values(dtype=helpers.get_dtypes("float"),
+                                      min_value=0.0 ,
+                                      max_value=1.0,
+                                      exclude_max=False,
+                                      exclude_min=False
+                                      ))
+
+        interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+        interpolation = draw(helpers.lists(interpolation_names, min_size=1, max_size=1))
+        return dtype, values, axis, interpolation, q
+
     return dtype, values, axis
 
 
@@ -181,4 +194,40 @@ def test_unravel_index(
         fn_name=fn_name,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
+    )
+
+
+@handle_test(
+    dtype_x_axis=statistical_dtype_values(function="quantile"),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="quantile")
+)
+def test_quantile(    
+    *,
+    dtype_x_axis,
+    keep_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x, axis, interpolation, q = dtype_x_axis
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="quantile",
+        a=x[0],
+        axis=axis,
+        q=q,
+        interpolation=interpolation,
+        keepdims=keep_dims
     )

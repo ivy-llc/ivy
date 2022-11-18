@@ -2,6 +2,7 @@ from typing import (
     Optional,
     Union,
     Tuple,
+    Sequence
 )
 import ivy
 from ivy.func_wrapper import (
@@ -142,3 +143,28 @@ def unravel_index(
     (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))
     """
     return ivy.current_backend(indices).unravel_index(indices, shape, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def quantile(
+    a: ivy.Array,
+    q: Union[ivy.Array, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = 'linear',
+    out: Optional[ivy.Array] = None
+) -> ivy.Array:
+
+    return ivy.current_backend(a).quantile(
+        a,
+        q,
+        axis=axis,
+        keepdims=keepdims,
+        interpolation=interpolation,
+        out=out
+    )

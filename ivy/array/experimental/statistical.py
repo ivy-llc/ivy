@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 
 # local
 import ivy
@@ -128,3 +128,23 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))
         """
         return ivy.unravel_index(self._data, shape, out=out)
+
+    def quantile(
+        self: ivy.Array,
+        q: Union[ivy.Array, float],
+        /,
+        *,
+        axis: Optional[Union[Sequence[int], int]] = None,
+        keepdims: bool = False,
+        interpolation: str = 'linear',
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
+
+        return ivy.quantile(
+            self._data,
+            q,
+            axis=axis,
+            keepdims=keepdims,
+            interpolation=interpolation,
+            out=out
+        )
