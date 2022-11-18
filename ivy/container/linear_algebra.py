@@ -637,7 +637,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.eigvalsh.
@@ -708,7 +708,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.eigvalsh.
@@ -740,7 +740,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         -------
         ret
             a container containing the computed eigenvalues.
-            The returned array must have shape            
+            The returned array must have shape
             (..., M) and have the same data type as x.
 
         Examples
