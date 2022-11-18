@@ -25,6 +25,18 @@ def all(a, axis=None, out=None, keepdims=False, *, where=False):
 
 
 @to_ivy_arrays_and_back
+def tan(x):
+    ret = ivy.tan(x)
+    return ret
+
+
+@to_ivy_arrays_and_back
+def tanh(x):
+    ret = ivy.tanh(x)
+    return ret
+
+
+@to_ivy_arrays_and_back
 def arctan(x):
     ret = ivy.atan(x)
     return ret
