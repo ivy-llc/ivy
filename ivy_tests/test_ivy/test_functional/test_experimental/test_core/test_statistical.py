@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def statistical_dtype_values(draw, *, function):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["mean", "median", "std", "var"]:
+    if function in ["mean", "median", "std", "var","quantile"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -53,6 +53,7 @@ def statistical_dtype_values(draw, *, function):
 
     if function == "quantile":
         q = draw(helpers.array_values(dtype=helpers.get_dtypes("float"),
+                                        shape=(10,),
                                       min_value=0.0 ,
                                       max_value=1.0,
                                       exclude_max=False,
@@ -60,7 +61,7 @@ def statistical_dtype_values(draw, *, function):
                                       ))
 
         interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
-        interpolation = draw(helpers.lists(interpolation_names, min_size=1, max_size=1))
+        interpolation = draw(helpers.lists(arg=st.sampled_from(interpolation_names), min_size=1, max_size=1))
         return dtype, values, axis, interpolation, q
 
     return dtype, values, axis
@@ -236,10 +237,11 @@ def test_quantile(
         ground_truth_backend=ground_truth_backend,
         fw=backend_fw,
         fn_name=fn_name,
-        a=x[0],
-        axis=axis,
-        q=q,
-        interpolation=interpolation,
-        keepdims=keep_dims,
         on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
+
     )

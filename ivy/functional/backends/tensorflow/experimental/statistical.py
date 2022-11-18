@@ -53,7 +53,7 @@ def quantile(
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
-    interpolation: str = 'nearest',
+    interpolation: str = 'linear',
     keepdims: bool = False,
     out : Optional[Union[tf.Tensor, tf.Variable]] = None 
 ) -> Union[tf.Tensor, tf.Variable] :

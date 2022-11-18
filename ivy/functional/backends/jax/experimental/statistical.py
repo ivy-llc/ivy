@@ -43,7 +43,7 @@ def unravel_index(
 
 def quantile(
     a: JaxArray,
-    q: Union[int, JaxArray],
+    q: Union[float, JaxArray],
     /,
     *,
     axis: Optional[Union[int, Sequence[int]]] = None,
