@@ -402,10 +402,10 @@ def test_count_nonzero(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     on_device,
-    fw,
+    backend_fw,
 ):
     i_o_dtype, a, axis = dtype_values_axis
     helpers.test_function(
@@ -414,10 +414,10 @@ def test_count_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
-        fw=fw,
+        fw=backend_fw,
         ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
         a=a,
