@@ -195,7 +195,8 @@ weighted_cross_entropy_with_logits.unsupported_dtypes = (
 )
 
 
-@with_supported_dtypes({"2.9.0 and below": ("float32", "float16", "bfloat16")}, "tensorflow")
+@with_supported_dtypes({"2.9.0 and below": ("float32",
+                                            "float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def local_response_normalization(
         input,
