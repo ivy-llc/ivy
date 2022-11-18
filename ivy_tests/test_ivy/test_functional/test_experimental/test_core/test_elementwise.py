@@ -132,7 +132,7 @@ def test_fmod(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
