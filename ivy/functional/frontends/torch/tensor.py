@@ -294,6 +294,9 @@ class Tensor:
     def ceil(self):
         return torch_frontend.ceil(self.data)
 
+    def min(self, dim=None, keepdim=False):
+        return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
+
     # Special Methods #
     # -------------------#
 
