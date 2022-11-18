@@ -19,7 +19,7 @@ from typing import Optional, Dict, List
 import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
-
+from ivy.functional.ivy.gradients import _is_variable
 # Base #
 # -----#
 
@@ -1153,7 +1153,7 @@ class Module(abc.ABC):
         return self._build_mode
 
     @property
-    def built(self):
+    def built_(self):
         return self._built
 
     # Module Converters #
@@ -1532,7 +1532,7 @@ class Module(abc.ABC):
                         native._modules[k] = self._replace_update_v(
                             v, native._modules[k]
                         )
-                    elif ivy.is_variable(v):
+                    elif _is_variable(v):
                         if isinstance(v, torch.nn.Parameter):
                             # noinspection PyProtectedMember
                             native.__setattr__(k, v)
@@ -1618,4 +1618,6 @@ class MyTFModule(tf.keras.Model):
         ret = self._ivy_module._forward(*a, **kw)
         if isinstance(ret, tuple):
             return ivy.args_to_native(*ret)
+
         return ivy.to_native(ret)
+
