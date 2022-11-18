@@ -1007,7 +1007,8 @@ class Module(abc.ABC):
             expected_submod_rets,
         )
 
-        v = ivy.to_native(v) # convert variables to native arrays so that they can be tracked
+        # convert variables to native arrays so that they can be tracked
+        v = ivy.to_native(v)  
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -1171,6 +1172,7 @@ class Module(abc.ABC):
         """
 
         ivy_module = self
+        
         class MyHaikuModel(hk.Module):
             def __init__(self):
                 super(MyHaikuModel, self).__init__()
@@ -1334,6 +1336,7 @@ class Module(abc.ABC):
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
+            
             def forward_fn(*a, **kw):
                 model = native_module(*c_args, **c_kwargs)
                 return model(*i_args, **i_kwargs)
@@ -1437,7 +1440,11 @@ class Module(abc.ABC):
             native_module.build((input_shape[-1],))
 
         return KerasIvyModule(
-            *i_args, native_module=native_module, device=device, devices=devices, **i_kwargs
+            *i_args,
+            native_module=native_module,
+            device=device,
+            devices=devices,
+            **i_kwargs
         )
 
     @staticmethod
@@ -1561,7 +1568,6 @@ class Module(abc.ABC):
 
         if inspect.isclass(native_module):
             native_module = native_module(*c_args, **c_kwargs)
-
 
         return TorchIvyModule(
             *i_args,
