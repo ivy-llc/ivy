@@ -126,6 +126,7 @@ def test_jax_switch(
         operand=x[0],
     )
 
+
 @handle_frontend_test(
     fn_tree="jax.lax.while_loop",
     dtype_and_x=helpers.dtype_and_values(
@@ -145,7 +146,7 @@ def test_jax_while_loop(
     frontend,
 ):
     def _test_condition_fn(x):
-        return x<10
+        return x < 10
 
     def _test_body_fn(x):
         return x + 5
@@ -164,5 +165,3 @@ def test_jax_while_loop(
         body_fun=_test_body_fn,
         init_val=x[0][0],
     )
-
-
