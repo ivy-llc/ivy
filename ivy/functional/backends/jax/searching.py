@@ -39,14 +39,10 @@ def argmin(
     # The returned array must have the default array index data type.
     if output_dtype is not None:
         if output_dtype not in (jnp.int32, jnp.int64):
-            return jnp.array(ret, dtype=jnp.int32)
+            return jnp.array(ret, dtype=jnp.int64)
         else:
             return jnp.array(ret, dtype=output_dtype)
-    else:
-        if ret.dtype not in (jnp.int32, jnp.int64):
-            return jnp.array(ret, dtype=jnp.int32)
-        else:
-            return jnp.array(ret, dtype=ret.dtype)
+    return jnp.array(ret, dtype=ret.dtype)
 
 
 def nonzero(

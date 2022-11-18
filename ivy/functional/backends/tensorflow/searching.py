@@ -39,14 +39,10 @@ def argmin(
     # The returned array must have the default array index data type.
     if output_dtype is not None:
         if output_dtype not in (tf.int32, tf.int64):
-            return tf.convert_to_tensor(ret, dtype=tf.int32)
+            return tf.convert_to_tensor(ret, dtype=tf.int64)
         else:
             return tf.convert_to_tensor(ret, dtype=output_dtype)
-    else:
-        if ret.dtype not in (tf.int32, tf.int64):
-            return tf.convert_to_tensor(ret, dtype=tf.int32)
-        else:
-            return tf.convert_to_tensor(ret, dtype=ret.dtype)
+    return tf.convert_to_tensor(ret, dtype=tf.int64)
 
 
 def nonzero(

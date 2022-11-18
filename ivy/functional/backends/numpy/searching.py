@@ -40,15 +40,8 @@ def argmin(
     ret = np.array(np.argmin(x, axis=axis, keepdims=keepdims, out=out))
     # The returned array must have the default array index data type.
     if output_dtype is not None:
-        if output_dtype not in (np.int32, np.int64):
-            return np.array(ret, dtype=np.int64)
-        else:
-            return np.array(ret, dtype=output_dtype)
-    else:
-        if ret.dtype not in (np.int32, np.int64):
-            return np.array(ret, dtype=np.int64)
-        else:
-            return np.array(ret, dtype=ret.dtype)
+        return ret.astype(output_dtype)
+    return ret
 
 
 argmin.support_native_out = True
