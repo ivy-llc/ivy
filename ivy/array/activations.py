@@ -10,7 +10,12 @@ import ivy
 
 
 class ArrayWithActivations(abc.ABC):
-    def relu(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def relu(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None
+    ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.relu. This method simply wraps the
         function, and so the docstring for ivy.relu also applies to this method
@@ -50,7 +55,7 @@ class ArrayWithActivations(abc.ABC):
         self: ivy.Array,
         /,
         *,
-        approximate: bool = True,
+        approximate: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -83,7 +88,7 @@ class ArrayWithActivations(abc.ABC):
         return ivy.sigmoid(self._data, out=out)
 
     def softmax(
-        self: ivy.Array,
+        x: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
         axis: Optional[int] = None,
@@ -94,6 +99,21 @@ class ArrayWithActivations(abc.ABC):
         function, and so the docstring for ivy.softmax also applies to this method
         with minimal changes.
 
+        Parameters
+        ----------
+        x
+            input array.
+        axis
+            the axis or axes along which the softmax should be computed
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array with the softmax unit function applied element-wise.
+
         Examples
         --------
         >>> x = ivy.array([1.0, 0, 1.0])
@@ -101,7 +121,7 @@ class ArrayWithActivations(abc.ABC):
         >>> print(y)
         ivy.array([0.422, 0.155, 0.422])
         """
-        return ivy.softmax(self._data, axis=axis, out=out)
+        return ivy.softmax(x, axis=axis, out=out)
 
     def softplus(
         self: ivy.Array,

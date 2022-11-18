@@ -26,9 +26,15 @@ def inner(a, b, /):
 def matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True
 ):
+    # TODO: add support for the rest of the arguments.
     return ivy.matmul(x1, x2, out=out)
 
 
 @to_ivy_arrays_and_back
 def matrix_power(a, n):
     return ivy.matrix_power(a, n)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, axes=2):
+    return ivy.tensordot(a, b, axes=axes)

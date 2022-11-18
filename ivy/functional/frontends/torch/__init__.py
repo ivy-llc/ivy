@@ -1,8 +1,8 @@
 # flake8: noqa
-from .. import versions
+
 from . import nn
-from . import Tensor
-from .Tensor import tensor
+from . import tensor
+from .tensor import *
 from . import blas_and_lapack_ops
 from .blas_and_lapack_ops import *
 from . import comparison_ops
@@ -182,10 +182,10 @@ def promote_types_torch(
 
 @handle_exceptions
 def promote_types_of_torch_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
     """
     Promotes the dtype of the given native array inputs to a common dtype
     based on type promotion rules. While passing float or integer values or any

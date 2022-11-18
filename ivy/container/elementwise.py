@@ -5304,32 +5304,62 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        self
+        self (Container)
             input array or container. Should have a real-valued data type.
-        x2
+        x2 (Union[Container, Array, NativeArray])
             input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
             Should have a real-valued data type.
-        key_chains
+        key_chains (Optional[Union[List[str], Dict[str, str]]])
             The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
+        to_apply (bool)
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped. Default is ``True``.
-        prune_unapplied
+        prune_unapplied (bool)
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
-        map_sequences
+        map_sequences (bool)
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
+        out (Optional[Container])
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+
+        Return type: Container
 
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container
-            must have a data type determined by :ref:`type-promotion`.
+            a container containing the element-wise products.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
+                               b=ivy.array([3.2, 5., 7.5]))
+        >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
+                               b=ivy.array([5.6, 1.2, 4.2]))
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        {
+            a: ivy.array([25.5, 12.6, 19.5]),
+            b: ivy.array([17.9, 6., 31.5])
+        }
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]),\
+                               b=ivy.array([5., 1.7, 0.1]))
+        >>> x2 = ivy.array([8.3, 3.2, 6.5])
+        >>> y = x1.multiply(x2)
+        >>> print(y)
+        {
+            a: ivy.array([51.5, 15.4, 14.9]),
+            b: ivy.array([41.5, 5.44, 0.65])
+        }
         """
         return self.static_multiply(
             self,
@@ -5543,6 +5573,30 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
+
+        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12., 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.array([3., 1., 0.9])
+        >>> y = x1.not_equal(x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([False, False, False])
+        }
         """
         return self.static_not_equal(
             self,
@@ -5644,6 +5698,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the evaluated result for each element in ``self``.
             The returned container must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., -5.]))
+        >>> y = ivy.positive(x)
+        >>> print(y)
+        {
+        a: ivy.array([0., 1., 2.]),
+        b: ivy.array([3., 4., -5.])
+        }
 
         """
         return self.static_positive(
@@ -7130,6 +7197,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+        ...                   b=ivy.array([12, -3.5, 1.234]))
+        >>> y = ivy.Container.static_trunc(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0., 4., 1.]),
+            b: ivy.array([12., -3., 1.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "trunc",
@@ -7179,6 +7258,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the rounded result for each element in ``self``.
             The returned container must have the same data type as ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+        ...                   b=ivy.array([12, -3.5, 1.234]))
+        >>> y = x.trunc()
+        >>> print(y)
+        {
+            a: ivy.array([-0., 4., 1.]),
+            b: ivy.array([12., -3., 1.])
+        }
 
         """
         return self.static_trunc(
@@ -7299,7 +7389,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7327,7 +7417,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7358,7 +7448,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7387,7 +7477,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the minimum. If ``False``, the
             minimum is calculated using the ``(x + y - |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to. It must have a shape that
             the inputs broadcast to.
@@ -7418,7 +7508,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7446,7 +7536,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -7480,7 +7570,7 @@ class ContainerWithElementwise(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        use_where: bool = False,
+        use_where: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -7508,7 +7598,7 @@ class ContainerWithElementwise(ContainerBase):
         use_where
             Whether to use :func:`where` to calculate the maximum. If ``False``, the
             maximum is calculated using the ``(x + y + |x - y|)/2`` formula. Default is
-            ``False``.
+            ``True``.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -8136,3 +8226,112 @@ class ContainerWithElementwise(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_trapz(
+        y: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.trapz. This method simply wraps
+        the function, and so the docstring for ivy.trapz also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        y
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> ivy.Container.static_trapz(y)
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "trapz",
+            y,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            x=x,
+            dx=dx,
+            axis=axis,
+            out=out,
+        )
+
+    def trapz(
+        self: ivy.Container,
+        /,
+        *,
+        x: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]],
+        dx: Optional[float] = 1.0,
+        axis: Optional[int] = -1,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.trapz. This method simply
+        wraps the function, and so the docstring for ivy.trapz also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            The container whose arrays should be integrated.
+        x
+            The sample points corresponding to the input array values.
+            If x is None, the sample points are assumed to be evenly spaced
+            dx apart. The default is None.
+        dx
+            The spacing between sample points when x is None. The default is 1.
+        axis
+            The axis along which to integrate.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including definite integrals of n-dimensional arrays
+            as approximated along a single axis by the trapezoidal rule.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+        >>> y = ivy.Container(a=ivy.array((1, 2, 3)), b=ivy.array((1, 5, 10)))
+        >>> y.trapz()
+        {
+            a: 4.0
+            b: 10.5
+        }
+        """
+        return self.static_trapz(self, x=x, dx=dx, axis=axis, out=out)

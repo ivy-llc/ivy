@@ -14,6 +14,12 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+def _reshape_fortran_tf(x, shape):
+    if len(x.shape) > 0:
+        x = tf.transpose(x)
+    return tf.transpose(tf.reshape(x, shape[::-1]))
+
+
 # Array API Standard #
 # -------------------#
 
@@ -36,7 +42,7 @@ def concat(
     for i in range(len(xs)):
         if is_axis_none:
             xs[i] = tf.reshape(xs[i], -1)
-        xs[i] = tf.cast(xs[i], highest_dtype)
+        xs[i] = ivy.astype(xs[i], highest_dtype, copy=False).to_native()
     if is_axis_none:
         axis = 0
         if is_tuple:
@@ -100,10 +106,16 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    order: Optional[str] = "C",
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = tf.experimental.numpy.copy(x)
+        if order == "F":
+            return _reshape_fortran_tf(newarr, shape)
         return tf.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_tf(x, shape)
     return tf.reshape(x, shape)
 
 
@@ -136,14 +148,10 @@ def squeeze(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     if isinstance(axis, int):
-        ivy.assertions.check_less(
-            x.shape[axis],
-            1,
-            allow_equal=True,
-            message="Expected dimension of size 1, but found dimension size {}".format(
-                x.shape[axis]
-            ),
-        )
+        if ivy.any(x.shape[axis] > 1):
+            raise ValueError(
+                "{} must be lesser than or equal to {}".format(x.shape[axis], 1)
+            )
         ret = tf.squeeze(x, axis)
     elif axis is None:
         ret = tf.squeeze(x)
@@ -160,7 +168,7 @@ def squeeze(
         ]
         for i in axis_updated_after_squeeze:
             if x.shape[i] > 1:
-                raise ivy.exceptions.IvyException(
+                raise ValueError(
                     "Expected dimension of size 1, but found dimension size {}".format(
                         x.shape[i]
                     )

@@ -1,6 +1,8 @@
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
+@to_ivy_arrays_and_back
 def pixel_shuffle(input, upscale_factor):
 
     input_shape = ivy.shape(input)
@@ -39,6 +41,7 @@ def pixel_shuffle(input, upscale_factor):
     )
 
 
+@to_ivy_arrays_and_back
 def pixel_unshuffle(input, downscale_factor):
 
     input_shape = ivy.shape(input)
@@ -80,3 +83,45 @@ def pixel_unshuffle(input, downscale_factor):
     return ivy.reshape(
         ivy.permute_dims(input_reshaped, (0, 1, 3, 5, 2, 4)), (b, oc, oh, ow)
     )
+
+
+def _pad_handle_padding_shape(padding, n, mode):
+    if isinstance(padding[0], (list, tuple)):  # case nested
+        padding = tuple([tuple(i) for i in ivy.flip(ivy.array(list(padding)), axis=0)])
+    elif len(padding) == 1:  # case scalar
+        padding = (padding[0], padding[0])
+    else:  # case flat
+        padding = tuple(
+            [
+                (padding[i * 2], padding[i * 2 + 1])
+                for i in range(int(len(padding) / 2) - 1, -1, -1)
+            ]
+        )
+    while len(padding) < n:
+        if mode == "circular":
+            padding = padding + ((0, 0),)
+        else:
+            padding = ((0, 0),) + padding
+    if mode == "circular":
+        padding = tuple([tuple(i) for i in ivy.flip(ivy.array(list(padding)), axis=0)])
+    return padding
+
+
+@to_ivy_arrays_and_back
+def pad(input, pad, mode="constant", value=0):
+    pad = _pad_handle_padding_shape(pad, len(input.shape), mode)
+    if mode == "constant":
+        return ivy.pad(input, pad, mode="constant", constant_values=value)
+    elif mode == "reflect":
+        return ivy.pad(input, pad, mode="reflect", reflect_type="even")
+    elif mode == "replicate":
+        return ivy.pad(input, pad, mode="edge")
+    elif mode == "circular":
+        return ivy.pad(input, pad, mode="wrap")
+    else:
+        raise ivy.exceptions.IvyException(
+            (
+                "mode '{}' must be in "
+                + "['constant', 'reflect', 'replicate', 'circular']"
+            ).format(mode)
+        )

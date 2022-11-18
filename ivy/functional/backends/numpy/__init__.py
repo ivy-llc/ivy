@@ -131,8 +131,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -155,3 +153,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *

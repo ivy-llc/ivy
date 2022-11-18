@@ -12,7 +12,8 @@ test_configs = {
     "test-frontend-numpy-push": ["numpy_frontend", 5],
     "test-frontend-jax-push": ["jax_frontend", 6],
     "test-frontend-torch-push": ["torch_frontend", 7],
-    "test-extensions-ivy": ["extensions", 8],
+    "test-experimental-core-ivy": ["experimental_core", 8],
+    "test-experimental-nn-ivy": ["experimental_nn", 9],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",

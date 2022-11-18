@@ -5,7 +5,7 @@ import torch as torch
 # local
 import ivy
 
-version = {"version": torch.__version__.split("+")[0]}
+backend_version = {"version": torch.__version__.split("+")[0]}
 
 # noinspection PyUnresolvedReferences
 use = ivy.backend_handler.ContextManager(sys.modules[__name__])
@@ -20,9 +20,9 @@ NativeSparseArray = torch.Tensor
 
 
 # devices
-valid_devices = ("cpu", "gpu", "tpu")
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # native data types
@@ -99,8 +99,6 @@ def closest_valid_dtype(type):
 
 
 backend = "torch"
-backend_version = torch.__version__
-
 
 # local sub-modules
 from . import activations
@@ -117,8 +115,6 @@ from . import device
 from .device import *
 from . import elementwise
 from .elementwise import *
-from . import extensions
-from .extensions import *
 from . import general
 from .general import *
 from . import gradients
@@ -141,3 +137,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
+from . import experimental
+from .experimental import *

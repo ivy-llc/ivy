@@ -11,3 +11,13 @@ def roll(a, shift, axis=None):
 @to_ivy_arrays_and_back
 def flip(m, axis=None):
     return ivy.flip(m, axis=axis, out=None)
+
+
+@to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m, out=None)
+
+
+@to_ivy_arrays_and_back
+def flipud(m):
+    return ivy.flipud(m, out=None)
