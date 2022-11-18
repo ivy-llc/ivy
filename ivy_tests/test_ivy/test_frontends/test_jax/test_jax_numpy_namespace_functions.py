@@ -179,7 +179,7 @@ def test_jax_numpy_all(
     )
 
 
-#tan
+# tan
 @handle_frontend_test(
     fn_tree="jax.numpy.tan",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
@@ -208,7 +208,7 @@ def test_jax_numpy_tan(
     )
 
 
-#tanh
+# tanh
 @handle_frontend_test(
     fn_tree="jax.numpy.tanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
