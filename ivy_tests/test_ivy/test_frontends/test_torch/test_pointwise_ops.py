@@ -778,7 +778,7 @@ def test_torch_atan2(
         num_arrays=2,
     ),
 )
-def test_torch_atan2(
+def test_torch_arctan2(
     *,
     dtype_and_x,
     as_variable,
