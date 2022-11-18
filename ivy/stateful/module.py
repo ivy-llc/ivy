@@ -14,7 +14,7 @@ import tensorflow as tf
 import re
 import inspect
 from collections import OrderedDict
-
+from typing import Optional, Dict, List
 # local
 import ivy
 from ivy.container import Container
@@ -28,6 +28,7 @@ class Module(abc.ABC):
     """Module is a base class for deriving trainable modules."""
 
     def __init__(
+
         self,
         /,
         *args,
@@ -124,12 +125,12 @@ class Module(abc.ABC):
             alphabetical_keys=False, ivyh=ivy.get_backend(backend="numpy")
         )
         self._sub_mods = set()
-        self._dtype_ = dtype
+        self._dtype = dtype
         self._args = args
         self._kwargs = kwargs
         if build_mode != "on_init":
             return
-        self.build_(*args, **kwargs)
+        self.build(*args, **kwargs)
 
     # Private #
     # --------#
@@ -551,7 +552,7 @@ class Module(abc.ABC):
         """
         with_grads = ivy.with_grads(with_grads=with_grads)
         if not self._built:
-            self.build_(
+            self.build(
                 *args,
                 **kwargs,
                 from_call=True,
@@ -1005,9 +1006,8 @@ class Module(abc.ABC):
             track_submod_call_order,
             expected_submod_rets,
         )
-        # using the convention that constructor parameters \
-        # must be keyword-only whereas forward pass is position only
-        kwargs.update(self._kwargs)
+
+        v = ivy.to_native(v) # convert variables to native arrays so that they can be tracked
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -1028,7 +1028,7 @@ class Module(abc.ABC):
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build_(self, *args, from_call=False, device=None, dtype=None, **kwargs):
+    def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """
         Build the internal layers and variables for this module.
 
@@ -1056,7 +1056,7 @@ class Module(abc.ABC):
         if dtype:
             dtype = ivy.default_dtype(dtype=dtype, as_native=True)
         else:
-            dtype = ivy.default_dtype(dtype=self._dtype_, as_native=True)
+            dtype = ivy.default_dtype(dtype=self._dtype, as_native=True)
 
         # TODO: this line causes error when calling consturctor
         # kwargs["dtype"] = dtype
@@ -1171,7 +1171,6 @@ class Module(abc.ABC):
         """
 
         ivy_module = self
-        
         class MyHaikuModel(hk.Module):
             def __init__(self):
                 super(MyHaikuModel, self).__init__()
@@ -1227,26 +1226,31 @@ class Module(abc.ABC):
     @staticmethod
     def from_haiku_module(
         native_module,
-        args=None,
-        kwargs=None,
+        constructor_args: Optional[List] = None,
+        constructor_kwargs: Optional[Dict] = None,
+        instance_args: Optional[List] = None,
+        instance_kwargs: Optional[Dict] = None,
         device=None,
         devices=None,
     ):
         """
         Converts a Haiku module instance to an Ivy module instance.
-        If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` 
-        as **position-only**.
 
         Parameters
         ----------
         native_module
-            The module in the native framework to convert(class or instance)
-        args
-            Positional arguments to pass to the forward pass of the native module class.
+            The module in the native framework to convert(class or instance).
+        constructor_args
+            Positional arguments to pass to the constructor of the native module.
             Default is ``None``.
-        kwargs
-            Key-word arguments to pass to the constructor of the native module class.
+        constructor_kwargs
+            Key-word arguments to pass to the constructor of the native module.
+             Default is ``None``.
+        instance_args
+            Positional arguments to pass to the forward pass of the native module.
+            Default is ``None``.
+        instance_kwargs
+            Key-word arguments to pass to the forward pass of the native module.
              Default is ``None``.
         device
             The device on which to create module variables. Default is ``None``.
@@ -1316,49 +1320,62 @@ class Module(abc.ABC):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)
 
-        args = ivy.default(args, [])
-        kwargs = ivy.default(kwargs, {})
+        c_args = ivy.default(constructor_args, [])
+        c_kwargs = ivy.default(constructor_kwargs, {})
+        i_args = ivy.default(instance_args, [])
+        i_kwargs = ivy.default(instance_kwargs, {})
+        i_args, i_kwargs = ivy.args_to_native(*i_args, **i_kwargs)
         transformed_module = native_module
 
         if inspect.isclass(native_module):
 
+            if (len(i_args) == 0 and len(i_kwargs) == 0):
+                raise ivy.exceptions.IvyException(
+                    "both instance_args and instance_kwargs cannot be none"
+                    " when passing a native class"
+                )
             def forward_fn(*a, **kw):
-                model = native_module(**kw)
-                return model(*a)
+                model = native_module(*c_args, **c_kwargs)
+                return model(*i_args, **i_kwargs)
 
             transformed_module = hk.transform(forward_fn)
 
         return HaikuIvyModule(
-            *args,
+            *i_args,
             native_module=transformed_module,
             device=device,
             devices=devices,
-            **kwargs,
+            **i_kwargs,
         )
 
     @staticmethod
     def from_keras_module(
         native_module=None,
-        args=None,
-        kwargs=None,
+        constructor_args: Optional[List] = None,
+        constructor_kwargs: Optional[Dict] = None,
+        instance_args: Optional[List] = None,
+        instance_kwargs: Optional[Dict] = None,
         device=None,
         devices=None,
     ):
         """
         Converts a Keras module instance to an Ivy module instance.
-        If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` 
-        as **position-only**.
 
         Parameters
         ----------
         native_module
-            The module in the native framework to convert(class or instance)
-        args
-            Positional arguments to pass to the forward pass of the native module class.
+            The module in the native framework to convert(class or instance).
+        constructor_args
+            Positional arguments to pass to the constructor of the native module.
             Default is ``None``.
-        kwargs
-            Key-word arguments to pass to the constructor of the native module class.
+        constructor_kwargs
+            Key-word arguments to pass to the constructor of the native module.
+             Default is ``None``.
+        instance_args
+            Positional arguments to pass to the forward pass of the native module.
+            Default is ``None``.
+        instance_kwargs
+            Key-word arguments to pass to the forward pass of the native module.
              Default is ``None``.
         device
             The device on which to create module variables. Default is ``None``.
@@ -1398,47 +1415,60 @@ class Module(abc.ABC):
 
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
-                ret = self._native_module(*a)
+                ret = self._native_module(*a, **kw)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)
 
-        args = ivy.default(args, [])
-        kwargs = ivy.default(kwargs, {})
+        c_args = ivy.default(constructor_args, [])
+        c_kwargs = ivy.default(constructor_kwargs, {})
+        i_args = ivy.default(instance_args, [])
+        i_kwargs = ivy.default(instance_kwargs, {})
 
         if inspect.isclass(native_module):
-            native_module = native_module(**kwargs)
-            input_shape = args[0].shape
+
+            if (len(i_args) == 0 and len(i_kwargs) == 0):
+                raise ivy.exceptions.IvyException(
+                    "both instance_args and instance_kwargs cannot be none"
+                    " when passing a native class"
+                )
+            native_module = native_module(*c_args, **c_kwargs)
+            input_shape = i_args[0].shape
             native_module.build((input_shape[-1],))
 
         return KerasIvyModule(
-            *args, native_module=native_module, device=device, devices=devices, **kwargs
+            *i_args, native_module=native_module, device=device, devices=devices, **i_kwargs
         )
 
     @staticmethod
     def from_torch_module(
         native_module=None,
-        args=None,
-        kwargs=None,
+        constructor_args: Optional[List] = None,
+        constructor_kwargs: Optional[Dict] = None,
+        instance_args: Optional[List] = None,
+        instance_kwargs: Optional[Dict] = None,
         device=None,
         devices=None,
         inplace_update=False,
     ):
         """
         Converts a Torch module instance to an Ivy module instance.
-        If Passing a module class rather than an instance, pass all `constructor
-        arguments` as **keyword-only** and model's `forward-pass arguments` 
-        as **position-only**.
 
         Parameters
         ----------
         native_module
             The module in the native framework to convert(class or instance)
-        args
-            Positional arguments to pass to the forward pass of the native module class.
+        constructor_args
+            Positional arguments to pass to the constructor of the native module.
             Default is ``None``.
-        kwargs
-            Key-word arguments to pass to the constructor of the native module class.
+        constructor_kwargs
+            Key-word arguments to pass to the constructor of the native module.
+             Default is ``None``.
+        instance_args
+            Positional arguments to pass to the forward pass of the native module.
+            Default is ``None``.
+        instance_kwargs
+            Key-word arguments to pass to the forward pass of the native module.
              Default is ``None``.
         device
             The device on which to create module variables. Default is ``None``.
@@ -1519,24 +1549,27 @@ class Module(abc.ABC):
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
                 self._update_v(self.v)
-                ret = self._native_module(*a)
+                ret = self._native_module(*a, **kw)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
                 return ivy.to_native(ret)
 
-        args = ivy.default(args, [])
-        kwargs = ivy.default(kwargs, {})
+        c_args = ivy.default(constructor_args, [])
+        c_kwargs = ivy.default(constructor_kwargs, {})
+        i_args = ivy.default(instance_args, [])
+        i_kwargs = ivy.default(instance_kwargs, {})
 
         if inspect.isclass(native_module):
-            native_module = native_module(**kwargs)
+            native_module = native_module(*c_args, **c_kwargs)
+
 
         return TorchIvyModule(
-            *args,
+            *i_args,
             native_module=native_module,
             device=device,
             devices=devices,
             inplace_update=inplace_update,
-            **kwargs,
+            **i_kwargs,
         )
 
 
