@@ -113,7 +113,7 @@ FROM_CONVERTERS = {
 
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
-def test_from_backend_module(bs_ic_oc, from_class_and_args, device):
+def test_from_backend_module(bs_ic_oc, from_class_and_args):
     # smoke test
     if ivy.current_backend_str() in "numpy":
         # Converters not implemented in numpy
@@ -130,8 +130,7 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args, device):
         ivy_module = module_converter(
             native_module_class,
             instance_args=[x],
-            constructor_kwargs={"in_size": input_channels, "out_size": output_channels},
-            device=device,
+            constructor_kwargs={"in_size": input_channels, "out_size": output_channels}
         )
     else:
         if ivy.current_backend_str() == "jax":
