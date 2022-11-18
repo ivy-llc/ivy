@@ -18,6 +18,7 @@ def sinc(
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
