@@ -26,10 +26,7 @@ from ivy.exceptions import handle_exceptions
 @handle_exceptions
 @handle_array_like
 def relu(
-    x: Union[ivy.Array, ivy.NativeArray],
-    /,
-    *,
-    out: Optional[ivy.Array] = None
+    x: Union[ivy.Array, ivy.NativeArray], /, *, out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """Applies the rectified linear unit function element-wise.
 

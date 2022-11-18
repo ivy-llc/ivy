@@ -818,7 +818,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         -------
         ret
             Array with values computed from zeta function from
-            input arrays' values.            
+            input arrays' values.
 
         Examples
         --------
