@@ -38,11 +38,12 @@ def argmin(
     ret = jnp.argmin(x, axis=axis, keepdims=keepdims)
     # The returned array must have the default array index data type.
     if output_dtype is not None:
+        output_dtype = ivy.as_native_dtype(output_dtype)
         if output_dtype not in (jnp.int32, jnp.int64):
             return jnp.array(ret, dtype=jnp.int64)
         else:
             return jnp.array(ret, dtype=output_dtype)
-    return jnp.array(ret, dtype=ret.dtype)
+    return jnp.array(ret, dtype=jnp.int64)
 
 
 def nonzero(

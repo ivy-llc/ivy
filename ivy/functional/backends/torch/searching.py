@@ -41,11 +41,12 @@ def argmin(
     ret = torch.argmin(x, dim=axis, keepdim=keepdims, out=out)
     # The returned array must have the default array index data type.
     if output_dtype is not None:
+        output_dtype = ivy.as_native_dtype(output_dtype)
         if output_dtype not in (torch.int32, torch.int64):
-            return torch.tensor(ret, dtype=torch.int64)
+            ret = torch.tensor(ret, dtype=torch.int64)
         else:
-            return torch.tensor(ret, dtype=output_dtype)
-    return torch.tensor(ret, dtype=ret.dtype)
+            ret = torch.tensor(ret, dtype=output_dtype)
+    return ret
 
 
 argmin.support_native_out = True
