@@ -113,7 +113,7 @@ FROM_CONVERTERS = {
 
 @pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize("from_class_and_args", [True, False])
-def test_from_backend_module(bs_ic_oc, from_class_and_args):
+def test_from_backend_module(bs_ic_oc, from_class_and_args, device):
     # smoke test
     if ivy.current_backend_str() in "numpy":
         # Converters not implemented in numpy
