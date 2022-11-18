@@ -2146,6 +2146,36 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
         method_name="add_",
     )
 
+## argsort
+@handle_frontend_method(
+    method_tree="torch.tensor.argsort",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+    ),
+)
+def test_torch_instance_argsort(
+    dtype_x,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=input_dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=0,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={},
+        frontend="torch",
+        class_="tensor",
+        method_name="argsort",
+    )
 
 # arccos_
 @handle_frontend_method(
