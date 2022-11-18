@@ -37,8 +37,8 @@ def fmod(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     result = tf.math.floormod(x1, x2, name=None)
-    temp = (result, x1)
-    return tf.map_fn(lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]), temp)
+    temp = [result, x1]
+    return tf.map_fn(lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]), temp, fn_output_signature=result.dtype)
 
 
 def fmax(
