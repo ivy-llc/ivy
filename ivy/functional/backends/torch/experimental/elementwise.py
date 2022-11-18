@@ -267,6 +267,7 @@ def allclose(
     return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def fix(
     x: torch.Tensor,
     /,
