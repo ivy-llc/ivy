@@ -197,7 +197,6 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
         if _is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
