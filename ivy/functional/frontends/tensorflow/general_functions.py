@@ -27,4 +27,3 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def squeeze(input, axis=None, name=None):
     return ivy.squeeze(input, axis)
-# This is a new line that ends the file.
