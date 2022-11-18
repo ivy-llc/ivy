@@ -42,11 +42,13 @@ def test_dirichlet(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, alpha = dtype_and_alpha
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             as_variable_flags=as_variable,
             with_out=with_out,
@@ -102,12 +104,14 @@ def test_beta(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
 
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -158,11 +162,13 @@ def test_gamma(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, alpha_beta = dtype_and_alpha_beta
     if "float16" in dtype:
         return
     ret, ret_gt = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

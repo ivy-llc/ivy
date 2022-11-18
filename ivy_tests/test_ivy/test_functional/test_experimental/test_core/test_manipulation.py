@@ -75,9 +75,11 @@ def test_moveaxis(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, a = dtype_and_a
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -152,9 +154,11 @@ def test_heaviside(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -195,9 +199,11 @@ def test_flipud(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -238,9 +244,11 @@ def test_vstack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -280,9 +288,11 @@ def test_hstack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -369,9 +379,11 @@ def test_rot90(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, m, k, axes = dtype_m_k_axes
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
@@ -419,9 +431,11 @@ def test_top_k(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -459,9 +473,11 @@ def test_fliplr(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, m = dtype_and_m
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -501,9 +517,11 @@ def test_i0(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -554,6 +572,7 @@ def test_flatten(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtypes, x = dtype_and_x
     x = np.asarray(x[0], dtype=input_dtypes[0])
@@ -568,6 +587,7 @@ def test_flatten(
     else:
         start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -639,6 +659,7 @@ def _pad_helper(draw):
 
 @handle_test(
     fn_tree="functional.experimental.pad",
+    ground_truth_backend="numpy",
     dtype_and_input_and_other=_pad_helper(),
     reflect_type=st.sampled_from(["even", "odd"]),
 )
@@ -654,6 +675,7 @@ def test_pad(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     (
         dtype,
@@ -665,6 +687,7 @@ def test_pad(
         mode,
     ) = dtype_and_input_and_other
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -675,7 +698,6 @@ def test_pad(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        ground_truth_backend="numpy",
         input=input,
         pad_width=pad_width,
         mode=mode,
@@ -714,10 +736,12 @@ def test_vsplit(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -760,10 +784,12 @@ def test_dsplit(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     indices_or_sections = sorted(indices_or_sections)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -805,9 +831,11 @@ def test_dstack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -841,6 +869,7 @@ def test_atleast_2d(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -848,6 +877,7 @@ def test_atleast_2d(
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
