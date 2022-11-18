@@ -281,3 +281,28 @@ def nextafter(
 
 
 nextafter.support_natvie_out = True
+
+
+def zeta(
+    x: np.ndarray, 
+    q: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    inf_indices = np.union1d(
+        np.array(np.where(x == 1.)),
+        np.array(np.where(q <= 0))
+    )
+    nan_indices = np.where(x <= 0)
+    n, res = 1, 1 / q ** x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = np.round(res, decimals=4)
+    ret[inf_indices] = np.inf
+    ret[nan_indices] = np.nan
+    return ret
+
+
+zeta.support_native_out = False
