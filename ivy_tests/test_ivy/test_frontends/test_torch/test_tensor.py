@@ -2145,8 +2145,9 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
         class_name="tensor",
         method_name="add_",
     )
+    
 
-## argsort
+# argsort
 @handle_frontend_method(
     method_tree="torch.tensor.argsort",
     dtype_x=helpers.dtype_and_values(
@@ -2176,6 +2177,7 @@ def test_torch_instance_argsort(
         class_="tensor",
         method_name="argsort",
     )
+
 
 # arccos_
 @handle_frontend_method(
