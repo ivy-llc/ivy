@@ -7,6 +7,7 @@ import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
@@ -740,6 +741,7 @@ def test_torch_instance_tanh(
 
 # tanh_
 @handle_frontend_method(
+    method_tree="torch.tensor.tanh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -911,7 +913,7 @@ def test_torch_instance_abs_(
 
 # amin
 @handle_frontend_method(
-    method_tree="torch.tensor.amin_",
+    method_tree="torch.tensor.amin",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1316,9 +1318,9 @@ def test_torch_special_truediv(
     )
 
 
-# to_with_device
+# _to_with_device
 @handle_frontend_method(
-    method_tree="torch.tensor.to_with_device",
+    method_tree="torch.tensor.to",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1358,9 +1360,9 @@ def test_torch_instance_to_with_device(
     )
 
 
-# to_with_dtype
+# _to_with_dtype
 @handle_frontend_method(
-    method_tree="torch.tensor.to_with_dtype",
+    method_tree="torch.tensor.to",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1512,7 +1514,9 @@ def test_torch_instance_acos(
         num_arrays=2,
     ),
 )
-def test_torch_instance_new_tensor(dtype_and_x, as_variable, native_array):
+def test_torch_instance_new_tensor(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
@@ -1596,7 +1600,9 @@ def _array_and_index(
     method_tree="torch.tensor.__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
-def test_torch_instance_getitem(dtype_and_x, as_variable, native_array, fw):
+def test_torch_instance_getitem(
+    dtype_and_x, as_variable, native_array, fw, class_, method_name
+):
     input_dtype, x = dtype_and_x
     data = x[0]
     index = x[1]
@@ -1749,7 +1755,9 @@ def test_torch_instance_unsqueeze_(
         num_arrays=1,
     ),
 )
-def test_torch_instance_detach(dtype_and_x, as_variable, native_array):
+def test_torch_instance_detach(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1777,7 +1785,9 @@ def test_torch_instance_detach(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_dim(dtype_and_x, as_variable, native_array):
+def test_torch_instance_dim(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1805,7 +1815,9 @@ def test_torch_instance_dim(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_ndimension(dtype_and_x, as_variable, native_array):
+def test_torch_instance_ndimension(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1875,7 +1887,9 @@ def _fill_value_and_size(
     method_tree="torch.tensor.new_full",
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
-def test_torch_instance_new_full(dtype_and_x, as_variable, native_array):
+def test_torch_instance_new_full(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
@@ -1910,7 +1924,9 @@ def test_torch_instance_new_full(dtype_and_x, as_variable, native_array):
         max_num_dims=3,
     ),
 )
-def test_torch_instance_new_empty(dtype_and_x, size, as_variable, native_array):
+def test_torch_instance_new_empty(
+    dtype_and_x, size, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=[input_dtype[0]],
@@ -2015,7 +2031,7 @@ def _unfold_args(draw):
     dtype_values_args=_unfold_args(),
 )
 def test_torch_instance_unfold(
-    dtype_values_args, size, step, as_variable, native_array
+    dtype_values_args, size, step, as_variable, native_array, class_, method_name
 ):
     input_dtype, x, axis, size, step = dtype_values_args
     print(axis, size, step)
@@ -2156,7 +2172,9 @@ def test_torch_instance_max(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
-def test_torch_instance_device(dtype_and_x, as_variable, native_array):
+def test_torch_instance_device(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -2174,6 +2192,57 @@ def test_torch_instance_device(dtype_and_x, as_variable, native_array):
         frontend="torch",
         class_="tensor",
         method_name="device",
+    )
+
+
+# is_cuda
+@handle_frontend_method(
+    method_tree="torch.tensor.is_cuda",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+    size=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+    device=st.booleans(),
+)
+def test_torch_instance_is_cuda(
+    dtype_and_x,
+    size,
+    dtypes,
+    requires_grad,
+    device,
+    as_variable,
+    native_array,
+):
+    input_dtype, x = dtype_and_x
+    device = "cpu" if device is False else "gpu:0"
+    x = Tensor(data=x[0]).new_ones(
+        size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
+    )
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=[],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend="torch",
+        class_="tensor",
+        method_name="is_cuda",
     )
 
 
@@ -2222,7 +2291,9 @@ def test_torch_instance_bitwise_and(
         num_arrays=2,
     ),
 )
-def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_add_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=[input_dtype[0]],
@@ -2254,7 +2325,9 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccos_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_arccos_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2284,7 +2357,9 @@ def test_torch_instance_arccos_(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arccos(dtype_and_x, as_variable, native_array):
+def test_torch_instance_arccos(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2386,7 +2461,9 @@ def test_torch_instance_asin_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arcsin_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_arcsin_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2486,7 +2563,9 @@ def test_torch_instance_tan_(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_atanh(dtype_and_x, as_variable, native_array):
+def test_torch_instance_atanh(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2516,7 +2595,9 @@ def test_torch_instance_atanh(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_atanh_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_atanh_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2546,7 +2627,9 @@ def test_torch_instance_atanh_(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arctanh(dtype_and_x, as_variable, native_array):
+def test_torch_instance_arctanh(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2576,7 +2659,9 @@ def test_torch_instance_arctanh(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_torch_instance_arctanh_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_arctanh_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=["float64"] + input_dtype,
@@ -2645,7 +2730,9 @@ def test_torch_instance_pow(
         num_arrays=2,
     ),
 )
-def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
+def test_torch_instance_pow_(
+    dtype_and_x, as_variable, native_array, class_, method_name
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         input_dtypes_init=[input_dtype[0]],
@@ -2670,6 +2757,7 @@ def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
 
 # argmax
 @handle_frontend_method(
+    method_tree="torch.tensor.argmax",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
@@ -2685,10 +2773,7 @@ def test_torch_instance_pow_(dtype_and_x, as_variable, native_array):
     keepdim=st.booleans(),
 )
 def test_torch_instance_argmax(
-    dtype_input_axis,
-    as_variable,
-    native_array,
-    keepdim,
+    dtype_input_axis, as_variable, native_array, keepdim, class_, method_name
 ):
     input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_method(
@@ -2710,4 +2795,37 @@ def test_torch_instance_argmax(
         frontend="torch",
         class_name="tensor",
         method_name="argmax",
+    )
+
+
+@handle_frontend_method(
+    method_tree="torch.tensor.ceil",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_ceil(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend="torch",
+        class_="tensor",
+        method_name="ceil",
     )

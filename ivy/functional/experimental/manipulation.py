@@ -829,15 +829,29 @@ def _to_pairs(x, n):
     return x
 
 
+# TODO: the checks for ivy.native arrays and the updating of the
+#  tuple args will not be necessary if/when the decorator
+#  `to_native_arrays_and_back` stops converting the input tuples
 def _check_tuple_arg(arg, name):
     flag_assert = False
-    if isinstance(arg, (tuple, list)):
-        for nested in arg:
-            if isinstance(nested, (tuple, list)):
-                for sub_nested in nested:
-                    if not isinstance(sub_nested, int):
+    if isinstance(arg, tuple):
+        arg = list(arg)
+    if isinstance(arg, list):
+        for i, nested in enumerate(arg):
+            if isinstance(nested, tuple):
+                arg[i] = list(nested)
+            if isinstance(arg[i], list):
+                for j, sub_nested in enumerate(nested):
+                    if (not isinstance(sub_nested, int))\
+                            and (not ivy.is_native_array(sub_nested)):
                         flag_assert = True
                         break
+                    elif ivy.is_native_array(sub_nested):
+                        if not len(sub_nested.shape) == 0:
+                            flag_assert = True
+                            break
+                        else:
+                            arg[i][j] = arg[i][j].numpy().item()
             elif not isinstance(nested, int):
                 flag_assert = True
     elif not isinstance(arg, int):
@@ -846,6 +860,7 @@ def _check_tuple_arg(arg, name):
         raise ivy.exceptions.IvyException(
             name + " should be int, tuple of ints or tuple of int tuples"
         )
+    return arg
 
 
 def _check_arguments(
@@ -874,7 +889,7 @@ def _check_arguments(
         ],
         message="the provided mode is not supported",
     )
-    _check_tuple_arg(pad_width, "pad_width")
+    pad_width = _check_tuple_arg(pad_width, "pad_width")
     ivy.assertions.check_true(
         all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
         message="the pad_widths must be greater or equal to zero",
@@ -885,7 +900,7 @@ def _check_arguments(
                 "stat_length is required for mode: " + mode
             )
         else:
-            _check_tuple_arg(stat_length, "stat_length")
+            stat_length = _check_tuple_arg(stat_length, "stat_length")
             ivy.assertions.check_true(
                 all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
                 message="the stat lengths must be greater than zero",
@@ -896,18 +911,19 @@ def _check_arguments(
                 "constant_values is required for mode: " + mode
             )
         else:
-            _check_tuple_arg(constant_values, "constant_values")
+            constant_values = _check_tuple_arg(constant_values, "constant_values")
     elif mode == "linear_ramp":
         if end_values is None:
             raise ivy.exceptions.IvyException(
                 "end_values is required for mode: " + mode
             )
         else:
-            _check_tuple_arg(end_values, "end_values")
+            end_values = _check_tuple_arg(end_values, "end_values")
     ivy.assertions.check_true(
         reflect_type in ["even", "odd"],
         message="the provided reflect_type is not supported",
     )
+    return pad_width, stat_length, constant_values, end_values
 
 
 @to_native_arrays_and_back
@@ -1083,7 +1099,7 @@ def pad(
         b: ivy.array([0, 4, 5, 6, 0])
     }
     """
-    _check_arguments(
+    pad_width, stat_length, constant_values, end_values = _check_arguments(
         mode,
         pad_width,
         stat_length,

@@ -11,7 +11,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     handle_nestable,
     infer_dtype,
-    handle_array_like
+    handle_array_like,
 )
 
 
@@ -524,7 +524,7 @@ def argwhere(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns indices the indices of all non-zero elements of the input array.
+    """Returns the indices of all non-zero elements of the input array.
 
     Parameters
     ----------
@@ -538,6 +538,44 @@ def argwhere(
     -------
     ret
         Indices of non-zero elements.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[1, 2], [3, 4]])
+    >>> res = ivy.argwhere(x)
+    >>> print(res)
+    ivy.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([[0, 2], [3, 4]])
+    >>> res = ivy.argwhere(x)
+    >>> print(res)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    >>> x = ivy.array([[0, 2], [3, 4]])
+    >>> y = ivy.zeros((3, 2), dtype=ivy.int64)
+    >>> res = ivy.argwhere(x, out=y)
+    >>> print(res)
+    ivy.array([[0, 1], [1, 0], [1, 1]])
+
+    With a :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+    >>> res = ivy.argwhere(x)
+    >>> print(res)
+    {
+        a: ivy.array([[0], [1]]),
+        b: ivy.array([[0], [1]])
+    }
+
+    >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
+    >>> res = ivy.argwhere(x)
+    >>> print(res)
+    {
+        a: ivy.array([[0]]),
+        b: ivy.array([[0], [1]])
+    }
 
     """
     return current_backend(x).argwhere(x, out=out)
