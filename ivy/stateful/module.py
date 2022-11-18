@@ -1153,7 +1153,7 @@ class Module(abc.ABC):
         return self._build_mode
 
     @property
-    def built_(self):
+    def built(self):
         return self._built
 
     # Module Converters #
