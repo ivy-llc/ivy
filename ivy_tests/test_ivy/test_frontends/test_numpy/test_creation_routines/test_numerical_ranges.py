@@ -217,6 +217,8 @@ def test_numpy_meshgrid(
 )
 def test_numpy_mgrid(
     range,
+    class_,
+    method_name,
 ):
     start, stop, step = range
     if start and stop and step:
@@ -246,9 +248,7 @@ def test_numpy_mgrid(
 @handle_frontend_method(
     method_tree="numpy.ogrid.__getitem__", range=_get_range_for_grid()
 )
-def test_numpy_ogrid(
-    range,
-):
+def test_numpy_ogrid(range, class_, method_name):
     start, stop, step = range
     if start and stop and step:
         ret = ogrid[start:stop:step]
