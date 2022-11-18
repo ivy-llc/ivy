@@ -3,7 +3,6 @@ from numbers import Number
 from typing import Optional, Union, Tuple
 
 import tensorflow as tf
-from tensorflow.python.framework.dtypes import DType
 
 import ivy
 
@@ -33,16 +32,16 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    dtype: DType = tf.dtypes.int64,
+    output_dtype: Optional[tf.dtypes.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     ret = x.numpy().argmin(axis=axis, keepdims=keepdims)
     # The returned array must have the default array index data type.
-    if dtype is not None:
-        if dtype not in (tf.int32, tf.int64):
+    if output_dtype is not None:
+        if output_dtype not in (tf.int32, tf.int64):
             return tf.convert_to_tensor(ret, dtype=tf.int32)
         else:
-            return tf.convert_to_tensor(ret, dtype=dtype)
+            return tf.convert_to_tensor(ret, dtype=output_dtype)
     else:
         if ret.dtype not in (tf.int32, tf.int64):
             return tf.convert_to_tensor(ret, dtype=tf.int32)

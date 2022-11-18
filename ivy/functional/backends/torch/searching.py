@@ -35,16 +35,16 @@ def argmin(
     *,
     axis: Optional[int] = None,
     keepdims: bool = False,
-    dtype: Optional[torch.dtype] = torch.int64,
+    output_dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     ret = torch.argmin(x, dim=axis, keepdim=keepdims, out=out)
     # The returned array must have the default array index data type.
-    if dtype is not None:
-        if dtype not in (torch.int32, torch.int64):
+    if output_dtype is not None:
+        if output_dtype not in (torch.int32, torch.int64):
             return torch.tensor(ret, dtype=torch.int32)
         else:
-            return torch.tensor(ret, dtype=dtype)
+            return torch.tensor(ret, dtype=output_dtype)
     else:
         if ret.dtype not in (torch.int32, torch.int64):
             return torch.tensor(ret, dtype=torch.int32)
