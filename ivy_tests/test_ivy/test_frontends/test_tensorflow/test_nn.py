@@ -833,8 +833,8 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     fn_tree="tensorflow.nn.local_response_normalization",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value= -20,
-        max_value= 20,
+        min_value=-20,
+        max_value=20,
         min_num_dims=4,
         max_num_dims=4,
         min_dim_size=1,
