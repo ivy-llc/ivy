@@ -29,4 +29,5 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def slicing(tf, begin, size):
     t = tf.constant([ivy.array])
-    return tf.slice(t, begin=[], size=[])
+    begin = [0]
+    return tf.slice(t, begin=[0], size=[])
