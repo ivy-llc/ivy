@@ -109,6 +109,9 @@ class EagerTensor:
     def __mul__(self, x, name="mul"):
         return tf_frontend.math.multiply(x, self.data, name=name)
 
+    def __mod__(self, x, name="mod"):
+        return ivy.remainder(x, self.data, name=name)
+
     def __ne__(self, other):
         return tf_frontend.raw_ops.NotEqual(
             x=self.data, y=other.data, incompatible_shape_error=False
