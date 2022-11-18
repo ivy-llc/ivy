@@ -147,7 +147,7 @@ class Tensor:
     def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.zeros(
                 size, dtype=dtype, device=device, requires_grad=requires_grad
-                )
+        )
 
     def to(self, *args, **kwargs):
         if len(args) > 0:
