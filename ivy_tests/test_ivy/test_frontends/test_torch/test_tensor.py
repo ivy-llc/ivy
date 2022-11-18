@@ -2832,8 +2832,8 @@ def test_torch_instance_ceil(
 
 
 # min
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="torch.tensor.min",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
@@ -2845,19 +2845,19 @@ def test_torch_instance_min(
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=1,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="min",
     )
