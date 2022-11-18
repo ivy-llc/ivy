@@ -106,7 +106,7 @@ def test_function(
         if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
-    device_
+    on_device
         The device on which to create arrays
     return_flat_np_arrays
         If test_values is False, this flag dictates whether the original returns are

@@ -48,5 +48,5 @@ class _IndexUpdateRef:
 
     def set(self, values, indices_are_sorted=False, unique_indices=False, mode=None):
         ret = ivy.copy_array(self.array)  # break inplace op
-        ivy.scatter_nd(self.index, values, reduction="replace", out=ret)
+        ret[self.index] = values
         return jax_frontend.DeviceArray(ret)

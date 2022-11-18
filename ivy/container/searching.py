@@ -424,6 +424,27 @@ class ContainerWithSearching(ContainerBase):
         -------
         ret
             Indices for where the boolean array is True.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0], [1]]),
+            b: ivy.array([[0], [1]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0]]),
+            b: ivy.array([[0], [1]])
+        }
+
         """
         return self.static_argwhere(
             self,
