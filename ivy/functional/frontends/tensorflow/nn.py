@@ -4,6 +4,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 from ivy.func_wrapper import with_supported_dtypes
 from ivy.functional.frontends.tensorflow import math
 
+
 @to_ivy_arrays_and_back
 def atrous_conv2d(value, filters, rate, padding):
     return ivy.conv2d(value, filters, 1, padding, dilations=rate)
@@ -195,18 +196,13 @@ weighted_cross_entropy_with_logits.unsupported_dtypes = (
 )
 
 
-@with_supported_dtypes({"2.9.0 and below": ("float32",
-                                            "float16", "bfloat16")}, "tensorflow")
+@with_supported_dtypes(
+    {"2.9.0 and below": ("float32", "float16", "bfloat16")}, "tensorflow"
+)
 @to_ivy_arrays_and_back
 def local_response_normalization(
-        input,
-        /,
-        *,
-        depth_radius=5,
-        bias=1.0,
-        alpha=1.0,
-        beta=0.5,
-        name=None):
+    input, /, *, depth_radius=5, bias=1.0, alpha=1.0, beta=0.5, name=None
+):
     input_shape = ivy.shape(input)
     ivy.assertions.check_equal(
         ivy.get_num_dims(input),
@@ -219,9 +215,13 @@ def local_response_normalization(
     beta = ivy.astype(ivy.array(beta), input.dtype)
     sqr_sum = ivy.astype(ivy.zeros_like(input_perm), input.dtype)
     for p in range(input_shape[0]):
-        sqr_sum[p] = [sum(ivy.pow(input_perm[p][
-                                  max(c - depth_radius, 0):
-                                  c + depth_radius + 1], 2.0))
-                      for c in range(input_shape[3])]
+        sqr_sum[p] = [
+            sum(
+                ivy.pow(
+                    input_perm[p][max(c - depth_radius, 0) : c + depth_radius + 1], 2.0
+                )
+            )
+            for c in range(input_shape[3])
+        ]
     div = ivy.multiply(input_perm, ivy.pow(math.add(sqr_sum * alpha, bias), -beta))
     return ivy.permute_dims(div, [0, 2, 3, 1])
