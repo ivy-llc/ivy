@@ -918,7 +918,7 @@ def zeta(
     out: Optional[ivy.Array] = None,
 ) -> bool:
     """
-    Compute the Hurwitz zeta function. 
+    Compute the Hurwitz zeta function.
 
     Parameters
     ----------
