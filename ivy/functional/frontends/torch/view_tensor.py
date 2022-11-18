@@ -16,25 +16,30 @@ def _merge_from_original(method: Callable) -> Callable:
     return new_method
 
 
-def _update_original(self, method, *args, **kwargs):
-    ret = method(*args, **kwargs)
+def _update_original(self, method, special_method, *args, **kwargs):
+    if special_method:
+        ret = method(self, *args, **kwargs)
+    else:
+        ret = method(*args, **kwargs)
     self.chain_merge_to(checked=True)
     return ret
 
 
+# Decorator for inplace instance methods
 def _push_to_original(self, method: Callable) -> Callable:
     @functools.wraps(method)
     def new_method(*args, **kwargs):
-        return _update_original(self, method, *args, **kwargs)
+        return _update_original(self, method, False, *args, **kwargs)
 
     return new_method
 
 
+# Decorator only for inplace special methods
 def _merge_to_original(method: Callable) -> Callable:
     @functools.wraps(method)
     def new_method(self, *args, **kwargs):
         if self.ref() is not None:
-            return _update_original(self, method, *args, **kwargs)
+            return _update_original(self, method, True, *args, **kwargs)
         return method(self, *args, **kwargs)
 
     return new_method
@@ -117,3 +122,66 @@ class ViewTensor:
     @_merge_from_original
     def __repr__(self):
         return self.delegate.__repr__()
+
+    @_merge_from_original
+    def __add__(self, other, *, alpha=1):
+        return self.delegate.__add__(other, alpha=alpha)
+
+    @_merge_from_original
+    def __mod__(self, other):
+        return self.delegate.__mod__(other)
+
+    @_merge_from_original
+    def __long__(self, memory_format=None):
+        return self.delegate.__long__(memory_format)
+
+    @_merge_from_original
+    def __getitem__(self, query):
+        return self.delegate.__getitem__(query)
+
+    @_merge_from_original
+    def __radd__(self, other, *, alpha=1):
+        return self.delegate.__radd__(other, alpha=alpha)
+
+    @_merge_from_original
+    def __mul__(self, other):
+        return self.delegate.__mul__(other)
+
+    @_merge_from_original
+    def __rmul__(self, other):
+        return self.delegate.__rmul__(other)
+
+    @_merge_from_original
+    def __sub__(self, other, *, alpha=1):
+        return self.delegate.__sub__(other, alpha=alpha)
+
+    @_merge_from_original
+    def __truediv__(self, other, *, rounding_mode=None):
+        return self.delegate.__truediv__(other, rounding_mode=rounding_mode)
+
+    # Inplace Special Methods #
+    # ----------------------- #
+    @_merge_from_original
+    @_merge_to_original
+    def __iadd__(self, other, *, alpha=1):
+        return self.delegate.__iadd__(other, alpha=alpha)
+
+    @_merge_from_original
+    @_merge_to_original
+    def __imod__(self, other):
+        return self.delegate.__imod__(other)
+
+    @_merge_from_original
+    @_merge_to_original
+    def __imul__(self, other):
+        return self.delegate.__imul__(other)
+
+    @_merge_from_original
+    @_merge_to_original
+    def __isub__(self, other, *, alpha=1):
+        return self.delegate.__isub__(other, alpha=alpha)
+
+    @_merge_from_original
+    @_merge_to_original
+    def __itruediv__(self, other, *, rounding_mode=None):
+        return self.delegate.__itruediv__(other, rounding_mode=rounding_mode)

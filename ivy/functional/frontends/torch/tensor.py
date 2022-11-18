@@ -131,7 +131,7 @@ class Tensor:
 
     def abs_(self):
         self.data = self.abs().data
-        return self.data
+        return self
 
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self.data, other)
@@ -337,6 +337,26 @@ class Tensor:
 
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+
+    def __iadd__(self, other, *, alpha=1):
+        self.data = self.__add__(other, alpha=alpha).data
+        return self
+
+    def __imod__(self, other):
+        self.data = self.__mod__(other).data
+        return self
+
+    def __imul__(self, other):
+        self.data = self.__mul__(other).data
+        return self
+
+    def __isub__(self, other, *, alpha=1):
+        self.data = self.__sub__(other, alpha=alpha)
+        return self
+
+    def __itruediv__(self, other, *, rounding_mode=None):
+        self.data = self.__truediv__(other, rounding_mode=rounding_mode)
+        return self
 
     # Method aliases
     absolute, absolute_ = abs, abs_
