@@ -29,11 +29,10 @@ def argsort(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    
     """Returns the indices that sort an array ``x`` along a specified axis.
+    
     Parameters
     ----------
-    
     x
         input array.
     axis
@@ -240,7 +239,6 @@ def searchsorted(
 
     Parameters
     ----------
-    
     x
         Input array. If `sorter` is None, then it must be sorted in ascending order,
         otherwise `sorter` must be an array of indices that sort it.
