@@ -14,6 +14,7 @@ import jax.numpy as jnp
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -246,3 +247,20 @@ def dstack(
 
 def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
+
+
+def take_along_axis(
+    arr: JaxArray,
+    indices: JaxArray,
+    axis: int,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"        
+        )
+        
+    return jnp.take_along_axis(arr, indices, axis)

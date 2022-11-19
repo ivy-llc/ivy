@@ -2,6 +2,7 @@ from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
+import ivy
 
 
 def moveaxis(
@@ -170,3 +171,24 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     if isinstance(transformed, tuple):
         return list(transformed)
     return transformed
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def take_along_axis(
+    arr: torch.Tensor,
+    indices: torch.Tensor,
+    axis: int,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"        
+        )
+    indices = indices.long()
+    return torch.take_along_dim(arr, indices, axis, out=out)
+
+
+take_along_axis.support_native_out = True
