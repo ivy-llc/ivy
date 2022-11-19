@@ -48,6 +48,7 @@ def kron(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.kron(a, b)
 
+
 def matrix_exp(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -77,3 +78,4 @@ def matrix_exp(
         else:
             return tf.linalg.expm(x)
     return tf.linalg.expm(x)
+    

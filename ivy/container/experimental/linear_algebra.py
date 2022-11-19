@@ -171,7 +171,6 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             out=out,
         )
 
-
     @staticmethod
     def static_matrix_exp(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -196,7 +195,6 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             out=out,
         )
 
-
     def matrix_exp(
         self: ivy.Container,
         /,
@@ -218,3 +216,4 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+        
