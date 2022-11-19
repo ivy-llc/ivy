@@ -1353,7 +1353,7 @@ def atleast_2d(
 @handle_out_argument
 @handle_nestable
 def atleast_3d(
-    *arys: Union[ivy.Array, ivy.NativeArray],
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
 ) -> List[ivy.Array]:
     """Convert inputs to arrays with at least three dimension.
     Scalar inputs are converted to 3-dimensional arrays, whilst

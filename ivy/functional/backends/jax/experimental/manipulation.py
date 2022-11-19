@@ -249,7 +249,7 @@ def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
-def atleast_3d(*arys: JaxArray) -> List[JaxArray]:
+def atleast_3d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
     return jnp.atleast_3d(*arys)
 
 
@@ -264,7 +264,7 @@ def take_along_axis(
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"        
+            + f" got {arr.shape} vs {indices.shape}"
         )
-        
+
     return jnp.take_along_axis(arr, indices, axis)

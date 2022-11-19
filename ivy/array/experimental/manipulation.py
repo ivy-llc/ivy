@@ -618,7 +618,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.atleast_2d(self._data, *arys)
 
-    def atleast_3d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
+    def atleast_3d(
+        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_3d. This method simply
         wraps the function, and so the docstring for ivy.atleast_3d also applies
