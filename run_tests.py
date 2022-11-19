@@ -2,7 +2,6 @@
 import os
 import sys
 from pymongo import MongoClient
-from automation_tools.dashboard_automation.update_tests import update_test_result
 
 submodules = (
     "test_core",
@@ -11,28 +10,22 @@ submodules = (
     "test_tensorflow",
     "test_torch",
     "test_jax",
-    "test_numpy/test_creation_routines",
-    "test_numpy/test_fft",
-    "test_numpy/test_indexing_routines",
-    "test_numpy/test_linear_algebra",
-    "test_numpy/test_logic",
-    "test_numpy/test_ma",
-    "test_numpy/test_manipulation_routines",
-    "test_numpy/test_mathematical_functions",
-    "test_numpy/test_matrix",
-    "test_numpy/test_ndarray",
-    "test_numpy/test_random",
-    "test_numpy/test_sorting_searching_counting",
-    "test_numpy/test_statistics",
-    "test_numpy/test_ufunc",
+    "test_numpy",
 )
 db_dict = {
-    "test_core": ["intelligent_test_core", 10],
-    "test_nn": ["intelligent_test_nn", 11],
-    "test_stateful": ["intelligent_test_stateful", 12],
-    "test_torch": ["intelligent_test_torch", 13],
-    "test_jax": ["intelligent_test_jax", 14],
-    "test_tensorflow": ["intelligent_test_tensorflow", 15],
+    "test_functional/test_core": ["intelligent_core", 10],
+    "test_experimental/test_core": ["intelligent_exp_core", 11],
+    "test_functional/test_nn": ["intelligent_nn", 12],
+    "test_experimental/test_nn": ["intelligent_exp_nn", 13],
+    "test_stateful": ["intelligent_stateful", 14],
+    "test_torch": ["intelligent_torch", 15],
+    "test_jax": ["intelligent_jax", 16],
+    "test_tensorflow": ["intelligent_tensorflow", 17],
+    "test_numpy": ["intelligent_numpy", 18],
+}
+result_config = {
+    "success": "https://img.shields.io/badge/-success-success",
+    "failure": "https://img.shields.io/badge/-failure-red",
 }
 
 
@@ -46,6 +39,15 @@ def get_submodule(test_path):
     submod, test = submod_test.split("::")
     submod = submod.split("_")[1].strip(".py")
     return coll, submod, test
+
+
+def update_individual_test_results(collection, id, submod, backend, test, result):
+    collection.update_one(
+        {"_id": id},
+        {"$set": {submod + "." + backend + "." + test: result["result"]}},
+        upsert=True,
+    )
+    return
 
 
 if __name__ == "__main__":
@@ -72,10 +74,14 @@ if __name__ == "__main__":
                     f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend}'  # noqa
                 )
             if ret != 0:
-                update_test_result(
+                update_individual_test_results(
                     db[coll[0]], coll[1], submod, backend, test, "failure"
                 )
                 failed = True
+            else:
+                update_individual_test_results(
+                    db[coll[0]], coll[1], submod, backend, test, "success"
+                )
 
     if failed:
         exit(1)
