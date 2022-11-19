@@ -209,9 +209,9 @@ class ArrayWithStatistical(abc.ABC):
 
         >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
         >>> y = ivy.array([0., 0., 0.])
-        >>> x.mean(axis=0, out=y)
+        >>> x.mean(axis=0, keepdims=True, out=y)
         >>> print(y)
-        ivy.array([-0.25,  1.05,  2.1])
+        ivy.array([[-0.25      ,  1.04999995,  2.0999999 ]])
 
         >>> x = ivy.array([[0., 1., 2.], [3., 4., 5.]])
         >>> y = ivy.array([0., 0.])
