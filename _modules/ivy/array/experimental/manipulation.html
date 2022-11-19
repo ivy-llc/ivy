@@ -746,7 +746,46 @@
 <span class="sd">        &gt;&gt;&gt; a1.atleast_2d(a2,5,6)</span>
 <span class="sd">        [ivy.array([[1, 2, 3]]), ivy.array([[4]]), ivy.array([[5]]), ivy.array([[6]])]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="o">*</span><span class="n">arys</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="o">*</span><span class="n">arys</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithManipulationExperimental.take_along_axis"><a class="viewcode-back" href="../../../../data_classes/array/experimental/manipulation/ArrayWithManipulationExperimental.html#ivy.array.experimental.manipulation.ArrayWithManipulationExperimental.take_along_axis">[docs]</a>    <span class="k">def</span> <span class="nf">take_along_axis</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">indices</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.take_along_axis. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.take_along_axis also applies</span>
+<span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            The source array.</span>
+<span class="sd">        indices</span>
+<span class="sd">            The indices of the values to extract.</span>
+<span class="sd">        axis</span>
+<span class="sd">            The axis over which to select values.</span>
+<span class="sd">        out</span>
+<span class="sd">            Optional output, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The returned array has the same shape as indices.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; arr = ivy.array([[4, 3, 5], [1, 2, 1]])</span>
+<span class="sd">        &gt;&gt;&gt; indices = ivy.array([[0, 1, 1], [2, 0, 0]])</span>
+<span class="sd">        &gt;&gt;&gt; y = arr.take_along_axis(indices, 1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[4, 3, 3], [1, 1, 1]])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">take_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

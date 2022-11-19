@@ -5030,6 +5030,126 @@
         <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
     <span class="p">)</span></div>
 
+<span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">static_take_along_axis</span><span class="p">(</span>
+    <span class="n">arr</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ivy.Container static method variant of ivy.take_along_axis. This method simply</span>
+<span class="sd">    wraps the function, and so the docstring for ivy.take_along_axis also applies to</span>
+<span class="sd">    this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr</span>
+<span class="sd">        container with array inputs.</span>
+<span class="sd">    indices</span>
+<span class="sd">        container with indices of the values to extract.</span>
+<span class="sd">    axis</span>
+<span class="sd">        The axis over which to select values. If axis is None, then arr and indices</span>
+<span class="sd">        must be 1-D sequences of the same length.</span>
+<span class="sd">    key_chains</span>
+<span class="sd">        The keychains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">    to_apply</span>
+<span class="sd">        If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">        will be skipped. Default is ``True``.</span>
+<span class="sd">    prune_unapplied</span>
+<span class="sd">        Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">        Default is ``False``.</span>
+<span class="sd">    map_sequences</span>
+<span class="sd">        Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">        Default is ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a container with arrays of the same shape as those in indices.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.Container(a=ivy.array([[1, 2], [3, 4]]),\</span>
+<span class="sd">                            b=ivy.array([[5, 6], [7, 8]]))</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[0, 0], [1, 1]]),\</span>
+<span class="sd">                                b=ivy.array([[1, 0], [1, 0]]))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.Container.static_take_along_axis(arr, indices, axis=1)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[1, 1],</span>
+<span class="sd">                      [4, 4]]),</span>
+<span class="sd">        b: ivy.array([[6, 5],</span>
+<span class="sd">                      [8, 7]])</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="take_along_axis"><a class="viewcode-back" href="../../../../data_classes/container/experimental/container_methods/take_along_axis.html#ivy.container.experimental.container_methods.take_along_axis">[docs]</a><span class="k">def</span> <span class="nf">take_along_axis</span><span class="p">(</span>
+    <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.take_along_axis.</span>
+<span class="sd">    This method simply wraps the function, and so the docstring for</span>
+<span class="sd">    ivy.take_along_axis also applies to this method with minimal changes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    self</span>
+<span class="sd">        container with array inputs.</span>
+<span class="sd">    indices</span>
+<span class="sd">        container with indices of the values to extract.</span>
+<span class="sd">    axis</span>
+<span class="sd">        The axis over which to select values. If axis is None, then arr and indices</span>
+<span class="sd">        must be 1-D sequences of the same length.</span>
+<span class="sd">    key_chains</span>
+<span class="sd">        The keychains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">    to_apply</span>
+<span class="sd">        If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">        will be skipped. Default is ``True``.</span>
+<span class="sd">    prune_unapplied</span>
+<span class="sd">        Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">        Default is ``False``.</span>
+<span class="sd">    map_sequences</span>
+<span class="sd">        Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">        Default is ``False``.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output container, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a container with arrays of the same shape as those in indices.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; arr = ivy.Container(a=ivy.array([[1, 2], [3, 4]]),\</span>
+<span class="sd">                            b=ivy.array([[5, 6], [7, 8]]))</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[0, 0], [1, 1]]),\</span>
+<span class="sd">                                b=ivy.array([[1, 0], [1, 0]]))</span>
+<span class="sd">    &gt;&gt;&gt; arr.take_along_axis(indices, axis=1)</span>
+<span class="sd">    [{</span>
+<span class="sd">        a: ivy.array([[1, 1],</span>
+<span class="sd">                      [4, 4]]),</span>
+<span class="sd">        b: ivy.array([[6, 5],</span>
+<span class="sd">                        [8, 7]])</span>
+<span class="sd">    }]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+
+
 <span class="c1">#ivy.container.experimental.random</span>
 <span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span>

@@ -57,6 +57,7 @@ Array methods
    array_methods/dsplit.rst
    array_methods/dstack.rst
    array_methods/atleast_2d.rst
+   array_methods/take_along_axis.rst
    array_methods/dirichlet.rst
    array_methods/msort.rst
    array_methods/median.rst
