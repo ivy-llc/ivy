@@ -232,8 +232,8 @@ class Tensor:
 
     def argsort(self, axis, descending=False, stable=False, out=None):
         return ivy.argsort(self.data, axis=axis,
-        descending=descending, stable=stable,
-        out=out)
+                           descending=descending, stable=stable,
+                           out=out)
 
     def dim(self):
         return self.data.ndim
