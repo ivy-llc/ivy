@@ -318,7 +318,7 @@ class ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ ivy.array instance method variant of ivy.prod.
+        """ivy.array instance method variant of ivy.prod.
         This method simply wraps the function, and so
         the docstring for ivy.prod also applies to this method
         with minimal changes.
@@ -328,14 +328,17 @@ class ArrayWithStatistical(abc.ABC):
         self
             input array. Should have a floating-point data type.
         axis
-            axis or axes along which products must be computed. By default, the product must
-            be computed over the entire array. If a tuple of integers, products must be
-            computed over multiple axes. Default: ``None``.
+            axis or axes along which products must be computed. By default,
+            the product must be computed over the entire array. If a
+            tuple of integers, products must be computed over multiple
+            axes. Default: ``None``.
         keepdims
-            bool, if True, the reduced axes (dimensions) must be included in the result as
-            singleton dimensions, and, accordingly, the result must be compatible with the
-            input array (see Broadcasting). Otherwise, if False, the reduced axes
-            (dimensions) must not be included in the result. Default: ``False``.
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
         dtype
             data type of the returned array.
         out
@@ -350,7 +353,7 @@ class ArrayWithStatistical(abc.ABC):
             The returned array must have the same data type as ``self``.
 
         Examples
-        -------------------
+        --------
         With: class: `ivy.Array` input:
 
         >>> x = ivy.array([1, 2, 3])
