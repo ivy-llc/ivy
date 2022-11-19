@@ -30,5 +30,4 @@ Manipulation
    manipulation/dsplit.rst
    manipulation/dstack.rst
    manipulation/atleast_2d.rst
-   manipulation/take_along_axis.rst
 
