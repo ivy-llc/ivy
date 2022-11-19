@@ -433,8 +433,7 @@
 <span class="sd">    simplicity, but this function is *nestable*, and therefore also accepts</span>
 <span class="sd">    :class:`ivy.Container` instances in place of any of the arguments.</span>
 
-
-<span class="sd">    Functional Examples</span>
+<span class="sd">    Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
@@ -543,6 +542,10 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.prod(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
@@ -553,6 +556,42 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array(0)</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[3., 4., 5.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.prod(x, keepdims=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([60.])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([2., 1.])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array(0.)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.prod(x, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array(2.)</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-1., -2.], [3., 3.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.prod(x, axis=1)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2., 9.])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.prod(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array(-0.),</span>
+<span class="sd">        b: ivy.array(0.30800003)</span>
+<span class="sd">    }</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]),</span>
+<span class="sd">    ...                   b=ivy.array([[ 4., 5.], [5., 6.]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.prod(x, axis=1, keepdims=True)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([[2.],</span>
+<span class="sd">                      [12.]]),</span>
+<span class="sd">        b: ivy.array([[20.],</span>
+<span class="sd">                      [30.]])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
