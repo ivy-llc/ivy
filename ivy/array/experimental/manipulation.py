@@ -564,7 +564,9 @@ class ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
 
-    def atleast_1d(self: ivy.Array, *arys: ivy.Array) -> List[ivy.Array]:
+    def atleast_1d(
+        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+    ) -> List[ivy.Array]:
         """
         ivy.Array instance method variant of ivy.atleast_1d. This method simply
         wraps the function, and so the docstring for ivy.atleast_1d also applies

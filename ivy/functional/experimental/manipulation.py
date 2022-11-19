@@ -1277,7 +1277,7 @@ def dsplit(
 @handle_out_argument
 @handle_nestable
 def atleast_1d(
-    *arys: Union[ivy.Array, ivy.NativeArray],
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
 ) -> List[ivy.Array]:
     """Convert inputs to arrays with at least one dimension.
     Scalar inputs are converted to 1-dimensional arrays, whilst
