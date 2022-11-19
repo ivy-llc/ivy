@@ -1050,7 +1050,6 @@ def test_numpy_instance_mul__(
     )
 
 
-
 @handle_frontend_method(
     method_tree="numpy.ndarray.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
