@@ -1563,16 +1563,17 @@ def test_jax_numpy_power(
 # arange
 @handle_frontend_test(
     fn_tree="jax.numpy.arange",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=3,
-        shape=(1,),
-        shared_dtype=True,
-    ),
+    start=st.integers(min_value=-100, max_value=100),
+    stop=st.integers(min_value=-100, max_value=100) | st.none(),
+    step=st.integers(min_value=-100, max_value=100).filter(lambda x: x != 0),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_jax_numpy_arange(
     *,
-    dtype_and_values,
+    start,
+    stop,
+    step,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1580,8 +1581,6 @@ def test_jax_numpy_arange(
     fn_tree,
     frontend,
 ):
-    dtype, values = dtype_and_values
-    start, stop, step = values
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1594,6 +1593,7 @@ def test_jax_numpy_arange(
         start=start,
         stop=stop,
         step=step,
+        dtype=dtype[0],
     )
 
 
