@@ -2145,7 +2145,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
         class_name="tensor",
         method_name="add_",
     )
-    
+
 
 # argsort
 @handle_frontend_method(
@@ -2170,7 +2170,7 @@ def test_torch_instance_argsort(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
+        num_positional_args_method=1,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
