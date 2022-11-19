@@ -828,16 +828,17 @@ def test_dstack(
     ),
 )
 def test_atleast_2d(
+    *,
     dtype_and_x,
     as_variable,
-    num_positional_args,
-    native_array,
-    container_flags,
     with_out,
+    native_array,
+    container,
     instance_method,
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -845,16 +846,17 @@ def test_atleast_2d(
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container_flags,
+        container_flags=container,
         instance_method=instance_method,
         fw=backend_fw,
-        on_device=on_device,
         fn_name=fn_name,
+        on_device=on_device,
         **kw,
     )
 
@@ -869,7 +871,6 @@ def test_atleast_2d(
 def test_atleast_3d(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
     container_flags,
     with_out,
@@ -892,7 +893,51 @@ def test_atleast_3d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        on_device=on_device,
         fn_name=fn_name,
+        on_device=on_device,
         **kw,
+    )
+
+
+# take_along_axis
+@handle_test(
+    fn_tree="functional.take_along_axis",
+    dtype_x_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int32", "int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_take_along_axis(
+    *,
+    dtype_x_indices_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    dtypes, x, indices, axis, _ = dtype_x_indices_axis
+    helpers.test_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        arr=x,
+        indices=indices,
+        axis=axis,
     )
