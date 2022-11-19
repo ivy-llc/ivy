@@ -16,6 +16,13 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Install Mongo Python Client
+         if: steps.check_file_changed.outputs.changed == 'True' && github.ref == 'refs/heads/master'
+         uses: BSFishy/pip-action@v1
+         with:
+           packages: |
+             pymongo[srv]
+
        - name: Determine and Run Tests
          id: tests
          run: |
@@ -28,7 +35,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
