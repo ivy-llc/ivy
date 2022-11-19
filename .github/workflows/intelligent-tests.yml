@@ -16,13 +16,6 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Install Mongo Python Client
-         if: steps.check_file_changed.outputs.changed == 'True' && github.ref == 'refs/heads/master'
-         uses: BSFishy/pip-action@v1
-         with:
-           packages: |
-             pymongo[srv]
-
        - name: Determine and Run Tests
          id: tests
          run: |
