@@ -1,6 +1,9 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.func_wrapper import (
+    to_ivy_arrays_and_back,
+    outputs_to_frontend_arrays,
+)
 
 
 @to_ivy_arrays_and_back
@@ -312,7 +315,7 @@ def power(x1, x2):
     return ivy.pow(x1, x2)
 
 
-@to_ivy_arrays_and_back
+@outputs_to_frontend_arrays
 def arange(start, stop=None, step=None, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
