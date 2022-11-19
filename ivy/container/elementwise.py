@@ -5279,8 +5279,10 @@ class ContainerWithElementwise(ContainerBase):
         --------
         With :code:`ivy.Container` inputs:
 
-        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]), b=ivy.array([3.2, 5., 7.5]))
-        >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]), b=ivy.array([5.6, 1.2, 4.2]))
+        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
+                               b=ivy.array([3.2, 5., 7.5]))
+        >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
+                               b=ivy.array([5.6, 1.2, 4.2]))
         >>> y =ivy.Container.static_multiply(x1, x2)
         >>> print(y)
         {
