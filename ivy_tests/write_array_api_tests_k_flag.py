@@ -1,4 +1,6 @@
 import os
+from pytest import mark
+from pathlib import Path
 
 this_dir = os.path.dirname(os.path.realpath(__file__))
 func_folder = os.path.join(this_dir, "array_api_methods_to_test")
@@ -25,6 +27,56 @@ framework_tests_to_skip = {
     "torch": list(),
     "tensorflow": list(),
 }
+
+skip_ids_jax = []
+skips_path_jax = Path(__file__).parent / "skips-jax.txt"
+if skips_path_jax.exists():
+    with open(skips_path_jax) as f:
+        for line in f:
+            if line.startswith("ivy_tests"):
+                id_ = line.strip("\n")
+                skip_ids_jax.append(id_)
+
+skip_ids_numpy = []
+skips_path_numpy = Path(__file__).parent / "skips-numpy.txt"
+if skips_path_numpy.exists():
+    with open(skips_path_numpy) as f:
+        for line in f:
+            if line.startswith("ivy_tests"):
+                id_ = line.strip("\n")
+                skip_ids_numpy.append(id_)
+
+skip_ids_tf = []
+skips_path_tf = Path(__file__).parent / "skips-tensorflow.txt"
+if skips_path_tf.exists():
+    with open(skips_path_tf) as f:
+        for line in f:
+            if line.startswith("ivy_tests"):
+                id_ = line.strip("\n")
+                skip_ids_tf.append(id_)
+
+skip_ids_torch = []
+skips_path_torch = Path(__file__).parent / "skips-torch.txt"
+if skips_path_torch.exists():
+    with open(skips_path_torch) as f:
+        for line in f:
+            if line.startswith("ivy_tests"):
+                id_ = line.strip("\n")
+                skip_ids_torch.append(id_)
+
+
+
+
+
+def pytest_collection_modifyitems(items):
+    skip_ivy = mark.skip(reason="ivy skip - see ivy_tests/skips.txt for details")
+    for item in items:
+        # skip if specified in skips.txt
+        for id_ in skip_ids:
+            if item.nodeid.startswith(id_):
+                item.add_marker(skip_ivy)
+                break
+
 # add from each filepath
 for fpath in fpaths:
     # extract contents
