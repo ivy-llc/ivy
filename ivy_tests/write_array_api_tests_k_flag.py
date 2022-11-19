@@ -63,6 +63,7 @@ for framework in framework_tests_to_skip:
 
 
 # save to file
+# make similar 'to skip' files for each backend that you can add specific case skips to
 for framework in framework_tests_to_run:
     with open(
         os.path.join(this_dir, ".array_api_tests_k_flag_" + framework), "w+"
