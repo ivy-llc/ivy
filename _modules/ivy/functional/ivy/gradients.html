@@ -50,7 +50,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
@@ -58,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
@@ -316,11 +316,11 @@
 <span class="n">with_grads_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../../functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">:</span>
+<div class="viewcode-block" id="GradientTracking"><a class="viewcode-back" href="../../../../functional/ivy/gradients/GradientTracking.html#ivy.functional.ivy.gradients.GradientTracking">[docs]</a><span class="k">class</span> <span class="nc">GradientTracking</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
 
     <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="GradientTracking.__init__"><a class="viewcode-back" href="../../../../functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">):</span>
+<div class="viewcode-block" id="GradientTracking.__init__"><a class="viewcode-back" href="../../../../functional/ivy/gradients/GradientTracking.html#ivy.functional.ivy.gradients.GradientTracking.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_grads</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_with_grads</span> <span class="o">=</span> <span class="n">with_grads</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

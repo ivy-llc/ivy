@@ -48,5 +48,17 @@ Array
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array forum`: https://discord.com/channels/799879767196958751/1028296936203235359
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
+.. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
 .. _`array channel`: https://discord.com/channels/799879767196958751/1000042910831620176
 This should have hopefully given you an overview of the array submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `array channel`_ or in the `array forum`_!

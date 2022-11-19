@@ -40,5 +40,17 @@ Creation
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation forum`: https://discord.com/channels/799879767196958751/1028298816526499912
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
 .. _`creation channel`: https://discord.com/channels/799879767196958751/1000043690254946374
 This should have hopefully given you an overview of the creation submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `creation channel`_ or in the `creation forum`_!

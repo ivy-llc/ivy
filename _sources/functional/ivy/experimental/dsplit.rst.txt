@@ -1,0 +1,41 @@
+dsplit
+======
+
+.. autofunction:: ivy.functional.ivy.experimental.dsplit
+
+.. autofunction:: ivy.array.array_methods.dsplit
+
+.. autofunction:: ivy.container.container_methods.static_dsplit
+
+.. autofunction:: ivy.container.container_methods.dsplit
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: dsplit
+
+   dsplit/dsplit_functional.rst
+   dsplit/dsplit_array.rst
+   dsplit/dsplit_container.rst
+   dsplit/static_dsplit_container.rst
+

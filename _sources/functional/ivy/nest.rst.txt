@@ -33,5 +33,17 @@ Nest
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
+.. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
 .. _`nest channel`: https://discord.com/channels/799879767196958751/1000044136000393326
 This should have hopefully given you an overview of the nest submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `nest channel`_ or in the `nest forum`_!

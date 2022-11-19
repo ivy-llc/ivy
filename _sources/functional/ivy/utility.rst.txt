@@ -18,5 +18,17 @@ Utility
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility forum`: https://discord.com/channels/799879767196958751/1028299594733457428
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
+.. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
 .. _`utility channel`: https://discord.com/channels/799879767196958751/1000044369044312164
 This should have hopefully given you an overview of the utility submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `utility channel`_ or in the `utility forum`_!

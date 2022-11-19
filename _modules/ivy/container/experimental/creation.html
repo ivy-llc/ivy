@@ -50,7 +50,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
@@ -58,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
@@ -136,8 +136,8 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithCreationExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_triu_indices">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithCreationExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_triu_indices">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_triu_indices</span><span class="p">(</span>
         <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -164,7 +164,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.triu_indices">[docs]</a>    <span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.triu_indices"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.triu_indices">[docs]</a>    <span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -191,7 +191,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_hann_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_hann_window">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_hann_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_hann_window">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_hann_window</span><span class="p">(</span>
         <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -248,7 +248,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.hann_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.hann_window">[docs]</a>    <span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.hann_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.hann_window">[docs]</a>    <span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -289,7 +289,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_hann_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_kaiser_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_kaiser_window">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_kaiser_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_kaiser_window">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_kaiser_window</span><span class="p">(</span>
         <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -348,7 +348,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.kaiser_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.kaiser_window">[docs]</a>    <span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.kaiser_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.kaiser_window">[docs]</a>    <span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
@@ -405,7 +405,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_kaiser_bessel_derived_window">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_kaiser_bessel_derived_window">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_kaiser_bessel_derived_window</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -465,7 +465,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.kaiser_bessel_derived_window">[docs]</a>    <span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.kaiser_bessel_derived_window">[docs]</a>    <span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
@@ -522,7 +522,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_hamming_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_hamming_window">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_hamming_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_hamming_window">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_hamming_window</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -587,7 +587,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.hamming_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.hamming_window">[docs]</a>    <span class="k">def</span> <span class="nf">hamming_window</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.hamming_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.hamming_window">[docs]</a>    <span class="k">def</span> <span class="nf">hamming_window</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -639,7 +639,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="n">periodic</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.static_vorbis_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.static_vorbis_window">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.static_vorbis_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.static_vorbis_window">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_vorbis_window</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -694,7 +694,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithCreationExperimental.vorbis_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental/creation/ContainerWithCreationExperimental.html#ivy.container.experimental.creation.ContainerWithCreationExperimental.vorbis_window">[docs]</a>    <span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithCreationExperimental.vorbis_window"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithCreationExperimental.vorbis_window">[docs]</a>    <span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>

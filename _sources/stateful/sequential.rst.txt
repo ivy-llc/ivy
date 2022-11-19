@@ -17,5 +17,17 @@ Sequential
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential forum`: https://discord.com/channels/799879767196958751/1028300952308027472
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
+.. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
 .. _`sequential channel`: https://discord.com/channels/799879767196958751/1000043078381473792
 This should have hopefully given you an overview of the sequential submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `sequential channel`_ or in the `sequential forum`_!

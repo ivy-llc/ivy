@@ -36,5 +36,17 @@ Layers
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers forum`: https://discord.com/channels/799879767196958751/1028299061092175872
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
+.. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
 .. _`layers channel`: https://discord.com/channels/799879767196958751/1000043967989162005
 This should have hopefully given you an overview of the layers submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `layers channel`_ or in the `layers forum`_!

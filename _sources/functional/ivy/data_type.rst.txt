@@ -50,24 +50,24 @@ Data type
    data_type/unset_default_uint_dtype.rst
    data_type/valid_dtype.rst
    data_type/promote_types_of_inputs.rst
-   data_type/DefaultDtype:
-    """"""
-
-    def __init__.rst
-   data_type/DefaultFloatDtype:
-    """"""
-
-    def __init__.rst
-   data_type/DefaultIntDtype:
-    """"""
-
-    def __init__.rst
-   data_type/DefaultUintDtype:
-    """"""
-
-    def __init__.rst
+   data_type/DefaultDtype.rst
+   data_type/DefaultFloatDtype.rst
+   data_type/DefaultIntDtype.rst
+   data_type/DefaultUintDtype.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type forum`: https://discord.com/channels/799879767196958751/1028298847950225519
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
+.. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
 .. _`data type channel`: https://discord.com/channels/799879767196958751/1000043749088436315
 This should have hopefully given you an overview of the data type submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `data type channel`_ or in the `data type forum`_!

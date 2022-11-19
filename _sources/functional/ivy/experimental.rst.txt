@@ -1,0 +1,82 @@
+Experimental
+============
+
+.. automodule:: ivy.functional.ivy.experimental
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Experimental
+
+   experimental/sinc.rst
+   experimental/lcm.rst
+   experimental/fmod.rst
+   experimental/fmax.rst
+   experimental/trapz.rst
+   experimental/float_power.rst
+   experimental/exp2.rst
+   experimental/count_nonzero.rst
+   experimental/nansum.rst
+   experimental/gcd.rst
+   experimental/isclose.rst
+   experimental/isposinf.rst
+   experimental/isneginf.rst
+   experimental/nan_to_num.rst
+   experimental/logaddexp2.rst
+   experimental/signbit.rst
+   experimental/allclose.rst
+   experimental/fix.rst
+   experimental/nextafter.rst
+   experimental/zeta.rst
+   experimental/median.rst
+   experimental/nanmean.rst
+   experimental/unravel_index.rst
+   experimental/diagflat.rst
+   experimental/kron.rst
+   experimental/msort.rst
+   experimental/is_ivy_sparse_array.rst
+   experimental/is_native_sparse_array.rst
+   experimental/native_sparse_array.rst
+   experimental/native_sparse_array_to_indices_values_and_shape.rst
+   experimental/flatten.rst
+   experimental/moveaxis.rst
+   experimental/ndenumerate.rst
+   experimental/ndindex.rst
+   experimental/heaviside.rst
+   experimental/flipud.rst
+   experimental/vstack.rst
+   experimental/hstack.rst
+   experimental/rot90.rst
+   experimental/top_k.rst
+   experimental/fliplr.rst
+   experimental/i0.rst
+   experimental/pad.rst
+   experimental/vsplit.rst
+   experimental/dsplit.rst
+   experimental/dstack.rst
+   experimental/atleast_2d.rst
+   experimental/take_along_axis.rst
+   experimental/dirichlet.rst
+   experimental/beta.rst
+   experimental/gamma.rst
+   experimental/triu_indices.rst
+   experimental/vorbis_window.rst
+   experimental/hann_window.rst
+   experimental/kaiser_window.rst
+   experimental/kaiser_bessel_derived_window.rst
+   experimental/hamming_window.rst
+   experimental/max_pool1d.rst
+   experimental/max_pool2d.rst
+   experimental/max_pool3d.rst
+   experimental/avg_pool1d.rst
+   experimental/avg_pool2d.rst
+   experimental/avg_pool3d.rst
+   experimental/dct.rst
+   experimental/SparseArray.rst
+   experimental/NativeSparseArray.rst
+

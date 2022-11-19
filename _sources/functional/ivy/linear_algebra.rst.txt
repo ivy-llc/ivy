@@ -43,5 +43,17 @@ Linear algebra
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra forum`: https://discord.com/channels/799879767196958751/1028299123046240366
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
+.. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
 .. _`linear algebra channel`: https://discord.com/channels/799879767196958751/1000044022942933112
 This should have hopefully given you an overview of the linear algebra submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `linear algebra channel`_ or in the `linear algebra forum`_!

@@ -53,7 +53,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../constants.html">Constants</a></li>
@@ -61,6 +60,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
@@ -233,8 +233,8 @@ instances in place of any of the arguments.</p>
 y = pinv(x, None, None)
 print(y)
 ivy.array([[-2., 1.],
-…        [1.5, -0.5]])</p>
-<p>x = ivy.array([[1., 2.],
+…        [1.5, -0.5]])
+x = ivy.array([[1., 2.],
 …            [3., 4.]])
 out = ivy.array()
 pinv(x, 0, out)
@@ -288,8 +288,8 @@ print(y)
 <div><p>a: ivy.array([[-2., 1.],</p>
 </div></blockquote>
 <p>…               [1.5, -0.5]])
-}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],
+}
+x = ivy.Container(a=ivy.array([[1., 2.],
 …                            [3., 4.]]))
 out = ivy.Container(a=ivy.array())
 pinv(x, 0, out)
@@ -342,8 +342,8 @@ print(y)
 <div><p>a: ivy.array([[-2., 1.],</p>
 </div></blockquote>
 <p>…               [1.5, -0.5]])
-}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],
+}
+x = ivy.Container(a=ivy.array([[1., 2.],
 …                            [3., 4.]]))
 out = ivy.Container(a=ivy.array())
 pinv(x, 0, out)

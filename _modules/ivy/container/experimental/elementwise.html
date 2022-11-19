@@ -50,7 +50,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
@@ -58,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
@@ -136,8 +136,8 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithElementWiseExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_sinc"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_sinc">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithElementWiseExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_sinc"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_sinc">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_sinc</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -201,7 +201,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.sinc"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.sinc"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.sinc">[docs]</a>    <span class="k">def</span> <span class="nf">sinc</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -262,7 +262,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_lcm"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_lcm">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_lcm"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_lcm">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_lcm</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -318,7 +318,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.lcm"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.lcm"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.lcm">[docs]</a>    <span class="k">def</span> <span class="nf">lcm</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">*</span><span class="p">,</span>
@@ -371,7 +371,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fmod"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_fmod">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fmod"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_fmod">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_fmod</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -425,7 +425,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fmod"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.fmod">[docs]</a>    <span class="k">def</span> <span class="nf">fmod</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fmod"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.fmod">[docs]</a>    <span class="k">def</span> <span class="nf">fmod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -464,7 +464,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_fmod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fmax"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_fmax">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fmax"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_fmax">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_fmax</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
@@ -518,7 +518,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fmax"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.fmax">[docs]</a>    <span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fmax"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.fmax">[docs]</a>    <span class="k">def</span> <span class="nf">fmax</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -557,7 +557,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_fmax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_float_power"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_float_power">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_float_power"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_float_power">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_float_power</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
@@ -611,7 +611,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.float_power"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.float_power">[docs]</a>    <span class="k">def</span> <span class="nf">float_power</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.float_power"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.float_power">[docs]</a>    <span class="k">def</span> <span class="nf">float_power</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -650,7 +650,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_float_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_exp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_exp2">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_exp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_exp2">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_exp2</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -699,7 +699,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.exp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.exp2">[docs]</a>    <span class="k">def</span> <span class="nf">exp2</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.exp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.exp2">[docs]</a>    <span class="k">def</span> <span class="nf">exp2</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -734,7 +734,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_exp2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_count_nonzero"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_count_nonzero">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_count_nonzero"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_count_nonzero">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_count_nonzero</span><span class="p">(</span>
         <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -825,7 +825,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.count_nonzero"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.count_nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">count_nonzero</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.count_nonzero"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.count_nonzero">[docs]</a>    <span class="k">def</span> <span class="nf">count_nonzero</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -915,7 +915,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nansum"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_nansum">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nansum"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_nansum">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_nansum</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -991,7 +991,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nansum"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.nansum">[docs]</a>    <span class="k">def</span> <span class="nf">nansum</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nansum"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.nansum">[docs]</a>    <span class="k">def</span> <span class="nf">nansum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1048,7 +1048,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_gcd"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_gcd">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_gcd"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_gcd">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_gcd</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
@@ -1102,7 +1102,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.gcd"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.gcd">[docs]</a>    <span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.gcd"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.gcd">[docs]</a>    <span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1141,7 +1141,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_gcd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_isclose">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_isclose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_isclose</span><span class="p">(</span>
         <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1241,7 +1241,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.isclose">[docs]</a>    <span class="k">def</span> <span class="nf">isclose</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.isclose">[docs]</a>    <span class="k">def</span> <span class="nf">isclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">b</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1339,7 +1339,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isposinf"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_isposinf">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isposinf"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_isposinf">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_isposinf</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1390,7 +1390,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isposinf"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.isposinf">[docs]</a>    <span class="k">def</span> <span class="nf">isposinf</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isposinf"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.isposinf">[docs]</a>    <span class="k">def</span> <span class="nf">isposinf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1428,7 +1428,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_isposinf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isneginf"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_isneginf">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_isneginf"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_isneginf">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_isneginf</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1479,7 +1479,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isneginf"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.isneginf">[docs]</a>    <span class="k">def</span> <span class="nf">isneginf</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.isneginf"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.isneginf">[docs]</a>    <span class="k">def</span> <span class="nf">isneginf</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1517,7 +1517,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_isneginf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nan_to_num"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_nan_to_num">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nan_to_num"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_nan_to_num">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_nan_to_num</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1587,7 +1587,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nan_to_num"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.nan_to_num">[docs]</a>    <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nan_to_num"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.nan_to_num">[docs]</a>    <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1641,7 +1641,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">copy</span><span class="p">,</span> <span class="n">nan</span><span class="o">=</span><span class="n">nan</span><span class="p">,</span> <span class="n">posinf</span><span class="o">=</span><span class="n">posinf</span><span class="p">,</span> <span class="n">neginf</span><span class="o">=</span><span class="n">neginf</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_logaddexp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_logaddexp2">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_logaddexp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_logaddexp2">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_logaddexp2</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
@@ -1695,7 +1695,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.logaddexp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.logaddexp2">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.logaddexp2"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.logaddexp2">[docs]</a>    <span class="k">def</span> <span class="nf">logaddexp2</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1734,7 +1734,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logaddexp2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_signbit"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_signbit">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_signbit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_signbit">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_signbit</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1782,7 +1782,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.signbit"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.signbit">[docs]</a>    <span class="k">def</span> <span class="nf">signbit</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.signbit"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.signbit">[docs]</a>    <span class="k">def</span> <span class="nf">signbit</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -1816,7 +1816,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_signbit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_allclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_allclose">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_allclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_allclose">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_allclose</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -1908,7 +1908,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.allclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.allclose">[docs]</a>    <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.allclose"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.allclose">[docs]</a>    <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -1998,7 +1998,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fix"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_fix">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_fix"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_fix">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_fix</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>
@@ -2047,7 +2047,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fix"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.fix">[docs]</a>    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.fix"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.fix">[docs]</a>    <span class="k">def</span> <span class="nf">fix</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -2082,7 +2082,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_fix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nextafter"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_nextafter">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_nextafter"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_nextafter">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_nextafter</span><span class="p">(</span>
         <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -2149,7 +2149,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nextafter"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.nextafter">[docs]</a>    <span class="k">def</span> <span class="nf">nextafter</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.nextafter"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.nextafter">[docs]</a>    <span class="k">def</span> <span class="nf">nextafter</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">x2</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -2214,7 +2214,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_zeta"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.static_zeta">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.static_zeta"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.static_zeta">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_zeta</span><span class="p">(</span>
         <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -2280,7 +2280,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithElementWiseExperimental.zeta"><a class="viewcode-back" href="../../../../data_classes/container/experimental/elementwise/ContainerWithElementWiseExperimental.html#ivy.container.experimental.elementwise.ContainerWithElementWiseExperimental.zeta">[docs]</a>    <span class="k">def</span> <span class="nf">zeta</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithElementWiseExperimental.zeta"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithElementWiseExperimental.zeta">[docs]</a>    <span class="k">def</span> <span class="nf">zeta</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">q</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>

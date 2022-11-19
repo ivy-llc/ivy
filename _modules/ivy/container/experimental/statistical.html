@@ -50,7 +50,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../functional/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/constants.html">Constants</a></li>
@@ -58,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/data_type.html">Data type</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../functional/ivy/layers.html">Layers</a></li>
@@ -142,8 +142,8 @@
 <span class="kn">from</span> <span class="nn">ivy.container.base</span> <span class="kn">import</span> <span class="n">ContainerBase</span>
 
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithStatisticalExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_median"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.static_median">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental">[docs]</a><span class="k">class</span> <span class="nc">ContainerWithStatisticalExperimental</span><span class="p">(</span><span class="n">ContainerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_median"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.static_median">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_median</span><span class="p">(</span>
         <span class="nb">input</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -201,7 +201,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.median"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.median">[docs]</a>    <span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.median"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.median">[docs]</a>    <span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -246,7 +246,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_median</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_nanmean"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.static_nanmean">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_nanmean"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.static_nanmean">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_nanmean</span><span class="p">(</span>
         <span class="nb">input</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -312,7 +312,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.nanmean"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.nanmean">[docs]</a>    <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.nanmean"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.nanmean">[docs]</a>    <span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
@@ -363,7 +363,7 @@
             <span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_unravel_index"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.static_unravel_index">[docs]</a>    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.static_unravel_index"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.static_unravel_index">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_unravel_index</span><span class="p">(</span>
         <span class="n">indices</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
@@ -417,7 +417,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerWithStatisticalExperimental.unravel_index"><a class="viewcode-back" href="../../../../data_classes/container/experimental/statistical/ContainerWithStatisticalExperimental.html#ivy.container.experimental.statistical.ContainerWithStatisticalExperimental.unravel_index">[docs]</a>    <span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerWithStatisticalExperimental.unravel_index"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithStatisticalExperimental.unravel_index">[docs]</a>    <span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
         <span class="o">/</span><span class="p">,</span>

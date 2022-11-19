@@ -25,5 +25,17 @@ Initializers
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers forum`: https://discord.com/channels/799879767196958751/1028300779083272252
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
+.. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
 .. _`initializers channel`: https://discord.com/channels/799879767196958751/1000043132706115654
 This should have hopefully given you an overview of the initializers submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `initializers channel`_ or in the `initializers forum`_!

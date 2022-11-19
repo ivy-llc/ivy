@@ -22,5 +22,17 @@ Random
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random forum`: https://discord.com/channels/799879767196958751/1028299348800450590
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
+.. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
 .. _`random channel`: https://discord.com/channels/799879767196958751/1000044191658815569
 This should have hopefully given you an overview of the random submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `random channel`_ or in the `random forum`_!

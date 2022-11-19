@@ -32,5 +32,17 @@ Manipulation
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation forum`: https://discord.com/channels/799879767196958751/1028299188112461986
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
+.. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
 .. _`manipulation channel`: https://discord.com/channels/799879767196958751/1000044082489466951
 This should have hopefully given you an overview of the manipulation submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `manipulation channel`_ or in the `manipulation forum`_!

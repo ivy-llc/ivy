@@ -37,13 +37,22 @@ Device
    device/split_func_call.rst
    device/function_supported_devices.rst
    device/function_unsupported_devices.rst
-   device/DefaultDevice:
-    """"""
-
-    def __init__.rst
+   device/DefaultDevice.rst
    device/Profiler.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device forum`: https://discord.com/channels/799879767196958751/1028298877998211204
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
 .. _`device channel`: https://discord.com/channels/799879767196958751/1000043825085026394
 This should have hopefully given you an overview of the device submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `device channel`_ or in the `device forum`_!

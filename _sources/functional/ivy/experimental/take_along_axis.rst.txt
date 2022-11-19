@@ -1,0 +1,41 @@
+take_along_axis
+===============
+
+.. autofunction:: ivy.functional.ivy.experimental.take_along_axis
+
+.. autofunction:: ivy.array.array_methods.take_along_axis
+
+.. autofunction:: ivy.container.container_methods.static_take_along_axis
+
+.. autofunction:: ivy.container.container_methods.take_along_axis
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: take_along_axis
+
+   take_along_axis/take_along_axis_functional.rst
+   take_along_axis/static_take_along_axis_container.rst
+   take_along_axis/take_along_axis_array.rst
+   take_along_axis/take_along_axis_container.rst
+

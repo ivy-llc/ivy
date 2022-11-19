@@ -1,0 +1,41 @@
+msort
+=====
+
+.. autofunction:: ivy.functional.ivy.experimental.msort
+
+.. autofunction:: ivy.array.array_methods.msort
+
+.. autofunction:: ivy.container.container_methods.msort
+
+.. autofunction:: ivy.container.container_methods.static_msort
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: msort
+
+   msort/msort_functional.rst
+   msort/msort_array.rst
+   msort/msort_container.rst
+   msort/static_msort_container.rst
+

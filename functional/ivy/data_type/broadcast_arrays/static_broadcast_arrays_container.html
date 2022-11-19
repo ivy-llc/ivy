@@ -53,7 +53,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Functions</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../constants.html">Constants</a></li>
@@ -102,10 +101,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../unset_default_uint_dtype.html">unset_default_uint_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../valid_dtype.html">valid_dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../promote_types_of_inputs.html">promote_types_of_inputs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../DefaultDtype.html">DefaultDtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../DefaultFloatDtype.html">DefaultFloatDtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../DefaultIntDtype.html">DefaultIntDtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../DefaultUintDtype.html">DefaultUintDtype</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../elementwise.html">Elementwise</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../experimental.html">Experimental</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../layers.html">Layers</a></li>
@@ -222,9 +226,9 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <span class="go">    a: ivy.array([-1.2, 0.4]),</span>
 <span class="go">    b: ivy.array([0, 1])</span>
 <span class="go">}]</span>
+<span class="go">With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:</span>
 </pre></div>
 </div>
-<p>With mixed <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_broadcast_arrays</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>

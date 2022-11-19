@@ -26,5 +26,17 @@ Statistical
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical forum`: https://discord.com/channels/799879767196958751/1028299556955361351
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
+.. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
 .. _`statistical channel`: https://discord.com/channels/799879767196958751/1000044336479731872
 This should have hopefully given you an overview of the statistical submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `statistical channel`_ or in the `statistical forum`_!

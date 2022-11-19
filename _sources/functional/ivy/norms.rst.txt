@@ -17,5 +17,17 @@ Norms
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms forum`: https://discord.com/channels/799879767196958751/1028299276985581598
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
+.. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
 .. _`norms channel`: https://discord.com/channels/799879767196958751/1000044163070447626
 This should have hopefully given you an overview of the norms submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `norms channel`_ or in the `norms forum`_!

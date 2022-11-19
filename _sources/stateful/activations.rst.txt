@@ -18,5 +18,17 @@ Activations
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations forum`: https://discord.com/channels/799879767196958751/1028300670505336893
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
+.. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
 .. _`activations channel`: https://discord.com/channels/799879767196958751/1000043360297439272
 This should have hopefully given you an overview of the activations submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `activations channel`_ or in the `activations forum`_!

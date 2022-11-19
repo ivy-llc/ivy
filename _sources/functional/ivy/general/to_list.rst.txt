@@ -5,8 +5,6 @@ to_list
 
 .. autofunction:: ivy.array.array_methods.to_list
 
-.. autofunction:: ivy.container.container_methods.to_list
-
 .. autofunction:: ivy.container.container_methods.static_to_list
 |
 | **Supported Frameworks:**
@@ -37,5 +35,4 @@ to_list
    to_list/to_list_functional.rst
    to_list/static_to_list_container.rst
    to_list/to_list_array.rst
-   to_list/to_list_container.rst
 

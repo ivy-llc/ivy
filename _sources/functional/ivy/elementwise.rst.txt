@@ -80,5 +80,17 @@ Elementwise
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise forum`: https://discord.com/channels/799879767196958751/1028298919488278589
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
+.. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
 .. _`elementwise channel`: https://discord.com/channels/799879767196958751/1000043825085026394
 This should have hopefully given you an overview of the elementwise submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `elementwise channel`_ or in the `elementwise forum`_!

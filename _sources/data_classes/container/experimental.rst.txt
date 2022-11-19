@@ -1,8 +1,163 @@
 Experimental
 ============
 
-.. automodule:: ivy.container.experimental
-    :members:
-    :special-members: __init__
-    :undoc-members:
-    :show-inheritance:
+.. autoclass:: ivy.container.experimental.ContainerWithActivationExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithConversionExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithCreationExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithData_typeExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithDeviceExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithElementWiseExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithGeneralExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithGradientsExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithImageExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithLayersExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithLinearAlgebraExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithLossesExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithManipulationExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithNormsExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithRandomExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithSearchingExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithSetExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithSortingExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithStatisticalExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+.. autoclass:: ivy.container.experimental.ContainerWithUtilityExperimental
+   :members:
+   :special-members: __init__
+   :undoc-members:
+   :show-inheritance:
+
+
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+

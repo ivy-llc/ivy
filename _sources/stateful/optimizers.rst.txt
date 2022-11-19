@@ -21,5 +21,17 @@ Optimizers
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers forum`: https://discord.com/channels/799879767196958751/1028300892434350090
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
+.. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
 .. _`optimizers channel`: https://discord.com/channels/799879767196958751/1000043277870964747
 This should have hopefully given you an overview of the optimizers submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `optimizers channel`_ or in the `optimizers forum`_!

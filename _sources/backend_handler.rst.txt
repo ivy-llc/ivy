@@ -25,6 +25,5 @@ Backend handler
    backend_handler/unset_backend.rst
    backend_handler/clear_backend_stack.rst
    backend_handler/choose_random_backend.rst
-   backend_handler/ContextManager:
-    def __init__.rst
+   backend_handler/ContextManager.rst
 

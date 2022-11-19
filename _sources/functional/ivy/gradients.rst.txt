@@ -27,13 +27,21 @@ Gradients
    gradients/lars_update.rst
    gradients/adam_update.rst
    gradients/lamb_update.rst
-   gradients/GradientTracking:
-    """"""
-
-    # noinspection PyShadowingNames
-    def __init__.rst
+   gradients/GradientTracking.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients forum`: https://discord.com/channels/799879767196958751/1028299026501750826
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
+.. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
 .. _`gradients channel`: https://discord.com/channels/799879767196958751/1000043921633722509
 This should have hopefully given you an overview of the gradients submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `gradients channel`_ or in the `gradients forum`_!

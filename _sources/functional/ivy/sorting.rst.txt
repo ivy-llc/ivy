@@ -19,5 +19,17 @@ Sorting
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting forum`: https://discord.com/channels/799879767196958751/1028299468908535841
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
+.. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
 .. _`sorting channel`: https://discord.com/channels/799879767196958751/1000044274148184084
 This should have hopefully given you an overview of the sorting submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `sorting channel`_ or in the `sorting forum`_!

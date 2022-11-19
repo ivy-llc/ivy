@@ -1,0 +1,41 @@
+nextafter
+=========
+
+.. autofunction:: ivy.functional.ivy.experimental.nextafter
+
+.. autofunction:: ivy.array.array_methods.nextafter
+
+.. autofunction:: ivy.container.container_methods.nextafter
+
+.. autofunction:: ivy.container.container_methods.static_nextafter
+|
+| **Supported Frameworks:**
+
+|jax_logo| |tf_logo| |pytorch_logo| |mxnet_logo| |numpy_logo|
+
+.. |jax_logo| image:: ../../../logos/supported/jax_logo.png
+   :target: https://jax.readthedocs.io
+
+.. |tf_logo| image:: ../../../logos/supported/tensorflow_logo.png
+   :target: https://www.tensorflow.org
+
+.. |pytorch_logo| image:: ../../../logos/supported/pytorch_logo.png
+   :target: https://pytorch.org
+
+.. |mxnet_logo| image:: ../../../logos/supported/mxnet_logo.png
+   :target: https://mxnet.apache.org
+
+.. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
+   :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: nextafter
+
+   nextafter/nextafter_functional.rst
+   nextafter/nextafter_array.rst
+   nextafter/nextafter_container.rst
+   nextafter/static_nextafter_container.rst
+

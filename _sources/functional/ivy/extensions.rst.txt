@@ -1,4 +1,16 @@
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions forum`: https://discord.com/channels/799879767196958751/1028298957870354542
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
+.. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
 .. _`extensions channel`: https://discord.com/channels/799879767196958751/1028272402624434196
 This should have hopefully given you an overview of the extensions submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `extensions channel`_ or in the `extensions forum`_!

@@ -16,5 +16,17 @@ Constants
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants forum`: https://discord.com/channels/799879767196958751/1028298780715536454
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
+.. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
 .. _`constants channel`: https://discord.com/channels/799879767196958751/1000043690254946374
 This should have hopefully given you an overview of the constants submodule,If you have any questions, please feel free to reach out on our `discord`_ in the `constants channel`_ or in the `constants forum`_!
