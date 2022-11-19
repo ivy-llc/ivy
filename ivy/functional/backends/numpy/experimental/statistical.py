@@ -1,5 +1,6 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
+import ivy
 
 
 def median(
@@ -53,6 +54,7 @@ def quantile(
     interpolation: str = 'linear',
     out : Optional[np.ndarray] = None 
 ) -> np.ndarray:
+    a, q = ivy.promote_types_of_inputs(a, q)
     tuple(axis) if isinstance(axis, list) else axis
     return np.quantile(
         a,
@@ -61,4 +63,4 @@ def quantile(
         method=interpolation,
         keepdims=keepdims,
         out=out
-    )
+    ).astype('float64')

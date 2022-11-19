@@ -1,6 +1,7 @@
 from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
+import ivy
 
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -61,10 +62,14 @@ def quantile(
     # In tensorflow, it requires percentile in range [0, 100], while in the other
     # backends the quantile has to be in range [0, 1].
     q = q * 100
-    return tfp.stats.percentile(
+    a, q = ivy.promote_types_of_inputs(a, q)
+
+    result = tfp.stats.percentile(
         a,
         q,
         axis=axis,
         interpolation=interpolation,
         keepdims=keepdims
     )
+    result = tf.cast(result, tf.float64)
+    return result

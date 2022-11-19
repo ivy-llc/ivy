@@ -15,7 +15,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def statistical_dtype_values(draw, *, function):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["mean", "median", "std", "var","quantile"]:
+    if function in ["mean", "median", "std", "var"]:
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -53,7 +53,8 @@ def statistical_dtype_values(draw, *, function):
 
     if function == "quantile":
         q = draw(helpers.array_values(dtype=helpers.get_dtypes("float"),
-                                        shape=(10,),
+                                      shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1
+                                                              ),
                                       min_value=0.0 ,
                                       max_value=1.0,
                                       exclude_max=False,
@@ -61,7 +62,8 @@ def statistical_dtype_values(draw, *, function):
                                       ))
 
         interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
-        interpolation = draw(helpers.lists(arg=st.sampled_from(interpolation_names), min_size=1, max_size=1))
+        interpolation = draw(helpers.lists(arg=st.sampled_from(
+            interpolation_names), min_size=1, max_size=1))
         return dtype, values, axis, interpolation, q
 
     return dtype, values, axis
@@ -171,7 +173,7 @@ def max_value_as_shape_prod(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.nanmean",
+    fn_tree="functional.experimental.unravel_index",
     dtype_x_shape=max_value_as_shape_prod(),
 )
 def test_unravel_index(
@@ -202,6 +204,28 @@ def test_unravel_index(
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
     )
+
+
+# @st.composite
+# def data_for_quantile(draw):
+#     large_abs_safety_factor = 2
+#     small_abs_safety_factor = 2
+#     # if function in ["mean", "median", "std", "var"]:
+#     # large_abs_safety_factor = 24
+#     # small_abs_safety_factor = 24
+#     # helpers.dtype_and_values()
+#     dtype, values = draw(
+#         helpers.dtype_and_values(
+#             available_dtypes=helpers.get_dtypes("float"),
+#             num_arrays=1,
+#             large_abs_safety_factor=large_abs_safety_factor,
+#             small_abs_safety_factor=small_abs_safety_factor,
+#             safety_factor_scale="log",
+#             shape=draw(helpers.get_shape(min_num_dims=1,
+#                        max_num_dims=5, min_dim_size=2)),
+#         )
+#     )
+#     return dtype, values
 
 
 @handle_test(

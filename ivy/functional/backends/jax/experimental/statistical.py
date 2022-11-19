@@ -1,6 +1,7 @@
 from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+import ivy
 
 
 def median(
@@ -52,6 +53,7 @@ def quantile(
     out : Optional[JaxArray] = None 
 ) -> JaxArray:
     tuple(axis) if isinstance(axis, list) else axis
+    a, q = ivy.promote_types_of_inputs(a, q)
     return jnp.quantile(
         a,
         q,
@@ -59,4 +61,4 @@ def quantile(
         method=interpolation,
         keepdims=keepdims,
         out=out
-    )
+    ).astype('float64')

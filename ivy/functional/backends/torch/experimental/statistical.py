@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import torch
+import ivy
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -59,11 +60,14 @@ def quantile(
     interpolation: str = 'linear',
     out: Optional[torch.tensor] = None
 ) -> torch.tensor:
+    a = a.float()
+    q = q.float()
+    a, q = ivy.promote_types_of_inputs(a, q)
     if axis is None:
         return torch.quantile(a,
                               q,
                               keepdim=keepdims,
-                              interpolation=interpolation)
+                              interpolation=interpolation).to(torch.float64)
     if isinstance(axis, list) or isinstance(axis, tuple):
         for i in axis:
             a = torch.quantile(a,
@@ -71,10 +75,10 @@ def quantile(
                                i,
                                keepdim=keepdims, 
                                interpolation=interpolation)
-        return a 
+        return a.to(torch.float64)
 
     return torch.quantile(a,
                           q, 
                           dim=axis,
                           keepdim=keepdims,
-                          interpolation=interpolation)
+                          interpolation=interpolation).to(torch.float64)
