@@ -308,9 +308,6 @@ class Array(
 
     def __pow__(self, power):
         return ivy.pow(self._data, power)
-        
-    def argsort(self, axis, descending=False, stable=False,out= None):
-        return ivy.argsort(self._data, axis=axis, descending=descending, stable=stable,out=out)
 
     def __rpow__(self, power):
         return ivy.pow(power, self._data)
