@@ -227,15 +227,15 @@ def test_kron(
     ),
 )
 def test_matrix_exp(
-    *,
     dtype_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
 ):
     dtype, x = dtype_x
     helpers.test_function(
@@ -244,9 +244,9 @@ def test_matrix_exp(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="matrix_exp",
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
