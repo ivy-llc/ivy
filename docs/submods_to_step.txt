@@ -1,2 +1,3 @@
 # submodules to step into (skipping the directory from doc stack)
 functional/ivy
+functional/experimental
