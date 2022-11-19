@@ -5274,6 +5274,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        With :code:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]), b=ivy.array([3.2, 5., 7.5]))
+        >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]), b=ivy.array([5.6, 1.2, 4.2]))
+        >>> y =ivy.Container.static_multiply(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([25.5, 12.6, 19.5]),
+            b: ivy.array([17.9, 6., 31.5])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "multiply",
@@ -5336,25 +5349,25 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        With :class:`ivy.Container` inputs:
+        With :code:`ivy.Container` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([15., 4.5, 6.5]),\
                                b=ivy.array([3.2, 5., 7.5]))
         >>> x2 = ivy.Container(a=ivy.array([1.7, 2.8, 3.]),\
                                b=ivy.array([5.6, 1.2, 4.2]))
-        >>> y = x1.multiply(x2)
+        >>> y = ivy.Container.multiply(x1, x2)
         >>> print(y)
         {
             a: ivy.array([25.5, 12.6, 19.5]),
             b: ivy.array([17.9, 6., 31.5])
         }
 
-        With mixed :class:`ivy.Container` and :class:`ivy.Array` inputs:
+        With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([6.2, 4.8, 2.3]),\
                                b=ivy.array([5., 1.7, 0.1]))
         >>> x2 = ivy.array([8.3, 3.2, 6.5])
-        >>> y = x1.multiply(x2)
+        >>> y = ivy.Container.multiply(x1, x2)
         >>> print(y)
         {
             a: ivy.array([51.5, 15.4, 14.9]),
