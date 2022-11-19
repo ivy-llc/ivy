@@ -909,6 +909,7 @@ def test_atleast_3d(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -916,6 +917,7 @@ def test_atleast_3d(
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
