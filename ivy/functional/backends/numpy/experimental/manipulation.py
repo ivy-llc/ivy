@@ -13,6 +13,10 @@ from typing import (
 from numbers import Number
 import numpy as np
 
+# local
+import ivy
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+
 
 def moveaxis(
     a: np.ndarray,
@@ -239,3 +243,23 @@ def dstack(
 
 def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_2d(*arys)
+
+
+@_scalar_output_to_0d_array
+def take_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    axis: int,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"        
+        )
+    return np.take_along_axis(arr, indices, axis)
+
+
+take_along_axis.support_native_out = False
