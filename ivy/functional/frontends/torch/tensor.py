@@ -136,6 +136,9 @@ class Tensor:
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self.data, other)
 
+    def bitwise_or(self, other):
+        return torch_frontend.bitwise_or(self.data, other)
+
     def contiguous(self, memory_format=None):
         return self.data
 
