@@ -2151,7 +2151,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
 @handle_frontend_method(
     method_tree="torch.tensor.argsort",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
 )
 def test_torch_instance_argsort(
@@ -2170,7 +2170,7 @@ def test_torch_instance_argsort(
         },
         input_dtypes_method=input_dtype,
         as_variable_flags_method=as_variable,
-        num_positional_args_method=1,
+        num_positional_args_method=0,
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
