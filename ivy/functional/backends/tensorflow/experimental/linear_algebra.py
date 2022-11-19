@@ -78,4 +78,3 @@ def matrix_exp(
         else:
             return tf.linalg.expm(x)
     return tf.linalg.expm(x)
-    
