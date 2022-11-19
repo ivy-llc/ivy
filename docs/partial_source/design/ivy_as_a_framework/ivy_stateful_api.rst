@@ -86,12 +86,12 @@ These variables are all detected automatically.
 
     {
         linear0: {
-            b: (<class ivy.array.array.Variable> shape=[64]),
-            w: (<class ivy.array.array.Variable> shape=[64, 3])
+            b: (<class ivy.array.array.Array> shape=[64]),
+            w: (<class ivy.array.array.Array> shape=[64, 3])
         },
         linear1: {
             b: ivy.array([0.]),
-            w: (<class ivy.array.array.Variable> shape=[1, 64])
+            w: (<class ivy.array.array.Array> shape=[1, 64])
         }
     }
 
@@ -118,12 +118,12 @@ As a list:
     {
         linear: {
             v0: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 3])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 3])
             },
             v1: {
                 b: ivy.array([0.]),
-                w: (<class ivy.array.array.Variable> shape=[1, 64])
+                w: (<class ivy.array.array.Array> shape=[1, 64])
             }
         }
     }
@@ -147,12 +147,12 @@ As a tuple:
     {
         linear: {
             v0: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 3])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 3])
             },
             v1: {
                 b: ivy.array([0.]),
-                w: (<class ivy.array.array.Variable> shape=[1, 64])
+                w: (<class ivy.array.array.Array> shape=[1, 64])
             }
         }
     }
@@ -177,12 +177,12 @@ As a dict:
     {
         linear: {
             key0: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 3])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 3])
             },
             key1: {
                 b: ivy.array([0.]),
-                w: (<class ivy.array.array.Variable> shape=[1, 64])
+                w: (<class ivy.array.array.Array> shape=[1, 64])
             }
         }
     }
@@ -209,17 +209,17 @@ As a nested list:
         linear: {
             v0: {
                 v0: {
-                    b: (<class ivy.array.array.Variable> shape=[64]),
-                    w: (<class ivy.array.array.Variable> shape=[64, 3])
+                    b: (<class ivy.array.array.Array> shape=[64]),
+                    w: (<class ivy.array.array.Array> shape=[64, 3])
                 },
                 v1: {
-                    b: (<class ivy.array.array.Variable> shape=[64]),
-                    w: (<class ivy.array.array.Variable> shape=[64, 64])
+                    b: (<class ivy.array.array.Array> shape=[64]),
+                    w: (<class ivy.array.array.Array> shape=[64, 64])
                 }
             },
             v1: {
                 b: ivy.array([0.]),
-                w: (<class ivy.array.array.Variable> shape=[1, 64])
+                w: (<class ivy.array.array.Array> shape=[1, 64])
             }
         }
     }
@@ -250,21 +250,21 @@ Duplicates are also handled correctly, if for example a layer is stored both as 
     {
         linear: {
             v0: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 3])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 3])
             },
             v1: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 64])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 64])
             },
             v2: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 64])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 64])
             }
         },
         linear3: {
             b: ivy.array([0.]),
-            w: (<class ivy.array.array.Variable> shape=[1, 64])
+            w: (<class ivy.array.array.Array> shape=[1, 64])
         }
     }
 
@@ -301,12 +301,12 @@ This can simplify the construction of our small fully connected network even fur
     {
         submodules: {
             v0: {
-                b: (<class ivy.array.array.Variable> shape=[64]),
-                w: (<class ivy.array.array.Variable> shape=[64, 3])
+                b: (<class ivy.array.array.Array> shape=[64]),
+                w: (<class ivy.array.array.Array> shape=[64, 3])
             },
             v2: {
                 b: ivy.array([0.]),
-                w: (<class ivy.array.array.Variable> shape=[1, 64])
+                w: (<class ivy.array.array.Array> shape=[1, 64])
             }
         }
     }
