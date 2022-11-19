@@ -325,24 +325,6 @@ def mean(
     >>> print(y)
     ivy.array([-1.4,  1.4])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([3., 4., 5.])
-    >>> y = ivy.mean(x)
-    >>> print(y)
-    ivy.array(4.)
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = ivy.array([0., 0., 0.])
-    >>> ivy.mean(x, axis=0, out=y)
-    >>> print(y)
-    ivy.array([1.5, 2.5, 3.5])
-
-    >>> x = ivy.native_array([[0., 1., 2.], [3., 4., 5.]])
-    >>> y = ivy.native_array([0., 0.])
-    >>> y = ivy.mean(x, axis=1)
-    >>> print(y)
-    ivy.array([1., 4.])
 
     With :class:`ivy.Container` input:
 
@@ -361,54 +343,6 @@ def mean(
     {
         a: ivy.array([1.5, 2.5, 3.5]),
         b: ivy.array([4.5, 5.5, 6.5])
-    }
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([3., 4., 5.])
-    >>> y = x.mean()
-    >>> print(y)
-    ivy.array(4.)
-
-    >>> x = ivy.array([0., 7.3, -1.3])
-    >>> y = ivy.array(0.)
-    >>> x.mean(out=y)
-    >>> print(y)
-    ivy.array(2.)
-
-    >>> x = ivy.array([[-0.5, 1., 2.], [0.0, 1.1, 2.2]])
-    >>> y = ivy.array([0., 0., 0.])
-    >>> x.mean(axis=0, out=y)
-    >>> print(y)
-    ivy.array([-0.25,  1.05,  2.1])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.2, 2.2, 4.2]))
-    >>> y = x.mean()
-    >>> print(y)
-    {
-        a: ivy.array(0.6),
-        b: ivy.array(2.2)
-    }
-
-    >>> x = ivy.Container(a=ivy.array([1., 1., 1.]), b=ivy.array([0., -1., 1.]))
-    >>> x.mean(out=x)
-    >>> print(x)
-    {
-        a: ivy.array(1.),
-        b: ivy.array(0.)
-    }
-
-    >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
-    ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
-    >>> x.mean(axis=1, out=x)
-    >>> print(x)
-    {
-        a: ivy.array([1., 2.]),
-        b: ivy.array([3., 4.])
     }
     """
     return current_backend(x).mean(x, axis=axis, keepdims=keepdims, out=out)
