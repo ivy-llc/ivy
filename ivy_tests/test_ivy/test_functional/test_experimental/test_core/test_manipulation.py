@@ -816,7 +816,6 @@ def test_dsplit(
 def test_atleast_1d(
     dtype_and_x,
     as_variable,
-    num_positional_args,
     native_array,
     container_flags,
     with_out,
@@ -824,6 +823,7 @@ def test_atleast_1d(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtypes, arrays = dtype_and_x
     kw = {}
@@ -831,6 +831,7 @@ def test_atleast_1d(
         kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
     num_positional_args = len(kw)
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -839,8 +840,8 @@ def test_atleast_1d(
         container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
-        on_device=on_device,
         fn_name=fn_name,
+        on_device=on_device,
         **kw,
     )
 
@@ -899,12 +900,12 @@ def test_dstack(
     ),
 )
 def test_atleast_2d(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     native_array,
-    container_flags,
-    with_out,
+    container,
     instance_method,
     backend_fw,
     fn_name,
@@ -923,11 +924,11 @@ def test_atleast_2d(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container_flags,
+        container_flags=container,
         instance_method=instance_method,
         fw=backend_fw,
-        on_device=on_device,
         fn_name=fn_name,
+        on_device=on_device,
         **kw,
     )
 
