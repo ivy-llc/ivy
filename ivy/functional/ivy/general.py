@@ -486,6 +486,24 @@ def get_show_func_wrapper_trace_mode() -> bool:
     return show_func_wrapper_trace_mode_stack[-1]
 
 
+def copy_array() -> None:
+    """Copies array.
+    
+    Parameters
+    ----------
+    
+    Returns
+    ----------
+    ret
+        None,
+        
+    Examples 
+    ----------
+   
+    
+    """
+
+
 @inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
