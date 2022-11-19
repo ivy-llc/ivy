@@ -318,6 +318,67 @@ class ArrayWithStatistical(abc.ABC):
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """ ivy.array instance method variant of ivy.prod.
+        This method simply wraps the function, and so
+        the docstring for ivy.prod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a floating-point data type.
+        axis
+            axis or axes along which products must be computed. By default, the product must
+            be computed over the entire array. If a tuple of integers, products must be
+            computed over multiple axes. Default: ``None``.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be included in the result as
+            singleton dimensions, and, accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False, the reduced axes
+            (dimensions) must not be included in the result. Default: ``False``.
+        dtype
+            data type of the returned array.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container, if the product was computed over the entire array,
+            a zero-dimensional array containing the product;
+            otherwise, a non-zero-dimensional array containing the products.
+            The returned array must have the same data type as ``self``.
+
+        Examples
+        -------------------
+        With: class: `ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> z = x.prod()
+        >>> print(z)
+        ivy.array(6)
+
+        >>> x = ivy.array([1, 0, 3])
+        >>> z = x.prod()
+        >>> print(z)
+        ivy.array(0)
+
+        >>> x = ivy.array([[3., 4., 5.]])
+        >>> y = x.prod(axis=1)
+        >>> print(y)
+        ivy.array([60.])
+
+        >>> x = ivy.array([2., 1.])
+        >>> y = ivy.array(0.)
+        >>> x.prod(out=y)
+        >>> print(y)
+        ivy.array(2.)
+
+        >>> x = ivy.array([[-1., -2.], [3., 3.]])
+        >>> y = x.prod(axis=1)
+        >>> print(y)
+        ivy.array([2., 9.])
+        """
         return ivy.prod(self._data, axis=axis, keepdims=keepdims, dtype=dtype, out=out)
 
     def sum(

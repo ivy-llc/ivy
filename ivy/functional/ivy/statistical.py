@@ -303,8 +303,7 @@ def mean(
     simplicity, but this function is *nestable*, and therefore also accepts
     :class:`ivy.Container` instances in place of any of the arguments.
 
-
-    Functional Examples
+    Examples
     -------------------
     With :class:`ivy.Array` input:
 
@@ -413,6 +412,10 @@ def prod(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    -------------------
+    With :class:`ivy.Array` input:
+
     >>> x = ivy.array([1, 2, 3])
     >>> z = ivy.prod(x)
     >>> print(z)
@@ -423,6 +426,42 @@ def prod(
     >>> print(z)
     ivy.array(0)
 
+    >>> x = ivy.array([[3., 4., 5.]])
+    >>> y = ivy.prod(x, keepdims=True)
+    >>> print(y)
+    ivy.array([60.])
+
+    >>> x = ivy.array([2., 1.])
+    >>> y = ivy.array(0.)
+    >>> ivy.prod(x, out=y)
+    >>> print(y)
+    ivy.array(2.)
+
+    >>> x = ivy.array([[-1., -2.], [3., 3.]])
+    >>> y = ivy.prod(x, axis=1)
+    >>> print(y)
+    ivy.array([2., 9.])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([-1., 0., 1.]), b=ivy.array([1.1, 0.2, 1.4]))
+    >>> y = ivy.prod(x)
+    >>> print(y)
+    {
+        a: ivy.array(-0.),
+        b: ivy.array(0.30800003)
+    }
+
+    >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]),
+    ...                   b=ivy.array([[ 4., 5.], [5., 6.]]))
+    >>> y = ivy.prod(x, axis=1, keepdims=True)
+    >>> print(x)
+    {
+        a: ivy.array([[2.],
+                      [12.]]),
+        b: ivy.array([[20.],
+                      [30.]])
+    }
     """
     return current_backend(x).prod(
         x, axis=axis, dtype=dtype, keepdims=keepdims, out=out

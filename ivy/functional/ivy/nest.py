@@ -612,7 +612,7 @@ def all_nested_indices(
     _base: bool = True,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
-    """returns indices of all the elements in nest
+    """Returns indices of all the elements in nest
 
     Parameters
     ----------
