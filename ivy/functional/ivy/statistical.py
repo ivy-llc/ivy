@@ -304,7 +304,7 @@ def mean(
     :class:`ivy.Container` instances in place of any of the arguments.
 
     Examples
-    -------------------
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([3., 4., 5.])
@@ -413,7 +413,7 @@ def prod(
     instances in place of any of the arguments.
 
     Examples
-    -------------------
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
