@@ -2050,7 +2050,21 @@ def get_all_arrays_in_memory():
 
 @handle_exceptions
 def num_arrays_in_memory():
-    """Returns the number of arrays which are currently alive."""
+    """Returns the number of arrays which are currently alive.
+    
+    Returns
+    -------
+    ret
+        Number of arrays which are currently alive.
+
+    Examples
+    --------
+    >>> print(ivy.num_arrays_in_memory())
+    0
+    >>> print(ivy.num_arrays_in_memory())
+    4
+
+    """
     return len(get_all_arrays_in_memory())
 
 
