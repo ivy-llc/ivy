@@ -602,27 +602,17 @@ with minimal changes.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>) – input container. Should have a floating-point data type.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which products must be computed. By default, the product must (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-be computed over the entire array. If a tuple of integers, products must be
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – axis or axes along which products must be computed. By (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+default, the product must be computed over the entire
+array. If a tuple of integers, products must be
 computed over multiple axes. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – bool, if True, the reduced axes (dimensions) must be included in the result as (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-singleton dimensions, and, accordingly, the result must be compatible with the
-input array (see Broadcasting). Otherwise, if False, the reduced axes
-(dimensions) must not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – data type of the returned array. If None, (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
-if the default data type corresponding to the data type “kind” (integer or
-floating-point) of x has a smaller range of values than the data type of x
-(e.g., x has data type int64 and the default data type is int32, or x has data
-type uint64 and the default data type is int64), the returned array must have
-the same data type as x. if x has a floating-point data type, the returned array
-must have the default floating-point data type. if x has a signed integer data
-type (e.g., int16), the returned array must have the default integer data type.
-if x has an unsigned integer data type (e.g., uint16), the returned array must
-have an unsigned integer data type having the same number of bits as the default
-integer data type (e.g., if the default integer data type is int32, the returned
-array must have a uint32 data type). If the data type (either specified or
-resolved) differs from the data type of x, the input array should be cast to the
-specified data type before computing the product. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – bool, if True, the reduced axes (dimensions) must be (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+included in the result as singleton dimensions, and,
+accordingly, the result must be compatible with the
+input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included
+in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>dtype</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dtype</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDtype</span></code>]]) – data type of the returned array. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 <li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The key-chains to apply or not apply the method to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
@@ -640,10 +630,11 @@ It must have a shape that the inputs broadcast to.</p></li>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – container, if the product was computed over the entire array,
-a zero-dimensional array containing the product;
-otherwise, a non-zero-dimensional array containing the products.
-The returned array must have the same data type as <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
+<dd class="field-odd"><p><em>ret</em> – container, if the product was computed over the entire
+array, a zero-dimensional array containing the product;
+otherwise, a non-zero-dimensional array containing the
+products. The returned array must have the same data type
+as <code class="docutils literal notranslate"><span class="pre">self</span></code>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
