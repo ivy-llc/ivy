@@ -16,6 +16,7 @@ FWS_DICT = {
 }
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
+CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
 CURRENT_BACKEND: callable = _Notsetval
 CURRENT_FRONTEND: callable = _Notsetval
 CURRENT_RUNNING_TEST = _Notsetval
@@ -78,14 +79,16 @@ def _get_ivy_torch():
 # Setup
 
 
-def setup_api_test(test_data: TestData, backend: str):
+def setup_api_test(test_data: TestData, backend: str, ground_truth_backend: str):
     _set_test_data(test_data)
     _set_backend(backend)
+    _set_ground_truth_backend(ground_truth_backend)
 
 
 def teardown_api_test():
     _unset_test_data()
     _unset_backend()
+    _unset_ground_truth_backend()
 
 
 def setup_frontend_test(test_data: TestData, frontend: str, backend: str):
@@ -121,6 +124,13 @@ def _set_backend(framework: str):
     CURRENT_BACKEND = FWS_DICT[framework]
 
 
+def _set_ground_truth_backend(framework: str):
+    global CURRENT_GROUND_TRUTH_BACKEND
+    if CURRENT_GROUND_TRUTH_BACKEND is not _Notsetval:
+        raise InterruptedTest(CURRENT_RUNNING_TEST)
+    CURRENT_GROUND_TRUTH_BACKEND = FWS_DICT[framework]
+
+
 # Teardown
 
 
@@ -137,3 +147,8 @@ def _unset_frontend():
 def _unset_backend():
     global CURRENT_BACKEND
     CURRENT_BACKEND = _Notsetval
+
+
+def _unset_ground_truth_backend():
+    global CURRENT_GROUND_TRUTH_BACKEND
+    CURRENT_GROUND_TRUTH_BACKEND = _Notsetval

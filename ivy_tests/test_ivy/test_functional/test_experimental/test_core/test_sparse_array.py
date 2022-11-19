@@ -69,9 +69,11 @@ def test_sparse_coo(
     init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     coo_ind, val_dtype, val, shp = sparse_data
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=["int64", val_dtype],
         init_as_variable_flags=init_as_variable_flags,
         init_num_positional_args=0,
@@ -103,9 +105,11 @@ def test_sparse_csr(
     init_native_array_flags: pf.NativeArrayFlags,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     crow_indices, col_indices, value_dtype, values, shape = sparse_data
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_input_dtypes=["int64", "int64", value_dtype],
         init_as_variable_flags=init_as_variable_flags,
         init_num_positional_args=0,

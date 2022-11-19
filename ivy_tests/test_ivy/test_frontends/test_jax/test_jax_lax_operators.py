@@ -769,11 +769,15 @@ def test_jax_lax_neg(
     index_dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_jax_lax_argmax(
+    *,
     dtype_x_axis,
+    index_dtype,
     as_variable,
     num_positional_args,
     native_array,
-    index_dtype,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_frontend_function(
@@ -782,8 +786,8 @@ def test_jax_lax_argmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="jax",
-        fn_tree="lax.argmax",
+        frontend=frontend,
+        fn_tree=fn_tree,
         operand=x[0],
         axis=axis,
         index_dtype=index_dtype[0],
@@ -1437,10 +1441,14 @@ def test_jax_lax_pow(
     ),
 )
 def test_jax_lax_gt(
+    *,
     dtypes_and_xs,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtypes, xs = dtypes_and_xs
     helpers.test_frontend_function(
@@ -1449,8 +1457,9 @@ def test_jax_lax_gt(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="jax",
-        fn_tree="lax.gt",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=xs[0],
         y=xs[1],
     )

@@ -69,9 +69,11 @@ def test_argmax(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -108,9 +110,11 @@ def test_argmin(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -156,9 +160,11 @@ def test_nonzero(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -192,10 +198,12 @@ def test_where(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     cond, xs, dtypes = broadcastables
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=["bool"] + dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -229,9 +237,11 @@ def test_argwhere(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
