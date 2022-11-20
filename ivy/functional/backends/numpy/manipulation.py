@@ -85,11 +85,13 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
+    order: Optional[str] = "C",
 ) -> np.ndarray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = x.copy()
-        return np.reshape(newarr, shape)
-    return np.reshape(x, shape)
+        return np.reshape(newarr, shape, order=order)
+    return np.reshape(x, shape, order=order)
 
 
 def roll(

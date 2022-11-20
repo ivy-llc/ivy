@@ -1,8 +1,7 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from hypothesis import given
 from hypothesis import strategies as st
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # squeeze
@@ -18,38 +17,43 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.squeeze",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
     ),
     axis=_squeeze_helper(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.squeeze"
-    ),
 )
 def test_numpy_squeeze(
+    *,
     dtype_and_x,
     axis,
+    with_out,
+    as_variable,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[False],
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=[False],
-        frontend="numpy",
-        fn_tree="squeeze",
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.expand_dims",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -60,24 +64,29 @@ def test_numpy_squeeze(
         max_size=1,
         force_int=True,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.expand_dims"
-    ),
 )
 def test_numpy_expand_dims(
+    *,
     dtype_and_x,
     axis,
+    with_out,
+    as_variable,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
-        as_variable_flags=[False],
-        with_out=False,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         num_positional_args=num_positional_args,
-        native_array_flags=[False],
-        frontend="numpy",
-        fn_tree="expand_dims",
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
     )

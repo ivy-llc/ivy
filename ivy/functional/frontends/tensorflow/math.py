@@ -119,12 +119,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def maximum(a, b, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
-    # Cast inputs to ivy array
-    a = ivy.array(a)
-    b = ivy.array(b)
-    return ivy.maximum(a, b)
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -346,6 +342,14 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+@to_ivy_arrays_and_back
+def argmin(input, axis=None, output_type="int64", name=None):
+    if output_type in ["int32", "int64"]:
+        return ivy.astype(ivy.argmin(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmin(input, axis=axis), "int64")
 
 
 @to_ivy_arrays_and_back
