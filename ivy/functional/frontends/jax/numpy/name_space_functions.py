@@ -323,7 +323,8 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
         x_list.append(int(x[i]))
-    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    max_val = int(ivy.max(ivy.array(x_list)))
+    ret = [x_list.count(i) for i in range(0, max_val + 1)]
     ret = ivy.array(ret)
     ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
     return ret
