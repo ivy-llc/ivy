@@ -61,11 +61,13 @@ def quantile(
     interpolation: str = 'linear',
     out: Optional[torch.tensor] = None
 ) -> torch.tensor:
+
     if axis is None:
         return torch.quantile(a,
                               q,
                               keepdim=keepdims,
                               interpolation=interpolation)
+
     if isinstance(axis, list) or isinstance(axis, tuple):
         for i in axis:
             a = torch.quantile(a,

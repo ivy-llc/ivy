@@ -58,13 +58,15 @@ def quantile(
     keepdims: bool = False,
     out : Optional[Union[tf.Tensor, tf.Variable]] = None 
 ) -> Union[tf.Tensor, tf.Variable] :
+
     axis = tuple(axis) if isinstance(axis, list) else axis
 
     # In tensorflow, it requires percentile in range [0, 100], while in the other
     # backends the quantile has to be in range [0, 1].
-
     q = q * 100
 
+    # The quantile instance method in other backends is equivalent of 
+    # percentile instance method in tensorflow_probability
     result = tfp.stats.percentile(
         a,
         q,
@@ -72,5 +74,4 @@ def quantile(
         interpolation=interpolation,
         keepdims=keepdims
     )
-    # result = tf.cast(result, tf.float64)
     return result
