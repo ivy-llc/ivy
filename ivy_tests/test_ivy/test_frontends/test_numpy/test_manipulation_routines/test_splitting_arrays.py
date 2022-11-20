@@ -1,8 +1,21 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from hypothesis import strategies as st
 
 
+def _arrays_idx_n_dtypes(draw):
+    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
+    num_arrays = draw(
+        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
+    )
+    common_shape = draw(
+        helpers.lists(
+            arg=helpers.ints(min_value=2, max_value=3),
+            min_size=num_dims - 1,
+            max_size=num_dims - 1,
+        )
+    )
 # split
 @handle_frontend_test(
     fn_tree="numpy.split",
