@@ -2477,22 +2477,24 @@ def test_jax_numpy_fliplr(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.hstack",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_tup=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        shared_dtype=True,
+        num_arrays=st.integers(min_value=2, max_value=2),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=5
+        ),
     ),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_jax_numpy_hstack(
-    dtype_and_x,
+    dtype_and_tup,
     as_variable,
-    dtype,
     num_positional_args,
     native_array,
     frontend,
     fn_tree,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_tup
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2501,8 +2503,7 @@ def test_jax_numpy_hstack(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
-        dtype=dtype,
-        arrays=x,
+        tup=x,
     )
 
 
