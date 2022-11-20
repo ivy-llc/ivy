@@ -269,7 +269,8 @@ def test_torch_l1_loss(
         reduce=reduce,
         reduction=reduction,
     )
-    
+
+
 # nll_loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.nll_loss",
@@ -335,4 +336,3 @@ def test_torch_nll_loss(
         reduce=reduce,
         reduction=reduction,
     )
-
