@@ -2152,32 +2152,36 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
     method_tree="torch.tensor.argsort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        #min_axis=-1,
-        #max_axis=0,
-        #min_num_dims=1,
-        #force_int_axis=True,
+        shape=st.shared(helpers.get_shape(), key="shape")
+    ),
+    dim=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
     ),
 )
 def test_torch_instance_argsort(
-    dtype_x_axis,
+    dtype_value,
+    dim,
     as_variable,
     native_array,
 ):
-    input_dtype, x, axis = dtype_x_axis
+    input_dtype, x = dtype_value
     helpers.test_frontend_method(
         input_dtypes_init=input_dtype,
-        as_variable_flags_init=as_variable,
-        num_positional_args_init=0,
-        native_array_flags_init=native_array,
-        all_as_kwargs_np_init={
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
             "data": x[0],
         },
-        axis=axis,
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=0,
-        native_array_flags_method=native_array,
-        all_as_kwargs_np_method={},
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=1,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "axis": dim,
+        },
         frontend="torch",
         class_="tensor",
         method_name="argsort",
