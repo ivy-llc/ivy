@@ -2154,7 +2154,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(), key="shape")
     ),
-    dim=helpers.get_axis(
+    axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
         allow_neg=True,
         force_int=True,
@@ -2162,7 +2162,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
 )
 def test_torch_instance_argsort(
     dtype_value,
-    dim,
+    axis,
     as_variable,
     native_array,
 ):
@@ -2180,7 +2180,7 @@ def test_torch_instance_argsort(
         method_num_positional_args=1,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "axis": dim,
+            "axis": axis,
         },
         frontend="torch",
         class_="tensor",
