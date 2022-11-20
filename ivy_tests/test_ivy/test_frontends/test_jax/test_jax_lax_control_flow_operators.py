@@ -130,10 +130,11 @@ def test_jax_switch(
 @handle_frontend_test(
     fn_tree="jax.lax.while_loop",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("integer"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
         max_dim_size=1,
+        min_value=5,
     ),
 )
 def test_jax_while_loop(
