@@ -1476,8 +1476,7 @@ def test_cholesky(
 
 
 # cov
-@handle_cmd_line_args
-@given(
+@handle_test(
     dtype_x1_x2=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
