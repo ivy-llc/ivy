@@ -893,23 +893,28 @@ def test_nextafter(
 @handle_test(
     fn_tree="functional.experimental.diff",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
         min_num_dims=1,
         max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="diff"),
 )
 def test_diff(
+    *,
     dtype_and_x,
     with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -918,11 +923,13 @@ def test_diff(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="diff",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )
 
 
