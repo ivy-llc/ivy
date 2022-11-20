@@ -383,6 +383,44 @@ def test_tensorflow_instance_mul(
     )
 
 
+# __mod__
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__mod__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_mod(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=[input_dtype[1]],
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=1,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "y": x[1],
+        },
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__mod__",
+    )
+
+
 # __sub__
 @handle_frontend_method(
     method_tree="tensorflow.EagerTensor.__sub__",
