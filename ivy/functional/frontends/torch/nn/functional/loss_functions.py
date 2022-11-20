@@ -174,9 +174,11 @@ def nll_loss(
     reduce=None,
     reduction='mean'
 ):
-    y = target.reshape(len(target), 1)
-    loss = -y * ivy.log(input) - (1 - y) * ivy.log(1 - input)
-    loss[loss == -ivy.inf] = 0
+    out  = ivy.zeros_like(target, dtype = ivy.float32)
+    for i in range(len(target)):
+        out[i] = input[i][target[i]]
+    loss = -out
+    
     if weight is not None:
         loss = ivy.multiply(weight, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
