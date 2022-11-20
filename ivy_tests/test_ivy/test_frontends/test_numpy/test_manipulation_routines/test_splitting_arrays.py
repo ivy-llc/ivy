@@ -26,6 +26,7 @@ def _arrays_idx_n_dtypes(draw):
         )
     )
     xs = list()
+    xa = list()
     input_dtypes = draw(
         helpers.array_dtypes(available_dtypes=draw(helpers.get_dtypes("valid")))
     )
@@ -37,6 +38,7 @@ def _arrays_idx_n_dtypes(draw):
             )
         )
         xs.append(x)
+        xa.append(x)
     return xs, input_dtypes, unique_idx
 
 
