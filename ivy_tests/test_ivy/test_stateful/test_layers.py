@@ -6,6 +6,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
@@ -83,11 +84,13 @@ def test_linear_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     ivy.seed(seed_value=seed)
     input_channels, input_dtype, x = ic_n_dtype_n_vals
     with_bias, bias_initializer = wb_n_b_init
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -142,9 +145,11 @@ def test_dropout_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "prob": prob,
@@ -262,6 +267,7 @@ def test_multi_head_attention_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -279,6 +285,7 @@ def test_multi_head_attention_layer(
         with_to_out_fn,
     ) = dtype_mha
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "query_dim": query_dim,
@@ -412,6 +419,7 @@ def test_conv1d_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -425,6 +433,7 @@ def test_conv1d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -457,6 +466,7 @@ def test_conv1d_layer(
 # conv1d transpose
 @handle_method(
     method_tree="Conv1DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1, transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -479,6 +489,7 @@ def test_conv1d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -493,6 +504,7 @@ def test_conv1d_transpose_layer(
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -518,7 +530,6 @@ def test_conv1d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
@@ -545,6 +556,7 @@ def test_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -558,6 +570,7 @@ def test_conv2d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -588,6 +601,7 @@ def test_conv2d_layer(
 # # conv2d transpose
 @handle_method(
     method_tree="Conv2DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -614,6 +628,7 @@ def test_conv2d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -628,6 +643,7 @@ def test_conv2d_transpose_layer(
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -653,13 +669,13 @@ def test_conv2d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # # depthwise conv2d
 @handle_method(
     method_tree="DepthwiseConv2D.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(depthwise=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -683,6 +699,7 @@ def test_depthwise_conv2d_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -696,6 +713,7 @@ def test_depthwise_conv2d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "num_channels": input_channels,
@@ -719,13 +737,13 @@ def test_depthwise_conv2d_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # conv3d
 @handle_method(
     method_tree="Conv3D.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -746,6 +764,7 @@ def test_conv3d_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -759,6 +778,7 @@ def test_conv3d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -783,13 +803,13 @@ def test_conv3d_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # conv3d transpose
 @handle_method(
     method_tree="Conv3DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3, transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -816,6 +836,7 @@ def test_conv3d_transpose_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -830,6 +851,7 @@ def test_conv3d_transpose_layer(
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -855,7 +877,6 @@ def test_conv3d_transpose_layer(
         method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
@@ -903,11 +924,13 @@ def test_lstm_layer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_channels, input_dtype, vals = input_dtype_val
     return_sequence = return_sequence
     return_state = return_state
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "input_channels": input_channels,
@@ -969,7 +992,7 @@ def test_sequential_layer(
     batch_shape, channels, target = bs_c_target
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
     if method_as_variable_flags:
-        x = ivy.variable(
+        x = _variable(
             ivy.asarray(
                 ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
                 dtype=dtype,
@@ -987,26 +1010,26 @@ def test_sequential_layer(
             {
                 "submodules": {
                     "v0": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
                                 device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
+                        "b": _variable(
                             ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },
                     "v2": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
                                 device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
+                        "b": _variable(
                             ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },

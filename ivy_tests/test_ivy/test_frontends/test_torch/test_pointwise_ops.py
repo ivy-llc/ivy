@@ -1877,3 +1877,42 @@ def test_torch_addcmul(
         value=value,
         out=None,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.pow",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        large_abs_safety_factor=2.5,
+        small_abs_safety_factor=2.5,
+        safety_factor_scale="log",
+    ),
+    alpha=st.integers(min_value=1, max_value=5),
+)
+def test_torch_pow(
+    dtype_and_x,
+    alpha,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["pow"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-03,
+        input=x[0],
+        exponent=x[1],
+    )

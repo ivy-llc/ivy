@@ -88,6 +88,7 @@ def _array_and_axes_permute_helper(
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
+    kwargs["where"] = None
     kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
@@ -112,6 +113,7 @@ def test_frontend_function(*args, where=None, **kwargs):
         kwargs["where"] = where
         if "out" in kwargs and kwargs["out"] is None:
             _test_frontend_function_ignoring_unitialized(*args, **kwargs)
+            return
         else:
             helpers.test_frontend_function(*args, **kwargs)
 
