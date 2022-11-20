@@ -404,6 +404,7 @@ def test_tensorflow_instance_mul(
 
 # __mod__
 @handle_frontend_method(
+    init_name="constant",
     method_tree="tensorflow.EagerTensor.__mod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
@@ -415,7 +416,8 @@ def test_tensorflow_instance_mod(
     dtype_and_x,
     as_variable,
     native_array,
-    class_,
+    frontend,
+    init_name,
     method_name,
 ):
     input_dtype, x = dtype_and_x
@@ -434,9 +436,9 @@ def test_tensorflow_instance_mod(
         method_all_as_kwargs_np={
             "y": x[1],
         },
-        frontend="tensorflow",
-        class_name="EagerTensor",
-        method_name="__mod__",
+        frontend=frontend,
+        method_name=method_name,
+        init_name=init_name,
     )
 
 
