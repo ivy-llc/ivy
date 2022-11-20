@@ -481,6 +481,7 @@ def fliplr(m):
 
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
+    # TODO: dtype supported in JAX v0.3.20
     return ivy.hstack(tup)
 
 
