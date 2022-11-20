@@ -327,14 +327,15 @@ def handle_method(
     return test_wrapper
 
 
-def handle_frontend_method(*, method_tree, **_given_kwargs):
+def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs):
     method_tree = "ivy.functional.frontends." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
     def test_wrapper(test_fn):
-        callable_method, method_name, class_, class_name, method_mod = _import_method(
-            method_tree
-        )
+        # Get the frontend we're testing for
+        # assuming the function hierarchy does not change TODO
+
+        callable_method, method_name, _, class_name, _ = _import_method(method_tree)
         supported_device_dtypes = _get_method_supported_devices_dtypes(
             method_name, callable_method.__module__, class_name
         )
@@ -361,7 +362,7 @@ def handle_frontend_method(*, method_tree, **_given_kwargs):
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
             possible_arguments = {
-                "class_": class_,
+                "init_name": init_name,
                 "method_name": method_name,
             }
             filtered_args = set(param_names).intersection(possible_arguments.keys())
