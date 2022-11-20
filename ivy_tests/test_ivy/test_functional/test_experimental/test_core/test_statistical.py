@@ -206,28 +206,6 @@ def test_unravel_index(
     )
 
 
-# @st.composite
-# def data_for_quantile(draw):
-#     large_abs_safety_factor = 2
-#     small_abs_safety_factor = 2
-#     # if function in ["mean", "median", "std", "var"]:
-#     # large_abs_safety_factor = 24
-#     # small_abs_safety_factor = 24
-#     # helpers.dtype_and_values()
-#     dtype, values = draw(
-#         helpers.dtype_and_values(
-#             available_dtypes=helpers.get_dtypes("float"),
-#             num_arrays=1,
-#             large_abs_safety_factor=large_abs_safety_factor,
-#             small_abs_safety_factor=small_abs_safety_factor,
-#             safety_factor_scale="log",
-#             shape=draw(helpers.get_shape(min_num_dims=1,
-#                        max_num_dims=5, min_dim_size=2)),
-#         )
-#     )
-#     return dtype, values
-
-
 @handle_test(
     fn_tree="functional.experimental.quantile",
     dtype_and_x=statistical_dtype_values(function="quantile"),

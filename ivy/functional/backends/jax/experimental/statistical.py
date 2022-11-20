@@ -52,8 +52,10 @@ def quantile(
     keepdims: bool = False,
     out : Optional[JaxArray] = None 
 ) -> JaxArray:
-    tuple(axis) if isinstance(axis, list) else axis
-    a, q = ivy.promote_types_of_inputs(a, q)
+
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
     return jnp.quantile(
         a,
         q,
@@ -61,4 +63,4 @@ def quantile(
         method=interpolation,
         keepdims=keepdims,
         out=out
-    ).astype('float64')
+    )

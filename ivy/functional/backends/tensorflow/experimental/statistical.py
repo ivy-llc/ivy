@@ -59,10 +59,11 @@ def quantile(
     out : Optional[Union[tf.Tensor, tf.Variable]] = None 
 ) -> Union[tf.Tensor, tf.Variable] :
     axis = tuple(axis) if isinstance(axis, list) else axis
+
     # In tensorflow, it requires percentile in range [0, 100], while in the other
     # backends the quantile has to be in range [0, 1].
+
     q = q * 100
-    a, q = ivy.promote_types_of_inputs(a, q)
 
     result = tfp.stats.percentile(
         a,
@@ -71,5 +72,5 @@ def quantile(
         interpolation=interpolation,
         keepdims=keepdims
     )
-    result = tf.cast(result, tf.float64)
+    # result = tf.cast(result, tf.float64)
     return result

@@ -54,7 +54,7 @@ def quantile(
     interpolation: str = 'linear',
     out : Optional[np.ndarray] = None 
 ) -> np.ndarray:
-    a, q = ivy.promote_types_of_inputs(a, q)
+    input_dtype = str(a.dtype)
     tuple(axis) if isinstance(axis, list) else axis
     return np.quantile(
         a,
@@ -63,4 +63,4 @@ def quantile(
         method=interpolation,
         keepdims=keepdims,
         out=out
-    ).astype('float64')
+    ).astype(input_dtype)

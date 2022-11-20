@@ -50,6 +50,7 @@ def nanmean(
 nanmean_support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version)
 def quantile(
     a: torch.tensor,
     q: Union[torch.tensor, float],
@@ -60,14 +61,11 @@ def quantile(
     interpolation: str = 'linear',
     out: Optional[torch.tensor] = None
 ) -> torch.tensor:
-    a = a.float()
-    q = q.float()
-    a, q = ivy.promote_types_of_inputs(a, q)
     if axis is None:
         return torch.quantile(a,
                               q,
                               keepdim=keepdims,
-                              interpolation=interpolation).to(torch.float64)
+                              interpolation=interpolation)
     if isinstance(axis, list) or isinstance(axis, tuple):
         for i in axis:
             a = torch.quantile(a,
@@ -75,10 +73,10 @@ def quantile(
                                i,
                                keepdim=keepdims, 
                                interpolation=interpolation)
-        return a.to(torch.float64)
+        return a
 
     return torch.quantile(a,
                           q, 
                           dim=axis,
                           keepdim=keepdims,
-                          interpolation=interpolation).to(torch.float64)
+                          interpolation=interpolation)
