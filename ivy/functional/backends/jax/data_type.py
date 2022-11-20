@@ -96,16 +96,8 @@ class Finfo:
 
 def astype(x: JaxArray, dtype: jnp.dtype, /, *, copy: bool = True) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = jnp.array(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = jnp.array(x)
-            return new_tensor.astype(dtype)
+    if x.dtype == dtype:
+        return jnp.copy(x) if copy else x
     return x.astype(dtype)
 
 

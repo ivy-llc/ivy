@@ -415,7 +415,7 @@ def scatter_nd(
     else:
         indices = [[indices]] if isinstance(indices, Number) else indices
         indices = (
-            torch.Tensor(indices) if isinstance(indices, (tuple, list)) else indices
+            torch.tensor(indices) if isinstance(indices, (tuple, list)) else indices
         )
         if len(indices.shape) < 2:
             indices = torch.unsqueeze(indices, 0)
@@ -436,7 +436,7 @@ def scatter_nd(
                             *[
                                 torch.range(0, s - 1)
                                 if idx == slice(None, None, None)
-                                else torch.Tensor([idx % s])
+                                else torch.tensor([idx % s])
                                 for s, idx in zip(shape, index)
                             ],
                             indexing="xy",

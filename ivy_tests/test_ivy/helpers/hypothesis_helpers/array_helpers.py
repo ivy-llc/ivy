@@ -409,6 +409,7 @@ def array_indices_axis(
     min_dim_size=1,
     max_dim_size=10,
     first_dimension_only=False,
+    indices_same_dims=False,
 ):
     """Generates two arrays x & indices, the values in the indices array are indices
     of the array x. Draws an integers randomly from the minimum and maximum number of
@@ -432,6 +433,8 @@ def array_indices_axis(
         The minimum size of the dimensions of the arrays.
     max_dim_size
         The maximum size of the dimensions of the arrays.
+    indices_same_dims
+        Set x and indices dimensions to be the same
 
     Returns
     -------
@@ -485,19 +488,22 @@ def array_indices_axis(
             )
         )
         batch_shape = x_shape[0:batch_dims]
-    shape_var = draw(
-        gh.get_shape(
-            allow_none=False,
-            min_num_dims=min_num_dims,
-            max_num_dims=max_num_dims - batch_dims,
-            min_dim_size=min_dim_size,
-            max_dim_size=max_dim_size,
+    if indices_same_dims:
+        indices_shape = x_shape
+    else:
+        shape_var = draw(
+            gh.get_shape(
+                allow_none=False,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims - batch_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+            )
         )
-    )
+        indices_shape = batch_shape + shape_var
     max_axis = max(x_shape[axis] - 1, 0)
     if first_dimension_only:
         max_axis = max(x_shape[0] - 1, 0)
-    indices_shape = batch_shape + shape_var
     indices_dtype, indices = draw(
         dtype_and_values(
             available_dtypes=indices_dtypes,
@@ -879,6 +885,8 @@ def arrays_for_pooling(draw, min_dims, max_dims, min_side, max_side):
             available_dtypes=dtype_helpers.get_dtypes("float"),
             shape=in_shape,
             num_arrays=1,
+            max_value=100,
+            min_value=-100,
         )
     )
     array_dim = x[0].ndim

@@ -103,17 +103,8 @@ def astype(
     copy: bool = True,
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
-    if copy:
-        if x.dtype == dtype:
-            new_tensor = tf.experimental.numpy.copy(x)
-            return new_tensor
-    else:
-        if x.dtype == dtype:
-            return x
-        else:
-            new_tensor = tf.experimental.numpy.copy(x)
-            new_tensor = tf.cast(new_tensor, dtype)
-            return new_tensor
+    if x.dtype == dtype:
+        return tf.experimental.numpy.copy(x) if copy else x
     return tf.cast(x, dtype)
 
 

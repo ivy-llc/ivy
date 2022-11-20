@@ -38,7 +38,7 @@ def argmin(
     dtype: Optional[torch.dtype] = torch.int64,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    ret = torch.argmin(x, axis=axis, keepdim=keepdims, out=out)
+    ret = torch.argmin(x, dim=axis, keepdim=keepdims, out=out)
     # The returned array must have the default array index data type.
     if dtype is not None:
         if dtype not in (torch.int32, torch.int64):
@@ -90,7 +90,7 @@ def where(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
-    return torch.where(condition, x1, x2).to(dtype=x1.dtype)
+    return ivy.astype(torch.where(condition, x1, x2), x1.dtype, copy=False)
 
 
 # Extra #

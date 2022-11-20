@@ -3,6 +3,7 @@ import sys
 from pydriller import Repository
 import pickle  # noqa
 from tqdm import tqdm
+from random import shuffle
 import bz2
 import _pickle as cPickle
 
@@ -12,28 +13,34 @@ tests = {}
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 os.system("git config --global --add safe.directory /ivy")
-N = 10
+N = 32
 run_iter = int(sys.argv[1])
 
 os.system(
     "docker run -v `pwd`:/ivy -v `pwd`/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --disable-pytest-warnings ivy_tests/test_ivy --my_test_dump true > test_names"  # noqa
 )
+test_names_without_backend = []
 test_names = []
 with open("test_names") as f:
     i = 0
     for line in f:
-        i += 1
-        if i <= 6:
+        if "ERROR" in line:
+            break
+        if not line.startswith("ivy_tests"):
             continue
         test_name = line[:-1]
         pos = test_name.find("[")
         if pos != -1:
             test_name = test_name[:pos]
-        for backend in BACKENDS:
-            test_backend = test_name + "," + backend
-            test_names.append(test_backend)
+        test_names_without_backend.append(test_name)
 
-test_names = test_names[:-12]
+shuffle(test_names_without_backend)
+for test_name in test_names_without_backend:
+    for backend in BACKENDS:
+        test_backend = test_name + "," + backend
+        test_names.append(test_backend)
+
+test_names = list(set(test_names))
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
@@ -42,50 +49,16 @@ for i in range(len(test_names)):
     tests["tests_mapping"][test_names[i]] = i
 
 
-directories = [
-    "ivy",
-    "ivy/array",
-    "ivy/container",
-    "ivy/functional",
-    "ivy/functional/backends",
-    "ivy/functional/backends/jax",
-    "ivy/functional/backends/numpy",
-    "ivy/functional/backends/torch",
-    "ivy/functional/backends/tensorflow",
-    "ivy/functional/frontends",
-    "ivy/functional/frontends/jax",
-    "ivy/functional/frontends/numpy",
-    "ivy/functional/frontends/torch",
-    "ivy/functional/frontends/tensorflow",
-    "ivy/functional/ivy",
-    "ivy/stateful",
-    "ivy_tests",
-    "ivy_tests/test_ivy",
-    "ivy_tests/test_ivy/test_frontends",
-    "ivy_tests/test_ivy/test_frontends/test_jax",
-    "ivy_tests/test_ivy/test_frontends/test_numpy",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_creation_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_fft",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_indexing_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_linear_algebra",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_logic",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ma",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_manipulation_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_matrix",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_random",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_sorting_searching_counting",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_statistics",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ufunc",
-    "ivy_tests/test_ivy/test_frontends/test_tensorflow",
-    "ivy_tests/test_ivy/test_frontends/test_torch",
-    "ivy_tests/test_ivy/test_functional",
-    "ivy_tests/test_ivy/test_functional/test_core",
-    "ivy_tests/test_ivy/test_functional/test_nn",
-    "ivy_tests/test_ivy/test_stateful",
-]
-
 if __name__ == "__main__":
+    directories = (
+        [x[0] for x in os.walk("ivy")]
+        + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+        + ["ivy_tests"]
+    )
+    directories_filtered = [
+        x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+    ]
+    directories = set(directories_filtered)
     num_tests = len(test_names)
     tests_per_run = num_tests // N
     start = run_iter * tests_per_run

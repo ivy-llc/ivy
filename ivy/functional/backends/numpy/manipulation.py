@@ -38,7 +38,7 @@ def concat(
     highest_dtype = xs[0].dtype
     for i in xs:
         highest_dtype = ivy.as_native_dtype(ivy.promote_types(highest_dtype, i.dtype))
-    return ret.astype(highest_dtype)
+    return ivy.astype(ret, highest_dtype, copy=False)
 
 
 concat.support_native_out = True
@@ -85,11 +85,13 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[np.ndarray] = None,
+    order: Optional[str] = "C",
 ) -> np.ndarray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = x.copy()
-        return np.reshape(newarr, shape)
-    return np.reshape(x, shape)
+        return np.reshape(newarr, shape, order=order)
+    return np.reshape(x, shape, order=order)
 
 
 def roll(
