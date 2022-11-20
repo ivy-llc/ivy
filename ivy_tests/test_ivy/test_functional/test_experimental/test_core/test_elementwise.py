@@ -907,6 +907,7 @@ def test_diff(
     as_variable,
     num_positional_args,
     native_array,
+    container,
     instance_method,
     fw,
 ):
@@ -917,6 +918,7 @@ def test_diff(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
+        container_flags=container,
         instance_method=instance_method,
         fw=fw,
         fn_name="diff",
