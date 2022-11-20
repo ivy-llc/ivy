@@ -242,6 +242,25 @@ def sort(
     )
 
 
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def lexsort(
+    keys: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend(keys).lexsort(
+        keys, axis=axis, descending=descending, stable=stable, out=out
+    )
+
+
 # Extra #
 # ------#
 
