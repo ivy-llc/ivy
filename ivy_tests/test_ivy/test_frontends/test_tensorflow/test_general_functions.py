@@ -34,14 +34,14 @@ def _get_clip_inputs(draw):
     input_and_ranges=_get_clip_inputs(),
 )
 def test_tensorflow_clip_by_value(
-    *,
-    input_and_ranges,
-    as_variable,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
-    num_positional_args,
+        *,
+        input_and_ranges,
+        as_variable,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+        num_positional_args,
 ):
     x_dtype, x, min, max = input_and_ranges
     helpers.test_frontend_function(
@@ -70,18 +70,18 @@ def test_tensorflow_clip_by_value(
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_eye(
-    *,
-    n_rows,
-    n_cols,
-    batch_shape,
-    dtype,
-    as_variable,
-    native_array,
-    with_out,
-    frontend,
-    fn_tree,
-    on_device,
-    num_positional_args,
+        *,
+        n_rows,
+        n_cols,
+        batch_shape,
+        dtype,
+        as_variable,
+        native_array,
+        with_out,
+        frontend,
+        fn_tree,
+        on_device,
+        num_positional_args,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -112,14 +112,14 @@ def test_tensorflow_eye(
     dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_ones(
-    shape,
-    dtype,
-    as_variable,
-    native_array,
-    num_positional_args,
-    frontend,
-    fn_tree,
-    on_device,
+        shape,
+        dtype,
+        as_variable,
+        native_array,
+        num_positional_args,
+        frontend,
+        fn_tree,
+        on_device,
 ):
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -132,4 +132,40 @@ def test_tensorflow_ones(
         on_device=on_device,
         shape=shape,
         dtype=dtype[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.zeros",
+    input=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=0,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_tensorflow_zeros(
+        *,
+        input,
+        dtype,
+        as_variable,
+        native_array,
+        with_out,
+        frontend,
+        fn_tree,
+        on_device,
+        num_positional_args,
+):
+    helpers.test_frontend_function(
+        shape=input,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree=fn_tree,
+        on_device=on_device,
     )
