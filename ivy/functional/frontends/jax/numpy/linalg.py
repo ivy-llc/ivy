@@ -14,6 +14,13 @@ def det(a):
 
 
 @to_ivy_arrays_and_back
+def svd(x, /, *, full_matrices=True, compute_uv=True, hermitian=False):
+    if not compute_uv:
+        return ivy.svdvals(x)
+    return ivy.svd(x, full_matrices=full_matrices, hermitian=hermitian)
+
+
+@to_ivy_arrays_and_back
 def eig(a):
     return ivy.eig(a)
 
