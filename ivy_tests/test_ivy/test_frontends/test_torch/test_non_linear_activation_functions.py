@@ -576,13 +576,10 @@ def test_torch_relu(
 
 
 # relu_
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.relu_",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.nn.functional.relu_"
     ),
 )
 def test_torch_relu_(
@@ -590,6 +587,8 @@ def test_torch_relu_(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
 ):
     input_dtype, input = dtype_and_input
     _filter_dtypes(input_dtype)
@@ -599,8 +598,8 @@ def test_torch_relu_(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="nn.functional.relu_",
+        frontend=frontend,
+        fn_tree=fn_tree,
         input=input[0],
     )
 
