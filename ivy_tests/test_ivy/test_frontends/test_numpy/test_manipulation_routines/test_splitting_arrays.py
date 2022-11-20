@@ -39,7 +39,7 @@ def _arrays_idx_n_dtypes(draw):
         )
         xs.append(x)
         xa.append(x)
-    return xs, input_dtypes, unique_idx
+    return xs, xa, input_dtypes, unique_idx
 
 
 # split
