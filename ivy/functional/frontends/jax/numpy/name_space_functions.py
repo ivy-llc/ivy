@@ -7,13 +7,11 @@ from ivy.functional.frontends.jax.func_wrapper import (
 
 
 @to_ivy_arrays_and_back
-def abs(x):
-    return ivy.abs(x)
-
-
-@to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
+
+
+abs = absolute
 
 
 @to_ivy_arrays_and_back
