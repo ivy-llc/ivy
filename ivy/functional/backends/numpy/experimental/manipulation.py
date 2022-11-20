@@ -257,7 +257,7 @@ def take_along_axis(
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"        
+            + f" got {arr.shape} vs {indices.shape}"
         )
     return np.take_along_axis(arr, indices, axis)
 
