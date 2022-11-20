@@ -13,37 +13,6 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 )
 
 
-# abs
-@handle_frontend_test(
-    fn_tree="jax.numpy.abs",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"),
-    ),
-)
-def test_jax_numpy_abs(
-    *,
-    dtype_and_x,
-    as_variable,
-    num_positional_args,
-    native_array,
-    on_device,
-    fn_tree,
-    frontend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
-
-
 # absolute
 @handle_frontend_test(
     fn_tree="jax.numpy.absolute",
@@ -66,6 +35,7 @@ def test_jax_numpy_absolute(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
+        all_aliases=["jax.numpy.abs"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -1563,16 +1533,17 @@ def test_jax_numpy_power(
 # arange
 @handle_frontend_test(
     fn_tree="jax.numpy.arange",
-    dtype_and_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=3,
-        shape=(1,),
-        shared_dtype=True,
-    ),
+    start=st.integers(min_value=-100, max_value=100),
+    stop=st.integers(min_value=-100, max_value=100) | st.none(),
+    step=st.integers(min_value=-100, max_value=100).filter(lambda x: x != 0),
+    dtype=helpers.get_dtypes("numeric", full=False),
 )
 def test_jax_numpy_arange(
     *,
-    dtype_and_values,
+    start,
+    stop,
+    step,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1580,8 +1551,6 @@ def test_jax_numpy_arange(
     fn_tree,
     frontend,
 ):
-    dtype, values = dtype_and_values
-    start, stop, step = values
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -1594,6 +1563,7 @@ def test_jax_numpy_arange(
         start=start,
         stop=stop,
         step=step,
+        dtype=dtype[0],
     )
 
 
@@ -2507,22 +2477,24 @@ def test_jax_numpy_fliplr(
 
 @handle_frontend_test(
     fn_tree="jax.numpy.hstack",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_tup=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        shared_dtype=True,
+        num_arrays=st.integers(min_value=2, max_value=2),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=5
+        ),
     ),
-    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_jax_numpy_hstack(
-    dtype_and_x,
+    dtype_and_tup,
     as_variable,
-    dtype,
     num_positional_args,
     native_array,
     frontend,
     fn_tree,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_tup
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -2531,8 +2503,7 @@ def test_jax_numpy_hstack(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
-        dtype=dtype,
-        arrays=x,
+        tup=x,
     )
 
 
