@@ -89,7 +89,7 @@ def test_jax_numpy_argmax(
 @handle_frontend_test(
     fn_tree="jax.numpy.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_jax_numpy_add(
