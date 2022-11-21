@@ -145,6 +145,7 @@ def test_numpy_isclose(
 
 
 @handle_frontend_test(
+    fn_tree="numpy.isclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
