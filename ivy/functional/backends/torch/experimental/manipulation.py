@@ -197,5 +197,13 @@ def take_along_axis(
     indices = indices.long()
     return torch.take_along_dim(arr, indices, axis, out=out)
 
+def hsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hsplit(ary, indices_or_sections)
 
 take_along_axis.support_native_out = True
