@@ -1646,15 +1646,19 @@ def test_jax_numpy_bincount(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_jax_numpy_cumprod(
     *,
     dtype_x_axis,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1673,9 +1677,10 @@ def test_jax_numpy_cumprod(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
         a=x[0],
         axis=axis,
-        dtype=input_dtype[0],
+        dtype=dtype[0],
     )
 
 
