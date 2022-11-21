@@ -49,3 +49,19 @@ def msort(
         )
     """
     return ivy.current_backend().msort(a, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def lexsort(
+    keys: Union[ivy.Array, ivy.NativeArray, list, tuple],
+    /,
+    *,
+    axis=-1,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """"
+    """
+    return ivy.current_backend().lexsort(keys, axis=axis, out=out)
