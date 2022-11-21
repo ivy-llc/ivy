@@ -1259,6 +1259,41 @@ def dsplit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def atleast_1d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least one dimension.
+    Scalar inputs are converted to 1-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more input arrays.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 1D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_1d(ary1)
+    ivy.array([5])
+    >>> ary2 = ivy.array([[3,4]])
+    >>> ivy.atleast_1d(ary2)
+    ivy.array([[3, 4]])
+    >>> ivy.atleast_1d(6,7,8)
+    [ivy.array([6]), ivy.array([7]), ivy.array([8])]
+    """
+    return ivy.current_backend().atleast_1d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
