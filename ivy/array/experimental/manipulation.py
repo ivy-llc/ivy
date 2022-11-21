@@ -686,3 +686,55 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([[4, 3, 3], [1, 1, 1]])
         """
         return ivy.take_along_axis(self._data, indices, axis, out=out)
+
+    def hsplit(
+        self: ivy.Array,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.hsplit. This method simply
+        wraps the function, and so the docstring for ivy.hsplit also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n along columns, each section will be of
+            equal size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            Optional output, for writing the result to.
+
+        Returns
+        -------
+        ret
+            input array split column-wise.
+
+        Examples
+        --------
+        >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+        >>> ary.hsplit(2)
+        [ivy.array([[ 0.,  1.],
+                    [ 4.,  5.],
+                    [ 8.,  9.],
+                    [12., 13.]]),
+         ivy.array([[ 2.,  3.],
+                    [ 6.,  7.],
+                    [10., 11.],
+                    [14., 15.]]))
+        """
+        return ivy.hsplit(self._data, indices_or_sections=indices_or_sections, out=out)
