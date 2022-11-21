@@ -6,7 +6,7 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 def array(object, dtype=None, *, copy=True, order="K", subok=False, ndmin=0, like=None):
     if dtype:
         return ivy.array(object, copy=copy, dtype=dtype)
-    return ivy.array(object, copy=copy, dtype=object.dtype())
+    return ivy.array(object, copy=copy, dtype=ivy.dtype(object))
 
 
 @to_ivy_arrays_and_back
