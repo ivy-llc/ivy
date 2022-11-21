@@ -890,12 +890,12 @@ def _getitem_helper(draw):
 
 # __getitem__
 @given(
-    dtype_x_index=_getitem_helper(),
+    x_index=_getitem_helper(),
 )
 def test_jax_special_getitem(
-    dtype_x_index,
+    x_index,
 ):
-    input_dtype, x, index = dtype_x_index
+    x, index = x_index
     data = DeviceArray(x[0])
     ret = data.__getitem__(index)
     ret_gt = jnp.array(x[0]).at[index].get()
