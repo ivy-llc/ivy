@@ -302,7 +302,6 @@ def test_torch_l1_loss(
     size_average=st.booleans(),
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
-    label_smoothing=helpers.floats(min_value=0, max_value=0.49),
 )
 def test_torch_nll_loss(
     *,
