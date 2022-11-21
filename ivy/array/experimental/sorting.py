@@ -3,6 +3,7 @@ import abc
 from typing import Optional
 
 # local
+
 import ivy
 
 
@@ -41,6 +42,7 @@ class ArrayWithSortingExperimental(abc.ABC):
             )
         """
         return ivy.msort(self._data, out=out)
+
 
     # lexsort
     def lexsort(
