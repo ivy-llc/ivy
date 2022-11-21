@@ -5,7 +5,6 @@ from hypothesis import given, strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 
-
 # isin
 @handle_cmd_line_args
 @given(
@@ -39,7 +38,7 @@ def test_isin(
         container_flags=container,
         fw=fw,
         fn_name="isin",
-        ground_truth_backend='numpy',
+        ground_truth_backend='tensorflow',
         elements=elements,
         test_elements=test_elements,
         invert=invert,
