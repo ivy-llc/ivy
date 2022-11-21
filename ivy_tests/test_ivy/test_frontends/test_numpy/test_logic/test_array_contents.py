@@ -153,7 +153,7 @@ def test_numpy_isclose(
     where=np_frontend_helpers.where(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.isnat"
-    ),
+    )
 )
 def test_numpy_isnat(
         dtype_and_x,
@@ -184,6 +184,7 @@ def test_numpy_isnat(
         where=where,
         casting="same_kind",
         order="k",
+        dtype=dtype,
+        subok=True,
         test_values=False,
     )
-
