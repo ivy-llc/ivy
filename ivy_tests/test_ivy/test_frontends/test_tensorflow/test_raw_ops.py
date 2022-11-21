@@ -748,6 +748,166 @@ def test_tensorflow_Squeeze(
     )
 
 
+# Sign
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Sign",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_Sign(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+@st.composite
+def _get_splits(draw, as_list=False):
+    """
+    Generate valid splits, either by generating an integer that evenly divides the axis
+    or a list of splits that sum to the length of the axis being split.
+    """
+    shape = draw(st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"))
+    axis = draw(
+        st.shared(helpers.get_axis(shape=shape, force_int=True), key="target_axis")
+    )
+
+    @st.composite
+    def get_int_split(draw):
+        if shape[axis] == 0:
+            return 0
+        factors = []
+        for i in range(1, shape[axis] + 1):
+            if shape[axis] % i == 0:
+                factors.append(i)
+        return draw(st.sampled_from(factors))
+
+    @st.composite
+    def get_list_split(draw):
+        num_or_size_splits = []
+        while sum(num_or_size_splits) < shape[axis]:
+            split_value = draw(
+                helpers.ints(
+                    min_value=1,
+                    max_value=shape[axis] - sum(num_or_size_splits),
+                )
+            )
+            num_or_size_splits.append(split_value)
+        return num_or_size_splits
+
+    if as_list:
+        return draw(get_list_split())
+    else:
+        return draw(get_int_split())
+
+
+# Split
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.Split",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    num_splits=_get_splits(),
+)
+def test_tensorflow_Split(
+    *,
+    dtype_and_x,
+    axis,
+    num_splits,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, value = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        axis=axis,
+        num_split=num_splits,
+    )
+
+
+# SplitV
+@handle_frontend_test(
+    fn_tree="tensorflow.raw_ops.SplitV",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+    ),
+    axis=st.shared(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
+            force_int=True,
+        ),
+        key="target_axis",
+    ),
+    size_splits=_get_splits(as_list=True),
+)
+def test_tensorflow_SplitV(
+    *,
+    dtype_and_x,
+    axis,
+    size_splits,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, value = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=value[0],
+        axis=axis,
+        size_splits=size_splits,
+        num_split=len(size_splits),
+    )
+
+
 # Sqrt
 @handle_frontend_test(
     fn_tree="tensorflow.raw_ops.Sqrt",

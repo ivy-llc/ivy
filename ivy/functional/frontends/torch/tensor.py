@@ -278,6 +278,9 @@ class Tensor:
     def device(self):
         return ivy.dev(self.data)
 
+    def is_cuda(self):
+        return "gpu" in ivy.dev(self.data)
+
     def pow(self, other):
         return ivy.pow(self.data, other)
 
@@ -287,6 +290,12 @@ class Tensor:
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
+    def ceil(self):
+        return torch_frontend.ceil(self.data)
+
+    def min(self, dim=None, keepdim=False):
+        return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
 
     # Special Methods #
     # -------------------#
@@ -326,3 +335,6 @@ class Tensor:
 
 # Tensor (alias)
 tensor = Tensor
+
+# ex_tensor = tensor(data=[3, 4])
+# print(ex_tensor)
