@@ -265,5 +265,14 @@ def take_along_axis(
         )
     return np.take_along_axis(arr, indices, axis)
 
+def hsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.hsplit(ary, indices_or_sections)
+
 
 take_along_axis.support_native_out = False
