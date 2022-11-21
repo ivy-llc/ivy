@@ -38,7 +38,7 @@ def test_isin(
         container_flags=container,
         fw=fw,
         fn_name="isin",
-        ground_truth_backend='tensorflow',
+        ground_truth_backend='numpy',
         elements=elements,
         test_elements=test_elements,
         invert=invert,
