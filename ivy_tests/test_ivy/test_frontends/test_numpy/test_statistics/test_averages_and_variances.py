@@ -7,12 +7,12 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_cmd_line_args,handle_frontend_test
 import ivy
 
 
 # mean
-# @handle_cmd_line_args
+@handle_cmd_line_args
 @given(
     dtype_and_x=statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -69,7 +69,7 @@ def test_numpy_mean(
 
 
 # nanmean
-# @handle_cmd_line_args
+@handle_cmd_line_args
 @given(
     dtype_and_a=statistical_dtype_values(function="mean"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
@@ -180,7 +180,7 @@ def test_numpy_std(
         test_values=False,
     )
 
-
+# average
 @handle_frontend_test(
     fn_tree="numpy.average",
     dtype_and_a=statistical_dtype_values(function="average"),
