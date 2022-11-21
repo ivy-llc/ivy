@@ -1,3 +1,9 @@
+# global
+import jax
+
+backend_version = {"version": jax.__version__}
+
+# local sub-modules
 # flake8: noqa
 from . import activations
 from .activations import *

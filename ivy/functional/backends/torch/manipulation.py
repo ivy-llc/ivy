@@ -14,6 +14,12 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+def _reshape_fortran_torch(x, shape):
+    if len(x.shape) > 0:
+        x = x.permute(*reversed(range(len(x.shape))))
+    return x.reshape(*reversed(shape)).permute(*reversed(range(len(shape))))
+
+
 # Array API Standard #
 # -------------------#
 
@@ -91,10 +97,16 @@ def reshape(
     *,
     copy: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
+    order: Optional[str] = "C",
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = torch.clone(x)
+        if order == "F":
+            return _reshape_fortran_torch(newarr, shape)
         return torch.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_torch(x, shape)
     return torch.reshape(x, shape)
 
 

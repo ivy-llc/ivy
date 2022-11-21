@@ -2,14 +2,17 @@
 
 # global
 import numpy as np
-from hypothesis import given, strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers import handle_method
+
 
 # Helpers #
 # --------#
@@ -52,8 +55,8 @@ def _input_channels_and_dtype_and_values(draw):
 
 
 # linear
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Linear.__call__",
     ic_n_dtype_n_vals=_input_channels_and_dtype_and_values(),
     output_channels=st.shared(
         st.integers(min_value=1, max_value=10), key="output_channels"
@@ -62,8 +65,6 @@ def _input_channels_and_dtype_and_values(draw):
     wb_n_b_init=_bias_flag_and_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Linear.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Linear._forward"),
     seed=helpers.seed(),
 )
 def test_linear_layer(
@@ -74,36 +75,40 @@ def test_linear_layer(
     wb_n_b_init,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
     seed,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     ivy.seed(seed_value=seed)
     input_channels, input_dtype, x = ic_n_dtype_n_vals
     with_bias, bias_initializer = wb_n_b_init
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "weight_initializer": weight_initializer,
             "bias_initializer": bias_initializer,
             "with_bias": with_bias,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"x": x[0]},
-        class_name="Linear",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"x": x[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
@@ -113,8 +118,8 @@ def test_linear_layer(
 # --------#
 
 # dropout
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Dropout.__call__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
@@ -126,37 +131,39 @@ def test_linear_layer(
     ),
     prob=helpers.floats(min_value=0, max_value=0.9),
     scale=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Dropout.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Dropout._forward"),
 )
 def test_dropout_layer(
     *,
     dtype_and_x,
     prob,
     scale,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     ret = helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "prob": prob,
             "scale": scale,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": x[0]},
-        class_name="Dropout",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": x[0]},
+        class_name=class_name,
+        method_name=method_name,
         test_values=False,
     )
     ret = helpers.flatten_and_to_np(ret=ret)
@@ -237,14 +244,11 @@ def x_and_mha(draw):
 
 
 # multi_head_attention
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="MultiHeadAttention.__call__",
     dtype_mha=x_and_mha(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(
-        fn_name="MultiHeadAttention.__init__"
-    ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="MultiHeadAttention._forward"
     ),
@@ -254,14 +258,16 @@ def test_multi_head_attention_layer(
     dtype_mha,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
+    num_positional_args_init: pf.NumPositionalArg,
     num_positional_args_method,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
     build_mode,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -278,13 +284,10 @@ def test_multi_head_attention_layer(
         with_to_kv_fn,
         with_to_out_fn,
     ) = dtype_mha
-    as_variable = [as_variable] * 3
-    native_array = [native_array] * 3
-    container = [container] * 3
-
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "query_dim": query_dim,
             "num_heads": num_heads,
             "head_dim": head_dim,
@@ -294,20 +297,21 @@ def test_multi_head_attention_layer(
             "with_to_kv_fn": with_to_kv_fn,
             "with_to_out_fn": with_to_out_fn,
             "build_mode": build_mode,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={
             "inputs": np.asarray(x_mha, dtype=input_dtype[0]),
             "context": np.asarray(context, dtype=input_dtype[0]),
             "mask": np.asarray(mask, dtype=input_dtype[0]),
         },
-        class_name="MultiHeadAttention",
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
         rtol_=1e-2,
@@ -393,15 +397,13 @@ def _x_ic_oc_f_d_df(draw, dim: int = 2, transpose: bool = False, depthwise=False
 
 
 # conv1d
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv1D.__call__",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Conv1D.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Conv1D._forward"),
 )
 def test_conv1d_layer(
     _x_ic_oc_f_s_d_df_p,
@@ -409,12 +411,15 @@ def test_conv1d_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -428,8 +433,9 @@ def test_conv1d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -439,34 +445,33 @@ def test_conv1d_layer(
             "bias_initializer": bias_initializer,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="Conv1D",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=False,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        atol_=1e-02,
         rtol_=1e-02,
+        atol_=1e-02,
     )
 
 
 # conv1d transpose
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv1DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=1, transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(
-        fn_name="Conv1DTranspose.__init__"
-    ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="Conv1DTranspose._forward"
     ),
@@ -477,13 +482,14 @@ def test_conv1d_transpose_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -497,10 +503,10 @@ def test_conv1d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (fw == "tensorflow" and dilations > 1 and device == "cpu"))
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -511,32 +517,30 @@ def test_conv1d_transpose_layer(
             "output_shape": output_shape,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=False,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        ground_truth_backend="jax",
-        class_name="Conv1DTranspose",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=False,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
 
 
 # # conv2d
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv2D.__call__",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Conv2D.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Conv2D._forward"),
 )
 def test_conv2d_layer(
     _x_ic_oc_f_s_d_df_p,
@@ -544,13 +548,15 @@ def test_conv2d_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -564,8 +570,9 @@ def test_conv2d_layer(
         padding,
     ) = _x_ic_oc_f_s_d_df_p
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -575,24 +582,26 @@ def test_conv2d_layer(
             "bias_initializer": bias_initializer,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="Conv2D",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
 
 
 # # conv2d transpose
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv2DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -611,13 +620,15 @@ def test_conv2d_transpose_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -631,11 +642,10 @@ def test_conv2d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
-    assume("bfloat16" not in input_dtype[0])
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -646,33 +656,31 @@ def test_conv2d_transpose_layer(
             "output_shape": output_shape,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="Conv2DTranspose",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # # depthwise conv2d
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="DepthwiseConv2D.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(depthwise=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(
-        fn_name="DepthwiseConv2D.__init__"
-    ),
     num_positional_args_method=helpers.num_positional_args(
         fn_name="DepthwiseConv2D._forward"
     ),
@@ -683,13 +691,15 @@ def test_depthwise_conv2d_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    device,
-    fw,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -702,10 +712,10 @@ def test_depthwise_conv2d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (fw == "tensorflow" and dilations > 1 and strides > 1))
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "num_channels": input_channels,
             "filter_shape": filter_shape,
             "strides": strides,
@@ -714,32 +724,31 @@ def test_depthwise_conv2d_layer(
             "bias_initializer": bias_initializer,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="DepthwiseConv2D",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # conv3d
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv3D.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="Conv3D.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="Conv3D._forward"),
 )
 def test_conv3d_layer(
     _x_ic_oc_f_s_d_df_p,
@@ -747,13 +756,15 @@ def test_conv3d_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -766,10 +777,10 @@ def test_conv3d_layer(
         data_format,
         padding,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -779,25 +790,26 @@ def test_conv3d_layer(
             "bias_initializer": bias_initializer,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="Conv3D",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # conv3d transpose
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="Conv3DTranspose.__call__",
+    ground_truth_backend="jax",
     _x_ic_oc_f_s_d_df_p=_x_ic_oc_f_d_df(dim=3, transpose=True),
     weight_initializer=_sample_initializer(),
     bias_initializer=_sample_initializer(),
@@ -816,13 +828,15 @@ def test_conv3d_transpose_layer(
     bias_initializer,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     (
         input_dtype,
@@ -836,10 +850,10 @@ def test_conv3d_transpose_layer(
         padding,
         output_shape,
     ) = _x_ic_oc_f_s_d_df_p
-    assume(not (fw == "tensorflow" and device == "cpu" and dilations > 1))
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "filter_shape": filter_shape,
@@ -850,25 +864,23 @@ def test_conv3d_transpose_layer(
             "output_shape": output_shape,
             "data_format": data_format,
             "dilations": dilations,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": vals[0]},
-        class_name="Conv3DTranspose",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": vals[0]},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
-        ground_truth_backend="jax",
     )
 
 
 # LSTM
-
-
 @st.composite
 def _input_channels_and_dtype_and_values_lstm(draw):
     input_channels = draw(st.integers(min_value=1, max_value=10))
@@ -882,8 +894,8 @@ def _input_channels_and_dtype_and_values_lstm(draw):
     return input_channels, dtype, vals
 
 
-@handle_cmd_line_args
-@given(
+@handle_method(
+    method_tree="LSTM.__call__",
     input_dtype_val=_input_channels_and_dtype_and_values_lstm(),
     output_channels=st.shared(
         st.integers(min_value=1, max_value=10), key="output_channels"
@@ -894,8 +906,6 @@ def _input_channels_and_dtype_and_values_lstm(draw):
     return_state=st.booleans(),
     init_with_v=st.booleans(),
     method_with_v=st.booleans(),
-    num_positional_args_init=helpers.num_positional_args(fn_name="LSTM.__init__"),
-    num_positional_args_method=helpers.num_positional_args(fn_name="LSTM._forward"),
 )
 def test_lstm_layer(
     input_dtype_val,
@@ -906,43 +916,48 @@ def test_lstm_layer(
     return_state,
     init_with_v,
     method_with_v,
-    num_positional_args_init,
-    num_positional_args_method,
-    as_variable,
-    native_array,
-    container,
-    fw,
-    device,
+    num_positional_args_init: pf.NumPositionalArg,
+    num_positional_args_method: pf.NumPositionalArg,
+    method_as_variable_flags: pf.AsVariableFlags,
+    method_native_array_flags: pf.NativeArrayFlags,
+    method_container_flags: pf.ContainerFlags,
+    on_device,
+    class_name,
+    method_name,
+    ground_truth_backend,
 ):
     input_channels, input_dtype, vals = input_dtype_val
     return_sequence = return_sequence
     return_state = return_state
     helpers.test_method(
-        num_positional_args_init=num_positional_args_init,
-        all_as_kwargs_np_init={
+        ground_truth_backend=ground_truth_backend,
+        init_num_positional_args=num_positional_args_init,
+        init_all_as_kwargs_np={
             "input_channels": input_channels,
             "output_channels": output_channels,
             "weight_initializer": weight_initializer,
             "num_layers": num_layers,
             "return_sequence": return_sequence,
             "return_state": return_state,
-            "device": device,
+            "device": on_device,
             "dtype": input_dtype[0],
         },
-        input_dtypes_method=input_dtype,
-        as_variable_flags_method=as_variable,
-        num_positional_args_method=num_positional_args_method,
-        native_array_flags_method=native_array,
-        container_flags_method=container,
-        all_as_kwargs_np_method={"inputs": np.asarray(vals[0], dtype=input_dtype[0])},
-        class_name="LSTM",
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=method_as_variable_flags,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=method_native_array_flags,
+        method_container_flags=method_container_flags,
+        method_all_as_kwargs_np={"inputs": np.asarray(vals[0], dtype=input_dtype[0])},
+        class_name=class_name,
+        method_name=method_name,
         init_with_v=init_with_v,
         method_with_v=method_with_v,
     )
 
 
 # # Sequential #
-@given(
+@handle_method(
+    method_tree="Sequential.__call__",
     bs_c_target=st.sampled_from(
         [
             (
@@ -960,16 +975,24 @@ def test_lstm_layer(
     with_v=st.booleans(),
     seq_v=st.booleans(),
     dtype=st.sampled_from(list(ivy_np.valid_float_dtypes) + [None]),
-    as_variable=st.booleans(),
+    method_as_variable_flags=st.booleans(),
 )
 def test_sequential_layer(
-    bs_c_target, with_v, seq_v, dtype, as_variable, device, compile_graph
+    bs_c_target,
+    with_v,
+    seq_v,
+    dtype,
+    method_as_variable_flags,
+    on_device,
+    compile_graph,
+    method_name,
+    class_name,
 ):
     # smoke test
     batch_shape, channels, target = bs_c_target
     tolerance_dict = {"float16": 1e-2, "float32": 1e-5, "float64": 1e-5, None: 1e-5}
-    if as_variable:
-        x = ivy.variable(
+    if method_as_variable_flags:
+        x = _variable(
             ivy.asarray(
                 ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
                 dtype=dtype,
@@ -987,27 +1010,27 @@ def test_sequential_layer(
             {
                 "submodules": {
                     "v0": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
-                                device=device,
+                                device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
-                            ivy.zeros([channels], device=device, dtype=dtype)
+                        "b": _variable(
+                            ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },
                     "v2": {
-                        "w": ivy.variable(
+                        "w": _variable(
                             ivy.array(
                                 np.random.uniform(-wlim, wlim, (channels, channels)),
                                 dtype=dtype,
-                                device=device,
+                                device=on_device,
                             )
                         ),
-                        "b": ivy.variable(
-                            ivy.zeros([channels], device=device, dtype=dtype)
+                        "b": _variable(
+                            ivy.zeros([channels], device=on_device, dtype=dtype)
                         ),
                     },
                 }
@@ -1017,10 +1040,10 @@ def test_sequential_layer(
         v = None
     if seq_v:
         seq = ivy.Sequential(
-            ivy.Linear(channels, channels, device=device, dtype=dtype),
+            ivy.Linear(channels, channels, device=on_device, dtype=dtype),
             ivy.Dropout(0.0),
-            ivy.Linear(channels, channels, device=device, dtype=dtype),
-            device=device,
+            ivy.Linear(channels, channels, device=on_device, dtype=dtype),
+            device=on_device,
             v=v if with_v else None,
             dtype=dtype,
         )
@@ -1029,7 +1052,7 @@ def test_sequential_layer(
             ivy.Linear(
                 channels,
                 channels,
-                device=device,
+                device=on_device,
                 v=v["submodules"]["v0"] if with_v else None,
                 dtype=dtype,
             ),
@@ -1037,11 +1060,11 @@ def test_sequential_layer(
             ivy.Linear(
                 channels,
                 channels,
-                device=device,
+                device=on_device,
                 v=v["submodules"]["v2"] if with_v else None,
                 dtype=dtype,
             ),
-            device=device,
+            device=on_device,
         )
     ret = seq(x)
     # type test

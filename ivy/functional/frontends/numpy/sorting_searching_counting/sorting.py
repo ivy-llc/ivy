@@ -15,9 +15,11 @@ def argsort(
     return ivy.argsort(x, axis=axis)
 
 
+@to_ivy_arrays_and_back
 def sort(a, axis=-1, kind=None, order=None):
     return ivy.sort(a, axis=axis)
 
 
+@to_ivy_arrays_and_back
 def msort(a):
     return ivy.sort(a, axis=0)

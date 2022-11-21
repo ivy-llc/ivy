@@ -1,16 +1,17 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-
-
-@to_ivy_arrays_and_back
-def abs(x):
-    return ivy.abs(x)
+from ivy.functional.frontends.jax.func_wrapper import (
+    to_ivy_arrays_and_back,
+    outputs_to_frontend_arrays,
+)
 
 
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
+
+
+abs = absolute
 
 
 @to_ivy_arrays_and_back
@@ -36,7 +37,7 @@ def arctan2(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def argmax(a, axis=None, out=None, keepdims=None):
+def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
@@ -149,13 +150,14 @@ def floor(x):
 
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
-    a = ivy.array(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
-    ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
+    ret = ivy.mean(a, axis=axis, keepdims=keepdims, out=out)
     if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype, copy=False)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -188,19 +190,21 @@ def tanh(x):
     return ivy.tanh(x)
 
 
+@to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.uint16)
 
 
 @to_ivy_arrays_and_back
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
-    a = ivy.array(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype, copy=False)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -309,7 +313,7 @@ def power(x1, x2):
     return ivy.pow(x1, x2)
 
 
-@to_ivy_arrays_and_back
+@outputs_to_frontend_arrays
 def arange(start, stop=None, step=None, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
@@ -319,7 +323,8 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
         x_list.append(int(x[i]))
-    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    max_val = int(ivy.max(ivy.array(x_list)))
+    ret = [x_list.count(i) for i in range(0, max_val + 1)]
     ret = ivy.array(ret)
     ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
     return ret
@@ -398,6 +403,46 @@ def kron(a, b):
 
 
 @to_ivy_arrays_and_back
+def sum(
+    a,
+    axis=None,
+    dtype=None,
+    out=None,
+    keepdims=False,
+    initial=None,
+    where=None,
+    promote_integers=True,
+):
+    if initial:
+        s = ivy.shape(a)
+        axis = -1
+        header = ivy.full(s, initial)
+        a = ivy.concat([a, header], axis=axis)
+
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
+
+    # TODO: promote_integers is only supported from JAX v0.3.14
+    if dtype is None and promote_integers:
+        if ivy.is_bool_dtype(dtype):
+            dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                dtype = ivy.default_int_dtype()
+
+    ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
+
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
+
+
+@to_ivy_arrays_and_back
 def lcm(x1, x2):
     return ivy.lcm(x1, x2)
 
@@ -413,10 +458,10 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, out=None, keepdims=False, *, where=True):
+def any(a, axis=None, keepdims=False, *, where=True):
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)))
+        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
     return ret
 
 
@@ -436,8 +481,9 @@ def fliplr(m):
 
 
 @to_ivy_arrays_and_back
-def hstack(x, dtype=None):
-    return ivy.hstack(x)
+def hstack(tup, dtype=None):
+    # TODO: dtype supported in JAX v0.3.20
+    return ivy.hstack(tup)
 
 
 @to_ivy_arrays_and_back
@@ -463,3 +509,63 @@ def msort(a):
 @to_ivy_arrays_and_back
 def multiply(x1, x2):
     return ivy.multiply(x1, x2)
+
+
+alltrue = all
+
+
+sometrue = any
+
+
+@to_ivy_arrays_and_back
+def not_equal(x1, x2):
+    return ivy.not_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less(x1, x2):
+    return ivy.less(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def less_equal(x1, x2):
+    return ivy.less_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater(x1, x2):
+    return ivy.greater(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def greater_equal(x1, x2):
+    return ivy.greater_equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def equal(x1, x2):
+    return ivy.equal(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def min(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.min(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+amin = min
+
+
+@to_ivy_arrays_and_back
+def max(a, axis=None, out=None, keepdims=False, where=None):
+    ret = ivy.max(a, axis=axis, out=out, keepdims=keepdims)
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret
+
+
+amax = max

@@ -126,7 +126,7 @@ class ArrayWithGeneral(abc.ABC):
         arrays = [self] + [x for x in x2]
         return ivy.all_equal(*arrays, equality_matrix=equality_matrix)
 
-    def has_nans(self: ivy.Array, include_infs: bool = True):
+    def has_nans(self: ivy.Array, /, *, include_infs: bool = True):
         """
         ivy.Array instance method variant of ivy.has_nans. This method simply wraps the
         function, and so the docstring for ivy.has_nans also applies to this method
@@ -152,7 +152,7 @@ class ArrayWithGeneral(abc.ABC):
         >>> print(y)
         False
         """
-        return ivy.has_nans(self, include_infs)
+        return ivy.has_nans(self, include_infs=include_infs)
 
     def gather(
         self: ivy.Array,

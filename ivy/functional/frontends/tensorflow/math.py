@@ -119,12 +119,8 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def maximum(a, b, name=None):
-    a, b = promote_types_of_tensorflow_inputs(a, b)
-    # Cast inputs to ivy array
-    a = ivy.array(a)
-    b = ivy.array(b)
-    return ivy.maximum(a, b)
+def maximum(x, y, name=None):
+    return ivy.maximum(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -197,6 +193,16 @@ def polyval(coeffs, x, name=None):
     for c in coeffs[1:]:
         p = c + p * x
     return p
+
+
+@to_ivy_arrays_and_back
+def pow(x, y, name="pow"):
+    if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
+        x = x.data
+    if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
+        y = y.data
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.pow(x, y)
 
 
 @to_ivy_arrays_and_back
@@ -336,6 +342,14 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+@to_ivy_arrays_and_back
+def argmin(input, axis=None, output_type="int64", name=None):
+    if output_type in ["int32", "int64"]:
+        return ivy.astype(ivy.argmin(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmin(input, axis=axis), "int64")
 
 
 @to_ivy_arrays_and_back
