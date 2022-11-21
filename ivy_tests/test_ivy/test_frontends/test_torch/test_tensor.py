@@ -7,7 +7,6 @@ import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
     _get_dtype_and_3dbatch_matrices,
     _get_dtype_input_and_matrices,
@@ -1367,31 +1366,26 @@ def test_torch_instance_to_with_device(
 
 @st.composite
 def _to_helper(draw):
-    dtype_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+        )
+    )
     input_dtype, x = dtype_x
-    arg = draw(st.sampled_from(['tensor', 'dtype', 'device']))
-    if arg == 'tensor':
+    arg = draw(st.sampled_from(["tensor", "dtype", "device"]))
+    if arg == "tensor":
         method_num_positional_args = 1
-        method_all_as_kwargs_np = {
-            "other": x[1]
-        }
-    elif arg == 'dtype':
+        method_all_as_kwargs_np = {"other": x[1]}
+    elif arg == "dtype":
         method_num_positional_args = 1
         dtype = draw(helpers.get_dtypes("valid", full=False))
-        method_all_as_kwargs_np = {
-            "dtype": dtype
-        }
+        method_all_as_kwargs_np = {"dtype": dtype}
     else:
         method_num_positional_args = 0
-        device = draw(st.sampled_from([torch.device('cuda'), torch.device('cpu')]))
+        device = draw(st.sampled_from([torch.device("cuda"), torch.device("cpu")]))
         dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
-        method_all_as_kwargs_np = {
-            "dtype": dtype,
-            "device": device
-        }
+        method_all_as_kwargs_np = {"dtype": dtype, "device": device}
     return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
 
 
@@ -2900,14 +2894,16 @@ def _get_dtype_and_multiplicative_matrices(draw):
 
 
 # matmul
-@handle_cmd_line_args
-@given(
-    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+@handle_frontend_method(
+    method_tree="torch.tensor.matmul",
+    dtype_indtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
 def test_torch_instance_matmul(
     dtype_tensor1_tensor2,
     as_variable,
     native_array,
+    class_,
+    method_name,
 ):
     dtype, tensor1, tensor2 = dtype_tensor1_tensor2
     helpers.test_frontend_method(
@@ -2924,6 +2920,6 @@ def test_torch_instance_matmul(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={"tensor2": tensor2},
         frontend="torch",
-        class_name="tensor",
+        class_="tensor",
         method_name="matmul",
     )
