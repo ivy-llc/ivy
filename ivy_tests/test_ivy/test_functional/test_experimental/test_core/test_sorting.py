@@ -17,17 +17,17 @@ from ivy_tests.test_ivy.helpers import handle_test
     ),
 )
 def test_msort(
-        dtype_and_x,
-        num_positional_args,
-        as_variable,
-        with_out,
-        native_array,
-        container_flags,
-        instance_method,
-        backend_fw,
-        fn_name,
-        on_device,
-        ground_truth_backend,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -60,17 +60,17 @@ def test_msort(
     ),
 )
 def test_lexsort(
-        dtype_and_x,
-        num_positional_args,
-        as_variable,
-        with_out,
-        native_array,
-        container_flags,
-        instance_method,
-        backend_fw,
-        fn_name,
-        on_device,
-        ground_truth_backend,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(

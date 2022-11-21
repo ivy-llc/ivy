@@ -1,22 +1,22 @@
 # global
 from typing import Optional, List, Union, Dict
 
-import ivy
 # local
 from ivy.container.base import ContainerBase
+import ivy
 
 
 class ContainerWithSortingExperimental(ContainerBase):
     @staticmethod
     def static_msort(
-            a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.msort. This method simply wraps the
@@ -64,14 +64,14 @@ class ContainerWithSortingExperimental(ContainerBase):
         )
 
     def msort(
-            self: ivy.Container,
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.msort.
@@ -115,6 +115,7 @@ class ContainerWithSortingExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
 
     @staticmethod
     def static_lexsort(
