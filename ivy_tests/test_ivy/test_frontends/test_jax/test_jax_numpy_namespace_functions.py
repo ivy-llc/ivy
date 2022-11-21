@@ -1254,7 +1254,10 @@ def test_jax_numpy_arcsinh(
 @handle_frontend_test(
     fn_tree="jax.numpy.argmin",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
@@ -1262,9 +1265,9 @@ def test_jax_numpy_argmin(
     *,
     dtype_and_x,
     keepdims,
-    num_positional_args,
-    with_out,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
     on_device,
     fn_tree,
@@ -1282,6 +1285,7 @@ def test_jax_numpy_argmin(
         on_device=on_device,
         a=x[0],
         axis=axis,
+        out=None,
         keepdims=keepdims,
     )
 
@@ -1646,15 +1650,19 @@ def test_jax_numpy_bincount(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_jax_numpy_cumprod(
     *,
     dtype_x_axis,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1673,9 +1681,10 @@ def test_jax_numpy_cumprod(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
         a=x[0],
         axis=axis,
-        dtype=input_dtype[0],
+        dtype=dtype[0],
     )
 
 
