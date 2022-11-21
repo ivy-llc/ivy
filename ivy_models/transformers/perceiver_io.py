@@ -129,11 +129,9 @@ class PerceiverIO(ivy.Module):
             if self._spec.with_final_head else lambda x: x
 
     def _create_variables(self, device, dtype=None):
-        latents = ivy.variable(
-            ivy.random_uniform(shape=(self._spec.num_latents, self._spec.latent_dim), device=device))
+        latents = ivy.random_uniform(shape=(self._spec.num_latents, self._spec.latent_dim), device=device)
         # ToDo: set the correct initializatin scheme for the query here
-        decoder_queries = ivy.variable(ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]))\
-            if self._spec.learn_query else None
+        decoder_queries = ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]) if self._spec.learn_query else None
         return {'latents': latents, 'decoder_queries': decoder_queries}
 
     def _forward(self, data, mask=None, queries=None):

@@ -11,10 +11,10 @@ FW_STRS = ["numpy", "jax", "tensorflow", "torch"]
 
 
 TEST_FRAMEWORKS: Dict[str, callable] = {
-    "numpy": lambda: helpers.get_ivy_numpy(),
-    "jax": lambda: helpers.get_ivy_jax(),
-    "tensorflow": lambda: helpers.get_ivy_tensorflow(),
-    "torch": lambda: helpers.get_ivy_torch(),
+    "numpy": lambda: helpers.globals._get_ivy_numpy(),
+    "jax": lambda: helpers.globals._get_ivy_jax(),
+    "tensorflow": lambda: helpers.globals._get_ivy_tensorflow(),
+    "torch": lambda: helpers.globals._get_ivy_torch(),
 }
 
 
