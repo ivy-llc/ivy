@@ -1,7 +1,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -138,6 +138,74 @@ def test_numpy_ndarray_transpose(
         frontend="numpy",
         class_="ndarray",
         method_name="transpose",
+    )
+
+
+# T
+@handle_frontend_method(
+    method_tree="numpy.ndarray.T",
+    dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=2,
+            max_num_dims=5,
+            min_dim_size=2,
+            max_dim_size=10,
+        ),
+)
+def test_numpy_ndarray_T(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    array, dtype = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": np.array(array),
+        },
+        method_input_dtypes=dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        frontend="numpy",
+        class_="ndarray",
+        method_name="T",
+    )
+
+
+# shape
+@handle_frontend_method(
+    method_tree="numpy.ndarray.shape",
+    dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        ),
+)
+def test_numpy_ndarray_shape(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    array, dtype = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": np.array(array),
+        },
+        method_input_dtypes=dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        frontend="numpy",
+        class_="ndarray",
+        method_name="shape",
     )
 
 
@@ -435,6 +503,38 @@ def test_numpy_instance_min(
         frontend="numpy",
         class_="ndarray",
         method_name="min",
+    )
+
+
+# dtype
+@handle_frontend_method(
+    method_tree="numpy.ndarray.dtype",
+    dtype_and_x=helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+        ),
+)
+def test_numpy_ndarray_shape(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+):
+    array, dtype = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": np.array(array),
+        },
+        method_input_dtypes=dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        frontend="numpy",
+        class_="ndarray",
+        method_name="dtype",
     )
 
 
@@ -1053,7 +1153,7 @@ def test_numpy_instance_mul__(
 @handle_frontend_method(
     method_tree="numpy.ndarray.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -1066,6 +1166,7 @@ def test_numpy_instance_truediv__(
     method_name,
 ):
     input_dtype, xs = dtype_and_x
+    assume(not np.any(np.isclose(xs[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
