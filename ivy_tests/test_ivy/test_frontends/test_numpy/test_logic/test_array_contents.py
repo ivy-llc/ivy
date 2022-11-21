@@ -163,7 +163,6 @@ def test_numpy_isnat(
     with_out,
     num_positional_args,
     native_array,
-    fw,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
@@ -185,7 +184,6 @@ def test_numpy_isnat(
         where=where,
         casting="same_kind",
         order="k",
-        dtype=dtype,
         subok=True,
         test_values=False,
     )
