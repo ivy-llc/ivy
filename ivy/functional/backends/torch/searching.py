@@ -44,7 +44,8 @@ def argmin(
             output_dtype = torch.int64
         else:
             output_dtype = output_dtype
-
+    else:
+        output_dtype = torch.int64
     if ivy.exists(out):
         out = torch.tensor(out, dtype=torch.int64)
         ret = torch.argmin(x, dim=axis, keepdim=keepdims, out=out)
