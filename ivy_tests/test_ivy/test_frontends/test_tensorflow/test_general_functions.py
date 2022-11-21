@@ -128,7 +128,6 @@ def test_tensorflow_squeeze_general(
     native_array,
     frontend,
     fn_tree,
-    on_device,
 ):
     dtype, xs = dtype_value
     helpers.test_frontend_function(
@@ -139,7 +138,6 @@ def test_tensorflow_squeeze_general(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
-        on_device=on_device,
         input=xs[0],
         axis=axis,
     )
