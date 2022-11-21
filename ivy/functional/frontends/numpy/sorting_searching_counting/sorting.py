@@ -33,5 +33,3 @@ def lexsort(
         axis=-1
 ):
     return ivy.lexsort(keys, axis=0)
-
-

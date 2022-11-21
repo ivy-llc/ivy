@@ -454,4 +454,3 @@ class ContainerWithSorting(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
-
