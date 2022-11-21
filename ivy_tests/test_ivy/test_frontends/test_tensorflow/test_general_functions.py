@@ -120,6 +120,7 @@ def _squeeze_helper(draw):
     axis=_squeeze_helper(),
 )
 def test_tensorflow_squeeze_general(
+    *,
     dtype_value,
     axis,
     as_variable,
@@ -127,6 +128,7 @@ def test_tensorflow_squeeze_general(
     native_array,
     frontend,
     fn_tree,
+    on_device,
 ):
     dtype, xs = dtype_value
     helpers.test_frontend_function(
@@ -137,6 +139,7 @@ def test_tensorflow_squeeze_general(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=xs[0],
         axis=axis,
     )
@@ -172,8 +175,6 @@ def test_tensorflow_ones(
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
-        input=xs[0],
-        axis=axis,
         on_device=on_device,
         shape=shape,
         dtype=dtype[0],
