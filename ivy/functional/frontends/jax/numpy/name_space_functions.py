@@ -192,7 +192,7 @@ def tanh(x):
 
 @to_ivy_arrays_and_back
 def uint16(x):
-    return ivy.astype(x, ivy.uint16)
+    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
 @to_ivy_arrays_and_back
