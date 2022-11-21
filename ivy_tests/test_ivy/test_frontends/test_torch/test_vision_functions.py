@@ -95,13 +95,12 @@ def _pad_generator(draw, shape, mode):
                 max_pad_value = 0
         else:
             max_pad_value = shape[i] - 1
-        tmp = draw(
+        pad = pad + draw(
             st.tuples(
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
             )
         )
-        pad = pad + (tmp,)
     return pad
 
 
@@ -135,11 +134,6 @@ def _pad_helper(draw):
         )
     )
     padding = draw(_pad_generator(shape, mode))
-    if type(padding) is tuple:
-        if type(padding[0]) is tuple:
-            padding = sum(padding, ())
-        if len(padding) == 1:
-            padding = padding[0]
     if mode == "constant":
         value = draw(helpers.ints(min_value=0, max_value=4))
     else:

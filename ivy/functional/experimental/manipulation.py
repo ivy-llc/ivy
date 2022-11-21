@@ -1259,6 +1259,41 @@ def dsplit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def atleast_1d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least one dimension.
+    Scalar inputs are converted to 1-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more input arrays.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 1D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_1d(ary1)
+    ivy.array([5])
+    >>> ary2 = ivy.array([[3,4]])
+    >>> ivy.atleast_1d(ary2)
+    ivy.array([[3, 4]])
+    >>> ivy.atleast_1d(6,7,8)
+    [ivy.array([6]), ivy.array([7]), ivy.array([8])]
+    """
+    return ivy.current_backend().atleast_1d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1330,3 +1365,44 @@ def atleast_2d(
     [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
     """
     return ivy.current_backend().atleast_2d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def take_along_axis(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    indices
+        The indices of the values to extract.
+    axis
+        The axis over which to select values.
+    out
+        The output array.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> y = ivy.take_along_axis(arr, indices, 1)
+    >>> print(y)
+    ivy.array([[4, 3, 3], [1, 1, 1]])
+    """
+    return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)

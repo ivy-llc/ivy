@@ -1,16 +1,17 @@
 # local
 import ivy
-from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
-
-
-@to_ivy_arrays_and_back
-def abs(x):
-    return ivy.abs(x)
+from ivy.functional.frontends.jax.func_wrapper import (
+    to_ivy_arrays_and_back,
+    outputs_to_frontend_arrays,
+)
 
 
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
+
+
+abs = absolute
 
 
 @to_ivy_arrays_and_back
@@ -196,13 +197,14 @@ def uint16(x):
 
 @to_ivy_arrays_and_back
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
-    a = ivy.array(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a) else a.dtype
     ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
     if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-    return ret.astype(dtype, copy=False)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -311,7 +313,7 @@ def power(x1, x2):
     return ivy.pow(x1, x2)
 
 
-@to_ivy_arrays_and_back
+@outputs_to_frontend_arrays
 def arange(start, stop=None, step=None, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
@@ -321,7 +323,8 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
         x_list.append(int(x[i]))
-    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    max_val = int(ivy.max(ivy.array(x_list)))
+    ret = [x_list.count(i) for i in range(0, max_val + 1)]
     ret = ivy.array(ret)
     ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
     return ret
@@ -330,7 +333,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
 @to_ivy_arrays_and_back
 def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
-        dtype = ivy.uint8
+        dtype = ivy.as_ivy_dtype(a.dtype)
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
 
 
@@ -411,27 +414,32 @@ def sum(
     promote_integers=True,
 ):
     if initial:
-        s = ivy.shape(a, as_array=True)
-        s[axis] = 1
-        header = ivy.full(ivy.Shape(tuple(s)), initial)
+        s = ivy.shape(a)
+        axis = -1
+        header = ivy.full(s, initial)
         a = ivy.concat([a, header], axis=axis)
 
-    result_dtype = dtype or ivy.dtype(a)
+    if dtype is None:
+        dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
+    # TODO: promote_integers is only supported from JAX v0.3.14
     if dtype is None and promote_integers:
-        if ivy.is_bool_dtype(result_dtype):
-            result_dtype = ivy.default_int_dtype()
-        elif ivy.is_uint_dtype(result_dtype):
-            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
-                result_dtype = ivy.default_uint_dtype()
-        elif ivy.is_int_dtype(result_dtype):
-            if ivy.dtype_bits(result_dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
-                result_dtype = ivy.default_int_dtype()
+        if ivy.is_bool_dtype(dtype):
+            dtype = ivy.default_int_dtype()
+        elif ivy.is_uint_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_uint_dtype()):
+                dtype = ivy.default_uint_dtype()
+        elif ivy.is_int_dtype(dtype):
+            if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
+                dtype = ivy.default_int_dtype()
+
+    ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
 
     if ivy.is_array(where):
-        a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
-    return ivy.sum(a, axis=axis, dtype=result_dtype, keepdims=keepdims, out=out)
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
 
 
 @to_ivy_arrays_and_back
@@ -473,8 +481,9 @@ def fliplr(m):
 
 
 @to_ivy_arrays_and_back
-def hstack(x, dtype=None):
-    return ivy.hstack(x)
+def hstack(tup, dtype=None):
+    # TODO: dtype supported in JAX v0.3.20
+    return ivy.hstack(tup)
 
 
 @to_ivy_arrays_and_back

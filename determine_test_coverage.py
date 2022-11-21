@@ -40,6 +40,7 @@ for test_name in test_names_without_backend:
         test_backend = test_name + "," + backend
         test_names.append(test_backend)
 
+test_names = list(set(test_names))
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
@@ -49,8 +50,14 @@ for i in range(len(test_names)):
 
 
 if __name__ == "__main__":
-    directories = [x[0] for x in os.walk("ivy")] + [x[0] for x in os.walk("ivy_tests/test_ivy")] + ["ivy_tests"]
-    directories_filtered = [x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)]
+    directories = (
+        [x[0] for x in os.walk("ivy")]
+        + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+        + ["ivy_tests"]
+    )
+    directories_filtered = [
+        x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+    ]
     directories = set(directories_filtered)
     num_tests = len(test_names)
     tests_per_run = num_tests // N
