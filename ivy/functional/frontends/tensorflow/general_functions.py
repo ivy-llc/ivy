@@ -1,8 +1,11 @@
+# global
+from typing import Any
+
 # local
 import ivy
-
 from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
 @to_ivy_arrays_and_back
@@ -28,3 +31,26 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
+
+
+def constant(
+    value: Any,
+    dtype: Any = None,
+    shape: Any = None,
+) -> EagerTensor:
+    if shape:
+        value = ivy.reshape(ivy.array(value, dtype=dtype), shape=shape)
+        return EagerTensor(value)
+    return EagerTensor(ivy.array(value, dtype=dtype))
+
+
+def convert_to_tensor(
+    value: Any,
+    dtype: Any = None,
+    dtype_hint: Any = None,
+) -> Any:
+    if dtype:
+        return EagerTensor(ivy.array(value, dtype=dtype))
+    elif dtype_hint:
+        return EagerTensor(ivy.array(value, dtype=dtype_hint))
+    return EagerTensor(ivy.array(value))
