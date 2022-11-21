@@ -705,7 +705,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
             Input array.
         indices_or_sections
             If indices_or_sections is an integer n, the array is split into n sections.
-            If the array is divisible by n along columns, each section will be of
+            If the array is divisible by n horizontally, each section will be of
             equal size. If input is not divisible by n, the sizes of the first
             int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
             the rest will have size int(ary.size(0) / n).
@@ -717,7 +717,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         Returns
         -------
         ret
-            input array split column-wise.
+            input array split horizontally.
 
         Examples
         --------
