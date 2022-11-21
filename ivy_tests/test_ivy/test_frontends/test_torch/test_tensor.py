@@ -1360,23 +1360,49 @@ def test_torch_instance_to_with_device(
     )
 
 
-# _to_with_dtype
+@st.composite
+def _to_helper(draw):
+    dtype_x = draw(helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ))
+    input_dtype, x = dtype_x
+    arg = draw(st.sampled_from(['tensor', 'dtype', 'device']))
+    if arg == 'tensor':
+        method_num_positional_args = 1
+        method_all_as_kwargs_np = {
+            "other": x[1]
+        }
+    elif arg == 'dtype':
+        method_num_positional_args = 1
+        dtype = draw(helpers.get_dtypes("valid", full=False))
+        method_all_as_kwargs_np = {
+            "dtype": dtype
+        }
+    else:
+        method_num_positional_args = 0
+        device = draw(st.sampled_from([torch.device('cuda'), torch.device('cpu')]))
+        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
+        method_all_as_kwargs_np = {
+            "dtype": dtype,
+            "device": device
+        }
+    return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
+
+
+# to
 @handle_frontend_method(
     method_tree="torch.tensor.to",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-    ),
-    copy=st.booleans(),
+    args_kwargs=_to_helper(),
 )
-def test_torch_instance_to_with_dtype(
-    dtype_x,
-    copy,
+def test_torch_instance_to(
+    args_kwargs,
     as_variable,
     native_array,
     class_,
     method_name,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1387,14 +1413,9 @@ def test_torch_instance_to_with_dtype(
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
-        method_num_positional_args=3,
+        method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
-            "non_blocking": False,
-            "copy": copy,
-            "memory_format": torch.preserve_format,
-        },
+        method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend="torch",
         class_="tensor",
         method_name="to",

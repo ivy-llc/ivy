@@ -157,6 +157,13 @@ def dsplit(
     return torch.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
+    transformed = torch.atleast_1d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
 def dstack(
     arrays: Sequence[torch.Tensor],
     /,
