@@ -16,17 +16,10 @@ pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
 
 
 # __abs__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=[
-            "float32",
-            "float64",
-            "int8",
-            "int16",
-            "int32",
-            "int64",
-        ],
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_tensorflow_instance_abs(dtype_and_x, as_variable, native_array):
@@ -45,7 +38,7 @@ def test_tensorflow_instance_abs(dtype_and_x, as_variable, native_array):
         native_array_flags_method=[],
         all_as_kwargs_np_method={},
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__abs__",
     )
 
@@ -573,8 +566,8 @@ def test_tensorflow_instance_radd(
 
 
 # __rdiv__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__rdiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -599,7 +592,7 @@ def test_tensorflow_instance_rdiv(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rdiv__",
     )
 
@@ -643,8 +636,8 @@ def test_tensorflow_instance_rfloordiv(
 
 
 # __rmod__
-@handle_cmd_line_args
-@given(
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__rmod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -669,7 +662,7 @@ def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
             "x": x[1],
         },
         frontend="tensorflow",
-        class_name="Tensor",
+        class_name="EagerTensor",
         method_name="__rmod__",
     )
 
