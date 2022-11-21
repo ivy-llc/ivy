@@ -9,39 +9,64 @@ import traceback as tb
 # ------- #
 
 
-def _print_new_stack_trace(old_stack_trace):
-    print(
-        "<func_wrapper.py stack trace is squashed,",
-        "call `ivy.set_show_func_wrapper_traces(True)` in order to view this>",
-    )
+def _print_new_stack_trace(old_stack_trace, trace_mode, func_wrapper_trace_mode):
+    if trace_mode == "frontend" or trace_mode == "ivy":
+        msg = "<stack trace is truncated to {} specific files,".format(trace_mode)
+        print(
+            msg,
+            "call `ivy.set_exception_trace_mode('full')` to view the full trace>",
+        )
+    if not func_wrapper_trace_mode:
+        print(
+            "<func_wrapper.py stack trace is squashed,",
+            "call `ivy.set_show_func_wrapper_traces(True)` in order to view this>",
+        )
     new_stack_trace = []
     for st in old_stack_trace:
-        if "func_wrapper.py" not in repr(st):
-            new_stack_trace.append(st)
+        if trace_mode == "full" and not func_wrapper_trace_mode:
+            if "func_wrapper.py" not in repr(st):
+                new_stack_trace.append(st)
+        else:
+            if ivy.trace_mode_dict[trace_mode] in repr(st):
+                if not func_wrapper_trace_mode and "func_wrapper.py" in repr(st):
+                    continue
+                new_stack_trace.append(st)
     print("".join(tb.format_list(new_stack_trace)))
 
 
 def _custom_exception_handle(type, value, tb_history):
-    if ivy.get_show_func_wrapper_trace_mode():
+    trace_mode = ivy.get_exception_trace_mode()
+    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(tb_history)))
+    elif trace_mode == "full" and not func_wrapper_trace_mode:
+        _print_new_stack_trace(
+            tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode
+        )
     else:
-        _print_new_stack_trace(tb.extract_tb(tb_history))
+        _print_new_stack_trace(
+            tb.extract_tb(tb_history), trace_mode, func_wrapper_trace_mode
+        )
     print(type.__name__ + ":", value)
 
 
 def _print_traceback_history():
-    if ivy.get_show_func_wrapper_trace_mode():
+    trace_mode = ivy.get_exception_trace_mode()
+    func_wrapper_trace_mode = ivy.get_show_func_wrapper_trace_mode()
+    if trace_mode == "full" and func_wrapper_trace_mode:
         print("".join(tb.format_tb(sys.exc_info()[2])))
+    elif trace_mode == "full" and not func_wrapper_trace_mode:
+        _print_new_stack_trace(
+            tb.extract_tb(sys.exc_info()[2]), trace_mode, func_wrapper_trace_mode
+        )
     else:
-        _print_new_stack_trace(tb.extract_tb(sys.exc_info()[2]))
+        _print_new_stack_trace(
+            tb.extract_tb(sys.exc_info()[2]), trace_mode, func_wrapper_trace_mode
+        )
     print("During the handling of the above exception, another exception occurred:\n")
 
 
 sys.excepthook = _custom_exception_handle
-
-
-# Classes and Methods #
-# ------------------- #
 
 
 class IvyException(Exception):
@@ -97,12 +122,10 @@ def handle_exceptions(fn: Callable) -> Callable:
         try:
             return fn(*args, **kwargs)
         except (IndexError, ValueError, AttributeError) as e:
-            if ivy.get_exception_trace_mode():
-                _print_traceback_history()
+            _print_traceback_history()
             raise ivy.exceptions.IvyError(fn.__name__, str(e))
         except Exception as e:
-            if ivy.get_exception_trace_mode():
-                _print_traceback_history()
+            _print_traceback_history()
             raise ivy.exceptions.IvyBackendException(fn.__name__, str(e))
 
     new_fn.handle_exceptions = True

@@ -282,6 +282,10 @@ def full_like(
     return torch.full_like(x, fill_value, dtype=dtype, device=device)
 
 
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 @with_unsupported_device_and_dtypes(
     {"1.11.0 and below": {"cpu": ("float16",)}}, backend_version
 )
@@ -297,11 +301,15 @@ def linspace(
     device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if axis is None:
+        axis = -1
     if not endpoint:
-        ans = linspace_helper(start, stop, num + 1, axis, device=device, dtype=dtype)
-        ans = ans[:-1]
+        ans = linspace_helper(start, stop, num + 1, axis, device=device)
+        if axis < 0:
+            axis += len(ans.shape)
+        ans = ans[_slice_at_axis(slice(None, -1), axis)]
     else:
-        ans = linspace_helper(start, stop, num, axis, device=device, dtype=dtype)
+        ans = linspace_helper(start, stop, num, axis, device=device)
     if (
         endpoint
         and ans.shape[0] > 1
@@ -316,13 +324,15 @@ def linspace(
         and ans[0] != start
     ):
         ans[0] = start
-    return ans
+    if "int" in str(dtype) and torch.is_floating_point(ans):
+        ans = torch.floor(ans)
+    return ans.to(dtype)
 
 
 linspace.support_native_out = True
 
 
-def linspace_helper(start, stop, num, axis=None, *, device, dtype):
+def linspace_helper(start, stop, num, axis=None, *, device):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
@@ -366,7 +376,7 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             res.append(stop)
         else:
             res = [
-                linspace_method(strt, stp, num, device=device, dtype=dtype)
+                linspace_method(strt, stp, num, device=device)
                 for strt, stp in zip(start, stop)
             ]
         torch.cat(res, -1).reshape(start_shape + [num])
@@ -377,27 +387,21 @@ def linspace_helper(start, stop, num, axis=None, *, device, dtype):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start, device=device, dtype=dtype) * stop)
+            res.append(torch.ones_like(start, device=device) * stop)
         else:
-            res = [
-                linspace_method(strt, stop, num, device=device, dtype=dtype)
-                for strt in start
-            ]
+            res = [linspace_method(strt, stop, num, device=device) for strt in start]
     elif not start_is_array and stop_is_array:
         if num < stop.shape[0]:
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop, device=device, dtype=dtype) * start]
+            res = [torch.ones_like(stop, device=device) * start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
-            res = [
-                linspace_method(start, stp, num, device=device, dtype=dtype)
-                for stp in stop
-            ]
+            res = [linspace_method(start, stp, num, device=device) for stp in stop]
     else:
-        return linspace_method(start, stop, num, device=device, dtype=dtype)
+        return linspace_method(start, stop, num, device=device)
     res = torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)

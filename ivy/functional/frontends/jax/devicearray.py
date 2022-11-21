@@ -16,6 +16,10 @@ class DeviceArray:
             + ")"
         )
 
+    @property
+    def at(self):
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.data)
+
     # Instance Methods #
     # ---------------- #
 
@@ -126,3 +130,6 @@ class DeviceArray:
 
     def __rrshift__(self, other):
         return jax_frontend.lax.shift_right_logical(other, self)
+
+    def __getitem__(self, index):
+        return ivy.get_item(self, index)
