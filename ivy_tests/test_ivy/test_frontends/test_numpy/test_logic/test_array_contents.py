@@ -184,7 +184,6 @@ def test_numpy_isnat(
         where=where,
         casting="same_kind",
         order="k",
-        subok=True,
         test_values=False,
     )
-    
+
