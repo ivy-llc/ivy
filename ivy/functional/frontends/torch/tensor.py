@@ -23,56 +23,56 @@ class Tensor:
         return torch_frontend.add(self.data, other, alpha=alpha)
 
     def add_(self, other, *, alpha=1):
-        self.data = self.add(other, alpha=alpha)
+        self.data = self.add(other, alpha=alpha).data
         return self.data
 
     def asin(self):
         return torch_frontend.asin(self.data)
 
     def asin_(self):
-        self.data = self.asin()
+        self.data = self.asin().data
         return self.data
 
     def sin(self):
         return torch_frontend.sin(self.data)
 
     def sin_(self):
-        self.data = self.sin()
+        self.data = self.sin().data
         return self.data
 
     def sinh(self):
         return torch_frontend.sinh(self.data)
 
     def sinh_(self):
-        self.data = self.sinh()
+        self.data = self.sinh().data
         return self.data
 
     def cos(self):
         return torch_frontend.cos(self.data)
 
     def cos_(self):
-        self.data = self.cos()
+        self.data = self.cos().data
         return self.data
 
     def cosh(self):
         return torch_frontend.cosh(self.data)
 
     def cosh_(self):
-        self.data = self.cosh()
+        self.data = self.cosh().data
         return self.data
 
     def arcsin(self):
         return torch_frontend.arcsin(self.data)
 
     def arcsin_(self):
-        self.data = self.arcsin()
+        self.data = self.arcsin().data
         return self.data
 
     def atan(self):
         return torch_frontend.atan(self.data)
 
     def atan_(self):
-        self.data = self.atan()
+        self.data = self.atan().data
         return self.data
 
     def view(self, shape):
@@ -86,35 +86,35 @@ class Tensor:
         return torch_frontend.asinh(self.data)
 
     def asinh_(self):
-        self.data = self.asinh()
+        self.data = self.asinh().data
         return self.data
 
     def tan(self):
         return torch_frontend.tan(self.data)
 
     def tan_(self):
-        self.data = self.tan()
+        self.data = self.tan().data
         return self.data
 
     def tanh(self):
         return torch_frontend.tanh(self.data)
 
     def tanh_(self):
-        self.data = self.tanh()
+        self.data = self.tanh().data
         return self.data
 
     def atanh(self):
         return torch_frontend.atanh(self.data)
 
     def atanh_(self):
-        self.data = self.atanh()
+        self.data = self.atanh().data
         return self.data
 
     def arctanh(self):
         return torch_frontend.arctanh(self.data)
 
     def arctanh_(self):
-        self.data = self.arctanh()
+        self.data = self.arctanh().data
         return self.data
 
     def log(self):
@@ -181,21 +181,21 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
-        self.data = self.arctan()
+        self.data = self.arctan().data
         return self.data
 
     def acos(self):
         return torch_frontend.acos(self.data)
 
     def acos_(self):
-        self.data = self.acos()
+        self.data = self.acos().data
         return self.data
 
     def arccos(self):
         return torch_frontend.arccos(self.data)
 
     def arccos_(self):
-        self.data = self.arccos()
+        self.data = self.arccos().data
         return self.data
 
     def new_tensor(
@@ -226,7 +226,7 @@ class Tensor:
         return torch_frontend.unsqueeze(self, dim)
 
     def unsqueeze_(self, dim):
-        self.data = self.unsqueeze(dim)
+        self.data = self.unsqueeze(dim).data
         return self.data
 
     def dim(self):
@@ -285,7 +285,7 @@ class Tensor:
         return ivy.pow(self.data, other)
 
     def pow_(self, other):
-        self.data = self.pow(other)
+        self.data = self.pow(other).data
         return self.data
 
     def size(self, dim=None):
@@ -314,7 +314,7 @@ class Tensor:
         return torch_frontend.add(self.data, other, alpha=alpha)
 
     def __mod__(self, other):
-        return torch_frontend.remainder(self, other)
+        return torch_frontend.remainder(self.data, other)
 
     def __long__(self, memory_format=None):
         return Tensor(ivy.astype(self.data, ivy.int64))
@@ -324,19 +324,19 @@ class Tensor:
         return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
+        return torch_frontend.add(torch_frontend.mul(other, alpha), self.data, alpha=1)
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self.data, other)
 
     def __rmul__(self, other):
-        return torch_frontend.mul(other, self)
+        return torch_frontend.mul(other, self.data)
 
     def __sub__(self, other, *, alpha=1):
         return torch_frontend.subtract(self.data, other, alpha=alpha)
 
     def __truediv__(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+        return torch_frontend.div(self.data, other, rounding_mode=rounding_mode)
 
     def __iadd__(self, other, *, alpha=1):
         self.data = self.__add__(other, alpha=alpha).data
