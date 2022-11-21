@@ -8,7 +8,7 @@ import ivy
 import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
 from . import number_helpers as nh
 from . import array_helpers as ah
-from .. import testing_helpers as th
+from .. import globals as test_globals
 
 
 @st.composite
@@ -66,7 +66,9 @@ def array_dtypes(
 
 
 @st.composite
-def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
+def get_dtypes(
+    draw, kind, index=0, full=True, none=False, key=None, prune_function=True
+):
     """
     Draws a valid dtypes for the test function. For frontend tests,
     it draws the data types from the intersection between backend
@@ -114,13 +116,37 @@ def get_dtypes(draw, kind, index=0, full=True, none=False, key=None):
             ),
         }
 
+    # TODO refactor this so we run the interesection in a chained clean way
     backend_dtypes = _get_type_dict(ivy)[kind]
-    if th.frontend_fw:
-        fw_dtypes = _get_type_dict(th.frontend_fw())[kind]
+    if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
+        fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
         valid_dtypes = tuple(set(fw_dtypes).intersection(backend_dtypes))
     else:
         valid_dtypes = backend_dtypes
 
+    ground_truth_is_set = (
+        test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval
+    )
+    if ground_truth_is_set:
+        gtb_dtypes = _get_type_dict(test_globals.CURRENT_GROUND_TRUTH_BACKEND())[kind]
+        valid_dtypes = tuple(set(gtb_dtypes).intersection(valid_dtypes))
+
+    # TODO, do this in a better way...
+    if prune_function:
+        fn_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
+        valid_dtypes = set(valid_dtypes).intersection(
+            fn_dtypes[test_globals.CURRENT_BACKEND().backend]["cpu"]
+        )
+        if ground_truth_is_set:
+            valid_dtypes = tuple(
+                valid_dtypes.intersection(
+                    fn_dtypes[test_globals.CURRENT_GROUND_TRUTH_BACKEND().backend][
+                        "cpu"
+                    ]
+                )
+            )
+        else:
+            valid_dtypes = tuple(valid_dtypes)
     if none:
         valid_dtypes += (None,)
     if full:

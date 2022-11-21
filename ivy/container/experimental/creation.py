@@ -381,7 +381,15 @@ class ContainerWithCreationExperimental(ContainerBase):
         }
         """
         return self.static_kaiser_bessel_derived_window(
-            self, periodic, beta, dtype=dtype, out=out
+            self,
+            periodic,
+            beta,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
         )
 
     @staticmethod
@@ -499,4 +507,109 @@ class ContainerWithCreationExperimental(ContainerBase):
         """
         return self.static_hamming_window(
             self, periodic=periodic, alpha=alpha, beta=beta, dtype=dtype, out=out
+        )
+
+    @staticmethod
+    def static_vorbis_window(
+        x: Union[int, ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.vorbis_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.vorbis_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container including window lenghts.
+
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the vorbis windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5)
+        >>> ivy.Container.static_vorbis_window(x)
+        {
+            a: ivy.array([0., 0.38268343, 0.92387953, 1., 0.92387953,
+                          0.38268343]),
+            b: ivy.array([0., 0.14943586, 0.51644717, 0.85631905, 0.98877142,
+                          1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "vorbis_window",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
+        )
+
+    def vorbis_window(
+        self: ivy.Container,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        dtype: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.vorbis_window.
+        This method simply wraps the function, and so the docstring for
+        ivy.vorbis_window also applies to this method with
+        minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container including window lenghts.
+        dtype
+            data type of the returned arrays.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The container that includes the vorbis windows.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=3, b=5))
+        >>> x.vorbis_window()
+        {
+            a: ivy.array([0., 0.38268343, 0.92387953, 1., 0.92387953,
+                          0.38268343]),
+            b: ivy.array([0., 0.14943586, 0.51644717, 0.85631905, 0.98877142,
+                          1., 0.98877142, 0.85631905, 0.51644717, 0.14943586])
+        }
+        """
+        return self.static_vorbis_window(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            dtype=dtype,
+            out=out,
         )

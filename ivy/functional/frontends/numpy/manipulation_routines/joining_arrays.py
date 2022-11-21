@@ -14,10 +14,12 @@ def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind")
     return ivy.concat(arrays, axis=axis, out=out)
 
 
+@to_ivy_arrays_and_back
 def stack(arrays, axis=0, out=None):
     return ivy.stack(arrays, axis=axis, out=out)
 
 
+@to_ivy_arrays_and_back
 def vstack(tup):
     if len(ivy.shape(tup[0])) == 1:
         xs = []
@@ -30,6 +32,7 @@ def vstack(tup):
 row_stack = vstack
 
 
+@to_ivy_arrays_and_back
 def hstack(tup):
     if len(ivy.shape(tup[0])) == 1:
         xs = []

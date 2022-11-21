@@ -52,11 +52,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
         {
-            a: ivy.array([1., 0., 1.])
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -112,11 +113,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
         >>> y = x.relu()
         >>> print(y)
         {
-            a: ivy.array([1., 0., 1.])
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -323,7 +325,7 @@ class ContainerWithActivations(ContainerBase):
         self: ivy.Container,
         /,
         *,
-        approximate: bool = True,
+        approximate: bool = False,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

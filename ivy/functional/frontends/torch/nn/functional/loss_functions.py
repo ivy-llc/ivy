@@ -1,6 +1,7 @@
 # global
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 def _get_reduction_func(reduction):
@@ -94,6 +95,7 @@ def cross_entropy(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
     input, target, weight=None, size_average=None, reduce=None, reduction="mean"
 ):

@@ -1,3 +1,9 @@
+# global
+import numpy as np
+
+backend_version = {"version": np.__version__}
+
+# local sub-modules
 # flake8: noqa
 from . import activations
 from .activations import *
