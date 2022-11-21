@@ -565,3 +565,7 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 
 amax = max
+
+@to_ivy_arrays_and_back
+def ones(shape, dtype=None):
+    return ivy.ones(shape, dtype=dtype)
