@@ -3,17 +3,16 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     to_ivy_arrays_and_back_with_order_manipulation,
+    outputs_to_frontend_arrays,
 )
-
-
-@to_ivy_arrays_and_back
-def abs(x):
-    return ivy.abs(x)
 
 
 @to_ivy_arrays_and_back
 def absolute(x):
     return ivy.abs(x)
+
+
+abs = absolute
 
 
 @to_ivy_arrays_and_back
@@ -315,7 +314,7 @@ def power(x1, x2):
     return ivy.pow(x1, x2)
 
 
-@to_ivy_arrays_and_back
+@outputs_to_frontend_arrays
 def arange(start, stop=None, step=None, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
@@ -325,7 +324,8 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     x_list = []
     for i in range(x.shape[0]):
         x_list.append(int(x[i]))
-    ret = [x_list.count(i) for i in range(0, max(x_list) + 1)]
+    max_val = int(ivy.max(ivy.array(x_list)))
+    ret = [x_list.count(i) for i in range(0, max_val + 1)]
     ret = ivy.array(ret)
     ret = ivy.astype(ret, ivy.as_ivy_dtype(ivy.int64))
     return ret
@@ -482,8 +482,9 @@ def fliplr(m):
 
 
 @to_ivy_arrays_and_back
-def hstack(x, dtype=None):
-    return ivy.hstack(x)
+def hstack(tup, dtype=None):
+    # TODO: dtype supported in JAX v0.3.20
+    return ivy.hstack(tup)
 
 
 @to_ivy_arrays_and_back
