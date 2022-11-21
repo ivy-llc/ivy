@@ -187,5 +187,3 @@ def test_numpy_isnat(
         test_values=False,
     )
 
-    
-
