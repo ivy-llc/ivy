@@ -873,3 +873,37 @@ def test_jax_special_rmatmul(
             ret_from_gt=ret_gt,
             ground_truth_backend="jax",
         )
+
+
+@st.composite
+def _getitem_helper(draw):
+    arr_size = draw(helpers.ints(min_value=2, max_value=10))
+    x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=(arr_size,)
+        )
+    )
+    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
+    return x, index
+
+
+# __getitem__
+@given(
+    dtype_x_index=_getitem_helper(),
+)
+def test_jax_special_getitem(
+    dtype_x_index,
+):
+    input_dtype, x, index = dtype_x_index
+    data = DeviceArray(x[0])
+    ret = data.__getitem__(index)
+    ret_gt = jnp.array(x[0]).at[index].get()
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    for (u, v) in zip(ret, ret_gt):
+        helpers.value_test(
+            ret=ret,
+            ret_from_gt=ret_gt,
+            ground_truth_backend="jax",
+        )
