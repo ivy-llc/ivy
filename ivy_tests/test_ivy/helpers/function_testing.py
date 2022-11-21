@@ -661,7 +661,6 @@ def test_frontend_function(
 
     ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
-
     # testing all alias functions
     if all_aliases is not None:
         # for each alias in aliases list
