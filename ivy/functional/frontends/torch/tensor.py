@@ -351,11 +351,11 @@ class Tensor:
         return self
 
     def __isub__(self, other, *, alpha=1):
-        self.data = self.__sub__(other, alpha=alpha)
+        self.data = self.__sub__(other, alpha=alpha).data
         return self
 
     def __itruediv__(self, other, *, rounding_mode=None):
-        self.data = self.__truediv__(other, rounding_mode=rounding_mode)
+        self.data = self.__truediv__(other, rounding_mode=rounding_mode).data
         return self
 
     # Method aliases
