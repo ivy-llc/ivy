@@ -1,6 +1,6 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_function
 
 
 # asarraya
@@ -34,7 +34,7 @@ def test_numpy_asarray(
     )
 
 
-@handle_frontend_test(
+@handle_frontend_function(
     fn_tree="numpy.asanyarray",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
