@@ -189,7 +189,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         /,
         *,
         UPLO: Optional[str] = "L",
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.eigvalsh.
