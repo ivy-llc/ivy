@@ -3,17 +3,16 @@ import abc
 from typing import Optional
 
 # local
-
 import ivy
 
 
 class ArrayWithSortingExperimental(abc.ABC):
     # msort
     def msort(
-        self: ivy.Array,
-        /,
-        *,
-        out: Optional[ivy.Array] = None,
+            self: ivy.Array,
+            /,
+            *,
+            out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.msort. This method simply wraps the
@@ -43,14 +42,13 @@ class ArrayWithSortingExperimental(abc.ABC):
         """
         return ivy.msort(self._data, out=out)
 
-
     # lexsort
     def lexsort(
-        self: ivy.Array,
-        /,
-        *,
-        axis: int = -1,
-        out: Optional[ivy.Array] = None,
+            self: ivy.Array,
+            /,
+            *,
+            axis: int = -1,
+            out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         """

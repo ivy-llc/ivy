@@ -3,12 +3,12 @@ from typing import Union, Optional
 
 # local
 import ivy
+from ivy.exceptions import handle_exceptions
 from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
 )
-from ivy.exceptions import handle_exceptions
 
 
 # Array API Standard #
@@ -20,10 +20,10 @@ from ivy.exceptions import handle_exceptions
 @handle_nestable
 @handle_exceptions
 def msort(
-    a: Union[ivy.Array, ivy.NativeArray, list, tuple],
-    /,
-    *,
-    out: Optional[ivy.Array] = None,
+        a: Union[ivy.Array, ivy.NativeArray, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Return a copy of an array sorted along the first axis.
 
@@ -56,11 +56,11 @@ def msort(
 @handle_nestable
 @handle_exceptions
 def lexsort(
-    keys: Union[ivy.Array, ivy.NativeArray, list, tuple],
-    /,
-    *,
-    axis=-1,
-    out: Optional[ivy.Array] = None,
+        keys: Union[ivy.Array, ivy.NativeArray, list, tuple],
+        /,
+        *,
+        axis=-1,
+        out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """"
     """
