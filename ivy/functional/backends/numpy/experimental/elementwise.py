@@ -303,3 +303,15 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def digamma(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.log(x) - 1 / (2 * x)
+
+
+digamma.support_native_out = False

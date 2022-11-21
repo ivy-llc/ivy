@@ -1,6 +1,7 @@
 from typing import Optional, Union, Tuple
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+import jax
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -214,3 +215,12 @@ def zeta(
     ret = ret.at[inf_indices].set(jnp.inf)
     ret = ret.at[nan_indices].set(jnp.nan)
     return ret
+
+
+def digamma(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jax.lax.digamma(x)

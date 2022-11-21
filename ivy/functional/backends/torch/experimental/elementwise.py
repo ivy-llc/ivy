@@ -304,3 +304,15 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def digamma(
+    x: torch.Tensor,
+    /,
+    *, 
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.digamma(x, out=out)
+
+
+digamma.support_native_out = True

@@ -944,3 +944,39 @@ def zeta(
     ivy.array([0.0369, 0.2021])
     """
     return ivy.current_backend(x, q).zeta(x, q, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def digamma(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Computes Psi, the derivative of Lgamma.
+
+    Parameters
+    ----------
+    x
+        Input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Array with values computed from digamma function from
+        input arrays' values, element-wise.
+
+    Examples
+    --------
+    >>> x = ivy.array([1, 0.5])
+    >>> ivy.digamma(x)
+    ivy.array([-0.5772, -1.9635])
+    """
+    return ivy.current_backend(x).digamma(x, out=out)

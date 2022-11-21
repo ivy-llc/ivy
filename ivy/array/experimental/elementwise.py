@@ -828,3 +828,36 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([0.0369, 0.2021])
         """
         return ivy.zeta(self._data, q, out=out)
+
+    def digamma(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.digamma. This method simply
+        wraps the function, and so the docstring for ivy.digamma also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Array with values computed from digamma function from
+            input arrays' values, element-wise.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 0.5])
+        >>> x.digamma()
+        ivy.array([-0.5772, -1.9635])
+        """
+        return ivy.digamma(self._data, out=out)
