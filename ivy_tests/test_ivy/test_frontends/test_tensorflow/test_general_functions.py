@@ -134,6 +134,6 @@ def test_tensorflow_sort(
         on_device=on_device,
         values=vals[0],
         axis=axis,
-        direction=direction,
+        direction=direction
     )
 

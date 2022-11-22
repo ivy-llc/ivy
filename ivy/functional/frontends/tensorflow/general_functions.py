@@ -30,4 +30,5 @@ def sort(values, axis=-1, direction='ASCENDING', name=None):
         descending = True
     else:
         descending = False
-    return ivy.sort(values, axis=axis, descending=descending)
+    return ivy.sort(values, axis=axis, descending=descending).astype('int32')
+
