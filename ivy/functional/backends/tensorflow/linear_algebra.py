@@ -650,6 +650,7 @@ def diag(
     return tf.experimental.numpy.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: Union[tf.Tensor, tf.Variable],
     /,
