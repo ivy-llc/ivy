@@ -284,7 +284,7 @@ def test_torch_l1_loss(
         min_dim_size=1,
     ),
     dtype_and_target=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("int"),
         min_value=0.0,
         max_value=1.0,
         allow_inf=False,
