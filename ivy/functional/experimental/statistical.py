@@ -20,7 +20,7 @@ def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
-    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
     range: Optional[Tuple[float]] = None,
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     density: Optional[bool] = False,

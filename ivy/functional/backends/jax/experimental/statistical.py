@@ -1,6 +1,18 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+
+
+def histogram(
+    a: jnp.ndarray,
+    /,
+    *,
+    bins: Optional[Union[int, Sequence[int], str]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[jnp.ndarray] = None,
+    density: Optional[bool] = False,
+) -> Tuple[jnp.ndarray]:
+    return jnp.histogram(a, bins=bins, range=range, weights=weights, density=density)
 
 
 def median(

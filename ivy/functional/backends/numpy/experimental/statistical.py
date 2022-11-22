@@ -1,5 +1,17 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import numpy as np
+
+
+def histogram(
+    a: np.ndarray,
+    /,
+    *,
+    bins: Optional[Union[int, Sequence[int], str]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[np.ndarray] = None,
+    density: Optional[bool] = False,
+) -> Tuple[np.ndarray]:
+    return np.histogram(a, bins=bins, range=range, weights=weights, density=density)
 
 
 def median(

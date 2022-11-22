@@ -6,6 +6,19 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+def histogram(
+    a: tf.Tensor,
+    /,
+    *,
+    bins: Optional[tf.Tensor] = None,
+    weights: Optional[tf.Tensor] = None,
+    dtype: Optional[tf.DType] = None,
+) -> tf.Tensor:
+    return tfp.stats.histogram(
+        x=a, edges=bins, weights=weights, dtype=dtype, name="histogram"
+    )
+
+
 def median(
     input: Union[tf.Tensor, tf.Variable],
     /,
