@@ -85,31 +85,26 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
-def _pad_handle_padding_shape(padding, n, mode):
-    if isinstance(padding[0], (list, tuple)):  # case nested
-        padding = tuple([tuple(i) for i in ivy.flip(ivy.array(list(padding)), axis=0)])
-    elif len(padding) == 1:  # case scalar
-        padding = (padding[0], padding[0])
-    else:  # case flat
-        padding = tuple(
-            [
-                (padding[i * 2], padding[i * 2 + 1])
-                for i in range(int(len(padding) / 2) - 1, -1, -1)
-            ]
-        )
+def _handle_padding_shape(padding, n, mode):
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
     while len(padding) < n:
         if mode == "circular":
             padding = padding + ((0, 0),)
         else:
             padding = ((0, 0),) + padding
     if mode == "circular":
-        padding = tuple([tuple(i) for i in ivy.flip(ivy.array(list(padding)), axis=0)])
+        padding = tuple(list(padding)[::-1])
     return padding
 
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
-    pad = _pad_handle_padding_shape(pad, len(input.shape), mode)
+    pad = _handle_padding_shape(pad, len(input.shape), mode)
     if mode == "constant":
         return ivy.pad(input, pad, mode="constant", constant_values=value)
     elif mode == "reflect":
