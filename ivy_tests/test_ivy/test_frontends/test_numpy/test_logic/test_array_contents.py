@@ -152,12 +152,15 @@ def test_numpy_isclose(
     where=np_frontend_helpers.where(),
 )
 def test_numpy_isnat(
+        *,
         dtype_and_x,
         where,
         as_variable,
         with_out,
         num_positional_args,
         native_array,
+        fn_tree,
+        frontend,
 ):
     dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
