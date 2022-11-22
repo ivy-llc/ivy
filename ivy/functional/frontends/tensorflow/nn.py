@@ -55,10 +55,10 @@ def gelu(features, approximate=False, name=None):
 
 @to_ivy_arrays_and_back
 def avg_pool2d(
-        input, ksize, strides, padding, data_format='NHWC', name=None
+        input, filters, strides, padding, data_format='NHWC', name=None
 ):
     return ivy.avg_pool2d(
-        input, ksize, strides, padding, data_format=data_format
+        input, filters, strides, padding, data_format=data_format
     )
 
 
