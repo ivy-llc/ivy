@@ -558,11 +558,13 @@ def test_i0(
         unique=False,
         force_tuple=True,
     ),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_flatten(
     *,
     dtype_and_x,
     axes,
+    order,
     num_positional_args,
     as_variable,
     with_out,
@@ -601,6 +603,7 @@ def test_flatten(
         x=x,
         start_dim=start_dim,
         end_dim=end_dim,
+        order=order,
     )
 
 
@@ -802,6 +805,47 @@ def test_dsplit(
         on_device=on_device,
         x=x[0],
         indices_or_sections=indices_or_sections,
+    )
+
+
+# atleast_1d
+@handle_test(
+    fn_tree="functional.experimental.atleast_1d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
+)
+def test_atleast_1d(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtypes, arrays = dtype_and_x
+    kw = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        **kw,
     )
 
 

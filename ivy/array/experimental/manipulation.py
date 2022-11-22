@@ -348,6 +348,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         *,
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
+        order: Optional[str] = "C",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.flatten. This method simply
@@ -362,6 +363,17 @@ class ArrayWithManipulationExperimental(abc.ABC):
             first dim to flatten. If not set, defaults to 0.
         end_dim
             last dim to flatten. If not set, defaults to -1.
+        order
+            Read the elements of the input container using this index order,
+            and place the elements into the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
 
         Returns
         -------
@@ -370,9 +382,13 @@ class ArrayWithManipulationExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([1,2], [3,4])
-        >>> ivy.flatten(x)
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.flatten()
         ivy.array([1, 2, 3, 4])
+
+        >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.flatten(order='F')
+        ivy.array([1, 3, 2, 4])
 
         >>> x = ivy.array(
             [[[[ 5,  5,  0,  6],
@@ -401,7 +417,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
             [ 4, 19, 16, 17],
             [ 2, 12,  8, 14]]]]
             )
-        >>> ivy.flatten(x, start_dim = 1, end_dim = 2)
+        >>> x.flatten(start_dim = 1, end_dim = 2)
         ivy.array(
             [[[ 5,  5,  0,  6],
             [17, 15, 11, 16],
@@ -563,6 +579,36 @@ class ArrayWithManipulationExperimental(abc.ABC):
         ivy.array([[[ 2.,  3.], [ 6.,  7.]], [[10., 11.], [14., 15.]]])]
         """
         return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
+
+    def atleast_1d(
+        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.atleast_1d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Cannot be a scalar input.
+        arys
+            An arbitrary number of input arrays.
+
+        Returns
+        -------
+        ret
+            List of arrays, each with a.ndim >= 1. Copies are made
+            only if necessary.
+
+        Examples
+        --------
+        >>> a1 = ivy.array([[1,2,3]])
+        >>> a2 = ivy.array(4)
+        >>> a1.atleast_1d(a2,5,6)
+        [ivy.array([[1, 2, 3]]), ivy.array([4]), ivy.array([5]), ivy.array([6])]
+        """
+        return ivy.atleast_1d(self._data, *arys)
 
     def dstack(
         self: ivy.Array,
