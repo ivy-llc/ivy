@@ -24,60 +24,59 @@ class Tensor:
 
     def add_(self, other, *, alpha=1):
         self.data = self.add(other, alpha=alpha).data
-        return self.data
+        return self
 
     def asin(self):
         return torch_frontend.asin(self.data)
 
     def asin_(self):
         self.data = self.asin().data
-        return self.data
+        return self
 
     def sin(self):
         return torch_frontend.sin(self.data)
 
     def sin_(self):
         self.data = self.sin().data
-        return self.data
+        return self
 
     def sinh(self):
         return torch_frontend.sinh(self.data)
 
     def sinh_(self):
         self.data = self.sinh().data
-        return self.data
+        return self
 
     def cos(self):
         return torch_frontend.cos(self.data)
 
     def cos_(self):
         self.data = self.cos().data
-        return self.data
+        return self
 
     def cosh(self):
         return torch_frontend.cosh(self.data)
 
     def cosh_(self):
         self.data = self.cosh().data
-        return self.data
+        return self
 
     def arcsin(self):
         return torch_frontend.arcsin(self.data)
 
     def arcsin_(self):
         self.data = self.arcsin().data
-        return self.data
+        return self
 
     def atan(self):
         return torch_frontend.atan(self.data)
 
     def atan_(self):
         self.data = self.atan().data
-        return self.data
+        return self
 
     def view(self, shape):
-        view = torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
-        return view
+        return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
 
     def float(self, memory_format=None):
         return ivy.astype(self.data, ivy.float32)
@@ -87,35 +86,35 @@ class Tensor:
 
     def asinh_(self):
         self.data = self.asinh().data
-        return self.data
+        return self
 
     def tan(self):
         return torch_frontend.tan(self.data)
 
     def tan_(self):
         self.data = self.tan().data
-        return self.data
+        return self
 
     def tanh(self):
         return torch_frontend.tanh(self.data)
 
     def tanh_(self):
         self.data = self.tanh().data
-        return self.data
+        return self
 
     def atanh(self):
         return torch_frontend.atanh(self.data)
 
     def atanh_(self):
         self.data = self.atanh().data
-        return self.data
+        return self
 
     def arctanh(self):
         return torch_frontend.arctanh(self.data)
 
     def arctanh_(self):
         self.data = self.arctanh().data
-        return self.data
+        return self
 
     def log(self):
         return ivy.log(self.data)
@@ -163,21 +162,21 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
         self.data = self.arctan().data
-        return self.data
+        return self
 
     def acos(self):
         return torch_frontend.acos(self.data)
 
     def acos_(self):
         self.data = self.acos().data
-        return self.data
+        return self
 
     def arccos(self):
         return torch_frontend.arccos(self.data)
 
     def arccos_(self):
         self.data = self.arccos().data
-        return self.data
+        return self
 
     def new_tensor(
         self,
@@ -208,7 +207,7 @@ class Tensor:
 
     def unsqueeze_(self, dim):
         self.data = self.unsqueeze(dim).data
-        return self.data
+        return self
 
     def dim(self):
         return self.data.ndim
@@ -267,7 +266,7 @@ class Tensor:
 
     def pow_(self, other):
         self.data = self.pow(other).data
-        return self.data
+        return self
 
     def size(self, dim=None):
         shape = ivy.shape(self.data, as_array=True)
