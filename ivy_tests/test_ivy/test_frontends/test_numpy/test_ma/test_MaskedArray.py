@@ -12,14 +12,12 @@ def _getitem_helper(draw):
     arr_size = draw(helpers.ints(min_value=2, max_value=10))
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=(arr_size,)
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(arr_size,)
         )
     )
     mask = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("bool"),
-            shape=(arr_size,)
+            available_dtypes=helpers.get_dtypes("bool"), shape=(arr_size,)
         )
     )
     index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
@@ -51,21 +49,21 @@ def test_numpy_maskedarray_special_getitem(
 @st.composite
 def _setitem_helper(draw):
     arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    available_dtypes = draw(helpers.get_dtypes("float")) + draw(helpers.get_dtypes("int"))
+    available_dtypes = draw(helpers.get_dtypes("float")) + draw(
+        helpers.get_dtypes("int")
+    )
     dtype, x = draw(
         helpers.dtype_and_values(
-            available_dtypes=st.sampled_from(available_dtypes),
-            shape=(arr_size,)
+            available_dtypes=st.sampled_from(available_dtypes), shape=(arr_size,)
         )
     )
     mask = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("bool"),
-            shape=(arr_size,)
+            available_dtypes=helpers.get_dtypes("bool"), shape=(arr_size,)
         )
     )
     index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    if 'float' in dtype[0]:
+    if "float" in dtype[0]:
         value = draw(helpers.floats())[0]
     else:
         value = draw(helpers.ints())[0]
