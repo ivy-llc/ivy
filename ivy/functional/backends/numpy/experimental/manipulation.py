@@ -232,6 +232,10 @@ def dsplit(
     return np.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[np.ndarray],
     /,

@@ -192,7 +192,7 @@ def tanh(x):
 
 @to_ivy_arrays_and_back
 def uint16(x):
-    return ivy.astype(x, ivy.uint16)
+    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -333,7 +333,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
 @to_ivy_arrays_and_back
 def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
-        dtype = ivy.uint8
+        dtype = ivy.as_ivy_dtype(a.dtype)
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
 
 

@@ -564,6 +564,36 @@ class ArrayWithManipulationExperimental(abc.ABC):
         """
         return ivy.dsplit(self._data, indices_or_sections=indices_or_sections, out=out)
 
+    def atleast_1d(
+        self: ivy.Array, *arys: Union[ivy.Array, bool, Number]
+    ) -> List[ivy.Array]:
+        """
+        ivy.Array instance method variant of ivy.atleast_1d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_1d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array. Cannot be a scalar input.
+        arys
+            An arbitrary number of input arrays.
+
+        Returns
+        -------
+        ret
+            List of arrays, each with a.ndim >= 1. Copies are made
+            only if necessary.
+
+        Examples
+        --------
+        >>> a1 = ivy.array([[1,2,3]])
+        >>> a2 = ivy.array(4)
+        >>> a1.atleast_1d(a2,5,6)
+        [ivy.array([[1, 2, 3]]), ivy.array([4]), ivy.array([5]), ivy.array([6])]
+        """
+        return ivy.atleast_1d(self._data, *arys)
+
     def dstack(
         self: ivy.Array,
         /,
