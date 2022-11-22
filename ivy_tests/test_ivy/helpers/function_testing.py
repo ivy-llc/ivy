@@ -345,6 +345,12 @@ def test_function(
         if return_flat_np_arrays:
             return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
+
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, fw)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, fw)
+
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
@@ -633,6 +639,15 @@ def test_frontend_function(
         if not test_values:
             return ret, frontend_ret
         # value tests, iterating through each array in the flattened returns
+
+        nonlocal rtol
+        nonlocal atol
+
+        if isinstance(rtol, dict):
+            rtol = _get_framework_rtol(rtol, ivy.backend)
+        if isinstance(atol, dict):
+            atol = _get_framework_atol(atol, ivy.backend)
+
         value_test(
             ret_np_flat=ret_np_flat,
             ret_np_from_gt_flat=frontend_ret_np_flat,
@@ -640,9 +655,11 @@ def test_frontend_function(
             atol=atol,
             ground_truth_backend=frontend,
         )
+        return ret, frontend_ret
 
     # Call the frontend testing function
-    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+
+    ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
     if all_aliases is not None:
@@ -662,6 +679,9 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+
+    if not test_values:
+        return ret, frontend_ret
 
 
 # Method testing
@@ -1032,6 +1052,12 @@ def test_method(
     if not test_values:
         return ret, ret_from_gt
     # value test
+
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, ivy.backend)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, ivy.backend)
+
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=ret_np_from_gt_flat,
@@ -1313,7 +1339,13 @@ def test_frontend_method(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
+
     # value test
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, ivy.backend)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, ivy.backend)
+
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
@@ -1324,6 +1356,20 @@ def test_frontend_method(
 
 
 # Helpers
+DEFAULT_RTOL = None
+DEFAULT_ATOL = 1e-06
+
+
+def _get_framework_rtol(rtols: dict, current_fw: str):
+    if current_fw in rtols.keys():
+        return rtols[current_fw]
+    return DEFAULT_RTOL
+
+
+def _get_framework_atol(atols: dict, current_fw: str):
+    if current_fw in atols.keys():
+        return atols[current_fw]
+    return DEFAULT_ATOL
 
 
 def _get_nested_np_arrays(nest):
