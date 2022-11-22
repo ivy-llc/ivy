@@ -1121,7 +1121,8 @@ def nested_multi_map(
     -------
         nest containing the result of the function. The structure of the output is the
         same as the input with the result of the function applied to each applicable
-        leaf and the value at that leaf in the first nest for a non-applicable leaf.
+        leaf and the value at that leaf in the first nest for a non-applicable leaf if
+        prune_unapplied is False else unapplied leaves are pruned.
 
     """
     nest0 = None
