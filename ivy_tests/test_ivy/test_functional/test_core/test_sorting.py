@@ -103,7 +103,7 @@ def test_sort(
         x=x[0],
         axis=axis,
         descending=descending,
-        stable=stable,
+        stable=stable
     )
 
 
