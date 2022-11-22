@@ -145,12 +145,12 @@ def test_numpy_ndarray_transpose(
 @handle_frontend_method(
     method_tree="numpy.ndarray.T",
     dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            min_num_dims=2,
-            max_num_dims=5,
-            min_dim_size=2,
-            max_dim_size=10,
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=10,
+    ),
 )
 def test_numpy_ndarray_T(
     dtype_and_x,
@@ -181,8 +181,8 @@ def test_numpy_ndarray_T(
 @handle_frontend_method(
     method_tree="numpy.ndarray.shape",
     dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
 )
 def test_numpy_ndarray_shape(
     dtype_and_x,
@@ -510,8 +510,8 @@ def test_numpy_instance_min(
 @handle_frontend_method(
     method_tree="numpy.ndarray.dtype",
     dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-        ),
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
 )
 def test_numpy_ndarray_shape(
     dtype_and_x,
