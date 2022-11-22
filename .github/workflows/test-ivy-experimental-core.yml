@@ -10,7 +10,7 @@ jobs:
      if: ${{(github.event_name == 'push') || contains(github.event.pull_request.labels.*.name, 'Exhaustive CI') || contains(github.event.pull_request.labels.*.name, 'Ivy API Experimental')}}
      strategy:
        matrix:
-         backends :  [numpy, torch, jax, tensorflow,MXNet]
+         backends :  [numpy, torch, jax, tensorflow]
          submodules: [creation, device, dtype, elementwise, general, gradients, linalg,
                      manipulation, meta, nest, random, searching, set, sorting, sparse_array                                                                               
                      statistical, utility]
