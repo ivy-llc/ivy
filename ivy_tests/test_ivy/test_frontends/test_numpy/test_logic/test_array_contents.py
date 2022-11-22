@@ -151,38 +151,3 @@ def test_numpy_isclose(
     ),
     where=np_frontend_helpers.where(),
 )
-def test_numpy_isnat(
-        *,
-        dtype_and_x,
-        where,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fn_tree,
-        frontend,
-):
-    dtype, x = dtype_and_x
-    where = np_frontend_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
-    np_frontend_helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="isnat",
-        x=np.asarray(x, dtype=dtype),
-        out=None,
-        where=where,
-        casting="same_kind",
-        order="k",
-        dtype=dtype,
-        subok=True,
-        test_values=False,
-    )
