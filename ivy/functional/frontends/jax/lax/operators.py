@@ -344,3 +344,8 @@ def shift_right_logical(x, y):
 @to_ivy_arrays_and_back
 def asinh(x):
     return ivy.asinh(x)
+
+
+@to_ivy_arrays_and_back
+def atanh(x):
+    return ivy.atanh(x)
