@@ -1913,7 +1913,7 @@ def test_jax_numpy_deg2rad(
         max_dim_size=3,
     ),
 )
-def test_exp2(
+def test_jax_numpy_exp2(
     *,
     dtype_and_x,
     num_positional_args,
@@ -1934,7 +1934,7 @@ def test_exp2(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        rtol=1e-02,
+        rtol=1e-01,
         atol=1e-02,
     )
 
@@ -2264,8 +2264,8 @@ def test_jax_numpy_logaddexp2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
-        atol=1e-03,
+        rtol=1e-01,
+        atol=1e-02,
         x1=x[0],
         x2=x[1],
     )
