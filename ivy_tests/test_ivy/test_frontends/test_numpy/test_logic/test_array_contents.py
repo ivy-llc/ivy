@@ -177,7 +177,6 @@ def test_numpy_isnat(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
         frontend="numpy",
         fn_tree="isnat",
         x=np.asarray(x, dtype=input_dtype),
