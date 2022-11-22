@@ -22,10 +22,10 @@ jobs:
          id: tests
          run: |
            git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
-           python determine_tests.py
+           python determine_tests.py extra
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
@@ -64,7 +64,7 @@ jobs:
          id: tests
          run: |
            git clone -b master2 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -106,7 +106,7 @@ jobs:
          id: tests
          run: |
            git clone -b master3 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -148,7 +148,7 @@ jobs:
          id: tests
          run: |
            git clone -b master4 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -190,7 +190,7 @@ jobs:
          id: tests
          run: |
            git clone -b master5 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo 
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -232,7 +232,7 @@ jobs:
          id: tests
          run: |
            git clone -b master6 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -274,7 +274,7 @@ jobs:
          id: tests
          run: |
            git clone -b master7 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -316,7 +316,7 @@ jobs:
          id: tests
          run: |
            git clone -b master8 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -358,7 +358,7 @@ jobs:
          id: tests
          run: |
            git clone -b master9 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -400,7 +400,7 @@ jobs:
          id: tests
          run: |
            git clone -b master10 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -442,7 +442,7 @@ jobs:
          id: tests
          run: |
            git clone -b master11 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -484,7 +484,7 @@ jobs:
          id: tests
          run: |
            git clone -b master12 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -526,7 +526,7 @@ jobs:
          id: tests
          run: |
            git clone -b master13 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -568,7 +568,7 @@ jobs:
          id: tests
          run: |
            git clone -b master14 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -610,7 +610,7 @@ jobs:
          id: tests
          run: |
            git clone -b master15 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -652,7 +652,7 @@ jobs:
          id: tests
          run: |
            git clone -b master16 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -694,7 +694,7 @@ jobs:
          id: tests
          run: |
            git clone -b master17 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -736,7 +736,7 @@ jobs:
          id: tests
          run: |
            git clone -b master18 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -778,7 +778,7 @@ jobs:
          id: tests
          run: |
            git clone -b master19 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -820,7 +820,7 @@ jobs:
          id: tests
          run: |
            git clone -b master20 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -862,7 +862,7 @@ jobs:
          id: tests
          run: |
            git clone -b master21 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -904,7 +904,7 @@ jobs:
          id: tests
          run: |
            git clone -b master22 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -946,7 +946,7 @@ jobs:
          id: tests
          run: |
            git clone -b master23 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -988,7 +988,7 @@ jobs:
          id: tests
          run: |
            git clone -b master24 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1030,7 +1030,7 @@ jobs:
          id: tests
          run: |
            git clone -b master25 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1072,7 +1072,7 @@ jobs:
          id: tests
          run: |
            git clone -b master26 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1114,7 +1114,7 @@ jobs:
          id: tests
          run: |
            git clone -b master27 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1156,7 +1156,7 @@ jobs:
          id: tests
          run: |
            git clone -b master28 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1198,7 +1198,7 @@ jobs:
          id: tests
          run: |
            git clone -b master29 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1240,7 +1240,7 @@ jobs:
          id: tests
          run: |
            git clone -b master30 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1282,7 +1282,7 @@ jobs:
          id: tests
          run: |
            git clone -b master31 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1324,7 +1324,7 @@ jobs:
          id: tests
          run: |
            git clone -b master32 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
