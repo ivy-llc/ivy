@@ -804,11 +804,19 @@
             <span class="n">value0</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="n">is_container</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_container</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+
+            <span class="k">def</span> <span class="nf">_found_in_key_chains</span><span class="p">(</span><span class="n">this_key_chain</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">this_key_chain</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">key_chain</span><span class="p">):</span>
+                        <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
             <span class="k">if</span> <span class="ow">not</span> <span class="n">assert_identical</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">is_container</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">is_container</span><span class="p">):</span>
+                <span class="n">found</span> <span class="o">=</span> <span class="n">_found_in_key_chains</span><span class="p">(</span><span class="n">this_key_chain</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">this_key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                        <span class="n">this_key_chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="n">to_apply</span>
-                    <span class="p">):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">found</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">to_apply</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">prune_unapplied</span><span class="p">:</span>
                             <span class="k">continue</span>
                         <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value0</span>
@@ -837,10 +845,9 @@
                         <span class="k">continue</span>
                     <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="n">found</span> <span class="o">=</span> <span class="n">_found_in_key_chains</span><span class="p">(</span><span class="n">this_key_chain</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="p">(</span><span class="n">this_key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-                            <span class="n">this_key_chain</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="n">to_apply</span>
-                        <span class="p">):</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">found</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">found</span> <span class="ow">and</span> <span class="n">to_apply</span><span class="p">):</span>
                             <span class="k">if</span> <span class="n">prune_unapplied</span><span class="p">:</span>
                                 <span class="k">continue</span>
                             <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value0</span>

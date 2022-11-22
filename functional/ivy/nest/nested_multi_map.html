@@ -173,7 +173,13 @@ otherwise the leftmost nest value is used. Default is <code class="docutils lite
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>nest containing the result of the funciton.</em></p>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>nest containing the result of the function. The structure of the output is the</em></p></li>
+<li><p><em>same as the input with the result of the function applied to each applicable</em></p></li>
+<li><p><em>leaf and the value at that leaf in the first nest for a non-applicable leaf if</em></p></li>
+<li><p><em>prune_unapplied is False else unapplied leaves are pruned.</em></p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
