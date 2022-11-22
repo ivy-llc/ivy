@@ -705,7 +705,8 @@ class ContainerBase(dict, abc.ABC):
                         map_nests,
                         assert_identical,
                     )
-                    return_dict[key] = ret
+                    if ret:
+                        return_dict[key] = ret
                 elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
                     ret = ivy.nested_multi_map(
                         lambda x, _: func(x, None), values, to_ivy=False
