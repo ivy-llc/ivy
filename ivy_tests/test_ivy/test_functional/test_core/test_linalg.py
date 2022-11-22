@@ -1477,6 +1477,7 @@ def test_cholesky(
 
 # cov
 @handle_test(
+    fn_tree="functional.ivy.cov",
     dtype_x1_x2=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1496,6 +1497,7 @@ def test_cov(
     with_out,
     num_positional_args,
     native_array,
+    fn_name,
     container,
     instance_method,
     fw,
@@ -1510,7 +1512,7 @@ def test_cov(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="cov",
+        fn_name=fn_name,
         x1=x1,
         x2=x2,
     )
