@@ -154,7 +154,7 @@ class Tensor:
                 )
         else:
             return ivy.asarray(
-                self.data, device=kwargs['device'], dtype=kwargs['dtype'], copy=False
+                self.data, device=kwargs["device"], dtype=kwargs["dtype"], copy=False
             )
 
     def arctan(self):

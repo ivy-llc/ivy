@@ -880,8 +880,7 @@ def _getitem_helper(draw):
     arr_size = draw(helpers.ints(min_value=2, max_value=10))
     x = draw(
         helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            shape=(arr_size,)
+            available_dtypes=helpers.get_dtypes("numeric"), shape=(arr_size,)
         )
     )
     index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))

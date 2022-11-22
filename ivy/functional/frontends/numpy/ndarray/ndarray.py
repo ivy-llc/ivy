@@ -174,7 +174,7 @@ class ndarray:
 
     def __mul__(self, value, /):
         return np_frontend.multiply(self.data, value)
-    
+
     def __truediv__(self, value, /):
         return np_frontend.true_divide(self.data, value)
 
