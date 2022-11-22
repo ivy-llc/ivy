@@ -14,7 +14,7 @@ def argsort(values, axis=-1, direction='ASCENDING', stable=False, name=None):
         descending = True
     else:
         descending = False
-    return ivy.argsort(values, axis=axis, descending=descending, stable=stable)
+    return ivy.argsort(values, axis=axis, descending=descending, stable=stable).astype("int32")
 
 
 @to_ivy_arrays_and_back
