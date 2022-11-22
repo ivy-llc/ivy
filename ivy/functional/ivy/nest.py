@@ -1121,7 +1121,7 @@ def nested_multi_map(
     -------
         nest containing the result of the function. The structure of the output is the
         same as the input with the result of the function applied to each applicable
-        leaf.
+        leaf and the value at that leaf in the first nest for a non-applicable leaf.
 
     """
     nest0 = None
@@ -1174,6 +1174,7 @@ def nested_multi_map(
                 config,
                 to_ivy,
             )
+            ret = value0 if ret is None else ret
             if to_ivy and isinstance(nest, (ivy.Array, ivy.NativeArray)):
                 ret = ivy.array(ivy.to_list(ret))
             return_nest.insert(index, ret) if isinstance(
@@ -1184,7 +1185,7 @@ def nested_multi_map(
         value0 = values[0]
         this_key_chain = key_chain
 
-        def found_in_key_chains(this_key_chain, key_chains):
+        def _found_in_key_chains(this_key_chain, key_chains):
             if key_chains is None:
                 return False
             for key_chain in key_chains:
@@ -1193,7 +1194,7 @@ def nested_multi_map(
             return False
 
         if key_chains is not None:
-            found = found_in_key_chains(this_key_chain, key_chains)
+            found = _found_in_key_chains(this_key_chain, key_chains)
             if (found and not to_apply) or (not found and to_apply):
                 if prune_unapplied:
                     return return_nest
