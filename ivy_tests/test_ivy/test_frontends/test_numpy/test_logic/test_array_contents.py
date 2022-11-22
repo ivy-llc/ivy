@@ -149,28 +149,25 @@ def test_numpy_isclose(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
+    dtype=helpers.get_dtypes("float"),
     where=np_frontend_helpers.where(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.isnat"
+    ),
 )
 def test_numpy_isnat(
-    *,
     dtype_and_x,
+    dtype,
     where,
-    with_out,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
-    on_device,
-    fn_tree,
-    frontend,
 ):
     input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
-    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+    where = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=[input_dtype],
         as_variable=as_variable,
         native_array=native_array,
     )
@@ -180,14 +177,14 @@ def test_numpy_isnat(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
+        fw=fw,
+        frontend="numpy",
+        fn_tree="isnat",
+        x=np.asarray(x, dtype=input_dtype),
         out=None,
         where=where,
-        casting=casting,
-        order="K",
-        dtype=dtype,
+        casting="same_kind",
+        order="k",
         subok=True,
+        test_values=False,
     )
