@@ -15,12 +15,7 @@ from . import backend_version
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
-def relu(
-    x: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None
-) -> torch.Tensor:
+def relu(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.relu(x)
 
 
