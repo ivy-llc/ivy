@@ -2030,6 +2030,8 @@ def test_jax_numpy_i0(
     fn_tree="jax.numpy.isneginf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2067,6 +2069,8 @@ def test_jax_numpy_isneginf(
     fn_tree="jax.numpy.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2896,7 +2900,7 @@ def test_jax_numpy_equal(
     )
 
 
-# minx
+# min
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
     dtype_x_axis=statistical_dtype_values(function="min"),
@@ -2939,7 +2943,7 @@ def test_jax_numpy_min(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amin"],
+        all_aliases=["numpy.amin"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -2996,7 +3000,7 @@ def test_jax_numpy_max(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amax"],
+        all_aliases=["numpy.amax"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
