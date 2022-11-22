@@ -89,7 +89,7 @@ def test_jax_numpy_argmax(
 @handle_frontend_test(
     fn_tree="jax.numpy.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_jax_numpy_add(
@@ -186,12 +186,16 @@ def test_jax_numpy_tan(
         num_arrays=2,
         shared_dtype=True,
     ),
+    rtol=st.floats(min_value=1e-5, max_value=1e-1),
+    atol=st.floats(min_value=1e-8, max_value=1e-6),
     equal_nan=st.booleans(),
 )
 def test_jax_numpy_allclose(
     *,
     dtype_and_input,
     equal_nan,
+    rtol,
+    atol,
     as_variable,
     with_out,
     num_positional_args,
@@ -210,8 +214,8 @@ def test_jax_numpy_allclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
-        atol=1e-08,
+        rtol=rtol,
+        atol=atol,
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
@@ -535,17 +539,18 @@ def test_jax_numpy_uint16(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        on_device=on_device,
-        x=x[0],
-    )
+    if ivy.current_backend_str() != "torch":
+        helpers.test_frontend_function(
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
+            x=x[0],
+        )
 
 
 # var
@@ -1254,7 +1259,10 @@ def test_jax_numpy_arcsinh(
 @handle_frontend_test(
     fn_tree="jax.numpy.argmin",
     dtype_and_x=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=helpers.get_dtypes("numeric"),
+        force_int_axis=True,
+        min_num_dims=1,
+        valid_axis=True,
     ),
     keepdims=st.booleans(),
 )
@@ -1262,9 +1270,9 @@ def test_jax_numpy_argmin(
     *,
     dtype_and_x,
     keepdims,
-    num_positional_args,
-    with_out,
     as_variable,
+    with_out,
+    num_positional_args,
     native_array,
     on_device,
     fn_tree,
@@ -1282,6 +1290,7 @@ def test_jax_numpy_argmin(
         on_device=on_device,
         a=x[0],
         axis=axis,
+        out=None,
         keepdims=keepdims,
     )
 
@@ -1646,15 +1655,19 @@ def test_jax_numpy_bincount(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
     ),
+    dtype=helpers.get_dtypes("float", none=True, full=False),
 )
 def test_jax_numpy_cumprod(
     *,
     dtype_x_axis,
+    dtype,
     num_positional_args,
     as_variable,
     native_array,
@@ -1673,9 +1686,10 @@ def test_jax_numpy_cumprod(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
         a=x[0],
         axis=axis,
-        dtype=input_dtype[0],
+        dtype=dtype[0],
     )
 
 
@@ -1903,7 +1917,7 @@ def test_jax_numpy_deg2rad(
         max_dim_size=3,
     ),
 )
-def test_exp2(
+def test_jax_numpy_exp2(
     *,
     dtype_and_x,
     num_positional_args,
@@ -1924,7 +1938,7 @@ def test_exp2(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        rtol=1e-02,
+        rtol=1e-01,
         atol=1e-02,
     )
 
@@ -2254,8 +2268,8 @@ def test_jax_numpy_logaddexp2(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-03,
-        atol=1e-03,
+        rtol=1e-01,
+        atol=1e-02,
         x1=x[0],
         x2=x[1],
     )
