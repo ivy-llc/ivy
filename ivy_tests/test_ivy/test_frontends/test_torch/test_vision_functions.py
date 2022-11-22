@@ -70,7 +70,7 @@ def test_torch_pixel_unshuffle(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
+    assume((ivy.shape(x[0])[2] % factor == 0) & (ivy.shape(x[0])[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
