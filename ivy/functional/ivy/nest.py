@@ -1174,12 +1174,12 @@ def nested_multi_map(
                 config,
                 to_ivy,
             )
-            ret = value0 if ret is None else ret
-            if to_ivy and isinstance(nest, (ivy.Array, ivy.NativeArray)):
-                ret = ivy.array(ivy.to_list(ret))
-            return_nest.insert(index, ret) if isinstance(
-                return_nest, (list)
-            ) else return_nest.update({val if is_dict else list(nest)[index]: ret})
+            if ret is not None:
+                if to_ivy and isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                    ret = ivy.array(ivy.to_list(ret))
+                return_nest.append(ret) if isinstance(
+                    return_nest, (list)
+                ) else return_nest.update({val if is_dict else list(nest)[index]: ret})
     else:
         values = nests
         value0 = values[0]
@@ -1221,6 +1221,8 @@ def nested_multi_map(
                 return ivy.array(ret)
         else:
             return ret
+    if prune_unapplied and len(return_nest) == 0:
+        return None
     return (
         tuple(return_nest)
         if isinstance(nest0, tuple)
