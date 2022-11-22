@@ -348,6 +348,7 @@ class ArrayWithManipulationExperimental(abc.ABC):
         *,
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
+        order: Optional[str] = "C",
         out: Optional[ivy.Array] = None,
         order: Optional[str] = "C",
     ) -> ivy.Array:

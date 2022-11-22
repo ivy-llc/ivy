@@ -964,6 +964,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         map_sequences: bool = False,
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
+        order: Optional[str] = "C",
         out: Optional[ivy.Container] = None,
         order: Optional[str] = "C",
     ) -> ivy.Container:
@@ -1026,6 +1027,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
             map_sequences=map_sequences,
             start_dim=start_dim,
             end_dim=end_dim,
+            order=order,
             out=out,
             order=order,
         )
@@ -1035,6 +1037,7 @@ class ContainerWithManipulationExperimental(ContainerBase):
         *,
         start_dim: Optional[int] = 0,
         end_dim: Optional[int] = -1,
+        order: Optional[str] = "C",
         out: Optional[ivy.Container] = None,
         order: Optional[str] = "C",
     ) -> ivy.Container:

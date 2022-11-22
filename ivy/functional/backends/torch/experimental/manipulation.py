@@ -134,6 +134,7 @@ def flatten(
     *,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
     order: Optional[str] = "C",
 ) -> torch.Tensor:
