@@ -155,8 +155,8 @@ class ArrayWithManipulation(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         *,
         copy: Optional[bool] = None,
-        out: Optional[ivy.Array] = None,
         order: Optional[str] = "C",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.reshape. This method simply wraps the
@@ -178,9 +178,6 @@ class ArrayWithManipulation(abc.ABC):
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
             and copy otherwise. Default: ``None``.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
         order
             Read the elements of the input array using this index order,
             and place the elements into the reshaped array using this index order.
@@ -192,6 +189,9 @@ class ArrayWithManipulation(abc.ABC):
             Note that the ‘C’ and ‘F’ options take no account of the memory layout
             of the underlying array, and only refer to the order of indexing.
             Default order is 'C'
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
