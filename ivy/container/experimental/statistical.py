@@ -14,6 +14,46 @@ from ivy.container.base import ContainerBase
 
 class ContainerWithStatisticalExperimental(ContainerBase):
     @staticmethod
+    def static_histogram(
+        a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        bins: Optional[Union[int, ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        range: Optional[Tuple[float]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        density: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "histogram",
+            a,
+            bins=bins,
+            range=range,
+            weights=weights,
+            density=density,
+            out=out,
+        )
+
+    def histogram(
+        self: ivy.Container,
+        /,
+        *,
+        bins: Optional[Union[int, ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        range: Optional[Tuple[float]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray, ivy.Container]] = None,
+        density: Optional[bool] = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_histogram(
+            self,
+            bins=bins,
+            range=range,
+            weights=weights,
+            density=density,
+            out=out,
+        )
+
+    @staticmethod
     def static_median(
         input: ivy.Container,
         /,

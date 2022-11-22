@@ -7,6 +7,21 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+def histogram(
+    a: torch.tensor,
+    /,
+    *,
+    bins: Optional[Union[int, torch.tensor]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[torch.tensor] = None,
+    density: Optional[bool] = False,
+    out: Optional[torch.tensor] = None,
+) -> Tuple[torch.tensor]:
+    return torch.histogram(
+        a, bins, range=range, weight=weights, density=density, out=out
+    )
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def median(
     input: torch.tensor,

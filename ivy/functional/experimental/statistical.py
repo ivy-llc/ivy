@@ -16,6 +16,25 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+def histogram(
+    a: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    density: Optional[bool] = False,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    return ivy.current_backend(a).histogram(
+        a, bins=bins, range=range, weights=weights, density=density, out=out
+    )
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
 def median(
     input: ivy.Array,
     /,

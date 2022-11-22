@@ -7,6 +7,25 @@ import ivy
 
 
 class ArrayWithStatisticalExperimental(abc.ABC):
+    def histogram(
+        self: ivy.Array,
+        /,
+        *,
+        bins: Optional[Union[int, ivy.Array, ivy.NativeArray]] = None,
+        range: Optional[Tuple[float]] = None,
+        weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+        density: Optional[bool] = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.histogram(
+            self._data,
+            bins=bins,
+            range=range,
+            weights=weights,
+            density=density,
+            out=out,
+        )
+
     def median(
         self: ivy.Array,
         /,
