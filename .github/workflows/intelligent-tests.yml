@@ -2,6 +2,8 @@ name: intelligent-tests
 on:
   workflow_dispatch:
   push:
+    branches:
+      - 'master'
 permissions:
   actions: read
 jobs:
@@ -28,7 +30,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -70,7 +72,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -112,7 +114,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -154,7 +156,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -196,7 +198,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -238,7 +240,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -280,7 +282,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -322,7 +324,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -364,7 +366,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -406,7 +408,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -448,7 +450,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -490,7 +492,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -532,7 +534,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -574,7 +576,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -616,7 +618,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -658,7 +660,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -700,7 +702,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -742,7 +744,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -784,7 +786,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -826,7 +828,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -868,7 +870,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -910,7 +912,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -952,7 +954,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -994,7 +996,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1036,7 +1038,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1078,7 +1080,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1120,7 +1122,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1162,7 +1164,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1204,7 +1206,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1246,7 +1248,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1288,7 +1290,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1330,7 +1332,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }}
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
          continue-on-error: true
 
        - name: Push Mapping

@@ -8,7 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-
 @st.composite
 def _x_and_filters(
     draw,
@@ -847,18 +846,18 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
     beta=st.floats(min_value=0.1, max_value=5),
 )
 def test_tensorflow_local_response_normalization(
-        *,
-        dtype_and_x,
-        depth_radius,
-        bias,
-        alpha,
-        beta,
-        as_variable,
-        num_positional_args,
-        native_array,
-        frontend,
-        fn_tree,
-        on_device,
+    *,
+    dtype_and_x,
+    depth_radius,
+    bias,
+    alpha,
+    beta,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     input = x[0]

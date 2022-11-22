@@ -612,7 +612,7 @@ def all_nested_indices(
     _base: bool = True,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
-    """returns indices of all the elements in nest
+    """Returns indices of all the elements in nest
 
     Parameters
     ----------
@@ -1149,7 +1149,6 @@ def nested_multi_map(
                     else nest
                     for nest in nests
                 ]
-            value0 = values[0]
             this_key_chain = (
                 str(index) if key_chain == "" else (key_chain + "/" + str(index))
             )
@@ -1172,6 +1171,7 @@ def nested_multi_map(
                 return_list.insert(index, ret)
     else:
         values = nests
+        value0 = values[0]
         this_key_chain = key_chain
         if key_chains is not None:
             if (this_key_chain in key_chains and not to_apply) or (
