@@ -236,6 +236,10 @@ def dsplit(
     return jnp.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[JaxArray],
     /,

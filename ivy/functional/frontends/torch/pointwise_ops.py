@@ -131,6 +131,9 @@ def atan2(input, other, *, out=None):
     return ivy.atan2(input, other, out=out)
 
 
+arctan2 = atan2
+
+
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
