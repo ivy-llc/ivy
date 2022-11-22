@@ -156,6 +156,7 @@ def test_numpy_isclose(
     ),
 )
 def test_numpy_isnat(
+    *,
     dtype_and_x,
     dtype,
     where,
