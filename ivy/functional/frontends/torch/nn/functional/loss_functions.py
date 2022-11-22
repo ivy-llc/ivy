@@ -179,8 +179,8 @@ def nll_loss(
         out[i] = input[i][target[i]]
     loss = -out
 
-    # if weight is not None:
-    #     loss = ivy.multiply(weight, loss)
+    if weight is not None:
+        loss = ivy.multiply(weight, loss)
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
 

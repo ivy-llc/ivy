@@ -292,13 +292,6 @@ def test_torch_l1_loss(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    dtype_and_weights=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
-        min_num_dims=1,
-        max_num_dims=1,
-        min_dim_size=2,
-    ),
     size_average=st.booleans(),
     reduce=st.booleans(),
     reduction=st.sampled_from(["mean", "none", "sum"]),
@@ -307,7 +300,6 @@ def test_torch_nll_loss(
     *,
     dtype_and_input,
     dtype_and_target,
-    dtype_and_weights,
     size_average,
     reduce,
     reduction,
@@ -321,9 +313,8 @@ def test_torch_nll_loss(
 ):
     inputs_dtype, input = dtype_and_input
     target_dtype, target = dtype_and_target
-    weights_dtype, weights = dtype_and_weights
     helpers.test_frontend_function(
-        input_dtypes=inputs_dtype + target_dtype + weights_dtype,
+        input_dtypes=inputs_dtype + target_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -333,7 +324,6 @@ def test_torch_nll_loss(
         on_device=on_device,
         input=input[0],
         target=target[0],
-        weight=weights[0].reshape(-1),
         size_average=size_average,
         reduce=reduce,
         reduction=reduction,
