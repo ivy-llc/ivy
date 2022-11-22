@@ -52,13 +52,13 @@ def sum(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def mean(input, dim, keepdim=False, *, dtype=None, out=None):
-    return ivy.mean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
+def mean(input, dim, keepdim=False, *, out=None):
+    return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
 
 
 @to_ivy_arrays_and_back
-def nanmean(input, dim=None, keepdim=False, *, out=None):
-    return ivy.nanmean(input, axis=dim, keepdims=keepdim, out=out)
+def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
