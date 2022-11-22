@@ -152,7 +152,9 @@ def test_jax_numpy_all(
 # tan
 @handle_frontend_test(
     fn_tree="jax.numpy.tan",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
 )
 def test_jax_numpy_tan(
     *,
@@ -186,12 +188,16 @@ def test_jax_numpy_tan(
         num_arrays=2,
         shared_dtype=True,
     ),
+    rtol=st.floats(min_value=1e-5, max_value=1e-1),
+    atol=st.floats(min_value=1e-8, max_value=1e-6),
     equal_nan=st.booleans(),
 )
 def test_jax_numpy_allclose(
     *,
     dtype_and_input,
     equal_nan,
+    rtol,
+    atol,
     as_variable,
     with_out,
     num_positional_args,
@@ -210,8 +216,8 @@ def test_jax_numpy_allclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
-        atol=1e-08,
+        rtol=rtol,
+        atol=atol,
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
