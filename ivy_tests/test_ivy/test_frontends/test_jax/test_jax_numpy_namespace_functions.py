@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
@@ -647,7 +647,9 @@ def _get_dtype_input_and_vectors(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.mod",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_numpy_mod(
@@ -661,6 +663,7 @@ def test_jax_numpy_mod(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1038,6 +1041,8 @@ def test_jax_numpy_fmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        min_value=-np.inf,
+        max_value=np.inf,
         shared_dtype=True,
     ),
     equal_nan=st.booleans(),
@@ -1427,7 +1432,7 @@ def test_jax_numpy_bitwise_xor(
 @handle_frontend_test(
     fn_tree="jax.numpy.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-100,
         max_value=100,
         shape=st.shared(
@@ -1503,7 +1508,7 @@ def test_jax_numpy_moveaxis(
 @handle_frontend_test(
     fn_tree="jax.numpy.flipud",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -2025,6 +2030,8 @@ def test_jax_numpy_i0(
     fn_tree="jax.numpy.isneginf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2062,6 +2069,8 @@ def test_jax_numpy_isneginf(
     fn_tree="jax.numpy.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2891,7 +2900,7 @@ def test_jax_numpy_equal(
     )
 
 
-# minx
+# min
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
     dtype_x_axis=statistical_dtype_values(function="min"),
@@ -2934,7 +2943,7 @@ def test_jax_numpy_min(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amin"],
+        all_aliases=["numpy.amin"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -2991,7 +3000,7 @@ def test_jax_numpy_max(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amax"],
+        all_aliases=["numpy.amax"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
