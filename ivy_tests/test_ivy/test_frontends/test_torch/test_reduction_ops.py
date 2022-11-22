@@ -344,6 +344,7 @@ def test_torch_mean(
         keepdim=keepdims,
     )
 
+
 @handle_frontend_test(
     fn_tree="torch.nanmean",
     dtype_and_x=statistical_dtype_values(function="nanmean"),
@@ -375,6 +376,7 @@ def test_torch_nanmean(
         dim=axis,
         keepdim=keepdims,
     )
+
 
 @handle_frontend_test(
     fn_tree="torch.std",
