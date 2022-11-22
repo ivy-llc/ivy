@@ -5,9 +5,9 @@ eigvalsh
 
 .. autofunction:: ivy.array.array_methods.eigvalsh
 
-.. autofunction:: ivy.container.container_methods.static_eigvalsh
-
 .. autofunction:: ivy.container.container_methods.eigvalsh
+
+.. autofunction:: ivy.container.container_methods.static_eigvalsh
 |
 | **Supported Frameworks:**
 

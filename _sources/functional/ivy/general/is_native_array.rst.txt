@@ -5,9 +5,9 @@ is_native_array
 
 .. autofunction:: ivy.array.array_methods.is_native_array
 
-.. autofunction:: ivy.container.container_methods.is_native_array
-
 .. autofunction:: ivy.container.container_methods.static_is_native_array
+
+.. autofunction:: ivy.container.container_methods.is_native_array
 |
 | **Supported Frameworks:**
 
