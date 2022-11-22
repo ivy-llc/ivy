@@ -50,11 +50,11 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[JaxArray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    device: jaxlib.xla_extension.Device,
+    dtype: Optional[jnp.dtype] = None,
     /,
     *,
     copy: Optional[bool] = None,
-    dtype: Optional[jnp.dtype] = None,
-    device: jaxlib.xla_extension.Device,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if isinstance(obj, ivy.NativeArray) and not dtype:

@@ -90,11 +90,11 @@ def asarray(
         NestedSequence,
         SupportsBufferProtocol,
     ],
+    device: torch.device,
+    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     /,
     *,
     copy: Optional[bool] = None,
-    dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
-    device: torch.device,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
 

@@ -76,11 +76,11 @@ def asarray(
     obj: Union[
         tf.Tensor, tf.Variable, bool, int, float, NestedSequence, SupportsBufferProtocol
     ],
+    device: str,
+    dtype: tf.DType = None,
     /,
     *,
     copy: Optional[bool] = None,
-    dtype: tf.DType = None,
-    device: str,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     with tf.device(device):

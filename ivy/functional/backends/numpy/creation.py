@@ -47,11 +47,11 @@ def arange(
 @asarray_handle_nestable
 def asarray(
     obj: Union[np.ndarray, bool, int, float, NestedSequence, SupportsBufferProtocol],
+    device: str,
+    dtype: Optional[np.dtype] = None,
     /,
     *,
     copy: Optional[bool] = None,
-    dtype: Optional[np.dtype] = None,
-    device: str,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if isinstance(obj, np.ndarray):
