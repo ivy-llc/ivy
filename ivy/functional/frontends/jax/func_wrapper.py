@@ -1,5 +1,6 @@
 # global
 import functools
+import inspect
 from typing import Callable
 
 # local
@@ -106,7 +107,9 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     def new_fn(*args, order="K", **kwargs):
         order = _set_order(args, order)
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        ret = (
+            fn(*args, order=order, **kwargs) if contains_order else fn(*args, **kwargs)
+        )
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
         if order == "F":
             return _from_ivy_array_to_jax_frontend_array_order_F(
@@ -117,31 +120,12 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
                 ret, nested=True, include_derived={tuple: True}
             )
 
+    if "order" in list(inspect.signature(fn).parameters.keys()):
+        contains_order = True
+    else:
+        contains_order = False
     return new_fn
 
 
 def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     return outputs_to_frontend_arrays(inputs_to_ivy_arrays(fn))
-
-
-def outputs_to_frontend_arrays_with_order_manipulation(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, order="K", **kwargs):
-        order = _set_order(args, order)
-        # call unmodified function
-        ret = fn(*args, order=order, **kwargs)
-        # convert all arrays in the return to `jax_frontend.DeviceArray` instances
-        if order == "F":
-            return _from_ivy_array_to_jax_frontend_array_order_F(
-                ret, nested=True, include_derived={tuple: True}
-            )
-        else:
-            return _from_ivy_array_to_jax_frontend_array(
-                ret, nested=True, include_derived={tuple: True}
-            )
-
-    return new_fn
-
-
-def to_ivy_arrays_and_back_with_order_manipulation(fn: Callable) -> Callable:
-    return outputs_to_frontend_arrays_with_order_manipulation(inputs_to_ivy_arrays(fn))

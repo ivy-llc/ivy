@@ -3,7 +3,6 @@ import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
-    to_ivy_arrays_and_back_with_order_manipulation,
 )
 
 
@@ -166,7 +165,7 @@ def mod(x1, x2):
     return ivy.remainder(x1, x2)
 
 
-@to_ivy_arrays_and_back_with_order_manipulation
+@to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
     return ivy.reshape(a, shape=newshape, order=order)
 

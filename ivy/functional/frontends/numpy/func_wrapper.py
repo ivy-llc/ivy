@@ -1,6 +1,7 @@
 # global
 import functools
 from typing import Callable, Any
+import inspect
 
 # local
 import ivy
@@ -249,7 +250,9 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         """
         order = _set_order(args, order)
         # call unmodified function
-        ret = fn(*args, **kwargs)
+        ret = (
+            fn(*args, order=order, **kwargs) if contains_order else fn(*args, **kwargs)
+        )
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances
@@ -260,6 +263,10 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         else:
             return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
 
+    if "order" in list(inspect.signature(fn).parameters.keys()):
+        contains_order = True
+    else:
+        contains_order = False
     new_fn.outputs_to_numpy_arrays = True
     return new_fn
 
@@ -270,36 +277,3 @@ def to_ivy_arrays_and_back(fn: Callable) -> Callable:
     and return arrays are all converted to `ndarray` instances.
     """
     return outputs_to_numpy_arrays(inputs_to_ivy_arrays(fn))
-
-
-def to_ivy_arrays_and_back_with_order_manipulation(fn: Callable) -> Callable:
-    """
-    Wraps `fn` so that input arrays are all converted to `ivy.Array` instances
-    and return arrays are all converted to `ndarray` instances.
-    """
-    return outputs_to_numpy_arrays_with_order_manipulation(inputs_to_ivy_arrays(fn))
-
-
-def outputs_to_numpy_arrays_with_order_manipulation(fn: Callable) -> Callable:
-    @functools.wraps(fn)
-    def new_fn(*args, order="C", **kwargs):
-        """
-        Calls the function, and then converts all `ivy.Array` instances returned
-        by the function into `ndarray` instances.
-           The return of the function, with ivy arrays as numpy arrays.
-        """
-        order = _set_order(args, order)
-        # call unmodified function
-        ret = fn(*args, order=order, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
-        # convert all returned arrays to `ndarray` instances
-        if order == "F":
-            return ivy.nested_map(
-                ret, _ivy_to_numpy_order_F, include_derived={tuple: True}
-            )
-        else:
-            return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
-
-    new_fn.outputs_to_numpy_arrays_with_order_manipulation = True
-    return new_fn
