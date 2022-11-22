@@ -73,3 +73,15 @@ def searchsorted(
     else:
         ret = np.searchsorted(x, v, side=side, sorter=sorter)
     return ret.astype(ret_dtype)
+
+
+def lexsort(
+    keys: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    descending: bool = False,
+    stable: bool = True,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.lexsort(keys, axis)

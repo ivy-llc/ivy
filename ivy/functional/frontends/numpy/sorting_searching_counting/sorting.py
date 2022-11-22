@@ -23,3 +23,13 @@ def sort(a, axis=-1, kind=None, order=None):
 @to_ivy_arrays_and_back
 def msort(a):
     return ivy.sort(a, axis=0)
+
+
+@to_ivy_arrays_and_back
+def lexsort(
+        keys,
+        /,
+        *,
+        axis=-1
+):
+    return ivy.lexsort(keys, axis=0)
