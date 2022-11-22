@@ -158,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
-    /,
     stop: Optional[Number] = None,
-    step: Number = 1,
+    step: Optional[Number] = 1,
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

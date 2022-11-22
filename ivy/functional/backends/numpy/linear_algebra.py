@@ -31,6 +31,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,

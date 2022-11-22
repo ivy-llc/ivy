@@ -16,12 +16,13 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    inputs_to_ivy_arrays,
 )
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -31,6 +32,7 @@ def flatten(
     *,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -46,6 +48,19 @@ def flatten(
         first dim to flatten. If not set, defaults to 0.
     end_dim
         last dim to flatten. If not set, defaults to -1.
+    order
+        Read the elements of the input container using this index order,
+        and place the elements into the reshaped array using this index order.
+        ‘C’ means to read / write the elements using C-like index order,
+        with the last axis index changing fastest, back to the first axis index
+        changing slowest.
+        ‘F’ means to read / write the elements using Fortran-like index order, with
+        the first index changing fastest, and the last index changing slowest.
+        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        of the underlying array, and only refer to the order of indexing.
+        Default order is 'C'
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -65,9 +80,13 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([1,2], [3,4])
+    >>> x = np.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
+
+    >>> x = np.array([[1,2], [3,4]])
+    >>> ivy.flatten(x, order='F')
+    ivy.array([1, 3, 2, 4])
 
     >>> x = np.array(
         [[[[ 5,  5,  0,  6],
@@ -124,12 +143,12 @@ def flatten(
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -144,7 +163,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst))
+    return ivy.reshape(x, tuple(lst), order=order)
 
 
 @to_native_arrays_and_back

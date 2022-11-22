@@ -679,7 +679,7 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
-    
+
     if not test_values:
         return ret, frontend_ret
 
