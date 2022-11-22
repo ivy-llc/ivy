@@ -236,6 +236,10 @@ def dsplit(
     return jnp.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[JaxArray],
     /,
@@ -260,7 +264,7 @@ def take_along_axis(
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"        
+            + f" got {arr.shape} vs {indices.shape}"
         )
-        
+
     return jnp.take_along_axis(arr, indices, axis)

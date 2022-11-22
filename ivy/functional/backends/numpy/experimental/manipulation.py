@@ -232,6 +232,10 @@ def dsplit(
     return np.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[np.ndarray],
     /,
@@ -257,7 +261,7 @@ def take_along_axis(
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"        
+            + f" got {arr.shape} vs {indices.shape}"
         )
     return np.take_along_axis(arr, indices, axis)
 

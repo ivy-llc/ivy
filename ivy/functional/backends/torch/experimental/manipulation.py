@@ -157,6 +157,13 @@ def dsplit(
     return torch.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: torch.Tensor) -> List[torch.Tensor]:
+    transformed = torch.atleast_1d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
 def dstack(
     arrays: Sequence[torch.Tensor],
     /,
@@ -185,7 +192,7 @@ def take_along_axis(
     if arr.shape != indices.shape:
         raise ivy.exceptions.IvyException(
             "arr and indices must have the same shape;"
-            + f" got {arr.shape} vs {indices.shape}"        
+            + f" got {arr.shape} vs {indices.shape}"
         )
     indices = indices.long()
     return torch.take_along_dim(arr, indices, axis, out=out)
