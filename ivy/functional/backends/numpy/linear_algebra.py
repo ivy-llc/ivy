@@ -31,6 +31,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -76,11 +77,7 @@ def eigh(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigvalsh(
-    x: np.ndarray,
-    /,
-    *,
-    UPLO: Optional[str] = "L",
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.linalg.eigvalsh(x, UPLO=UPLO)
 

@@ -99,6 +99,7 @@ def test_tensorflow_eye(
     )
 
 
+<<<<<<< HEAD
 # sort
 @handle_frontend_test(
     fn_tree="tensorflow.sort",
@@ -127,13 +128,47 @@ def test_tensorflow_sort(
         input_dtypes=datatype,
         as_variable_flags=as_variable,
         with_out=with_out,
+=======
+# ones
+@handle_frontend_test(
+    fn_tree="tensorflow.ones",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_tensorflow_ones(
+    shape,
+    dtype,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+>>>>>>> f268a23d4d79b9b0b18d43f0190761eccc5b735d
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+<<<<<<< HEAD
         values=vals[0],
         axis=axis,
         direction=direction
     )
 
+=======
+        shape=shape,
+        dtype=dtype[0],
+    )
+>>>>>>> f268a23d4d79b9b0b18d43f0190761eccc5b735d
