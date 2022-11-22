@@ -1801,12 +1801,13 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -1816,6 +1817,7 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">start_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
     <span class="n">end_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Flattens input by reshaping it into a one-dimensional tensor.</span>
@@ -1831,6 +1833,19 @@
 <span class="sd">        first dim to flatten. If not set, defaults to 0.</span>
 <span class="sd">    end_dim</span>
 <span class="sd">        last dim to flatten. If not set, defaults to -1.</span>
+<span class="sd">    order</span>
+<span class="sd">        Read the elements of the input container using this index order,</span>
+<span class="sd">        and place the elements into the reshaped array using this index order.</span>
+<span class="sd">        ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">        with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">        changing slowest.</span>
+<span class="sd">        ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">        the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">        Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">        of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">        Default order is &#39;C&#39;</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -1850,9 +1865,13 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array([1,2], [3,4])</span>
+<span class="sd">    &gt;&gt;&gt; x = np.array([[1,2], [3,4]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flatten(x)</span>
 <span class="sd">    ivy.array([1, 2, 3, 4])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = np.array([[1,2], [3,4]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.flatten(x, order=&#39;F&#39;)</span>
+<span class="sd">    ivy.array([1, 3, 2, 4])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = np.array(</span>
 <span class="sd">        [[[[ 5,  5,  0,  6],</span>
@@ -1909,12 +1928,12 @@
     <span class="k">if</span> <span class="n">start_dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Dimension out of range (expected to be in range of</span><span class="se">\</span>
-<span class="s2">            </span><span class="si">{</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">start_dim</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">                </span><span class="si">{</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">start_dim</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">end_dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Dimension out of range (expected to be in range of</span><span class="se">\</span>
-<span class="s2">            </span><span class="si">{</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">end_dim</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="s2">                </span><span class="si">{</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, but got </span><span class="si">{</span><span class="n">end_dim</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
     <span class="k">if</span> <span class="n">start_dim</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">start_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="n">start_dim</span>
@@ -1929,7 +1948,7 @@
             <span class="n">lst</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">end_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
         <span class="n">lst</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">lst</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="moveaxis"><a class="viewcode-back" href="../../../../functional/ivy/experimental/moveaxis/moveaxis_functional.html#ivy.functional.ivy.experimental.moveaxis">[docs]</a><span class="nd">@to_native_arrays_and_back</span>

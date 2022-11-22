@@ -1094,6 +1094,7 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">start_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">end_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1109,6 +1110,17 @@
 <span class="sd">            first dim to flatten. If not set, defaults to 0.</span>
 <span class="sd">        end_dim</span>
 <span class="sd">            last dim to flatten. If not set, defaults to -1.</span>
+<span class="sd">        order</span>
+<span class="sd">            Read the elements of the input container using this index order,</span>
+<span class="sd">            and place the elements into the reshaped array using this index order.</span>
+<span class="sd">            ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">            with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">            changing slowest.</span>
+<span class="sd">            ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">            the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">            Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">            of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">            Default order is &#39;C&#39;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1126,6 +1138,14 @@
 <span class="sd">            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])</span>
 <span class="sd">            b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</span>
 <span class="sd">        }]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),</span>
+<span class="sd">        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.flatten(x, order=&quot;F&quot;)</span>
+<span class="sd">        [{</span>
+<span class="sd">            a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])</span>
+<span class="sd">            b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])</span>
+<span class="sd">        }]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;flatten&quot;</span><span class="p">,</span>
@@ -1136,6 +1156,7 @@
             <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span>
             <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span>
+            <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
@@ -1144,6 +1165,7 @@
         <span class="o">*</span><span class="p">,</span>
         <span class="n">start_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">end_dim</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.flatten. This method simply</span>
@@ -1158,6 +1180,17 @@
 <span class="sd">            first dim to flatten. If not set, defaults to 0.</span>
 <span class="sd">        end_dim</span>
 <span class="sd">            last dim to flatten. If not set, defaults to -1.</span>
+<span class="sd">        order</span>
+<span class="sd">            Read the elements of the input container using this index order,</span>
+<span class="sd">            and place the elements into the reshaped array using this index order.</span>
+<span class="sd">            ‘C’ means to read / write the elements using C-like index order,</span>
+<span class="sd">            with the last axis index changing fastest, back to the first axis index</span>
+<span class="sd">            changing slowest.</span>
+<span class="sd">            ‘F’ means to read / write the elements using Fortran-like index order, with</span>
+<span class="sd">            the first index changing fastest, and the last index changing slowest.</span>
+<span class="sd">            Note that the ‘C’ and ‘F’ options take no account of the memory layout</span>
+<span class="sd">            of the underlying array, and only refer to the order of indexing.</span>
+<span class="sd">            Default order is &#39;C&#39;</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1170,13 +1203,23 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),</span>
 <span class="sd">        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.flatten(x)</span>
+<span class="sd">        &gt;&gt;&gt; x.flatten()</span>
 <span class="sd">        [{</span>
 <span class="sd">            a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])</span>
 <span class="sd">            b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</span>
 <span class="sd">        }]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),</span>
+<span class="sd">        ...                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))</span>
+<span class="sd">        &gt;&gt;&gt; x.flatten(order=&quot;F&quot;)</span>
+<span class="sd">        [{</span>
+<span class="sd">            a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])</span>
+<span class="sd">            b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])</span>
+<span class="sd">        }]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span> <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_flatten</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="n">start_dim</span><span class="p">,</span> <span class="n">end_dim</span><span class="o">=</span><span class="n">end_dim</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span>
+        <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerWithManipulationExperimental.static_pad"><a class="viewcode-back" href="../../../../data_classes/container/experimental.html#ivy.container.experimental.ContainerWithManipulationExperimental.static_pad">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">static_pad</span><span class="p">(</span>
