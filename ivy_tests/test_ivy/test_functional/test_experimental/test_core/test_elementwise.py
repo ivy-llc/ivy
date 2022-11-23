@@ -345,6 +345,7 @@ def test_exp2(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_nan=False,
+        shared_dtype=True,
     ),
     num_positional_args=helpers.num_positional_args(fn_name="copysign"),
 )
