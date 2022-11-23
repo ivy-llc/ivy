@@ -3014,7 +3014,7 @@ def test_jax_numpy_max(
     )
 
 
-# logaddexp2
+# log10
 @handle_frontend_test(
     fn_tree="jax.numpy.log10",
     dtype_and_x=helpers.dtype_and_values(
