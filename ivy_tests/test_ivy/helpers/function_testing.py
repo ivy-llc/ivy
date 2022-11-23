@@ -51,7 +51,7 @@ def test_function(
     input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     as_variable_flags: List[bool],
     with_out: bool,
-    num_positional_args: List[bool],
+    num_positional_args: int,
     native_array_flags: List[bool],
     container_flags: List[bool],
     instance_method: bool,
@@ -63,7 +63,7 @@ def test_function(
     test_gradients: bool = False,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     on_device: str = "cpu",
     return_flat_np_arrays: bool = False,
     **all_as_kwargs_np,
@@ -106,7 +106,7 @@ def test_function(
         if True, test for the correctness of gradients.
     ground_truth_backend
         Ground Truth Backend to compare the result-values.
-    device_
+    on_device
         The device on which to create arrays
     return_flat_np_arrays
         If test_values is False, this flag dictates whether the original returns are
@@ -285,35 +285,72 @@ def test_function(
     except Exception as e:
         ivy.unset_backend()
         raise e
+    hasattr_unsupported_gradients = hasattr(fn, "unsupported_gradients")
+    if hasattr_unsupported_gradients:
+        fw_list = fn.unsupported_gradients
+    else:
+        fw_list = None
     ivy.unset_backend()
     # gradient test
+    fw = ivy.current_backend_str()
     if (
         test_gradients
         and not fw == "numpy"
         and not instance_method
         and "bool" not in input_dtypes
     ):
-        gradient_test(
-            fn_name=fn_name,
-            all_as_kwargs_np=all_as_kwargs_np,
-            args_np=args_np,
-            kwargs_np=kwargs_np,
-            input_dtypes=input_dtypes,
-            as_variable_flags=as_variable_flags,
-            native_array_flags=native_array_flags,
-            container_flags=container_flags,
-            rtol_=rtol_,
-            atol_=atol_,
-            xs_grad_idxs=xs_grad_idxs,
-            ret_grad_idxs=ret_grad_idxs,
-            ground_truth_backend=ground_truth_backend,
-        )
+        if hasattr_unsupported_gradients and fw in fw_list:
+            if ivy.nested_argwhere(
+                all_as_kwargs_np,
+                lambda x: x.dtype in fw_list[fw] if isinstance(x, np.ndarray) else None,
+            ):
+                pass
+            else:
+
+                gradient_test(
+                    fn_name=fn_name,
+                    all_as_kwargs_np=all_as_kwargs_np,
+                    args_np=args_np,
+                    kwargs_np=kwargs_np,
+                    input_dtypes=input_dtypes,
+                    as_variable_flags=as_variable_flags,
+                    native_array_flags=native_array_flags,
+                    container_flags=container_flags,
+                    rtol_=rtol_,
+                    atol_=atol_,
+                    xs_grad_idxs=xs_grad_idxs,
+                    ret_grad_idxs=ret_grad_idxs,
+                    ground_truth_backend=ground_truth_backend,
+                )
+
+        else:
+            gradient_test(
+                fn_name=fn_name,
+                all_as_kwargs_np=all_as_kwargs_np,
+                args_np=args_np,
+                kwargs_np=kwargs_np,
+                input_dtypes=input_dtypes,
+                as_variable_flags=as_variable_flags,
+                native_array_flags=native_array_flags,
+                container_flags=container_flags,
+                rtol_=rtol_,
+                atol_=atol_,
+                xs_grad_idxs=xs_grad_idxs,
+                ret_grad_idxs=ret_grad_idxs,
+                ground_truth_backend=ground_truth_backend,
+            )
 
     # assuming value test will be handled manually in the test function
     if not test_values:
         if return_flat_np_arrays:
             return ret_np_flat, ret_np_from_gt_flat
         return ret, ret_from_gt
+
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, fw)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, fw)
+
     # value test
     value_test(
         ret_np_flat=ret_np_flat,
@@ -331,7 +368,7 @@ def test_frontend_function(
     with_out: bool,
     with_inplace: bool = False,
     all_aliases: List[str] = None,
-    num_positional_args: List[bool],
+    num_positional_args: int,
     native_array_flags: List[bool],
     on_device="cpu",
     frontend: str,
@@ -602,6 +639,15 @@ def test_frontend_function(
         if not test_values:
             return ret, frontend_ret
         # value tests, iterating through each array in the flattened returns
+
+        nonlocal rtol
+        nonlocal atol
+
+        if isinstance(rtol, dict):
+            rtol = _get_framework_rtol(rtol, ivy.backend)
+        if isinstance(atol, dict):
+            atol = _get_framework_atol(atol, ivy.backend)
+
         value_test(
             ret_np_flat=ret_np_flat,
             ret_np_from_gt_flat=frontend_ret_np_flat,
@@ -609,9 +655,11 @@ def test_frontend_function(
             atol=atol,
             ground_truth_backend=frontend,
         )
+        return ret, frontend_ret
 
     # Call the frontend testing function
-    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+
+    ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
     if all_aliases is not None:
@@ -632,6 +680,9 @@ def test_frontend_function(
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
+    if not test_values:
+        return ret, frontend_ret
+
 
 # Method testing
 
@@ -650,7 +701,7 @@ def gradient_test(
     atol_: float = 1e-06,
     xs_grad_idxs=None,
     ret_grad_idxs=None,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
 ):
     def grad_fn(xs):
         array_vals = [v for k, v in xs.to_iterator()]
@@ -740,12 +791,12 @@ def test_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
     init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: List[bool] = 0,
+    init_num_positional_args: int = 0,
     init_native_array_flags: List[bool] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     method_as_variable_flags: List[bool],
-    method_num_positional_args: List[bool],
+    method_num_positional_args: int,
     method_native_array_flags: List[bool],
     method_container_flags: List[bool],
     method_all_as_kwargs_np: dict,
@@ -757,7 +808,7 @@ def test_method(
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
     test_gradients: bool = False,
-    ground_truth_backend: str = "tensorflow",
+    ground_truth_backend: str,
     device_: str = "cpu",
 ):
     """Tests a class-method that consumes (or returns) arrays for the current backend
@@ -1001,6 +1052,12 @@ def test_method(
     if not test_values:
         return ret, ret_from_gt
     # value test
+
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, ivy.backend)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, ivy.backend)
+
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=ret_np_from_gt_flat,
@@ -1013,12 +1070,12 @@ def test_frontend_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
     init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: List[bool] = 0,
+    init_num_positional_args: int = 0,
     init_native_array_flags: List[bool] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
     method_as_variable_flags: List[bool],
-    method_num_positional_args: List[bool],
+    method_num_positional_args: int,
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
@@ -1282,7 +1339,13 @@ def test_frontend_method(
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
+
     # value test
+    if isinstance(rtol_, dict):
+        rtol_ = _get_framework_rtol(rtol_, ivy.backend)
+    if isinstance(atol_, dict):
+        atol_ = _get_framework_atol(atol_, ivy.backend)
+
     value_test(
         ret_np_flat=ret_np_flat,
         ret_np_from_gt_flat=frontend_ret_np_flat,
@@ -1293,6 +1356,20 @@ def test_frontend_method(
 
 
 # Helpers
+DEFAULT_RTOL = None
+DEFAULT_ATOL = 1e-06
+
+
+def _get_framework_rtol(rtols: dict, current_fw: str):
+    if current_fw in rtols.keys():
+        return rtols[current_fw]
+    return DEFAULT_RTOL
+
+
+def _get_framework_atol(atols: dict, current_fw: str):
+    if current_fw in atols.keys():
+        return atols[current_fw]
+    return DEFAULT_ATOL
 
 
 def _get_nested_np_arrays(nest):

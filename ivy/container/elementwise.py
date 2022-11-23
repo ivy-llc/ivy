@@ -5698,7 +5698,7 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the evaluated result for each element in ``self``.
             The returned container must have the same data type as ``self``.
-        
+
         Examples
         --------
         With :class:`ivy.Container` input:

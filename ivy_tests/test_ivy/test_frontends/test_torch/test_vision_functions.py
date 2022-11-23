@@ -70,7 +70,7 @@ def test_torch_pixel_unshuffle(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
+    assume((ivy.shape(x[0])[2] % factor == 0) & (ivy.shape(x[0])[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -95,19 +95,27 @@ def _pad_generator(draw, shape, mode):
                 max_pad_value = 0
         else:
             max_pad_value = shape[i] - 1
-        tmp = draw(
+        pad = pad + draw(
             st.tuples(
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
                 st.integers(min_value=0, max_value=max(0, max_pad_value)),
             )
         )
-        pad = pad + (tmp,)
     return pad
 
 
 @st.composite
 def _pad_helper(draw):
-    mode = draw(st.sampled_from(["constant", "reflect", "replicate", "circular"]))
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "replicate",
+                "circular",
+            ]
+        )
+    )
     min_v = 1
     max_v = 5
     if mode != "constant":
@@ -126,11 +134,6 @@ def _pad_helper(draw):
         )
     )
     padding = draw(_pad_generator(shape, mode))
-    if type(padding) is tuple:
-        if type(padding[0]) is tuple:
-            padding = sum(padding, ())
-        if len(padding) == 1:
-            padding = padding[0]
     if mode == "constant":
         value = draw(helpers.ints(min_value=0, max_value=4))
     else:
@@ -139,7 +142,7 @@ def _pad_helper(draw):
 
 
 @handle_frontend_test(
-    fn_tree="nn.functional.pad",
+    fn_tree="torch.nn.functional.pad",
     dtype_and_input_and_other=_pad_helper(),
 )
 def test_torch_pad(
@@ -147,21 +150,24 @@ def test_torch_pad(
     dtype_and_input_and_other,
     as_variable,
     with_out,
+    num_positional_args,
     native_array,
-    frontend,
+    on_device,
     fn_tree,
+    frontend,
 ):
     dtype, input, padding, value, mode = dtype_and_input_and_other
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=2,
+        num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=input,
-        padding=padding,
+        pad=padding,
         mode=mode,
         value=value,
     )

@@ -37,9 +37,11 @@ def test_sgd_optimizer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "lr": lr,
@@ -90,9 +92,11 @@ def test_lars_optimizer(
     on_device,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "lr": lr,
@@ -148,9 +152,11 @@ def test_adam_optimizer(
     method_container_flags: pf.ContainerFlags,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "lr": lr,
@@ -211,9 +217,11 @@ def test_lamb_optimizer(
     method_container_flags: pf.ContainerFlags,
     class_name,
     method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=num_positional_args_init,
         init_all_as_kwargs_np={
             "lr": lr,

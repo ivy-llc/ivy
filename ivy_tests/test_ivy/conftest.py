@@ -70,7 +70,11 @@ def pytest_configure(config):
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
     if hasattr(request.function, "test_data"):
         try:
-            test_globals.setup_api_test(request.function.test_data, backend_fw.backend)
+            test_globals.setup_api_test(
+                request.function.test_data,
+                backend_fw.backend,
+                request.function.ground_truth_backend,
+            )
         except Exception as e:
             test_globals.teardown_api_test()
             raise RuntimeError(f"Setting up test for {request.function} failed.") from e

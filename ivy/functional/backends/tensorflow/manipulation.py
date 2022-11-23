@@ -14,6 +14,12 @@ from ivy.functional.ivy.manipulation import _calculate_out_shape
 from . import backend_version
 
 
+def _reshape_fortran_tf(x, shape):
+    if len(x.shape) > 0:
+        x = tf.transpose(x)
+    return tf.transpose(tf.reshape(x, shape[::-1]))
+
+
 # Array API Standard #
 # -------------------#
 
@@ -99,11 +105,17 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = tf.experimental.numpy.copy(x)
+        if order == "F":
+            return _reshape_fortran_tf(newarr, shape)
         return tf.reshape(newarr, shape)
+    if order == "F":
+        return _reshape_fortran_tf(x, shape)
     return tf.reshape(x, shape)
 
 

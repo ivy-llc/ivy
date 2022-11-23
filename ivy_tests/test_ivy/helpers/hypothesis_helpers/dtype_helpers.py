@@ -116,6 +116,7 @@ def get_dtypes(
             ),
         }
 
+    # TODO refactor this so we run the interesection in a chained clean way
     backend_dtypes = _get_type_dict(ivy)[kind]
     if test_globals.CURRENT_FRONTEND is not test_globals._Notsetval:
         fw_dtypes = _get_type_dict(test_globals.CURRENT_FRONTEND())[kind]
@@ -123,15 +124,29 @@ def get_dtypes(
     else:
         valid_dtypes = backend_dtypes
 
+    ground_truth_is_set = (
+        test_globals.CURRENT_GROUND_TRUTH_BACKEND is not test_globals._Notsetval
+    )
+    if ground_truth_is_set:
+        gtb_dtypes = _get_type_dict(test_globals.CURRENT_GROUND_TRUTH_BACKEND())[kind]
+        valid_dtypes = tuple(set(gtb_dtypes).intersection(valid_dtypes))
+
     # TODO, do this in a better way...
     if prune_function:
-        valid_dtypes = tuple(
-            set(valid_dtypes).intersection(
-                test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes[
-                    test_globals.CURRENT_BACKEND().backend
-                ]["cpu"]
-            )
+        fn_dtypes = test_globals.CURRENT_RUNNING_TEST.supported_device_dtypes
+        valid_dtypes = set(valid_dtypes).intersection(
+            fn_dtypes[test_globals.CURRENT_BACKEND().backend]["cpu"]
         )
+        if ground_truth_is_set:
+            valid_dtypes = tuple(
+                valid_dtypes.intersection(
+                    fn_dtypes[test_globals.CURRENT_GROUND_TRUTH_BACKEND().backend][
+                        "cpu"
+                    ]
+                )
+            )
+        else:
+            valid_dtypes = tuple(valid_dtypes)
     if none:
         valid_dtypes += (None,)
     if full:

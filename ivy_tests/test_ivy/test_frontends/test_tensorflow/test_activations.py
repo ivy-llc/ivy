@@ -504,6 +504,7 @@ def test_tensorflow_deserialize(
 
 
 @handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.get",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
         lambda x: not x[0].isupper()
         and x

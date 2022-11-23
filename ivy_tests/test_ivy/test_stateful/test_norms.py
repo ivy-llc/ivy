@@ -29,10 +29,12 @@ def test_layer_norm_layer(
     method_container: pf.ContainerFlags,
     on_device,
     class_name,
-    method_name
+    method_name,
+    ground_truth_backend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_num_positional_args=init_num_positional_args,
         init_all_as_kwargs_np={
             "normalized_shape": x[0].shape,

@@ -5,10 +5,12 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 @to_ivy_arrays_and_back
 def transpose(array, /, *, axes=None):
-    if axes is None:
+    if not axes:
         axes = list(range(len(array.shape)))[::-1]
-    assert len(axes) > 1, "`axes` should have the same size the input array.ndim"
-
+    if type(axes) is int:
+        axes = [axes]
+    if (len(array.shape) == 0 and not axes) or (len(array.shape) == 1 and axes[0] == 0):
+        return array
     return ivy.permute_dims(array, axes, out=None)
 
 

@@ -49,11 +49,13 @@ def test_cross_entropy(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -116,10 +118,12 @@ def test_binary_cross_entropy(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     pred_dtype, pred = dtype_and_pred
     true_dtype, true = dtype_and_true
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -184,10 +188,12 @@ def test_sparse_cross_entropy(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     true_dtype, true = dtype_and_true
     pred_dtype, pred = dtype_and_pred
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=true_dtype + pred_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

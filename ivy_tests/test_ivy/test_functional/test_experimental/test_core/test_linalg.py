@@ -148,6 +148,7 @@ def test_diagflat(
     backend_fw,
     fn_name,
     args_packet,
+    ground_truth_backend,
 ):
     dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
 
@@ -156,6 +157,7 @@ def test_diagflat(
     padding_value = padding_value[0][0]
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -198,9 +200,11 @@ def test_kron(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
