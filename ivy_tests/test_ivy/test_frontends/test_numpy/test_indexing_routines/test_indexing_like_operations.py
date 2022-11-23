@@ -36,9 +36,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     offset=st.integers(min_value=0),  # ,max_value=10),
     axis1=st.integers(min_value=-2, max_value=2),
     axis2=st.integers(min_value=-2, max_value=2),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.diagonal"
-    ),
     # dtype=helpers.get_dtypes("float", full=False, none=True),
     # where=np_frontend_helpers.where(),
 )
@@ -52,6 +49,9 @@ def test_diagonal(
     axis1,
     axis2,
     with_out,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     as_variable = as_variable
@@ -59,13 +59,16 @@ def test_diagonal(
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
+        on_device=on_device,
+        frontend=frontend,
+        fn_tree=fn_tree,
         where=where,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         # fw=fw,
-        frontend="numpy",
-        fn_tree="diagonal",
+        # frontend="numpy",
+        # fn_tree="diagonal",
         x=x,
         offset=offset,
         axis1=axis1,
