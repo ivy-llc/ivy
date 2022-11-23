@@ -31,7 +31,7 @@ def test_torch_pixel_shuffle(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume(ivy.shape(input)[1] % (factor**2) == 0)
+    assume(ivy.shape(x[0])[1] % (factor**2) == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
