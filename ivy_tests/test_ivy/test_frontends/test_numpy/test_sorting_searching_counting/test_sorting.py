@@ -141,6 +141,6 @@ def test_numpy_lexsort(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        keys=x[0],
         axis=axis,
     )

@@ -27,9 +27,9 @@ def msort(a):
 
 @to_ivy_arrays_and_back
 def lexsort(
-        keys,
-        /,
-        *,
-        axis=-1
+    x,
+    /,
+    *,
+    axis=-1
 ):
-    return ivy.lexsort(keys, axis=0)
+    return ivy.lexsort(x, axis=0)

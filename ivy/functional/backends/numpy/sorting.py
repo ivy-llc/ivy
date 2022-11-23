@@ -76,7 +76,7 @@ def searchsorted(
 
 
 def lexsort(
-    keys: np.ndarray,
+    x: np.ndarray,
     /,
     *,
     axis: int = -1,
@@ -84,4 +84,4 @@ def lexsort(
     stable: bool = True,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.lexsort(keys, axis)
+    return np.lexsort(x, axis)

@@ -118,21 +118,21 @@ class ContainerWithSortingExperimental(ContainerBase):
 
     @staticmethod
     def static_lexsort(
-            keys: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
-            /,
-            *,
-            axis: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, list, tuple],
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         """
         return ContainerBase.multi_map_in_static_method(
             "lexsort",
-            keys,
+            x,
             axis=axis,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -142,15 +142,15 @@ class ContainerWithSortingExperimental(ContainerBase):
         )
 
     def lexsort(
-            self: ivy.Container,
-            /,
-            *,
-            axis: int = -1,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        /,
+        *,
+        axis: int = -1,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_lexsort(
             self,

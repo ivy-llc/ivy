@@ -56,7 +56,7 @@ def msort(
 @handle_nestable
 @handle_exceptions
 def lexsort(
-    keys: Union[ivy.Array, ivy.NativeArray, list, tuple],
+    x: Union[ivy.Array, ivy.NativeArray, list, tuple],
     /,
     *,
     axis=-1,
@@ -64,4 +64,4 @@ def lexsort(
 ) -> ivy.Array:
     """"
     """
-    return ivy.current_backend().lexsort(keys, axis=axis, out=out)
+    return ivy.current_backend().lexsort(x, axis=axis, out=out)

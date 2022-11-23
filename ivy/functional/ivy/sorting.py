@@ -248,7 +248,7 @@ def sort(
 @handle_exceptions
 @handle_array_like
 def lexsort(
-    keys: Union[ivy.Array, ivy.NativeArray],
+    x: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     axis: int = -1,
@@ -256,8 +256,10 @@ def lexsort(
     stable: bool = True,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    return ivy.current_backend(keys).lexsort(
-        keys, axis=axis, descending=descending, stable=stable, out=out
+    """
+    """
+    return ivy.current_backend(x).lexsort(
+        x, axis=axis, descending=descending, stable=stable, out=out
     )
 
 

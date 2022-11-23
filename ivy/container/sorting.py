@@ -403,21 +403,21 @@ class ContainerWithSorting(ContainerBase):
 
     @staticmethod
     def static_lexsort(
-            keys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            /,
-            *,
-            axis: int = -1,
-            descending: bool = False,
-            stable: bool = True,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        axis: int = -1,
+        descending: bool = False,
+        stable: bool = True,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "lexsort",
-            keys,
+            x,
             axis=axis,
             descending=descending,
             stable=stable,
