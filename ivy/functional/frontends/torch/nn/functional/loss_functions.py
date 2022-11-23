@@ -186,7 +186,7 @@ def nll_loss(
 
     if weight is not None:
         loss = ivy.multiply(weight, loss)
-    reduction = _get_reduction(reduction, size_average, reduce)
-    ret = reduction(loss)
+    reduct = _get_reduction(reduction, size_average, reduce)
+    ret = reduct(loss)
 
     return ret
