@@ -1,7 +1,7 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -1051,6 +1051,45 @@ def test_numpy_instance_mul__(
 
 
 @handle_frontend_method(
+    method_tree="numpy.ndarray.__truediv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+    ),
+)
+def test_numpy_instance_truediv__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, xs = dtype_and_x
+    assume(not np.any(np.isclose(xs[1], 0)))
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": xs[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "value": xs[1],
+        },
+        frontend="numpy",
+        class_="ndarray",
+        method_name="__truediv__",
+    )
+
+
+@handle_frontend_method(
     method_tree="numpy.ndarray.__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
@@ -1997,4 +2036,40 @@ def test_numpy_instance_imod__(
         frontend=frontend,
         class_=class_,
         method_name=method_name,
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.__abs__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+    ),
+)
+def test_numpy_instance_abs__(
+    dtype_and_x,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x = dtype_and_x
+
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args_method,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend="numpy",
+        class_="ndarray",
+        method_name="__abs__",
     )

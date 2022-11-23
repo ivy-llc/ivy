@@ -147,34 +147,15 @@ class Tensor:
     def to(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[0], ivy.Dtype):
-                return self._to_with_dtype(*args, **kwargs)
-            elif isinstance(args[0], ivy.Device):
-                return self._to_with_device(*args, **kwargs)
+                return ivy.asarray(self.data, dtype=args[0], copy=False)
             else:
-                return self._to_with_tensor(*args, **kwargs)
-
+                return ivy.asarray(
+                    self.data, dtype=args[0].dtype, device=args[0].device, copy=False
+                )
         else:
-            if "tensor" not in kwargs:
-                return self._to_with_device(**kwargs)
-            else:
-                return self._to_with_tensor(**kwargs)
-
-    def _to_with_tensor(
-        self, tensor, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(
-            self.data, dtype=tensor.dtype, device=tensor.device, copy=copy
-        )
-
-    def _to_with_dtype(
-        self, dtype, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(self.data, dtype=dtype, copy=copy)
-
-    def _to_with_device(
-        self, device, dtype=None, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
+            return ivy.asarray(
+                self.data, device=kwargs["device"], dtype=kwargs["dtype"], copy=False
+            )
 
     def arctan(self):
         return torch_frontend.atan(self.data)
@@ -293,6 +274,9 @@ class Tensor:
 
     def ceil(self):
         return torch_frontend.ceil(self.data)
+
+    def min(self, dim=None, keepdim=False):
+        return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
 
     # Special Methods #
     # -------------------#
