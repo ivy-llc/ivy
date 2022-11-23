@@ -3126,8 +3126,6 @@ def test_jax_numpy_divide(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        atol=1e-02,
-        x1=x[0],
-        x2=x[1],
+        x1=np.asarray(x[0], dtype=input_dtype[0]),
+        x2=np.asarray(x[1], dtype=input_dtype[1])
     )
