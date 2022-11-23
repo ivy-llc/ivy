@@ -59,7 +59,6 @@ def quantile(
     input_dtype = str(a.dtype)
 
     tuple(axis) if isinstance(axis, list) else axis
-
     return np.quantile(
         a,
         q,
