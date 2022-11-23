@@ -658,7 +658,7 @@ def test_frontend_function(
 
     # Call the frontend testing function
 
-    ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
     if all_aliases is not None:
@@ -678,9 +678,6 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
-
-    if not test_values:
-        return ret, frontend_ret
 
 
 # Method testing
