@@ -10,9 +10,21 @@ class ndarray:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
-        self.T = np_frontend.transpose(data)
-        self.shape = np_frontend.shape(data)
-        self.dtype = data.dtype
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def T(self):
+        return np_frontend.transpose(self.data)
+
+    @property
+    def shape(self):
+        return np_frontend.shape(self)
+
+    @property
+    def dtype(self):
+        return self.data.dtype
 
     # Instance Methods #
     # ---------------- #
