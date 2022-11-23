@@ -1279,8 +1279,9 @@
 <span class="sd">    &gt;&gt;&gt; ivy.isin(x, y, invert=True)</span>
 <span class="sd">    ivy.array([False, False, False,  True])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">test_elements</span><span class="p">,</span>
-                                      <span class="n">assume_unique</span><span class="o">=</span><span class="n">assume_unique</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+        <span class="n">elements</span><span class="p">,</span> <span class="n">test_elements</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="n">assume_unique</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span>
+    <span class="p">)</span></div>
 
 
 <span class="c1"># global</span>
