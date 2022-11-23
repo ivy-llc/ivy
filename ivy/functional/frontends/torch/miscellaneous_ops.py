@@ -1,5 +1,5 @@
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -42,6 +42,7 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch")
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
@@ -114,7 +115,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     for individual_tensor in individual_tensors:
         # These tensors may be multidimensional, but must be treated as a single vector.
         original_shape = individual_tensor.shape
-        tensor_flattened = flatten(individual_tensor)
+        tensor_flattened = ivy.flatten(individual_tensor)
 
         # Don't scale up to the maximum norm, only scale down to it.
         norm = ivy.vector_norm(tensor_flattened, axis=0, ord=p)
@@ -135,6 +136,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logcumsumexp(input, dim, *, out=None):
     if len(input.shape) == 0:
@@ -151,6 +153,7 @@ def logcumsumexp(input, dim, *, out=None):
     return ret
 
 
+@with_supported_dtypes({"1.11.0 and below": ("int32", "int64", )}, "torch")
 @to_ivy_arrays_and_back
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)

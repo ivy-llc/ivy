@@ -385,8 +385,9 @@ def trace(
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
@@ -400,10 +401,11 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)

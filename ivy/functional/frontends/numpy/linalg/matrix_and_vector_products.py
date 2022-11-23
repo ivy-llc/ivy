@@ -26,6 +26,7 @@ def inner(a, b, /):
 def matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True
 ):
+    # TODO: add support for the rest of the arguments.
     return ivy.matmul(x1, x2, out=out)
 
 

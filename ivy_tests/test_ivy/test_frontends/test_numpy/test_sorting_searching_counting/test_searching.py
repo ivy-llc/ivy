@@ -1,10 +1,10 @@
 import hypothesis.extra.numpy as hnp
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 @st.composite
@@ -13,79 +13,82 @@ def _broadcastable_trio(draw):
     shapes_st = draw(
         hnp.mutually_broadcastable_shapes(num_shapes=3, min_dims=1, min_side=1)
     )
-    cond_shape, x1_shape, x2_shape = draw(shapes_st).input_shapes
+    cond_shape, x1_shape, x2_shape = shapes_st.input_shapes
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
-    x1 = draw(helpers.array_values(dtype=dtype[0], shape=shapes_st))
-    x2 = draw(helpers.array_values(dtype=dtype[0], shape=shapes_st))
+    x1 = draw(helpers.array_values(dtype=dtype[0], shape=x1_shape))
+    x2 = draw(helpers.array_values(dtype=dtype[0], shape=x2_shape))
     return cond, x1, x2, (dtype * 2)
 
 
-@handle_cmd_line_args
-@given(
+# where
+@handle_frontend_test(
+    fn_tree="numpy.where",
     broadcastables=_broadcastable_trio(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.where"
-    ),
 )
 def test_numpy_where(
     broadcastables,
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     cond, x1, x2, dtype = broadcastables
     helpers.test_frontend_function(
-        input_dtypes=["bool"] + dtype,
+        input_dtypes=["bool", dtype],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="where",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         cond=cond,
         x1=x1,
         x2=x2,
     )
 
 
-@handle_cmd_line_args
-@given(
+# nonzero
+@handle_frontend_test(
+    fn_tree="numpy.nonzero",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nonzero"
     ),
 )
 def test_numpy_nonzero(
     dtype_and_a,
-    native_array,
+    as_variable,
     num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, a = dtype_and_a
     helpers.test_frontend_function(
         input_dtypes=dtype,
-        as_variable_flags=[False],
+        as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nonzero",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=a[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# argmin
+@handle_frontend_test(
+    fn_tree="numpy.argmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.argmin"
     ),
     keep_dims=st.booleans(),
 )
@@ -94,6 +97,9 @@ def test_numpy_argmin(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -103,8 +109,9 @@ def test_numpy_argmin(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="argmin",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -113,17 +120,14 @@ def test_numpy_argmin(
 
 
 # argmax
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.argmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
         max_axis=0,
         min_num_dims=1,
         force_int_axis=True,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.argmax"
     ),
     keep_dims=st.booleans(),
 )
@@ -132,6 +136,9 @@ def test_numpy_argmax(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -141,8 +148,9 @@ def test_numpy_argmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="argmax",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -150,16 +158,22 @@ def test_numpy_argmax(
     )
 
 
-@handle_cmd_line_args
-@given(
+# flatnonzero
+@handle_frontend_test(
+    fn_tree="numpy.flatnonzero",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.flatnonzero"
-    ),
 )
-def test_numpy_flatnonzero(dtype_and_x, as_variable, native_array, num_positional_args):
+def test_numpy_flatnonzero(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -167,14 +181,16 @@ def test_numpy_flatnonzero(dtype_and_x, as_variable, native_array, num_positiona
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="flatnonzero",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# searchsorted
+@handle_frontend_test(
+    fn_tree="numpy.searchsorted",
     dtype_x_v=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -182,22 +198,27 @@ def test_numpy_flatnonzero(dtype_and_x, as_variable, native_array, num_positiona
         num_arrays=2,
     ),
     side=st.sampled_from(["left", "right"]),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.searchsorted"
-    ),
 )
 def test_numpy_searchsorted(
-    dtype_x_v, side, as_variable, native_array, num_positional_args
+    dtype_x_v,
+    side,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, xs = dtype_x_v
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes + [np.int64],
+        input_dtypes=input_dtypes + ["int64"],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="searchsorted",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=xs[0],
         v=xs[1],
         side=side,
@@ -205,36 +226,39 @@ def test_numpy_searchsorted(
     )
 
 
-@handle_cmd_line_args
-@given(
+# argwhere
+@handle_frontend_test(
+    fn_tree="numpy.argwhere",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.argwhere"
     ),
 )
 def test_numpy_argwhere(
     dtype_and_x,
     as_variable,
-    native_array,
     num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=[dtype],
+        input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        native_array_flags=native_array,
         num_positional_args=num_positional_args,
-        frontend="numpy",
-        fn_tree="argwhere",
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# nanargmax
+@handle_frontend_test(
+    fn_tree="numpy.nanargmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -242,18 +266,16 @@ def test_numpy_argwhere(
         min_num_dims=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nanargmax"
-    ),
     keep_dims=st.booleans(),
 )
 def test_numpy_nanargmax(
     dtype_x_axis,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -263,16 +285,18 @@ def test_numpy_nanargmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nanargmax",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
 
 
-@handle_cmd_line_args
-@given(
+# nanargmin
+@handle_frontend_test(
+    fn_tree="numpy.nanargmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -281,9 +305,6 @@ def test_numpy_nanargmax(
         force_int_axis=True,
     ),
     dtype=helpers.get_dtypes("float", full=False, none=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nanargmin"
-    ),
     keep_dims=st.booleans(),
 )
 def test_numpy_nanargmin(
@@ -292,6 +313,9 @@ def test_numpy_nanargmin(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     keep_dims,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -301,8 +325,9 @@ def test_numpy_nanargmin(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nanargmin",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,

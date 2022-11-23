@@ -609,6 +609,11 @@ class ArrayWithElementwise(abc.ABC):
         >>> ivy.cos(x, out=y)
         >>> print(y)
         ivy.array([-0.99,  1.  , -0.99])
+
+        >>> x = ivy.array([[0., 1.,], [2., 3.]])
+        >>> y = x.cos()
+        >>> print(y)
+        ivy.array([[1., 0.540], [-0.416, -0.990]])
         """
         return ivy.cos(self._data, out=out)
 
@@ -1741,6 +1746,29 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the evaluated result for each element in ``self``.
             The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+         >>> x = ivy.array([2, 3 ,5, 7])
+        >>> y = ivy.positive(x)
+        >>> print(y)
+        ivy.array([2, 3, 5, 7])
+
+        >>> x = ivy.array([0, -1, -0.5, 2, 3])
+        >>> y = ivy.zeros(5)
+        >>> ivy.positive(x, out=y)
+        >>> print(y)
+        ivy.array([0., -1., -0.5,  2.,  3.])
+
+        >>> x = ivy.array([[1.1, 2.2, 3.3],
+        ...                [-4.4, -5.5, -6.6]])
+        >>> ivy.positive(x,out=x)
+        >>> print(x)
+        ivy.array([[ 1.1,  2.2,  3.3],
+        [-4.4, -5.5, -6.6]])
+
         """
         return ivy.positive(self._data, out=out)
 
