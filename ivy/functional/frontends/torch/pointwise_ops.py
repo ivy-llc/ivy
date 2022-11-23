@@ -268,6 +268,7 @@ def clip(input, min=None, max=None, *, out=None):
 
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.multiply(input, other, out=out)
 
 
