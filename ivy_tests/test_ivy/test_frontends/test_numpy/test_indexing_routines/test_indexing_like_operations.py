@@ -39,7 +39,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     # dtype=helpers.get_dtypes("float", full=False, none=True),
     # where=np_frontend_helpers.where(),
 )
-def test_diagonal(
+def test_numpy_diagonal(
     dtype_and_x,
     as_variable,
     num_positional_args,
