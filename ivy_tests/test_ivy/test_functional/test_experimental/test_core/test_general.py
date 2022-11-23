@@ -3,10 +3,12 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 import numpy as np
 
 # isin
+
+
 @st.composite
 def _isin_data_generation_helper(draw):
     assume_unique = draw(st.booleans())
@@ -21,8 +23,9 @@ def _isin_data_generation_helper(draw):
                                                shared_dtype=True)
     return assume_unique, draw(dtype_and_x)
 
-@handle_cmd_line_args
-@given(
+
+@handle_test(
+    fn_tree="functional.experimental.isin",
     dtype_and_x=st.builds(lambda x: x[1], _isin_data_generation_helper()),
     num_positional_args=helpers.num_positional_args(fn_name="isin"),
     invert=st.booleans(),
@@ -35,9 +38,9 @@ def test_isin(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     dtypes, values = dtype_and_x
     elements, test_elements = values
@@ -48,8 +51,8 @@ def test_isin(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         instance_method=instance_method,
-        container_flags=container,
-        fw=fw,
+        container_flags=container_flags,
+        fw=backend_fw,
         fn_name="isin",
         ground_truth_backend='numpy',
         elements=elements,
