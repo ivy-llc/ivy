@@ -63,5 +63,4 @@ def einsum(equation, *inputs, **kwargs):
 
 @to_ivy_arrays_and_back
 def rank(input, **kwargs):
-    return  ivy.astype(ivy.array(input.ndim), ivy.int32)
-
+    return ivy.astype(ivy.array(input.ndim), ivy.int32)
