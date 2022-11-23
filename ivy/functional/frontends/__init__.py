@@ -3,6 +3,7 @@ from . import numpy
 from . import jax
 from . import torch
 from . import tensorflow
+from . import cupy
 import importlib
 
 latest_version = {
@@ -10,6 +11,7 @@ latest_version = {
     "tensorflow": "2.9.0",
     "numpy": "1.23.2",
     "jax": "0.3.16",
+    "cupy": "11.1.0"
 }
 
 
@@ -92,3 +94,4 @@ set_frontend_to_specific_version(torch)
 set_frontend_to_specific_version(tensorflow)
 set_frontend_to_specific_version(jax)
 set_frontend_to_specific_version(numpy)
+set_frontend_to_specific_version(cupy)
