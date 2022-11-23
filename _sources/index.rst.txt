@@ -319,14 +319,14 @@ Citation
    :maxdepth: -1
    :caption: Framework Classes
 
-   stateful/norms.rst
-   stateful/optimizers.rst
-   stateful/initializers.rst
-   stateful/sequential.rst
-   stateful/activations.rst
-   stateful/layers.rst
-   stateful/module.rst
    stateful/converters.rst
+   stateful/norms.rst
+   stateful/module.rst
+   stateful/optimizers.rst
+   stateful/layers.rst
+   stateful/activations.rst
+   stateful/sequential.rst
+   stateful/initializers.rst
 
 
 .. toctree::
