@@ -1174,16 +1174,19 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            get_scalar = lambda x: ivy.to_scalar(x) if ivy.is_array(x) else x
+            is_native = lambda x: ivy.is_native_array(x)
             if ivy.nested_argwhere(
                 input,
-                lambda x: get_scalar(x) > 9223372036854775807
-                and get_scalar(x) != ivy.inf,
+                lambda x: ivy.dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != ivy.inf,
             ):
                 ret = ivy.uint64
             elif ivy.nested_argwhere(
                 input,
-                lambda x: get_scalar(x) > 2147483647 and get_scalar(x) != ivy.inf,
+                lambda x: ivy.dtype(x) == "int64"
+                if is_native(x)
+                else x > 2147483647 and x != ivy.inf,
             ):
                 ret = ivy.int64
             else:
