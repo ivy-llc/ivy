@@ -1,3 +1,4 @@
+import ivy
 from typing import Union, Optional, Tuple
 import tensorflow as tf
 import tensorflow_probability as tfp
@@ -10,13 +11,38 @@ def histogram(
     a: tf.Tensor,
     /,
     *,
-    bins: Optional[tf.Tensor] = None,
-    weights: Optional[tf.Tensor] = None,
+    bins: Optional[Union[int, tf.Tensor, str]] = None,
+    axis: Optional[tf.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
     dtype: Optional[tf.DType] = None,
+    range: Optional[Tuple[float]] = None,
+    weights: Optional[tf.Tensor] = None,
+    density: Optional[bool] = False,
 ) -> tf.Tensor:
-    return tfp.stats.histogram(
-        x=a, edges=bins, weights=weights, dtype=dtype, name="histogram"
+    if range:
+        if type(bins) == int:
+            try:
+                bins = tf.linspace(start=range[0], stop=range[1], num=bins)
+            except IndexError as e:
+                raise ivy.exceptions.IvyError(histogram.__name__, str(e)) from None
+            except Exception as e:
+                raise ivy.exceptions.IvyBackendException(
+                    histogram.__name__, str(e)
+                ) from None
+    ret = tfp.stats.histogram(
+        x=a,
+        edges=bins,
+        axis=axis,
+        weights=weights,
+        extend_upper_interval=extend_upper_interval,
+        extend_lower_interval=extend_lower_interval,
+        dtype=dtype,
+        name="histogram",
     )
+    if density:
+        ret = ret / max(ret)
+    return ret
 
 
 def median(

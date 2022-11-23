@@ -11,15 +11,22 @@ def histogram(
     a: torch.tensor,
     /,
     *,
-    bins: Optional[Union[int, torch.tensor]] = None,
+    bins: Optional[Union[int, torch.tensor, str]] = None,
+    axis: Optional[torch.Tensor] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[torch.dtype] = None,
     range: Optional[Tuple[float]] = None,
     weights: Optional[torch.tensor] = None,
     density: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> Tuple[torch.tensor]:
     return torch.histogram(
-        a, bins, range=range, weight=weights, density=density, out=out
+        a=a, bins=bins, range=range, weight=weights, density=density, out=out
     )
+
+
+histogram.support_native_out = True
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)

@@ -8,6 +8,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    infer_dtype,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -16,18 +17,32 @@ from ivy.exceptions import handle_exceptions
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@infer_dtype
 def histogram(
     a: Union[ivy.Array, ivy.NativeArray],
     /,
     *,
     bins: Optional[Union[int, ivy.Array, ivy.NativeArray, str]] = None,
+    axis: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    extend_lower_interval: Optional[bool] = False,
+    extend_upper_interval: Optional[bool] = False,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     range: Optional[Tuple[float]] = None,
     weights: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     density: Optional[bool] = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     return ivy.current_backend(a).histogram(
-        a, bins=bins, range=range, weights=weights, density=density, out=out
+        a,
+        bins=bins,
+        axis=axis,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=dtype,
+        range=range,
+        weights=weights,
+        density=density,
+        out=out,
     )
 
 
