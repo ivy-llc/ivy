@@ -939,6 +939,8 @@ def test_zeta(
         max_value=10,
         min_num_dims=1,
         max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3
     ),
 )
 def test_digamma(

@@ -312,17 +312,24 @@ def digamma(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     y = 0.5772156649015328606065120900824024310421
-
+    nan_indices = np.where(x <= -1.)
+    valid_indices = np.where(x > -1)
+    array_shape = x.shape
+    valid_x = x[valid_indices]
+    
     def sub_fn(x, n):
         return (1 / (x - 1 + n)) - (1 / n)
     
     res = 0
     for n in range(1, 10000):
-        res = res - sub_fn(x, n)
+        res = res - sub_fn(valid_x, n)
+    res = - y + res
 
-    nan_indices = np.where(x <= -1.)
-    res[nan_indices] = np.nan
-    return np.asarray(- y + res, dtype=x.dtype)
+    ret = np.zeros(shape=array_shape)
+    ret[valid_indices] = res
+    ret[nan_indices] = np.nan
+
+    return np.asarray(ret, dtype=x.dtype)
 
 
 digamma.support_native_out = False
