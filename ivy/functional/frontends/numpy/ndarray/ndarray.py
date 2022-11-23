@@ -10,6 +10,9 @@ class ndarray:
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
+        self.T = np_frontend.transpose(data)
+        self.shape = np_frontend.shape(data)
+        self.dtype = data.dtype
 
     # Instance Methods #
     # ---------------- #
@@ -36,14 +39,6 @@ class ndarray:
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]
         return np_frontend.transpose(self.data, axes=axes)
-
-    @property
-    def T(self):
-        return np_frontend.transpose(self.data)
-
-    @property
-    def shape(self):
-        return np_frontend.shape(self)
 
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self.data, axis1, axis2)
@@ -81,10 +76,6 @@ class ndarray:
             initial=initial,
             where=where,
         )
-
-    @property
-    def dtype(self):
-        return self.data.dtype
 
     def argmin(
         self,
