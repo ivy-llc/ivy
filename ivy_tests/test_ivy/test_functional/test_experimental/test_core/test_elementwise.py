@@ -944,12 +944,13 @@ def test_zeta(
 def test_digamma(
     dtype_and_x,
     with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -958,10 +959,11 @@ def test_digamma(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="digamma",
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
         rtol_=1e-03,
         atol_=1e-03,
         x=x[0],
