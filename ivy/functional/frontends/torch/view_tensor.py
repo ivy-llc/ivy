@@ -21,7 +21,7 @@ def _update_original(self, method, special_method, *args, **kwargs):
         ret = method(self, *args, **kwargs)
     else:
         ret = method(*args, **kwargs)
-    self.chain_merge_to(checked=True)
+    self.merge_to(checked=True)
     return ret
 
 
@@ -91,7 +91,7 @@ class ViewTensor:
                     "'ViewTensor' object"
                 )
 
-    def chain_merge_to(self, *, checked=False):
+    def merge_to(self, *, checked=False):
         if (self.ref() is not None) or checked:
             if isinstance(self.ref(), Tensor):
                 self.ref().data = ivy.reshape(
@@ -101,7 +101,7 @@ class ViewTensor:
                 self.ref().delegate.data = ivy.reshape(
                     self.delegate.data, self.ref().size(), copy=True
                 )
-                self.ref().chain_merge_to()
+                self.ref().merge_to()
             else:
                 raise AttributeError(
                     "'ViewTensor' object is not referring to a 'Tensor' or "

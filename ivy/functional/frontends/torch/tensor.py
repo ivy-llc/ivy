@@ -136,7 +136,7 @@ class Tensor:
         return torch_frontend.bitwise_and(self.data, other)
 
     def contiguous(self, memory_format=None):
-        return self.data
+        return Tensor(self.data)
 
     def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.ones(
