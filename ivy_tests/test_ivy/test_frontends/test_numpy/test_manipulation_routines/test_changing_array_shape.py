@@ -29,7 +29,7 @@ def dtypes_x_reshape(draw):
 @handle_frontend_test(
     fn_tree="numpy.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
-    order=st.sampled_from(["C", "F"]),
+    order=st.sampled_from(["C", "F", "A"]),
 )
 def test_numpy_reshape(
     *,
@@ -96,7 +96,7 @@ def test_numpy_broadcast_to(
 @handle_frontend_test(
     fn_tree="numpy.ravel",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
-    order=st.sampled_from(["C", "F"]),
+    order=st.sampled_from(["C", "F", "A", "K"]),
 )
 def test_numpy_ravel(
     *,

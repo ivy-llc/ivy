@@ -105,11 +105,16 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, order="K", **kwargs):
-        order = _set_order(args, order)
         # call unmodified function
-        ret = (
-            fn(*args, order=order, **kwargs) if contains_order else fn(*args, **kwargs)
-        )
+        if contains_order:
+            if len(args) >= (order_pos + 1):
+                order = args[order_pos]
+                args = args[:-1]
+            order = _set_order(args, order)
+            print(order)
+            ret = fn(*args, order=order, **kwargs)
+        else:
+            ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
         if order == "F":
             return _from_ivy_array_to_jax_frontend_array_order_F(
@@ -122,6 +127,7 @@ def outputs_to_frontend_arrays(fn: Callable) -> Callable:
 
     if "order" in list(inspect.signature(fn).parameters.keys()):
         contains_order = True
+        order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
     return new_fn

@@ -248,11 +248,15 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
         by the function into `ndarray` instances.
            The return of the function, with ivy arrays as numpy arrays.
         """
-        order = _set_order(args, order)
-        # call unmodified function
-        ret = (
-            fn(*args, order=order, **kwargs) if contains_order else fn(*args, **kwargs)
-        )
+        # handle order and call unmodified function
+        if contains_order:
+            if len(args) >= (order_pos + 1):
+                order = args[order_pos]
+                args = args[:-1]
+            order = _set_order(args, order)
+            ret = fn(*args, order=order, **kwargs)
+        else:
+            ret = fn(*args, **kwargs)
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances
@@ -265,6 +269,7 @@ def outputs_to_numpy_arrays(fn: Callable) -> Callable:
 
     if "order" in list(inspect.signature(fn).parameters.keys()):
         contains_order = True
+        order_pos = list(inspect.signature(fn).parameters).index("order")
     else:
         contains_order = False
     new_fn.outputs_to_numpy_arrays = True
