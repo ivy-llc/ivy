@@ -464,9 +464,9 @@ def test_eigh(
         return
     ret_np_flat, ret_from_np_flat = results
     reconstructed_np = None
-    for i in range(len(ret_np_flat)//2):
-        eigenvalue=ret_np_flat[i*2]
-        eigenvector=ret_np_flat[i*2+1]
+    for i in range(len(ret_np_flat) // 2):
+        eigenvalue=ret_np_flat[i * 2]
+        eigenvector=ret_np_flat[i * 2 + 1]
         if reconstructed_np is not None:
             reconstructed_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
@@ -476,9 +476,9 @@ def test_eigh(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
             )
     reconstructed_from_np = None
-    for i in range(len(ret_from_np_flat)//2):
-        eigenvalue=ret_from_np_flat[i*2]
-        eigenvector=ret_from_np_flat[i*2+1]
+    for i in range(len(ret_from_np_flat) // 2):
+        eigenvalue=ret_from_np_flat[i * 2]
+        eigenvector=ret_from_np_flat[i * 2 + 1]
         if reconstructed_from_np is not None:
             reconstructed_from_np += eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
