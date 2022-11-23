@@ -219,32 +219,6 @@
              
   <section id="ivy-array-supports-inplace-updates">
 <h1>ivy.Array.supports_inplace_updates<a class="headerlink" href="#ivy-array-supports-inplace-updates" title="Permalink to this heading"></a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.supports_inplace_updates">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">supports_inplace_updates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/general.html#ArrayWithGeneral.supports_inplace_updates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.supports_inplace_updates" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of <a href="../supports_inplace_updates/supports_inplace_updates_functional.html">ivy.supports_inplace_updates</a>. This method
-simply wraps the function, and so the docstring for <a href="../supports_inplace/supports_inplace_functional.html">ivy.supports_inplace</a> also
-applies to this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – The input array whose elements’ data type is to be checked.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Bool value depends on whether the currently active backend
-framework supports in-place operations with argument’s data type.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>With <cite>ivy.Array</cite> input and backend set as “tensorflow”:
-&gt;&gt;&gt; x = ivy.array([1., 4.2, 2.2])
-&gt;&gt;&gt; ret = x.supports_inplace_updates()
-&gt;&gt;&gt; print(ret)
-False</p>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
