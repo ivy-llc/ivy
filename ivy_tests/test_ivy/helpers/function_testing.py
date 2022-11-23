@@ -510,7 +510,7 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
-        ret = frontend_fn.__wrapped__(*args_ivy, **kwargs_ivy)
+        ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -551,7 +551,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = frontend_fn.__wrapped__(*copy_args, **copy_kwargs)
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_args)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -1554,6 +1554,12 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     return ret, flatten_and_to_np(ret=ret)
 
 
+def get_frontend_ret(fn, *args, **kwargs):
+    ret = fn(*args, **kwargs)
+    ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
+    return ret
+
+
 def args_to_container(array_args):
     array_args_container = ivy.Container({str(k): v for k, v in enumerate(array_args)})
     return array_args_container
@@ -1589,3 +1595,15 @@ def _is_frontend_array(x):
         or isinstance(x, tf_tensor)
         or isinstance(x, DeviceArray)
     )
+
+
+def _frontend_array_to_ivy(x):
+    if (
+        isinstance(x, ndarray)
+        or isinstance(x, torch_tensor)
+        or isinstance(x, tf_tensor)
+        or isinstance(x, DeviceArray)
+    ):
+        return x.data
+    else:
+        return x
