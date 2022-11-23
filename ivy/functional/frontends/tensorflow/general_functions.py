@@ -57,5 +57,15 @@ def convert_to_tensor(
 
 
 @to_ivy_arrays_and_back
+def einsum(equation, *inputs, **kwargs):
+    return ivy.einsum(equation, *inputs)
+
+
+@to_ivy_arrays_and_back
+def rank(input, **kwargs):
+    return ivy.astype(ivy.array(input.ndim), ivy.int32)
+    
+    
+@to_ivy_arrays_and_back 
 def zeros(shape, dtype=ivy.float32, name=None):
     return ivy.zeros(shape=shape, dtype=dtype)
