@@ -169,6 +169,84 @@
              
   <section id="ivy-container-static-vector-norm">
 <h1>ivy.Container.static_vector_norm<a class="headerlink" href="#ivy-container-static-vector-norm" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_vector_norm">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_vector_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/linear_algebra.html#ContainerWithLinear_algebra.static_vector_norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_vector_norm" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="../vector_norm/vector_norm_functional.html">ivy.vector_norm</a>.
+This method simply wraps the function, and so the docstring for
+ivy.vector_norm also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – input array. Should have a floating-point data type.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]]) – <p>If an integer, <code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axis (dimension) (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+along which to compute vector norms. If an n-tuple,
+<code class="docutils literal notranslate"><span class="pre">axis</span></code> specifies the axes (dimensions) along
+which to compute batched vector norms. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the</p>
+<blockquote>
+<div><p>vector norm must be computed over all array values
+(i.e., equivalent to computing the vector norm of</p>
+</div></blockquote>
+<p>a flattened array). Negative indices must be
+supported. Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+</p></li>
+<li><p><strong>keepdims</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+must be included in the result as singleton dimensions,
+and, accordingly, the result must be compatible
+with the input array (see <span class="xref std std-ref">broadcasting</span>). Otherwise,
+if <code class="docutils literal notranslate"><span class="pre">False</span></code>, the axes (dimensions) specified by <code class="docutils literal notranslate"><span class="pre">axis</span></code> must
+not be included in the result. Default: <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>ord</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[inf, -inf]]) – order of the norm. The following mathematical norms must be supported: (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)
++——————+—————————-+
+| ord              | description                |
++==================+============================+
+| 1                | L1-norm (Manhattan)        |
++——————+—————————-+
+| 2                | L2-norm (Euclidean)        |
++——————+—————————-+
+| inf              | infinity norm              |
++——————+—————————-+
+| (int,float &gt;= 1) | p-norm                     |
++——————+—————————-+
+The following non-mathematical “norms” must be supported:
++——————+——————————–+
+| ord              | description                    |
++==================+================================+
+| 0                | sum(a != 0)                    |
++——————+——————————–+
+| -1               | 1./sum(1./abs(a))              |
++——————+——————————–+
+| -2               | 1./sqrt(sum(1./abs(a)/<em>/*2))   | 
++——————+——————————–+
+| -inf             | min(abs(a))                    |
++——————+——————————–+
+| (int,float &lt; 1)  | sum(abs(a)/</em>/<em>ord)/</em>/<a href="#id1"><span class="problematic" id="id2">*</span></a>(1./ord) |
++——————+——————————–+
+Default: <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output array, for writing the result to. It must (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+have a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><p><em>ret</em> – an array containing the vector norms. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, the returned array must be a zero-dimensional
+array containing a vector norm. If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is
+a scalar value (<code class="docutils literal notranslate"><span class="pre">int</span></code> or <code class="docutils literal notranslate"><span class="pre">float</span></code>), the returned array
+must have a rank which is one less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">axis</span></code> is a <code class="docutils literal notranslate"><span class="pre">n</span></code>-tuple, the returned array must have</p>
+<blockquote>
+<div><p>a rank which is <code class="docutils literal notranslate"><span class="pre">n</span></code> less than the rank of <code class="docutils literal notranslate"><span class="pre">x</span></code>. The returned</p>
+</div></blockquote>
+<p>array must have a floating-point data type determined
+by <span class="xref std std-ref">type-promotion</span>.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

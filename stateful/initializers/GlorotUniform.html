@@ -144,6 +144,21 @@
              
   <section id="glorotuniform">
 <h1>GlorotUniform<a class="headerlink" href="#glorotuniform" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.initializers.GlorotUniform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">GlorotUniform</span></span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#GlorotUniform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.GlorotUniform" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="Uniform.html#ivy.stateful.initializers.Uniform" title="ivy.stateful.initializers.Uniform"><code class="xref py py-class docutils literal notranslate"><span class="pre">Uniform</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.initializers.GlorotUniform.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#GlorotUniform.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.GlorotUniform.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>The Glorot uniform initializer, also known as the Xavier uniform initializer.
+It draws values from a uniform distribtion <cite>[-limit, limit]</cite> where
+<cite>limit = sqrt(6 / (fan_in + fan_out))</cite> where <cite>fan_in</cite> and <cite>fan_out</cite> are the
+number of input and output features respectively.</p>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
