@@ -276,7 +276,7 @@ def test_torch_l1_loss(
     fn_tree="torch.nn.functional.nll_loss",
     dtype_and_input=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=0.01,
+        min_value=1.0013580322265625e-05,
         max_value=1.0,
         allow_inf=False,
         min_num_dims=1,
@@ -296,6 +296,8 @@ def test_torch_l1_loss(
     ),
     dtype_and_weights=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=1.0013580322265625e-05,
+        max_value=1.0,
         allow_inf=False,
         min_num_dims=1,
         max_num_dims=1,
