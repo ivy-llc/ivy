@@ -558,11 +558,13 @@ def test_i0(
         unique=False,
         force_tuple=True,
     ),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_flatten(
     *,
     dtype_and_x,
     axes,
+    order,
     num_positional_args,
     as_variable,
     with_out,
@@ -601,6 +603,7 @@ def test_flatten(
         x=x,
         start_dim=start_dim,
         end_dim=end_dim,
+        order=order,
     )
 
 

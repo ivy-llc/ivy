@@ -131,6 +131,9 @@ def atan2(input, other, *, out=None):
     return ivy.atan2(input, other, out=out)
 
 
+arctan2 = atan2
+
+
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
@@ -265,6 +268,7 @@ def clip(input, min=None, max=None, *, out=None):
 
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.multiply(input, other, out=out)
 
 
