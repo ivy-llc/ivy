@@ -319,6 +319,10 @@ class Tensor:
     def __truediv__(self, other, *, rounding_mode=None):
         return torch_frontend.div(self, other, rounding_mode=rounding_mode)
 
+
+    def sqrt(self):
+        return torch_frontend.sqrt(self.data)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
