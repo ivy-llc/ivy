@@ -42,7 +42,9 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch")
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+)
 @to_ivy_arrays_and_back
 def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
@@ -153,7 +155,15 @@ def logcumsumexp(input, dim, *, out=None):
     return ret
 
 
-@with_supported_dtypes({"1.11.0 and below": ("int32", "int64", )}, "torch")
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "int32",
+            "int64",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)

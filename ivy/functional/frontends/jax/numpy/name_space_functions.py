@@ -533,3 +533,13 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 
 amax = max
+
+
+@to_ivy_arrays_and_back
+def log10(x):
+    return ivy.log10(x)
+
+
+@to_ivy_arrays_and_back
+def logaddexp(x1, x2):
+    return ivy.logaddexp(x1, x2)
