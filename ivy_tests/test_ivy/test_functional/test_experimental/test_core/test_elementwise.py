@@ -342,7 +342,7 @@ def test_exp2(
 @handle_cmd_line_args
 @given(
     dtype_x1_x2=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         allow_nan=False,
     ),
