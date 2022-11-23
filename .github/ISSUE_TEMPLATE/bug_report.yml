@@ -1,0 +1,52 @@
+name: 🐛 Bug Report
+description: File a bug report.
+title: "[Bug]: <TITLE>"
+labels: "Bug Report"
+body:
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Bug Explanation
+      description: What is the bug, and what did you expect to happen?
+      placeholder: e.g. The TensorFlow frontend __add__ function is subtracting.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce Bug
+      placeholder: "e.g. Run the following code:"
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment did you encounter the bug in?
+      placeholder: e.g. Windows 11 using PyCharm CE & Docker.
+    validations:
+      required: true
+  - type: input
+    id: ivy_version
+    attributes:
+      label: Ivy Version
+      description: Which version of Ivy are you using?
+      placeholder: ex. v1.1.9
+    validations:
+      required: true
+  - type: checkboxes
+    id: backend
+    attributes:
+      label: Backend
+      description: Is this bug backend specific (leave empty if not)?
+      options:
+        - label: NumPy
+        - label: TensorFlow
+        - label: PyTorch
+        - label: JAX
+  - type: input
+    id: device
+    attributes:
+      label: Device
+      description: What device did you encounter the bug on? Which GPU/CPU/TPU?
+      placeholder: "GPU: NVIDIA GeForce RTX 3090"
