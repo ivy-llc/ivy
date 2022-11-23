@@ -7,12 +7,12 @@ from ivy.container.base import ContainerBase
 class ContainerWithGeneralExperimental(ContainerBase):
     @staticmethod
     def static_isin(
-            element: ivy.Container,
-            test_elements: ivy.Container,
-            /,
-            *,
-            assume_unique: Optional[bool] = False,
-            invert: Optional[bool] = False,
+        element: ivy.Container,
+        test_elements: ivy.Container,
+        /,
+        *,
+        assume_unique: Optional[bool] = False,
+        invert: Optional[bool] = False,
     ) -> ContainerBase:
         """Container instance method variant of ivy.isin. This method simply
         wraps the function, and so the docstring for ivy.isin also applies to
@@ -51,16 +51,18 @@ class ContainerWithGeneralExperimental(ContainerBase):
         ivy.Container(a=[[ True,  True,  True], [False, False, False]],\
                       b=[False,  True, False])
         """
-        return ContainerBase.multi_map_in_static_method("isin", element, test_elements,
-                                                        assume_unique=assume_unique,
-                                                        invert=invert)
+        return ContainerBase.multi_map_in_static_method(
+            "isin", element, test_elements, assume_unique=assume_unique, invert=invert
+        )
 
-    def isin(self: ivy.Container,
-             test_elements: ivy.Container,
-             /,
-             *,
-             assume_unique: Optional[bool] = False,
-             invert: Optional[bool] = False) -> ivy.Container:
+    def isin(
+        self: ivy.Container,
+        test_elements: ivy.Container,
+        /,
+        *,
+        assume_unique: Optional[bool] = False,
+        invert: Optional[bool] = False,
+    ) -> ivy.Container:
         """Container instance method variant of ivy.isin. This method simply
         wraps the function, and so the docstring for ivy.isin also applies to
         this method with minimal changes.
@@ -94,5 +96,6 @@ class ContainerWithGeneralExperimental(ContainerBase):
         ivy.Container(a=[[False, False, False], [ True,  True,  True]],\
                         b=[ True, False,  True])
         """
-        return self.static_isin(self, test_elements,
-                                assume_unique=assume_unique, invert=invert)
+        return self.static_isin(
+            self, test_elements, assume_unique=assume_unique, invert=invert
+        )
