@@ -33,9 +33,9 @@ from . import backend_version
 )
 def arange(
     start: float,
-    /,
     stop: Optional[float] = None,
     step: float = 1,
+    /,
     *,
     dtype: Optional[tf.DType] = None,
     device: str,

@@ -420,7 +420,7 @@ def test_count_nonzero(
         fw=backend_fw,
         ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
-        a=a,
+        a=a[0],
         axis=axis,
         keepdims=keepdims,
         dtype=i_o_dtype[1],

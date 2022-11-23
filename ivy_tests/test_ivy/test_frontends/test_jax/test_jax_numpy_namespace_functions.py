@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 import numpy as np
 
 # local
@@ -89,7 +89,7 @@ def test_jax_numpy_argmax(
 @handle_frontend_test(
     fn_tree="jax.numpy.add",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
+        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_jax_numpy_add(
@@ -186,12 +186,16 @@ def test_jax_numpy_tan(
         num_arrays=2,
         shared_dtype=True,
     ),
+    rtol=st.floats(min_value=1e-5, max_value=1e-1),
+    atol=st.floats(min_value=1e-8, max_value=1e-6),
     equal_nan=st.booleans(),
 )
 def test_jax_numpy_allclose(
     *,
     dtype_and_input,
     equal_nan,
+    rtol,
+    atol,
     as_variable,
     with_out,
     num_positional_args,
@@ -210,8 +214,8 @@ def test_jax_numpy_allclose(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-05,
-        atol=1e-08,
+        rtol=rtol,
+        atol=atol,
         a=input[0],
         b=input[1],
         equal_nan=equal_nan,
@@ -646,7 +650,9 @@ def _get_dtype_input_and_vectors(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.mod",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"), num_arrays=2
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_numpy_mod(
@@ -660,6 +666,7 @@ def test_jax_numpy_mod(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -1037,6 +1044,8 @@ def test_jax_numpy_fmax(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        min_value=-np.inf,
+        max_value=np.inf,
         shared_dtype=True,
     ),
     equal_nan=st.booleans(),
@@ -1426,7 +1435,7 @@ def test_jax_numpy_bitwise_xor(
 @handle_frontend_test(
     fn_tree="jax.numpy.moveaxis",
     dtype_and_a=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-100,
         max_value=100,
         shape=st.shared(
@@ -1502,7 +1511,7 @@ def test_jax_numpy_moveaxis(
 @handle_frontend_test(
     fn_tree="jax.numpy.flipud",
     dtype_and_m=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_value=-100,
         max_value=100,
         min_num_dims=1,
@@ -2024,6 +2033,8 @@ def test_jax_numpy_i0(
     fn_tree="jax.numpy.isneginf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2061,6 +2072,8 @@ def test_jax_numpy_isneginf(
     fn_tree="jax.numpy.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        min_value=-np.inf,
+        max_value=np.inf,
         min_num_dims=1,
         max_num_dims=3,
         min_dim_size=1,
@@ -2890,7 +2903,7 @@ def test_jax_numpy_equal(
     )
 
 
-# minx
+# min
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
     dtype_x_axis=statistical_dtype_values(function="min"),
@@ -2933,7 +2946,7 @@ def test_jax_numpy_min(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amin"],
+        all_aliases=["numpy.amin"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -2990,7 +3003,7 @@ def test_jax_numpy_max(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        all_aliases=["jax.numpy.amax"],
+        all_aliases=["numpy.amax"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -3001,4 +3014,82 @@ def test_jax_numpy_max(
         out=None,
         keepdims=keepdims,
         where=where,
+    )
+
+
+# log10
+@handle_frontend_test(
+    fn_tree="jax.numpy.log10",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+    ),
+)
+def test_jax_numpy_log10(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-02,
+        x=x[0]
+    )
+
+
+# logaddexp
+@handle_frontend_test(
+    fn_tree="jax.numpy.logaddexp",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+)
+def test_jax_numpy_logaddexp(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-01,
+        atol=1e-02,
+        x1=x[0],
+        x2=x[1],
     )
