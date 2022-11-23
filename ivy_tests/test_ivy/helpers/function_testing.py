@@ -306,7 +306,6 @@ def test_function(
             ):
                 pass
             else:
-
                 gradient_test(
                     fn_name=fn_name,
                     all_as_kwargs_np=all_as_kwargs_np,
@@ -655,9 +654,11 @@ def test_frontend_function(
             atol=atol,
             ground_truth_backend=frontend,
         )
+        return ret, frontend_ret
 
     # Call the frontend testing function
-    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+
+    ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
     if all_aliases is not None:
@@ -677,6 +678,9 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+
+    if not test_values:
+        return ret, frontend_ret
 
 
 # Method testing
@@ -699,9 +703,8 @@ def gradient_test(
     ground_truth_backend: str,
 ):
     def grad_fn(xs):
-        array_vals = [v for k, v in xs.to_iterator()]
-        arg_array_vals = array_vals[0 : len(args_idxs)]
-        kwarg_array_vals = array_vals[len(args_idxs) :]
+        arg_array_vals = xs[0]
+        kwarg_array_vals = xs[1]
         args_writeable = ivy.copy_nest(args)
         kwargs_writeable = ivy.copy_nest(kwargs)
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
@@ -727,7 +730,7 @@ def gradient_test(
     )
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    xs = [arg_array_vals, kwarg_array_vals]
     _, grads = ivy.execute_with_gradients(
         grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
@@ -756,7 +759,7 @@ def gradient_test(
     )
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    xs = [arg_array_vals, kwarg_array_vals]
     _, grads_from_gt = ivy.execute_with_gradients(
         grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
