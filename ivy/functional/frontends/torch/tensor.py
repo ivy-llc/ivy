@@ -278,6 +278,9 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
 
+    def sqrt(self):
+        return torch_frontend.sqrt(self.data)
+
     # Special Methods #
     # -------------------#
 
