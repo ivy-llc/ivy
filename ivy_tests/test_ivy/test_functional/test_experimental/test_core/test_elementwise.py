@@ -338,6 +338,43 @@ def test_exp2(
     )
 
 
+# copysign
+@handle_cmd_line_args
+@given(
+    dtype_x1_x2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        allow_nan=False,
+    ),
+    num_positional_args=helpers.num_positional_args(fn_name="copysign"),
+)
+def test_copysign(
+    dtype_x1_x2,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
+    helpers.test_function(
+        input_dtypes=[x1_dtype, x2_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="copysign",
+        test_values=True,
+        x1=x1,
+        x2=x2,
+    )
+
+
 @st.composite
 def _get_dtype_values_axis_for_count_nonzero(
     draw,
