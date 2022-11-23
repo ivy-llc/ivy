@@ -361,8 +361,3 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
-
-
-
-
-
