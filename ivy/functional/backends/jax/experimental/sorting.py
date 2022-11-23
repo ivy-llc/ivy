@@ -14,3 +14,14 @@ def msort(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.msort(a)
+
+
+# lexsort
+def lexsort(
+    x: Union[JaxArray, list, tuple],
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.lexsort(x, axis)
