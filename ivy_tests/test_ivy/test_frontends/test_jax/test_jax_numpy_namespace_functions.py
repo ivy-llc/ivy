@@ -3014,6 +3014,7 @@ def test_jax_numpy_max(
     )
 
 
+# expand_dims
 @handle_frontend_test(
     fn_tree="jax.numpy.expand_dims",
     dtype_and_x=helpers.dtype_and_values(
