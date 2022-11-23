@@ -160,25 +160,25 @@ def quantile(
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
     """ Compute the q-th quantile of the data along the specified axis.
-    
+
     Parameters
     ----------
     a
         Input array. 
-    
+
     q
         Quantile or sequence of quantiles to compute, which must be
         between 0 and 1 inclusive.
-    
+
     axis
         Axis or axes along which the quantiles are computed. The default
         is to compute the quantile(s) along a flattened version of the array.
-    
+
     keepdims
         If this is set to True, the axes which are reduced are left in the result
         as dimensions with size one. With this option, the result will broadcast
         correctly against the original array a.
-    
+
     interpolation
         {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
         This specifies the interpolation method to use when the desired quantile lies between
@@ -189,7 +189,7 @@ def quantile(
         - higher: j.
         - nearest: i or j, whichever is nearest.
         - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with integer dtypes..
-    
+
     out
         optional output array, for writing the result to.
 
@@ -210,22 +210,19 @@ def quantile(
 
     >>> ivy.quantile(a, q, axis=0)
     >>> ivy.array([6.5, 4.5, 2.5])
-    
+
     >>> ivy.quantile(a, q, axis=1)
     >>> ivy.array([7.,  2.])
-    
+
     >>> ivy.quantile(a, q, axis=1, keepdims=True)
     >>> ivy.array([[7.],[2.]])
-    
+
     >>> a = [1., 2., 3., 4.]
     >>> q = [0.3, 0.7]
     >>> ivy.quantile(a, q, interpolation='lower')
     >>> ivy.array([1., 3.])
 
     """
-
-
-
     return ivy.current_backend(a).quantile(
         a,
         q,
