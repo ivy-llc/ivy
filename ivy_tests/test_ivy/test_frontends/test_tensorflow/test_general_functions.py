@@ -209,9 +209,9 @@ def test_tensorflow_rank(
         on_device=on_device,
         input=x[0],
     )
-    
-    
- # ones_like
+
+
+# ones_like
 @handle_frontend_test(
     fn_tree="tensorflow.ones_like",
     dtype_and_x=helpers.dtype_and_values(
