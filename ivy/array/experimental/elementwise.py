@@ -304,14 +304,12 @@ class ArrayWithElementWiseExperimental(abc.ABC):
 
         Examples
         --------
-        >>> x1 = ivy.array([-1, 0, 23, 2])
-        >>> x2 = ivy.array([1, -1, -10, 44])
-        >>> ivy.copysign(x1, x2)
-        ivy.array([  1.,  -0., -23.,   2.])
-        >>> ivy.copysign(x1, -1)
-        ivy.array([ -1.,  -0., -23.,  -2.])
-        >>> ivy.copysign(-10, 1)
-        ivy.array(10.)
+        >>> x1 = ivy.array([0, 1, 2, 3])
+        >>> x2 = ivy.array([-1, 1, -2, 2])
+        >>> x1.copysign(x2)
+        ivy.array([-0.,  1., -2.,  3.])
+        >>> x2.copysign(-1)
+        ivy.array([-1., -1., -2., -2.])
         """
         return ivy.copysign(self._data, x2, out=out)
 
