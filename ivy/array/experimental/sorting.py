@@ -43,7 +43,6 @@ class ArrayWithSortingExperimental(abc.ABC):
         """
         return ivy.msort(self._data, out=out)
 
-
     # lexsort
     def lexsort(
         self: ivy.Array,
