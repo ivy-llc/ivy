@@ -182,6 +182,41 @@ def binary_cross_entropy(
         out,
     )
 
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def binary_cross_entropy_with_logits(
+    true: Union[ivy.Array, ivy.NativeArray],
+    pred: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    epsilon: float = 1e-7,
+    pos_weight: Optional[ivy.Array] = None,
+    reduction: str = "none",
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """
+    docstrings
+    """
+    ivy.assertions.check_elem_in_list(reduction, ["none", "sum", "mean"])
+    if pos_weight is not None:
+        pred = ivy.clip(pred, epsilon, 1 - epsilon)
+        max_val = ivy.max(-pred)
+        log_weight = (pos_weight - 1) * true + 1
+        result = (1 - true) * pred + log_weight * (
+            ivy.log(ivy.exp(-max_val) + ivy.exp(-pred - max_val)) + max_val
+        )
+    else:
+        input_sigmoid = ivy.sigmoid(pred)
+        result = ivy.binary_cross_entropy(true, input_sigmoid, epsilon=epsilon)
+
+    return _reduce_loss(
+        reduction,
+        result,
+        None,
+        out,
+    )
+
 
 @handle_nestable
 @handle_exceptions
