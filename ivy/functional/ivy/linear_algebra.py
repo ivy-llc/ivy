@@ -564,7 +564,7 @@ def eigh(
     return current_backend(x).eigh(x, UPLO=UPLO, out=out)
 
 
-eigh.out_index=1
+eigh.out_index = 1
 
 
 @to_native_arrays_and_back
