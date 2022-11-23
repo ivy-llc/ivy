@@ -282,19 +282,36 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """TODO
+        """ivy.Array instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
+        this method with minimal changes.
 
         Parameters
         ----------
-        TODO
+        x1
+            Array or scalar to change the sign of
+        x2
+            Array or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output array, for writing the result to.
 
         Returns
         -------
-        TODO
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
 
         Examples
         --------
-        >>> TODO
+        >>> x1 = ivy.array([-1, 0, 23, 2])
+        >>> x2 = ivy.array([1, -1, -10, 44])
+        >>> ivy.copysign(x1, x2)
+        ivy.array([  1.,  -0., -23.,   2.])
+        >>> ivy.copysign(x1, -1)
+        ivy.array([ -1.,  -0., -23.,  -2.])
+        >>> ivy.copysign(-10, 1)
+        ivy.array(10.)
         """
         return ivy.copysign(self._data, x2, out=out)
 

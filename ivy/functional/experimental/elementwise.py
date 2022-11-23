@@ -377,7 +377,14 @@ def copysign(
 
     Examples
     --------
-    TODO
+    >>> x1 = ivy.array([-1, 0, 23, 2])
+    >>> x2 = ivy.array([1, -1, -10, 44])
+    >>> ivy.copysign(x1, x2)
+    ivy.array([  1.,  -0., -23.,   2.])
+    >>> ivy.copysign(x1, -1)
+    ivy.array([ -1.,  -0., -23.,  -2.])
+    >>> ivy.copysign(-10, 1)
+    ivy.array(10.)
     """
     return ivy.current_backend().copysign(x1, x2, out=out)
 
