@@ -1,5 +1,5 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -13,28 +13,28 @@ import numpy as np
 def _isin_data_generation_helper(draw):
     assume_unique = draw(st.booleans())
     if assume_unique:
-        dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"),
-                                               num_arrays=2,
-                                               shared_dtype=True)\
-            .filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shared_dtype=True
+        ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
     else:
-        dtype_and_x = helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"),
-                                               num_arrays=2,
-                                               shared_dtype=True)
+        dtype_and_x = helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shared_dtype=True)
     return assume_unique, draw(dtype_and_x)
 
 
 @handle_test(
     fn_tree="functional.experimental.isin",
-    dtype_and_x=st.builds(lambda x: x[1], _isin_data_generation_helper()),
+    assume_unique_and_dtype_and_x=_isin_data_generation_helper(),
     num_positional_args=helpers.num_positional_args(fn_name="isin"),
     invert=st.booleans(),
-    assume_unique=st.builds(lambda x: x[0], _isin_data_generation_helper()),
 )
 def test_isin(
-    dtype_and_x,
+    assume_unique_and_dtype_and_x,
     invert,
-    assume_unique,
     as_variable,
     num_positional_args,
     native_array,
@@ -42,7 +42,8 @@ def test_isin(
     instance_method,
     backend_fw,
 ):
-    dtypes, values = dtype_and_x
+    assume_unique, x_and_dtype = assume_unique_and_dtype_and_x
+    dtypes, values = x_and_dtype
     elements, test_elements = values
     helpers.test_function(
         input_dtypes=dtypes,
