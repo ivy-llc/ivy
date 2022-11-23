@@ -513,7 +513,7 @@ def test_numpy_instance_min(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_numpy_ndarray_shape(
+def test_numpy_ndarray_dtype(
     dtype_and_x,
     as_variable,
     num_positional_args,
