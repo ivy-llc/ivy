@@ -533,3 +533,8 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 
 amax = max
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
