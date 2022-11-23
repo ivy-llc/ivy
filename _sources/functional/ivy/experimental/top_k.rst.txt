@@ -5,9 +5,9 @@ top_k
 
 .. autofunction:: ivy.array.array_methods.top_k
 
-.. autofunction:: ivy.container.container_methods.top_k
-
 .. autofunction:: ivy.container.container_methods.static_top_k
+
+.. autofunction:: ivy.container.container_methods.top_k
 |
 | **Supported Frameworks:**
 
