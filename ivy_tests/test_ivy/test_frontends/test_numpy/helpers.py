@@ -89,19 +89,37 @@ def _array_and_axes_permute_helper(
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
     kwargs["where"] = None
-    kwargs["test_values"] = False
+    # kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
         return
     ret, frontend_ret = values
+    # set backend to frontend to flatten the frontend array
+    ivy.set_backend(kwargs["frontend"])
+    try:
+        # get flattened arrays from returned value
+        if ivy.isscalar(frontend_ret):
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    except Exception as e:
+        ivy.unset_backend()
+        raise e
+    # set backend back to original
+    ivy.unset_backend()
+
+    # handling where size
+    where = np.broadcast_to(where, ret.shape)
+
     ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
+        np.where(where, x, 0)
+        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
     ]
-    frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
-    ]
+    frontend_ret_flat = [np.where(where, x, 0) for x in frontend_ret_np_flat]
     helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
 
@@ -120,7 +138,7 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 # noinspection PyShadowingNames
 def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
-    if isinstance(where, list):
+    if isinstance(where, list) or isinstance(where, tuple):
         input_dtype += ["bool"]
         return where, as_variable + [False], native_array + [False]
     return where, as_variable, native_array
