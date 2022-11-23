@@ -126,7 +126,7 @@ class ndarray:
             out=out,
         )
 
-    def cumsum(self, *, axis=None, dtype=dtype, out=None):
+    def cumsum(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumsum(
             self.data,
             axis=axis,
