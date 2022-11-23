@@ -1226,6 +1226,61 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+
+
+<div class="viewcode-block" id="isin"><a class="viewcode-back" href="../../../../functional/ivy/experimental/isin/isin_functional.html#ivy.functional.ivy.experimental.isin">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">isin</span><span class="p">(</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">test_elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">assume_unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">invert</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Tests if each element of elements is in test_elements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elements</span>
+<span class="sd">        input array</span>
+<span class="sd">    test_elements</span>
+<span class="sd">        values against which to test for each input element</span>
+<span class="sd">    assume_unique</span>
+<span class="sd">        If True, assumes both elements and test_elements contain unique elements,</span>
+<span class="sd">        which can speed up the calculation. Default value is False.</span>
+<span class="sd">    invert</span>
+<span class="sd">        If True, inverts the boolean return array, resulting in True values for</span>
+<span class="sd">        elements not in test_elements. Default value is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        output a boolean array of the same shape as elements that is True for elements</span>
+<span class="sd">        in test_elements and False otherwise.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[10, 7, 4], [3, 2, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y)</span>
+<span class="sd">    ivy.array([[False, False, False], [ True,  True,  True]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 2, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y, invert=True)</span>
+<span class="sd">    ivy.array([False, False, False,  True])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">elements</span><span class="p">,</span> <span class="n">test_elements</span><span class="p">,</span>
+                                      <span class="n">assume_unique</span><span class="o">=</span><span class="n">assume_unique</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span><span class="p">)</span></div>
 
 
 <span class="c1"># global</span>

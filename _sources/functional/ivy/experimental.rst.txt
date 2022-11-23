@@ -36,6 +36,7 @@ Experimental
    experimental/median.rst
    experimental/nanmean.rst
    experimental/unravel_index.rst
+   experimental/isin.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/msort.rst
