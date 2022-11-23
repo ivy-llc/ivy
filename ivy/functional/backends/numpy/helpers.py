@@ -14,6 +14,6 @@ def _scalar_output_to_0d_array(function: Callable) -> Callable:
     @functools.wraps(function)
     def new_function(*args, **kwargs):
         ret = function(*args, **kwargs)
-        return np.asarray(ret) if not isinstance(ret, np.ndarray) else ret
+        return np.asarray(ret) if np.isscalar(ret) else ret
 
     return new_function

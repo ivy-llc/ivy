@@ -30,7 +30,7 @@ def leaky_relu(
 
 @_scalar_output_to_0d_array
 def gelu(
-    x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
+    x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ivy.assertions.check_exists(
         erf,
@@ -41,7 +41,7 @@ def gelu(
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:
         ret = 0.5 * x * (1 + erf(x / np.sqrt(2)))
-    return ret.astype(x.dtype)
+    return ivy.astype(ret, x.dtype, copy=False)
 
 
 def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:

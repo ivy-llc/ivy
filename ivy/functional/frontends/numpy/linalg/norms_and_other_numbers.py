@@ -9,13 +9,14 @@ from ivy.func_wrapper import with_unsupported_dtypes
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, "numpy")
 @to_ivy_arrays_and_back
 def norm(x, ord=None, axis=None, keepdims=False):
-    ret = ivy.vector_norm(x, axis, keepdims, ord)
+    ret = ivy.vector_norm(x, axis=axis, keepdims=keepdims, ord=ord)
     if axis is None:
         return ret[0]
     return ret
 
 
 # matrix_rank
+# TODO: add support for hermitian
 @to_ivy_arrays_and_back
 def matrix_rank(A, tol=None, hermitian=False):
     ret = ivy.matrix_rank(A, rtol=tol)
@@ -33,3 +34,10 @@ def det(a):
 def slogdet(a):
     sign, logabsdet = ivy.slogdet(a)
     return ivy.concat((ivy.reshape(sign, (-1,)), ivy.reshape(logabsdet, (-1,))))
+
+
+# trace
+@to_ivy_arrays_and_back
+def trace(a, offset=0, axis1=0, axis2=1, out=None):
+    ret = ivy.trace(a, offset=offset, axis1=axis1, axis2=axis2, out=out)
+    return ret

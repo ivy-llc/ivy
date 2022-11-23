@@ -4,7 +4,9 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from . import backend_version
 
 
 # Array API Standard #
@@ -51,7 +53,9 @@ def mean(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     axis = tuple(axis) if isinstance(axis, list) else axis
-    return np.mean(x, axis=axis, keepdims=keepdims, out=out).astype(x.dtype)
+    return ivy.astype(
+        np.mean(x, axis=axis, keepdims=keepdims, out=out), x.dtype, copy=False
+    )
 
 
 mean.support_native_out = True
@@ -139,18 +143,24 @@ def var(
         axis = tuple(range(len(x.shape)))
     axis = (axis,) if isinstance(axis, int) else tuple(axis)
     if isinstance(correction, int):
-        return np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out).astype(
-            x.dtype
+        return ivy.astype(
+            np.var(x, axis=axis, ddof=correction, keepdims=keepdims, out=out),
+            x.dtype,
+            copy=False,
         )
     if x.size == 0:
         return np.asarray(float("nan"))
     size = 1
     for a in axis:
         size *= x.shape[a]
-    return np.multiply(
-        np.var(x, axis=axis, keepdims=keepdims, out=out),
-        ivy.stable_divide(size, (size - correction)),
-    ).astype(x.dtype)
+    return ivy.astype(
+        np.multiply(
+            np.var(x, axis=axis, keepdims=keepdims, out=out),
+            ivy.stable_divide(size, (size - correction)),
+        ),
+        x.dtype,
+        copy=False,
+    )
 
 
 var.support_native_out = True
@@ -160,6 +170,7 @@ var.support_native_out = True
 # ------#
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: np.ndarray,
     axis: int = 0,

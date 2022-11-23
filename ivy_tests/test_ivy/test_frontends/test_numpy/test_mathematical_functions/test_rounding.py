@@ -1,22 +1,16 @@
-from hypothesis import given
-
-
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # ceil
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.ceil"
-    ),
 )
 def test_numpy_ceil(
     dtype_and_x,
@@ -25,6 +19,9 @@ def test_numpy_ceil(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -43,8 +40,9 @@ def test_numpy_ceil(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="ceil",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -55,45 +53,45 @@ def test_numpy_ceil(
     )
 
 
-@handle_cmd_line_args
-@given(
+# fix
+@handle_frontend_test(
+    fn_tree="numpy.fix",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.fix"
     ),
 )
 def test_numpy_fix(
     dtype_and_x,
     as_variable,
+    with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="fix",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         test_values=False,
         a=x[0],
     )
 
 
 # trunc
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.trunc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.trunc"
-    ),
 )
 def test_numpy_trunc(
     dtype_and_x,
@@ -102,6 +100,9 @@ def test_numpy_trunc(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -120,8 +121,9 @@ def test_numpy_trunc(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="trunc",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,

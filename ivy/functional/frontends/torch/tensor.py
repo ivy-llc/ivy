@@ -147,34 +147,15 @@ class Tensor:
     def to(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[0], ivy.Dtype):
-                return self._to_with_dtype(*args, **kwargs)
-            elif isinstance(args[0], ivy.Device):
-                return self._to_with_device(*args, **kwargs)
+                return ivy.asarray(self.data, dtype=args[0], copy=False)
             else:
-                return self._to_with_tensor(*args, **kwargs)
-
+                return ivy.asarray(
+                    self.data, dtype=args[0].dtype, device=args[0].device, copy=False
+                )
         else:
-            if "tensor" not in kwargs:
-                return self._to_with_device(**kwargs)
-            else:
-                return self._to_with_tensor(**kwargs)
-
-    def _to_with_tensor(
-        self, tensor, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(
-            self.data, dtype=tensor.dtype, device=tensor.device, copy=copy
-        )
-
-    def _to_with_dtype(
-        self, dtype, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(self.data, dtype=dtype, copy=copy)
-
-    def _to_with_device(
-        self, device, dtype=None, non_blocking=False, copy=False, *, memory_format=None
-    ):
-        return ivy.asarray(self.data, device=device, dtype=dtype, copy=copy)
+            return ivy.asarray(
+                self.data, device=kwargs["device"], dtype=kwargs["dtype"], copy=False
+            )
 
     def arctan(self):
         return torch_frontend.atan(self.data)
@@ -211,7 +192,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def view_as(self, other):
@@ -247,7 +227,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def new_empty(
@@ -263,7 +242,6 @@ class Tensor:
         dtype = ivy.dtype(self.data) if dtype is None else dtype
         device = ivy.dev(self.data) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        _data = ivy.variable(_data) if requires_grad else _data
         return Tensor(_data)
 
     def unfold(self, dimension, size, step):
@@ -280,6 +258,25 @@ class Tensor:
 
     def device(self):
         return ivy.dev(self.data)
+
+    def is_cuda(self):
+        return "gpu" in ivy.dev(self.data)
+
+    def pow(self, other):
+        return ivy.pow(self.data, other)
+
+    def pow_(self, other):
+        self.data = self.pow(other)
+        return self.data
+
+    def argmax(self, dim=None, keepdim=False):
+        return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
+
+    def ceil(self):
+        return torch_frontend.ceil(self.data)
+
+    def min(self, dim=None, keepdim=False):
+        return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
 
     # Special Methods #
     # -------------------#
@@ -319,3 +316,6 @@ class Tensor:
 
 # Tensor (alias)
 tensor = Tensor
+
+# ex_tensor = tensor(data=[3, 4])
+# print(ex_tensor)

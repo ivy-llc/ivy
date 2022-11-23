@@ -4,17 +4,18 @@ from numbers import Number
 import torch
 
 # local
+import ivy
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float",)}, backend_version)
 def lcm(
     x1: torch.Tensor,
     x2: torch.Tensor,
     /,
     *,
-    dtype: Optional[torch.dtype] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.abs(torch.lcm(x1, x2, out=out))
@@ -92,10 +93,9 @@ def float_power(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.tensor(torch.float_power(x1, x2, out=out), dtype=x1.dtype)
-
-
-float_power.support_native_out = True
+    # Native out is supported but with restrictions leading
+    # to failures hence letting ivy handle it.
+    return torch.float_power(x1, x2).to(x1.dtype)
 
 
 def exp2(
@@ -138,7 +138,8 @@ def count_nonzero(
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
+        return torch.tensor(torch.count_nonzero(a, dim=axis),
+                            dtype=ivy.as_native_dtype(dtype))
 
     x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
@@ -281,6 +282,7 @@ def allclose(
     return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def fix(
     x: torch.Tensor,
     /,
@@ -303,4 +305,17 @@ def nextafter(
     return torch.nextafter(x1, x2)
 
 
-nextafter.support_natvie_out = True
+nextafter.support_native_out = True
+
+
+def zeta(
+    x: torch.Tensor,
+    q: torch.Tensor,
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.special.zeta(x, q)
+
+
+zeta.support_native_out = False

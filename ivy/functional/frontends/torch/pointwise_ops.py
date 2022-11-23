@@ -131,6 +131,9 @@ def atan2(input, other, *, out=None):
     return ivy.atan2(input, other, out=out)
 
 
+arctan2 = atan2
+
+
 @to_ivy_arrays_and_back
 def negative(input, *, out=None):
     return ivy.negative(input, out=out)
@@ -265,6 +268,7 @@ def clip(input, min=None, max=None, *, out=None):
 
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.multiply(input, other, out=out)
 
 
@@ -324,8 +328,8 @@ def true_divide(input, other, *, out=None):
 @to_ivy_arrays_and_back
 def log1p(input, *, out=None):
     return ivy.log1p(input, out=out)
-    
-    
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.divide(tensor1, tensor2)), out=out)
@@ -335,3 +339,8 @@ def addcdiv(input, tensor1, tensor2, *, value=1, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def addcmul(input, tensor1, tensor2, *, value=1, out=None):
     return ivy.add(input, ivy.multiply(value, ivy.multiply(tensor1, tensor2)), out=out)
+
+
+@to_ivy_arrays_and_back
+def pow(input, exponent, *, out=None):
+    return ivy.pow(input, exponent, out=out)

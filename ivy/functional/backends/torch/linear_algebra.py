@@ -385,8 +385,9 @@ def trace(
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
@@ -400,10 +401,11 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
@@ -441,7 +443,16 @@ def vander(
     increasing: bool = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.vander(x, N=N, increasing=increasing)
+    # torch.vander hasn't been used as it produces 0 gradients
+    N = ivy.default(N, x.shape[-1])
+    start, stop, step = N - 1, -1, -1
+    if increasing:
+        start, stop, step = 0, N, 1
+    return torch.pow(
+        torch.transpose(torch.unsqueeze(x, 0), 0, 1),
+        torch.arange(start, stop, step),
+        out=out,
+    )
 
 
 def vector_to_skew_symmetric_matrix(
