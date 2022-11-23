@@ -13,7 +13,7 @@ import ivy
 
 
 def gelu(
-    x: Tensor, /, *, approximate: bool = True, out: Optional[Tensor] = None
+    x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
@@ -35,11 +35,7 @@ def sigmoid(x: Tensor, /, *, out: Optional[Tensor] = None) -> Tensor:
 
 
 def softmax(
-    x: Tensor, 
-    /, 
-    *, 
-    axis: Optional[int] = None, 
-    out: Optional[Tensor] = None
+    x: Tensor, /, *, axis: Optional[int] = None, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.softmax(x, axis)
 

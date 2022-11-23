@@ -1,14 +1,21 @@
 # global
-from typing import (Optional,
-                    Union,
-                    Sequence,
-                    Tuple,
-                    NamedTuple,
-                    Literal,
-                    Callable,
-                    Any)
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 from numbers import Number
 import numpy as np
+
+# local
+import ivy
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 
 def moveaxis(
@@ -160,7 +167,6 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[np.ndarray] = None,
     **kwargs: Optional[Any],
 ) -> np.ndarray:
     if callable(mode):
@@ -204,3 +210,60 @@ def pad(
             pad_width,
             mode=mode,
         )
+
+
+def vsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: np.ndarray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_1d(*arys)
+
+
+def dstack(
+    arrays: Sequence[np.ndarray],
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.dstack(arrays)
+
+
+def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
+    return np.atleast_2d(*arys)
+
+
+@_scalar_output_to_0d_array
+def take_along_axis(
+    arr: np.ndarray,
+    indices: np.ndarray,
+    axis: int,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"
+        )
+    return np.take_along_axis(arr, indices, axis)
+
+
+take_along_axis.support_native_out = False

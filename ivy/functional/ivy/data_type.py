@@ -14,6 +14,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     inputs_to_native_arrays,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -52,9 +53,29 @@ def _handle_nestable_dtype_info(fn):
     return new_fn
 
 
+# Unindent every line in the source such that
+# class methods can be compiled as normal methods
+def _lstrip_lines(source: str) -> str:
+    source = source.lstrip().split("\n")
+
+    # If the first line is a decorator
+    if source[0][0] == "@":
+        # If the second line is a function definition
+        if source[1].lstrip()[0:3] == "def":
+            # Work out how many whitespace chars to remove
+            num_chars_to_remove = source[1].find("d")
+
+            # The first string needs no changes
+            for i in range(1, len(source)):
+                source[i] = source[i][num_chars_to_remove:]
+
+    source = "\n".join(source)
+    return source
+
+
 # Get the list of function used the function
 def _get_function_list(func):
-    tree = ast.parse(inspect.getsource(func).lstrip())
+    tree = ast.parse(_lstrip_lines(inspect.getsource(func)))
     names = set()
     # Extract all the call names
     for node in ast.walk(tree):
@@ -100,11 +121,14 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
         # if it's einops, we need to recurse
+
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
             continue
-        elif "frontend" in fn.__module__ or "einops" in fn.__name__:
+        elif "frontend" in fn.__module__ or (
+            hasattr(fn, "__name__") and "einops" in fn.__name__
+        ):
             f_supported = wrapper(get_fn(fn, False))
             out = merge_fn(f_supported, out)
 
@@ -169,6 +193,7 @@ Iinfo = None
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def astype(
     x: Union[ivy.Array, ivy.NativeArray],
     dtype: Union[ivy.Dtype, ivy.NativeDtype],
@@ -350,6 +375,7 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def broadcast_to(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -909,11 +935,12 @@ def closest_valid_dtype(type: Union[ivy.Dtype, str, None], /) -> Union[ivy.Dtype
     return current_backend(type).closest_valid_dtype(type)
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def default_float_dtype(
     *,
-    input=None,
+    input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
@@ -921,24 +948,23 @@ def default_float_dtype(
     Parameters
     ----------
     input
-        (Default value = None) Number or array for inferring float dtype.
+        Number or array for inferring the float dtype.
     float_dtype
-        (Default value = None) float type to be returned.
+        The float dtype to be returned.
     as_native
-        (Default value = None) Whether to return the float dtype as native 
-        dtype.
+        Whether to return the float dtype as native dtype.
 
     Returns
     -------
-        Return the input float dtype as native or ivy dtype if provided, else 
-        if an input is given, return its float dtype, otherwise return the 
+        Return ``float_dtype`` as native or ivy dtype if provided, else
+        if ``input`` is given, return its float dtype, otherwise return the
         global default float dtype.
 
     Examples
     --------
     >>> ivy.default_float_dtype()
     'float32'
-    
+
     >>> ivy.set_default_float_dtype(ivy.FloatDtype("float64"))
     >>> ivy.default_float_dtype()
     'float64'
@@ -948,7 +974,7 @@ def default_float_dtype(
 
     >>> ivy.default_float_dtype(input=4294.967346)
     'float32'
-    
+
     >>> x = ivy.array([9.8,8.9], dtype="float16")
     >>> ivy.default_float_dtype(input=x)
     'float16'
@@ -1039,24 +1065,29 @@ def infer_default_dtype(
     return default_dtype
 
 
+@inputs_to_native_arrays
 @handle_exceptions
 def default_dtype(
-    *, dtype: Union[ivy.Dtype, str] = None, item=None, as_native: Optional[bool] = None
+    *,
+    dtype: Optional[Union[ivy.Dtype, str]] = None,
+    item: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
-    """Summary.
-
+    """
     Parameters
     ----------
     dtype
-
+        The dtype to be returned.
     item
-         (Default value = None)
+        Number or array for inferring the dtype.
     as_native
-         (Default value = None)
+        Whether to return the dtype as native dtype.
 
     Returns
     -------
-        Return the input dtype if provided, otherwise return the global default dtype.
+        Return ``dtype`` as native or ivy dtype if provided, else
+        if ``item`` is given, return its dtype, otherwise return the
+        global default dtype.
     """
     if ivy.exists(dtype):
         if as_native is True:
@@ -1090,27 +1121,29 @@ def default_dtype(
     return ivy.as_ivy_dtype(ret)
 
 
+@inputs_to_native_arrays
 @handle_exceptions
 def default_int_dtype(
     *,
-    input=None,
+    input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: bool = False,
+    as_native: Optional[bool] = None,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """
     Parameters
     ----------
     input
-       (Default value = None) Number or array for inferring default int dtype.
+        Number or array for inferring the int dtype.
     int_dtype
-       (Default value = None) Uint dtype to be returned as default.
+        The int dtype to be returned.
     as_native
-       (Default value = None) Whether to return the default int dtype as native dtype.
+        Whether to return the int dtype as native dtype.
 
     Returns
     -------
-        Return the input int dtype if provided, otherwise return the global default
-        int dtype.
+        Return ``int_dtype`` as native or ivy dtype if provided, else
+        if ``input`` is given, return its int dtype, otherwise return the
+        global default int dtype.
 
     Examples
     --------
@@ -1189,29 +1222,29 @@ def default_int_dtype(
     return ivy.IntDtype(ivy.as_ivy_dtype(ret))
 
 
+@inputs_to_native_arrays
 @handle_exceptions
 def default_uint_dtype(
     *,
-    input=None,
+    input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
     as_native: Optional[bool] = None,
 ) -> Union[ivy.UintDtype, ivy.NativeDtype]:
-    """Returns the default uint dtype currently set. If input number or array is
-    given, returns uint dtype according to input, else uint32 by default.
-
+    """
     Parameters
     ----------
     input
-        Number or array for inferring default uint dtype. Optional.
+        Number or array for inferring the uint dtype.
     uint_dtype
-        Uint dtype to be returned as defualt. Optional.
+        The uint dtype to be returned.
     as_native
-        Whether to return the default uint dtype as native dtype. Optional.
+        Whether to return the uint dtype as native dtype.
 
     Returns
     -------
-        Return the input uint dtype if provided, otherwise return the global default
-        uint dtype.
+        Return ``uint_dtype`` as native or ivy dtype if provided, else
+        if ``input`` is given, return its uint dtype, otherwise return the
+        global default uint dtype.
 
     Examples
     --------
@@ -1272,6 +1305,7 @@ def default_uint_dtype(
     return ivy.UintDtype(ivy.as_ivy_dtype(ret))
 
 
+@inputs_to_native_arrays
 @handle_nestable
 @handle_exceptions
 def dtype(
@@ -1861,7 +1895,18 @@ def unset_default_dtype():
 
 @handle_exceptions
 def unset_default_float_dtype():
-    """"""
+    """Reset the current default float dtype to the previous state.
+
+    Examples
+    --------
+    >>> ivy.set_default_float_dtype(ivy.float32)
+    >>> ivy.set_default_float_dtype(ivy.float64)
+    >>> ivy.default_float_dtype_stack
+    ['float32','float64']
+    >>> ivy.unset_default_float_dtype()
+    >>> ivy.default_float_dtype_stack
+    ['float32']
+    """
     global default_float_dtype_stack
     if default_float_dtype_stack:
         default_float_dtype_stack.pop(-1)
@@ -1869,7 +1914,25 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """"""
+    """
+
+    Reset the current default int dtype to the previous state.
+
+    Parameters
+    ----------
+    None
+
+    Examples
+    --------
+    >>> ivy.set_default_int_dtype(ivy.intDtype("int16"))
+    >>> ivy.default_int_dtype()
+    'int16'
+
+    >>> ivy.unset_default_int_dtype()
+    >>> ivy.default_int_dtype()
+    'int32'
+
+    """
     global default_int_dtype_stack
     if default_int_dtype_stack:
         default_int_dtype_stack.pop(-1)

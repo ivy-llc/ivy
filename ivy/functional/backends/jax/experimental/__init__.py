@@ -1,3 +1,9 @@
+# global
+import jax
+
+backend_version = {"version": jax.__version__}
+
+# local sub-modules
 # flake8: noqa
 from . import activations
 from .activations import *
@@ -19,8 +25,8 @@ from . import gradients
 from .gradients import *
 from . import layers
 from .layers import *
-from . import linalg
-from .linalg import *
+from . import linear_algebra
+from .linear_algebra import *
 from . import manipulation
 from .manipulation import *
 from . import random

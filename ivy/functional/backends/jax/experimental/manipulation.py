@@ -1,16 +1,20 @@
 # local
-from typing import (Optional,
-                    Union,
-                    Sequence,
-                    Tuple,
-                    NamedTuple,
-                    Literal,
-                    Callable,
-                    Any)
+from typing import (
+    Optional,
+    Union,
+    Sequence,
+    Tuple,
+    NamedTuple,
+    Literal,
+    Callable,
+    Any,
+    List,
+)
 import jax.numpy as jnp
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -117,6 +121,19 @@ def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
+def _to_nested_tuple(nested_list):
+    ret = ()
+    if hasattr(nested_list, "__iter__"):
+        for inner_list in nested_list:
+            if hasattr(inner_list, "__iter__"):
+                ret += (tuple(inner_list),)
+            else:
+                ret += (inner_list,)
+        return ret
+    if ret == ():
+        return nested_list
+
+
 def pad(
     input: JaxArray,
     pad_width: Union[Sequence[Sequence[int]], JaxArray, int],
@@ -144,47 +161,110 @@ def pad(
     constant_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     end_values: Optional[Union[Sequence[Sequence[Number]], Number]] = 0,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[JaxArray] = None,
     **kwargs: Optional[Any],
 ) -> JaxArray:
+    pad_width = _to_nested_tuple(pad_width)
+    stat_length = _to_nested_tuple(stat_length)
+    constant_values = _to_nested_tuple(constant_values)
+    end_values = _to_nested_tuple(end_values)
+    input_dtype = input.dtype
+    if jnp.issubdtype(input_dtype, jnp.integer):
+        input = input.astype(jnp.float64)
     if callable(mode):
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             **kwargs,
         )
-    if mode in ["maximum", "mean", "median", "minimum"]:
-        return jnp.pad(
+    elif mode in ["maximum", "mean", "median", "minimum"]:
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             stat_length=stat_length,
         )
     elif mode == "constant":
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             constant_values=constant_values,
         )
     elif mode == "linear_ramp":
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             end_values=end_values,
         )
     elif mode in ["reflect", "symmetric"]:
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
             reflect_type=reflect_type,
         )
     else:
-        return jnp.pad(
+        ret = jnp.pad(
             _flat_array_to_1_dim_array(input),
             pad_width,
             mode=mode,
         )
+    if jnp.issubdtype(input_dtype, jnp.integer):
+        ret = jnp.floor(ret).astype(input_dtype)
+    return ret
+
+
+def vsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.vsplit(ary, indices_or_sections)
+
+
+def dsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dsplit(ary, indices_or_sections)
+
+
+def atleast_1d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_1d(*arys)
+
+
+def dstack(
+    arrays: Sequence[JaxArray],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.dstack(arrays)
+
+
+def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
+    return jnp.atleast_2d(*arys)
+
+
+def take_along_axis(
+    arr: JaxArray,
+    indices: JaxArray,
+    axis: int,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"
+        )
+
+    return jnp.take_along_axis(arr, indices, axis)

@@ -3,12 +3,14 @@
 # global
 import pytest
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable, _is_variable
 import ivy.functional.backends.numpy
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # ToDo: replace dict checks for verifying costs with analytic calculations
@@ -18,7 +20,8 @@ import ivy_tests.test_ivy.helpers as helpers
 # ------------#
 
 # fomaml step unique vars
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
@@ -28,7 +31,7 @@ import ivy_tests.test_ivy.helpers as helpers
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_unique_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -36,12 +39,12 @@ def test_fomaml_step_unique_vars(
     stop_gradients,
     num_tasks,
     return_inner_v,
-    fw,
+    backend_fw,
 ):
 
     # Numpy does not support gradients, and jax does not support gradients on
     # custom nested classes
-    if fw == "numpy":
+    if backend_fw.current_backend_str() == "numpy":
         return
 
     # config
@@ -51,19 +54,19 @@ def test_fomaml_step_unique_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[0.0]], device=on_device), num_tasks, axis=0)
                 ),
-                "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "weight": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 ),
             }
         )
     else:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(ivy.array([0.0], device=device)),
-                "weight": ivy.variable(ivy.array([1.0], device=device)),
+                "latent": _variable(ivy.array([0.0], device=on_device)),
+                "weight": _variable(ivy.array([1.0], device=on_device)),
             }
         )
 
@@ -151,7 +154,7 @@ def test_fomaml_step_unique_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
@@ -165,7 +168,8 @@ def test_fomaml_step_unique_vars(
 
 
 # fomaml step shared vars
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
@@ -175,7 +179,7 @@ def test_fomaml_step_unique_vars(
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_shared_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -183,11 +187,11 @@ def test_fomaml_step_shared_vars(
     stop_gradients,
     num_tasks,
     return_inner_v,
-    fw,
+    backend_fw,
 ):
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes
-    if fw == "numpy":
+    if backend_fw.current_backend_str() == "numpy":
         return
 
     # config
@@ -197,14 +201,14 @@ def test_fomaml_step_shared_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 )
             }
         )
     else:
         variables = ivy.Container(
-            {"latent": ivy.variable(ivy.array([1.0], device=device))}
+            {"latent": _variable(ivy.array([1.0], device=on_device))}
         )
 
     # batch
@@ -316,7 +320,7 @@ def test_fomaml_step_shared_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
@@ -330,7 +334,8 @@ def test_fomaml_step_shared_vars(
 
 
 # fomaml step overlapping vars
-@given(
+@handle_test(
+    fn_tree="functional.ivy.fomaml_step",
     inner_grad_steps=helpers.ints(min_value=1, max_value=3),
     with_outer_cost_fn=st.booleans(),
     average_across_steps=st.booleans(),
@@ -340,7 +345,7 @@ def test_fomaml_step_shared_vars(
     return_inner_v=st.sampled_from(["first", "all", False]),
 )
 def test_fomaml_step_overlapping_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -348,11 +353,11 @@ def test_fomaml_step_overlapping_vars(
     stop_gradients,
     num_tasks,
     return_inner_v,
-    fw,
+    backend_fw,
 ):
     # Numpy does not support gradients, jax does not support gradients on custom
     # nested classes
-    if fw == "numpy":
+    if backend_fw.current_backend_str() == "numpy":
         return
 
     # config
@@ -362,19 +367,19 @@ def test_fomaml_step_overlapping_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[0.0]], device=on_device), num_tasks, axis=0)
                 ),
-                "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "weight": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 ),
             }
         )
     else:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(ivy.array([0.0], device=device)),
-                "weight": ivy.variable(ivy.array([1.0], device=device)),
+                "latent": _variable(ivy.array([0.0], device=on_device)),
+                "weight": _variable(ivy.array([1.0], device=on_device)),
             }
         )
 
@@ -466,7 +471,7 @@ def test_fomaml_step_overlapping_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
@@ -487,7 +492,7 @@ def test_fomaml_step_overlapping_vars(
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_reptile_step(
-    device, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
+    on_device, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v
 ):
     if ivy.current_backend_str() == "numpy":
         # Numpy does not support gradients, jax does not support gradients on custom
@@ -501,14 +506,14 @@ def test_reptile_step(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 )
             }
         )
     else:
         variables = ivy.Container(
-            {"latent": ivy.variable(ivy.array([1.0], device=device))}
+            {"latent": _variable(ivy.array([1.0], device=on_device))}
         )
 
     # batch
@@ -573,7 +578,7 @@ def test_reptile_step(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
@@ -598,7 +603,7 @@ def test_reptile_step(
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_unique_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -623,19 +628,19 @@ def test_maml_step_unique_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[0.0]], device=on_device), num_tasks, axis=0)
                 ),
-                "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "weight": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 ),
             }
         )
     else:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(ivy.array([0.0], device=device)),
-                "weight": ivy.variable(ivy.array([1.0], device=device)),
+                "latent": _variable(ivy.array([0.0], device=on_device)),
+                "weight": _variable(ivy.array([1.0], device=on_device)),
             }
         )
 
@@ -721,7 +726,7 @@ def test_maml_step_unique_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight), np.array(true_outer_grad))
@@ -743,7 +748,7 @@ def test_maml_step_unique_vars(
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_shared_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -768,14 +773,14 @@ def test_maml_step_shared_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 )
             }
         )
     else:
         variables = ivy.Container(
-            {"latent": ivy.variable(ivy.array([1.0], device=device))}
+            {"latent": _variable(ivy.array([1.0], device=on_device))}
         )
 
     # batch
@@ -931,7 +936,7 @@ def test_maml_step_shared_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(
@@ -955,7 +960,7 @@ def test_maml_step_shared_vars(
 @pytest.mark.parametrize("num_tasks", [1, 2])
 @pytest.mark.parametrize("return_inner_v", ["first", "all", False])
 def test_maml_step_overlapping_vars(
-    device,
+    on_device,
     inner_grad_steps,
     with_outer_cost_fn,
     average_across_steps,
@@ -979,19 +984,19 @@ def test_maml_step_overlapping_vars(
     if batched:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(
-                    ivy.repeat(ivy.array([[0.0]], device=device), num_tasks, axis=0)
+                "latent": _variable(
+                    ivy.repeat(ivy.array([[0.0]], device=on_device), num_tasks, axis=0)
                 ),
-                "weight": ivy.variable(
-                    ivy.repeat(ivy.array([[1.0]], device=device), num_tasks, axis=0)
+                "weight": _variable(
+                    ivy.repeat(ivy.array([[1.0]], device=on_device), num_tasks, axis=0)
                 ),
             }
         )
     else:
         variables = ivy.Container(
             {
-                "latent": ivy.variable(ivy.array([0.0], device=device)),
-                "weight": ivy.variable(ivy.array([1.0], device=device)),
+                "latent": _variable(ivy.array([0.0], device=on_device)),
+                "weight": _variable(ivy.array([1.0], device=on_device)),
             }
         )
 
@@ -1083,7 +1088,7 @@ def test_maml_step_overlapping_vars(
     )
     calc_cost = rets[0]
     if stop_gradients:
-        assert ivy.equal(ivy.is_variable(calc_cost, exclusive=True), False)
+        assert ivy.equal(_is_variable(calc_cost, exclusive=True), False)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight), np.array(true_weight_grad))

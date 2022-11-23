@@ -88,7 +88,7 @@ Following this, an inplace update is then also performed on the :class:`ivy.Arra
         ensure_in_backend: bool = False,
     ) -> ivy.Array:
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        if ivy.is_variable(x_native):
+        if _is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
                 x.data = x_native
@@ -151,7 +151,7 @@ As explained in the :ref:`Function Wrapping` section, this wrapping is applied t
 
 **Primary Functions**
 
-In the case of *primary* functions, `handle_out_argument`_ does not handle the backend-specific inplace updates in cases where the backend function being wrapped supports an them directly, such as `torch.tan`_ and `numpy.tan`_, which both support the :code:`out` argument directly.
+In the case of *primary* functions, `handle_out_argument`_ does not handle the backend-specific inplace updates in cases where the backend function being wrapped supports them directly, such as `torch.tan`_ and `numpy.tan`_, which both support the :code:`out` argument directly.
 When implementing backend-specific functions, the attribute :code:`support_native_out` should be added to all functions which wrap a function in the backend supporting inplace updates directly.
 `tf.math.tan`_, `jax.numpy.tan`_ and `mx.nd.tan`_ for example do **not** support inplace updates, and so the :code:`support_native_out` attribute should **not** be added to the :code:`tan` implementations.
 

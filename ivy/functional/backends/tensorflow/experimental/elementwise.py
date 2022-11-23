@@ -1,9 +1,10 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 from .. import backend_version
 
 
 # local
+import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
 
@@ -18,9 +19,7 @@ def sinc(
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
-)
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -28,13 +27,7 @@ def lcm(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if [x1.dtype, x2.dtype] == [tf.int8, tf.int8]:
-        dtype = tf.int8
-        x1 = tf.cast(x1, dtype=tf.int16)
-        x2 = tf.cast(x2, dtype=tf.int16)
-    else:
-        dtype = x1.dtype
-    return tf.math.abs(tf.cast(tf.experimental.numpy.lcm(x1, x2), dtype=dtype))
+    return tf.math.abs(tf.experimental.numpy.lcm(x1, x2))
 
 
 def fmod(
@@ -44,12 +37,15 @@ def fmod(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.floormod(x1, x2, name=None)
+    result = tf.math.floormod(x1, x2, name=None)
+    temp = [result, x1]
+    return tf.map_fn(
+        lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]),
+        temp,
+        fn_output_signature=result.dtype,
+    )
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("blfoat16", "float16", "float32", "float64")}, backend_version
-)
 def fmax(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -57,10 +53,14 @@ def fmax(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x1 = tf.where(tf.math.is_nan(x1), float("inf"), x1)
-    x2 = tf.where(tf.math.is_nan(x1), float("inf"), x2)
-    ret = tf.math.maximum(x1, x2, name=None)
-    return tf.where(tf.math.is_inf(ret), float("nan"))
+    temp = tf.constant(float("nan"))
+    tf.dtypes.cast(x1, tf.float64)
+    tf.dtypes.cast(x2, tf.float64)
+    x1 = tf.where(tf.math.is_nan(x1, temp), x2, x1)
+    x2 = tf.where(tf.math.is_nan(x2, temp), x1, x2)
+    tf.experimental.numpy.experimental_enable_numpy_behavior()
+    ret = tf.experimental.numpy.maximum(x1, x2)
+    return ret
 
 
 def trapz(
@@ -92,6 +92,22 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.pow(2, x, name=None)
+
+
+def count_nonzero(
+    a: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[tf.DType] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if dtype is None:
+        return tf.math.count_nonzero(a, axis=axis, keepdims=keepdims, name=None)
+    return tf.math.count_nonzero(
+        a, axis=axis, keepdims=keepdims, dtype=dtype, name=None
+    )
 
 
 def nansum(
@@ -162,8 +178,8 @@ def nan_to_num(
     neginf: Optional[Union[float, int]] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    posinf = posinf if posinf is not None else 1.79769313e+308
-    neginf = neginf if neginf is not None else -1.79769313e+308
+    posinf = posinf if posinf is not None else 1.79769313e308
+    neginf = neginf if neginf is not None else -1.79769313e308
     ret = tf.where(tf.math.is_nan(x), nan, x)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret > 0), posinf, ret)
     ret = tf.where(tf.math.logical_and(tf.math.is_inf(ret), ret < 0), neginf, ret)
@@ -173,11 +189,21 @@ def nan_to_num(
         x = ret
         return x
 
-    
+
 @with_unsupported_dtypes(
-    {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64",
-                         "int8", "int16", "int32", "int64",)},
-    backend_version
+    {
+        "2.9.1 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+        )
+    },
+    backend_version,
 )
 def logaddexp2(
     x1: Union[tf.Tensor, tf.Variable, float, list, tuple],
@@ -186,7 +212,64 @@ def logaddexp2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = 2**x1 + 2**x2
-    numerator = tf.math.log(x)
-    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
-    return numerator / denominator
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2)).astype(dtype)
+
+
+def signbit(
+    x: Union[tf.Tensor, tf.Variable, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.signbit(x)
+
+
+def allclose(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> bool:
+    return tf.experimental.numpy.allclose(
+        x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan
+    )
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
+def fix(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.fix(x)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16,")}, backend_version)
+def nextafter(
+    x1: Union[tf.Tensor, tf.Variable],
+    x2: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.nextafter(x1, x2)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
+def zeta(
+    x: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.zeta(x, q)

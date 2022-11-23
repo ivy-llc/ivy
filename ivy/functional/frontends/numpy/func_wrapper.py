@@ -141,7 +141,7 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
     return new_fn
 
 
-def _numpy_to_ivy(x: Any) -> Any:
+def _numpy_frontend_to_ivy(x: Any) -> Any:
     if isinstance(x, ndarray):
         return x.data
     else:
@@ -153,6 +153,16 @@ def _ivy_to_numpy(x: Any) -> Any:
         return ndarray(x)
     else:
         return x
+
+
+def _native_to_ivy_array(x):
+    if isinstance(x, ivy.NativeArray):
+        return ivy.array(x)
+    return x
+
+
+def _to_ivy_array(x):
+    return _numpy_frontend_to_ivy(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -179,9 +189,9 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             out = kwargs["out"]
             has_out = True
         # convert all arrays in the inputs to ivy.Array instances
-        ivy_args = ivy.nested_map(args, _numpy_to_ivy, include_derived={tuple: True})
+        ivy_args = ivy.nested_map(args, _to_ivy_array, include_derived={tuple: True})
         ivy_kwargs = ivy.nested_map(
-            kwargs, _numpy_to_ivy, include_derived={tuple: True}
+            kwargs, _to_ivy_array, include_derived={tuple: True}
         )
         if has_out:
             ivy_kwargs["out"] = out

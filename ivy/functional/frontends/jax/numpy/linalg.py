@@ -14,6 +14,13 @@ def det(a):
 
 
 @to_ivy_arrays_and_back
+def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
+    if not compute_uv:
+        return ivy.svdvals(a)
+    return ivy.svd(a, full_matrices=full_matrices)
+
+
+@to_ivy_arrays_and_back
 def eig(a):
     return ivy.eig(a)
 
@@ -63,6 +70,11 @@ def matrix_rank(M):
 @to_ivy_arrays_and_back
 def solve(a, b):
     return ivy.solve(a, b)
+
+
+@to_ivy_arrays_and_back
+def pinv(a, rcond=None):
+    return ivy.pinv(a, rtol=rcond)
 
 
 @to_ivy_arrays_and_back

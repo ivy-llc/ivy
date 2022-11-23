@@ -22,7 +22,7 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
         ArrayWithGradients,
         ArrayWithImage,
         ArrayWithLayers,
-        ArrayWithLinalg,
+        ArrayWithLinearAlgebra,
         ArrayWithLosses,
         ArrayWithManipulation,
         ArrayWithNorms,
@@ -43,7 +43,7 @@ Let’s dive straight in and check out what the :class:`ivy.Array` constructor l
             ArrayWithGradients.__init__(self)
             ArrayWithImage.__init__(self)
             ArrayWithLayers.__init__(self)
-            ArrayWithLinalg.__init__(self)
+            ArrayWithLinearAlgebra.__init__(self)
             ArrayWithLosses.__init__(self)
             ArrayWithManipulation.__init__(self)
             ArrayWithNorms.__init__(self)

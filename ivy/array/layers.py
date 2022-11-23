@@ -81,6 +81,23 @@ class ArrayWithLayers(abc.ABC):
             out=out,
         )
 
+    def dropout1d(
+        self: ivy.Array,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.dropout1d(
+            self._data,
+            prob,
+            training=training,
+            data_format=data_format,
+            out=out,
+        )
+
     def scaled_dot_product_attention(
         self: ivy.Array,
         k: Union[ivy.Array, ivy.NativeArray],

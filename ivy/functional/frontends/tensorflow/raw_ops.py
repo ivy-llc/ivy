@@ -189,6 +189,11 @@ def Inv(*, x, name="Inv"):
 
 
 @to_ivy_arrays_and_back
+def Reciprocal(*, x, name=None):
+    return ivy.reciprocal(x)
+
+
+@to_ivy_arrays_and_back
 def Invert(*, x, name="Invert"):
     return ivy.bitwise_invert(x)
 
@@ -308,6 +313,11 @@ def OnesLike(*, x, name="OnesLike"):
     return ivy.ones_like(x)
 
 
+@to_ivy_arrays_and_back
+def Pack(*, values, axis=0, name="Pack"):
+    return ivy.stack(values, axis=axis)
+
+
 Relu = to_ivy_arrays_and_back(
     map_raw_ops_alias(
         tf_frontend.keras.activations.relu,
@@ -346,6 +356,32 @@ def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
 
 
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def Sign(*, x, name="Sign"):
+    return ivy.sign(x)
+
+
+@to_ivy_arrays_and_back
+def Split(*, axis, value, num_split, name="Split"):
+    return ivy.split(value, num_or_size_splits=num_split, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def SplitV(*, value, size_splits, axis, num_split, name="SplitV"):
+    return ivy.split(value, num_or_size_splits=size_splits, axis=axis)
+
+
 @to_ivy_arrays_and_back
 def Sqrt(*, x, name="Sqrt"):
     return ivy.sqrt(x)
@@ -354,6 +390,11 @@ def Sqrt(*, x, name="Sqrt"):
 @to_ivy_arrays_and_back
 def Square(*, x, name="Square"):
     return ivy.square(x)
+
+
+@to_ivy_arrays_and_back
+def Squeeze(*, input, axis, name="Squeeze"):
+    return ivy.squeeze(input, axis=axis)
 
 
 Sub = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.math.subtract))
@@ -435,6 +476,7 @@ def Xdivy(*, x, y, name="Xdivy"):
     return ivy.divide(x, y)
 
 
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def Xlog1py(*, x, y, name="Xlog1py"):
     if (x == 0).all():
@@ -443,6 +485,7 @@ def Xlog1py(*, x, y, name="Xlog1py"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0

@@ -656,7 +656,7 @@ def minimum(
     x2: Union[float, torch.Tensor],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -676,7 +676,7 @@ def maximum(
     x2: Union[float, torch.Tensor],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

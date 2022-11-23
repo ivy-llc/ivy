@@ -1,3 +1,5 @@
+.. _`RWorks Vendor-Specific Compilers`:
+
 Vendor-Specific Compilers
 =========================
 

@@ -1,15 +1,15 @@
 # global
 import numpy as np
-from hypothesis import given, assume
+from hypothesis import assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # unique_values
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.ivy.unique_values",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -17,39 +17,43 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="unique_values"),
 )
 def test_unique_values(
     *,
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="unique_values",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# unique_all
+@handle_test(
+    fn_tree="functional.ivy.unique_all",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -57,38 +61,43 @@ def test_unique_values(
         min_dim_size=1,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="unique_all"),
 )
 def test_unique_all(
     *,
     dtype_and_x,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
         num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="unique_all",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# unique_counts
+@handle_test(
+    fn_tree="functional.ivy.unique_counts",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
@@ -96,38 +105,43 @@ def test_unique_all(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="unique_counts"),
 )
 def test_unique_counts(
     *,
     dtype_and_x,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
         num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="unique_counts",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+# unique_inverse
+@handle_test(
+    fn_tree="functional.ivy.unique_inverse",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
@@ -135,31 +149,35 @@ def test_unique_counts(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="unique_inverse"),
 )
 def test_unique_inverse(
     *,
     dtype_and_x,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
-    device,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x, 0.0)))
 
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
         num_positional_args=num_positional_args,
+        as_variable_flags=as_variable,
+        with_out=with_out,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="unique_inverse",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )

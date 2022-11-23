@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -60,6 +60,22 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def count_nonzero(
+    a: JaxArray,
+    /,
+    *,
+    axis: Optional[Union[int, Tuple[int, ...]]] = None,
+    keepdims: Optional[bool] = False,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if isinstance(axis, list):
+        axis = tuple(axis)
+    if dtype is None:
+        return jnp.count_nonzero(a, axis=axis, keepdims=keepdims)
+    return jnp.array(jnp.count_nonzero(a, axis=axis, keepdims=keepdims), dtype=dtype)
 
 
 def nansum(
@@ -134,5 +150,67 @@ def logaddexp2(
     /,
     *,
     out: Optional[JaxArray] = None,
-) -> JaxArray:    
+) -> JaxArray:
     return jnp.logaddexp2(x1, x2)
+
+
+def signbit(
+    x: Union[JaxArray, float, int, list, tuple],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.signbit(x)
+
+
+def allclose(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    rtol: Optional[float] = 1e-05,
+    atol: Optional[float] = 1e-08,
+    equal_nan: Optional[bool] = False,
+    out: Optional[JaxArray] = None,
+) -> bool:
+    return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+
+
+def fix(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.fix(x, out=out)
+
+
+def nextafter(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.nextafter(x1, x2)
+
+
+def zeta(
+    x: JaxArray,
+    q: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    inf_indices = jnp.union1d(
+        jnp.array(jnp.where(x == 1.0)), jnp.array(jnp.where(q <= 0))
+    )
+    nan_indices = jnp.where(x <= 0)
+    n, res = 1, 1 / q**x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = jnp.round(res, decimals=4)
+    ret = ret.at[inf_indices].set(jnp.inf)
+    ret = ret.at[nan_indices].set(jnp.nan)
+    return ret

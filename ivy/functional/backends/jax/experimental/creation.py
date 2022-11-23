@@ -56,3 +56,17 @@ def hann_window(
 ) -> JaxArray:
     window_length = window_length + 1 if periodic is True else window_length
     return jnp.array(jnp.hanning(window_length), dtype=dtype)
+
+
+def kaiser_window(
+    window_length: int,
+    periodic: bool = True,
+    beta: float = 12.0,
+    *,
+    dtype: Optional[jnp.dtype] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if periodic is False:
+        return jnp.array(jnp.kaiser(M=window_length, beta=beta), dtype=dtype)
+    else:
+        return jnp.array(jnp.kaiser(M=window_length + 1, beta=beta)[:-1], dtype=dtype)
