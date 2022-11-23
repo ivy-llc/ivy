@@ -1,6 +1,6 @@
 # global
 from hypothesis import strategies as st
-
+from hypothesis import reproduce_failure
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
@@ -14,13 +14,13 @@ def _isin_data_generation_helper(draw):
     assume_unique = draw(st.booleans())
     if assume_unique:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shared_dtype=True
         ).filter(lambda x: np.array_equal(x[1][0], np.unique(x[1][0])))
     else:
         dtype_and_x = helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
+            available_dtypes=helpers.get_dtypes("valid"),
             num_arrays=2,
             shared_dtype=True)
     return assume_unique, draw(dtype_and_x)
