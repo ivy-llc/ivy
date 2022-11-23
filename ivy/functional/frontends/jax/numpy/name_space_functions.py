@@ -543,3 +543,8 @@ def log10(x):
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
     return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def divide(x1, x2):
+    return ivy.divide(x1, x2)
