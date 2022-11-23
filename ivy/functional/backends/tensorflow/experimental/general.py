@@ -23,7 +23,6 @@ def isin(
     test_elements = tf.reshape(test_elements, [-1])
 
     output = tf.reduce_any(
-        tf.equal(tf.expand_dims(elements, -1), test_elements)
-        , axis=-1
+        tf.equal(tf.expand_dims(elements, -1), test_elements), axis=-1
     )
     return tf.reshape(output, input_shape) ^ invert

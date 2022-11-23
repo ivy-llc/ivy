@@ -50,5 +50,6 @@ class ArrayWithGeneralExperimental(abc.ABC):
         >>> x.isin(y, invert=True)
         ivy.array([False, False, False,  True])
         """
-        return ivy.isin(self._data, test_elements,
-                        assume_unique=assume_unique, invert=invert)
+        return ivy.isin(
+            self._data, test_elements, assume_unique=assume_unique, invert=invert
+        )
