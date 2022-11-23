@@ -54,3 +54,13 @@ def convert_to_tensor(
     elif dtype_hint:
         return EagerTensor(ivy.array(value, dtype=dtype_hint))
     return EagerTensor(ivy.array(value))
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *inputs, **kwargs):
+    return ivy.einsum(equation, *inputs)
+
+
+@to_ivy_arrays_and_back
+def rank(input, **kwargs):
+    return ivy.astype(ivy.array(input.ndim), ivy.int32)
