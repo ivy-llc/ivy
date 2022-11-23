@@ -89,7 +89,6 @@ def _array_and_axes_permute_helper(
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
     kwargs["where"] = None
-    # kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
         return
@@ -116,10 +115,12 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = np.broadcast_to(where, ret.shape)
 
     ret_flat = [
-        np.where(where, x, 0)
+        np.where(where, x, np.zeros_like(x))
         for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
     ]
-    frontend_ret_flat = [np.where(where, x, 0) for x in frontend_ret_np_flat]
+    frontend_ret_flat = [
+        np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
+    ]
     helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
 
 
