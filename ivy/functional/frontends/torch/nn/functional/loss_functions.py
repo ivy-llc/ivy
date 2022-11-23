@@ -175,8 +175,13 @@ def nll_loss(
     reduction='mean'
 ):
     out = ivy.zeros_like(target, dtype=ivy.float32)
-    for i in range(len(target)):
-        out[i] = input[i][target[i]]
+
+    if len(input.shape) == 1:
+        for i in range(len(target)):
+            out[i] = input[target[i]]
+    else:
+        for i in range(len(target)):
+            out[i] = input[i][target[i]]
     loss = -out
 
     if weight is not None:
