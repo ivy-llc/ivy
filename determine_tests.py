@@ -61,7 +61,9 @@ if __name__ == "__main__":
             + ["ivy_tests"]
         )
         directories_filtered = [
-            x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+            x
+            for x in directories
+            if not (x.endswith("__pycache__") or "hypothesis" in x)
         ]
         directories = set(directories_filtered)
         for test_backend in new_tests[old_num_tests:num_tests]:
