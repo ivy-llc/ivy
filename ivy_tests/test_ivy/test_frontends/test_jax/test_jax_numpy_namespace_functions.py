@@ -485,12 +485,6 @@ def test_jax_numpy_mean(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
-    # x_array = ivy.array(x[0])
-    # if len(x_array.shape) == 2:
-    #     where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    # elif len(x_array.shape) == 1:
-    #     where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
