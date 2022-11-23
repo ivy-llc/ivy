@@ -51,5 +51,6 @@ def isin(
     >>> ivy.isin(x, y, invert=True)
     ivy.array([False, False, False,  True])
     """
-    return ivy.current_backend().isin(elements, test_elements,
-                                      assume_unique=assume_unique, invert=invert)
+    return ivy.current_backend().isin(
+        elements, test_elements, assume_unique=assume_unique, invert=invert
+    )
