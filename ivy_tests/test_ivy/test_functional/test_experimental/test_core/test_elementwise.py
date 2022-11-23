@@ -132,7 +132,7 @@ def test_fmod(
         container_flags=container_flags,
         instance_method=instance_method,
         on_device=on_device,
-        ground_truth_backend="tensorflow",
+        ground_truth_backend="numpy",
         fw=backend_fw,
         fn_name=fn_name,
         x1=x[0],
@@ -187,7 +187,6 @@ def test_fmax(
 
 
 # trapz
-# TODO: add container methods
 @st.composite
 def _either_x_dx(draw):
     rand = (draw(st.integers(min_value=0, max_value=1)),)
@@ -386,8 +385,8 @@ def _get_dtype_values_axis_for_count_nonzero(
 @handle_test(
     fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
-        in_available_dtypes="numeric",
-        out_available_dtypes="numeric",
+        in_available_dtypes="integer",
+        out_available_dtypes="integer",
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
@@ -420,10 +419,10 @@ def test_count_nonzero(
         fw=backend_fw,
         ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
-        a=a,
+        a=a[0],
         axis=axis,
         keepdims=keepdims,
-        dtype=i_o_dtype[1],
+        dtype=i_o_dtype[1][0],
     )
 
 
@@ -788,9 +787,9 @@ def test_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -799,10 +798,10 @@ def test_allclose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         ground_truth_backend="tensorflow",
-        fw=fw,
+        fw=backend_fw,
         fn_name="allclose",
         x1=x[0],
         x2=x[1],
@@ -829,7 +828,7 @@ def test_fix(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     backend_fw,
 ):
@@ -840,7 +839,7 @@ def test_fix(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         ground_truth_backend="tensorflow",
         fw=backend_fw,
@@ -868,7 +867,7 @@ def test_nextafter(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     backend_fw,
 ):
@@ -879,11 +878,52 @@ def test_nextafter(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name="nextafter",
         x1=x[0],
         x2=x[1],
+    )
+
+
+# zeta
+@handle_test(
+    fn_tree="functional.experimental.zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_zeta(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=fw,
+        fn_name="zeta",
+        rtol_=1e-03,
+        atol_=1e-03,
+        x=x[0],
+        q=x[1],
     )

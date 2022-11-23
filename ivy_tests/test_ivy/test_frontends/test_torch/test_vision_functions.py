@@ -31,7 +31,7 @@ def test_torch_pixel_shuffle(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume(ivy.shape(input)[1] % (factor**2) == 0)
+    assume(ivy.shape(x[0])[1] % (factor**2) == 0)
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -70,7 +70,7 @@ def test_torch_pixel_unshuffle(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume((ivy.shape(input)[2] % factor == 0) & (ivy.shape(input)[3] % factor == 0))
+    assume((ivy.shape(x[0])[2] % factor == 0) & (ivy.shape(x[0])[3] % factor == 0))
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -134,11 +134,6 @@ def _pad_helper(draw):
         )
     )
     padding = draw(_pad_generator(shape, mode))
-    if type(padding) is tuple:
-        if type(padding[0]) is tuple:
-            padding = sum(padding, ())
-        if len(padding) == 1:
-            padding = padding[0]
     if mode == "constant":
         value = draw(helpers.ints(min_value=0, max_value=4))
     else:

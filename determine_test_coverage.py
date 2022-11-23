@@ -22,7 +22,6 @@ os.system(
 test_names_without_backend = []
 test_names = []
 with open("test_names") as f:
-    i = 0
     for line in f:
         if "ERROR" in line:
             break
@@ -40,6 +39,7 @@ for test_name in test_names_without_backend:
         test_backend = test_name + "," + backend
         test_names.append(test_backend)
 
+test_names = list(set(test_names))
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
