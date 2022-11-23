@@ -3,9 +3,9 @@ hamming_window
 
 .. autofunction:: ivy.functional.ivy.experimental.hamming_window
 
-.. autofunction:: ivy.container.container_methods.hamming_window
-
 .. autofunction:: ivy.container.container_methods.static_hamming_window
+
+.. autofunction:: ivy.container.container_methods.hamming_window
 |
 | **Supported Frameworks:**
 
