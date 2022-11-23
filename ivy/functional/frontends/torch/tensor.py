@@ -288,6 +288,9 @@ class Tensor:
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
 
+    def sqrt(self):
+        return torch_frontend.sqrt(self.data)
+
     # Special Methods #
     # -------------------#
 
