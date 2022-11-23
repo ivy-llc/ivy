@@ -184,6 +184,7 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
         -------
             The return of the function, with ivy arrays passed in the arguments.
         """
+        global out
         has_out = False
         if "out" in kwargs:
             out = kwargs["out"]
