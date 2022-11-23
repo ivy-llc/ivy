@@ -349,3 +349,8 @@ def asinh(x):
 @to_ivy_arrays_and_back
 def atanh(x):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def bitwise_invert(x):
+    return ivy.bitwise_invert(x)
