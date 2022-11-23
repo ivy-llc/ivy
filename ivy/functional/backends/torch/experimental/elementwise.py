@@ -91,10 +91,9 @@ def float_power(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.tensor(torch.float_power(x1, x2, out=out), dtype=x1.dtype)
-
-
-float_power.support_native_out = True
+    # Native out is supported but with restrictions leading
+    # to failures hence letting ivy handle it.
+    return torch.float_power(x1, x2).to(x1.dtype)
 
 
 def exp2(
