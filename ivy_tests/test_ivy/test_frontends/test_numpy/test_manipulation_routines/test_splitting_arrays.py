@@ -39,7 +39,7 @@ def _arrays_idx_n_dtypes(draw):
         )
         xs.append(x)
         xa.append(x)
-    return xs, xa, input_dtypes, unique_idx
+    return xs, xa, unique_idx
 
 
 # split
@@ -53,7 +53,7 @@ def test_numpy_split(
     native_array,
     num_positional_args,
 ):
-    indices_or_sections, ary, axis, input_dtypes = dtype_and_x
+    indices_or_sections, ary, axis = dtype_and_x
     helpers.test_frontend_function(
         as_variable_flags=as_variable,
         input_dtypes=input_dtypes,
