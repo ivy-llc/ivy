@@ -69,3 +69,4 @@ def rank(input, **kwargs):
 @to_ivy_arrays_and_back 
 def zeros(shape, dtype=ivy.float32, name=None):
     return ivy.zeros(shape=shape, dtype=dtype)
+    
