@@ -306,6 +306,7 @@ def zeta(
 zeta.support_native_out = False
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
 def digamma(
     x: torch.Tensor,
     /,

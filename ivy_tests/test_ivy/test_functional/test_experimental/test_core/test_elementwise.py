@@ -934,7 +934,7 @@ def test_zeta(
 @handle_test(
     fn_tree="functional.experimental.digamma",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("float", index=1),
         min_value=-10,
         max_value=10,
         min_num_dims=1,
@@ -951,6 +951,7 @@ def test_digamma(
     instance_method,
     backend_fw,
     fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -964,7 +965,8 @@ def test_digamma(
         ground_truth_backend="tensorflow",
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-03,
-        atol_=1e-03,
+        on_device=on_device,
+        rtol_=1e+03,
+        atol_=1e+03,
         x=x[0],
     )

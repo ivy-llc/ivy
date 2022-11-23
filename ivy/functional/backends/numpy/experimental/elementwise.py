@@ -311,7 +311,18 @@ def digamma(
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    return np.log(x) - 1 / (2 * x)
+    y = 0.5772156649015328606065120900824024310421
+
+    def sub_fn(x, n):
+        return (1 / (x - 1 + n)) - (1 / n)
+    
+    res = 0
+    for n in range(1, 10000):
+        res = res - sub_fn(x, n)
+
+    nan_indices = np.where(x <= -1.)
+    res[nan_indices] = np.nan
+    return np.asarray(- y + res, dtype=x.dtype)
 
 
 digamma.support_native_out = False

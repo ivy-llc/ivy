@@ -273,6 +273,7 @@ def zeta(
     return tf.math.zeta(x, q)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16,")}, backend_version)
 def digamma(
     x: Union[tf.Tensor, tf.Variable],
     /,
