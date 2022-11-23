@@ -3023,9 +3023,6 @@ def test_jax_numpy_max(
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
-        min_size=1,
-        max_size=1,
-        force_int=True,
     ),
 )
 def test_jax_expand_dims(
