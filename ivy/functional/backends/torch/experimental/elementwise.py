@@ -3,6 +3,7 @@ from typing import Optional, Union, Tuple
 import torch
 
 # local
+import ivy
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
@@ -123,7 +124,8 @@ def count_nonzero(
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(torch.count_nonzero(a, dim=axis), dtype=dtype)
+        return torch.tensor(torch.count_nonzero(a, dim=axis),
+                            dtype=ivy.as_native_dtype(dtype))
 
     x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
