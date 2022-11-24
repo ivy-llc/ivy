@@ -5,9 +5,9 @@ inplace_decrement
 
 .. autofunction:: ivy.array.array_methods.inplace_decrement
 
-.. autofunction:: ivy.container.container_methods.static_inplace_decrement
-
 .. autofunction:: ivy.container.container_methods.inplace_decrement
+
+.. autofunction:: ivy.container.container_methods.static_inplace_decrement
 |
 | **Supported Frameworks:**
 

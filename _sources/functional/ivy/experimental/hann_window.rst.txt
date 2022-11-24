@@ -3,9 +3,9 @@ hann_window
 
 .. autofunction:: ivy.functional.ivy.experimental.hann_window
 
-.. autofunction:: ivy.container.container_methods.hann_window
-
 .. autofunction:: ivy.container.container_methods.static_hann_window
+
+.. autofunction:: ivy.container.container_methods.hann_window
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ pad
 
 .. autofunction:: ivy.array.array_methods.pad
 
-.. autofunction:: ivy.container.container_methods.static_pad
-
 .. autofunction:: ivy.container.container_methods.pad
+
+.. autofunction:: ivy.container.container_methods.static_pad
 |
 | **Supported Frameworks:**
 
