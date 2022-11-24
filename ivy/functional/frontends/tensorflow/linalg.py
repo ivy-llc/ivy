@@ -128,10 +128,12 @@ def matrix_transpose(a, name="matrix_transpose", conjugate=False):
     # if complex numbers become supported
     return ivy.matrix_transpose(a)
 
+
 @to_ivy_arrays_and_back
 def global_norm(t_list, name=None):
-    l2_norms = [ivy.sqrt((ivy.sum(ivy.square(t)))) ** 2 for t in t_list if t is not None]
+    l2_norms = [ivy.sqrt((ivy.sum(ivy.square(t))))**2 for t in t_list if t is not None]
     return ivy.sqrt(ivy.sum(ivy.asarray(l2_norms, dtype=ivy.dtype(l2_norms[0]))))
+
 
 global_norm.supported_dtypes = (
     "float32",

@@ -628,21 +628,23 @@ def test_tensorflow_matrix_transpose(
         a=x[0],
     )
 
+
 @st.composite
 def _get_dtype_and_sequence_of_arrays(draw):
-    array_dtype = draw(helpers.get_dtypes("float",full=False))
-    arbitrary_size = draw(st.integers(min_value=2,max_value=10))
-    values=[]
+    array_dtype = draw(helpers.get_dtypes("float", full=False))
+    arbitrary_size = draw(st.integers(min_value=2, max_value=10))
+    values = []
     for i in range(arbitrary_size):
         values.append(draw(helpers.array_values(dtype=array_dtype[0],
                                                 shape=helpers.get_shape(),
                                                 allow_nan=True)))
-    return array_dtype,values
+    return array_dtype, values
+
 
 @handle_frontend_test(
     fn_tree="tensorflow.linalg.global_norm",
-    dtype_and_input= _get_dtype_and_sequence_of_arrays()
-    )
+    dtype_and_input=_get_dtype_and_sequence_of_arrays()
+)
 def test_tensorflow_global_norm(
     *,
     dtype_and_input,
@@ -666,3 +668,4 @@ def test_tensorflow_global_norm(
         on_device=on_device,
         t_list=x,
     )
+    
