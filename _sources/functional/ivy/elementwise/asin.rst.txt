@@ -5,9 +5,9 @@ asin
 
 .. autofunction:: ivy.array.array_methods.asin
 
-.. autofunction:: ivy.container.container_methods.static_asin
-
 .. autofunction:: ivy.container.container_methods.asin
+
+.. autofunction:: ivy.container.container_methods.static_asin
 |
 | **Supported Frameworks:**
 
