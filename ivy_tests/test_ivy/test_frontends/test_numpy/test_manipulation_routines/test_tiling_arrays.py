@@ -1,14 +1,14 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # tile
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.tile",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="value_shape"),
@@ -21,16 +21,17 @@ from ivy_tests.test_ivy.helpers import handle_cmd_line_args
         min_value=0,
         max_value=10,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.tile"
-    ),
 )
 def test_numpy_tile(
+    *,
     dtype_and_x,
     dtype_and_repeats,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     repeats_dtype, repeats = dtype_and_repeats
@@ -40,16 +41,17 @@ def test_numpy_tile(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="tile",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         A=x[0],
         reps=repeats[0],
     )
 
 
 # repeat
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.repeat",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=2,
@@ -57,17 +59,18 @@ def test_numpy_tile(
     ),
     repeats=helpers.ints(min_value=2, max_value=5),
     axis=helpers.ints(min_value=-1, max_value=1),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.repeat"
-    ),
 )
 def test_numpy_repeat(
+    *,
     dtype_and_x,
     repeats,
     axis,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -76,8 +79,9 @@ def test_numpy_repeat(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="repeat",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         repeats=repeats,
         axis=axis,
