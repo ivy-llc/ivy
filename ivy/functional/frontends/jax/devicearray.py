@@ -67,7 +67,7 @@ class DeviceArray:
         return jax_frontend.numpy.dot(other, self)
 
     def __pos__(self):
-        return ivy.positive(self)
+        return self
 
     def __neg__(self):
         return jax_frontend.lax.neg(self)
@@ -133,4 +133,4 @@ class DeviceArray:
         return jax_frontend.lax.shift_right_logical(other, self)
 
     def __getitem__(self, index):
-        return ivy.get_item(self, index)
+        return self.at[index].get()
