@@ -751,10 +751,80 @@
 <div class="viewcode-block" id="ArrayWithStatistical.einsum"><a class="viewcode-back" href="../../../data_classes/array/statistical/ArrayWithStatistical.html#ivy.array.statistical.ArrayWithStatistical.einsum">[docs]</a>    <span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="n">equation</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-        <span class="o">*</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.einsum. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.einsum also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        equation</span>
+<span class="sd">            A str describing the contraction, in the same format as numpy.einsum.</span>
+<span class="sd">        operands</span>
+<span class="sd">            seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes</span>
+<span class="sd">            should be consistent with equation.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            The array with sums computed.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.einsum(&#39;ii&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array(12)</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; z = x.einsum(&#39;ij -&gt; j&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([ 9, 12, 15])</span>
+
+<span class="sd">        &gt;&gt;&gt; A = ivy.array([0, 1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; B = ivy.array([[ 0,  1,  2,  3],</span>
+<span class="sd">        ...                [ 4,  5,  6,  7],</span>
+<span class="sd">        ...                [ 8,  9, 10, 11]])</span>
+<span class="sd">        &gt;&gt;&gt; C = A.einsum(&#39;i,ij-&gt;i&#39;, B)</span>
+<span class="sd">        &gt;&gt;&gt; print(C)</span>
+<span class="sd">        ivy.array([ 0, 22, 76])</span>
+
+<span class="sd">        &gt;&gt;&gt; A = ivy.array([[1, 1, 1],</span>
+<span class="sd">        ...                [2, 2, 2],</span>
+<span class="sd">        ...                [5, 5, 5]])</span>
+<span class="sd">        &gt;&gt;&gt; B = ivy.array([[0, 1, 0],</span>
+<span class="sd">        ...                [1, 1, 0],</span>
+<span class="sd">        ...                [1, 1, 1]])</span>
+<span class="sd">        &gt;&gt;&gt; C = A.einsum(&#39;ij,jk-&gt;ik&#39;, B)</span>
+<span class="sd">        &gt;&gt;&gt; print(C)</span>
+<span class="sd">        ivy.array([[ 2,  3,  1],</span>
+<span class="sd">               [ 4,  6,  2],</span>
+<span class="sd">               [10, 15,  5]])</span>
+
+<span class="sd">        &gt;&gt;&gt; A = ivy.arange(10)</span>
+<span class="sd">        &gt;&gt;&gt; B = A.einsum(&#39;i-&gt;&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(B)</span>
+<span class="sd">        ivy.array(45)</span>
+
+<span class="sd">        &gt;&gt;&gt; A = ivy.arange(10)</span>
+<span class="sd">        &gt;&gt;&gt; B = ivy.arange(5, 15)</span>
+<span class="sd">        &gt;&gt;&gt; C = A.einsum(&#39;i,i-&gt;i&#39;, B)</span>
+<span class="sd">        &gt;&gt;&gt; print(C)</span>
+<span class="sd">        ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])</span>
+
+<span class="sd">        &gt;&gt;&gt; A = ivy.arange(10)</span>
+<span class="sd">        &gt;&gt;&gt; B = ivy.arange(5, 15)</span>
+<span class="sd">        &gt;&gt;&gt; C = A.einsum(&#39;i,i-&gt;&#39;, B) # or just use &#39;i,i&#39;</span>
+<span class="sd">        &gt;&gt;&gt; print(C)</span>
+<span class="sd">        ivy.array(510)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>
