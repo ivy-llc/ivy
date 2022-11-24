@@ -344,6 +344,8 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
 
+
 @to_ivy_arrays_and_back
 def log(input, *, out=None):
     return ivy.log(input, out=out)
+

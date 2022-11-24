@@ -1952,6 +1952,7 @@ def test_torch_pow(
         exponent=x[1],
     )
 
+
 # log
 @handle_cmd_line_args
 @given(
@@ -1981,3 +1982,4 @@ def test_torch_log(
         input=x[0],
         out=None,
     )
+
