@@ -2348,11 +2348,13 @@ def test_jax_numpy_trapz(
         max_axes_size=1,
     ),
     keepdims=st.booleans(),
+    where=np_helpers.where(),
 )
 def test_jax_numpy_any(
     *,
     dtype_x_axis,
     keepdims,
+    where,
     num_positional_args,
     as_variable,
     native_array,
@@ -2362,7 +2364,13 @@ def test_jax_numpy_any(
 ):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
-    helpers.test_frontend_function(
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -2375,6 +2383,7 @@ def test_jax_numpy_any(
         a=x[0],
         axis=axis,
         keepdims=keepdims,
+        where=where,
     )
 
 
@@ -3004,7 +3013,7 @@ def test_jax_numpy_log10(
         on_device=on_device,
         rtol=1e-01,
         atol=1e-02,
-        x=x[0]
+        x=x[0],
     )
 
 
