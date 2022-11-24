@@ -3047,7 +3047,7 @@ def test_jax_numpy_log10(
         on_device=on_device,
         rtol=1e-01,
         atol=1e-02,
-        x=x[0]
+        x=x[0],
     )
 
 
