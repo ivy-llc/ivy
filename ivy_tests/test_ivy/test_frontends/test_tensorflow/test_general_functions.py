@@ -101,7 +101,6 @@ def test_tensorflow_eye(
     )
 
 
-# Squeeze
 @st.composite
 def _squeeze_helper(draw):
     shape = draw(st.shared(helpers.get_shape(), key="value_shape"))
@@ -113,6 +112,7 @@ def _squeeze_helper(draw):
     return draw(st.sampled_from(valid_axes))
 
 
+# Squeeze
 @handle_frontend_test(
     fn_tree="tensorflow.squeeze",
     dtype_value=helpers.dtype_and_values(
@@ -125,21 +125,24 @@ def test_tensorflow_squeeze_general(
     *,
     dtype_value,
     axis,
+    with_out,
     as_variable,
     num_positional_args,
     native_array,
-    frontend,
+    on_device,
     fn_tree,
+    frontend,
 ):
     dtype, xs = dtype_value
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=False,
+        with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
+        on_device=on_device,
         input=xs[0],
         axis=axis,
     )
