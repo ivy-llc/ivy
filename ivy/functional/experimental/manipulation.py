@@ -31,6 +31,7 @@ def flatten(
     *,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -46,6 +47,19 @@ def flatten(
         first dim to flatten. If not set, defaults to 0.
     end_dim
         last dim to flatten. If not set, defaults to -1.
+    order
+        Read the elements of the input container using this index order,
+        and place the elements into the reshaped array using this index order.
+        ‘C’ means to read / write the elements using C-like index order,
+        with the last axis index changing fastest, back to the first axis index
+        changing slowest.
+        ‘F’ means to read / write the elements using Fortran-like index order, with
+        the first index changing fastest, and the last index changing slowest.
+        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        of the underlying array, and only refer to the order of indexing.
+        Default order is 'C'
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -65,11 +79,15 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([1,2], [3,4])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = np.array(
+    >>> x = ivy.array([[1,2], [3,4]])
+    >>> ivy.flatten(x, order='F')
+    ivy.array([1, 3, 2, 4])
+
+    >>> x = ivy.array(
         [[[[ 5,  5,  0,  6],
          [17, 15, 11, 16],
          [ 6,  3, 13, 12]],
@@ -119,17 +137,18 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if start_dim == end_dim and len(x.shape) != 0:
+    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -144,7 +163,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst))
+    return ivy.reshape(x, tuple(lst), order=order)
 
 
 @to_native_arrays_and_back
@@ -1406,3 +1425,57 @@ def take_along_axis(
     ivy.array([[4, 3, 3], [1, 1, 1]])
     """
     return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def hsplit(
+    ary: Union[ivy.Array, ivy.NativeArray],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Split an array into multiple sub-arrays horizontally.
+
+    Parameters
+    ----------
+    ary
+        Array input.
+    indices_or_sections
+        If indices_or_sections is an integer n, the array is split into n sections.
+        If the array is divisible by n along the 3rd axis, each section will be of
+        equal size. If input is not divisible by n, the sizes of the first
+        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
+        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is a tuple of ints, then input is split at each of
+        the indices in the tuple.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        input array split horizontally.
+
+    Examples
+    --------
+    >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+    >>> ivy.vsplit(ary, 2)
+    [ivy.array([[ 0.,  1.],
+                    [ 4.,  5.],
+                    [ 8.,  9.],
+                    [12., 13.]]),
+         ivy.array([[ 2.,  3.],
+                    [ 6.,  7.],
+                    [10., 11.],
+                    [14., 15.]]))
+    """
+    return ivy.current_backend(ary).hsplit(
+        ary, indices_or_sections=indices_or_sections, out=out
+    )

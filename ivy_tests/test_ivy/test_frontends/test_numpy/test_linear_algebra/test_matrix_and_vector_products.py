@@ -164,7 +164,7 @@ def test_numpy_matrix_power(
 
 # tensordot
 @handle_frontend_test(
-    fn_tree="numpy.linalg.tensordot",
+    fn_tree="numpy.tensordot",
     dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
         helpers.get_dtypes(kind="numeric")
     ),
