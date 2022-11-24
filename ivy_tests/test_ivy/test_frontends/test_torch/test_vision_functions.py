@@ -172,6 +172,7 @@ def test_torch_pad(
         value=value,
     )
 
+
 @st.composite
 def _upsample_bilinear_helper(draw):
     dtype, input, shape = draw(
@@ -197,39 +198,42 @@ def _upsample_bilinear_helper(draw):
         )
     )
     if is_size_used:
-        size = (draw(helpers.ints(min_value=shape[2])), draw(helpers.ints(min_value=shape[3])))
+        size = (
+            draw(helpers.ints(min_value=shape[2])),
+            draw(helpers.ints(min_value=shape[3])),
+        )
     else:
         scale_factor = helpers.ints(min_value=1)
 
     return dtype, input[0], size, scale_factor
+
 
 @handle_frontend_test(
     fn_tree="torch.nn.functional.upsample_bilinear",
     dtype_and_input_and_other=_upsample_bilinear_helper(),
 )
 def test_torch_upsample_bilinear(
-        *,
-        dtype_and_input_and_other,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_input_and_other,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
-     dtype, input, size, scale_factor = dtype_and_input_and_other
-     helpers.test_frontend_function(
-         input_dtypes=dtype,
-         as_variable_flags=as_variable,
-         with_out=with_out,
-         num_positional_args=num_positional_args,
-         native_array_flags=native_array,
-         frontend=frontend,
-         fn_tree=fn_tree,
-         on_device=on_device,
-         input=input,
-         size=size,
-         scale_factor=scale_factor,
-     )
-
+    dtype, input, size, scale_factor = dtype_and_input_and_other
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        size=size,
+        scale_factor=scale_factor,
+    )
