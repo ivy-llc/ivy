@@ -75,3 +75,4 @@ def ones_like(input, dtype=None, name=None):
 def zeros(shape, dtype=ivy.float32, name=None):
     return ivy.zeros(shape=shape, dtype=dtype)
     
+    
