@@ -6,10 +6,11 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, data):
+    def __init__(self, data, f_contiguous=False):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
+        self.f_contiguous = f_contiguous
 
     # Properties #
     # ---------- #
@@ -45,7 +46,15 @@ class ndarray:
         )
 
     def reshape(self, shape, order="C"):
-        return np_frontend.reshape(self.data, shape)
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.reshape(self.data, shape, order="F")
+        else:
+            return np_frontend.reshape(self.data, shape, order="C")
 
     def transpose(self, *axes):
         if axes and isinstance(axes[0], tuple):
@@ -158,7 +167,26 @@ class ndarray:
         return np_frontend.nonzero(self.data)[0]
 
     def ravel(self, order="C"):
-        return np_frontend.ravel(self.data, order=order)
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.ravel(self.data, order="F")
+        else:
+            return np_frontend.ravel(self.data, order="C")
+
+    def flatten(self, order="C"):
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.ravel(self.data, order="F")
+        else:
+            return np_frontend.ravel(self.data, order="C")
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
