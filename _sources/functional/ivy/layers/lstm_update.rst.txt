@@ -5,9 +5,9 @@ lstm_update
 
 .. autofunction:: ivy.array.array_methods.lstm_update
 
-.. autofunction:: ivy.container.container_methods.static_lstm_update
-
 .. autofunction:: ivy.container.container_methods.lstm_update
+
+.. autofunction:: ivy.container.container_methods.static_lstm_update
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ conv1d_transpose
 
 .. autofunction:: ivy.array.array_methods.conv1d_transpose
 
-.. autofunction:: ivy.container.container_methods.conv1d_transpose
-
 .. autofunction:: ivy.container.container_methods.static_conv1d_transpose
+
+.. autofunction:: ivy.container.container_methods.conv1d_transpose
 |
 | **Supported Frameworks:**
 
