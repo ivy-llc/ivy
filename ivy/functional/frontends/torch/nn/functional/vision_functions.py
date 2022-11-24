@@ -1,8 +1,6 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
-import torch
-
 
 @to_ivy_arrays_and_back
 def pixel_shuffle(input, upscale_factor):
@@ -123,19 +121,16 @@ def pad(input, pad, mode="constant", value=0):
             ).format(mode)
         )
 
+
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     if scale_factor and size:
         raise ivy.exceptions.IvyException(
-            (
-                "only one of size or scale_factor should be defined"
-            )
+            ("only one of size or scale_factor should be defined")
         )
     elif (not scale_factor) and (not size):
         raise ivy.exceptions.IvyException(
-            (
-                "either size or scale_factor should be defined"
-            )
+            ("either size or scale_factor should be defined")
         )
 
     n, c, w_old, h_old = input.shape
@@ -157,43 +152,76 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     higher_pivots_y = ivy.zeros(w_new, dtype=ivy.int64)
 
     for i in range(w_old):
-        lower_pivots_x = ivy.where(x_distances_old[i] <= x_distances_new, i, lower_pivots_x)
+        lower_pivots_x = ivy.where(
+            x_distances_old[i] <= x_distances_new, i, lower_pivots_x
+        )
     for i in range(h_old):
-        lower_pivots_y = ivy.where(y_distances_old[i] <= y_distances_new, i, lower_pivots_y)
-    for i in range(w_old-1, -1, -1):
-        higher_pivots_x = ivy.where(x_distances_old[i] >= x_distances_new, i, higher_pivots_x)
-    for i in range(h_old-1, -1, -1):
-        higher_pivots_y = ivy.where(y_distances_old[i] >= y_distances_new, i, higher_pivots_y)
+        lower_pivots_y = ivy.where(
+            y_distances_old[i] <= y_distances_new, i, lower_pivots_y
+        )
+    for i in range(w_old - 1, -1, -1):
+        higher_pivots_x = ivy.where(
+            x_distances_old[i] >= x_distances_new, i, higher_pivots_x
+        )
+    for i in range(h_old - 1, -1, -1):
+        higher_pivots_y = ivy.where(
+            y_distances_old[i] >= y_distances_new, i, higher_pivots_y
+        )
 
     temp = ivy.zeros((n, c, h_old, w_new))
-    temp = ivy.where((lower_pivots_x == higher_pivots_x)[None, None, None, :], ivy.gather(input, lower_pivots_x, axis=3), temp)
-    temp = ivy.where((lower_pivots_x != higher_pivots_x)[None, None, None, :],
-                    ivy.divide(
-                        ivy.add(
-                             ivy.multiply((ivy.gather(x_distances_old, higher_pivots_x) - x_distances_new)[None, None, None, :],
-                                          ivy.gather(input, lower_pivots_x, axis=3)),
-                             ivy.multiply((x_distances_new - ivy.gather(x_distances_old, lower_pivots_x))[None, None, None, :],
-                                          ivy.gather(input, higher_pivots_x, axis=3))
-                             ), x_distances_old[1] - x_distances_old[0]
-                    ), temp)
+    temp = ivy.where(
+        (lower_pivots_x == higher_pivots_x)[None, None, None, :],
+        ivy.gather(input, lower_pivots_x, axis=3),
+        temp,
+    )
+    temp = ivy.where(
+        (lower_pivots_x != higher_pivots_x)[None, None, None, :],
+        ivy.divide(
+            ivy.add(
+                ivy.multiply(
+                    (ivy.gather(x_distances_old, higher_pivots_x) - x_distances_new)[
+                        None, None, None, :
+                    ],
+                    ivy.gather(input, lower_pivots_x, axis=3),
+                ),
+                ivy.multiply(
+                    (x_distances_new - ivy.gather(x_distances_old, lower_pivots_x))[
+                        None, None, None, :
+                    ],
+                    ivy.gather(input, higher_pivots_x, axis=3),
+                ),
+            ),
+            x_distances_old[1] - x_distances_old[0],
+        ),
+        temp,
+    )
 
     result = ivy.zeros((n, c, h_new, w_new))
-    result = ivy.where((lower_pivots_x == higher_pivots_x)[None, None, :, None], ivy.gather(temp, lower_pivots_y, axis=2), result)
-    result = ivy.where((lower_pivots_x != higher_pivots_x)[None, None, :, None],
-                     ivy.divide(
-                         ivy.add(
-                             ivy.multiply((ivy.gather(y_distances_old, higher_pivots_y) - y_distances_new)[None, None, :, None],
-                                          ivy.gather(temp, lower_pivots_y, axis=2)),
-                             ivy.multiply((y_distances_new - ivy.gather(y_distances_old, lower_pivots_y))[None, None, :, None],
-                                          ivy.gather(temp, higher_pivots_y, axis=2))
-                         ), y_distances_old[1] - y_distances_old[0]
-                     ), result)
+    result = ivy.where(
+        (lower_pivots_x == higher_pivots_x)[None, None, :, None],
+        ivy.gather(temp, lower_pivots_y, axis=2),
+        result,
+    )
+    result = ivy.where(
+        (lower_pivots_x != higher_pivots_x)[None, None, :, None],
+        ivy.divide(
+            ivy.add(
+                ivy.multiply(
+                    (ivy.gather(y_distances_old, higher_pivots_y) - y_distances_new)[
+                        None, None, :, None
+                    ],
+                    ivy.gather(temp, lower_pivots_y, axis=2),
+                ),
+                ivy.multiply(
+                    (y_distances_new - ivy.gather(y_distances_old, lower_pivots_y))[
+                        None, None, :, None
+                    ],
+                    ivy.gather(temp, higher_pivots_y, axis=2),
+                ),
+            ),
+            y_distances_old[1] - y_distances_old[0],
+        ),
+        result,
+    )
 
     return result
-
-
-
-
-
-
-
