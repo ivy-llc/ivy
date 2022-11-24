@@ -1982,4 +1982,3 @@ def test_torch_log(
         input=x[0],
         out=None,
     )
-

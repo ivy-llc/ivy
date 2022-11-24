@@ -348,4 +348,3 @@ def pow(input, exponent, *, out=None):
 @to_ivy_arrays_and_back
 def log(input, *, out=None):
     return ivy.log(input, out=out)
-
