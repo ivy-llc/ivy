@@ -1325,6 +1325,17 @@ class ContainerWithStatistical(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+        ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+        >>> y = x.einsum('ii')
+        >>> print(y)
+        {
+            a: ivy.array(2),
+            b: ivy.array(15)
+        }
+
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.einsum(equation, x_) if ivy.is_array(x_) else x_,
