@@ -2686,43 +2686,8 @@ def multiply(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Calculates the product for each element ``x1_i`` of the input array ``x1``
-    with the respective element ``x2_i`` of the input array ``x2``.
-
-    **Special cases**
-
-    For floating-point operands,
-
-    - If either ``x1_i`` or ``x2_i`` is ``NaN``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either ``+0``
-      or ``-0``, the result is ``NaN``.
-    - If ``x1_i`` is either ``+0`` or ``-0`` and ``x2_i`` is either ``+infinity`` or
-      ``-infinity``, the result is ``NaN``.
-    - If ``x1_i`` and ``x2_i`` have the same mathematical sign, the result has a
-      positive mathematical sign, unless the result is ``NaN``. If the result is
-      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
-    - If ``x1_i`` and ``x2_i`` have different mathematical signs, the result has a
-      negative mathematical sign, unless the result is ``NaN``. If the result is
-      ``NaN``, the “sign” of ``NaN`` is implementation-defined.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is either
-      ``+infinity`` or ``-infinity``, the result is a signed infinity with the
-      mathematical sign determined by the rule already stated above.
-    - If ``x1_i`` is either ``+infinity`` or ``-infinity`` and ``x2_i`` is a nonzero
-      finite number, the result is a signed infinity with the mathematical sign
-      determined by the rule already stated above.
-    - If ``x1_i`` is a nonzero finite number and ``x2_i`` is either ``+infinity`` or
-      ``-infinity``, the result is a signed infinity with the mathematical sign
-      determined by the rule already stated above.
-
-    In the remaining cases, where neither ``infinity`` nor ``NaN`` is involved, the
-    product must be computed and rounded to the nearest representable value according to
-    IEEE 754-2019 and a supported rounding mode. If the magnitude is too large to
-    represent, the result is an ``infinity`` of appropriate mathematical sign. If the
-    magnitude is too small to represent, the result is a zero of appropriate
-    mathematical sign.
-
-    .. note::
-        Floating-point multiplication is not always associative due to finite precision.
+    """Calculates the product for each element x1_i of the input array x1
+    with the respective element x2_i of the input array x2.
 
     Parameters
     ----------
@@ -2730,14 +2695,12 @@ def multiply(
         first input array. Should have a numeric data type.
 
     x2
-        second input array. Should have a numeric data type.
-        Must be compatible with ``x1``
+        second input array. Must be compatible with ``x1``
         (see :ref'`broadcasting`). Should have a numeric data type
 
     out
         optional output array, for writing the array result to.
         It must have a shape that the inputs broadcast to.
-
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -2789,7 +2752,8 @@ def multiply(
     {
         a: ivy.array([12.,12.,24.]),
         b: ivy.array([9.,3.,10.])
-    
+    }
+
     With mixed :code:`ivy.Container` and :code:`ivy.Array` inputs:
 
     >>> x1 = ivy.Container(a=ivy.array([3., 4., 5.]), b=ivy.array([2., 2., 1.]))
