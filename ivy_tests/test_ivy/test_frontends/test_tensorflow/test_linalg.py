@@ -668,4 +668,5 @@ def test_tensorflow_global_norm(
         on_device=on_device,
         t_list=x,
     )
+
     
