@@ -191,8 +191,7 @@ def is_ivy_array(
 
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
-    """Determines whether the input x is either an Ivy Array, a Native Array
-    or a frontend array.
+    """Determines whether the input x is either an Ivy Array or a Native Array.
 
     Parameters
     ----------

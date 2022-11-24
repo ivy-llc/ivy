@@ -1,6 +1,5 @@
 """Collection of tests for unified linear algebra functions."""
 
-
 # global
 import sys
 import numpy as np
@@ -87,7 +86,6 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     min_dim_size=1,
     max_dim_size=10,
 ):
-
     shape = draw(
         helpers.get_shape(
             allow_none=False,
@@ -173,7 +171,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        )
+        ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -204,7 +202,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        )
+        ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -919,7 +917,6 @@ def test_tensordot(
     on_device,
     ground_truth_backend,
 ):
-
     (
         dtype,
         x1,
@@ -1086,7 +1083,6 @@ def test_vector_norm(
     on_device,
     ground_truth_backend,
 ):
-    print("n_p_s:", num_positional_args)
     dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -1095,8 +1091,8 @@ def test_vector_norm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[True],
-        instance_method=True,
+        container_flags=container_flags,
+        instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
