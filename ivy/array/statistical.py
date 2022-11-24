@@ -404,6 +404,86 @@ class ArrayWithStatistical(abc.ABC):
         keepdims: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """ivy.array instance method variant of ivy.std.
+        This method simply wraps the function, and so
+        the docstring for ivy.std also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        axis
+            axis or axes along which standard deviation must be computed.
+            By default, the product must be computed over the entire array.
+            If a tuple of integers, products must be computed over multiple
+            axes. Default: ``None``.
+        correction
+            degrees of freedom adjustment. Setting this parameter to a
+            value other than ``0`` has the effect of adjusting the
+            divisor during the calculation of the standard deviation
+            according to ``N-c`` where ``N`` corresponds to the total
+            number of elements over which the standard deviation is
+            computed and ``c`` corresponds to the provided degrees of
+            freedom adjustment. When computing the standard deviation
+            of a population, setting this parameter to ``0`` is the
+            standard choice (i.e., the provided array contains data
+            constituting an entire population). When computing
+            the corrected sample standard deviation, setting this
+            parameter to ``1`` is the standard choice (i.e., the
+            provided array contains data sampled from a larger
+            population; this is commonly referred to as Bessel's
+            correction). Default: ``0``.
+
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included in
+            the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container, if the product was computed over the entire array,
+            a zero-dimensional array containing the product;
+            otherwise, a non-zero-dimensional array containing the products.
+            The returned array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With: class: `ivy.Array` input:
+
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> y = x.std()
+        >>> print(y)
+        ivy.array(0.8164966)
+
+        >>> x = ivy.array([-1., 0., 1.])
+        >>> z = x.std(correction=1)
+        >>> print(z)
+        ivy.array(1.)
+
+        >>> x = ivy.array([[0., 4.]])
+        >>> y = x.std(keepdims=True)
+        >>> print(y)
+        ivy.array([[2.]])
+
+        >>> x = ivy.array([2., 1.])
+        >>> y = ivy.array(0.)
+        >>> x.std(out=y)
+        >>> print(y)
+        ivy.array(0.5)
+
+        >>> x = ivy.array([[-1., -2.], [3., 3.]])
+        >>> y = x.std(axis=1)
+        >>> print(y)
+        ivy.array([1.5, 1. ])
+
+        """
         return ivy.std(
             self, axis=axis, correction=correction, keepdims=keepdims, out=out
         )
