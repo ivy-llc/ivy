@@ -191,7 +191,7 @@ def binary_cross_entropy_with_logits(
     /,
     *,
     epsilon: float = 1e-7,
-    pos_weight: Optional[ivy.Array] = None,
+    pos_weight: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     reduction: str = "none",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
