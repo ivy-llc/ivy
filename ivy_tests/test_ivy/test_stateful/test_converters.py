@@ -2,9 +2,28 @@
 
 # global
 import pytest
-import torch.nn
-import haiku as hk
-import jax.numpy as jnp
+
+try:
+    import torch.nn
+except:
+    import types
+    torch = types.SimpleNamespace()
+    torch.nn = types.SimpleNamespace()
+    torch.nn.Module = types.SimpleNamespace
+
+try:
+    import haiku as hk
+except:
+    import types
+    hk = types.SimpleNamespace()
+    hk.Module = types.SimpleNamespace
+
+try:
+    import jax.numpy as jnp
+except:
+    import types
+    jnp = types.SimpleNamespace()
+
 
 # local
 import ivy

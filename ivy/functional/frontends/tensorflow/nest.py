@@ -1,6 +1,13 @@
 # global
 import ivy
-import tensorflow as tf
+
+try:
+    import tensorflow as tf
+except ImportError:
+    import types
+    tf = types.SimpleNamespace()
+    tf.Tensor = None
+    tf.RaggedTensor = None
 
 
 def _is_composite_array(x):

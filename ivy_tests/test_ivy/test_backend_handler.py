@@ -1,9 +1,24 @@
 # global
 import pytest
 import importlib
-import tensorflow as tf
-import torch
-import jax.numpy as jnp
+import types
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = types.SimpleNamespace()
+    tf.constant = lambda x : x
+try:
+    import torch 
+except ImportError:
+    torch = types.SimpleNamespace()
+    torch.tensor =  lambda x : x
+try:
+    import jax.numpy as jnp
+except ImportError:
+    jnp = types.SimpleNamespace()
+    jnp.array =  lambda x : x
+
+
 import numpy as np
 
 # local
@@ -72,9 +87,9 @@ def test_unset_backend(backend):
 def test_clear_backend_stack():
     for _ in range(3):
         ivy.set_backend("numpy")
-        ivy.set_backend("tensorflow")
-        ivy.set_backend("torch")
-        ivy.set_backend("jax")
+        # ivy.set_backend("tensorflow")
+        # ivy.set_backend("torch")
+        # ivy.set_backend("jax")
 
     ivy.clear_backend_stack()
     ivy.assertions.check_equal(ivy.backend_stack, [])

@@ -1,7 +1,8 @@
 import sys
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 
-backends = ["numpy", "torch", "jax", "tensorflow"]
+backends = available_frameworks
 submodules = [
     "activations",
     "converters",
