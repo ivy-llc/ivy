@@ -5,9 +5,9 @@ msort
 
 .. autofunction:: ivy.array.array_methods.msort
 
-.. autofunction:: ivy.container.container_methods.msort
-
 .. autofunction:: ivy.container.container_methods.static_msort
+
+.. autofunction:: ivy.container.container_methods.msort
 |
 | **Supported Frameworks:**
 
