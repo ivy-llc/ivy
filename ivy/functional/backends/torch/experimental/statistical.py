@@ -1,4 +1,5 @@
 # global
+import ivy
 from typing import Optional, Union, Tuple
 import torch
 
@@ -21,9 +22,15 @@ def histogram(
     density: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> Tuple[torch.tensor]:
-    return torch.histogram(
-        a=a, bins=bins, range=range, weight=weights, density=density, out=out
+
+    ret = torch.histogram(
+        input=a, bins=bins, range=range, weight=weights, density=density, out=out
     )
+
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    else:
+        return ret
 
 
 histogram.support_native_out = True

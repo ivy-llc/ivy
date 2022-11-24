@@ -23,7 +23,7 @@ def histogram(
     if range:
         if type(bins) == int:
             try:
-                bins = tf.linspace(start=range[0], stop=range[1], num=bins)
+                bins = tf.linspace(start=range[0], stop=range[1], num=bins + 1)
             except IndexError as e:
                 raise ivy.exceptions.IvyError(histogram.__name__, str(e)) from None
             except Exception as e:
@@ -41,7 +41,7 @@ def histogram(
         name="histogram",
     )
     if density:
-        ret = ret / max(ret)
+        pass
     return ret
 
 
