@@ -386,7 +386,7 @@ def test_copysign(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container_flags,
-        instance_method=False,
+        instance_method=instance_method,
         on_device=on_device,
         ground_truth_backend="torch",
         fw=backend_fw,
