@@ -43,6 +43,7 @@ def test_tensorflow_det(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -98,6 +99,7 @@ def test_tensorflow_eigvalsh(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -123,6 +125,7 @@ def test_matrix_rank(
     dtype_x,
     tolr,
     num_positional_args,
+    native_array,
     as_variable,
     frontend,
     fn_tree,
@@ -131,6 +134,7 @@ def test_matrix_rank(
     input_dtype, x = dtype_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -285,6 +289,7 @@ def test_tensorflow_slogdet(
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -360,6 +365,7 @@ def test_tensorflow_cholesky_solve(
     input_dtype2, x2 = y
     helpers.test_frontend_function(
         input_dtypes=[input_dtype1, input_dtype2],
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -391,6 +397,7 @@ def test_tensorflow_pinv(
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -427,6 +434,7 @@ def test_tensorflow_tensordot(
     ) = dtype_x_y_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -469,6 +477,7 @@ def test_tensorflow_norm(
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -510,6 +519,7 @@ def test_tensorflow_normalize(
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         with_inplace=False,
@@ -549,6 +559,7 @@ def test_tensorflow_l2_normalize(
     input_dtype, x, axis = dtype_values_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
+        native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -562,6 +573,7 @@ def test_tensorflow_l2_normalize(
 
 # trace
 @handle_frontend_test(
+    fn_tree="tensorflow.linalg.trace",
     dtype_and_input=_get_dtype_and_matrix(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.tensorflow.linalg.trace"

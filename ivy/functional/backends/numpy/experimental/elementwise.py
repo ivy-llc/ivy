@@ -1,9 +1,12 @@
 from typing import Optional, Union, Tuple
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 
 @_scalar_output_to_0d_array
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def sinc(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.sinc(x).astype(x.dtype)
 
@@ -69,6 +72,7 @@ def fmax(
 fmax.support_native_out = True
 
 
+@_scalar_output_to_0d_array
 def trapz(
     y: np.ndarray,
     /,
@@ -121,9 +125,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -277,3 +282,25 @@ def nextafter(
 
 
 nextafter.support_natvie_out = True
+
+
+def zeta(
+    x: np.ndarray,
+    q: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    inf_indices = np.union1d(np.array(np.where(x == 1.0)), np.array(np.where(q <= 0)))
+    nan_indices = np.where(x <= 0)
+    n, res = 1, 1 / q**x
+    while n < 10000:
+        term = 1 / (q + n) ** x
+        n, res = n + 1, res + term
+    ret = np.round(res, decimals=4)
+    ret[inf_indices] = np.inf
+    ret[nan_indices] = np.nan
+    return ret
+
+
+zeta.support_native_out = False

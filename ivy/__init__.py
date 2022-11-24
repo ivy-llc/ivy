@@ -880,14 +880,15 @@ def set_nan_policy(warn_level):
     Parameters
     ----------
     nan_policy
-        string for the nan policy to be set, one of 
+        string for the nan policy to be set, one of
         "nothing", "warns", "raise_exception"
 
     """
     global nan_policy_stack
     if warn_level not in ["nothing", "warns", "raise_exception"]:
         raise ivy.exceptions.IvyException(
-            "nan_policy must be one of 'nothing', 'warns', 'raise_exception'")
+            "nan_policy must be one of 'nothing', 'warns', 'raise_exception'"
+        )
     nan_policy_stack.append(warn_level)
 
 

@@ -7,14 +7,14 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
 def mean(
-        x,
-        /,
-        *,
-        axis=None,
-        keepdims=False,
-        out=None,
-        dtype=None,
-        where=True,
+    x,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:
@@ -30,14 +30,14 @@ def mean(
 @from_zero_dim_arrays_to_float
 @to_ivy_arrays_and_back
 def nanmean(
-        a,
-        /,
-        *,
-        axis=None,
-        keepdims=False,
-        out=None,
-        dtype=None,
-        where=True,
+    a,
+    /,
+    *,
+    axis=None,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
 ):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -65,15 +65,15 @@ def nanmean(
 
 @from_zero_dim_arrays_to_float
 def std(
-        x,
-        /,
-        *,
-        axis=None,
-        correction=0.0,
-        keepdims=False,
-        out=None,
-        dtype=None,
-        where=True,
+    x,
+    /,
+    *,
+    axis=None,
+    correction=0.0,
+    keepdims=False,
+    out=None,
+    dtype=None,
+    where=True,
 ):
     axis = tuple(axis) if isinstance(axis, list) else axis
     if dtype:

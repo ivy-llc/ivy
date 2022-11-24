@@ -22,7 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -279,7 +279,7 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert native data type to string representation.
+    """Convert device to string representation.
 
     Parameters
     ----------

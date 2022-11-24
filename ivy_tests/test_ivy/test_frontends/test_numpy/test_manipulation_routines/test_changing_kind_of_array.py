@@ -1,3 +1,4 @@
+<<<<<<< working_asanyarray
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_function
@@ -61,3 +62,5 @@ def test_numpy_asanyarray(
         a=x,
         dtype=input_dtype[0],
     )
+=======
+>>>>>>> master

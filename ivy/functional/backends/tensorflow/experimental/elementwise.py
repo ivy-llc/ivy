@@ -4,6 +4,7 @@ from .. import backend_version
 
 
 # local
+import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
 
@@ -18,6 +19,7 @@ def sinc(
     return tf.cast(tf.experimental.numpy.sinc(x), x.dtype)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("unsigned",)}, backend_version)
 def lcm(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
@@ -35,7 +37,13 @@ def fmod(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.math.floormod(x1, x2, name=None)
+    result = tf.math.floormod(x1, x2, name=None)
+    temp = [result, x1]
+    return tf.map_fn(
+        lambda x: x[0] if (x[0] * x[1] >= 0) else (-1 * x[0]),
+        temp,
+        fn_output_signature=result.dtype,
+    )
 
 
 def fmax(
@@ -204,10 +212,11 @@ def logaddexp2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = 2**x1 + 2**x2
-    numerator = tf.math.log(x)
-    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
-    return numerator / denominator
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2)).astype(dtype)
 
 
 def signbit(
@@ -253,3 +262,14 @@ def nextafter(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.nextafter(x1, x2)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)
+def zeta(
+    x: Union[tf.Tensor, tf.Variable],
+    q: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.math.zeta(x, q)

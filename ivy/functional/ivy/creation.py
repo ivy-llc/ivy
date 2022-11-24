@@ -17,7 +17,7 @@ from ivy.func_wrapper import (
     outputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_nestable,
-    handle_array_like
+    handle_array_like,
 )
 
 # Helpers #
@@ -65,6 +65,7 @@ def _ivy_to_native(x):
     # converts it to a native array if it is an ivy array
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
             x[i] = _ivy_to_native(item)
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
@@ -157,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
-    /,
     stop: Optional[Number] = None,
-    step: Number = 1,
+    step: Optional[Number] = 1,
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
