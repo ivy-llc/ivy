@@ -624,15 +624,34 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Parameters
         ----------
-        TODO
+        x1
+            Container, Array, or scalar to change the sign of
+        x2
+            Container, Array, or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
 
         Returns
         -------
-        TODO
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
 
         Examples
         --------
-        >>> TODO
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> ivy.Container.static_copysign(x1, x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> ivy.Container.static_copysign(23, x1)
+        {
+            a: ivy.array([23., 23., 23.]),
+            b: ivy.array(-23.)
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "copysign",
@@ -647,30 +666,47 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
     def copysign(
         self: ivy.Container,
+        x2: ivy.Container,
         /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.exp2. This method simply
-        wraps the function, and so the docstring for ivy.exp2 also applies to
+        """ivy.Container instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
         this method with minimal changes.
 
         Parameters
         ----------
         self
-            container with the base input arrays.
+            Container to change the sign of
+        x2
+            Container from which the new signs are applied
+            Unsigned zeroes are considered positive.
         out
-            optional output container, for writing the result to.
+            optional output Container, for writing the result to.
 
         Returns
         -------
-        TODO
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
 
         Examples
         --------
-        >>> TODO
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> x1.copysign(x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> x1.copysign(-1)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(-1.)
+        }
         """
-        return self.static_copysign(self, out=out)
+        return self.static_copysign(self, x2, out=out)
 
     @staticmethod
     def static_count_nonzero(
