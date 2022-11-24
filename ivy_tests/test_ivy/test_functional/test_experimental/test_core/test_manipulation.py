@@ -540,19 +540,11 @@ def test_i0(
 @handle_test(
     fn_tree="functional.experimental.flatten",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
-        ),
-        min_value=-100,
-        max_value=100,
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
     ),
     axes=helpers.get_axis(
-        shape=st.shared(
-            helpers.get_shape(min_num_dims=1, max_num_dims=5), key="flatten_shape"
-        ),
-        allow_neg=True,
-        sorted=True,
+        shape=st.shared(helpers.get_shape(), key="flatten_shape"),
         min_size=2,
         max_size=2,
         unique=False,
@@ -577,17 +569,6 @@ def test_flatten(
     ground_truth_backend,
 ):
     input_dtypes, x = dtype_and_x
-    x = np.asarray(x[0], dtype=input_dtypes[0])
-
-    if axes[1] == 0:
-        start_dim, end_dim = axes[1], axes[0]
-    elif axes[0] * axes[1] < 0:
-        if x.ndim + min(axes) >= max(axes):
-            start_dim, end_dim = max(axes), min(axes)
-        else:
-            start_dim, end_dim = min(axes), max(axes)
-    else:
-        start_dim, end_dim = axes[0], axes[1]
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
@@ -600,9 +581,9 @@ def test_flatten(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x,
-        start_dim=start_dim,
-        end_dim=end_dim,
+        x=x[0],
+        start_dim=axes[0],
+        end_dim=axes[1],
         order=order,
     )
 
