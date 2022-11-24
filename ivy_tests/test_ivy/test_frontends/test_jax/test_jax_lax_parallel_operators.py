@@ -37,5 +37,5 @@ def test_jax_lax_axis_index(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        axis_name="example_name",
+        axis_name="j",
     )
