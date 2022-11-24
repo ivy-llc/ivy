@@ -1,6 +1,6 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_frontend
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_function
 
 
 # asarraya
