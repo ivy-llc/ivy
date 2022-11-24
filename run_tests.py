@@ -57,7 +57,7 @@ if __name__ == "__main__":
         mongo_key = sys.argv[3]
     failed = False
     cluster = MongoClient(
-        f"mongodb+srv://deep-ivy:{key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
+        f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
     )
     db = cluster["Ivy_tests"]
     with open("tests_to_run", "r") as f:
