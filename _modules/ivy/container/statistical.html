@@ -831,6 +831,126 @@
         <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Container instance method variant of ivy.std.</span>
+<span class="sd">        This method simply wraps the function, and so</span>
+<span class="sd">        the docstring for ivy.std also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis or axes along which standard deviation must be computed.</span>
+<span class="sd">            By default, the product must be computed over the entire</span>
+<span class="sd">            array. If a tuple of integers, products must be</span>
+<span class="sd">            computed over multiple axes. Default: ``None``.</span>
+<span class="sd">        correction</span>
+<span class="sd">            degrees of freedom adjustment. Setting this parameter to a</span>
+<span class="sd">            value other than ``0`` has the effect of adjusting the</span>
+<span class="sd">            divisor during the calculation of the standard deviation</span>
+<span class="sd">            according to ``N-c`` where ``N`` corresponds to the total</span>
+<span class="sd">            number of elements over which the standard deviation is</span>
+<span class="sd">            computed and ``c`` corresponds to the provided degrees of</span>
+<span class="sd">            freedom adjustment. When computing the standard deviation</span>
+<span class="sd">            of a population, setting this parameter to ``0`` is the</span>
+<span class="sd">            standard choice (i.e., the provided array contains data</span>
+<span class="sd">            constituting an entire population). When computing</span>
+<span class="sd">            the corrected sample standard deviation, setting this</span>
+<span class="sd">            parameter to ``1`` is the standard choice (i.e., the</span>
+<span class="sd">            provided array contains data sampled from a larger</span>
+<span class="sd">            population; this is commonly referred to as Bessel&#39;s</span>
+<span class="sd">            correction). Default: ``0``.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            bool, if True, the reduced axes (dimensions) must be</span>
+<span class="sd">            included in the result as singleton dimensions, and,</span>
+<span class="sd">            accordingly, the result must be compatible with the</span>
+<span class="sd">            input array (see Broadcasting). Otherwise, if False,</span>
+<span class="sd">            the reduced axes (dimensions) must not be included</span>
+<span class="sd">            in the result. Default: ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            otherwise key_chains will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was</span>
+<span class="sd">            not applied. Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            container, if the standard deviation was computed over the</span>
+<span class="sd">            entire array, a zero-dimensional array containing the</span>
+<span class="sd">            standard deviation; otherwise, a non-zero-dimensional array</span>
+<span class="sd">            containing the respectve standard deviations. The returned</span>
+<span class="sd">            array must have the same data type as ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([-4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.std()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(1.),</span>
+<span class="sd">            b: ivy.array(4.5)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.std(keepdims=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0.5]),</span>
+<span class="sd">            b: ivy.array([0.81649649])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, -2]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.std(axis=1, keepdims=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0.5]]),</span>
+<span class="sd">            b: ivy.array([[2.]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 1, 1]), b=ivy.array([1.1, 0.2, 1.4]))</span>
+<span class="sd">        &gt;&gt;&gt; x.std(out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(0.94280904),</span>
+<span class="sd">            b: ivy.array(0.509902)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -2., 1.]), b=ivy.array([1., 1., 1.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))</span>
+<span class="sd">        &gt;&gt;&gt; x.std(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(1.2472192),</span>
+<span class="sd">            b: ivy.array(0.)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[-1., 1., 2.], [2., 2., 2.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3., 0., -3.], [4., 1., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.std(x, axis=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">        a: ivy.array([1.2472192, 0.]),</span>
+<span class="sd">        b: ivy.array([2.44948983, 1.41421354])</span>
+<span class="sd">        }</span>
+
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">std</span><span class="p">(</span>
