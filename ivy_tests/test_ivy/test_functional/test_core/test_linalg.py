@@ -1,6 +1,5 @@
 """Collection of tests for unified linear algebra functions."""
 
-
 # global
 import sys
 import numpy as np
@@ -87,7 +86,6 @@ def _get_dtype_value1_value2_axis_for_tensordot(
     min_dim_size=1,
     max_dim_size=10,
 ):
-
     shape = draw(
         helpers.get_shape(
             allow_none=False,
@@ -173,7 +171,7 @@ def _get_first_matrix_and_dtype(draw, *, transpose=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        )
+        ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -204,7 +202,7 @@ def _get_second_matrix_and_dtype(draw, *, transpose=False):
         st.shared(
             st.sampled_from(draw(helpers.get_dtypes("numeric"))),
             key="shared_dtype",
-        )
+        ).filter(lambda x: "float16" not in x)
     )
     shared_size = draw(
         st.shared(helpers.ints(min_value=2, max_value=4), key="shared_size")
@@ -919,7 +917,6 @@ def test_tensordot(
     on_device,
     ground_truth_backend,
 ):
-
     (
         dtype,
         x1,
