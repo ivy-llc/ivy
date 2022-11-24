@@ -5272,8 +5272,9 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
         ret
-            a container containing the element-wise results. The returned container
-            must have a data type determined by :ref:`type-promotion`.
+            a container containing the element-wise results.
+            The returned container must have a data type determined
+            by :ref:`type-promotion`.
         
         Examples
         --------
@@ -5319,28 +5320,26 @@ class ContainerWithElementwise(ContainerBase):
 
         Parameters
         ----------
-        self (Container)
-            input array or container. Should have a real-valued data type.
-        x2 (Union[Container, Array, NativeArray])
-            input array or container. Must be compatible with ``self``
+        self
+            first input array or container. Should have a numeric data type.
+        x2
+            second input array or container. Must be compatible with ``self``
             (see :ref:`broadcasting`).
-            Should have a real-valued data type.
-        key_chains (Optional[Union[List[str], Dict[str, str]]])
+            Should have a nuneric data type.
+        key_chains
             The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply (bool)
+        to_apply
             If True, the method will be applied to key_chains, otherwise key_chains
             will be skipped. Default is ``True``.
-        prune_unapplied (bool)
+        prune_unapplied
             Whether to prune key_chains for which the function was not applied.
             Default is ``False``.
-        map_sequences (bool)
+        map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out (Optional[Container])
+        out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
-
-        Return type: Container
 
         Returns
         -------
