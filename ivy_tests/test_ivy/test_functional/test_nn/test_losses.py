@@ -143,6 +143,7 @@ def test_binary_cross_entropy(
         reduction=reduction,
     )
 
+
 # binary_cross_entropy_with_logits
 @handle_test(
     fn_tree="functional.ivy.binary_cross_entropy_with_logits",
@@ -168,7 +169,7 @@ def test_binary_cross_entropy(
     ),
     dtype_and_pos_weight=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        min_value=1.0013580322265625e-05,
+        min_value=0,
         max_value=1,
         allow_inf=False,
         exclude_min=True,
