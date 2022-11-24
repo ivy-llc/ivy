@@ -16,13 +16,12 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    inputs_to_ivy_arrays,
 )
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -80,15 +79,15 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([[1,2], [3,4]])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = np.array([[1,2], [3,4]])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x, order='F')
     ivy.array([1, 3, 2, 4])
 
-    >>> x = np.array(
+    >>> x = ivy.array(
         [[[[ 5,  5,  0,  6],
          [17, 15, 11, 16],
          [ 6,  3, 13, 12]],
@@ -138,7 +137,8 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if start_dim == end_dim and len(x.shape) != 0:
+    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
