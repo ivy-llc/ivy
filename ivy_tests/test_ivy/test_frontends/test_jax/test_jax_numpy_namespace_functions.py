@@ -2336,7 +2336,7 @@ def test_jax_numpy_trapz(
         on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
-        y=np.asarray(y[0], dtype=input_dtype[0]),
+        y=y[0],
         x=x,
         dx=dx,
         axis=axis,
