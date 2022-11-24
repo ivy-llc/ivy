@@ -350,3 +350,8 @@ def pow(input, exponent, *, out=None):
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def logaddexp(x1, x2, out=None):
     return ivy.logaddexp(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def exp2(input, out=None):
+    return ivy.exp2(input, out=out)
