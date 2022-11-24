@@ -480,4 +480,3 @@ ivy_tests/test_array_api/array_api_tests/test_type_promotion.py::test_inplace_op
 # as noted by the skip in the array-api repo.
 ivy_tests/test_array_api/array_api_tests/test_operators_and_elementwise_functions.py::test_floor_divide
 
-ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py::

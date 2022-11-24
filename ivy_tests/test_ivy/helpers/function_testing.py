@@ -524,9 +524,9 @@ def test_frontend_function(
         # frontend function
         frontend_fn = getattr(function_module, fn_name)
         # check and replace NativeClass object in arguments with ivy counterparts
-        convs = {"numpy"}
-
         from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
+
+        convs = {"numpy": convnumpy}
 
         if "torch" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_torch import convtorch

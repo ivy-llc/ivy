@@ -7,10 +7,8 @@ func_folder = os.path.join(this_dir, "array_api_methods_to_test")
 func_fnames = os.listdir(func_folder)
 func_fnames.sort()
 
-func_fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
-
 # all filepaths
-fpaths = func_fpaths
+fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
 
 # test lists
 framework_tests_to_run = {framework: list() for framework in available_frameworks}

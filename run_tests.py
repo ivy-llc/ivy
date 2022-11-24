@@ -7,9 +7,9 @@ submodules = (
     "test_core",
     "test_nn",
     "test_stateful",
-    "test_tensorflow",
-    "test_torch",
-    "test_jax",
+    # "test_tensorflow",
+    # "test_torch",
+    # "test_jax",
     "test_numpy",
 )
 db_dict = {
@@ -18,9 +18,9 @@ db_dict = {
     "test_functional/test_nn": ["intelligent_nn", 12],
     "test_experimental/test_nn": ["intelligent_exp_nn", 13],
     "test_stateful": ["intelligent_stateful", 14],
-    "test_torch": ["intelligent_torch", 15],
-    "test_jax": ["intelligent_jax", 16],
-    "test_tensorflow": ["intelligent_tensorflow", 17],
+    # "test_torch": ["intelligent_torch", 15],
+    # "test_jax": ["intelligent_jax", 16],
+    # "test_tensorflow": ["intelligent_tensorflow", 17],
     "test_numpy": ["intelligent_numpy", 18],
 }
 result_config = {
