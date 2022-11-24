@@ -269,6 +269,7 @@ def take_along_axis(
 
     return jnp.take_along_axis(arr, indices, axis)
 
+
 def hsplit(
     ary: JaxArray,
     indices_or_sections: Union[int, Tuple[int]],
