@@ -959,3 +959,51 @@ def test_take_along_axis(
         indices=indices,
         axis=axis,
     )
+
+# hsplit
+@handle_test(
+    fn_tree="functional.experimental.hsplit",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-10,
+        max_value=10,
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=2,
+        max_dim_size=5,
+    ),
+    indices_or_sections=helpers.get_shape(
+        min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=3
+    ),
+)
+def test_hsplit(
+    dtype_and_x,
+    indices_or_sections,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    indices_or_sections = sorted(indices_or_sections)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        indices_or_sections=indices_or_sections,
+    )
+
