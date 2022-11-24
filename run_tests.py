@@ -44,7 +44,7 @@ def get_submodule(test_path):
 def update_individual_test_results(collection, id, submod, backend, test, result):
     collection.update_one(
         {"_id": id},
-        {"$set": {submod + "." + backend + "." + test: result["result"]}},
+        {"$set": {submod + "." + backend + "." + test: result_config[result]}},
         upsert=True,
     )
     return
