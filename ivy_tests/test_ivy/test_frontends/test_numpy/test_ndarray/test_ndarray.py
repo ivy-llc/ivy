@@ -12,6 +12,7 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_second_matrix_and_dtype,
 )
 
+
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
 
 
