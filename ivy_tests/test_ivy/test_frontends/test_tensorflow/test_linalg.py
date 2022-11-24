@@ -655,7 +655,6 @@ def test_tensorflow_global_norm(
     fn_tree,
     on_device,
 ):
-
     input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -668,5 +667,3 @@ def test_tensorflow_global_norm(
         on_device=on_device,
         t_list=x,
     )
-
-    
