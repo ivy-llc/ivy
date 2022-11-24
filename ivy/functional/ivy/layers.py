@@ -1470,7 +1470,7 @@ def conv_general_dilated(
     ret
         The result of the transpose convolution operation.
     """
-    if data_format != "channel_last" or data_format != "channel_first":
+    if data_format != "channel_last" and data_format != "channel_first":
         dims, data_format = _get_dims_channel(data_format)
     return current_backend(x).conv_general_dilated(
         x,
