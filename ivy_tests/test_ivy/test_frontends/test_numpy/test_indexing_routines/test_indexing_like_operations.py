@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 
+
 # from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 #   statistical_dtype_values,
 # )
@@ -24,7 +25,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         shared_dtype=True,
         min_num_dims=2,
     ),
-    where=np_frontend_helpers.where(),
+    # where=np_frontend_helpers.where(),
     # dtype_and_axis1=helpers.dtype_values_axis(
     #   available_dtypes=helpers.get_dtypes("numeric"),
     # num_arrays=1,
@@ -44,11 +45,11 @@ def test_numpy_diagonal(
     as_variable,
     num_positional_args,
     native_array,
-    where,
+    # where,
+    with_out,
     offset,
     axis1,
     axis2,
-    with_out,
     on_device,
     fn_tree,
     frontend,
@@ -62,7 +63,7 @@ def test_numpy_diagonal(
         on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
-        where=where,
+        # where=where,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
