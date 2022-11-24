@@ -451,7 +451,7 @@ def test_tensorflow_avg_pool2d(
     fn_tree,
     on_device
 ):
-    input_dtype, x, ksize, stride, data_format, padding = x_f_d_df
+    input_dtype, x, filters, dilation, stride, data_format, padding, ksize  = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
