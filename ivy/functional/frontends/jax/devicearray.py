@@ -6,8 +6,9 @@ import ivy.functional.frontends.jax as jax_frontend
 
 
 class DeviceArray:
-    def __init__(self, data):
+    def __init__(self, data, f_contiguous=False):
         self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
+        self.f_contiguous = f_contiguous
 
     def __repr__(self):
         return (
@@ -66,7 +67,7 @@ class DeviceArray:
         return jax_frontend.numpy.dot(other, self)
 
     def __pos__(self):
-        return ivy.positive(self)
+        return self
 
     def __neg__(self):
         return jax_frontend.lax.neg(self)
@@ -132,4 +133,4 @@ class DeviceArray:
         return jax_frontend.lax.shift_right_logical(other, self)
 
     def __getitem__(self, index):
-        return ivy.get_item(self, index)
+        return self.at[index].get()

@@ -6,10 +6,26 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, data):
+    def __init__(self, data, f_contiguous=False):
         if ivy.is_native_array(data):
             data = ivy.Array(data)
         self.data = data
+        self.f_contiguous = f_contiguous
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def T(self):
+        return np_frontend.transpose(self.data)
+
+    @property
+    def shape(self):
+        return np_frontend.shape(self)
+
+    @property
+    def dtype(self):
+        return self.data.dtype
 
     # Instance Methods #
     # ---------------- #
@@ -30,20 +46,20 @@ class ndarray:
         )
 
     def reshape(self, shape, order="C"):
-        return np_frontend.reshape(self.data, shape)
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.reshape(self.data, shape, order="F")
+        else:
+            return np_frontend.reshape(self.data, shape, order="C")
 
     def transpose(self, *axes):
         if axes and isinstance(axes[0], tuple):
             axes = axes[0]
         return np_frontend.transpose(self.data, axes=axes)
-
-    @property
-    def T(self):
-        return np_frontend.transpose(self.data)
-
-    @property
-    def shape(self):
-        return np_frontend.shape(self)
 
     def swapaxes(self, axis1, axis2, /):
         return np_frontend.swapaxes(self.data, axis1, axis2)
@@ -81,10 +97,6 @@ class ndarray:
             initial=initial,
             where=where,
         )
-
-    @property
-    def dtype(self):
-        return self.data.dtype
 
     def argmin(
         self,
@@ -135,7 +147,7 @@ class ndarray:
             out=out,
         )
 
-    def cumsum(self, *, axis=None, dtype=dtype, out=None):
+    def cumsum(self, *, axis=None, dtype=None, out=None):
         return np_frontend.cumsum(
             self.data,
             axis=axis,
@@ -155,7 +167,26 @@ class ndarray:
         return np_frontend.nonzero(self.data)[0]
 
     def ravel(self, order="C"):
-        return np_frontend.ravel(self.data, order=order)
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.ravel(self.data, order="F")
+        else:
+            return np_frontend.ravel(self.data, order="C")
+
+    def flatten(self, order="C"):
+        ivy.assertions.check_elem_in_list(
+            order,
+            ["C", "F", "A", "K"],
+            message="order must be one of 'C', 'F', 'A', or 'K'",
+        )
+        if (order in ["K", "A"] and self.f_contiguous) or order == "F":
+            return np_frontend.ravel(self.data, order="F")
+        else:
+            return np_frontend.ravel(self.data, order="C")
 
     def repeat(self, repeats, axis=None):
         return np_frontend.repeat(self.data, repeats, axis=axis)
@@ -166,6 +197,19 @@ class ndarray:
     def squeeze(self, axis=None):
         return np_frontend.squeeze(self.data, axis=axis)
 
+    def std(
+        self, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=True
+    ):
+        return np_frontend.std(
+            self.data,
+            axis=axis,
+            dtype=dtype,
+            out=out,
+            ddof=ddof,
+            keepdims=keepdims,
+            where=where,
+        )
+
     def __add__(self, value, /):
         return np_frontend.add(self.data, value)
 
@@ -174,6 +218,9 @@ class ndarray:
 
     def __mul__(self, value, /):
         return np_frontend.multiply(self.data, value)
+
+    def __truediv__(self, value, /):
+        return np_frontend.true_divide(self.data, value)
 
     def __and__(self, value, /):
         return np_frontend.logical_and(self.data, value)
@@ -272,3 +319,6 @@ class ndarray:
 
     def __imod__(self, value, /):
         return np_frontend.mod(self.data, value)
+
+    def __abs__(self):
+        return np_frontend.absolute(self.data)

@@ -125,9 +125,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -284,18 +285,15 @@ nextafter.support_natvie_out = True
 
 
 def zeta(
-    x: np.ndarray, 
+    x: np.ndarray,
     q: np.ndarray,
     /,
     *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    inf_indices = np.union1d(
-        np.array(np.where(x == 1.)),
-        np.array(np.where(q <= 0))
-    )
+    inf_indices = np.union1d(np.array(np.where(x == 1.0)), np.array(np.where(q <= 0)))
     nan_indices = np.where(x <= 0)
-    n, res = 1, 1 / q ** x
+    n, res = 1, 1 / q**x
     while n < 10000:
         term = 1 / (q + n) ** x
         n, res = n + 1, res + term
