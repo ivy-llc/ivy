@@ -463,7 +463,9 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
-    eigenvalues_np, eigenvectors_np = ret_np_flat
+    eigenvalues_np, eigenvectors_np = ret_np_flat[
+        :2
+    ]  # update this; values shouldn't be repeated
     reconstructed_np = None
     for eigenvalue, eigenvector in zip(eigenvalues_np, eigenvectors_np):
         if reconstructed_np is not None:
@@ -474,7 +476,9 @@ def test_eigh(
             reconstructed_np = eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
             )
-    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat
+    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat[
+        :2
+    ]  # update this; values shouldn't be repeated
     reconstructed_from_np = None
     for eigenvalue, eigenvector in zip(eigenvalues_from_np, eigenvectors_from_np):
         if reconstructed_from_np is not None:
