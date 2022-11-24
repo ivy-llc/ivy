@@ -372,10 +372,12 @@ def _get_input_and_reshape(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.reshape",
     input_x_shape=_get_input_and_reshape(),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_jax_numpy_reshape(
     *,
     input_x_shape,
+    order,
     num_positional_args,
     as_variable,
     native_array,
@@ -395,6 +397,7 @@ def test_jax_numpy_reshape(
         on_device=on_device,
         a=x[0],
         newshape=shape,
+        order=order,
     )
 
 
