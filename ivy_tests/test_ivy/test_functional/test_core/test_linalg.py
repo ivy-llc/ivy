@@ -1451,9 +1451,7 @@ def test_cholesky(
 ):
     dtype, x = dtype_x
     x = x[0]
-    x = (
-        np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
-    )  # make symmetric positive-definite
+    x = np.matmul(x.T, x) + np.identity(x.shape[0])  # make symmetric positive-definite
 
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
