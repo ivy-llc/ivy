@@ -73,6 +73,7 @@ Experimental
    experimental/dstack.rst
    experimental/atleast_2d.rst
    experimental/take_along_axis.rst
+   experimental/hsplit.rst
    experimental/diagflat.rst
    experimental/kron.rst
    experimental/dirichlet.rst
