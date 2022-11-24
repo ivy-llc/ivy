@@ -425,7 +425,8 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 def any(a, axis=None, keepdims=False, *, where=True):
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
     return ret
 
 
