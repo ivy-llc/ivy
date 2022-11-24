@@ -21,13 +21,7 @@ if "tensorflow" in available_frameworks:
 if "torch" in available_frameworks:
     FWS_DICT["torch"] = lambda: _get_ivy_torch()
 
-# FWS_DICT = {
-#     "numpy": lambda: _get_ivy_numpy(),
-#     "jax": lambda: _get_ivy_jax(),
-#     "tensorflow": lambda: _get_ivy_tensorflow(),
-#     "tensorflow_graph": lambda: _get_ivy_tensorflow(),
-#     "torch": lambda: _get_ivy_torch(),
-# }
+
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval
