@@ -1083,7 +1083,6 @@ def test_vector_norm(
     on_device,
     ground_truth_backend,
 ):
-    print("n_p_s:", num_positional_args)
     dtype, x, axis = dtype_values_axis
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
@@ -1092,8 +1091,8 @@ def test_vector_norm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=[True],
-        instance_method=True,
+        container_flags=container_flags,
+        instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
