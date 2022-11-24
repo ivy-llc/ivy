@@ -2564,13 +2564,12 @@
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
-    <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
@@ -2628,15 +2627,15 @@
 <span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array([[1,2], [3,4]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flatten(x)</span>
 <span class="sd">    ivy.array([1, 2, 3, 4])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array([[1,2], [3,4]])</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.flatten(x, order=&#39;F&#39;)</span>
 <span class="sd">    ivy.array([1, 3, 2, 4])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = np.array(</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array(</span>
 <span class="sd">        [[[[ 5,  5,  0,  6],</span>
 <span class="sd">         [17, 15, 11, 16],</span>
 <span class="sd">         [ 6,  3, 13, 12]],</span>
@@ -2686,7 +2685,8 @@
 <span class="sd">          [ 4, 19, 16, 17],</span>
 <span class="sd">          [ 2, 12,  8, 14]]]))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">start_dim</span> <span class="o">==</span> <span class="n">end_dim</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># if it&#39;s 0-d convert to 1-d</span>
+    <span class="k">if</span> <span class="n">start_dim</span> <span class="o">==</span> <span class="n">end_dim</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
     <span class="k">if</span> <span class="n">start_dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span>
