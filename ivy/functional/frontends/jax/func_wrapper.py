@@ -26,18 +26,6 @@ def _from_ivy_array_to_jax_frontend_array(x, nested=False, include_derived=None)
     return x
 
 
-def _from_ivy_array_to_jax_frontend_array_order_F(
-    x, nested=False, include_derived=None
-):
-    if nested:
-        return ivy.nested_map(
-            x, _from_ivy_array_to_jax_frontend_array_order_F, include_derived
-        )
-    elif isinstance(x, ivy.Array):
-        return jax_frontend.DeviceArray(x, f_contiguous=True)
-    return x
-
-
 def _native_to_ivy_array(x):
     if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
@@ -58,25 +46,6 @@ def _check_C_order(x):
             return True
     else:
         return None
-
-
-def _set_order(args, order):
-    ivy.assertions.check_elem_in_list(
-        order,
-        ["C", "F", "A", "K", None],
-        message="order must be one of 'C', 'F', 'A', or 'K'",
-    )
-    if order in ["K", "A", None]:
-        check_order = ivy.nested_map(
-            args, _check_C_order, include_derived={tuple: True}
-        )
-        if all(v is None for v in check_order) or any(
-            ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
-        ):
-            order = "C"
-        else:
-            order = "F"
-    return order
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -104,26 +73,24 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 def outputs_to_frontend_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, order="K", **kwargs):
+    def new_fn(*args, order="C", **kwargs):
         # call unmodified function
         if contains_order:
+            ivy.assertions.check_elem_in_list(
+                order,
+                ["C", "F"],
+                message="order must be one of 'C', 'F'",
+            )
             if len(args) >= (order_pos + 1):
                 order = args[order_pos]
                 args = args[:-1]
-            order = _set_order(args, order)
-            print(order)
             ret = fn(*args, order=order, **kwargs)
         else:
             ret = fn(*args, **kwargs)
         # convert all arrays in the return to `jax_frontend.DeviceArray` instances
-        if order == "F":
-            return _from_ivy_array_to_jax_frontend_array_order_F(
-                ret, nested=True, include_derived={tuple: True}
-            )
-        else:
-            return _from_ivy_array_to_jax_frontend_array(
-                ret, nested=True, include_derived={tuple: True}
-            )
+        return _from_ivy_array_to_jax_frontend_array(
+            ret, nested=True, include_derived={tuple: True}
+        )
 
     if "order" in list(inspect.signature(fn).parameters.keys()):
         contains_order = True
