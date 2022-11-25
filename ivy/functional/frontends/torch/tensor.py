@@ -297,6 +297,9 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self.data, dim=dim, keepdim=keepdim)
 
+    def clamp(self, min=None, max=None, *, out=None):
+        return torch_frontend.clamp(self.data, min=min, max=max, out=out)
+
     # Special Methods #
     # -------------------#
 
@@ -336,5 +339,5 @@ class Tensor:
 # Tensor (alias)
 tensor = Tensor
 
-# ex_tensor = tensor(data=[3, 4])
-# print(ex_tensor)
+#ex_tensor = tensor(data=[3, 4])
+#print(ex_tensor)
