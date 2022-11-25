@@ -175,7 +175,7 @@ def nll_loss(
     reduction='mean'
 ):
 
-    out = ivy.zeros_like(target, dtype=ivy.float)
+    out = ivy.zeros_like(target, dtype=ivy.float16)
 
     if len(input.shape) == 1:
         for i in range(len(target)):
