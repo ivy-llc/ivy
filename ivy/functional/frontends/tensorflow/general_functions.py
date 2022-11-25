@@ -64,9 +64,8 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
-    
+
 
 @to_ivy_arrays_and_back
 def ones_like(input, dtype=None, name=None):
     return ivy.ones_like(input, dtype=dtype)
-    

@@ -124,8 +124,9 @@ def count_nonzero(
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(torch.count_nonzero(a, dim=axis),
-                            dtype=ivy.as_native_dtype(dtype))
+        return torch.tensor(
+            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
+        )
 
     x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
