@@ -5,3 +5,4 @@ termcolor==1.1.0
 colorama==0.4.5
 packaging==21.3
 nvidia-ml-py<=11.495.46 # mod_name=pynvml
+cython==0.29.32
