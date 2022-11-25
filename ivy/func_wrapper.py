@@ -402,10 +402,23 @@ def handle_out_argument(fn: Callable) -> Callable:
             native_out = ivy.to_native(out)
             # compute return, with backend inplace update handled by
             # the backend function
+            ret_out = []
+            if isinstance(native_out, (list, tuple)):
+                for i in range(len(out)):
+                    ret_out.append(ivy.inplace_update(out[i], ret[i]))
             ret = fn(*args, out=native_out, **kwargs)
             out.data = ivy.to_native(ret)
             return out
         # compute return, and then handle the inplace update explicitly
+        # ret = fn(*args, **kwargs)
+        # ret_out = []
+        # if isinstance(out, (list, tuple)):
+        #     for i in range(len(out)):
+        #         ret_out.append(ivy.inplace_update(out[i], ret[i]))
+        # else:
+        #     ret_out = ivy.inplace_update(out, ret)
+        # return ret_out
+
         ret = fn(*args, **kwargs)
         return ivy.inplace_update(out, ret)
 
