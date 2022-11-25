@@ -11,6 +11,8 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # accumulate_n
+
+
 @handle_frontend_test(
     fn_tree="tensorflow.math.accumulate_n",
     dtype_and_x=helpers.dtype_and_values(
@@ -42,6 +44,7 @@ def test_tensorflow_accumulate_n(
         x=x,
     )
 
+    
 # add
 @handle_frontend_test(
     fn_tree="tensorflow.math.add",
