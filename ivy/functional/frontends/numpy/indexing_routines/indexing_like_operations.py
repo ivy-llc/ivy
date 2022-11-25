@@ -9,4 +9,4 @@ def diagonal(x, offset, axis1, axis2):
     # )
     # ivy.assertions.check_equal(x.ndim, 2, message="x must be 2-dimensional")
 
-    return ivy.diagonal(x, offset, axis1, axis2)
+    return ivy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)

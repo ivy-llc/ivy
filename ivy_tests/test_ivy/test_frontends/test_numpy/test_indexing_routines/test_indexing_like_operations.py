@@ -34,7 +34,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     #  shared_dtype=True,
     # min_num_dims=2,
     # ),
-    offset=st.integers(min_value=0),  # ,max_value=10),
+    offset=st.integers(min_value=-1, max_value=1),
     axis1=st.integers(min_value=-2, max_value=2),
     axis2=st.integers(min_value=-2, max_value=2),
     # dtype=helpers.get_dtypes("float", full=False, none=True),
