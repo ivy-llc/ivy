@@ -122,6 +122,24 @@ def pad(input, pad, mode="constant", value=0):
         )
 
 
+def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
+    if scale_factor and (not size):
+        if type(scale_factor) == int:
+            w_new = int(w_old * scale_factor)
+            h_new = int(h_old * scale_factor)
+        elif type(scale_factor) == tuple:
+            w_new = int(w_old * scale_factor[0])
+            h_new = int(h_old * scale_factor[1])
+    elif (not scale_factor) and size:
+        if type(size) == int:
+            w_new = size
+            h_new = size
+        elif type(size) == tuple:
+            w_new, h_new = size
+
+    return w_new, h_new
+
+
 @to_ivy_arrays_and_back
 def upsample_bilinear(input, size=None, scale_factor=None):
     if scale_factor and size:
@@ -134,12 +152,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
         )
 
     n, c, w_old, h_old = input.shape
-
-    if scale_factor and (not size):
-        w_new = int(w_old * scale_factor)
-        h_new = int(h_old * scale_factor)
-    elif (not scale_factor) and size:
-        w_new, h_new = size
+    w_new, h_new = _get_new_width_height(w_old, h_old, size, scale_factor)
 
     x_distances_old = ivy.linspace(0, 1, w_old)
     y_distances_old = ivy.linspace(0, 1, h_old)
