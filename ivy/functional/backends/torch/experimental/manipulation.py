@@ -1,4 +1,5 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from numbers import Number
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -186,7 +187,7 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return transformed
 
 
-def atleast_3d(*arys: torch.Tensor) -> List[torch.Tensor]:
+def atleast_3d(*arys: Union[torch.Tensor, bool, Number]) -> List[torch.Tensor]:
     transformed = torch.atleast_3d(*arys)
     if isinstance(transformed, tuple):
         return list(transformed)
