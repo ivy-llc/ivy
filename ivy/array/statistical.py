@@ -621,7 +621,77 @@ class ArrayWithStatistical(abc.ABC):
     def einsum(
         self: ivy.Array,
         equation: str,
-        *,
+        *args,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        return ivy.einsum(equation, self._data, out=out)
+        """
+        ivy.Array instance method variant of ivy.einsum. This method simply wraps the
+        function, and so the docstring for ivy.einsum also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        equation
+            A str describing the contraction, in the same format as numpy.einsum.
+        operands
+            seq of arrays, the inputs to contract (each one an ivy.Array), whose shapes
+            should be consistent with equation.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            The array with sums computed.
+
+        Examples
+        --------
+        >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+        >>> y = x.einsum('ii')
+        >>> print(y)
+        ivy.array(12)
+
+        >>> x = ivy.array([[0, 1, 2], [3, 4, 5], [6, 7, 8]])
+        >>> z = x.einsum('ij -> j')
+        >>> print(z)
+        ivy.array([ 9, 12, 15])
+
+        >>> A = ivy.array([0, 1, 2])
+        >>> B = ivy.array([[ 0,  1,  2,  3],
+        ...                [ 4,  5,  6,  7],
+        ...                [ 8,  9, 10, 11]])
+        >>> C = A.einsum('i,ij->i', B)
+        >>> print(C)
+        ivy.array([ 0, 22, 76])
+
+        >>> A = ivy.array([[1, 1, 1],
+        ...                [2, 2, 2],
+        ...                [5, 5, 5]])
+        >>> B = ivy.array([[0, 1, 0],
+        ...                [1, 1, 0],
+        ...                [1, 1, 1]])
+        >>> C = A.einsum('ij,jk->ik', B)
+        >>> print(C)
+        ivy.array([[ 2,  3,  1],
+               [ 4,  6,  2],
+               [10, 15,  5]])
+
+        >>> A = ivy.arange(10)
+        >>> B = A.einsum('i->')
+        >>> print(B)
+        ivy.array(45)
+
+        >>> A = ivy.arange(10)
+        >>> B = ivy.arange(5, 15)
+        >>> C = A.einsum('i,i->i', B)
+        >>> print(C)
+        ivy.array([  0,   6,  14,  24,  36,  50,  66,  84, 104, 126])
+
+        >>> A = ivy.arange(10)
+        >>> B = ivy.arange(5, 15)
+        >>> C = A.einsum('i,i->', B) # or just use 'i,i'
+        >>> print(C)
+        ivy.array(510)
+
+        """
+        return ivy.einsum(equation, *(self._data,) + args, out=out)

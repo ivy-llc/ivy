@@ -347,8 +347,9 @@ svdvals.support_native_out = True
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to

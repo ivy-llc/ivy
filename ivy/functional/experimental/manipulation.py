@@ -1389,6 +1389,52 @@ def atleast_2d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def atleast_3d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least three dimension.
+    Scalar inputs are converted to 3-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have three or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with a.ndim >= 3. Copies
+        are avoided where possible, and views with three or more
+        dimensions are returned. For example, a 1-D array of shape
+        (N,) becomes a view of shape (1, N, 1), and a 2-D array of
+        shape (M, N) becomes a view of shape (M, N, 1).
+
+    Examples
+    --------
+    >>> ary1 = ivy.array([5,6])
+    >>> ivy.atleast_3d(ary1)
+    ivy.array([[[5],
+            [6]]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_3d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ary3 = ivy.array([[3,4],[9,10]])
+    >>> ivy.atleast_3d(6,7,ary3)
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
+            [ 4]],
+
+           [[ 9],
+            [10]]])]
+    """
+    return ivy.current_backend().atleast_3d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 @handle_exceptions
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
