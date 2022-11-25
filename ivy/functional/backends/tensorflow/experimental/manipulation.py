@@ -172,6 +172,7 @@ def take_along_axis(
     indices = tf.dtypes.cast(indices, tf.int32)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
 
+
 def hsplit(
     ary: Union[tf.Tensor, tf.Variable],
     indices_or_sections: Union[int, Tuple[int]],

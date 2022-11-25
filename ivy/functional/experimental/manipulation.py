@@ -1426,6 +1426,7 @@ def take_along_axis(
     """
     return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
