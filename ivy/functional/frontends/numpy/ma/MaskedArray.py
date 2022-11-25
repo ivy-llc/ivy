@@ -146,9 +146,11 @@ class MaskedArray(np_frontend.ndarray):
             self._fill_value = ivy.ones_like(self._data) * self._fill_value
         if hasattr(self._mask[query], "shape"):
             return MaskedArray(
-                data=self._data[query], mask=self._mask[query],
+                data=self._data[query],
+                mask=self._mask[query],
                 fill_value=self._fill_value[query],
-                hard_mask=self._hard_mask)
+                hard_mask=self._hard_mask,
+            )
 
     def __setitem__(self, query, val):
         self._data[query] = val
