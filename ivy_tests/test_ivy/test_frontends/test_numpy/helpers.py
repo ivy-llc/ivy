@@ -112,13 +112,27 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     # set backend back to original
     ivy.unset_backend()
 
-    # handling where size
-    where = np.broadcast_to(where, ret.shape)
+    # get flattened arrays from returned value
+    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
 
-    ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
-    ]
+    # handling where size
+    where = np.asarray(where)
+    if where.ndim == 0:
+        where = np.array([where])
+    elif where.ndim > 1:
+        where = where.flatten()
+    # handling ret size
+
+    first_el = ret_np_flat[0]
+    # change where to match the shape of the first element of ret_np_flat
+    if first_el.size == 1:
+        where = where[:1]
+    else:
+        where = np.repeat(where, first_el.size)
+        where = where[: first_el.size]
+        where = where.reshape(first_el.shape)
+
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
