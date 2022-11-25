@@ -3615,6 +3615,14 @@ def log2(
                [-inf, nan, nan, nan]])
 
 
+    With :code:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([4.56, float('-inf')])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([2.189, nan])
+
+
 
     With :code:`ivy.NativeArray` input:
 
