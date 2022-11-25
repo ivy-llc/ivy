@@ -1,14 +1,19 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
+import jax.numpy as jnp
 
 # local
-import jax.numpy as jnp
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy.functional.backends.torch as ivy_torch
 
 
 # __pos__
-@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+)
 def test_jax_special_pos(
     dtype_x,
 ):
@@ -17,16 +22,18 @@ def test_jax_special_pos(
     ret_gt = +jnp.array(x[0], dtype=input_dtype[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __neg__
-@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+)
 def test_jax_special_neg(
     dtype_x,
 ):
@@ -35,19 +42,19 @@ def test_jax_special_neg(
     ret_gt = -jnp.array(x[0], dtype=input_dtype[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __eq__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_eq(
     dtype_x,
@@ -59,19 +66,19 @@ def test_jax_special_eq(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __ne__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ne(
     dtype_x,
@@ -83,19 +90,19 @@ def test_jax_special_ne(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __lt__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_lt(
     dtype_x,
@@ -107,19 +114,19 @@ def test_jax_special_lt(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __le__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_le(
     dtype_x,
@@ -131,19 +138,19 @@ def test_jax_special_le(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __gt__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_gt(
     dtype_x,
@@ -155,19 +162,19 @@ def test_jax_special_gt(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __ge__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ge(
     dtype_x,
@@ -179,16 +186,18 @@ def test_jax_special_ge(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __abs__
-@given(dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+)
 def test_jax_special_abs(
     dtype_x,
 ):
@@ -197,12 +206,11 @@ def test_jax_special_abs(
     ret_gt = abs(jnp.array(x[0], dtype=input_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 @st.composite
@@ -215,7 +223,9 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
 
 
 # __pow__
-@given(dtype_x_pow=_get_dtype_x_and_int())
+@handle_frontend_test(
+    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
+)
 def test_jax_special_pow(
     dtype_x_pow,
 ):
@@ -224,16 +234,17 @@ def test_jax_special_pow(
     ret_gt = jnp.array(x[0], dtype=x_dtype[0]) ** pow
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rpow__
-@given(dtype_x_pow=_get_dtype_x_and_int())
+@handle_frontend_test(
+    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
+)
 def test_jax_special_rpow(
     dtype_x_pow,
 ):
@@ -242,19 +253,19 @@ def test_jax_special_rpow(
     ret_gt = jnp.array(pow).__rpow__(jnp.array(x[0], dtype=x_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __and__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_and(
     dtype_x,
@@ -266,19 +277,19 @@ def test_jax_special_and(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rand__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_rand(
     dtype_x,
@@ -290,19 +301,19 @@ def test_jax_special_rand(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __or__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_or(
     dtype_x,
@@ -314,19 +325,19 @@ def test_jax_special_or(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __ror__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ror(
     dtype_x,
@@ -338,19 +349,19 @@ def test_jax_special_ror(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __xor__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_xor(
     dtype_x,
@@ -362,19 +373,19 @@ def test_jax_special_xor(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rxor__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_rxor(
     dtype_x,
@@ -386,19 +397,19 @@ def test_jax_special_rxor(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __invert__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer")
-    )
+    ),
 )
 def test_jax_special_invert(
     dtype_x,
@@ -408,16 +419,18 @@ def test_jax_special_invert(
     ret_gt = ~jnp.array(x[0], dtype=input_dtype[0])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __lshift__
-@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+)
 def test_jax_special_lshift(
     dtype_x_shift,
 ):
@@ -426,16 +439,18 @@ def test_jax_special_lshift(
     ret_gt = jnp.array(x[0], dtype=input_dtype[0]) << shift
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rlshift__
-@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+)
 def test_jax_special_rlshift(
     dtype_x_shift,
 ):
@@ -444,16 +459,18 @@ def test_jax_special_rlshift(
     ret_gt = jnp.array(shift).__rlshift__(jnp.array(x[0], dtype=input_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rshift__
-@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+)
 def test_jax_special_rshift(
     dtype_x_shift,
 ):
@@ -462,16 +479,18 @@ def test_jax_special_rshift(
     ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >> shift
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rrshift__
-@given(dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"))
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+)
 def test_jax_special_rrshift(
     dtype_x_shift,
 ):
@@ -480,21 +499,21 @@ def test_jax_special_rrshift(
     ret_gt = jnp.array(shift).__rrshift__(jnp.array(x[0], dtype=input_dtype[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __add__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_add(
     dtype_x,
@@ -504,21 +523,21 @@ def test_jax_special_add(
     ret_gt = jnp.array(x[0]) + jnp.array(x[1], dtype=input_dtype[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __radd__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_radd(
     dtype_x,
@@ -532,21 +551,21 @@ def test_jax_special_radd(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __sub__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_sub(
     dtype_x,
@@ -558,21 +577,21 @@ def test_jax_special_sub(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rsub__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rsub(
     dtype_x,
@@ -586,21 +605,21 @@ def test_jax_special_rsub(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __mul__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_mul(
     dtype_x,
@@ -612,21 +631,21 @@ def test_jax_special_mul(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rmul__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rmul(
     dtype_x,
@@ -640,21 +659,21 @@ def test_jax_special_rmul(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __div__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_div(
     dtype_x,
@@ -666,21 +685,21 @@ def test_jax_special_div(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rdiv__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rdiv(
     dtype_x,
@@ -694,21 +713,21 @@ def test_jax_special_rdiv(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __truediv__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_truediv(
     dtype_x,
@@ -722,21 +741,21 @@ def test_jax_special_truediv(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rtruediv__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rtruediv(
     dtype_x,
@@ -746,24 +765,23 @@ def test_jax_special_rtruediv(
     other = DeviceArray(x[1])
     ret = data.__rtruediv__(other)
     ret_gt = jnp.array(x[0]).__rtruediv__(jnp.array(x[1], dtype=input_dtype[1]))
-
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __mod__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_mod(
     dtype_x,
@@ -775,24 +793,23 @@ def test_jax_special_mod(
     ret_gt = jnp.array(x[0], dtype=input_dtype[0]) % jnp.array(
         x[1], dtype=input_dtype[1]
     )
-
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rmod__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rmod(
     dtype_x,
@@ -806,12 +823,11 @@ def test_jax_special_rmod(
     )
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 @st.composite
@@ -832,7 +848,8 @@ def _get_dtype_input_and_vectors(draw):
 
 
 # __matmul__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_matmul(
@@ -845,16 +862,16 @@ def test_jax_special_matmul(
     ret_gt = jnp.array(x[0]) @ jnp.array(x[1])
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
 
 
 # __rmatmul__
-@given(
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=_get_dtype_input_and_vectors(),
 )
 def test_jax_special_rmatmul(
@@ -867,42 +884,31 @@ def test_jax_special_rmatmul(
     ret_gt = jnp.array(x[1]).__rmatmul__(jnp.array(x[0]))
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
-
-
-@st.composite
-def _getitem_helper(draw):
-    arr_size = draw(helpers.ints(min_value=2, max_value=10))
-    x = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"), shape=(arr_size,)
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
     )
-    index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
-    return x, index
 
 
 # __getitem__
-@given(
-    x_index=_getitem_helper(),
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x_index=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=ivy_torch.valid_int_dtypes,
+    ),
 )
 def test_jax_special_getitem(
-    x_index,
+    dtype_x_index,
 ):
-    x, index = x_index
-    data = DeviceArray(x[0])
-    ret = data.__getitem__(index)
-    ret_gt = jnp.array(x[0]).at[index].get()
+    x, index = dtype_x_index[1:3]
+    ret = DeviceArray(x).__getitem__(index)
+    ret_gt = jnp.array(x).at[index].get()
     ret = helpers.flatten_and_to_np(ret=ret)
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        helpers.value_test(
-            ret=ret,
-            ret_from_gt=ret_gt,
-            ground_truth_backend="jax",
-        )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )

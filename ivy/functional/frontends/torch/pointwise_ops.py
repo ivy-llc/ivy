@@ -268,6 +268,7 @@ def clip(input, min=None, max=None, *, out=None):
 
 @to_ivy_arrays_and_back
 def mul(input, other, *, out=None):
+    input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
     return ivy.multiply(input, other, out=out)
 
 
@@ -343,3 +344,14 @@ def addcmul(input, tensor1, tensor2, *, value=1, out=None):
 @to_ivy_arrays_and_back
 def pow(input, exponent, *, out=None):
     return ivy.pow(input, exponent, out=out)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def logaddexp(x1, x2, out=None):
+    return ivy.logaddexp(x1, x2, out=out)
+
+
+@to_ivy_arrays_and_back
+def exp2(input, out=None):
+    return ivy.exp2(input, out=out)
