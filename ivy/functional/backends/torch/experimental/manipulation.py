@@ -186,6 +186,13 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return transformed
 
 
+def atleast_3d(*arys: torch.Tensor) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
