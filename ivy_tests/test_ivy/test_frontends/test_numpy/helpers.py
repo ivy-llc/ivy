@@ -87,6 +87,7 @@ def _array_and_axes_permute_helper(
 
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
+    # TODO: this is a hack to get around, but not sure if it is efficient way to do it.
     where = kwargs["where"]
     if kwargs["frontend"] == "numpy":
         kwargs["where"] = True
