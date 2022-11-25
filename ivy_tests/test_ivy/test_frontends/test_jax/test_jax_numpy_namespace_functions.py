@@ -372,10 +372,12 @@ def _get_input_and_reshape(draw):
 @handle_frontend_test(
     fn_tree="jax.numpy.reshape",
     input_x_shape=_get_input_and_reshape(),
+    order=st.sampled_from(["C", "F"]),
 )
 def test_jax_numpy_reshape(
     *,
     input_x_shape,
+    order,
     num_positional_args,
     as_variable,
     native_array,
@@ -395,6 +397,7 @@ def test_jax_numpy_reshape(
         on_device=on_device,
         a=x[0],
         newshape=shape,
+        order=order,
     )
 
 
@@ -485,17 +488,8 @@ def test_jax_numpy_mean(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
-    x_array = ivy.array(x[0])
-
-    if len(x_array.shape) == 2:
-        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
-    if isinstance(where, tuple) or isinstance(where, list):
-        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
@@ -512,6 +506,8 @@ def test_jax_numpy_mean(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        atol=1e-2,
+        rtol=1e-2,
         a=x[0],
         axis=axis,
         dtype=dtype[0],
@@ -576,17 +572,8 @@ def test_jax_numpy_var(
     frontend,
 ):
     x_dtype, x, axis, ddof = dtype_x_axis
-    x_array = ivy.array(x[0])
-
-    if len(x_array.shape) == 2:
-        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
-    if isinstance(where, tuple) or isinstance(where, list):
-        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
@@ -2165,17 +2152,8 @@ def test_jax_numpy_sum(
 ):
     x_dtype, x, axis, castable_dtype = dtype_x_axis_castable
 
-    x_array = ivy.array(x[0])
-
-    if len(x_array.shape) == 2:
-        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
-    if isinstance(where, tuple) or isinstance(where, list):
-        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
@@ -2373,11 +2351,13 @@ def test_jax_numpy_trapz(
         max_axes_size=1,
     ),
     keepdims=st.booleans(),
+    where=np_helpers.where(),
 )
 def test_jax_numpy_any(
     *,
     dtype_x_axis,
     keepdims,
+    where,
     num_positional_args,
     as_variable,
     native_array,
@@ -2387,7 +2367,13 @@ def test_jax_numpy_any(
 ):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
-    helpers.test_frontend_function(
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    np_helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -2400,6 +2386,7 @@ def test_jax_numpy_any(
         a=x[0],
         axis=axis,
         keepdims=keepdims,
+        where=where,
     )
 
 
@@ -2921,17 +2908,8 @@ def test_jax_numpy_min(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
-    x_array = ivy.array(x[0])
-
-    if len(x_array.shape) == 2:
-        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
-    if isinstance(where, tuple) or isinstance(where, list):
-        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
@@ -2978,17 +2956,8 @@ def test_jax_numpy_max(
     frontend,
 ):
     x_dtype, x, axis = dtype_x_axis
-    x_array = ivy.array(x[0])
-
-    if len(x_array.shape) == 2:
-        where = ivy.ones((x_array.shape[0], 1), dtype=ivy.bool)
-    elif len(x_array.shape) == 1:
-        where = ivy.ones((1,), dtype=ivy.bool)
-
     if isinstance(axis, tuple):
         axis = axis[0]
-    if isinstance(where, tuple) or isinstance(where, list):
-        where = where[0]
     where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=x_dtype,
@@ -3047,7 +3016,7 @@ def test_jax_numpy_log10(
         on_device=on_device,
         rtol=1e-01,
         atol=1e-02,
-        x=x[0]
+        x=x[0],
     )
 
 
