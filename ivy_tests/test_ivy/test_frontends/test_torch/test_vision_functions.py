@@ -181,7 +181,7 @@ def _upsample_bilinear_helper(draw):
             ret_shape=True,
             min_num_dims=4,
             max_num_dims=4,
-            min_dim_size=2,
+            min_dim_size=1,
             max_dim_size=1000,
             min_value=-1e05,
             max_value=1e05,

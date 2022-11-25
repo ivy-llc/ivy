@@ -159,6 +159,9 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     x_distances_new = ivy.linspace(0, 1, w_new)
     y_distances_new = ivy.linspace(0, 1, h_new)
 
+    normalize_distances_coeff_x = 1 / w_old
+    normalize_distances_coeff_y = 1 / h_old
+
     lower_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
     higher_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
     lower_pivots_y = ivy.zeros(h_new, dtype=ivy.int64)
@@ -204,7 +207,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
                     ivy.gather(input, higher_pivots_x, axis=3),
                 ),
             ),
-            x_distances_old[1] - x_distances_old[0],
+            normalize_distances_coeff_x,
         ),
         temp,
     )
@@ -232,7 +235,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
                     ivy.gather(temp, higher_pivots_y, axis=2),
                 ),
             ),
-            y_distances_old[1] - y_distances_old[0],
+            normalize_distances_coeff_y,
         ),
         result,
     )
