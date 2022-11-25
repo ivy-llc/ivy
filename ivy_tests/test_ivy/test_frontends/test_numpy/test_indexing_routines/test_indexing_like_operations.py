@@ -17,6 +17,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
+    # dtype_x_axis=helpers.dtype_values_axis(
+    #   available_dtypes=helpers.get_dtypes("numeric"),
+    #  num_arrays=1,
+    # shared_dtype = True,
+    # min_num_dims = 2
+    # ),
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=1,
@@ -37,6 +43,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     offset=st.integers(min_value=-1, max_value=1),
     axis1=st.integers(min_value=-2, max_value=2),
     axis2=st.integers(min_value=-2, max_value=2),
+    # axis1!=axis2,
     # dtype=helpers.get_dtypes("float", full=False, none=True),
     # where=np_frontend_helpers.where(),
 )
