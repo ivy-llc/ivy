@@ -26,6 +26,28 @@ cmd_line_args_lists = (
 
 
 @st.composite
+def num_positional_args_method(draw, *, method):
+    total, num_positional_only, num_keyword_only, = (
+        0,
+        0,
+        0,
+    )
+    for param in inspect.signature(method).parameters.values():
+        if param.name == "self":
+            continue
+        total += 1
+        if param.kind == param.POSITIONAL_ONLY:
+            num_positional_only += 1
+        elif param.kind == param.KEYWORD_ONLY:
+            num_keyword_only += 1
+        elif param.kind == param.VAR_KEYWORD:
+            num_keyword_only += 1
+    return draw(
+        nh.ints(min_value=num_positional_only, max_value=(total - num_keyword_only))
+    )
+
+
+@st.composite
 def num_positional_args(draw, *, fn_name: str = None):
     """Draws an integers randomly from the minimum and maximum number of positional
     arguments a given function can take.
@@ -328,6 +350,7 @@ def handle_method(
 
 
 def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs):
+    frontend = method_tree.split(".")[0]
     method_tree = "ivy.functional.frontends." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
 
@@ -351,13 +374,15 @@ def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs)
                     or v is pf.AsVariableFlags
                 ):
                     _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
-                elif v is pf.NumPositionalArg:
-                    if k.startswith("method"):
-                        _given_kwargs[k] = num_positional_args(
-                            f"{class_name}.{method_name}"
+                elif isinstance(v, pf.NumPositionalArg):
+                    if v.object_type is pf.TestObjectType.METHOD:
+                        _given_kwargs[k] = num_positional_args_method(
+                            method=callable_method
                         )
-                    else:
-                        _given_kwargs[k] = num_positional_args(class_name + ".__init__")
+                    elif v.object_type is pf.TestObjectType.INIT:
+                        _given_kwargs[k] = num_positional_args(
+                            fn_name="functional.frontends." + frontend + "." + init_name
+                        )
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
