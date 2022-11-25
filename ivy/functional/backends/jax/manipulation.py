@@ -74,12 +74,14 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = jnp.copy(x)
-        return jnp.reshape(newarr, shape)
-    return jnp.reshape(x, shape)
+        return jnp.reshape(newarr, shape, order=order)
+    return jnp.reshape(x, shape, order=order)
 
 
 def roll(
@@ -195,7 +197,7 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float32)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         elif (
             jnp.float16 in (x.dtype, x_min.dtype, x_max.dtype)
             or jnp.float32 in (x.dtype, x_min.dtype, x_max.dtype)
@@ -208,12 +210,14 @@ def clip(
             promoted_type = jnp.promote_types(x.dtype, jnp.float64)
             promoted_type = jnp.promote_types(promoted_type, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
+            x = x.astype(promoted_type)
         else:
             promoted_type = jnp.promote_types(x.dtype, x_min.dtype)
             promoted_type = jnp.promote_types(promoted_type, x_max.dtype)
-            x = jnp.asarray(x, dtype=promoted_type)
-    return jnp.clip(x, x_min, x_max)
+            x.astype(promoted_type)
+    # jnp.clip isn't used because of inconsistent gradients
+    x = jnp.where(x > x_max, x_max, x)
+    return jnp.where(x < x_min, x_min, x)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("uint64",)}, backend_version)

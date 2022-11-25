@@ -347,8 +347,9 @@ svdvals.support_native_out = True
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to
@@ -375,6 +376,8 @@ def trace(
     axis2: int = 1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    if len(x) == 0:
+        return ivy.array([])
     ret = torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
     ret = torch.sum(ret)
     return ret
@@ -383,8 +386,9 @@ def trace(
 def vecdot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axis: int = -1,
+    /,
     *,
+    axis: int = -1,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(ivy.promote_types(x1.dtype, x2.dtype))
@@ -398,10 +402,11 @@ vecdot.support_native_out = True
 
 def vector_norm(
     x: torch.Tensor,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     py_normalized_vector = torch.linalg.vector_norm(x, ord, axis, keepdims, out=out)
@@ -419,28 +424,15 @@ vector_norm.support_native_out = True
 # ----- #
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def diag(
     x: torch.Tensor,
     /,
     *,
-    offset: int = 0,
-    padding_value: float = 0,
-    align: str = "RIGHT_LEFT",
-    num_rows: Optional[int] = None,
-    num_cols: Optional[int] = None,
+    k: int = 0,
     out: Optional[torch.Tensor] = None,
-):
-    if num_rows is None:
-        num_rows = len(x)
-    if num_cols is None:
-        num_cols = len(x)
-
-    ret = torch.ones((num_rows, num_cols))
-    ret *= padding_value
-
-    ret += torch.diag(x - padding_value, diagonal=offset)
-
-    return ret
+) -> torch.tensor:
+    return torch.diag(x, diagonal=k)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
@@ -452,7 +444,16 @@ def vander(
     increasing: bool = False,
     out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
-    return torch.vander(x, N=N, increasing=increasing)
+    # torch.vander hasn't been used as it produces 0 gradients
+    N = ivy.default(N, x.shape[-1])
+    start, stop, step = N - 1, -1, -1
+    if increasing:
+        start, stop, step = 0, N, 1
+    return torch.pow(
+        torch.transpose(torch.unsqueeze(x, 0), 0, 1),
+        torch.arange(start, stop, step),
+        out=out,
+    )
 
 
 def vector_to_skew_symmetric_matrix(

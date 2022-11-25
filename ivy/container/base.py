@@ -674,11 +674,19 @@ class ContainerBase(dict, abc.ABC):
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
+
+            def _found_in_key_chains(this_key_chain, key_chains):
+                if key_chains is None:
+                    return False
+                for key_chain in key_chains:
+                    if this_key_chain.startswith(key_chain):
+                        return True
+                return False
+
             if not assert_identical and not all(is_container) and any(is_container):
+                found = _found_in_key_chains(this_key_chain, key_chains)
                 if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                        this_key_chain not in key_chains and to_apply
-                    ):
+                    if (found and not to_apply) or (not found and to_apply):
                         if prune_unapplied:
                             continue
                         return_dict[key] = value0
@@ -697,7 +705,7 @@ class ContainerBase(dict, abc.ABC):
                         map_nests,
                         assert_identical,
                     )
-                    if ret is not None:
+                    if ret:
                         return_dict[key] = ret
                 elif any(isinstance(x, (list, tuple)) for x in values) and map_nests:
                     ret = ivy.nested_multi_map(
@@ -707,10 +715,9 @@ class ContainerBase(dict, abc.ABC):
                         continue
                     return_dict[key] = ret
                 else:
+                    found = _found_in_key_chains(this_key_chain, key_chains)
                     if key_chains is not None:
-                        if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply
-                        ):
+                        if (found and not to_apply) or (not found and to_apply):
                             if prune_unapplied:
                                 continue
                             return_dict[key] = value0
@@ -3016,6 +3023,9 @@ class ContainerBase(dict, abc.ABC):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
+    def __deepcopy__(self, memo):
+        return self.deep_copy()
+
     def map(
         self,
         func,
@@ -3608,6 +3618,9 @@ class ContainerBase(dict, abc.ABC):
             uniform_indent_wo_overflow = array_str_in.replace(
                 "\\n[", "\n" + local_indent_str + extra_indent + "["
             )
+            uniform_indent_wo_overflow_list = list(
+                filter(None, uniform_indent_wo_overflow.split("\\n"))
+            )
             uniform_indent = "\n".join(
                 [
                     local_indent_str + extra_indent + " " + s
@@ -3622,7 +3635,7 @@ class ContainerBase(dict, abc.ABC):
                         if (not s[0].isspace() and s[0] != '"')
                         else s
                     )
-                    for s in uniform_indent_wo_overflow.split("\\n")
+                    for s in uniform_indent_wo_overflow_list
                 ]
             )
             indented = uniform_indent
@@ -3797,9 +3810,6 @@ class ContainerBase(dict, abc.ABC):
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
-    def __len__(self):
-        return self.__getattr__("__len__")
-
     # noinspection PyProtectedMember
     def __getattr__(self, item, *args, **kwargs):
         try:
@@ -3813,7 +3823,7 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     # raise error
                     if not hasattr(v, item):
-                        raise IvyException(
+                        raise AttributeError(
                             "'{}' object has no attribute '{}'".format(
                                 type(v).__module__, item
                             )

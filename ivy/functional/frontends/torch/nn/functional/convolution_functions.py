@@ -1,4 +1,13 @@
 import ivy
+from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+
+
+def _div_rtn(x, y):
+    q = x / y
+    r = x % y
+    if (r != 0) and ((r < 0) != (y < 0)):
+        q = q - 1
+    return q
 
 
 def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False):
@@ -44,6 +53,7 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
         )
 
 
+@to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
 
@@ -75,6 +85,7 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
+@to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
 
@@ -104,6 +115,7 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
+@to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
 
@@ -143,14 +155,7 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-def _div_rtn(x, y):
-    q = x / y
-    r = x % y
-    if (r != 0) and ((r < 0) != (y < 0)):
-        q = q - 1
-    return q
-
-
+@to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
 
     kernel_size = ivy.repeat(ivy.asarray(kernel_size), 2)[:2]
@@ -271,6 +276,7 @@ def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
     return output
 
 
+@to_ivy_arrays_and_back
 def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
 
     output_size = ivy.repeat(ivy.asarray(output_size), 2)[:2]

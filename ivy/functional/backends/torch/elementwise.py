@@ -274,9 +274,9 @@ def divide(
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret = torch.div(x1, x2)
     if ivy.is_float_dtype(x1.dtype):
-        ret = ret.to(x1.dtype)
+        ret = ivy.astype(ret, x1.dtype, copy=False)
     else:
-        ret = ret.to(ivy.default_float_dtype(as_native=True))
+        ret = ivy.astype(ret, ivy.default_float_dtype(as_native=True), copy=False)
     return ret
 
 
@@ -656,7 +656,7 @@ def minimum(
     x2: Union[float, torch.Tensor],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -676,7 +676,7 @@ def maximum(
     x2: Union[float, torch.Tensor],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

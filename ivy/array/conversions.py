@@ -15,7 +15,7 @@ import ivy
 
 def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
-        return _to_native(x.data)
+        return x.data
     elif isinstance(x, ivy.Container):
         return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
     return x
@@ -38,9 +38,9 @@ def to_ivy(
     nested: bool = False,
     include_derived: Optional[Dict[type, bool]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
-    """Returns the input array converted to an ivy.Array instances if it is an array
-    type, otherwise the input is returned unchanged. If nested is set, the check is
-    applied to all nested leafs of tuples, lists and dicts contained within x.
+    """Returns the input array converted to an ivy.Array instance if it is a frontend
+    array type, otherwise the input is returned unchanged. If nested is set, the check
+    is applied to all nested leafs of tuples, lists and dicts contained within x.
 
     Parameters
     ----------
@@ -161,9 +161,13 @@ def args_to_native(
 
     """
     native_args = ivy.nested_map(
-        args, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+        args,
+        lambda x: _to_native(x, inplace=cont_inplace),
+        include_derived,
     )
     native_kwargs = ivy.nested_map(
-        kwargs, lambda x: _to_native(x, inplace=cont_inplace), include_derived
+        kwargs,
+        lambda x: _to_native(x, inplace=cont_inplace),
+        include_derived,
     )
     return native_args, native_kwargs

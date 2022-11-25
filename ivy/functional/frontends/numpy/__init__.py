@@ -4,7 +4,6 @@ from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
 
-# from .linalg.norms_and_other_numbers import trace
 from ivy import (
     int8,
     int16,
@@ -183,22 +182,21 @@ def promote_numpy_dtypes(
 
 @handle_exceptions
 def promote_types_of_numpy_inputs(
-    x1: Union[ivy.NativeArray, Number, Iterable[Number]],
-    x2: Union[ivy.NativeArray, Number, Iterable[Number]],
+    x1: Union[ivy.Array, Number, Iterable[Number]],
+    x2: Union[ivy.Array, Number, Iterable[Number]],
     /,
-) -> Tuple[ivy.NativeArray, ivy.NativeArray]:
+) -> Tuple[ivy.Array, ivy.Array]:
+    """
+    Promotes the dtype of the given ivy array inputs to a common dtype
+    based on numpy type promotion rules. While passing float or integer values or any
+    other non-array input to this function, it should be noted that the return will
+    be an array-like object. Therefore, outputs from this function should be used
+    as inputs only for those functions that expect an array-like or tensor-like objects,
+    otherwise it might give unexpected results.
+    """
     if (hasattr(x1, "dtype") and hasattr(x2, "dtype")) or (
         not hasattr(x1, "dtype") and not hasattr(x2, "dtype")
     ):
-        """
-        Promotes the dtype of the given ivy array inputs to a common dtype
-        based on numpy type promotion rules. While passing float or integer values or any
-        other non-array input to this function, it should be noted that the return will
-        be an array-like object. Therefore, outputs from this function should be used
-        as inputs only for those functions that expect an array-like or tensor-like objects,
-        otherwise it might give unexpected results.
-
-        """
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
         promoted = promote_numpy_dtypes(x1.dtype, x2.dtype)
@@ -248,7 +246,7 @@ from .linalg.matrix_and_vector_products import (
     outer,
     matmul,
     matrix_power,
-    # tensordot,
+    tensordot,
     # einsum,
     # einsum_path,
     # kron,
@@ -257,6 +255,6 @@ from .linalg.matrix_and_vector_products import (
 from .linalg.decompositions import cholesky, qr, svd
 
 
-from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm
+from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
 
 from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve

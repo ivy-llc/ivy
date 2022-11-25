@@ -80,7 +80,7 @@ def floats(
         Float.
     """
     # ToDo assert that if min or max can be represented
-    dtype = draw(dtype_helpers.get_dtypes("float", full=False))
+    dtype = draw(dtype_helpers.get_dtypes("float", full=False, prune_function=False))
     dtype = dtype[0]
     # ToDo add support for not applying safety factor
     min_value, max_value, abs_smallest_val = gh.apply_safety_factor(
@@ -170,7 +170,7 @@ def ints(
     ret
         Integer.
     """
-    dtype = draw(dtype_helpers.get_dtypes("integer", full=False))
+    dtype = draw(dtype_helpers.get_dtypes("integer", full=False, prune_function=False))
     if min_value is None and max_value is None:
         safety_factor_scale = "linear"
     if safety_factor_scale is not None:

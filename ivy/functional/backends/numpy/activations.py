@@ -1,12 +1,12 @@
 """Collection of Numpy activation functions, wrapped to fit Ivy syntax and signature."""
 
-from typing import Optional, Union
-
 # global
+from typing import Optional, Union
 import numpy as np
 
+# local
 import ivy
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
 try:
     from scipy.special import erf
@@ -14,8 +14,9 @@ except (ImportError, ModuleNotFoundError):
     erf = None
 
 
+@_scalar_output_to_0d_array
 def relu(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.asarray(np.maximum(x, 0, out=out, dtype=x.dtype))
+    return np.maximum(x, 0, out=out, dtype=x.dtype)
 
 
 relu.support_native_out = True
@@ -27,8 +28,9 @@ def leaky_relu(
     return np.asarray(np.where(x > 0, x, np.multiply(x, alpha)), x.dtype)
 
 
+@_scalar_output_to_0d_array
 def gelu(
-    x, /, *, approximate: bool = True, out: Optional[np.ndarray] = None
+    x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     ivy.assertions.check_exists(
         erf,
@@ -39,7 +41,7 @@ def gelu(
         ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
     else:
         ret = 0.5 * x * (1 + erf(x / np.sqrt(2)))
-    return np.asarray(ret.astype(x.dtype))
+    return ivy.astype(ret, x.dtype, copy=False)
 
 
 def sigmoid(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
@@ -58,7 +60,7 @@ def softmax(
 softmax.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def softplus(
     x: np.ndarray,
     /,
@@ -92,7 +94,7 @@ def softplus(
 softplus.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def log_softmax(
     x: np.ndarray, /, *, axis: Optional[int] = None, out: Optional[np.ndarray] = None
 ) -> np.ndarray:

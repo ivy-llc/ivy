@@ -53,7 +53,7 @@ class Device(str):
         if dev_str != "":
             ivy.assertions.check_elem_in_list(dev_str[0:3], ["gpu", "tpu", "cpu"])
             if dev_str != "cpu":
-                ivy.assertions.check_equal(dev_str[3], ":")
+                # ivy.assertions.check_equal(dev_str[3], ":")
                 ivy.assertions.check_true(
                     dev_str[4:].isnumeric(),
                     message="{} must be numeric".format(dev_str[4:]),
@@ -196,6 +196,7 @@ class Node(str):
 array_significant_figures_stack = list()
 array_decimal_values_stack = list()
 warning_level_stack = list()
+nan_policy_stack = list()
 warn_to_regex = {"all": "!.*", "ivy_only": "^(?!.*ivy).*$", "none": ".*"}
 
 
@@ -209,11 +210,12 @@ import threading
 
 
 # devices
+# ToDo: add gpu and tpu for valid devices when we test for them
 all_devices = ("cpu", "gpu", "tpu")
 
-valid_devices = all_devices
+valid_devices = ("cpu",)
 
-invalid_devices = ()
+invalid_devices = ("gpu", "tpu")
 
 
 # data types
@@ -505,6 +507,10 @@ from .backend_handler import (
     current_backend,
     get_backend,
     set_backend,
+    set_numpy_backend,
+    set_jax_backend,
+    set_tensorflow_backend,
+    set_torch_backend,
     unset_backend,
     backend_stack,
     choose_random_backend,
@@ -618,6 +624,58 @@ add_ivy_container_instance_methods(
     ],
     static=True,
 )
+
+
+class GlobalsDict(dict):
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+    __name__ = dict.__name__
+
+
+# defines ivy.globals attribute
+globals = GlobalsDict(
+    {
+        "backend_stack": backend_stack,
+        "default_device_stack": device.default_device_stack,
+        "valid_dtypes": valid_dtypes,
+        "valid_numeric_dtypes": valid_numeric_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_int_dtypes": valid_int_dtypes,
+        "valid_uint_dtypes": valid_uint_dtypes,
+        "valid_complex_dtypes": valid_complex_dtypes,
+        "valid_devices": valid_devices,
+        "invalid_dtypes": invalid_dtypes,
+        "invalid_numeric_dtypes": invalid_numeric_dtypes,
+        "invalid_int_dtypes": invalid_int_dtypes,
+        "invalid_float_dtypes": invalid_float_dtypes,
+        "invalid_uint_dtypes": invalid_uint_dtypes,
+        "invalid_complex_dtypes": invalid_complex_dtypes,
+        "invalid_devices": invalid_devices,
+        "array_significant_figures_stack": array_significant_figures_stack,
+        "array_decimal_values_stack": array_decimal_values_stack,
+        "warning_level_stack": warning_level_stack,
+        "queue_timeout_stack": general.queue_timeout_stack,
+        "array_mode_stack": general.array_mode_stack,
+        "shape_array_mode_stack": general.shape_array_mode_stack,
+        "nestable_mode_stack": general.nestable_mode_stack,
+        "exception_trace_mode_stack": general.exception_trace_mode_stack,
+        "default_dtype_stack": data_type.default_dtype_stack,
+        "default_float_dtype_stack": data_type.default_float_dtype_stack,
+        "default_int_dtype_stack": data_type.default_int_dtype_stack,
+        "default_uint_dtype_stack": data_type.default_uint_dtype_stack,
+        "nan_policy_stack": nan_policy_stack,
+    }
+)
+
+
+def set_global_attr(attr_name, attr_val):
+    setattr(globals, attr_name, attr_val)
+
+
+def del_global_attr(attr_name):
+    delattr(globals, attr_name)
+
 
 backend = "none"
 backend_version = "none"
@@ -794,3 +852,48 @@ def warn(warning_message, stacklevel=0):
     warn_level = warning_level()
     warnings.filterwarnings("ignore", module=warn_to_regex[warn_level])
     warnings.warn(warning_message, stacklevel=stacklevel)
+
+
+# nan policy #
+
+
+def get_nan_policy():
+    """Summary.
+
+    Returns
+    -------
+    ret
+        current nan policy, default is "nothing"
+
+    """
+    global nan_policy_stack
+    if not nan_policy_stack:
+        ret = "nothing"
+    else:
+        ret = nan_policy_stack[-1]
+    return ret
+
+
+def set_nan_policy(warn_level):
+    """Summary.
+
+    Parameters
+    ----------
+    nan_policy
+        string for the nan policy to be set, one of
+        "nothing", "warns", "raise_exception"
+
+    """
+    global nan_policy_stack
+    if warn_level not in ["nothing", "warns", "raise_exception"]:
+        raise ivy.exceptions.IvyException(
+            "nan_policy must be one of 'nothing', 'warns', 'raise_exception'"
+        )
+    nan_policy_stack.append(warn_level)
+
+
+def unset_nan_policy():
+    """"""
+    global nan_policy_stack
+    if nan_policy_stack:
+        nan_policy_stack.pop(-1)

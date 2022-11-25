@@ -11,6 +11,8 @@ from ivy.functional.ivy.random import (
     _randint_check_dtype_and_bound,
     _check_valid_scale,
 )
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 # Extra #
 # ------#
@@ -56,6 +58,7 @@ def random_normal(
 random_normal.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
 def multinomial(
     population_size: int,
     num_samples: int,
