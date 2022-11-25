@@ -4322,7 +4322,10 @@ class ContainerWithElementwise(ContainerBase):
 	
 	Examples
         --------
+
         Using :code:`ivy.Container` input:
+
+
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
                               b=ivy.array([-0., -4, float('+inf')]),\
                               c=ivy.array([4., 4.4, 1.]))
@@ -4334,7 +4337,10 @@ class ContainerWithElementwise(ContainerBase):
             c: ivy.array([2., 2.1375, 0.])
         }
 
+
+
         """
+
         return ContainerBase.multi_map_in_static_method(
             "log2",
             x,

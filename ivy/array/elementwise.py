@@ -1230,6 +1230,7 @@ class ArrayWithElementwise(abc.ABC):
 
     def log2(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         """
+
         ivy.Array instance method variant of ivy.log2.
         This method simply wraps the function, and so the docstring for
         ivy.log2 also applies to this method with minimal changes.
@@ -1252,22 +1253,27 @@ class ArrayWithElementwise(abc.ABC):
 	Examples
         --------
 
+
         Using :code:`ivy.Array` instance method:
+
 	
 	>>> x = ivy.array(10)
         >>> y = x.log2()
         >>> print(y)
         ivy.array(3.322)
+
 	
         >>> x = ivy.array([4.0, 1, -0.0, -5.0])
         >>> y = x.log2()
         >>> print(y)
         ivy.array([2., 0., -inf, nan])
 
+
         >>> x = ivy.array([float('nan'), -4.0, -0.0, 1.0, 4.0, float('+inf')])
         >>> y = x.log2()
         >>> print(y)
         ivy.array([nan, nan, -inf, 0., 2., inf])
+
 
         >>> x = ivy.array([[float('nan'), 1, 4.0, float('+inf')],\
                            [+0, -1.0, -4, float('-inf')]])
@@ -1277,7 +1283,9 @@ class ArrayWithElementwise(abc.ABC):
                    [-inf, nan, nan, nan]])
 
 
+
         """
+
         return ivy.log2(self._data, out=out)
 
     def log10(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
