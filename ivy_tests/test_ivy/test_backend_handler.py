@@ -11,12 +11,12 @@ try:
     import torch 
 except ImportError:
     torch = types.SimpleNamespace()
-    torch.tensor =  lambda x : x
+    torch.tensor = lambda x : x
 try:
     import jax.numpy as jnp
 except ImportError:
     jnp = types.SimpleNamespace()
-    jnp.array =  lambda x : x
+    jnp.array = lambda x : x
 
 
 import numpy as np

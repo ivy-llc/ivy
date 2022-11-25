@@ -20,12 +20,16 @@ import ivy
 from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
 
+
 def empty_func(*args, **kwargs):
     return None
 
+
 try:
-    from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
-except:
+    from ivy.functional.backends.jax.general import (
+        is_native_array as is_jax_native_array,
+    )
+except ImportError:
     is_jax_native_array = empty_func
 
 
@@ -39,7 +43,7 @@ try:
     from ivy.functional.backends.numpy.general import (
         is_native_array as is_numpy_native_array,
     )
-except:
+except ImportError:
     is_numpy_native_array = empty_func
 
 
@@ -47,7 +51,7 @@ try:
     from ivy.functional.backends.tensorflow.general import (
         is_native_array as is_tensorflow_native_array,
     )
-except:
+except ImportError:
     is_tensorflow_native_array = empty_func
 
 
@@ -55,9 +59,8 @@ try:
     from ivy.functional.backends.torch.general import (
         is_native_array as is_torch_native_array,
     )
-except:
+except ImportError:
     is_torch_native_array = empty_func
-
 
 
 from .assertions import (

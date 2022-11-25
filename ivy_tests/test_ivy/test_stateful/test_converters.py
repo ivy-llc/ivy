@@ -5,7 +5,7 @@ import pytest
 
 try:
     import torch.nn
-except:
+except ImportError:
     import types
     torch = types.SimpleNamespace()
     torch.nn = types.SimpleNamespace()
@@ -13,14 +13,14 @@ except:
 
 try:
     import haiku as hk
-except:
+except ImportError:
     import types
     hk = types.SimpleNamespace()
     hk.Module = types.SimpleNamespace
 
 try:
     import jax.numpy as jnp
-except:
+except ImportError:
     import types
     jnp = types.SimpleNamespace()
 

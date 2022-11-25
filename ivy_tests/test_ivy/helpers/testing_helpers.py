@@ -133,7 +133,7 @@ def _generate_shared_test_flags(
 
 def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_name: str):
     supported_device_dtypes = {}
-    backends = available_frameworks # TODO temporary
+    backends = available_frameworks  # TODO temporary
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)

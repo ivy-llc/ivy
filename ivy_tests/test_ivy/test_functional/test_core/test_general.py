@@ -10,7 +10,7 @@ from collections.abc import Sequence
 
 try:
     import torch.multiprocessing as multiprocessing
-except:
+except ImportError:
     import types
     multiprocessing = types.SimpleNamespace()
 
@@ -24,7 +24,6 @@ try:
     import jax.numpy as jnp
 except ImportError:
     jnp = types.SimpleNamespace()
-
 
 
 try:
