@@ -125,9 +125,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False

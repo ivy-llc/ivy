@@ -144,6 +144,11 @@ class Tensor:
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
+    def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.zeros(
+            size, dtype=dtype, device=device, requires_grad=requires_grad
+        )
+
     def to(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[0], ivy.Dtype):
@@ -154,7 +159,7 @@ class Tensor:
                 )
         else:
             return ivy.asarray(
-                self.data, device=kwargs['device'], dtype=kwargs['dtype'], copy=False
+                self.data, device=kwargs["device"], dtype=kwargs["dtype"], copy=False
             )
 
     def arctan(self):

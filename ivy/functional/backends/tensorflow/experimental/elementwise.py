@@ -4,6 +4,7 @@ from .. import backend_version
 
 
 # local
+import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
 
@@ -211,10 +212,11 @@ def logaddexp2(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    x = 2**x1 + 2**x2
-    numerator = tf.math.log(x)
-    denominator = tf.math.log(tf.constant(2, dtype=numerator.dtype))
-    return numerator / denominator
+    x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    dtype = x1.dtype
+    x1 = tf.cast(x1, tf.float64)
+    x2 = tf.cast(x2, tf.float64)
+    return ivy.log2(ivy.exp2(x1) + ivy.exp2(x2)).astype(dtype)
 
 
 def signbit(

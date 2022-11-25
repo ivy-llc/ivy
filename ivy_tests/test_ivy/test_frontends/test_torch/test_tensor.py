@@ -1362,31 +1362,26 @@ def test_torch_instance_to_with_device(
 
 @st.composite
 def _to_helper(draw):
-    dtype_x = draw(helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
-    ))
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+        )
+    )
     input_dtype, x = dtype_x
-    arg = draw(st.sampled_from(['tensor', 'dtype', 'device']))
-    if arg == 'tensor':
+    arg = draw(st.sampled_from(["tensor", "dtype", "device"]))
+    if arg == "tensor":
         method_num_positional_args = 1
-        method_all_as_kwargs_np = {
-            "other": x[1]
-        }
-    elif arg == 'dtype':
+        method_all_as_kwargs_np = {"other": x[1]}
+    elif arg == "dtype":
         method_num_positional_args = 1
         dtype = draw(helpers.get_dtypes("valid", full=False))
-        method_all_as_kwargs_np = {
-            "dtype": dtype
-        }
+        method_all_as_kwargs_np = {"dtype": dtype}
     else:
         method_num_positional_args = 0
-        device = draw(st.sampled_from([torch.device('cuda'), torch.device('cpu')]))
+        device = draw(st.sampled_from([torch.device("cuda"), torch.device("cpu")]))
         dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
-        method_all_as_kwargs_np = {
-            "dtype": dtype,
-            "device": device
-        }
+        method_all_as_kwargs_np = {"dtype": dtype, "device": device}
     return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
 
 
