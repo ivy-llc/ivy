@@ -1927,15 +1927,15 @@ class ContainerWithManipulationExperimental(ContainerBase):
 
     @staticmethod
     def static_hsplit(
-            ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-            indices_or_sections: Union[int, Tuple[int]],
-            /,
-            *,
-            key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-            to_apply: bool = True,
-            prune_unapplied: bool = False,
-            map_sequences: bool = False,
-            out: Optional[ivy.Container] = None,
+        ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.hsplit. This method simply wraps
@@ -2008,11 +2008,11 @@ class ContainerWithManipulationExperimental(ContainerBase):
         )
 
     def hsplit(
-            self: ivy.Container,
-            indices_or_sections: Union[int, Tuple[int]],
-            /,
-            *,
-            out: Optional[ivy.Container] = None,
+        self: ivy.Container,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.hsplit. This method simply
         wraps the function, and so the docstring for ivy.hsplit also applies to this
