@@ -162,3 +162,48 @@ def test_numpy_std(
         where=where,
         test_values=False,
     )
+
+
+#average
+@handle_frontend_test(
+    fn_tree="numpy.average",
+    dtype_and_a=statistical_dtype_values(function="average"),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.average"
+    ),
+    dtype_and_x=statistical_dtype_values(function="average"),
+    keep_dims=st.booleans(),
+)
+def test_numpy_average(
+        dtype_and_a,
+        as_variable,
+        with_out,
+        native_array,
+        num_positional_args,
+        dtype_and_x,
+        frontend,
+        fn_tree,
+        keep_dims,
+):
+    input_dtype, a, axis = dtype_and_a
+
+    input_dtypes, xs, axiss = dtype_and_x
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        native_array_flags=native_array,
+        num_positional_args=num_positional_args,
+        a=a[0],
+        weights=xs[0],
+        axis=axis,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        keepdims=keep_dims,
+        test_values=False,
+    )
+
