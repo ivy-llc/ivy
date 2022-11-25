@@ -294,7 +294,7 @@ def test_vector_to_skew_symmetric_matrix(
         max_value=20,
         shape=helpers.ints(min_value=2, max_value=8).map(lambda x: tuple([x, x])),
     ),
-    n=helpers.ints(min_value=1, max_value=6),
+    n=helpers.ints(min_value=-6, max_value=6),
 )
 def test_matrix_power(
     *,
