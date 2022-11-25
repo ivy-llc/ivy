@@ -1,5 +1,4 @@
 # global
-import pytest
 from hypothesis import strategies as st
 
 # local
@@ -188,8 +187,6 @@ def test_numpy_average(
     input_dtype, a, axis = dtype_and_a
 
     input_dtypes, xs, axiss = dtype_and_x
-    with pytest.raises(ZeroDivisionError):
-        print("ZeroDivisionError")
 
     if isinstance(axis, tuple):
         axis = axis[0]
