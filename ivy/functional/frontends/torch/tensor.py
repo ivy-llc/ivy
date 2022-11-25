@@ -274,6 +274,9 @@ class Tensor:
         self.data = self.pow(other)
         return self.data
 
+    def matmul(self, tensor2):
+        return torch_frontend.matmul(self.data, tensor2)
+
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)
 
