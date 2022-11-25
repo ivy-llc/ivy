@@ -23,6 +23,8 @@ class DeviceArray:
     # Instance Methods #
     # ---------------- #
 
+    def __all__(self, other):
+        return jax_frontend.numpy.all(self, other)
     def __add__(self, other):
         return jax_frontend.numpy.add(self, other)
 
