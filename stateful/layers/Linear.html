@@ -146,41 +146,6 @@
              
   <section id="linear">
 <h1>Linear<a class="headerlink" href="#linear" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.layers.Linear">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Linear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_bias=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Linear" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.layers.Linear.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_initializer=&lt;ivy.stateful.initializers.Zeros</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_bias=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Linear.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Linear.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>Linear layer, also referred to as dense or fully connected. The layer
-receives tensors with input_channels last dimension and returns a new tensor
-with output_channels last dimension, following matrix multiplication with the
-weight matrix and addition with the bias vector.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> – Number of input channels for the layer.</p></li>
-<li><p><strong>output_channels</strong> – Number of output channels for the layer.</p></li>
-<li><p><strong>weight_initializer</strong> – Initializer for the weights. Default is GlorotUniform.</p></li>
-<li><p><strong>bias_initializer</strong> – Initializer for the bias. Default is Zeros.</p></li>
-<li><p><strong>with_bias</strong> – Whether or not to include a bias term, default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
-etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> – the variables for the linear layer, as a container, constructed internally
-by default.</p></li>
-<li><p><strong>dtype</strong> – <dl class="simple">
-<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
