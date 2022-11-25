@@ -88,7 +88,10 @@ def _array_and_axes_permute_helper(
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     where = kwargs["where"]
-    kwargs["where"] = None
+    if kwargs["frontend"] == "numpy":
+        kwargs["where"] = True
+    else:
+        kwargs["where"] = None
     kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
