@@ -49,6 +49,9 @@ class EagerTensor:
                     f"{shape}."
                 )
 
+    def expand_dims(self, axis):
+        return tf_frontend.expand_dims(self.data, axis=axis)
+
     def __add__(self, y, name="add"):
         return y.__radd__(self.data)
 
