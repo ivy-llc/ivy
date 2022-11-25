@@ -187,7 +187,6 @@ def test_fmax(
 
 
 # trapz
-# TODO: add container methods
 @st.composite
 def _either_x_dx(draw):
     rand = (draw(st.integers(min_value=0, max_value=1)),)
@@ -386,8 +385,8 @@ def _get_dtype_values_axis_for_count_nonzero(
 @handle_test(
     fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
-        in_available_dtypes="numeric",
-        out_available_dtypes="numeric",
+        in_available_dtypes="integer",
+        out_available_dtypes="integer",
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
@@ -423,7 +422,7 @@ def test_count_nonzero(
         a=a[0],
         axis=axis,
         keepdims=keepdims,
-        dtype=i_o_dtype[1],
+        dtype=i_o_dtype[1][0],
     )
 
 
