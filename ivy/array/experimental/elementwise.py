@@ -725,6 +725,37 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
+    def diff(
+        self: Union[ivy.Array, int, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+        Parameters
+        ----------
+        self
+            array-like input.
+        out
+            optional output array, for writing the result to.
+        Returns
+        -------
+        ret
+            Returns the n-th discrete difference along the given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ivy.diff(self._data, out=out)
+
     def fix(
         self: ivy.Array,
         /,
