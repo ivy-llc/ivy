@@ -136,11 +136,11 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    if kwargs["rtol"] is not None:
+    if "rtol" in kwargs.keys():
         rtol = kwargs["rtol"]
     else:
         rtol = 1e-4
-    if kwargs["atol"] is not None:
+    if "atol" in kwargs.keys():
         atol = kwargs["atol"]
     else:
         atol = 1e-6
