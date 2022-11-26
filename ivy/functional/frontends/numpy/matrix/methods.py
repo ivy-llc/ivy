@@ -22,9 +22,7 @@ class matrix:
         else:
             raise ivy.exceptions.IvyException("data must be a 2D array, list, or str")
         self._dtype = self._data.dtype
-        self.shape = ivy.shape(self._data)
-        self.size = self.shape[0] * self.shape[1]
-        self.ndim = len(self.shape)
+        self._shape = ivy.shape(self._data)
 
     def _process_str_data(self, data, dtype):
         is_float = "." in data
@@ -71,6 +69,18 @@ class matrix:
     @property
     def dtype(self):
         return self._dtype
+
+    @property
+    def ndim(self):
+        return len(self._shape)
+
+    @property
+    def shape(self):
+        return self._shape
+
+    @property
+    def size(self):
+        return self._shape[0] * self._shape[1]
 
     # Getters #
     # ------- #

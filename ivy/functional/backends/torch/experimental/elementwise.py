@@ -124,8 +124,9 @@ def count_nonzero(
     def _dtype_count_nonzero(a, axis, dtype):
         if dtype is None:
             return torch.count_nonzero(a, dim=axis)
-        return torch.tensor(torch.count_nonzero(a, dim=axis),
-                            dtype=ivy.as_native_dtype(dtype))
+        return torch.tensor(
+            torch.count_nonzero(a, dim=axis), dtype=ivy.as_native_dtype(dtype)
+        )
 
     x = _dtype_count_nonzero(a, axis, dtype)
     if not keepdims:
@@ -241,6 +242,19 @@ def logaddexp2(
 
 
 logaddexp2.support_native_out = True
+
+
+def diff(
+    x: Union[torch.Tensor, int, float, list, tuple],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None
+) -> torch.Tensor:
+    x = x if type(x) == torch.Tensor else torch.Tensor(x)
+    return torch.diff(x, out=out)
+
+
+gcd.support_native_out = True
 
 
 def signbit(
