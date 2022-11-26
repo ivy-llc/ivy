@@ -20,7 +20,6 @@ except ImportError:
     jnp = types.SimpleNamespace()
     jnp.array = lambda x : x
 
-
 import numpy as np
 
 # local
@@ -39,6 +38,7 @@ available_array_types_class = [
 available_array_types_input = [
         ("numpy", np.array(3.0)),
     ]
+    
 if "tensorflow" in available_frameworks:
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
     available_array_types_class.append(("tensorflow", "<class 'tensorflow.python.framework.ops.EagerTensor'>"))
@@ -51,17 +51,6 @@ if "jax" in available_frameworks:
 if "torch" in available_frameworks:
     available_array_types_input.append(("torch", torch.tensor([3.0])))
     available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
-
-
-
-for tuple_index, tuple in enumerate(available_array_types_input):
-    if tuple[0] not in available_frameworks:
-        del available_array_types_input[tuple_index]
-        del available_array_types_class[tuple_index]
-
-
-
-
 
 
 @pytest.mark.parametrize(
