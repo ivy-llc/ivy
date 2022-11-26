@@ -376,3 +376,4 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
+    ndim = dim
