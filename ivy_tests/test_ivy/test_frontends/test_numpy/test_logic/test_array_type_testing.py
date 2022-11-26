@@ -151,4 +151,3 @@ def test_numpy_isnan(
         dtype=dtype,
         subok=True,
     )
-
