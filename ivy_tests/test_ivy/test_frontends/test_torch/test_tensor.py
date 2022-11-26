@@ -2148,23 +2148,16 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
 
 
 # argsort
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.argsort",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=tuple(
-            set(ivy_np.valid_numeric_dtypes).intersection(
-                set(ivy_torch.valid_numeric_dtypes)
-            ),
-        ),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
         min_axis=-1,
         max_axis=0,
-    ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.argsort"
     ),
     descending=st.booleans(),
 )
