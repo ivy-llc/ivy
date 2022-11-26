@@ -1,8 +1,15 @@
 # local
-
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.func_wrapper import with_unsupported_dtypes
+import weakref
+
+
+# Initialisation workaround
+def _Tensor(array):
+    a = torch_frontend.Tensor(0)
+    a.ivyArray = array
+    return a
 
 
 class Tensor:
@@ -28,9 +35,7 @@ class Tensor:
 
     @ivyArray.setter
     def ivyArray(self, array):
-        if ivy.is_native_array(array):
-            array = ivy.Array(array)
-        self._ivyArray = array
+        self._ivyArray = ivy.array(array) if not isinstance(array, ivy.Array) else array
 
     # Instance Methods #
     # ---------------- #
@@ -41,61 +46,60 @@ class Tensor:
         return torch_frontend.add(self._ivyArray, other, alpha=alpha)
 
     def add_(self, other, *, alpha=1):
-        self._ivyArray = self.add(other, alpha=alpha)
-        return self._ivyArray
+        self._ivyArray = self.add(other, alpha=alpha).ivyArray
+        return self
 
     def asin(self):
         return torch_frontend.asin(self._ivyArray)
 
     def asin_(self):
-        self._ivyArray = self.asin()
-        return self._ivyArray
+        self._ivyArray = self.asin().ivyArray
+        return self
 
     def sin(self):
         return torch_frontend.sin(self._ivyArray)
 
     def sin_(self):
-        self._ivyArray = self.sin()
-        return self._ivyArray
+        self._ivyArray = self.sin().ivyArray
+        return self
 
     def sinh(self):
         return torch_frontend.sinh(self._ivyArray)
 
     def sinh_(self):
-        self._ivyArray = self.sinh()
-        return self._ivyArray
+        self._ivyArray = self.sinh().ivyArray
+        return self
 
     def cos(self):
         return torch_frontend.cos(self._ivyArray)
 
     def cos_(self):
-        self._ivyArray = self.cos()
-        return self._ivyArray
+        self._ivyArray = self.cos().ivyArray
+        return self
 
     def cosh(self):
         return torch_frontend.cosh(self._ivyArray)
 
     def cosh_(self):
-        self._ivyArray = self.cosh()
-        return self._ivyArray
+        self._ivyArray = self.cosh().ivyArray
+        return self
 
     def arcsin(self):
         return torch_frontend.arcsin(self._ivyArray)
 
     def arcsin_(self):
-        self._ivyArray = self.arcsin()
-        return self._ivyArray
+        self._ivyArray = self.arcsin().ivyArray
+        return self
 
     def atan(self):
         return torch_frontend.atan(self._ivyArray)
 
     def atan_(self):
-        self._ivyArray = self.atan()
-        return self._ivyArray
+        self._ivyArray = self.atan().ivyArray
+        return self
 
     def view(self, shape):
-        self._ivyArray = torch_frontend.reshape(self._ivyArray, shape)
-        return self._ivyArray
+        return torch_frontend.ViewTensor(weakref.ref(self), shape=shape)
 
     def float(self, memory_format=None):
         return ivy.astype(self._ivyArray, ivy.float32)
@@ -104,36 +108,36 @@ class Tensor:
         return torch_frontend.asinh(self._ivyArray)
 
     def asinh_(self):
-        self._ivyArray = self.asinh()
-        return self._ivyArray
+        self._ivyArray = self.asinh().ivyArray
+        return self
 
     def tan(self):
         return torch_frontend.tan(self._ivyArray)
 
     def tan_(self):
-        self._ivyArray = self.tan()
-        return self._ivyArray
+        self._ivyArray = self.tan().ivyArray
+        return self
 
     def tanh(self):
         return torch_frontend.tanh(self._ivyArray)
 
     def tanh_(self):
-        self._ivyArray = self.tanh()
-        return self._ivyArray
+        self._ivyArray = self.tanh().ivyArray
+        return self
 
     def atanh(self):
         return torch_frontend.atanh(self._ivyArray)
 
     def atanh_(self):
-        self._ivyArray = self.atanh()
-        return self._ivyArray
+        self._ivyArray = self.atanh().ivyArray
+        return self
 
     def arctanh(self):
         return torch_frontend.arctanh(self._ivyArray)
 
     def arctanh_(self):
-        self._ivyArray = self.arctanh()
-        return self._ivyArray
+        self._ivyArray = self.arctanh().ivyArray
+        return self
 
     def log(self):
         return ivy.log(self._ivyArray)
@@ -148,14 +152,14 @@ class Tensor:
         return torch_frontend.abs(self._ivyArray)
 
     def abs_(self):
-        self._ivyArray = self.abs()
-        return self._ivyArray
+        self._ivyArray = self.abs().ivyArray
+        return self
 
     def bitwise_and(self, other):
         return torch_frontend.bitwise_and(self._ivyArray, other)
 
     def contiguous(self, memory_format=None):
-        return self._ivyArray
+        return _Tensor(self.ivyArray)
 
     def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.ones(
@@ -191,22 +195,22 @@ class Tensor:
 
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16")}, "torch")
     def arctan_(self):
-        self._ivyArray = self.arctan()
-        return self._ivyArray
+        self._ivyArray = self.arctan().ivyArray
+        return self
 
     def acos(self):
         return torch_frontend.acos(self._ivyArray)
 
     def acos_(self):
-        self._ivyArray = self.acos()
-        return self._ivyArray
+        self._ivyArray = self.acos().ivyArray
+        return self
 
     def arccos(self):
         return torch_frontend.arccos(self._ivyArray)
 
     def arccos_(self):
-        self._ivyArray = self.arccos()
-        return self._ivyArray
+        self._ivyArray = self.arccos().ivyArray
+        return self
 
     def new_tensor(
         self,
@@ -221,7 +225,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        return Tensor(_data)
+        return _Tensor(_data)
 
     def view_as(self, other):
         return self.view(other.shape)
@@ -236,8 +240,8 @@ class Tensor:
         return torch_frontend.unsqueeze(self, dim)
 
     def unsqueeze_(self, dim):
-        self._ivyArray = self.unsqueeze(dim)
-        return self._ivyArray
+        self._ivyArray = self.unsqueeze(dim).ivyArray
+        return self
 
     def dim(self):
         return self._ivyArray.ndim
@@ -256,7 +260,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        return Tensor(_data)
+        return _Tensor(_data)
 
     def new_empty(
         self,
@@ -271,7 +275,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        return Tensor(_data)
+        return _Tensor(_data)
 
     def unfold(self, dimension, size, step):
         slices = []
@@ -295,8 +299,21 @@ class Tensor:
         return ivy.pow(self._ivyArray, other)
 
     def pow_(self, other):
-        self._ivyArray = self.pow(other)
-        return self._ivyArray
+        self._ivyArray = self.pow(other).ivyArray
+        return self
+
+    def size(self, dim=None):
+        shape = ivy.shape(self._ivyArray, as_array=True)
+        if dim is None:
+            return shape
+        else:
+            try:
+                return shape[dim]
+            except IndexError:
+                raise IndexError(
+                    "Dimension out of range (expected to be in range of [{}, {}], "
+                    "but got {}".format(len(shape), len(shape) - 1, dim)
+                )
 
     def matmul(self, tensor2):
         return torch_frontend.matmul(self._ivyArray, tensor2)
@@ -317,29 +334,51 @@ class Tensor:
         return torch_frontend.add(self._ivyArray, other, alpha=alpha)
 
     def __mod__(self, other):
-        return torch_frontend.remainder(self, other)
+        return torch_frontend.remainder(self._ivyArray, other)
 
     def __long__(self, memory_format=None):
-        return Tensor(ivy.astype(self._ivyArray, ivy.int64))
+        return _Tensor(ivy.astype(self._ivyArray, ivy.int64))
 
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivyArray, query)
-        return Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return _Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __radd__(self, other, *, alpha=1):
-        return torch_frontend.add(torch_frontend.mul(other, alpha), self, alpha=1)
+        return torch_frontend.add(
+            torch_frontend.mul(other, alpha), self._ivyArray, alpha=1
+        )
 
     def __mul__(self, other):
-        return torch_frontend.mul(self, other)
+        return torch_frontend.mul(self._ivyArray, other)
 
     def __rmul__(self, other):
-        return torch_frontend.mul(other, self)
+        return torch_frontend.mul(other, self._ivyArray)
 
     def __sub__(self, other, *, alpha=1):
-        return torch_frontend.subtract(self, other, alpha=alpha)
+        return torch_frontend.subtract(self._ivyArray, other, alpha=alpha)
 
     def __truediv__(self, other, *, rounding_mode=None):
-        return torch_frontend.div(self, other, rounding_mode=rounding_mode)
+        return torch_frontend.div(self._ivyArray, other, rounding_mode=rounding_mode)
+
+    def __iadd__(self, other, *, alpha=1):
+        self._ivyArray = self.__add__(other, alpha=alpha).ivyArray
+        return self
+
+    def __imod__(self, other):
+        self._ivyArray = self.__mod__(other).ivyArray
+        return self
+
+    def __imul__(self, other):
+        self._ivyArray = self.__mul__(other).ivyArray
+        return self
+
+    def __isub__(self, other, *, alpha=1):
+        self._ivyArray = self.__sub__(other, alpha=alpha).ivyArray
+        return self
+
+    def __itruediv__(self, other, *, rounding_mode=None):
+        self._ivyArray = self.__truediv__(other, rounding_mode=rounding_mode).ivyArray
+        return self
 
     # Method aliases
     absolute, absolute_ = abs, abs_
