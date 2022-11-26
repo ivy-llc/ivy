@@ -101,7 +101,7 @@ def test_numpy_ndarray_reshape(
         method_name="reshape",
     )
 
-#astype
+
 @handle_frontend_method(
     method_tree="numpy.ndarray.astype",
     dtype_and_x=helpers.dtype_and_values(
@@ -136,6 +136,7 @@ def test_numpy_ndarray_astype(
         class_name="ndarray",
         method_name="astype",
     )
+
     
 @handle_frontend_method(
     method_tree="numpy.ndarray.transpose",
