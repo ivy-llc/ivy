@@ -21,7 +21,6 @@ def cos(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.cos(x, out=out)
     if ivy.is_array(where):
@@ -41,7 +40,6 @@ def sin(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.sin(x, out=out)
     if ivy.is_array(where):
@@ -61,7 +59,6 @@ def tan(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.tan(x, out=out)
     if ivy.is_array(where):
@@ -81,7 +78,6 @@ def arcsin(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.asin(x, out=out)
     if ivy.is_array(where):
@@ -101,7 +97,6 @@ def arccos(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.acos(x, out=out)
     if ivy.is_array(where):
@@ -121,7 +116,6 @@ def arctan(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.atan(x, out=out)
     if ivy.is_array(where):
@@ -141,7 +135,6 @@ def deg2rad(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
     signature=None,
     extobj=None,
 ):
@@ -163,7 +156,6 @@ def rad2deg(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.rad2deg(x, out=out)
     if ivy.is_array(where):
