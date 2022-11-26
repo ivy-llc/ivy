@@ -383,7 +383,3 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
-
-
-# Tensor (alias)
-tensor = Tensor
