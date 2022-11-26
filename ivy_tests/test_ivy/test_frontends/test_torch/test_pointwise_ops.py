@@ -1957,9 +1957,7 @@ def test_torch_pow(
 @handle_frontend_test(
     fn_tree="torch.logaddexp",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
-        shared_dtype=True
+        available_dtypes=helpers.get_dtypes("float"), num_arrays=2, shared_dtype=True
     ),
 )
 def test_torch_logaddexp(
@@ -1984,7 +1982,7 @@ def test_torch_logaddexp(
         fn_tree=fn_tree,
         on_device=on_device,
         x1=x[0],
-        x2=x[1]
+        x2=x[1],
     )
 
 
