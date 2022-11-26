@@ -5,13 +5,13 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 
 
 @to_ivy_arrays_and_back
-def add(x, y, name=None):
+def add(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
 
 
 @to_ivy_arrays_and_back
-def argmax(input, axis, output_type=None, name=None):
+def argmax(input, axis, output_type=None):
     if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
@@ -19,14 +19,13 @@ def argmax(input, axis, output_type=None, name=None):
 
 
 @to_ivy_arrays_and_back
-def asinh(x, name="asinh"):
+def asinh(x):
     return ivy.asinh(x)
 
 
 @to_ivy_arrays_and_back
 def confusion_matrix(
-    labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
-):
+    labels, predictions, num_classes=None, weights=None, dtype=ivy.int32):
     labels = ivy.astype(
         ivy.squeeze(ivy.array(labels), axis=None), ivy.int64, copy=False
     )
@@ -74,7 +73,7 @@ def confusion_matrix(
 
 
 @to_ivy_arrays_and_back
-def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
+def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64):
     x = ivy.array(input)
     if keepdims is None:
         keepdims = False
@@ -90,26 +89,26 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     )
 
 
-def cumprod(x, axis, exclusive=False, reverse=False, name=None):
+def cumprod(x, axis, exclusive=False, reverse=False):
     return ivy.astype(
         ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
-def cumsum(x, axis, exclusive=False, reverse=False, name=None):
+def cumsum(x, axis, exclusive=False, reverse=False):
     return ivy.astype(
         ivy.cumsum(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
     )
 
 
 @to_ivy_arrays_and_back
-def divide(x, y, name=None):
+def divide(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.divide(x, y)
 
 
 @to_ivy_arrays_and_back
-def divide_no_nan(x, y, name="divide_no_nan"):
+def divide_no_nan(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
@@ -119,7 +118,7 @@ def divide_no_nan(x, y, name="divide_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def maximum(x, y, name=None):
+def maximum(x, y):
     return ivy.maximum(x, y)
 
 
@@ -129,7 +128,7 @@ def erfcinv(x, name="erfcinv"):
 
 
 @to_ivy_arrays_and_back
-def is_non_decreasing(x, name="is_non_decreasing"):
+def is_non_decreasing(x):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
@@ -138,7 +137,7 @@ def is_non_decreasing(x, name="is_non_decreasing"):
 
 
 @to_ivy_arrays_and_back
-def is_strictly_increasing(x, name="is_strictly_increasing"):
+def is_strictly_increasing(x):
     if ivy.array(x).size < 2:
         return ivy.array(True)
     if ivy.array(x).size == 2:
@@ -147,28 +146,28 @@ def is_strictly_increasing(x, name="is_strictly_increasing"):
 
 
 @to_ivy_arrays_and_back
-def log_sigmoid(x, name=None):
+def log_sigmoid(x):
     return -ivy.softplus(-x)
 
 
 @to_ivy_arrays_and_back
-def logical_and(x, y, name="LogicalAnd"):
+def logical_and(x, y):
     return ivy.logical_and(x, y)
 
 
 @to_ivy_arrays_and_back
-def logical_xor(x, y, name="LogicalXor"):
+def logical_xor(x, y):
     return ivy.logical_xor(x, y)
 
 
 @to_ivy_arrays_and_back
-def multiply(x, y, name=None):
+def multiply(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.multiply(x, y)
 
 
 @to_ivy_arrays_and_back
-def multiply_no_nan(x, y, name="multiply_no_nan"):
+def multiply_no_nan(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.where(
         y == 0,
@@ -178,12 +177,12 @@ def multiply_no_nan(x, y, name="multiply_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def negative(x, name=None):
+def negative(x):
     return ivy.negative(x)
 
 
 @to_ivy_arrays_and_back
-def polyval(coeffs, x, name=None):
+def polyval(coeffs, x):
     ivy.assertions.check_isinstance(coeffs, list)
     x = ivy.array(x)
     if len(coeffs) < 1:
@@ -196,7 +195,7 @@ def polyval(coeffs, x, name=None):
 
 
 @to_ivy_arrays_and_back
-def pow(x, y, name="pow"):
+def pow(x, y):
     if not (isinstance(x, int) or isinstance(x, float) or (x is None)):
         x = x.data
     if not (isinstance(y, int) or isinstance(y, float) or (y is None)):
@@ -206,7 +205,7 @@ def pow(x, y, name="pow"):
 
 
 @to_ivy_arrays_and_back
-def reciprocal_no_nan(x, name="reciprocal_no_nan"):
+def reciprocal_no_nan(x):
     return ivy.where(
         x == 0,
         ivy.array(0.0, dtype=x.dtype),
@@ -215,26 +214,25 @@ def reciprocal_no_nan(x, name="reciprocal_no_nan"):
 
 
 @to_ivy_arrays_and_back
-def reduce_all(input_tensor, axis=None, keepdims=False, name="reduce_all"):
+def reduce_all(input_tensor, axis=None, keepdims=False):
     return ivy.all(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def reduce_any(input_tensor, axis=None, keepdims=False, name="reduce_any"):
+def reduce_any(input_tensor, axis=None, keepdims=False):
     return ivy.any(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
 def reduce_euclidean_norm(
-    input_tensor, axis=None, keepdims=False, name="reduce_euclidean_norm"
-):
+    input_tensor, axis=None, keepdims=False):
     return ivy.vector_norm(
         input_tensor, axis=axis, keepdims=keepdims, ord=2
     )  # ord = '2' is the euclidean norm
 
 
 @to_ivy_arrays_and_back
-def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsumexp"):
+def reduce_logsumexp(input_tensor, axis=None, keepdims=False):
     # stable logsumexp trick
     max_input_tensor = ivy.max(input_tensor, axis=axis, keepdims=True)
     return (
@@ -250,65 +248,64 @@ def reduce_logsumexp(input_tensor, axis=None, keepdims=False, name="reduce_logsu
 
 
 @to_ivy_arrays_and_back
-def reduce_max(input_tensor, axis=None, keepdims=False, name="reduce_max"):
+def reduce_max(input_tensor, axis=None, keepdims=False):
     return ivy.max(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def reduce_mean(input_tensor, axis=None, keepdims=False, name="reduce_mean"):
+def reduce_mean(input_tensor, axis=None, keepdims=False):
     return ivy.mean(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def reduce_min(input_tensor, axis=None, keepdims=False, name="reduce_min"):
+def reduce_min(input_tensor, axis=None, keepdims=False):
     return ivy.min(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def reduce_prod(input_tensor, axis=None, keepdims=False, name="reduce_prod"):
+def reduce_prod(input_tensor, axis=None, keepdims=False):
     return ivy.prod(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
 
 
 @to_ivy_arrays_and_back
-def reduce_std(input_tensor, axis=None, keepdims=False, name="reduce_std"):
+def reduce_std(input_tensor, axis=None, keepdims=False):
     return ivy.std(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def reduce_sum(input_tensor, axis=None, keepdims=False, name="reduce_sum"):
+def reduce_sum(input_tensor, axis=None, keepdims=False):
     return ivy.sum(input_tensor, axis=axis, keepdims=keepdims).astype(
         input_tensor.dtype
     )
 
 
 @to_ivy_arrays_and_back
-def reduce_variance(input_tensor, axis=None, keepdims=False, name="reduce_variance"):
+def reduce_variance(input_tensor, axis=None, keepdims=False):
     return ivy.var(input_tensor, axis=axis, keepdims=keepdims)
 
 
 @to_ivy_arrays_and_back
-def scalar_mul(scalar, x, name="scalar_mul"):
+def scalar_mul(scalar, x):
     scalar, x = promote_types_of_tensorflow_inputs(scalar, x)
     return ivy.multiply(x, scalar).astype(x.dtype)
 
 
 @to_ivy_arrays_and_back
-def subtract(x, y, name=None):
+def subtract(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.subtract(x, y)
 
 
 @to_ivy_arrays_and_back
-def tan(x, name=None):
+def tan(x):
     return ivy.tan(x)
 
 
 @to_ivy_arrays_and_back
 def unsorted_segment_mean(
-    data, segment_ids, num_segments, name="unsorted_segment_mean"
-):
+    data, segment_ids, num_segments):
     ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
@@ -322,8 +319,7 @@ def unsorted_segment_mean(
 
 @to_ivy_arrays_and_back
 def unsorted_segment_sqrt_n(
-    data, segment_ids, num_segments, name="unsorted_segement_sqrt_n"
-):
+    data, segment_ids, num_segments):
     ivy.assertions.check_equal(list(segment_ids.shape), [list(data.shape)[0]])
     x = ivy.zeros(tuple([num_segments] + (list(data.shape))[1:]))
     count = ivy.zeros((num_segments,))
@@ -336,7 +332,7 @@ def unsorted_segment_sqrt_n(
 
 
 @to_ivy_arrays_and_back
-def zero_fraction(value, name="zero_fraction"):
+def zero_fraction(value):
     zero = ivy.zeros(tuple(list(value.shape)), dtype=ivy.float32)
     x = ivy.array(value, dtype=ivy.float32)
     count_zero = ivy.sum(ivy.equal(x, zero))
@@ -345,7 +341,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 
 @to_ivy_arrays_and_back
-def argmin(input, axis=None, output_type="int64", name=None):
+def argmin(input, axis=None, output_type="int64"):
     if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=axis), output_type)
     else:
@@ -353,7 +349,7 @@ def argmin(input, axis=None, output_type="int64", name=None):
 
 
 @to_ivy_arrays_and_back
-def truediv(x, y, name="truediv"):
+def truediv(x, y):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     x_dtype = ivy.dtype(x)
     if x_dtype in [ivy.int8, ivy.uint8, ivy.int16, ivy.uint16]:
