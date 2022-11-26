@@ -19,7 +19,7 @@ def histogram(
     range: Optional[Tuple[float]] = None,
     weights: Optional[tf.Tensor] = None,
     density: Optional[bool] = False,
-) -> tf.Tensor:
+) -> Tuple[tf.Tensor]:
     if range:
         if type(bins) == int:
             try:
@@ -41,7 +41,9 @@ def histogram(
         name="histogram",
     )
     if density:
-        pass
+        diff_bins = tf.experimental.numpy.diff(bins)
+        ret = ret / diff_bins / tf.math.reduce_sum(ret)
+        return ret
     return ret
 
 
