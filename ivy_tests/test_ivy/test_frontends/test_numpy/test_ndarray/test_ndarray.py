@@ -695,6 +695,7 @@ def test_numpy_instance_diagonal(
         method_name="diagonal",
     )
 
+
 @handle_frontend_method(
     method_tree="numpy.ndarray.sort",
     dtype_x_axis=helpers.dtype_values_axis(
