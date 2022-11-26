@@ -425,7 +425,8 @@ def execute_with_gradients(
         Function for which we compute the gradients of the output with respect to xs
         input.
     xs
-        Variables for which to compute the function gradients with respective to.
+        Variables for which to compute the function gradients with respective to. This
+        can be a single array or an arbitrary nest of arrays.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
     xs_grad_idxs
