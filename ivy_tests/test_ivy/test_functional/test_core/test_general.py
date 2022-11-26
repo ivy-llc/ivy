@@ -651,7 +651,7 @@ def values_and_ndindices(
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
-            ).filter(lambda l: len(set(l[1][0])) == len(l[1][0])),
+            ).filter(lambda le: len(set(le[1][0])) == len(le[1][0])),
             st.integers(min_value=n, max_value=n),
         )
     ),
