@@ -91,7 +91,10 @@ def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64):
 
 def cumprod(x, axis, exclusive=False, reverse=False):
     return ivy.astype(
-        ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+        ret = ivy.cumprod(x, axis=axis, exclusive=exclusive, reverse=reverse), x.dtype
+        if reverse:
+        return ivy.flip(ret, axis)
+    return ret
     )
 
 
