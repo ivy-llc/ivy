@@ -43,9 +43,7 @@ class ndarray:
 
     @ivyArray.setter
     def ivyArray(self, array):
-        if ivy.is_native_array(array):
-            array = ivy.Array(array)
-        self._ivyArray = array
+        self._ivyArray = ivy.array(array) if not isinstance(array, ivy.Array) else array
 
     # Instance Methods #
     # ---------------- #
