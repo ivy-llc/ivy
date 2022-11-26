@@ -2162,6 +2162,7 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
     descending=st.booleans(),
 )
 def test_torch_argsort(
+    *,
     dtype_input_axis,
     descending,
     as_variable,
