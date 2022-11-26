@@ -352,10 +352,3 @@ class Tensor:
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
-
-
-# Tensor (alias)
-tensor = Tensor
-
-# ex_tensor = tensor(data=[3, 4])
-# print(ex_tensor)
