@@ -309,5 +309,3 @@ def test_tensorflow_concat(
         values=xs,
         axis=unique_idx,
     )
-    
-
