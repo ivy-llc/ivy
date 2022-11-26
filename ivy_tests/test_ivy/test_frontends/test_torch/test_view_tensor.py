@@ -21,7 +21,6 @@ ivy.set_numpy_backend()
 cache = Database()
 
 
-@pytest.mark.disable_autouse
 @pytest.mark.parametrize(["test_input"], [[1], [2], [-3]])
 def test_view_tensor_add(test_input):
     assert_all_close(
@@ -34,7 +33,6 @@ def test_view_tensor_add(test_input):
     )
 
 
-@pytest.mark.disable_autouse
 @pytest.mark.parametrize(["test_input"], [[0], [-1], [-2]])
 def test_view_tensor_add_(test_input):
     base = Tensor([[-1, -2], [2, 1]])
@@ -47,7 +45,6 @@ def test_view_tensor_add_(test_input):
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_asin():
     assert_all_close(
         ret_np=cache.view_base.asin().data, ret_from_gt_np=cache.base.asin().data
@@ -58,7 +55,6 @@ def test_view_tensor_asin():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_asin_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -69,7 +65,6 @@ def test_view_tensor_asin_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_sin():
     assert_all_close(
         ret_np=cache.view_base.sin().data, ret_from_gt_np=cache.base.sin().data
@@ -80,7 +75,6 @@ def test_view_tensor_sin():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_sin_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -91,7 +85,6 @@ def test_view_tensor_sin_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_sinh():
     assert_all_close(
         ret_np=cache.view_base.sinh().data, ret_from_gt_np=cache.base.sinh().data
@@ -102,7 +95,6 @@ def test_view_tensor_sinh():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_sinh_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -113,7 +105,6 @@ def test_view_tensor_sinh_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_cos():
     assert_all_close(
         ret_np=cache.view_base.cos().data, ret_from_gt_np=cache.base.cos().data
@@ -124,7 +115,6 @@ def test_view_tensor_cos():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_cos_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -135,7 +125,6 @@ def test_view_tensor_cos_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_cosh():
     assert_all_close(
         ret_np=cache.view_base.cosh().data, ret_from_gt_np=cache.base.cosh().data
@@ -146,7 +135,6 @@ def test_view_tensor_cosh():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_cosh_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -157,7 +145,6 @@ def test_view_tensor_cosh_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arcsin():
     assert_all_close(
         ret_np=cache.view_base.arcsin().data, ret_from_gt_np=cache.base.arcsin().data
@@ -168,7 +155,6 @@ def test_view_tensor_arcsin():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arcsin_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -179,7 +165,6 @@ def test_view_tensor_arcsin_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_atan():
     assert_all_close(
         ret_np=cache.view_base.atan().data, ret_from_gt_np=cache.base.atan().data
@@ -190,7 +175,6 @@ def test_view_tensor_atan():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_atan_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -201,7 +185,6 @@ def test_view_tensor_atan_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_asinh():
     assert_all_close(
         ret_np=cache.view_base.asinh().data, ret_from_gt_np=cache.base.asinh().data
@@ -212,7 +195,6 @@ def test_view_tensor_asinh():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_asinh_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -223,7 +205,6 @@ def test_view_tensor_asinh_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_tan():
     assert_all_close(
         ret_np=cache.view_base.tan().data, ret_from_gt_np=cache.base.tan().data
@@ -234,7 +215,6 @@ def test_view_tensor_tan():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_tan_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -245,7 +225,6 @@ def test_view_tensor_tan_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_tanh():
     assert_all_close(
         ret_np=cache.view_base.tanh().data, ret_from_gt_np=cache.base.tanh().data
@@ -256,7 +235,6 @@ def test_view_tensor_tanh():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_tanh_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -267,7 +245,6 @@ def test_view_tensor_tanh_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_atanh():
     assert_all_close(
         ret_np=cache.view_base.atanh().data, ret_from_gt_np=cache.base.atanh().data
@@ -278,7 +255,6 @@ def test_view_tensor_atanh():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_atanh_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -289,7 +265,6 @@ def test_view_tensor_atanh_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_log():
     assert_all_close(
         ret_np=cache.view_base.log().data, ret_from_gt_np=cache.base.log().data
@@ -300,7 +275,6 @@ def test_view_tensor_log():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_abs():
     assert_all_close(
         ret_np=cache.view_base.abs().data, ret_from_gt_np=cache.base.abs().data
@@ -311,7 +285,6 @@ def test_view_tensor_abs():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_abs_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -322,7 +295,6 @@ def test_view_tensor_abs_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arctan():
     assert_all_close(
         ret_np=cache.view_base.arctan().data, ret_from_gt_np=cache.base.arctan().data
@@ -333,7 +305,6 @@ def test_view_tensor_arctan():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arctan_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -344,7 +315,6 @@ def test_view_tensor_arctan_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_acos():
     assert_all_close(
         ret_np=cache.view_base.acos().data, ret_from_gt_np=cache.base.acos().data
@@ -355,7 +325,6 @@ def test_view_tensor_acos():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_acos_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -366,7 +335,6 @@ def test_view_tensor_acos_():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arccos():
     assert_all_close(
         ret_np=cache.view_base.arccos().data, ret_from_gt_np=cache.base.arccos().data
@@ -377,7 +345,6 @@ def test_view_tensor_arccos():
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_arccos_():
     base = Tensor([[-1, -2], [2, 1]])
     view_base = base.view((2, 2))
@@ -388,7 +355,6 @@ def test_view_tensor_arccos_():
     )
 
 
-@pytest.mark.disable_autouse
 @pytest.mark.parametrize(["test_input"], [[0], [1], [2]])
 def test_view_tensor_pow(test_input):
     assert_all_close(
@@ -401,7 +367,6 @@ def test_view_tensor_pow(test_input):
     )
 
 
-@pytest.mark.disable_autouse
 @pytest.mark.parametrize(["test_input"], [[2], [3], [4]])
 def test_view_tensor_pow_(test_input):
     base = Tensor([[-1, -2], [2, 1]])
@@ -414,7 +379,6 @@ def test_view_tensor_pow_(test_input):
     )
 
 
-@pytest.mark.disable_autouse
 def test_view_tensor_size():
     assert_all_close(ret_np=cache.view_base.size(), ret_from_gt_np=ivy.array([2, 2]))
     assert_all_close(ret_np=cache.view_view.size(), ret_from_gt_np=ivy.array([4, 1]))
