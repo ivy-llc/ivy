@@ -160,7 +160,8 @@ func_ret and the gradients of each output variable w.r.t each input variable,</p
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> – Function for which we compute the gradients of the output with respect to xs
 input.</p></li>
-<li><p><strong>xs</strong> – Variables for which to compute the function gradients with respective to.</p></li>
+<li><p><strong>xs</strong> – Variables for which to compute the function gradients with respective to. This
+can be a single array or an arbitrary nest of arrays.</p></li>
 <li><p><strong>retain_grads</strong> – Whether to retain the gradients of the returned values. (Default value = False)</p></li>
 <li><p><strong>xs_grad_idxs</strong> – Indices of the input arrays to compute gradients with respect to. If None,
 gradients are returned with respect to all input arrays. (Default value = None)</p></li>
