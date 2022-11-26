@@ -144,6 +144,71 @@
              
   <section id="uniform">
 <h1>Uniform<a class="headerlink" href="#uniform" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.initializers.</span></span><span class="sig-name descname"><span class="pre">Uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numerator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#Uniform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="Initializer.html#ivy.stateful.initializers.Initializer" title="ivy.stateful.initializers.Initializer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Initializer</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">numerator</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#Uniform.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>A initializer based on a uniform distribution, will fill in all values with
+values drawn from a uniform (all values have an equal probability) distribution
+with range <cite>[-wlim, wlim]</cite> (endpoints included) with <cite>wlim</cite> being calculated as
+<cite>gain * (numerator / fan)**power</cite>. This distribution helps with issues when
+trying to optimize and train networks. The expected value of this distribution
+is <cite>0</cite> and the variance is
+<cite>(gain * numerator / fan)^power / 4</cite>.</p>
+<p>This is intended as a base-class for special predefined initialzers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>numerator</strong> – </p></li>
+<li><p><strong>fan_mode</strong> – <p>Determines how <cite>fan</cite> is calculated.
+- <cite>fan_out</cite> sets <cite>fan</cite> to the number of output features of this neuron.</p>
+<blockquote>
+<div><p>This is useful when training using back-propogation.</p>
+</div></blockquote>
+<ul>
+<li><p><cite>fan_in</cite> sets <cite>fan</cite> to the number of input features of this neuron.
+This is useful when training using forward-propogation.</p></li>
+<li><p><cite>fan_sum</cite> sets <cite>fan</cite> to the sum of the number of input features and
+output features of this neuron.</p></li>
+<li><p><cite>fan_avg</cite> sets <cite>fan</cite> to the average of the number of input features and
+output features of this neuron.</p></li>
+</ul>
+</p></li>
+<li><p><strong>power</strong> – Sets the drop-off factor for the calculated <cite>fan</cite>.</p></li>
+<li><p><strong>gain</strong> – Scales the output of the distribution.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.initializers.Uniform.create_variables">
+<span class="sig-name descname"><span class="pre">create_variables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">var_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fan_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/initializers.html#Uniform.create_variables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.initializers.Uniform.create_variables" title="Permalink to this definition"></a></dt>
+<dd><p>Create internal variables for the layer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var_shape</strong> – <dl class="simple">
+<dt>Tuple representing the shape of the desired array. If considering</dt><dd><p>the array as a rectangular matrix, this tuple is represented as
+‘(ROWS, COLUMNS)’.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>device</strong> – Device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>fan_out</strong> – The number of nodes in the next layer.</p></li>
+<li><p><strong>fan_in</strong> – The number of nodes in the previous layer.</p></li>
+<li><p><strong>dtype</strong> – Desired data type.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
