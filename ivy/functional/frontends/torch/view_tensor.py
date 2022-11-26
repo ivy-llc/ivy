@@ -4,6 +4,7 @@ import weakref
 import functools
 from typing import Callable
 from ivy.functional.frontends.torch.tensor import Tensor
+import ivy.functional.frontends.torch as torch_frontend
 
 
 def _merge_from_original(method: Callable) -> Callable:
@@ -48,9 +49,13 @@ def _merge_to_original(method: Callable) -> Callable:
 class ViewTensor:
     def __init__(self, ref, *, shape):
         if isinstance(ref(), Tensor):
-            self.delegate = Tensor(ivy.reshape(ref().data, shape, copy=True))
+            self.delegate = torch_frontend.tensor(
+                ivy.reshape(ref().ivyArray, shape, copy=True)
+            )
         elif isinstance(ref(), ViewTensor):
-            self.delegate = Tensor(ivy.reshape(ref().delegate.data, shape, copy=True))
+            self.delegate = torch_frontend.tensor(
+                ivy.reshape(ref().delegate.ivyArray, shape, copy=True)
+            )
         else:
             raise TypeError(
                 "'ViewTensor' object needs to refer to a 'Tensor' or "
@@ -77,13 +82,13 @@ class ViewTensor:
     def fetch_from(self, *, checked=False):
         if (self.ref() is not None) or checked:
             if isinstance(self.ref(), Tensor):
-                self.delegate = Tensor(
-                    ivy.reshape(self.ref().data, self.size(), copy=True)
+                self.delegate = torch_frontend.tensor(
+                    ivy.reshape(self.ref().ivyArray, self.size(), copy=True)
                 )
             elif isinstance(self.ref(), ViewTensor):
                 self.ref().fetch_from()
-                self.delegate = Tensor(
-                    ivy.reshape(self.ref().delegate.data, self.size(), copy=True)
+                self.delegate = torch_frontend.tensor(
+                    ivy.reshape(self.ref().delegate.ivyArray, self.size(), copy=True)
                 )
             else:
                 raise AttributeError(
@@ -94,12 +99,12 @@ class ViewTensor:
     def merge_to(self, *, checked=False):
         if (self.ref() is not None) or checked:
             if isinstance(self.ref(), Tensor):
-                self.ref().data = ivy.reshape(
-                    self.delegate.data, self.ref().size(), copy=True
+                self.ref().ivyArray = ivy.reshape(
+                    self.delegate.ivyArray, self.ref().size(), copy=True
                 )
             elif isinstance(self.ref(), ViewTensor):
-                self.ref().delegate.data = ivy.reshape(
-                    self.delegate.data, self.ref().size(), copy=True
+                self.ref().delegate.ivyArray = ivy.reshape(
+                    self.delegate.ivyArray, self.ref().size(), copy=True
                 )
                 self.ref().merge_to()
             else:
