@@ -678,7 +678,6 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
-
     if not test_values:
         return ret, frontend_ret
 
@@ -1604,6 +1603,6 @@ def _frontend_array_to_ivy(x):
         or isinstance(x, tf_tensor)
         or isinstance(x, DeviceArray)
     ):
-        return x.data
+        return x.ivyArray
     else:
         return x

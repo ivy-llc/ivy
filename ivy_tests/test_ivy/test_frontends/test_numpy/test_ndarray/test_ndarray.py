@@ -936,6 +936,62 @@ def test_numpy_instance_squeeze(
 
 
 @handle_frontend_method(
+    method_tree="numpy.ndarray.std",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_value=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    where=np_frontend_helpers.where(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.std"
+    ),
+)
+def test_numpy_instance_std(
+    dtype_x_axis,
+    keepdims,
+    where,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x, axis = dtype_x_axis
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=num_positional_args_method,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "out": None,
+            "ddof": 0,
+            "keepdims": keepdims,
+            "where": where,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="std",
+    )
+
+
+@handle_frontend_method(
     method_tree="numpy.ndarray.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
