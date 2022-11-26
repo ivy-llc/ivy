@@ -1342,7 +1342,7 @@ def test_tensorflow_accumulate_n(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend='tensorflow',
+        frontend="tensorflow",
         fn_tree=fn_tree,
         on_device=on_device,
         inputs=[i for i in x[0]],
