@@ -2148,43 +2148,47 @@ def test_torch_instance_add_(dtype_and_x, as_variable, native_array):
 
 
 # argsort
-@handle_frontend_method(
-    method_tree="torch.tensor.argsort",
-    dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        shape=st.shared(helpers.get_shape(), key="shape")
+@handle_cmd_line_args
+@given(
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=tuple(
+            set(ivy_np.valid_numeric_dtypes).intersection(
+                set(ivy_torch.valid_numeric_dtypes)
+            ),
+        ),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
     ),
-    axis=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.torch.argsort"
     ),
+    descending=st.booleans(),
 )
-def test_torch_instance_argsort(
-    dtype_value,
-    axis,
+def test_torch_argsort(
+    dtype_input_axis,
+    descending,
     as_variable,
+    num_positional_args,
     native_array,
+    fw,
 ):
-    input_dtype, x = dtype_value
-    helpers.test_frontend_method(
-        input_dtypes_init=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=1,
-        init_native_array_flags=native_array,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=1,
-        method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "axis": axis,
-        },
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        fw=fw,
         frontend="torch",
-        class_="tensor",
-        method_name="argsort",
+        fn_tree="argsort",
+        input=np.asarray(input, dtype=input_dtype),
+        dim=axis,
+        descending=descending,
     )
 
 
