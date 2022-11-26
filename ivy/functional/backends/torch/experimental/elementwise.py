@@ -248,7 +248,7 @@ def diff(
     x: Union[torch.Tensor, int, float, list, tuple],
     /,
     *,
-    out: Optional[torch.Tensor] = None
+    out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
     return torch.diff(x, out=out)
