@@ -1603,6 +1603,6 @@ def _frontend_array_to_ivy(x):
         or isinstance(x, tf_tensor)
         or isinstance(x, DeviceArray)
     ):
-        return x.data
+        return x.ivyArray
     else:
         return x
