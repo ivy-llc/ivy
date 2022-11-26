@@ -5,13 +5,6 @@ from ivy.func_wrapper import with_unsupported_dtypes
 import weakref
 
 
-# Initialisation workaround
-def _Tensor(array):
-    a = torch_frontend.Tensor(0)
-    a.ivyArray = array
-    return a
-
-
 class Tensor:
     def __init__(self, array, device=None):
         self._ivyArray = ivy.asarray(array, dtype=torch_frontend.float32, device=device)
@@ -159,7 +152,7 @@ class Tensor:
         return torch_frontend.bitwise_and(self._ivyArray, other)
 
     def contiguous(self, memory_format=None):
-        return _Tensor(self.ivyArray)
+        return torch_frontend.tensor(self.ivyArray)
 
     def new_ones(self, size, *, dtype=None, device=None, requires_grad=False):
         return torch_frontend.ones(
@@ -225,7 +218,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.asarray(data, copy=True, dtype=dtype, device=device)
-        return _Tensor(_data)
+        return torch_frontend.tensor(_data)
 
     def view_as(self, other):
         return self.view(other.shape)
@@ -260,7 +253,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.full(size, fill_value, dtype=dtype, device=device)
-        return _Tensor(_data)
+        return torch_frontend.tensor(_data)
 
     def new_empty(
         self,
@@ -275,7 +268,7 @@ class Tensor:
         dtype = ivy.dtype(self._ivyArray) if dtype is None else dtype
         device = ivy.dev(self._ivyArray) if device is None else device
         _data = ivy.empty(size, dtype=dtype, device=device)
-        return _Tensor(_data)
+        return torch_frontend.tensor(_data)
 
     def unfold(self, dimension, size, step):
         slices = []
@@ -337,11 +330,11 @@ class Tensor:
         return torch_frontend.remainder(self._ivyArray, other)
 
     def __long__(self, memory_format=None):
-        return _Tensor(ivy.astype(self._ivyArray, ivy.int64))
+        return torch_frontend.tensor(ivy.astype(self._ivyArray, ivy.int64))
 
     def __getitem__(self, query):
         ret = ivy.get_item(self._ivyArray, query)
-        return _Tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
+        return torch_frontend.tensor(ivy.array(ret, dtype=ivy.dtype(ret), copy=False))
 
     def __radd__(self, other, *, alpha=1):
         return torch_frontend.add(
