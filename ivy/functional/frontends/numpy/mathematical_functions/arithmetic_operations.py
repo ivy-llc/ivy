@@ -21,7 +21,6 @@ def add(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.add(x1, x2, out=out)
