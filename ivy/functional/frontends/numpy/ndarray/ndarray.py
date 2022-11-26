@@ -45,6 +45,23 @@ class ndarray:
             keepdims=keepdims,
         )
 
+    def astype(
+        self, 
+        dtype,
+        order="K",
+        casting="unsafe",
+        subok=True, 
+        copy=True
+    ):
+        return np_frontend.astype(
+            self.data,
+            dtype=dtype,
+            order=order,
+            casting=casting,
+            subok=subok,
+            copy=copy
+        )
+
     def reshape(self, shape, order="C"):
         ivy.assertions.check_elem_in_list(
             order,
