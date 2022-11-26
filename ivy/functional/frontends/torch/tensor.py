@@ -144,6 +144,11 @@ class Tensor:
             size, dtype=dtype, device=device, requires_grad=requires_grad
         )
 
+    def new_zeros(self, size, *, dtype=None, device=None, requires_grad=False):
+        return torch_frontend.zeros(
+            size, dtype=dtype, device=device, requires_grad=requires_grad
+        )
+
     def to(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[0], ivy.Dtype):
@@ -268,6 +273,9 @@ class Tensor:
     def pow_(self, other):
         self.data = self.pow(other)
         return self.data
+
+    def matmul(self, tensor2):
+        return torch_frontend.matmul(self.data, tensor2)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self.data, dim=dim, keepdim=keepdim)

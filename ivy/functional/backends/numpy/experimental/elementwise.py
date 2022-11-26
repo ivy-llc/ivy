@@ -125,9 +125,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -240,6 +241,13 @@ def signbit(
 
 
 signbit.support_native_out = True
+
+
+def diff(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.diff(x)
+
+
+diff.support_native_out = False
 
 
 def allclose(
