@@ -7,6 +7,10 @@ import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
+    _get_dtype_input_and_matrices,
+)
 from ivy.functional.frontends.torch import Tensor
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 
@@ -2876,4 +2880,46 @@ def test_torch_instance_min(
         frontend="torch",
         class_="tensor",
         method_name="min",
+    )
+
+
+@st.composite
+def _get_dtype_and_multiplicative_matrices(draw):
+    return draw(
+        st.one_of(
+            _get_dtype_input_and_matrices(),
+            _get_dtype_and_3dbatch_matrices(),
+        )
+    )
+
+
+# matmul
+@handle_frontend_method(
+    method_tree="torch.tensor.matmul",
+    dtype_indtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_torch_instance_matmul(
+    dtype_tensor1_tensor2,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
+    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
+    helpers.test_frontend_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": tensor1,
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={"tensor2": tensor2},
+        frontend="torch",
+        class_="tensor",
+        method_name="matmul",
     )
