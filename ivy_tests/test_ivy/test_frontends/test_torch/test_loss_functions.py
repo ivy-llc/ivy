@@ -274,19 +274,40 @@ def test_torch_l1_loss(
 # huber_loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.huber_loss",
-    dtype_and_x=helpers.dtype_and_values(
+    dtype_and_true=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+        min_value=0.0,
+        max_value=1.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
         allow_inf=False,
-        shared_dtype=True,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=2,
     ),
-    size_average=st.booleans(),
-    reduce=st.booleans(),
-    reduction=st.sampled_from(["none", "mean", "sum"]),
+    dtype_and_pred=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0.0,
+        max_value=1.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
+        safety_factor_scale="linear",
+        allow_inf=False,
+        exclude_min=True,
+        exclude_max=True,
+        min_num_dims=1,
+        max_num_dims=1,m
+        min_dim_size=2,
+    ),
+    reduction=st.sampled_from(["none", "mean", "sum"])
 )
 def test_torch_huber_loss(
     *,
-    dtype_and_x,
+    dtype_and_true,
+    dtype_and_pred,
     reduction,
     as_variable,
     num_positional_args,
@@ -295,11 +316,10 @@ def test_torch_huber_loss(
     fn_tree,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
-    pred_dtype, pred = input_dtype[0], x[0]
-    true_dtype, true = input_dtype[1], x[1]
+    pred_dtype, pred = dtype_and_pred  # Input
+    true_dtype, true = dtype_and_true  # Target
     helpers.test_frontend_function(
-        input_dtypes=[pred_dtype, true_dtype],
+        input_dtypes=[pred_dtype[0], true_dtype[0]],
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -307,7 +327,7 @@ def test_torch_huber_loss(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=pred,
-        target=true,
+        input=pred[0],
+        target=true[0],
         reduction=reduction,
     )

@@ -88,7 +88,12 @@ def cross_entropy(
 ):
     input = ivy.softmax(input)
     ret = ivy.cross_entropy(target, input, epsilon=label_smoothing)
-	@@ -97,7 +97,7 @@ def cross_entropy(
+    if weight is not None:
+        ret = ivy.multiply(weight, ret)
+    ret = _apply_reduction(reduction, size_average, reduce, ret)
+    return ret
+
+
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def binary_cross_entropy(
@@ -96,7 +101,20 @@ def binary_cross_entropy(
 ):
     reduction = _get_reduction(reduction, size_average, reduce)
     result = ivy.binary_cross_entropy(target, input, epsilon=0.0)
-	@@ -118,12 +118,12 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
+
+    if weight is not None:
+        result = ivy.multiply(weight, result)
+    result = reduction(result)
+    return result
+
+
+@to_ivy_arrays_and_back
+def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
+    reduction = _get_reduction(reduction, size_average, reduce)
+    result = ivy.square(input - target)
+    result = reduction(result)
+    return result
+
 
 @to_ivy_arrays_and_back
 def smooth_l1_loss(
@@ -109,7 +127,17 @@ def smooth_l1_loss(
 ):
     beta = ivy.array(beta, device=input.device)
     reduction = _get_reduction(reduction, size_average, reduce)
-	@@ -141,7 +141,7 @@ def smooth_l1_loss(
+
+    if beta < 1e-5:
+        # [Copied and modified from fvcore]
+        # if beta == 0, then torch.where will result in nan gradients when
+        # the chain rule is applied due to pytorch implementation details
+        # (the False branch "0.5 * _diff_abs ** 2 / 0" has an incoming
+        # gradient of zeros, rather than "no gradient"). To avoid this
+        # issue, we define small values of beta to be exactly l1 loss.
+        loss = ivy.abs(input - target)
+    else:
+        _diff_abs = ivy.abs(input - target)
 
         loss = ivy.where(
             _diff_abs < beta,
@@ -117,8 +145,10 @@ def smooth_l1_loss(
             _diff_abs - 0.5 * beta,
         )
 
-	@@ -150,13 +150,46 @@ def smooth_l1_loss(
+    ret = reduction(loss)
+
     return ret
+
 
 @to_ivy_arrays_and_back
 def huber_loss(
@@ -140,7 +170,7 @@ def huber_loss(
         loss = ivy.where(
             _abs_diff < delta,  # If |xᵢ - yᵢ| < δ
             0.5 * _abs_diff ** 2,  # lᵢ = 0.5(xᵢ - yᵢ)²
-            delta * (_abs_diff - 0.5 * delta),  # l_i = δ(|xᵢ - yᵢ| - 0.5 * δ)
+            delta * (_abs_diff - 0.5 * delta),  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
         )
 
         # Get the reduction from its string
@@ -153,7 +183,7 @@ def huber_loss(
         return loss
 
 
-@ to_ivy_arrays_and_back
+@to_ivy_arrays_and_back
 def l1_loss(
     input,
     target,
@@ -161,5 +191,7 @@ def l1_loss(
     reduce=None,
     reduction="mean",
 ):
-    loss=ivy.abs(input - target)
-    reduction=_get_reduction(reduction, size_average, reduce)
+    loss = ivy.abs(input - target)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret
