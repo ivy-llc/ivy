@@ -41,7 +41,6 @@ def subtract(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.subtract(x1, x2, out=out)
@@ -61,8 +60,7 @@ def divide(
     where=True,
     casting="same_kind",
     order="k",
-    dtype=None,
-    subok=True,
+    dtype=None,  
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.divide(x1, x2, out=out)
@@ -85,8 +83,7 @@ def multiply(
     where=True,
     casting="same_kind",
     order="k",
-    dtype=None,
-    subok=True,
+    dtype=None,   
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.multiply(x1, x2, out=out)
@@ -106,8 +103,7 @@ def power(
     where=True,
     casting="same_kind",
     order="k",
-    dtype=None,
-    subok=True,
+    dtype=None,  
 ):
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
     ret = ivy.pow(x1, x2, out=out)
@@ -128,7 +124,6 @@ def float_power(
     casting="same_kind",
     order="k",
     dtype=None,
-    subok=True,
 ):
     x1 = ivy.astype(x1, ivy.as_ivy_dtype("float64"))
     x1, x2 = promote_types_of_numpy_inputs(x1, x2)
@@ -159,7 +154,6 @@ def positive(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.positive(x, out=out)
     if ivy.is_array(where):
@@ -178,7 +172,6 @@ def negative(
     casting="same_kind",
     order="K",
     dtype=None,
-    subok=True,
 ):
     ret = ivy.negative(x, out=out)
     if ivy.is_array(where):
@@ -197,8 +190,7 @@ def floor_divide(
     where=True,
     casting="same_kind",
     order="k",
-    dtype=None,
-    subok=True,
+    dtype=None,   
 ):
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
@@ -218,8 +210,7 @@ def reciprocal(
     where=True,
     casting="same_kind",
     order="K",
-    dtype=None,
-    subok=True,
+    dtype=None,   
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
@@ -239,8 +230,7 @@ def mod(
     where=True,
     casting="same_kind",
     order="K",
-    dtype=None,
-    subok=True,
+    dtype=None,  
 ):
     if dtype:
         x1 = ivy.astype(ivy.array(x1), ivy.as_ivy_dtype(dtype))
