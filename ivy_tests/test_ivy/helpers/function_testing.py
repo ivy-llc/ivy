@@ -306,7 +306,6 @@ def test_function(
             ):
                 pass
             else:
-
                 gradient_test(
                     fn_name=fn_name,
                     all_as_kwargs_np=all_as_kwargs_np,
@@ -511,7 +510,7 @@ def test_frontend_function(
         copy_kwargs = copy.deepcopy(kwargs)
         copy_args = copy.deepcopy(args)
         # strip the decorator to get an Ivy array
-        ret = frontend_fn.__wrapped__(*args_ivy, **kwargs_ivy)
+        ret = get_frontend_ret(frontend_fn, *args_ivy, **kwargs_ivy)
         if with_out:
             if not inspect.isclass(ret):
                 is_ret_tuple = issubclass(ret.__class__, tuple)
@@ -552,7 +551,7 @@ def test_frontend_function(
                 first_array = ivy.func_wrapper._get_first_array(
                     *copy_args, **copy_kwargs
                 )
-                ret_ = frontend_fn.__wrapped__(*copy_args, **copy_kwargs)
+                ret_ = get_frontend_ret(frontend_fn, *copy_args, **copy_args)
                 if ivy.native_inplace_support:
                     assert ret_.data is first_array.data
                 assert first_array is ret_
@@ -679,7 +678,6 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
-
     if not test_values:
         return ret, frontend_ret
 
@@ -704,9 +702,8 @@ def gradient_test(
     ground_truth_backend: str,
 ):
     def grad_fn(xs):
-        array_vals = [v for k, v in xs.to_iterator()]
-        arg_array_vals = array_vals[0 : len(args_idxs)]
-        kwarg_array_vals = array_vals[len(args_idxs) :]
+        arg_array_vals = xs[0]
+        kwarg_array_vals = xs[1]
         args_writeable = ivy.copy_nest(args)
         kwargs_writeable = ivy.copy_nest(kwargs)
         ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
@@ -732,7 +729,7 @@ def gradient_test(
     )
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    xs = [arg_array_vals, kwarg_array_vals]
     _, grads = ivy.execute_with_gradients(
         grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
@@ -761,7 +758,7 @@ def gradient_test(
     )
     arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
     kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = args_to_container(arg_array_vals + kwarg_array_vals)
+    xs = [arg_array_vals, kwarg_array_vals]
     _, grads_from_gt = ivy.execute_with_gradients(
         grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
@@ -1556,6 +1553,12 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     return ret, flatten_and_to_np(ret=ret)
 
 
+def get_frontend_ret(fn, *args, **kwargs):
+    ret = fn(*args, **kwargs)
+    ret = ivy.nested_map(ret, _frontend_array_to_ivy, include_derived={tuple: True})
+    return ret
+
+
 def args_to_container(array_args):
     array_args_container = ivy.Container({str(k): v for k, v in enumerate(array_args)})
     return array_args_container
@@ -1591,3 +1594,15 @@ def _is_frontend_array(x):
         or isinstance(x, tf_tensor)
         or isinstance(x, DeviceArray)
     )
+
+
+def _frontend_array_to_ivy(x):
+    if (
+        isinstance(x, ndarray)
+        or isinstance(x, torch_tensor)
+        or isinstance(x, tf_tensor)
+        or isinstance(x, DeviceArray)
+    ):
+        return x.data
+    else:
+        return x

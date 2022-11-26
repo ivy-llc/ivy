@@ -89,7 +89,7 @@ def x_and_filters(draw, dim: int = 2, transpose: bool = False):
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv1d",
+    fn_tree="torch.nn.functional.conv1d",
     dtype_vals=x_and_filters(dim=1),
 )
 def test_torch_conv1d(
@@ -124,7 +124,7 @@ def test_torch_conv1d(
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv2d",
+    fn_tree="torch.nn.functional.conv2d",
     dtype_vals=x_and_filters(dim=2),
 )
 def test_torch_conv2d(
@@ -159,7 +159,7 @@ def test_torch_conv2d(
 
 
 @handle_frontend_test(
-    fn_tree="torch.conv3d",
+    fn_tree="torch.nn.functional.conv3d",
     dtype_vals=x_and_filters(dim=3),
 )
 def test_torch_conv3d(

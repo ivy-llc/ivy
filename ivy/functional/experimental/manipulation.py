@@ -16,13 +16,12 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
-    inputs_to_ivy_arrays,
 )
 from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@inputs_to_ivy_arrays
+@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -80,15 +79,15 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([[1,2], [3,4]])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = np.array([[1,2], [3,4]])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x, order='F')
     ivy.array([1, 3, 2, 4])
 
-    >>> x = np.array(
+    >>> x = ivy.array(
         [[[[ 5,  5,  0,  6],
          [17, 15, 11, 16],
          [ 6,  3, 13, 12]],
@@ -138,7 +137,8 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if start_dim == end_dim and len(x.shape) != 0:
+    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
@@ -1389,6 +1389,52 @@ def atleast_2d(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def atleast_3d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least three dimension.
+    Scalar inputs are converted to 3-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have three or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with a.ndim >= 3. Copies
+        are avoided where possible, and views with three or more
+        dimensions are returned. For example, a 1-D array of shape
+        (N,) becomes a view of shape (1, N, 1), and a 2-D array of
+        shape (M, N) becomes a view of shape (M, N, 1).
+
+    Examples
+    --------
+    >>> ary1 = ivy.array([5,6])
+    >>> ivy.atleast_3d(ary1)
+    ivy.array([[[5],
+            [6]]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_3d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ary3 = ivy.array([[3,4],[9,10]])
+    >>> ivy.atleast_3d(6,7,ary3)
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
+            [ 4]],
+
+           [[ 9],
+            [10]]])]
+    """
+    return ivy.current_backend().atleast_3d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 @handle_exceptions
 def take_along_axis(
     arr: Union[ivy.Array, ivy.NativeArray],
@@ -1425,3 +1471,58 @@ def take_along_axis(
     ivy.array([[4, 3, 3], [1, 1, 1]])
     """
     return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def hsplit(
+    ary: Union[ivy.Array, ivy.NativeArray],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Split an array into multiple sub-arrays horizontally.
+
+    Parameters
+    ----------
+    ary
+        Array input.
+    indices_or_sections
+        If indices_or_sections is an integer n, the array is split into n sections.
+        If the array is divisible by n along the 3rd axis, each section will be of
+        equal size. If input is not divisible by n, the sizes of the first
+        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
+        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is a tuple of ints, then input is split at each of
+        the indices in the tuple.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        input array split horizontally.
+
+    Examples
+    --------
+    >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+    >>> ivy.vsplit(ary, 2)
+    [ivy.array([[ 0.,  1.],
+                    [ 4.,  5.],
+                    [ 8.,  9.],
+                    [12., 13.]]),
+         ivy.array([[ 2.,  3.],
+                    [ 6.,  7.],
+                    [10., 11.],
+                    [14., 15.]]))
+    """
+    return ivy.current_backend(ary).hsplit(
+        ary, indices_or_sections=indices_or_sections, out=out
+    )
