@@ -184,5 +184,5 @@ from . import utility
 from .utility import *
 from . import experimental
 from .experimental import *
-from . import fft2
-from .fft2 import *
+from . import fft
+from .fft import *

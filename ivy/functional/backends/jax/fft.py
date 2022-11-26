@@ -3,7 +3,6 @@ import jax.numpy as jnp
 
 from ivy.functional.backends.jax import JaxArray
 
-
 def fft2(
         a: JaxArray,
         s: Optional[Sequence[int]] = None,
