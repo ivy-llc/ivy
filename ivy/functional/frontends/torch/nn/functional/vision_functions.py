@@ -125,19 +125,19 @@ def pad(input, pad, mode="constant", value=0):
 def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
     if scale_factor and (not size):
         if type(scale_factor) == int:
-            w_new = int(w_old * scale_factor)
-            h_new = int(h_old * scale_factor)
+            h_new = int(w_old * scale_factor)
+            w_new = int(h_old * scale_factor)
         elif type(scale_factor) == tuple:
-            w_new = int(w_old * scale_factor[0])
-            h_new = int(h_old * scale_factor[1])
+            h_new = int(w_old * scale_factor[0])
+            w_new = int(h_old * scale_factor[1])
     elif (not scale_factor) and size:
         if type(size) == int:
-            w_new = size
             h_new = size
+            w_new = size
         elif type(size) == tuple:
-            w_new, h_new = size
+            h_new, w_new = size
 
-    return w_new, h_new
+    return h_new, w_new
 
 
 @to_ivy_arrays_and_back
@@ -151,8 +151,8 @@ def upsample_bilinear(input, size=None, scale_factor=None):
             ("either size or scale_factor should be defined")
         )
 
-    n, c, w_old, h_old = input.shape
-    w_new, h_new = _get_new_width_height(w_old, h_old, size, scale_factor)
+    n, c, h_old, w_old = input.shape
+    h_new, w_new = _get_new_width_height(w_old, h_old, size, scale_factor)
 
     x_distances_old = ivy.linspace(0, 1, w_old)
     y_distances_old = ivy.linspace(0, 1, h_old)
@@ -165,7 +165,7 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     lower_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
     higher_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
     lower_pivots_y = ivy.zeros(h_new, dtype=ivy.int64)
-    higher_pivots_y = ivy.zeros(w_new, dtype=ivy.int64)
+    higher_pivots_y = ivy.zeros(h_new, dtype=ivy.int64)
 
     for i in range(w_old):
         lower_pivots_x = ivy.where(
@@ -211,15 +211,14 @@ def upsample_bilinear(input, size=None, scale_factor=None):
         ),
         temp,
     )
-
     result = ivy.zeros((n, c, h_new, w_new))
     result = ivy.where(
-        (lower_pivots_x == higher_pivots_x)[None, None, :, None],
+        (lower_pivots_y == higher_pivots_y)[None, None, :, None],
         ivy.gather(temp, lower_pivots_y, axis=2),
         result,
     )
     result = ivy.where(
-        (lower_pivots_x != higher_pivots_x)[None, None, :, None],
+        (lower_pivots_y != higher_pivots_y)[None, None, :, None],
         ivy.divide(
             ivy.add(
                 ivy.multiply(
