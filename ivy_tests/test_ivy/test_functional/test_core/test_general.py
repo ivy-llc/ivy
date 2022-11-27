@@ -3,6 +3,7 @@
 # global
 import time
 import math
+import tensorflow as tf
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
@@ -656,6 +657,7 @@ def values_and_ndindices(
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    ground_truth_backend="torch",
 )
 def test_scatter_flat(
     x,
@@ -669,8 +671,20 @@ def test_scatter_flat(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
     ground_truth_backend,
 ):
+    # scatter_flat throws an error while computing gradients for tensorflow
+    # this has been fixed in the newer versions of tensorflow (2.10.0 onwards)
+    if "tensorflow" in backend_fw.__name__:
+        grad_support_version = [2, 10, 0]
+        k = 0
+        for number in [int(s) for s in tf.__version__.split(".") if s.isdigit()]:
+            if k > len(grad_support_version):
+                break
+            if number < grad_support_version[k]:
+                test_gradients = False
+            k += 1
     (val_dtype, vals), (ind_dtype, ind), size = x
     helpers.test_function(
         input_dtypes=ind_dtype + val_dtype,
@@ -680,6 +694,9 @@ def test_scatter_flat(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        test_gradients=test_gradients,
+        xs_grad_idxs=[[0, 1]],
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
