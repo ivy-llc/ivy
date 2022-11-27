@@ -56,12 +56,11 @@ def _forward_fn(
 ):
     if xs_grad_idxs is not None:
         ivy.set_nest_at_indices(xs, xs_grad_idxs, x)
+    elif ivy.is_array(xs):
+        xs = x
     else:
-        if ivy.is_array(xs):
-            xs = x
-        else:
-            arr_idxs = ivy.nested_argwhere(xs, lambda x: ivy.is_array(x))
-            ivy.set_nest_at_indices(xs, arr_idxs, x)
+        arr_idxs = ivy.nested_argwhere(xs, lambda x: ivy.is_array(x))
+        ivy.set_nest_at_indices(xs, arr_idxs, x)
     if not ivy.is_array(xs):
         xs = _set_duplicates(xs, duplicate_key_chains)
     ret = func(xs)
