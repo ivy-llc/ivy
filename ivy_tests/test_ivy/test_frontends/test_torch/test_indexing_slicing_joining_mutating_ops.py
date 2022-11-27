@@ -824,3 +824,4 @@ def test_torch_vstack(
         on_device=on_device,
         tensors=value,
     )
+
