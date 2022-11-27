@@ -299,7 +299,7 @@ def test_torch_l1_loss(
         exclude_min=True,
         exclude_max=True,
         min_num_dims=1,
-        max_num_dims=1,m
+        max_num_dims=1,
         min_dim_size=2,
     ),
     reduction=st.sampled_from(["none", "mean", "sum"])
