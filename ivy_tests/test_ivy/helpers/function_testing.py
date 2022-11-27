@@ -701,14 +701,9 @@ def gradient_test(
     ret_grad_idxs=None,
     ground_truth_backend: str,
 ):
-    def grad_fn(xs):
-        arg_array_vals = xs[0]
-        kwarg_array_vals = xs[1]
-        args_writeable = ivy.copy_nest(args)
-        kwargs_writeable = ivy.copy_nest(kwargs)
-        ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
-        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
-        ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
+    def grad_fn(all_args):
+        args, kwargs = all_args
+        ret = ivy.__dict__[fn_name](*args, **kwargs)
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -727,11 +722,8 @@ def gradient_test(
         native_array_flags=native_array_flags,
         container_flags=container_flags,
     )
-    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
-    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = [arg_array_vals, kwarg_array_vals]
     _, grads = ivy.execute_with_gradients(
-        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
@@ -756,11 +748,8 @@ def gradient_test(
         native_array_flags=native_array_flags,
         container_flags=container_flags,
     )
-    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
-    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = [arg_array_vals, kwarg_array_vals]
     _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
