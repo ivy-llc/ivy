@@ -160,27 +160,23 @@ def huber_loss(
     # Broadcast delta
     delta = ivy.array(delta, device=input.device)
 
-    if delta == 1.0:  # If δ == 1, use smooth_l1_loss
-        return smooth_l1_loss(input, target, reduction)
+    # Let's define the absolute diff |xᵢ - yᵢ| as _abs_diff
+    _abs_diff = ivy.abs(input - target)
 
-    else:  # Otherwise
-        # Let's define the absolute diff |xᵢ - yᵢ| as _abs_diff
-        _abs_diff = ivy.abs(input - target)
+    loss = ivy.where(
+        _abs_diff < delta,  # If |xᵢ - yᵢ| < δ
+        0.5 * (_abs_diff ** 2),  # lᵢ = 0.5(xᵢ - yᵢ)²
+        delta * (_abs_diff - 0.5 * delta)  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
+    )
 
-        loss = ivy.where(
-            _abs_diff < delta,  # If |xᵢ - yᵢ| < δ
-            0.5 * _abs_diff ** 2,  # lᵢ = 0.5(xᵢ - yᵢ)²
-            delta * (_abs_diff - 0.5 * delta),  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
-        )
+    # Get the reduction from its string
+    reduction = _get_reduction(reduction)
 
-        # Get the reduction from its string
-        reduction = _get_reduction(reduction)
+    # Apply reduction on loss
+    ret = reduction(loss)
 
-        # Apply reduction on loss
-        loss = reduction(loss)
-
-        # Return the loss
-        return loss
+    # Return the loss
+    return ret
 
 
 @to_ivy_arrays_and_back
