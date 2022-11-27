@@ -23,7 +23,19 @@ In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them for testing.
 
-**Important Helper Functions**
+**Ivy Decorators**
+
+Ivy provides test decorators for frontend tests to make it easier and more maintainable, currently there are two:
+
+* :func:`@handle_frontend_test` a decorator which is used to test frontend functions, for example: 
+        - :func:`np.zeros` 
+        - :func:`tensorflow.tan` 
+
+* :func:`@handle_frontend_method` a decorator which is used to test frontend methods and special methods, for example:
+        - :func:`torch.Tensor.add`
+        - :func:`numpy.ndarray.__add__`
+
+**Important Helper Functions** # TODO => move to seperate section, a lot of overlapping with ivy tests
 
 * :func:`handle_cmd_line_args` a decorator that should be added to every test function.
   For more information, visit the `Function Wrapping`_ section of the docs.
@@ -35,8 +47,6 @@ We assume knowledge of hypothesis data generation strategies and how to implemen
 * :func:`helpers.get_dtypes` helper function that returns either a full list of data types or a single data type, we should **always** be using `helpers.get_dtypes` to sample data types.
 
 * :func:`helpers.dtype_and_values` is a convenience function that allows you to generate arrays of any dimension and their associated data types, returned as :code:`([dtypes], [np.array])`.
-
-* :func:`helpers.num_positional_args` is a convenience function that specifies the number of positional arguments for a particular function.
 
 * :func:`helpers.get_shape` is a convenience function that allows you to generate an array shape of type :code:`tuple`
 
@@ -68,32 +78,32 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py
-    @handle_cmd_line_args
-    @given(
-        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.jax.lax.tan"
-        ),
-    )
+    @handle_frontend_test(
+            fn_tree="jax.lax.tan",
+            dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+            )
     def test_jax_lax_tan(
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
+            *,
+            dtype_and_x,
+            as_variable,
+            num_positional_args,
+            native_array,
+            on_device,
+            fn_tree,
+            frontend,
     ):
-        input_dtype, x = dtype_and_x
-        helpers.test_frontend_function(
+            input_dtype, x = dtype_and_x
+            helpers.test_frontend_function(
             input_dtypes=input_dtype,
             as_variable_flags=as_variable,
             with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
-            fw=fw,
-            frontend="jax",
-            fn_tree="lax.tan",
+            frontend=frontend,
+            fn_tree=fn_tree,
+            on_device=on_device,
             x=x[0],
-        )
+    )
 
 * As you can see we generate almost everything we need to test a frontend function within the :code:`@given` and :code:`@handle_cmd_line_args` decorators.
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid :code:`float` data types specifically for Jax.
@@ -110,47 +120,7 @@ ivy.tan()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_np_trigonometric_functions.py
-    @handle_cmd_line_args
-    @given(
-        dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric")
-        ),
-        dtype=helpers.get_dtypes("float", full=False, none=True),
-        where=np_frontend_helpers.where(),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.numpy.tan"
-        ),
-    )
-    def test_numpy_tan(
-        dtype_and_x,
-        dtype,
-        where,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
-        input_dtype, x = dtype_and_x
-        where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
-            where=where,
-            input_dtype=input_dtype,
-            as_variable=as_variable,
-            native_array=native_array,
-        )
-        np_frontend_helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="numpy",
-            fn_tree="tan",
-            x=x[0],
-            where=where,
-            dtype=dtype[0],
-        )
+    
 
 * Here we use :code:`helpers.get_dtypes("numeric")` to generate :code:`available_dtypes`, these are valid :code:`numeric` data types specifically for NumPy.
 * NumPy has an optional argument :code:`where` which is generated using :func:`np_frontend_helpers.where`.
@@ -163,30 +133,36 @@ ivy.tan()
 **TensorFlow**
 
 .. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
-    @handle_cmd_line_args
-    @given(
-        dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.tensorflow.tan"
-        ),
-    )
-    def test_tensorflow_tan(
-        dtype_and_x, as_variable, num_positional_args, native_array, fw
-    ):
-        input_dtype, x = dtype_and_x
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="tensorflow",
-            fn_tree="tan",
-            x=x[0],
+        
+        # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py
+        # tan
+        @handle_frontend_test(
+            fn_tree="tensorflow.math.tan",
+            dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
         )
+        def test_tensorflow_tan(
+            *,
+            dtype_and_x,
+            num_positional_args,
+            as_variable,
+            native_array,
+            frontend,
+            fn_tree,
+            on_device,
+        ):
+            input_dtype, x = dtype_and_x
+            helpers.test_frontend_function(
+                input_dtypes=input_dtype,
+                as_variable_flags=as_variable,
+                with_out=False,
+                num_positional_args=num_positional_args,
+                native_array_flags=native_array,
+                frontend=frontend,
+                fn_tree=fn_tree,
+                on_device=on_device,
+                x=x[0],
+            )
+            
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for TensorFlow.
 * We set :code:`fn_tree` to :code:`tan` which is the path to the function in the TensorFlow namespace.
@@ -196,48 +172,39 @@ ivy.tan()
 
 .. code-block:: python
 
-    # ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py
-    # leaky_relu
-    @handle_cmd_line_args
-    @given(
-        dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("float"),
-        ),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.torch.nn.functional.leaky_relu"
-        ),
-        alpha=st.floats(min_value=0, max_value=1),
-        with_inplace=st.booleans(),
+    # ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py
+    # tan
+    @handle_frontend_test(
+    fn_tree="torch.tan",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+            ),
     )
-    def test_torch_leaky_relu(
-        dtype_and_x,
-        with_out,
-        with_inplace, # does handle_cmd_line_args deals with this like with_out?
-        num_positional_args,
-        as_variable,
-        native_array,
-        fw,
-        alpha,
-    ):
-        input_dtype, x = dtype_and_x
-        helpers.test_frontend_function(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            with_inplace=with_inplace,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="torch",
-            fn_tree="nn.functional.leaky_relu",
-            input=x[0],
-            negative_slope=alpha,
-        )
+        def test_torch_tan(
+            *,
+            dtype_and_x,
+            as_variable,
+            with_out,
+            num_positional_args,
+            native_array,
+            on_device,
+            fn_tree,
+            frontend,
+        ):
+            input_dtype, x = dtype_and_x
+            helpers.test_frontend_function(
+                input_dtypes=input_dtype,
+                as_variable_flags=as_variable,
+                with_out=with_out,
+                num_positional_args=num_positional_args,
+                native_array_flags=native_array,
+                frontend=frontend,
+                fn_tree=fn_tree,
+                on_device=on_device,
+                input=x[0],
+            )
 
 * We use :code:`helpers.get_dtypes("float")` to generate :code:`available_dtypes`, these are valid float data types specifically for PyTorch.
-* We set :code:`fn_tree` to :code:`nn.functional.leaky_relu` which is the path to the function in the PyTorch namespace.
-* We get :code:`with_inplace` with hypothesis to test the function that supports direct inplace update in its arguments: when :code:`with_inplace` is :code:`True` the function updates the :code:`input` argument with return value and the return value has the same reference as the input.
-* We should set :code:`with_inplace` is :code:`True` for the special In-place versions of PyTorch functions that always do inplace update, as the :code:`input` argument is also updated with return value and the returned value has the same reference as the input.
 
 ivy.full()
 ^^^^^^^^^^
