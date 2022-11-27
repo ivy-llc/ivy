@@ -1,10 +1,11 @@
 # global
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
 )
+
+
 # eigvalsh
 @handle_frontend_test(
     fn_tree="numpy.linalg.eigvalsh",
