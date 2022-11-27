@@ -193,7 +193,7 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 
 def _is_zero_dim_array(x):
-    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
