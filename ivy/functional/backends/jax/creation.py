@@ -36,7 +36,7 @@ def arange(
 ) -> JaxArray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(jnp.arange(start, stop, step=step, dtype=dtype), device=device)
+    res = _to_device(jnp.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == jnp.float64:
             return res.astype(jnp.float32)
