@@ -4176,13 +4176,12 @@ def negative(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Computes the numerical negative of each element x_i (i.e., y_i = -x_i) of the
-    input array x.
+    """Returns a new array with the positive value of each element in ``x``.
 
     Parameters
     ----------
     x
-        Input array
+        Input array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -4190,7 +4189,7 @@ def negative(
     Returns
     -------
     ret
-        an array containing the evaluated result for each element in x
+        A new array with the negative value of each element in ``x``.
 
 
     This function conforms to the `Array API Standard
@@ -4200,7 +4199,7 @@ def negative(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments
+    instances in place of any of the arguments.
 
     Functional Examples
     -------------------
@@ -4210,70 +4209,38 @@ def negative(
     >>> x = ivy.array([0,1,1,2])
     >>> y = ivy.negative(x)
     >>> print(y)
-    ivy.array([0,-1,-1,-2])
+    ivy.array([ 0, -1, -1, -2])
 
     >>> x = ivy.array([0,-1,-0.5,2,3])
     >>> y = ivy.zeros(5)
-    >>> ivy.negative(x,out=y)
+    >>> ivy.negative(x, out=y)
     >>> print(y)
-    ivy.array([-0.,1.,0.5,-2.,-3.])
+    ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])
 
-    >>> x = ivy.array([[1.1,2.2,3.3],
-    ...                [-4.4,-5.5,-6.6]])
+    >>> x = ivy.array([[1.1, 2.2, 3.3],
+    ...                [-4.4, -5.5, -6.6]])
     >>> ivy.negative(x,out=x)
     >>> print(x)
-    ivy.array([[-1.1,-2.2,-3.3],[4.4,5.5,6.6]])
+    ivy.array([[-1.1, -2.2, -3.3],
+       [4.4, 5.5, 6.6]])
 
     With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([-1.1,-1,0,1,1.1])
+    >>> x = ivy.native_array([-1.1, -1, 0, 1, 1.1])
     >>> y = ivy.negative(x)
     >>> print(y)
-    ivy.array([1.1,1.,-0.,-1.,-1.1])
+    ivy.array([1.1, 1., -0., -1., -1.1])
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([0.,1.,2.]),
-    ...                   b=ivy.array([3.,4.,-5.]))
+    >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+    ...                   b=ivy.array([3., 4., -5.]))
     >>> y = ivy.negative(x)
     >>> print(y)
-    {a:ivy.array([-0.,-1.,-2.]),b:ivy.array([-3.,-4.,5.])}
-
-    Instance Method Examples
-    -------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1.1,-1,0,-0,1,1.1])
-    >>> y = x.negative()
-    >>> print(y)
-    ivy.array([1.1,1.,-0.,-0.,-1.,-1.1])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1,2,3]),
-    ...                   b=ivy.array([-4.4,5,-6.6]))
-    >>> y = x.negative()
-    >>> print(y)
-    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
-
-    Operator Examples
-    -----------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1,2,3])
-    >>> y = -x
-    >>> print(y)
-    ivy.array([-1,-2,-3])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([1,2,3]),
-    ...                   b=ivy.array([-4.4,5,-6.6]))
-    >>> y = -x
-    >>> print(y)
-    {a:ivy.array([-1,-2,-3]),b:ivy.array([4.4,-5.,6.6])}
+    {
+        a: ivy.array([-0., -1., -2.]),
+        b: ivy.array([-3., -4., 5.])
+    }
 
     """
     return ivy.current_backend(x).negative(x, out=out)
