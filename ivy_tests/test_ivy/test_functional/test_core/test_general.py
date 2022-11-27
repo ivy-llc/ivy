@@ -3,6 +3,7 @@
 # global
 import time
 import math
+import tensorflow as tf
 import jax.numpy as jnp
 import pytest
 from hypothesis import given, assume, strategies as st
@@ -144,6 +145,7 @@ def test_array_equal(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -222,11 +224,12 @@ def test_get_item(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
         test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         x=x,
         query=indices,
     )
@@ -267,6 +270,7 @@ def test_to_numpy(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -309,6 +313,7 @@ def test_to_scalar(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -346,6 +351,7 @@ def test_to_list(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -385,6 +391,7 @@ def test_shape(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -424,6 +431,7 @@ def test_get_num_dims(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -498,6 +506,7 @@ def test_clip_vector_norm(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -651,11 +660,14 @@ def values_and_ndindices(
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
-            ).filter(lambda x: len(set(x[1][0])) == len(x[1][0])),
+
+            ).filter(lambda d_n_v: len(set(d_n_v[1][0])) == len(d_n_v[1][0])),
+
             st.integers(min_value=n, max_value=n),
         )
     ),
     reduction=st.sampled_from(["sum", "min", "max", "replace"]),
+    ground_truth_backend="torch",
 )
 def test_scatter_flat(
     x,
@@ -669,8 +681,20 @@ def test_scatter_flat(
     backend_fw,
     fn_name,
     on_device,
+    test_gradients,
     ground_truth_backend,
 ):
+    # scatter_flat throws an error while computing gradients for tensorflow
+    # this has been fixed in the newer versions of tensorflow (2.10.0 onwards)
+    if "tensorflow" in backend_fw.__name__:
+        grad_support_version = [2, 10, 0]
+        k = 0
+        for number in [int(s) for s in tf.__version__.split(".") if s.isdigit()]:
+            if k > len(grad_support_version):
+                break
+            if number < grad_support_version[k]:
+                test_gradients = False
+            k += 1
     (val_dtype, vals), (ind_dtype, ind), size = x
     helpers.test_function(
         input_dtypes=ind_dtype + val_dtype,
@@ -680,6 +704,9 @@ def test_scatter_flat(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        test_gradients=test_gradients,
+        xs_grad_idxs=[[0, 1]],
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -727,6 +754,7 @@ def test_scatter_nd(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -772,6 +800,7 @@ def test_gather(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -898,6 +927,7 @@ def test_gather_nd(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1231,6 +1261,7 @@ def test_einops_rearrange(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1295,6 +1326,7 @@ def test_einops_reduce(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1354,6 +1386,7 @@ def test_einops_repeat(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1482,6 +1515,7 @@ def test_inplace_increment(x_val_and_dtypes, tensor_fn, on_device):
         available_dtypes=helpers.get_dtypes("valid")
     ),
     exclusive=st.booleans(),
+    ground_truth_backend="numpy",
 )
 def test_is_ivy_array(
     *,
@@ -1507,10 +1541,10 @@ def test_is_ivy_array(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        ground_truth_backend="numpy",
         x=x[0],
         exclusive=exclusive,
     )
@@ -1548,6 +1582,7 @@ def test_is_native_array(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1587,6 +1622,7 @@ def test_is_array(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1624,6 +1660,7 @@ def test_is_ivy_container(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1669,6 +1706,7 @@ def test_all_equal(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1718,6 +1756,7 @@ def test_clip_matrix_norm(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1766,6 +1805,7 @@ def test_value_is_nan(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -1808,6 +1848,7 @@ def test_has_nans(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2008,6 +2049,7 @@ def test_stable_divide(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2067,6 +2109,7 @@ def test_stable_pow(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2152,6 +2195,7 @@ def test_supports_inplace_updates(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
@@ -2165,6 +2209,7 @@ def test_supports_inplace_updates(
     x_val_and_dtypes=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid")
     ),
+    ground_truth_backend="numpy",
 )
 def test_assert_supports_inplace(
     x_val_and_dtypes,
@@ -2191,10 +2236,10 @@ def test_assert_supports_inplace(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        ground_truth_backend="numpy",
         x=x[0],
     )
 
