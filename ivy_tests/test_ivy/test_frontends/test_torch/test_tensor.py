@@ -241,14 +241,14 @@ def test_torch_instance_arcsin(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -280,14 +280,14 @@ def test_torch_instance_atan(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -319,7 +319,7 @@ def test_torch_instance_sin_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -358,14 +358,14 @@ def test_torch_instance_cos(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -398,7 +398,7 @@ def test_torch_instance_cos_(
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -437,14 +437,14 @@ def test_torch_instance_sinh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -476,14 +476,14 @@ def test_torch_instance_sinh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -515,14 +515,14 @@ def test_torch_instance_cosh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -554,14 +554,14 @@ def test_torch_instance_cosh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -677,14 +677,14 @@ def test_torch_instance_asinh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -718,7 +718,7 @@ def test_torch_instance_asinh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -759,14 +759,14 @@ def test_torch_instance_tan(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -798,14 +798,14 @@ def test_torch_instance_tanh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -837,14 +837,14 @@ def test_torch_instance_tanh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -876,14 +876,14 @@ def test_torch_instance_asin(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -1109,14 +1109,14 @@ def test_torch_instance_log(
     input_dtype, x = dtype_and_x
     assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -1583,14 +1583,14 @@ def test_torch_instance_arctan(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -1622,7 +1622,7 @@ def test_torch_instance_arctan_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -1661,14 +1661,14 @@ def test_torch_instance_acos(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=["float64"] + input_dtype,
+        method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
@@ -2632,7 +2632,7 @@ def test_torch_instance_arccos_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2672,7 +2672,7 @@ def test_torch_instance_arccos(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2712,7 +2712,7 @@ def test_torch_instance_acos_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2752,7 +2752,7 @@ def test_torch_instance_asin_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2792,7 +2792,7 @@ def test_torch_instance_arcsin_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2831,7 +2831,7 @@ def test_torch_instance_atan_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2870,7 +2870,7 @@ def test_torch_instance_tan_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2910,7 +2910,7 @@ def test_torch_instance_atanh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2950,7 +2950,7 @@ def test_torch_instance_atanh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -2990,7 +2990,7 @@ def test_torch_instance_arctanh(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
@@ -3030,7 +3030,7 @@ def test_torch_instance_arctanh_(
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
-        init_input_dtypes=["float64"] + input_dtype,
+        init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
