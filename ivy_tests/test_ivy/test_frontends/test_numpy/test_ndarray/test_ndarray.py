@@ -2229,6 +2229,7 @@ def test_numpy_instance_imod__(
 
 
 @handle_frontend_method(
+    init_name="array",
     method_tree="numpy.ndarray.__abs__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
