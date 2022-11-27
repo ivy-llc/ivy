@@ -185,6 +185,13 @@ def relu(input, inplace=False):
 
 
 @to_ivy_arrays_and_back
+def relu_(input):
+    ret = ivy.relu(input)
+    ivy.inplace_update(input, ret)
+    return input
+
+
+@to_ivy_arrays_and_back
 def selu(input, inplace=False):
     return _selu_with_inplace(input, inplace=inplace)
 
