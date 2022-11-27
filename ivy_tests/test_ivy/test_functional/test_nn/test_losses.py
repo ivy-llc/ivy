@@ -167,8 +167,8 @@ def test_binary_cross_entropy(
         max_num_dims=1,
         min_dim_size=2,
     ),
-    dtype_and_pos_weight=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_pos_weight=helpers.array_or_none(
+        array_dtype="float",
         min_value=0,
         max_value=1,
         allow_inf=False,

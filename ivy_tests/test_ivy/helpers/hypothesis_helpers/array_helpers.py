@@ -237,6 +237,64 @@ def dtype_and_values(
 
 
 @st.composite
+def array_or_none(
+    draw,
+    *,
+    array_dtype,
+    num_arrays=1,
+    abs_smallest_val=None,
+    min_value=None,
+    max_value=None,
+    large_abs_safety_factor=1.1,
+    small_abs_safety_factor=1.1,
+    safety_factor_scale="linear",
+    allow_inf=False,
+    allow_nan=False,
+    exclude_min=False,
+    exclude_max=False,
+    min_num_dims=0,
+    max_num_dims=5,
+    min_dim_size=1,
+    max_dim_size=10,
+    shape=None,
+    shared_dtype=False,
+    ret_shape=False,
+    dtype=None,
+    array_api_dtypes=False,
+):
+    selected_type = draw(st.sampled_from((array_dtype, None)))
+    if selected_type is None:
+        dtype, values = [None], [None]
+    else:
+        dtype, values = draw(
+            dtype_and_values(
+                available_dtypes=dtype_helpers.get_dtypes(array_dtype),
+                num_arrays=num_arrays,
+                abs_smallest_val=abs_smallest_val,
+                min_value=min_value,
+                max_value=max_value,
+                large_abs_safety_factor=large_abs_safety_factor,
+                small_abs_safety_factor=small_abs_safety_factor,
+                safety_factor_scale=safety_factor_scale,
+                allow_inf=allow_inf,
+                allow_nan=allow_nan,
+                exclude_min=exclude_min,
+                exclude_max=exclude_max,
+                min_num_dims=min_num_dims,
+                max_num_dims=max_num_dims,
+                min_dim_size=min_dim_size,
+                max_dim_size=max_dim_size,
+                shape=shape,
+                shared_dtype=shared_dtype,
+                ret_shape=ret_shape,
+                dtype=dtype,
+                array_api_dtypes=array_api_dtypes,
+            )
+        )
+    return dtype, values
+
+
+@st.composite
 def dtype_values_axis(
     draw,
     *,
