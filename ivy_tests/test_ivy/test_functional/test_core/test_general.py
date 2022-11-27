@@ -660,7 +660,9 @@ def values_and_ndindices(
                 max_num_dims=1,
                 min_dim_size=n,
                 max_dim_size=n,
+
             ).filter(lambda d_n_v: len(set(d_n_v[1][0])) == len(d_n_v[1][0])),
+
             st.integers(min_value=n, max_value=n),
         )
     ),
