@@ -1869,6 +1869,86 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_diff(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.diff. This method simply wraps
+        the function, and so the docstring for ivy.diff also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along
+            the given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "diff",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diff(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along the
+            given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return self.static_diff(self, out=out)
+
+    @staticmethod
     def static_fix(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
