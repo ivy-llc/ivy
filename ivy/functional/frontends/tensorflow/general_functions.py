@@ -9,17 +9,14 @@ from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
 @to_ivy_arrays_and_back
-def argsort(values, axis=-1, direction='ASCENDING', stable=False, name=None):
-    if direction == 'DESCENDING':
+def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
+    if direction == "DESCENDING":
         descending = True
     else:
         descending = False
-    return ivy.argsort(
-        values,
-        axis=axis,
-        descending=descending,
-        stable=stable
-    ).astype("int32")
+    return ivy.argsort(values, axis=axis, descending=descending, stable=stable).astype(
+        "int32"
+    )
 
 
 @to_ivy_arrays_and_back
