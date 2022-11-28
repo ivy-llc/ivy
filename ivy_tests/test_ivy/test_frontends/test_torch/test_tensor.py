@@ -52,8 +52,8 @@ def _requires_grad(draw):
 def test_torch_instance_add(
     dtype_and_x,
     alpha,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     method_name,
@@ -104,8 +104,8 @@ def test_torch_instance_new_ones(
     dtypes,
     requires_grad,
     on_device,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -151,8 +151,8 @@ def test_torch_instance_new_ones(
 def test_torch_instance_reshape(
     dtype_x,
     shape,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -192,8 +192,8 @@ def test_torch_instance_reshape(
 )
 def test_torch_instance_sin(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -231,8 +231,8 @@ def test_torch_instance_sin(
 )
 def test_torch_instance_arcsin(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -270,8 +270,8 @@ def test_torch_instance_arcsin(
 )
 def test_torch_instance_atan(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -309,8 +309,8 @@ def test_torch_instance_atan(
 )
 def test_torch_instance_sin_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -348,8 +348,8 @@ def test_torch_instance_sin_(
 )
 def test_torch_instance_cos(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -387,8 +387,8 @@ def test_torch_instance_cos(
 )
 def test_torch_instance_cos_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -427,8 +427,8 @@ def test_torch_instance_cos_(
 )
 def test_torch_instance_sinh(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -466,8 +466,8 @@ def test_torch_instance_sinh(
 )
 def test_torch_instance_sinh_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -505,8 +505,8 @@ def test_torch_instance_sinh_(
 )
 def test_torch_instance_cosh(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -544,8 +544,8 @@ def test_torch_instance_cosh(
 )
 def test_torch_instance_cosh_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -587,8 +587,8 @@ def test_torch_instance_cosh_(
 def test_torch_instance_view(
     dtype_x,
     shape,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -626,8 +626,8 @@ def test_torch_instance_view(
 )
 def test_torch_instance_float(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -667,8 +667,8 @@ def test_torch_instance_float(
 )
 def test_torch_instance_asinh(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -708,8 +708,8 @@ def test_torch_instance_asinh(
 )
 def test_torch_instance_asinh_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -749,8 +749,8 @@ def test_torch_instance_asinh_(
 )
 def test_torch_instance_tan(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -788,8 +788,8 @@ def test_torch_instance_tan(
 )
 def test_torch_instance_tanh(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -827,8 +827,8 @@ def test_torch_instance_tanh(
 )
 def test_torch_instance_tanh_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -866,8 +866,8 @@ def test_torch_instance_tanh_(
 )
 def test_torch_instance_asin(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -904,8 +904,8 @@ def test_torch_instance_asin(
 )
 def test_torch_instance_amax(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -942,8 +942,8 @@ def test_torch_instance_amax(
 )
 def test_torch_instance_abs(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -980,8 +980,8 @@ def test_torch_instance_abs(
 )
 def test_torch_instance_abs_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1018,8 +1018,8 @@ def test_torch_instance_abs_(
 )
 def test_torch_instance_amin(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1057,8 +1057,8 @@ def test_torch_instance_amin(
 )
 def test_torch_instance_contiguous(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1098,8 +1098,8 @@ def test_torch_instance_contiguous(
 )
 def test_torch_instance_log(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1146,8 +1146,8 @@ def test_torch_instance_log(
 def test_torch_special_add(
     dtype_and_x,
     alpha,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1191,8 +1191,8 @@ def test_torch_special_add(
 )
 def test_torch_special_long(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1238,8 +1238,8 @@ def test_torch_special_long(
 def test_torch_special_radd(
     dtype_and_x,
     alpha,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1288,8 +1288,8 @@ def test_torch_special_radd(
 def test_torch_special_sub(
     dtype_and_x,
     alpha,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1333,8 +1333,8 @@ def test_torch_special_sub(
 )
 def test_torch_special_mul(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1377,8 +1377,8 @@ def test_torch_special_mul(
 )
 def test_torch_special_rmul(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1424,8 +1424,8 @@ def test_torch_special_rmul(
 def test_torch_special_truediv(
     dtype_and_x,
     rounding_mode,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1467,8 +1467,8 @@ def test_torch_special_truediv(
 def test_torch_instance_to_with_device(
     dtype_x,
     copy,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1534,8 +1534,8 @@ def _to_helper(draw):
 )
 def test_torch_instance_to(
     args_kwargs,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1573,8 +1573,8 @@ def test_torch_instance_to(
 )
 def test_torch_instance_arctan(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1612,8 +1612,8 @@ def test_torch_instance_arctan(
 )
 def test_torch_instance_arctan_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1651,8 +1651,8 @@ def test_torch_instance_arctan_(
 )
 def test_torch_instance_acos(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1689,8 +1689,8 @@ def test_torch_instance_acos(
     ),
 )
 def test_torch_instance_new_tensor(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -1783,8 +1783,8 @@ def _array_and_index(
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_torch_instance_getitem(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -1824,8 +1824,8 @@ def test_torch_instance_getitem(
 )
 def test_torch_instance_view_as(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1871,8 +1871,8 @@ def test_torch_instance_view_as(
 def test_torch_instance_unsqueeze(
     dtype_value,
     dim,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1918,8 +1918,8 @@ def test_torch_instance_unsqueeze(
 def test_torch_instance_unsqueeze_(
     dtype_value,
     dim,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -1958,8 +1958,8 @@ def test_torch_instance_unsqueeze_(
     ),
 )
 def test_torch_instance_detach(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -1996,8 +1996,8 @@ def test_torch_instance_detach(
     ),
 )
 def test_torch_instance_dim(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2034,8 +2034,8 @@ def test_torch_instance_dim(
     ),
 )
 def test_torch_instance_ndimension(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2114,8 +2114,8 @@ def _fill_value_and_size(
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
 def test_torch_instance_new_full(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2159,8 +2159,8 @@ def test_torch_instance_new_full(
     ),
 )
 def test_torch_instance_new_empty(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     size,
     as_variable: pf.AsVariableFlags,
@@ -2211,8 +2211,8 @@ def _expand_helper(draw):
 )
 def test_torch_instance_expand(
     dtype_x_shape,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2278,8 +2278,8 @@ def _unfold_args(draw):
     dtype_values_args=_unfold_args(),
 )
 def test_torch_instance_unfold(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_values_args,
     size,
     step,
@@ -2325,8 +2325,8 @@ def test_torch_instance_unfold(
 )
 def test_torch_special_mod(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2367,8 +2367,8 @@ def test_torch_special_mod(
 )
 def test_torch_instance_long(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2405,8 +2405,8 @@ def test_torch_instance_long(
 )
 def test_torch_instance_max(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2442,8 +2442,8 @@ def test_torch_instance_max(
     ),
 )
 def test_torch_instance_device(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2495,8 +2495,8 @@ def test_torch_instance_is_cuda(
     dtypes,
     requires_grad,
     device,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
@@ -2539,8 +2539,8 @@ def test_torch_instance_is_cuda(
 )
 def test_torch_instance_bitwise_and(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2579,8 +2579,8 @@ def test_torch_instance_bitwise_and(
     ),
 )
 def test_torch_instance_add_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2621,8 +2621,8 @@ def test_torch_instance_add_(
     ),
 )
 def test_torch_instance_arccos_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2661,8 +2661,8 @@ def test_torch_instance_arccos_(
     ),
 )
 def test_torch_instance_arccos(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2702,8 +2702,8 @@ def test_torch_instance_arccos(
 )
 def test_torch_instance_acos_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2742,8 +2742,8 @@ def test_torch_instance_acos_(
 )
 def test_torch_instance_asin_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2781,8 +2781,8 @@ def test_torch_instance_asin_(
     ),
 )
 def test_torch_instance_arcsin_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2821,8 +2821,8 @@ def test_torch_instance_arcsin_(
 )
 def test_torch_instance_atan_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2860,8 +2860,8 @@ def test_torch_instance_atan_(
 )
 def test_torch_instance_tan_(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -2899,8 +2899,8 @@ def test_torch_instance_tan_(
     ),
 )
 def test_torch_instance_atanh(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2939,8 +2939,8 @@ def test_torch_instance_atanh(
     ),
 )
 def test_torch_instance_atanh_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -2979,8 +2979,8 @@ def test_torch_instance_atanh_(
     ),
 )
 def test_torch_instance_arctanh(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -3019,8 +3019,8 @@ def test_torch_instance_arctanh(
     ),
 )
 def test_torch_instance_arctanh_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -3062,8 +3062,8 @@ def test_torch_instance_arctanh_(
 )
 def test_torch_instance_pow(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -3102,8 +3102,8 @@ def test_torch_instance_pow(
     ),
 )
 def test_torch_instance_pow_(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -3152,8 +3152,8 @@ def test_torch_instance_pow_(
     keepdim=st.booleans(),
 )
 def test_torch_instance_argmax(
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_input_axis,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
@@ -3194,8 +3194,8 @@ def test_torch_instance_argmax(
 )
 def test_torch_instance_ceil(
     dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,
@@ -3232,8 +3232,8 @@ def test_torch_instance_ceil(
 )
 def test_torch_instance_min(
     dtype_x,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
@@ -3278,8 +3278,8 @@ def _get_dtype_and_multiplicative_matrices(draw):
 )
 def test_torch_instance_matmul(
     dtype_tensor1_tensor2,
-    init_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.INIT),
-    method_num_positional_args: pf.NumPositionalArg(pf.TestObjectType.METHOD),
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_name,

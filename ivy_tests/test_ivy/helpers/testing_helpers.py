@@ -374,15 +374,15 @@ def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs)
                     or v is pf.AsVariableFlags
                 ):
                     _given_kwargs[k] = st.lists(st.booleans(), min_size=1, max_size=1)
-                elif isinstance(v, pf.NumPositionalArg):
-                    if v.object_type is pf.TestObjectType.METHOD:
-                        _given_kwargs[k] = num_positional_args_method(
-                            method=callable_method
-                        )
-                    elif v.object_type is pf.TestObjectType.INIT:
-                        _given_kwargs[k] = num_positional_args(
-                            fn_name="functional.frontends." + frontend + "." + init_name
-                        )
+                elif v is pf.NumPositionalArgMethod:
+                    _given_kwargs[k] = num_positional_args_method(
+                        method=callable_method
+                    )
+                # TODO temporay, should also handle if the init is a method.
+                elif v is pf.NumPositionalArgFn:
+                    _given_kwargs[k] = num_positional_args(
+                        fn_name="functional.frontends." + frontend + "." + init_name
+                    )
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__

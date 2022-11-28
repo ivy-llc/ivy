@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from enum import Enum
 
 
@@ -12,9 +11,16 @@ class TestObjectType(Enum):
     INIT = 3
 
 
-@dataclass(frozen=True)
-class NumPositionalArg:
-    object_type: TestObjectType = TestObjectType.FUNCTION
+class NumPositionalArg:  # TODO for backward compatibility only
+    pass
+
+
+class NumPositionalArgMethod:
+    pass
+
+
+class NumPositionalArgFn:
+    pass
 
 
 class NativeArrayFlags:
