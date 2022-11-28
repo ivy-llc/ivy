@@ -9,6 +9,17 @@ from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
 @to_ivy_arrays_and_back
+def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
+    if direction == "DESCENDING":
+        descending = True
+    else:
+        descending = False
+    return ivy.argsort(values, axis=axis, descending=descending, stable=stable).astype(
+        "int32"
+    )
+
+
+@to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -69,6 +80,11 @@ def rank(input, **kwargs):
 @to_ivy_arrays_and_back
 def ones_like(input, dtype=None, name=None):
     return ivy.ones_like(input, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(input, axis, name=None):
+    return ivy.expand_dims(input, axis=axis)
 
 
 @to_ivy_arrays_and_back

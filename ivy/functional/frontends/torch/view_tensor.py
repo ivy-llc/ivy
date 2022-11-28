@@ -50,11 +50,11 @@ class ViewTensor:
     def __init__(self, ref, *, shape):
         if isinstance(ref(), Tensor):
             self.delegate = torch_frontend.tensor(
-                ivy.reshape(ref().ivyArray, shape, copy=True)
+                ivy.reshape(ref().ivy_array, shape, copy=True)
             )
         elif isinstance(ref(), ViewTensor):
             self.delegate = torch_frontend.tensor(
-                ivy.reshape(ref().delegate.ivyArray, shape, copy=True)
+                ivy.reshape(ref().delegate.ivy_array, shape, copy=True)
             )
         else:
             raise TypeError(
@@ -83,12 +83,12 @@ class ViewTensor:
         if (self.ref() is not None) or checked:
             if isinstance(self.ref(), Tensor):
                 self.delegate = torch_frontend.tensor(
-                    ivy.reshape(self.ref().ivyArray, self.size(), copy=True)
+                    ivy.reshape(self.ref().ivy_array, self.size(), copy=True)
                 )
             elif isinstance(self.ref(), ViewTensor):
                 self.ref().fetch_from()
                 self.delegate = torch_frontend.tensor(
-                    ivy.reshape(self.ref().delegate.ivyArray, self.size(), copy=True)
+                    ivy.reshape(self.ref().delegate.ivy_array, self.size(), copy=True)
                 )
             else:
                 raise AttributeError(
@@ -99,12 +99,12 @@ class ViewTensor:
     def merge_to(self, *, checked=False):
         if (self.ref() is not None) or checked:
             if isinstance(self.ref(), Tensor):
-                self.ref().ivyArray = ivy.reshape(
-                    self.delegate.ivyArray, self.ref().size(), copy=True
+                self.ref().ivy_array = ivy.reshape(
+                    self.delegate.ivy_array, self.ref().size(), copy=True
                 )
             elif isinstance(self.ref(), ViewTensor):
-                self.ref().delegate.ivyArray = ivy.reshape(
-                    self.delegate.ivyArray, self.ref().size(), copy=True
+                self.ref().delegate.ivy_array = ivy.reshape(
+                    self.delegate.ivy_array, self.ref().size(), copy=True
                 )
                 self.ref().merge_to()
             else:
