@@ -172,7 +172,7 @@ def nll_loss(
     size_average=None,
     ignore_index=-100,
     reduce=None,
-    reduction='mean'
+    reduction="mean",
 ):
 
     out = ivy.zeros_like(target)
