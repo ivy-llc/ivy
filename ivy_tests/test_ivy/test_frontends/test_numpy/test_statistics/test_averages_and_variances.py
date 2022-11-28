@@ -19,17 +19,17 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     keep_dims=st.booleans(),
 )
 def test_numpy_mean(
-    dtype_and_x,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
-    keep_dims,
+        dtype_and_x,
+        dtype,
+        where,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+        keep_dims,
 ):
     input_dtype, x, axis = dtype_and_x
     if isinstance(axis, tuple):
@@ -70,17 +70,17 @@ def test_numpy_mean(
     keep_dims=st.booleans(),
 )
 def test_numpy_nanmean(
-    dtype_and_a,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    frontend,
-    fn_tree,
-    on_device,
-    keep_dims,
+        dtype_and_a,
+        dtype,
+        where,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        frontend,
+        fn_tree,
+        on_device,
+        keep_dims,
 ):
     input_dtype, a, axis = dtype_and_a
     if isinstance(axis, tuple):
@@ -124,15 +124,15 @@ def test_numpy_nanmean(
     keep_dims=st.booleans(),
 )
 def test_numpy_std(
-    dtype_and_x,
-    dtype,
-    where,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    fw,
-    keep_dims,
+        dtype_and_x,
+        dtype,
+        where,
+        as_variable,
+        with_out,
+        num_positional_args,
+        native_array,
+        fw,
+        keep_dims,
 ):
     input_dtype, x, axis, axis_excess = dtype_and_x
     if isinstance(axis, tuple):
@@ -164,26 +164,23 @@ def test_numpy_std(
     )
 
 
-#average
+# average
 @handle_frontend_test(
     fn_tree="numpy.average",
     dtype_and_a=statistical_dtype_values(function="average"),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.average"
-    ),
     dtype_and_x=statistical_dtype_values(function="average"),
     keep_dims=st.booleans(),
 )
 def test_numpy_average(
         dtype_and_a,
         as_variable,
-        with_out,
-        native_array,
         num_positional_args,
+        native_array,
         dtype_and_x,
         frontend,
         fn_tree,
         keep_dims,
+        on_device
 ):
     input_dtype, a, axis = dtype_and_a
 
@@ -193,17 +190,17 @@ def test_numpy_average(
         axis = axis[0]
 
     helpers.test_frontend_function(
+        a=a[0],
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
-        native_array_flags=native_array,
+        with_out=False,
         num_positional_args=num_positional_args,
-        a=a[0],
+        native_array_flags=native_array,
         weights=xs[0],
         axis=axis,
         frontend=frontend,
         fn_tree=fn_tree,
         keepdims=keep_dims,
-        test_values=False,
+        test_values=True,
+        on_device=on_device,
     )
-
