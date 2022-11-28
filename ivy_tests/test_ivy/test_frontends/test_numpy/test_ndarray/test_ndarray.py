@@ -4,16 +4,101 @@ import numpy as np
 from hypothesis import assume, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, assert_all_close
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_method,
+    assert_all_close,
+    handle_frontend_test,
+)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
     _get_second_matrix_and_dtype,
 )
+from ivy.functional.frontends.numpy import ndarray
 
 
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
+
+
+@handle_frontend_test(
+    fn_tree="numpy.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_numpy_ndarray_property_ivy_array(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
+    ret_gt = np.ravel(data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="numpy",
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_numpy_ndarray_property_dtype(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+    ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+
+
+@handle_frontend_test(
+    fn_tree="numpy.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_numpy_ndarray_property_shape(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+    ivy.assertions.check_equal(x.shape, ivy.Shape(shape))
+
+
+@handle_frontend_test(
+    fn_tree="numpy.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        ret_shape=True,
+    ),
+)
+def test_numpy_ndarray_property_T(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = ndarray(shape, dtype[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.T.ivy_array)
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ivy.matrix_transpose(ivy.native_array(data[0]))
+    )
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="numpy",
+    )
 
 
 @handle_frontend_method(
@@ -932,6 +1017,62 @@ def test_numpy_instance_squeeze(
         frontend="numpy",
         class_="ndarray",
         method_name="squeeze",
+    )
+
+
+@handle_frontend_method(
+    method_tree="numpy.ndarray.std",
+    dtype_x_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        max_value=100,
+        valid_axis=True,
+        force_int_axis=True,
+    ),
+    keepdims=st.booleans(),
+    where=np_frontend_helpers.where(),
+    num_positional_args_method=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.numpy.ndarray.std"
+    ),
+)
+def test_numpy_instance_std(
+    dtype_x_axis,
+    keepdims,
+    where,
+    as_variable,
+    num_positional_args_method,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x, axis = dtype_x_axis
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
+        where=[where[0][0]] if isinstance(where, list) else where,
+        input_dtype=input_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        input_dtypes_method=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=num_positional_args_method,
+        num_positional_args_method=num_positional_args_method,
+        native_array_flags_init=native_array,
+        as_variable_flags_method=as_variable,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        all_as_kwargs_np_method={
+            "axis": axis,
+            "out": None,
+            "ddof": 0,
+            "keepdims": keepdims,
+            "where": where,
+        },
+        frontend="numpy",
+        class_name="ndarray",
+        method_name="std",
     )
 
 

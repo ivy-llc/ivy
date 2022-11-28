@@ -131,7 +131,7 @@ def mod(x1, x2):
 
 @to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
-    return ivy.reshape(a, newshape)
+    return ivy.reshape(a, shape=newshape, order=order)
 
 
 @to_ivy_arrays_and_back
@@ -422,10 +422,12 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, keepdims=False, *, where=True):
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
     return ret
 
 
