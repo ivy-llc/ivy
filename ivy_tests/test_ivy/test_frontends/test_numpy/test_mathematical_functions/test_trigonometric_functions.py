@@ -346,4 +346,3 @@ def test_numpy_deg2rad(
         subok=True,
         test_values=False,
     )
-
