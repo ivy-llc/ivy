@@ -56,7 +56,6 @@ def quantile(
 ) -> np.ndarray:
     # quantile method in numpy backend, always return an array with dtype=float64.
     # in other backends, the output is the same dtype as the input.
-    input_dtype = str(a.dtype)
 
     tuple(axis) if isinstance(axis, list) else axis
     return np.quantile(
@@ -66,4 +65,4 @@ def quantile(
         method=interpolation,
         keepdims=keepdims,
         out=out
-    ).astype(input_dtype)
+    ).astype(a.dtype)
