@@ -175,10 +175,7 @@ def allclose(
 
 
 def diff(
-    x: Union[JaxArray, int, float, list, tuple],
-    /,
-    *,
-    out: Optional[JaxArray] = None
+    x: Union[JaxArray, int, float, list, tuple], /, *, out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.diff(x, out=out)
 
