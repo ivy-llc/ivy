@@ -756,7 +756,11 @@ def _get_inv_square_matrices(draw):
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
 
     shape = (dim_size,) * batch_shape
-    input_dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    input_dtype = draw(
+        helpers.get_dtypes("float", index=1, full=False).filter(
+            lambda x: x not in ["float16", "bfloat16"]
+        )
+    )
     invertible = False
     while not invertible:
         a = draw(
