@@ -774,7 +774,6 @@ def _get_inv_square_matrices(draw):
             pass
 
     ind = int(np.floor(len(shape) / 2))
-
     return input_dtype, a, ind
 
 
@@ -803,6 +802,6 @@ def test_jax_numpy_tensorinv(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        a=x,
         ind=ind,
     )
