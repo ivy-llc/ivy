@@ -61,9 +61,9 @@ def avg_pool2d(
         input, ksize, strides, padding, data_format=data_format
     )
 
+
 avg_pool2d.unsupported_dtypes = (
     "int64",
-    "bool",
     "bfloat16",
 )
 
