@@ -42,7 +42,7 @@ def _get_clip_inputs(draw):
         min_axis=-1,
         max_axis=0,
     ),
-    direction=st.sampled_from(["ASCENDING", "DESCENDING"])
+    direction=st.sampled_from(["ASCENDING", "DESCENDING"]),
 )
 def test_tensorflow_argsort(
     *,
