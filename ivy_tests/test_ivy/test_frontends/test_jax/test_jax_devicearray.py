@@ -32,7 +32,7 @@ def test_jax_special_pos(
 # __neg__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"))
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_jax_special_neg(
     dtype_x,
@@ -54,7 +54,7 @@ def test_jax_special_neg(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_eq(
     dtype_x,
@@ -78,7 +78,7 @@ def test_jax_special_eq(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ne(
     dtype_x,
@@ -102,7 +102,7 @@ def test_jax_special_ne(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_lt(
     dtype_x,
@@ -126,7 +126,7 @@ def test_jax_special_lt(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_le(
     dtype_x,
@@ -150,7 +150,7 @@ def test_jax_special_le(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_gt(
     dtype_x,
@@ -174,7 +174,7 @@ def test_jax_special_gt(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ge(
     dtype_x,
@@ -196,7 +196,7 @@ def test_jax_special_ge(
 # __abs__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric"))
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_jax_special_abs(
     dtype_x,
@@ -224,8 +224,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
 
 # __pow__
 @handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_pow=_get_dtype_x_and_int()
+    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
 )
 def test_jax_special_pow(
     dtype_x_pow,
@@ -244,8 +243,7 @@ def test_jax_special_pow(
 
 # __rpow__
 @handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_pow=_get_dtype_x_and_int()
+    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
 )
 def test_jax_special_rpow(
     dtype_x_pow,
@@ -267,7 +265,7 @@ def test_jax_special_rpow(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_and(
     dtype_x,
@@ -291,7 +289,7 @@ def test_jax_special_and(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_rand(
     dtype_x,
@@ -315,7 +313,7 @@ def test_jax_special_rand(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_or(
     dtype_x,
@@ -339,7 +337,7 @@ def test_jax_special_or(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_ror(
     dtype_x,
@@ -363,7 +361,7 @@ def test_jax_special_ror(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_xor(
     dtype_x,
@@ -387,7 +385,7 @@ def test_jax_special_xor(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
-    )
+    ),
 )
 def test_jax_special_rxor(
     dtype_x,
@@ -411,7 +409,7 @@ def test_jax_special_rxor(
     fn_tree="jax.lax.add",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer")
-    )
+    ),
 )
 def test_jax_special_invert(
     dtype_x,
@@ -431,7 +429,7 @@ def test_jax_special_invert(
 # __lshift__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer")
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_lshift(
     dtype_x_shift,
@@ -451,7 +449,7 @@ def test_jax_special_lshift(
 # __rlshift__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer")
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rlshift(
     dtype_x_shift,
@@ -471,7 +469,7 @@ def test_jax_special_rlshift(
 # __rshift__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer")
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rshift(
     dtype_x_shift,
@@ -491,7 +489,7 @@ def test_jax_special_rshift(
 # __rrshift__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer")
+    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rrshift(
     dtype_x_shift,
@@ -515,7 +513,7 @@ def test_jax_special_rrshift(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_add(
     dtype_x,
@@ -539,7 +537,7 @@ def test_jax_special_add(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_radd(
     dtype_x,
@@ -567,7 +565,7 @@ def test_jax_special_radd(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_sub(
     dtype_x,
@@ -593,7 +591,7 @@ def test_jax_special_sub(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rsub(
     dtype_x,
@@ -621,7 +619,7 @@ def test_jax_special_rsub(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_mul(
     dtype_x,
@@ -647,7 +645,7 @@ def test_jax_special_mul(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rmul(
     dtype_x,
@@ -675,7 +673,7 @@ def test_jax_special_rmul(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_div(
     dtype_x,
@@ -701,7 +699,7 @@ def test_jax_special_div(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rdiv(
     dtype_x,
@@ -729,7 +727,7 @@ def test_jax_special_rdiv(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_truediv(
     dtype_x,
@@ -757,7 +755,7 @@ def test_jax_special_truediv(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rtruediv(
     dtype_x,
@@ -783,7 +781,7 @@ def test_jax_special_rtruediv(
         available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_mod(
     dtype_x,
@@ -811,7 +809,7 @@ def test_jax_special_mod(
         available_dtypes=helpers.get_dtypes("float", full=True),
         shared_dtype=True,
         num_arrays=2,
-    )
+    ),
 )
 def test_jax_special_rmod(
     dtype_x,

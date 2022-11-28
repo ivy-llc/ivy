@@ -422,7 +422,8 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, keepdims=False, *, where=True):
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)

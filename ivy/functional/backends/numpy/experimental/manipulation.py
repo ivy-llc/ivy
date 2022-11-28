@@ -249,6 +249,10 @@ def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_2d(*arys)
 
 
+def atleast_3d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_3d(*arys)
+
+
 @_scalar_output_to_0d_array
 def take_along_axis(
     arr: np.ndarray,
@@ -264,6 +268,7 @@ def take_along_axis(
             + f" got {arr.shape} vs {indices.shape}"
         )
     return np.take_along_axis(arr, indices, axis)
+
 
 def hsplit(
     ary: np.ndarray,

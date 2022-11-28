@@ -195,6 +195,7 @@ def handle_dtype_and_casting(
 @st.composite
 def get_dtype_and_values_and_casting(
     draw,
+    *,
     get_dtypes_kind="valid",
     get_dtypes_index=0,
     get_dtypes_none=True,
@@ -206,7 +207,7 @@ def get_dtype_and_values_and_casting(
     if casting in ["no", "equiv"]:
         dtype = input_dtype[0]
         input_dtype = [dtype for x in input_dtype]
-        return input_dtype, [dtype], x, casting
+        return dtype, input_dtype, x, casting
     dtype = draw(
         helpers.get_dtypes(
             get_dtypes_kind,
@@ -227,4 +228,4 @@ def get_dtype_and_values_and_casting(
                     key=get_dtypes_key,
                 )
             )
-    return input_dtype, dtype, x, casting
+    return dtype[0], input_dtype, x, casting

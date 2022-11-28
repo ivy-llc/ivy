@@ -253,6 +253,10 @@ def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
 
 
+def atleast_3d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_3d(*arys)
+
+
 def take_along_axis(
     arr: JaxArray,
     indices: JaxArray,
@@ -268,6 +272,7 @@ def take_along_axis(
         )
 
     return jnp.take_along_axis(arr, indices, axis)
+
 
 def hsplit(
     ary: JaxArray,
