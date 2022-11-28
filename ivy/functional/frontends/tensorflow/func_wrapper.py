@@ -11,7 +11,7 @@ import ivy.functional.frontends.tensorflow as frontend
 
 def _tf_frontend_array_to_ivy(x):
     if isinstance(x, frontend.EagerTensor):
-        return x.ivyArray
+        return x.ivy_array
     return x
 
 
