@@ -1,7 +1,6 @@
 # global
 from typing import Optional, Union, Tuple, Sequence
 import torch
-import ivy
 
 # local
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -50,7 +49,8 @@ def nanmean(
 nanmean_support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version)
+@with_unsupported_dtypes({"1.11.0 and below":
+                          ("bfloat16", "bfloat32", "float16")}, backend_version)
 def quantile(
     a: torch.tensor,
     q: Union[torch.tensor, float],

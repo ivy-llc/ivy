@@ -1,7 +1,6 @@
 from typing import Union, Optional, Tuple, Sequence
 import tensorflow as tf
 import tensorflow_probability as tfp
-import ivy
 
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
