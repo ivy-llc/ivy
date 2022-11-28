@@ -277,3 +277,44 @@ def test_hamming_window(
         beta=beta,
         dtype=dtype,
     )
+
+
+@handle_test(
+    fn_tree="functional.experimental.tril_indices",
+    n_rows=helpers.ints(min_value=0, max_value=10),
+    n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
+    k=helpers.ints(min_value=-15, max_value=15),
+)
+def test_tril_indices(
+    *,
+    n_rows,
+    n_cols,
+    k,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=["int32"],
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        n_rows=n_rows,
+        n_cols=n_cols,
+        k=k,
+        device=on_device,
+    )
