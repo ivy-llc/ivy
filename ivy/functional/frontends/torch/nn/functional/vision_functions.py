@@ -136,7 +136,6 @@ def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
             w_new = size
         elif type(size) == tuple:
             h_new, w_new = size
-    print("anan : ", scale_factor, size)
     return h_new, w_new
 
 
