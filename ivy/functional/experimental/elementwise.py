@@ -764,7 +764,7 @@ def signbit(
 @handle_out_argument
 @handle_nestable
 def diff(
-    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],   
+    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
     out: Optional[ivy.Array] = None,
