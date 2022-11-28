@@ -85,18 +85,13 @@ def pixel_unshuffle(input, downscale_factor):
     )
 
 
-def _pad_handle_padding_shape(padding, n, mode):
-    if isinstance(padding[0], (list, tuple)):  # case nested
-        padding = tuple(list(padding)[::-1])
-    elif len(padding) == 1:  # case scalar
-        padding = (padding[0], padding[0])
-    else:  # case flat
-        padding = tuple(
-            [
-                (padding[i * 2], padding[i * 2 + 1])
-                for i in range(int(len(padding) / 2) - 1, -1, -1)
-            ]
-        )
+def _handle_padding_shape(padding, n, mode):
+    padding = tuple(
+        [
+            (padding[i * 2], padding[i * 2 + 1])
+            for i in range(int(len(padding) / 2) - 1, -1, -1)
+        ]
+    )
     while len(padding) < n:
         if mode == "circular":
             padding = padding + ((0, 0),)
@@ -109,7 +104,7 @@ def _pad_handle_padding_shape(padding, n, mode):
 
 @to_ivy_arrays_and_back
 def pad(input, pad, mode="constant", value=0):
-    pad = _pad_handle_padding_shape(pad, len(input.shape), mode)
+    pad = _handle_padding_shape(pad, len(input.shape), mode)
     if mode == "constant":
         return ivy.pad(input, pad, mode="constant", constant_values=value)
     elif mode == "reflect":
@@ -125,3 +120,129 @@ def pad(input, pad, mode="constant", value=0):
                 + "['constant', 'reflect', 'replicate', 'circular']"
             ).format(mode)
         )
+
+
+def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
+    if scale_factor and (not size):
+        if type(scale_factor) == int:
+            h_new = int(w_old * scale_factor)
+            w_new = int(h_old * scale_factor)
+        elif type(scale_factor) == tuple:
+            h_new = int(w_old * scale_factor[0])
+            w_new = int(h_old * scale_factor[1])
+    elif (not scale_factor) and size:
+        if type(size) == int:
+            h_new = size
+            w_new = size
+        elif type(size) == tuple:
+            h_new, w_new = size
+    return h_new, w_new
+
+
+@to_ivy_arrays_and_back
+def upsample_bilinear(input, size=None, scale_factor=None):
+    if scale_factor and size:
+        raise ivy.exceptions.IvyException(
+            ("only one of size or scale_factor should be defined")
+        )
+    elif (not scale_factor) and (not size):
+        raise ivy.exceptions.IvyException(
+            ("either size or scale_factor should be defined")
+        )
+    elif ivy.get_num_dims(input) != 4:
+        raise ivy.exceptions.IvyException(
+            (
+                f"Got {ivy.get_num_dims(input)}D input,",
+                "but bilinear mode needs 4D input (n,c,h,w)",
+            )
+        )
+
+    n, c, h_old, w_old = input.shape
+    h_new, w_new = _get_new_width_height(w_old, h_old, size, scale_factor)
+
+    x_distances_old = ivy.linspace(0, 1, w_old)
+    y_distances_old = ivy.linspace(0, 1, h_old)
+    x_distances_new = ivy.linspace(0, 1, w_new)
+    y_distances_new = ivy.linspace(0, 1, h_new)
+
+    normalize_distances_coeff_x = 1 / (w_old - 1) if w_old != 1 else 1
+    normalize_distances_coeff_y = 1 / (h_old - 1) if h_old != 1 else 1
+
+    lower_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
+    higher_pivots_x = ivy.zeros(w_new, dtype=ivy.int64)
+    lower_pivots_y = ivy.zeros(h_new, dtype=ivy.int64)
+    higher_pivots_y = ivy.zeros(h_new, dtype=ivy.int64)
+
+    for i in range(w_old):
+        lower_pivots_x = ivy.where(
+            x_distances_old[i] <= x_distances_new, i, lower_pivots_x
+        )
+    for i in range(h_old):
+        lower_pivots_y = ivy.where(
+            y_distances_old[i] <= y_distances_new, i, lower_pivots_y
+        )
+    for i in range(w_old - 1, -1, -1):
+        higher_pivots_x = ivy.where(
+            x_distances_old[i] >= x_distances_new, i, higher_pivots_x
+        )
+    for i in range(h_old - 1, -1, -1):
+        higher_pivots_y = ivy.where(
+            y_distances_old[i] >= y_distances_new, i, higher_pivots_y
+        )
+
+    temp = ivy.zeros((n, c, h_old, w_new))
+    temp = ivy.where(
+        (lower_pivots_x == higher_pivots_x)[None, None, None, :],
+        ivy.gather(input, lower_pivots_x, axis=3),
+        temp,
+    )
+    temp = ivy.where(
+        (lower_pivots_x != higher_pivots_x)[None, None, None, :],
+        ivy.divide(
+            ivy.add(
+                ivy.multiply(
+                    (ivy.gather(x_distances_old, higher_pivots_x) - x_distances_new)[
+                        None, None, None, :
+                    ],
+                    ivy.gather(input, lower_pivots_x, axis=3),
+                ),
+                ivy.multiply(
+                    (x_distances_new - ivy.gather(x_distances_old, lower_pivots_x))[
+                        None, None, None, :
+                    ],
+                    ivy.gather(input, higher_pivots_x, axis=3),
+                ),
+            ),
+            normalize_distances_coeff_x,
+        ),
+        temp,
+    )
+    result = ivy.zeros((n, c, h_new, w_new))
+    result = ivy.where(
+        (lower_pivots_y == higher_pivots_y)[None, None, :, None],
+        ivy.gather(temp, lower_pivots_y, axis=2),
+        result,
+    )
+    result = ivy.where(
+        (lower_pivots_y != higher_pivots_y)[None, None, :, None],
+        ivy.divide(
+            ivy.add(
+                ivy.multiply(
+                    (ivy.gather(y_distances_old, higher_pivots_y) - y_distances_new)[
+                        None, None, :, None
+                    ],
+                    ivy.gather(temp, lower_pivots_y, axis=2),
+                ),
+                ivy.multiply(
+                    (y_distances_new - ivy.gather(y_distances_old, lower_pivots_y))[
+                        None, None, :, None
+                    ],
+                    ivy.gather(temp, higher_pivots_y, axis=2),
+                ),
+            ),
+            normalize_distances_coeff_y,
+        ),
+        result,
+    )
+
+    return result

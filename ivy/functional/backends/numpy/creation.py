@@ -33,7 +33,7 @@ def arange(
 ) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(np.arange(start, stop, step=step, dtype=dtype), device=device)
+    res = _to_device(np.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)

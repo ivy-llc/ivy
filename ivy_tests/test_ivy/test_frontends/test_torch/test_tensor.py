@@ -2,13 +2,18 @@
 import pytest
 import ivy
 import torch
+import numpy as np
 from hypothesis import assume, strategies as st
 import hypothesis.extra.numpy as hnp
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops import (
+    _get_dtype_and_3dbatch_matrices,
+    _get_dtype_input_and_matrices,
+)
 from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 
 
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
@@ -33,6 +38,25 @@ def _requires_grad(draw):
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
         return draw(st.just(False))
     return draw(st.booleans())
+
+
+@handle_frontend_test(
+    fn_tree="torch.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
+    ret_gt = np.ravel(data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="torch",
+    )
 
 
 # add
@@ -1360,23 +1384,44 @@ def test_torch_instance_to_with_device(
     )
 
 
-# _to_with_dtype
+@st.composite
+def _to_helper(draw):
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
+            num_arrays=2,
+        )
+    )
+    input_dtype, x = dtype_x
+    arg = draw(st.sampled_from(["tensor", "dtype", "device"]))
+    if arg == "tensor":
+        method_num_positional_args = 1
+        method_all_as_kwargs_np = {"other": x[1]}
+    elif arg == "dtype":
+        method_num_positional_args = 1
+        dtype = draw(helpers.get_dtypes("valid", full=False))
+        method_all_as_kwargs_np = {"dtype": dtype}
+    else:
+        method_num_positional_args = 0
+        device = draw(st.sampled_from([torch.device("cuda"), torch.device("cpu")]))
+        dtype = draw(helpers.get_dtypes("valid", full=False, none=True))
+        method_all_as_kwargs_np = {"dtype": dtype, "device": device}
+    return input_dtype, x, method_num_positional_args, method_all_as_kwargs_np
+
+
+# to
 @handle_frontend_method(
     method_tree="torch.tensor.to",
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid", full=True),
-    ),
-    copy=st.booleans(),
+    args_kwargs=_to_helper(),
 )
-def test_torch_instance_to_with_dtype(
-    dtype_x,
-    copy,
+def test_torch_instance_to(
+    args_kwargs,
     as_variable,
     native_array,
     class_,
     method_name,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1387,14 +1432,9 @@ def test_torch_instance_to_with_dtype(
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
-        method_num_positional_args=3,
+        method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "dtype": ivy.as_ivy_dtype(input_dtype[0]),
-            "non_blocking": False,
-            "copy": copy,
-            "memory_format": torch.preserve_format,
-        },
+        method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend="torch",
         class_="tensor",
         method_name="to",
@@ -2860,4 +2900,46 @@ def test_torch_instance_min(
         frontend="torch",
         class_="tensor",
         method_name="min",
+    )
+
+
+@st.composite
+def _get_dtype_and_multiplicative_matrices(draw):
+    return draw(
+        st.one_of(
+            _get_dtype_input_and_matrices(),
+            _get_dtype_and_3dbatch_matrices(),
+        )
+    )
+
+
+# matmul
+@handle_frontend_method(
+    method_tree="torch.tensor.matmul",
+    dtype_indtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+)
+def test_torch_instance_matmul(
+    dtype_tensor1_tensor2,
+    as_variable,
+    native_array,
+    class_,
+    method_name,
+):
+    dtype, tensor1, tensor2 = dtype_tensor1_tensor2
+    helpers.test_frontend_method(
+        input_dtypes_init=dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": tensor1,
+        },
+        input_dtypes_method=dtype,
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={"tensor2": tensor2},
+        frontend="torch",
+        class_="tensor",
+        method_name="matmul",
     )

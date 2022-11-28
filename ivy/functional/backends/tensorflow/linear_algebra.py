@@ -575,7 +575,7 @@ def tensordot(
     # type casting to float32 which is acceptable for tf.tensordot
     x1, x2 = tf.cast(x1, tf.float32), tf.cast(x2, tf.float32)
 
-    ret = tf.cast(tf.tensordot(x1, x2, axes), dtype)
+    ret = tf.cast(tf.tensordot(x1, x2, axes=axes), dtype)
     return ret
 
 
@@ -657,6 +657,7 @@ def diag(
     return tf.experimental.numpy.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: Union[tf.Tensor, tf.Variable],
     /,

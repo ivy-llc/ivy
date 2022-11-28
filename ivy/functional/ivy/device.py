@@ -279,7 +279,7 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert native data type to string representation.
+    """Convert device to string representation.
 
     Parameters
     ----------
