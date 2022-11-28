@@ -1273,16 +1273,16 @@ def test_svd(
 
     if uv:
         for i in range(len(ret_flat_np) // 3):
-            U = U.append(ret_flat_np[i * 3])
-            S = S.append(ret_flat_np[i * 3 + 1])
-            Vh = Vh.append(ret_flat_np[i * 3 + 2])
+            U = ret_flat_np[i * 3]
+            S = ret_flat_np[i * 3 + 1]
+            Vh = ret_flat_np[i * 3 + 2]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
         for i in range(len(ret_from_gt_flat_np) // 3):
-            U = U.append(ret_from_gt_flat_np[i * 3])
-            S = S.append(ret_from_gt_flat_np[i * 3 + 1])
-            Vh = Vh.append(ret_from_gt_flat_np[i * 3 + 2])
+            U_gt = ret_from_gt_flat_np[i * 3]
+            S_gt = ret_from_gt_flat_np[i * 3 + 1]
+            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
