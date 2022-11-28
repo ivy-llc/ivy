@@ -6,8 +6,11 @@ from hypothesis import assume, strategies as st
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_method, assert_all_close, \
-    handle_frontend_test
+from ivy_tests.test_ivy.helpers import (
+    handle_frontend_method,
+    assert_all_close,
+    handle_frontend_test,
+)
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix_and_dtype,
@@ -88,7 +91,9 @@ def test_numpy_ndarray_property_T(
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
     ret = helpers.flatten_and_to_np(ret=x.T.ivy_array)
-    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(ivy.native_array(data[0])))
+    ret_gt = helpers.flatten_and_to_np(
+        ret=ivy.matrix_transpose(ivy.native_array(data[0]))
+    )
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
