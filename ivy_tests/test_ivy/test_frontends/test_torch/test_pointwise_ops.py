@@ -2017,7 +2017,7 @@ def test_torch_exp2(
         input=x[0],
     )
 
-    
+
 # log
 @handle_frontend_test(
     fn_tree="torch.log",
@@ -2026,15 +2026,15 @@ def test_torch_exp2(
     ),
 )
 def test_torch_log(
-        *,
-        dtype_and_x,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(

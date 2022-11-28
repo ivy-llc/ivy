@@ -17,14 +17,14 @@ import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpe
     ),
 )
 def test_numpy_isneginf(
-        *,
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -49,14 +49,14 @@ def test_numpy_isneginf(
     ),
 )
 def test_numpy_isposinf(
-        *,
-        dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -80,15 +80,15 @@ def test_numpy_isposinf(
     equal_nan=st.booleans(),
 )
 def test_numpy_allclose(
-        *,
-        dtype_and_x,
-        equal_nan,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    equal_nan,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -116,15 +116,15 @@ def test_numpy_allclose(
     equal_nan=st.booleans(),
 )
 def test_numpy_isclose(
-        *,
-        dtype_and_x,
-        equal_nan,
-        as_variable,
-        num_positional_args,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_and_x,
+    equal_nan,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -156,14 +156,14 @@ def test_numpy_isclose(
     ),
 )
 def test_numpy_isnat(
-        *,
-        dtype_and_x,
-        dtype,
-        where,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
+    *,
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(
