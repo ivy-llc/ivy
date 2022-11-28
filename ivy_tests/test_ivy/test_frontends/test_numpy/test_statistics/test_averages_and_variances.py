@@ -201,5 +201,6 @@ def test_numpy_average(
         frontend=frontend,
         fn_tree=fn_tree,
         keepdims=keep_dims,
+        test_values=True,
         on_device=on_device,
     )
