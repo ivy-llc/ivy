@@ -42,23 +42,20 @@ available_array_types_input = [
 if "tensorflow" in available_frameworks:
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
     available_array_types_class.append(
-        ("tensorflow", 
-        "<class 'tensorflow.python.framework.ops.EagerTensor'>")
+        ("tensorflow", "<class 'tensorflow.python.framework.ops.EagerTensor'>")
     )
 
 if "jax" in available_frameworks:
     available_array_types_input.append(("jax", jnp.array(3.0)))
     available_array_types_class.append(
-        ("jax", 
-        "<class 'jaxlib.xla_extension.DeviceArray'>")
+        ("jax", "<class 'jaxlib.xla_extension.DeviceArray'>")
     )
 
 
 if "torch" in available_frameworks:
     available_array_types_input.append(("torch", torch.tensor([3.0])))
     available_array_types_class.append(
-        ("torch", 
-        "<class 'torch.Tensor'>")
+        ("torch", "<class 'torch.Tensor'>")
     )
 
 
