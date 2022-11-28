@@ -305,7 +305,6 @@ def test_numpy_rad2deg(
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
     as_variable=helpers.array_bools(num_arrays=1),
-    with_out=st.booleans(),
     num_positional_args=helpers.num_positional_args(
         fn_name="ivy.functional.frontends.numpy.deg2rad"
     ),
