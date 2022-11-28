@@ -22,7 +22,6 @@ os.system(
 test_names_without_backend = []
 test_names = []
 with open("test_names") as f:
-    i = 0
     for line in f:
         if "ERROR" in line:
             break

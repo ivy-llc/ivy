@@ -390,6 +390,7 @@ def diag(
     return jnp.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: JaxArray,
     /,

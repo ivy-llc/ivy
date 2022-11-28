@@ -1,4 +1,5 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from numbers import Number
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -132,8 +133,14 @@ def flatten(
     *,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
+    if order == "F":
+        return ivy.functional.experimental.flatten(
+            x, start_dim=start_dim, end_dim=end_dim, order=order
+        )
     return torch.flatten(x, start_dim=start_dim, end_dim=end_dim)
 
 
@@ -180,6 +187,13 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return transformed
 
 
+def atleast_3d(*arys: Union[torch.Tensor, bool, Number]) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
@@ -196,6 +210,16 @@ def take_along_axis(
         )
     indices = indices.long()
     return torch.take_along_dim(arr, indices, axis, out=out)
+
+
+def hsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hsplit(ary, indices_or_sections)
 
 
 take_along_axis.support_native_out = True

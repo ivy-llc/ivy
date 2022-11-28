@@ -156,6 +156,7 @@ def test_numpy_isclose(
     ),
 )
 def test_numpy_isnat(
+<<<<<<< HEAD
         *,
         dtype_and_x,
         dtype,
@@ -164,6 +165,16 @@ def test_numpy_isnat(
         with_out,
         num_positional_args,
         native_array,
+=======
+    *,
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+>>>>>>> 84c4f746dc7230ed845e2fd54e292ff2b97c9f09
 ):
     input_dtype, x = dtype_and_x
     where = np_frontend_helpers.handle_where_and_array_bools(

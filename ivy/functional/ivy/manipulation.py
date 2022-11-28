@@ -409,8 +409,8 @@ def reshape(
     shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[ivy.Array] = None,
     order: Optional[str] = "C",
+    out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Gives a new shape to an array without changing its data.
 
@@ -429,9 +429,6 @@ def reshape(
         raise a ValueError in case a copy would be necessary.
         If None, the function must reuse existing memory buffer if possible
         and copy otherwise. Default: ``None``.
-    out
-        optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
     order
         Read the elements of x using this index order, and place the elements into
         the reshaped array using this index order.
@@ -443,6 +440,9 @@ def reshape(
         Note that the ‘C’ and ‘F’ options take no account of the memory layout
         of the underlying array, and only refer to the order of indexing.
         Default order is 'C'
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
 
     Returns
     -------

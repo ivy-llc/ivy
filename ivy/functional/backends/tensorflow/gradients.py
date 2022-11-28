@@ -56,13 +56,18 @@ def execute_with_gradients(
             include_derived=True,
         )
         grads = tape.gradient(y, xs_required)
-        if isinstance(grads, ivy.Container):
+        if isinstance(xs, ivy.NativeArray):
+            grads = grads_ if grads is None else grads
+        else:
             grads = ivy.nested_map(
                 grads, lambda x: 0 if x is None else x, include_derived=True
             )
-            grads += grads_
-        else:
-            grads = grads_ if grads is None else grads
+            if isinstance(grads, ivy.Container):
+                grads += grads_
+            else:
+                grads = ivy.nested_multi_map(
+                    lambda x, _: (x[0] + x[1]), [grads, grads_]
+                )
         return grads
 
     if isinstance(y, ivy.NativeArray):
