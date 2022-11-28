@@ -161,7 +161,7 @@ possible_fixtures = ["backend_fw", "on_device"]
 
 
 def handle_test(
-    *, fn_tree: str, ground_truth_backend: str = "numpy", **_given_kwargs
+    *, fn_tree: str, ground_truth_backend: str = "tensorflow", **_given_kwargs
 ):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
@@ -264,7 +264,7 @@ def _import_method(method_tree: str):
 
 
 def handle_method(
-    *, method_tree, ground_truth_backend: str = "numpy", **_given_kwargs
+    *, method_tree, ground_truth_backend: str = "tensorflow", **_given_kwargs
 ):
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
