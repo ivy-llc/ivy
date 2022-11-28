@@ -12,7 +12,7 @@ from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks, ground_truth
 
 cmd_line_args = (
     "with_out",
@@ -161,7 +161,7 @@ possible_fixtures = ["backend_fw", "on_device"]
 
 
 def handle_test(
-    *, fn_tree: str, ground_truth_backend: str = "tensorflow", **_given_kwargs
+    *, fn_tree: str, ground_truth_backend: str = ground_truth, **_given_kwargs
 ):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
@@ -264,7 +264,7 @@ def _import_method(method_tree: str):
 
 
 def handle_method(
-    *, method_tree, ground_truth_backend: str = "tensorflow", **_given_kwargs
+    *, method_tree, ground_truth_backend: str = ground_truth, **_given_kwargs
 ):
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0

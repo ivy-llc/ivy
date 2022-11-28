@@ -25,7 +25,6 @@ from collections.abc import Sequence
 try:
     import torch.multiprocessing as multiprocessing
 except ImportError:
-    import types
     multiprocessing = SimpleNamespace()
 
 # local

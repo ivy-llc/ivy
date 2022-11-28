@@ -9,7 +9,7 @@ from .available_frameworks import available_frameworks
 FWS_DICT = {"": lambda: None, }
 
 if "numpy" in available_frameworks:
-    FWS_DICT["numpy"] =  lambda: _get_ivy_numpy()
+    FWS_DICT["numpy"] = lambda: _get_ivy_numpy()
 
 if "jax" in available_frameworks:
     FWS_DICT["jax"] = lambda: _get_ivy_jax()

@@ -32,25 +32,34 @@ available_frameworks_with_none = available_frameworks[:]
 available_frameworks_with_none.append(None)
 
 available_array_types_class = [
-        ("numpy", "<class 'numpy.ndarray'>"),
-    ]
+    ("numpy", "<class 'numpy.ndarray'>"),
+]
 
 available_array_types_input = [
-        ("numpy", np.array(3.0)),
-    ]
+    ("numpy", np.array(3.0)),
+]
     
 if "tensorflow" in available_frameworks:
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
-    available_array_types_class.append(("tensorflow", "<class 'tensorflow.python.framework.ops.EagerTensor'>"))
+    available_array_types_class.append(
+        ("tensorflow", 
+        "<class 'tensorflow.python.framework.ops.EagerTensor'>")
+    )
 
 if "jax" in available_frameworks:
     available_array_types_input.append(("jax", jnp.array(3.0)))
-    available_array_types_class.append(("jax", "<class 'jaxlib.xla_extension.DeviceArray'>"))
+    available_array_types_class.append(
+        ("jax", 
+        "<class 'jaxlib.xla_extension.DeviceArray'>")
+    )
 
 
 if "torch" in available_frameworks:
     available_array_types_input.append(("torch", torch.tensor([3.0])))
-    available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
+    available_array_types_class.append(
+        ("torch", 
+        "<class 'torch.Tensor'>")
+    )
 
 
 @pytest.mark.parametrize(
@@ -122,19 +131,22 @@ def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
     ivy.clear_backend_stack()
     ivy.assertions.check_equal(
-        ivy.current_backend(array_type), importlib.import_module(_backend_dict[backend])
+        ivy.current_backend(array_type), 
+        importlib.import_module(_backend_dict[backend])
     )
 
     # global_backend > argument's backend.
     if "torch" in available_frameworks:
         ivy.set_backend("torch")
         ivy.assertions.check_equal(
-            ivy.current_backend(array_type), importlib.import_module(_backend_dict["torch"])
+            ivy.current_backend(array_type), 
+            importlib.import_module(_backend_dict["torch"])
         )
     else:
         ivy.set_backend("numpy")
         ivy.assertions.check_equal(
-            ivy.current_backend(array_type), importlib.import_module(_backend_dict["numpy"])
+            ivy.current_backend(array_type), 
+            importlib.import_module(_backend_dict["numpy"])
         )
 
 
