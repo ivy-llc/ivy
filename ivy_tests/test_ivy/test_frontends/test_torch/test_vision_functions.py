@@ -192,14 +192,14 @@ def _upsample_bilinear_helper(draw):
     is_size_used = draw(st.booleans())
     is_int = draw(st.booleans())
     if is_size_used and is_int:
-        size = (draw(helpers.ints(min_value=shape[2])),)
+        size = draw(helpers.ints(min_value=shape[2]))
     elif is_size_used and not is_int:
         size = (
             draw(helpers.ints(min_value=shape[2])),
             draw(helpers.ints(min_value=shape[3])),
         )
     elif not is_size_used and is_int:
-        scale_factor = helpers.ints(min_value=1)
+        scale_factor = draw(helpers.ints(min_value=1))
     elif not is_size_used and not is_int:
         scale_factor = (
             draw(helpers.ints(min_value=shape[2])),

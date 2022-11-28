@@ -136,7 +136,7 @@ def _get_new_width_height(w_old, h_old, size=None, scale_factor=None):
             w_new = size
         elif type(size) == tuple:
             h_new, w_new = size
-
+    print("anan : ", scale_factor, size)
     return h_new, w_new
 
 
@@ -149,6 +149,13 @@ def upsample_bilinear(input, size=None, scale_factor=None):
     elif (not scale_factor) and (not size):
         raise ivy.exceptions.IvyException(
             ("either size or scale_factor should be defined")
+        )
+    elif ivy.get_num_dims(input) != 4:
+        raise ivy.exceptions.IvyException(
+            (
+                f"Got {ivy.get_num_dims(input)}D input,",
+                "but bilinear mode needs 4D input (n,c,h,w)",
+            )
         )
 
     n, c, h_old, w_old = input.shape
