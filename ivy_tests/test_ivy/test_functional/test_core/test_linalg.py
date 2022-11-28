@@ -715,6 +715,7 @@ def test_outer(
 
 # slogdet
 # TODO: add with_out testing when testing with tuples is supported
+# execute with grads error
 @handle_test(
     fn_tree="functional.ivy.slogdet",
     dtype_x=helpers.dtype_and_values(
@@ -1276,11 +1277,13 @@ def test_svd(
     ret_flat_np, ret_from_gt_flat_np = results
 
     if uv:
-        U, S, Vh = ret_flat_np
+        U, S, Vh = ret_flat_np[:3]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np
+        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np[
+            :3
+        ]  # fix the test_function module/temp fix
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
@@ -1428,6 +1431,7 @@ def test_matrix_rank(
 
 
 # cholesky
+# execute with grads error
 @handle_test(
     fn_tree="functional.ivy.cholesky",
     dtype_x=helpers.dtype_and_values(
