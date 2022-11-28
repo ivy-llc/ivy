@@ -7,25 +7,27 @@ import ivy.functional.frontends.jax as jax_frontend
 
 class DeviceArray:
     def __init__(self, array):
-        self._ivyArray = ivy.array(array) if not isinstance(array, ivy.Array) else array
+        self._ivy_array = (
+            ivy.array(array) if not isinstance(array, ivy.Array) else array
+        )
 
     def __repr__(self):
         return (
             "ivy.functional.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self._ivyArray))
+            + str(ivy.to_list(self._ivy_array))
             + ")"
         )
 
     @property
     def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivyArray)
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 
     # Properties #
     # ---------- #
 
     @property
-    def ivyArray(self):
-        return self._ivyArray
+    def ivy_array(self):
+        return self._ivy_array
 
     # Instance Methods #
     # ---------------- #
