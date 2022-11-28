@@ -342,7 +342,7 @@ def array_or_none(
     if selected_type is None:
         dtype, values = [None], [None]
     else:
-        dtype, values = draw(
+        res = draw(
             dtype_and_values(
                 available_dtypes=dtype_helpers.get_dtypes(array_dtype),
                 num_arrays=num_arrays,
@@ -367,6 +367,10 @@ def array_or_none(
                 array_api_dtypes=array_api_dtypes,
             )
         )
+        dtype, values = res[0], res[1]
+        if ret_shape:
+            shape = res[2]
+            return dtype, values, shape
     return dtype, values
 
 
