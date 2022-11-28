@@ -27,24 +27,18 @@ FN_DECORATORS = [
 # Helpers #
 # --------#
 
-
 def _get_first_array(*args, **kwargs):
     # ToDo: make this more efficient, with function ivy.nested_nth_index_where
     arr = None
     if args:
-        arr_idxs = ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1)
-        if arr_idxs:
+        if arr_idxs := ivy.nested_argwhere(args, ivy.is_array, stop_after_n_found=1):
             arr = ivy.index_nest(args, arr_idxs[0])
-        else:
-            arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
-            if arr_idxs:
-                arr = ivy.index_nest(kwargs, arr_idxs[0])
+        elif arr_idxs := ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1):
+            arr = ivy.index_nest(kwargs, arr_idxs[0])
     elif kwargs:
-        arr_idxs = ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1)
-        if arr_idxs:
+        if arr_idxs := ivy.nested_argwhere(kwargs, ivy.is_array, stop_after_n_found=1):
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
-
 
 # Array Handling #
 # ---------------#
@@ -183,10 +177,8 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True}) if ivy.get_array_mode() else ret
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
@@ -604,7 +596,7 @@ def _dtype_device_wrapper_creator(attrib, t):
         }
         for key, value in version_dict.items():
             for i, v in enumerate(value):
-                if v in typesets.keys():
+                if v in typesets:
                     version_dict[key] = (
                         version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
                     )
