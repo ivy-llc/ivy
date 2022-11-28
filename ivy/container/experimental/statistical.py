@@ -365,15 +365,17 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             correctly against the original array a.
 
         interpolation
-            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
-            This specifies the interpolation method to use when the desired quantile lies between
-            two data points i < j:
-            - linear: i + (j - i) * fraction, where fraction is the fractional part of the 
-            index surrounded by i and j.
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value:
+            'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+            the index surrounded by i and j.
             - lower: i.
             - higher: j.
             - nearest: i or j, whichever is nearest.
-            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with integer dtypes..
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
 
         out
             optional output array, for writing the result to.
@@ -381,8 +383,9 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         Returns
         -------
         ret
-            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype as input arrays in the container, or, if axis is None,
-            rank(q) arrays. The first rank(q) dimensions index quantiles for different values of q.
+            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The
+            first rank(q) dimensions index quantiles for different values of q.
 
         Examples
         -------------------
@@ -503,15 +506,17 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             correctly against the original array a.
 
         interpolation
-            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
-            This specifies the interpolation method to use when the desired quantile lies between
-            two data points i < j:
-            - linear: i + (j - i) * fraction, where fraction is the fractional part of the 
-            index surrounded by i and j.
+            {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value:
+            'linear'.
+            This specifies the interpolation method to use when the desired quantile
+            lies between two data points i < j:
+            - linear: i + (j - i) * fraction, where fraction is the fractional part of
+            the index surrounded by i and j.
             - lower: i.
             - higher: j.
             - nearest: i or j, whichever is nearest.
-            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with integer dtypes..
+            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with
+            integer dtypes.
 
         out
             optional output array, for writing the result to.
@@ -519,8 +524,9 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         Returns
         -------
         ret
-            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype as input arrays in the container, or, if axis is None,
-            rank(q) arrays. The first rank(q) dimensions index quantiles for different values of q.
+            Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
+            as input arrays in the container, or, if axis is None, rank(q) arrays. The 
+            first rank(q) dimensions index quantiles for different values of q.
 
         Examples
         -------------------

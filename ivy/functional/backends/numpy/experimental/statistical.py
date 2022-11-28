@@ -1,6 +1,5 @@
 from typing import Optional, Union, Tuple, Sequence
 import numpy as np
-import ivy
 
 
 def median(

@@ -181,14 +181,15 @@ def quantile(
 
     interpolation
         {'nearest', 'linear', 'lower', 'higher', 'midpoint'}. Default value: 'linear'.
-        This specifies the interpolation method to use when the desired quantile lies between
-        two data points i < j:
+        This specifies the interpolation method to use when the desired quantile lies
+        between two data points i < j:
         - linear: i + (j - i) * fraction, where fraction is the fractional part of the 
         index surrounded by i and j.
         - lower: i.
         - higher: j.
         - nearest: i or j, whichever is nearest.
-        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with integer dtypes..
+        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with 
+        integer dtypes.
 
     out
         optional output array, for writing the result to.
@@ -196,8 +197,9 @@ def quantile(
     Returns
     -------
     ret
-        A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis is None,
-        a rank(q) array. The first rank(q) dimensions index quantiles for different values of q.
+        A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis
+        is None, a rank(q) array. The first rank(q) dimensions index quantiles for 
+        different values of q.
 
     Functional Examples
     -------------------
