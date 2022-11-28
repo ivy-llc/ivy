@@ -248,7 +248,10 @@ def test_tensorflow_divide(
 @handle_frontend_test(
     fn_tree="tensorflow.math.negative",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=st.one_of(
+            helpers.get_dtypes("signed_integer"),
+            helpers.get_dtypes("float"),
+        )
     ),
 )
 def test_tensorflow_negative(
@@ -1277,7 +1280,7 @@ def test_tensorflow_pow(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
-        fn_tere=fn_tree,
+        fn_tree=fn_tree,
         x=x[0],
         y=x[1],
     )
@@ -1287,7 +1290,7 @@ def test_tensorflow_pow(
 @handle_frontend_test(
     fn_tree="tensorflow.math.argmin",
     dtype_and_x=statistical_dtype_values(function="argmin"),
-    output_type=st.sampled_from(["int16", "uint16", "int32", "int64"]),
+    output_type=st.sampled_from(["int32", "int64"]),
 )
 def test_tensorflow_argmin(
     *,
