@@ -325,8 +325,9 @@ def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

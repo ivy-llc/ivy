@@ -45,9 +45,9 @@ def _differentiable_linspace(start, stop, num, *, device, dtype=None):
 # noinspection PyUnboundLocalVariable,PyShadowingNames
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
-    /,
     *,
     dtype: Optional[Union[ivy.Dtype, torch.dtype]] = None,
     device: torch.device,
