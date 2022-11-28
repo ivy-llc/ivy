@@ -80,3 +80,8 @@ def rank(input, **kwargs):
 @to_ivy_arrays_and_back
 def ones_like(input, dtype=None, name=None):
     return ivy.ones_like(input, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(input, axis, name=None):
+    return ivy.expand_dims(input, axis=axis)
