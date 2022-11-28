@@ -44,6 +44,11 @@ def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
 
 
+@to_ivy_arrays_and_back
+def zeros_like(input, dtype=None, name=None):
+    return ivy.zeros_like(input, dtype=dtype)
+
+
 def constant(
     value: Any,
     dtype: Any = None,
