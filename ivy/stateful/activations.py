@@ -6,7 +6,7 @@ from ivy.stateful.module import Module
 
 
 class GELU(Module):
-    def __init__(self, *, approximate=True):
+    def __init__(self, *, approximate: bool = False):
         """Applies the GELU activation function."""
         self._approximate = approximate
         Module.__init__(self)
@@ -24,7 +24,6 @@ class GELU(Module):
         -------
         ret
             The outputs following the GELU activation *[batch_shape, d]*
-
         """
         return ivy.gelu(x, approximate=ivy.default(approximate, self._approximate))
 

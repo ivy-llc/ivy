@@ -1,10 +1,10 @@
 # global
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
 # Helpers #
@@ -53,35 +53,39 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),
     keep_dims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="median"),
 )
 def test_median(
     *,
     dtype_x_axis,
     keep_dims,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="median",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         input=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -89,37 +93,41 @@ def test_median(
 
 
 # nanmean
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.nanmean",
     dtype_x_axis=statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
     dtype=helpers.get_dtypes("float"),
-    num_positional_args=helpers.num_positional_args(fn_name="nanmean"),
 )
 def test_nanmean(
     *,
     dtype_x_axis,
     keep_dims,
     dtype,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="nanmean",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
@@ -148,10 +156,9 @@ def max_value_as_shape_prod(draw):
     return dtype_and_x, shape
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.nanmean",
     dtype_x_shape=max_value_as_shape_prod(),
-    num_positional_args=helpers.num_positional_args(fn_name="unravel_index"),
 )
 def test_unravel_index(
     dtype_x_shape,
@@ -161,11 +168,14 @@ def test_unravel_index(
     native_array,
     container,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
 ):
     dtype_and_x, shape = dtype_x_shape
     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -173,8 +183,8 @@ def test_unravel_index(
         native_array_flags=native_array,
         container_flags=container,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="unravel_index",
+        fw=backend_fw,
+        fn_name=fn_name,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
     )

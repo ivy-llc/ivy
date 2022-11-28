@@ -1,14 +1,13 @@
 # global
-from hypothesis import assume, given, strategies as st
+from hypothesis import assume, strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-from ivy import argsort, array
+from ivy_tests.test_ivy.helpers import handle_frontend_test
+import ivy
 
 
-# clip
 @st.composite
 def _get_clip_inputs(draw):
     shape = draw(
@@ -49,13 +48,11 @@ def _get_clip_inputs(draw):
     return x_dtype, x, min, max
 
 
-@handle_cmd_line_args
-@given(
+# clip
+@handle_frontend_test(
+    fn_tree="numpy.clip",
     input_and_ranges=_get_clip_inputs(),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.clip"
-    ),
 )
 def test_numpy_clip(
     input_and_ranges,
@@ -64,6 +61,9 @@ def test_numpy_clip(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x, min, max = input_and_ranges
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -82,8 +82,9 @@ def test_numpy_clip(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="clip",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
         a_min=min,
         a_max=max,
@@ -97,15 +98,12 @@ def test_numpy_clip(
 
 
 # cbrt
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.cbrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.cbrt"
-    ),
 )
 def test_numpy_cbrt(
     dtype_and_x,
@@ -114,6 +112,9 @@ def test_numpy_cbrt(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -132,8 +133,9 @@ def test_numpy_cbrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="cbrt",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -144,15 +146,13 @@ def test_numpy_cbrt(
     )
 
 
-@handle_cmd_line_args
-@given(
+# sqrt
+@handle_frontend_test(
+    fn_tree="numpy.sqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.sqrt"
-    ),
 )
 def test_numpy_sqrt(
     dtype_and_x,
@@ -161,6 +161,9 @@ def test_numpy_sqrt(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -179,8 +182,9 @@ def test_numpy_sqrt(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="sqrt",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -191,15 +195,13 @@ def test_numpy_sqrt(
     )
 
 
-@handle_cmd_line_args
-@given(
+# square
+@handle_frontend_test(
+    fn_tree="numpy.square",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.square"
-    ),
 )
 def test_numpy_square(
     dtype_and_x,
@@ -208,6 +210,9 @@ def test_numpy_square(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -226,8 +231,9 @@ def test_numpy_square(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="square",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -238,13 +244,11 @@ def test_numpy_square(
     )
 
 
-@handle_cmd_line_args
-@given(
+# absolute
+@handle_frontend_test(
+    fn_tree="numpy.absolute",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.absolute"
-    ),
 )
 def test_numpy_absolute(
     dtype_and_x,
@@ -253,6 +257,9 @@ def test_numpy_absolute(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -265,8 +272,9 @@ def test_numpy_absolute(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="absolute",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -277,13 +285,11 @@ def test_numpy_absolute(
     )
 
 
-@handle_cmd_line_args
-@given(
+# fabs
+@handle_frontend_test(
+    fn_tree="numpy.fabs",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.fabs"
-    ),
 )
 def test_numpy_fabs(
     dtype_and_x,
@@ -292,6 +298,9 @@ def test_numpy_fabs(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -304,8 +313,9 @@ def test_numpy_fabs(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="fabs",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         out=None,
         where=where,
@@ -316,17 +326,15 @@ def test_numpy_fabs(
     )
 
 
-@handle_cmd_line_args
-@given(
+# heaviside
+@handle_frontend_test(
+    fn_tree="numpy.heaviside",
     x1_x2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.heaviside"
-    ),
 )
 def test_numpy_heaviside(
     x1_x2,
@@ -335,6 +343,9 @@ def test_numpy_heaviside(
     with_out,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtypes, (x1_list, x2_list) = x1_x2
     dtype, input_dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
@@ -353,8 +364,9 @@ def test_numpy_heaviside(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="heaviside",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x1=x1_list,
         x2=x2_list,
         out=None,
@@ -366,17 +378,23 @@ def test_numpy_heaviside(
     )
 
 
-@handle_cmd_line_args
-@given(
+# nan_to_num
+@handle_frontend_test(
+    fn_tree="numpy.nan_to_num",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.nan_to_num"
-    ),
     posinf=st.one_of(st.none(), st.floats()),
     neginf=st.one_of(st.none(), st.floats()),
 )
 def test_numpy_nan_to_num(
-    dtype_and_x, as_variable, num_positional_args, native_array, posinf, neginf
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    posinf,
+    neginf,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -385,8 +403,9 @@ def test_numpy_nan_to_num(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="nan_to_num",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         nan=0.0,
         posinf=posinf,
@@ -394,18 +413,19 @@ def test_numpy_nan_to_num(
     )
 
 
-@handle_cmd_line_args
-@given(
+# real_if_close
+@handle_frontend_test(
+    fn_tree="numpy.real_if_close",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.real_if_close"
-    ),
 )
 def test_numpy_real_if_close(
     dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     np_frontend_helpers.test_frontend_function(
@@ -414,17 +434,16 @@ def test_numpy_real_if_close(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="real_if_close",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.interp"
-    ),
+# interp
+@handle_frontend_test(
+    fn_tree="numpy.interp",
     xp_and_fp=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -453,20 +472,26 @@ def test_numpy_interp(
     as_variable,
     num_positional_args,
     native_array,
+    frontend,
+    fn_tree,
+    on_device,
     xp_and_fp,
     x,
     left,
     right,
     period,
 ):
-    input_dtypes, (xp, fp) = xp_and_fp
-    xp_order = argsort(xp)
-    xp = array(xp)[xp_order]
-    fp = array(fp)[xp_order]
-    previous = xp[0]
-    for i in xp[1:]:
-        assume(i > previous)
-        previous = i
+    input_dtypes, xp_fp = xp_and_fp
+    xp = ivy.array(xp_fp[0])
+    fp = ivy.array(xp_fp[1])
+    if period is None:
+        xp_order = ivy.argsort(xp)
+        xp = xp[xp_order]
+        fp = fp[xp_order]
+        previous = xp[0]
+        for i in xp[1:]:
+            assume(i > previous)
+            previous = i
     x_dtype, x = x
     np_frontend_helpers.test_frontend_function(
         input_dtypes=input_dtypes + x_dtype,
@@ -474,12 +499,50 @@ def test_numpy_interp(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="interp",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         xp=xp,
         fp=fp,
         left=left,
         right=right,
         period=period,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="numpy.convolve",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", full=True),
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+    mode=st.sampled_from(["valid", "same", "full"]),
+)
+def test_numpy_convolve(
+    dtype_and_x,
+    mode,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_and_x
+    np_frontend_helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=xs[0],
+        v=xs[1],
+        mode=mode,
     )

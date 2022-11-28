@@ -15,6 +15,7 @@ class ArrayWithRandom(abc.ABC):
         shape: Optional[Union[ivy.Shape, ivy.NativeShape]] = None,
         device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        seed: Optional[int] = None,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.random_uniform. This method simply
@@ -39,8 +40,10 @@ class ArrayWithRandom(abc.ABC):
             device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
             (Default value = None).
         dtype
-             output array data type. If ``dtype`` is ``None``, the output array data
-             type will be the default floating-point data type. Default ``None``
+            output array data type. If ``dtype`` is ``None``, the output array data
+            type will be the default floating-point data type. Default ``None``
+        seed
+            A python integer. Used to create a random seed distribution
         out
             optional output array, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -98,6 +101,7 @@ class ArrayWithRandom(abc.ABC):
             shape=shape,
             device=device,
             dtype=dtype,
+            seed=seed,
             out=out,
         )
 

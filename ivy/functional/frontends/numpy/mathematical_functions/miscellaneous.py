@@ -10,8 +10,13 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 )
 
 
+@to_ivy_arrays_and_back
 def convolve(a, v, mode="full"):
-    pass
+    if len(a) == 0:
+        raise ValueError("'a' cannot be empty.")
+    if len(v) == 0:
+        raise ValueError("'v' cannot be empty.")
+    return ivy.frontends.numpy.correlate(a, v[::-1], mode)
 
 
 @from_zero_dim_arrays_to_float

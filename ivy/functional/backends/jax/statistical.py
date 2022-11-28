@@ -4,7 +4,9 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 # Array API Standard #
@@ -139,6 +141,7 @@ def var(
 # ------#
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: JaxArray,
     axis: int = 0,

@@ -1,14 +1,12 @@
 # global
 import math
-
-from hypothesis import given, strategies as st, assume
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_test
 
 
-# diagflat
 @st.composite
 def _generate_diag_args(draw):
     x_shape = draw(
@@ -135,10 +133,9 @@ def _generate_diag_args(draw):
     return dtype_x, offset, dtype_padding_value, align, num_rows, num_cols
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.diagflat",
     args_packet=_generate_diag_args(),
-    num_positional_args=helpers.num_positional_args(fn_name="diagflat"),
 )
 def test_diagflat(
     *,
@@ -146,10 +143,12 @@ def test_diagflat(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
     args_packet,
+    ground_truth_backend,
 ):
     dtype_x, offset, dtype_padding_value, align, num_rows, num_cols = args_packet
 
@@ -157,19 +156,17 @@ def test_diagflat(
     padding_value_dtype, padding_value = dtype_padding_value
     padding_value = padding_value[0][0]
 
-    assume("float16" not in x_dtype)
-    assume("bfloat16" not in x_dtype)
-
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=x_dtype + ["int64"] + padding_value_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="diagflat",
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
         offset=offset,
         padding_value=padding_value,
@@ -181,9 +178,8 @@ def test_diagflat(
     )
 
 
-# kron
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.kron",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -193,7 +189,6 @@ def test_diagflat(
         num_arrays=2,
         shared_dtype=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="kron"),
 )
 def test_kron(
     dtype_x,
@@ -201,21 +196,24 @@ def test_kron(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="kron",
+        fw=backend_fw,
+        fn_name=fn_name,
         a=x[0],
         b=x[1],
     )

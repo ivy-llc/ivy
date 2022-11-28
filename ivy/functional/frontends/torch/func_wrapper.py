@@ -2,9 +2,6 @@
 import functools
 from typing import Callable
 
-import torch
-
-
 # local
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
@@ -12,7 +9,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
     if isinstance(x, torch_frontend.Tensor):
-        return x.data
+        return x.ivy_array
     return x
 
 
@@ -22,18 +19,20 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
             x, _from_ivy_array_to_torch_frontend_tensor, include_derived
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return torch_frontend.Tensor(x)
+        a = torch_frontend.Tensor(0)  # TODO: Find better initialisation workaround
+        a.ivy_array = x
+        return a
     return x
 
 
-def _from_torch_tensor_to_ivy_array(x):
-    if isinstance(x, torch.Tensor):
+def _from_native_to_ivy_array(x):
+    if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _from_torch_frontend_tensor_to_ivy_array(_from_torch_tensor_to_ivy_array(x))
+    return _from_torch_frontend_tensor_to_ivy_array(_from_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:

@@ -14,6 +14,8 @@ class ArrayWithLinearAlgebra(abc.ABC):
         x2: Union[ivy.Array, ivy.NativeArray],
         /,
         *,
+        transpose_a: bool = False,
+        transpose_b: bool = False,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
@@ -28,7 +30,9 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(z)
         ivy.array(11.)
         """
-        return ivy.matmul(self._data, x2, out=out)
+        return ivy.matmul(
+            self._data, x2, transpose_a=transpose_a, transpose_b=transpose_b, out=out
+        )
 
     def cholesky(
         self: ivy.Array,
@@ -177,11 +181,60 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
     ) -> Tuple[ivy.Array]:
-        return ivy.eigh(self._data)
+        return ivy.eigh(self._data, UPLO=UPLO, out=out)
 
-    def eigvalsh(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
-        return ivy.eigvalsh(self._data, out=out)
+    def eigvalsh(
+        self: ivy.Array,
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of ivy.eigvalsh.
+        This method simply wraps the function, and so the docstring for
+        ivy.eigvalsh also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input array having shape (..., M, M) and whose innermost two dimensions form
+            square matrices. Must have floating-point data type.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the computed eigenvalues. The returned array must have shape
+            (..., M) and have the same data type as x.
+
+
+        This function conforms to the `Array API Standard
+        <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+        `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigvalsh.html>`_ # noqa
+        in the standard.
+
+        Both the description and the type hints above assumes an array input for simplicity,
+        but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+        instances in place of any of the arguments.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([[[1.0,2.0],[2.0,1.0]]])
+        >>> y = ivy.eigvalsh(x)
+        >>> print(y)
+        ivy.array([[-1.,  3.]])
+        """
+        return ivy.eigvalsh(self._data, UPLO=UPLO, out=out)
 
     def inner(
         self: ivy.Array,
@@ -403,6 +456,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def qr(
         self: ivy.Array,
+        /,
         *,
         mode: str = "reduced",
     ) -> Tuple[ivy.Array, ivy.Array]:
@@ -530,6 +584,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def vecdot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         axis: int = -1,
         out: Optional[ivy.Array] = None,
@@ -538,6 +593,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def vector_norm(
         self: ivy.Array,
+        /,
         *,
         axis: Optional[Union[int, Sequence[int]]] = None,
         keepdims: bool = False,

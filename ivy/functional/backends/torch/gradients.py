@@ -17,7 +17,7 @@ from ivy.functional.ivy.gradients import (
 )
 
 
-def variable(x):
+def variable(x, /):
     if not x.is_leaf:
         return x.detach().requires_grad_()
     return x.clone().requires_grad_()
@@ -27,7 +27,7 @@ def is_variable(x, /, *, exclusive: bool = False):
     return isinstance(x, torch.Tensor) and x.requires_grad
 
 
-def variable_data(x):
+def variable_data(x, /):
     return x.data
 
 
@@ -39,7 +39,9 @@ def execute_with_gradients(
     func_ret = func(xs)
     xs = _get_required_native_variables(xs, xs_grad_idxs)
     ret_idxs, ret_values = _get_native_variables_and_indices(
-        func_ret, idxs=ret_grad_idxs
+        func_ret,
+        idxs=ret_grad_idxs,
+        create_var=True,
     )
     if ret_values is None or (isinstance(ret_values, list) and len(ret_values) == 0):
         return func_ret, {}
@@ -90,13 +92,14 @@ def execute_with_gradients(
                     create_graph=retain_grads,
                     allow_unused=True,
                 )[0]
-                return grad if grad is not None else ivy.zeros_like(x)
+                return grad if grad is not None else 0
 
             grads = ivy.nested_map(
                 xs,
                 grad_,
                 include_derived=True,
             )
+            grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
         return grads
 
     if isinstance(y, ivy.NativeArray):
@@ -159,8 +162,9 @@ def value_and_grad(func):
 
 def stop_gradient(
     x: Optional[torch.Tensor],
-    preserve_type: bool = True,
+    /,
     *,
+    preserve_type: bool = True,
     out: Optional[torch.Tensor] = None,
 ):
     if is_variable(x) and preserve_type:

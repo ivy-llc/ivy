@@ -4,8 +4,6 @@ import inspect
 from typing import Callable, Dict
 import functools
 
-import tensorflow as tf
-
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as frontend
@@ -13,24 +11,24 @@ import ivy.functional.frontends.tensorflow as frontend
 
 def _tf_frontend_array_to_ivy(x):
     if isinstance(x, frontend.EagerTensor):
-        return x.data
+        return x.ivy_array
     return x
 
 
 def ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return frontend.EagerTensor(x.data)
+        return frontend.EagerTensor(x)
     return x
 
 
-def _tf_array_to_ivy_array(x):
-    if isinstance(x, tf.Tensor):
+def _native_to_ivy_array(x):
+    if isinstance(x, ivy.NativeArray):
         return ivy.array(x)
     return x
 
 
 def _to_ivy_array(x):
-    return _tf_frontend_array_to_ivy(_tf_array_to_ivy_array(x))
+    return _tf_frontend_array_to_ivy(_native_to_ivy_array(x))
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:

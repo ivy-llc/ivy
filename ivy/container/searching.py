@@ -106,7 +106,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -126,7 +126,7 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        dtype
+        output_dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -139,7 +139,12 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
         """
         return ContainerBase.multi_map_in_static_method(
-            "argmin", x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+            "argmin",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            out=out,
         )
 
     def argmin(
@@ -148,7 +153,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -168,7 +173,7 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        dtype
+        output_dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -182,7 +187,7 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_argmin(
-            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
         )
 
     @staticmethod
@@ -424,6 +429,27 @@ class ContainerWithSearching(ContainerBase):
         -------
         ret
             Indices for where the boolean array is True.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0], [1]]),
+            b: ivy.array([[0], [1]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0]]),
+            b: ivy.array([[0], [1]])
+        }
+
         """
         return self.static_argwhere(
             self,

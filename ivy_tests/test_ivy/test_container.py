@@ -9,6 +9,7 @@ import pickle
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 from ivy.container import Container
 from ivy.exceptions import IvyException
 
@@ -991,7 +992,7 @@ def test_container_num_arrays(device):
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
         "b": {
-            "c": ivy.variable(ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device)),
+            "c": _variable(ivy.array([[5.0, 10.0, 15.0, 20.0]], device=device)),
             "d": ivy.array([[10.0, 9.0, 8.0, 7.0]], device=device),
         },
     }

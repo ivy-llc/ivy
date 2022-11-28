@@ -13,7 +13,7 @@ import ivy
 
 
 def gelu(
-    x: Tensor, /, *, approximate: bool = True, out: Optional[Tensor] = None
+    x: Tensor, /, *, approximate: bool = False, out: Optional[Tensor] = None
 ) -> Tensor:
     return tf.nn.gelu(x, approximate)
 
