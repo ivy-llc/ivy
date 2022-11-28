@@ -2,6 +2,7 @@
 import pytest
 import ivy
 import torch
+import numpy as np
 from hypothesis import assume, strategies as st
 import hypothesis.extra.numpy as hnp
 
@@ -12,7 +13,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
     _get_dtype_input_and_matrices,
 )
 from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 
 
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
@@ -37,6 +38,25 @@ def _requires_grad(draw):
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
         return draw(st.just(False))
     return draw(st.booleans())
+
+
+@handle_frontend_test(
+    fn_tree="torch.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
+    ret_gt = np.ravel(data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="torch",
+    )
 
 
 # add
