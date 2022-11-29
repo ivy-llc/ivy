@@ -1207,11 +1207,15 @@ def test_qr(
     )
     if results is None:
         return
+    
     ret_np_flat, ret_from_np_flat = results
-    q_np_flat, r_np_flat = ret_np_flat[:2]
-    q_from_np_flat, r_from_np_flat = ret_from_np_flat[:2]
-
+    for i in range(len(ret_np_flat) // 2):
+        q_np_flat = ret_np_flat[i * 2]
+        r_np_flat = ret_np_flat[i * 2 + 1]
     reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
+    for i in range(len(ret_from_np_flat) // 2):
+        q_from_np_flat = ret_from_np_flat[i * 2]
+        r_from_np_flat = ret_from_np_flat[i * 2 + 1]
     reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
 
     # value test
