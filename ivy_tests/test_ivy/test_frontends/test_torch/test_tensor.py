@@ -264,7 +264,7 @@ def test_torch_instance_arcsin(
 
 # sum
 @handle_frontend_method(
-    method_tree="torch.tensor.sum",
+    method_tree="torch.Tensor.sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -292,7 +292,7 @@ def test_torch_instance_sum(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="sum",
     )
 
