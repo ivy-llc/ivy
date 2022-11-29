@@ -41,10 +41,10 @@ def test_tensorflow_accumulate_n(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x,
+        inputs=x,
     )
 
-    
+
 # add
 @handle_frontend_test(
     fn_tree="tensorflow.math.add",
@@ -107,7 +107,7 @@ def test_tensorflow_tan(
         x=x[0],
     )
 
-
+'''
 # multiply
 @handle_frontend_test(
     fn_tree="tensorflow.math.multiply",
@@ -1350,3 +1350,4 @@ def test_tensorflow_argmin(
         axis=axis,
         output_type=output_type,
     )
+'''
