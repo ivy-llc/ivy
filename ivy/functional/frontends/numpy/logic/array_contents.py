@@ -83,15 +83,15 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 @inputs_to_ivy_arrays
 def isnat(
-        x,
-        /,
-        out=None,
-        *,
-        where=True,
-        casting='same_kind',
-        order='K',
-        dtype=None,
-        subok=True
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
 ):
     if dtype:
         x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))

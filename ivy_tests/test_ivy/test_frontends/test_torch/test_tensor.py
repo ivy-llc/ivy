@@ -2,6 +2,7 @@
 import pytest
 import ivy
 import torch
+import numpy as np
 from hypothesis import assume, strategies as st
 import hypothesis.extra.numpy as hnp
 
@@ -12,7 +13,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
     _get_dtype_input_and_matrices,
 )
 from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 
 
 pytestmark = pytest.mark.skip("handle_frontend_method decorator wip")
@@ -39,9 +40,28 @@ def _requires_grad(draw):
     return draw(st.booleans())
 
 
+@handle_frontend_test(
+    fn_tree="torch.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
+    ret_gt = np.ravel(data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="torch",
+    )
+
+
 # add
 @handle_frontend_method(
-    method_tree="torch.tensor.add",
+    method_tree="torch.Tensor.add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -77,14 +97,14 @@ def test_torch_instance_add(
             "alpha": alpha,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="add",
     )
 
 
 # new_ones
 @handle_frontend_method(
-    method_tree="torch.tensor.new_ones",
+    method_tree="torch.Tensor.new_ones",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     size=helpers.get_shape(
         allow_none=False,
@@ -127,13 +147,13 @@ def test_torch_instance_new_ones(
             "device": on_device,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="new_ones",
     )
 
 
 @handle_frontend_method(
-    method_tree="torch.tensor.reshape",
+    method_tree="torch.Tensor.reshape",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -167,14 +187,14 @@ def test_torch_instance_reshape(
             "shape": shape,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="reshape",
     )
 
 
 # sin
 @handle_frontend_method(
-    method_tree="torch.tensor.sin",
+    method_tree="torch.Tensor.sin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -202,14 +222,14 @@ def test_torch_instance_sin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="sin",
     )
 
 
 # arcsin
 @handle_frontend_method(
-    method_tree="torch.tensor.arcsin",
+    method_tree="torch.Tensor.arcsin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -237,7 +257,7 @@ def test_torch_instance_arcsin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="arcsin",
     )
 
@@ -279,7 +299,7 @@ def test_torch_instance_sum(
 
 # atan
 @handle_frontend_method(
-    method_tree="torch.tensor.atan",
+    method_tree="torch.Tensor.atan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -307,14 +327,14 @@ def test_torch_instance_atan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="atan",
     )
 
 
 # sin_
 @handle_frontend_method(
-    method_tree="torch.tensor.sin_",
+    method_tree="torch.Tensor.sin_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -342,14 +362,14 @@ def test_torch_instance_sin_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="sin_",
     )
 
 
 # cos
 @handle_frontend_method(
-    method_tree="torch.tensor.cos",
+    method_tree="torch.Tensor.cos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -377,14 +397,14 @@ def test_torch_instance_cos(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="cos",
     )
 
 
 # cos_
 @handle_frontend_method(
-    method_tree="torch.tensor.cos_",
+    method_tree="torch.Tensor.cos_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -413,14 +433,14 @@ def test_torch_instance_cos_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="cos_",
     )
 
 
 # sinh
 @handle_frontend_method(
-    method_tree="torch.tensor.sinh",
+    method_tree="torch.Tensor.sinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -448,14 +468,14 @@ def test_torch_instance_sinh(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="sinh",
     )
 
 
 # sinh_
 @handle_frontend_method(
-    method_tree="torch.tensor.sinh_",
+    method_tree="torch.Tensor.sinh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -483,14 +503,14 @@ def test_torch_instance_sinh_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="sinh_",
     )
 
 
 # cosh
 @handle_frontend_method(
-    method_tree="torch.tensor.cosh",
+    method_tree="torch.Tensor.cosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -518,14 +538,14 @@ def test_torch_instance_cosh(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="cosh",
     )
 
 
 # cosh_
 @handle_frontend_method(
-    method_tree="torch.tensor.cosh_",
+    method_tree="torch.Tensor.cosh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -553,14 +573,14 @@ def test_torch_instance_cosh_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="cosh_",
     )
 
 
 # view
 @handle_frontend_method(
-    method_tree="torch.tensor.view",
+    method_tree="torch.Tensor.view",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -594,13 +614,13 @@ def test_torch_instance_view(
             "shape": shape,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="view",
     )
 
 
 @handle_frontend_method(
-    method_tree="torch.tensor.float",
+    method_tree="torch.Tensor.float",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -629,14 +649,14 @@ def test_torch_instance_float(
             "memory_format": torch.preserve_format,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="float",
     )
 
 
 # asinh
 @handle_frontend_method(
-    method_tree="torch.tensor.asinh",
+    method_tree="torch.Tensor.asinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -664,7 +684,7 @@ def test_torch_instance_asinh(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="asinh",
         rtol_=1e-2,
         atol_=1e-2,
@@ -673,7 +693,7 @@ def test_torch_instance_asinh(
 
 # asinh_
 @handle_frontend_method(
-    method_tree="torch.tensor.asinh_",
+    method_tree="torch.Tensor.asinh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -701,7 +721,7 @@ def test_torch_instance_asinh_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="asinh_",
         rtol_=1e-2,
         atol_=1e-2,
@@ -710,7 +730,7 @@ def test_torch_instance_asinh_(
 
 # tan
 @handle_frontend_method(
-    method_tree="torch.tensor.tan",
+    method_tree="torch.Tensor.tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -738,14 +758,14 @@ def test_torch_instance_tan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="tan",
     )
 
 
 # tanh
 @handle_frontend_method(
-    method_tree="torch.tensor.tanh",
+    method_tree="torch.Tensor.tanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -773,14 +793,14 @@ def test_torch_instance_tanh(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="tanh",
     )
 
 
 # tanh_
 @handle_frontend_method(
-    method_tree="torch.tensor.tanh_",
+    method_tree="torch.Tensor.tanh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -808,14 +828,14 @@ def test_torch_instance_tanh_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="tanh_",
     )
 
 
 # asin
 @handle_frontend_method(
-    method_tree="torch.tensor.asin",
+    method_tree="torch.Tensor.asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -843,14 +863,14 @@ def test_torch_instance_asin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="asin",
     )
 
 
 # amax
 @handle_frontend_method(
-    method_tree="torch.tensor.amax",
+    method_tree="torch.Tensor.amax",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -877,14 +897,14 @@ def test_torch_instance_amax(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="amax",
     )
 
 
 # abs
 @handle_frontend_method(
-    method_tree="torch.tensor.abs",
+    method_tree="torch.Tensor.abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -911,14 +931,14 @@ def test_torch_instance_abs(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="abs",
     )
 
 
 # abs_
 @handle_frontend_method(
-    method_tree="torch.tensor.abs_",
+    method_tree="torch.Tensor.abs_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -945,14 +965,14 @@ def test_torch_instance_abs_(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="abs_",
     )
 
 
 # amin
 @handle_frontend_method(
-    method_tree="torch.tensor.amin",
+    method_tree="torch.Tensor.amin",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -979,14 +999,14 @@ def test_torch_instance_amin(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="amin",
     )
 
 
 # contiguous
 @handle_frontend_method(
-    method_tree="torch.tensor.contiguous",
+    method_tree="torch.Tensor.contiguous",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1016,14 +1036,14 @@ def test_torch_instance_contiguous(
             "memory_format": torch.contiguous_format,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="contiguous",
     )
 
 
 # log
 @handle_frontend_method(
-    method_tree="torch.tensor.log",
+    method_tree="torch.Tensor.log",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1052,14 +1072,14 @@ def test_torch_instance_log(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="log",
     )
 
 
 # __add__
 @handle_frontend_method(
-    method_tree="torch.tensor.__add__",
+    method_tree="torch.Tensor.__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1098,14 +1118,14 @@ def test_torch_special_add(
             "alpha": alpha,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__add__",
     )
 
 
 # __long__
 @handle_frontend_method(
-    method_tree="torch.tensor.__long__",
+    method_tree="torch.Tensor.__long__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
@@ -1136,14 +1156,14 @@ def test_torch_special_long(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="__long__",
     )
 
 
 # __radd__
 @handle_frontend_method(
-    method_tree="torch.tensor.__radd__",
+    method_tree="torch.Tensor.__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1182,14 +1202,14 @@ def test_torch_special_radd(
             "alpha": alpha,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__radd__",
     )
 
 
 # __sub__
 @handle_frontend_method(
-    method_tree="torch.tensor.__sub__",
+    method_tree="torch.Tensor.__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1228,14 +1248,14 @@ def test_torch_special_sub(
             "alpha": alpha,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__sub__",
     )
 
 
 # __mul__
 @handle_frontend_method(
-    method_tree="torch.tensor.__mul__",
+    method_tree="torch.Tensor.__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1268,14 +1288,14 @@ def test_torch_special_mul(
             "other": x[1],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__mul__",
     )
 
 
 # __rmul__
 @handle_frontend_method(
-    method_tree="torch.tensor.__rmul__",
+    method_tree="torch.Tensor.__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1308,14 +1328,14 @@ def test_torch_special_rmul(
             "other": x[1],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__rmul__",
     )
 
 
 # __truediv__
 @handle_frontend_method(
-    method_tree="torch.tensor.__truediv__",
+    method_tree="torch.Tensor.__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -1352,14 +1372,14 @@ def test_torch_special_truediv(
             "rounding_mode": rounding_mode,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__truediv__",
     )
 
 
 # _to_with_device
 @handle_frontend_method(
-    method_tree="torch.tensor.to",
+    method_tree="torch.Tensor.to",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1394,7 +1414,7 @@ def test_torch_instance_to_with_device(
             "memory_format": torch.preserve_format,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="to",
     )
 
@@ -1426,7 +1446,7 @@ def _to_helper(draw):
 
 # to
 @handle_frontend_method(
-    method_tree="torch.tensor.to",
+    method_tree="torch.Tensor.to",
     args_kwargs=_to_helper(),
 )
 def test_torch_instance_to(
@@ -1451,14 +1471,14 @@ def test_torch_instance_to(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np=method_all_as_kwargs_np,
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="to",
     )
 
 
 # arctan
 @handle_frontend_method(
-    method_tree="torch.tensor.arctan",
+    method_tree="torch.Tensor.arctan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1486,14 +1506,14 @@ def test_torch_instance_arctan(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="arctan",
     )
 
 
 # arctan_
 @handle_frontend_method(
-    method_tree="torch.tensor.arctan_",
+    method_tree="torch.Tensor.arctan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1521,14 +1541,14 @@ def test_torch_instance_arctan_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arctan_",
     )
 
 
 # acos
 @handle_frontend_method(
-    method_tree="torch.tensor.acos",
+    method_tree="torch.Tensor.acos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1556,14 +1576,14 @@ def test_torch_instance_acos(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="acos",
     )
 
 
 # new_tensor
 @handle_frontend_method(
-    method_tree="torch.tensor.new_tensor",
+    method_tree="torch.Tensor.new_tensor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1590,7 +1610,7 @@ def test_torch_instance_new_tensor(
             "dtype": input_dtype[1],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="new_tensor",
     )
 
@@ -1652,7 +1672,7 @@ def _array_and_index(
 
 # __getitem__
 @handle_frontend_method(
-    method_tree="torch.tensor.__getitem__",
+    method_tree="torch.Tensor.__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_torch_instance_getitem(
@@ -1673,14 +1693,14 @@ def test_torch_instance_getitem(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"query": index},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__getitem__",
     )
 
 
 # view_as
 @handle_frontend_method(
-    method_tree="torch.tensor.view_as",
+    method_tree="torch.Tensor.view_as",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -1711,14 +1731,14 @@ def test_torch_instance_view_as(
             "other": x[1],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="view_as",
     )
 
 
 # unsqueeze
 @handle_frontend_method(
-    method_tree="torch.tensor.unsqueeze",
+    method_tree="torch.Tensor.unsqueeze",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -1754,14 +1774,14 @@ def test_torch_instance_unsqueeze(
             "dim": dim,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="unsqueeze",
     )
 
 
 # unsqueeze_
 @handle_frontend_method(
-    method_tree="torch.tensor.unsqueeze_",
+    method_tree="torch.Tensor.unsqueeze_",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -1797,14 +1817,14 @@ def test_torch_instance_unsqueeze_(
             "dim": dim,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="unsqueeze_",
     )
 
 
 # detach
 @handle_frontend_method(
-    method_tree="torch.tensor.detach",
+    method_tree="torch.Tensor.detach",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=1,
@@ -1828,14 +1848,14 @@ def test_torch_instance_detach(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="detach",
     )
 
 
 # dim
 @handle_frontend_method(
-    method_tree="torch.tensor.dim",
+    method_tree="torch.Tensor.dim",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -1858,14 +1878,14 @@ def test_torch_instance_dim(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="dim",
     )
 
 
 # ndimension
 @handle_frontend_method(
-    method_tree="torch.tensor.ndimension",
+    method_tree="torch.Tensor.ndimension",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -1888,7 +1908,7 @@ def test_torch_instance_ndimension(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="ndimension",
     )
 
@@ -1939,7 +1959,7 @@ def _fill_value_and_size(
 
 # new_full
 @handle_frontend_method(
-    method_tree="torch.tensor.new_full",
+    method_tree="torch.Tensor.new_full",
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
 def test_torch_instance_new_full(
@@ -1963,14 +1983,14 @@ def test_torch_instance_new_full(
             "fill_value": x[2],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="new_full",
     )
 
 
 # new_empty (not actually intuitive for testing)
 @handle_frontend_method(
-    method_tree="torch.tensor.new_empty",
+    method_tree="torch.Tensor.new_empty",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -1999,7 +2019,7 @@ def test_torch_instance_new_empty(
             "size": size,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="new_empty",
     )
 
@@ -2018,7 +2038,7 @@ def _expand_helper(draw):
 
 
 @handle_frontend_method(
-    method_tree="torch.tensor.expand",
+    method_tree="torch.Tensor.expand",
     dtype_x_shape=_expand_helper(),
 )
 def test_torch_instance_expand(
@@ -2044,7 +2064,7 @@ def test_torch_instance_expand(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={str(i): s for i, s in enumerate(shape)},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="expand",
     )
 
@@ -2082,7 +2102,7 @@ def _unfold_args(draw):
 
 # unfold
 @handle_frontend_method(
-    method_tree="torch.tensor.unfold",
+    method_tree="torch.Tensor.unfold",
     dtype_values_args=_unfold_args(),
 )
 def test_torch_instance_unfold(
@@ -2108,14 +2128,14 @@ def test_torch_instance_unfold(
             "step": step,
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="unfold",
     )
 
 
 # __mod__
 @handle_frontend_method(
-    method_tree="torch.tensor.__mod__",
+    method_tree="torch.Tensor.__mod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -2146,14 +2166,14 @@ def test_torch_special_mod(
             "other": x[1],
         },
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="__mod__",
     )
 
 
 # long
 @handle_frontend_method(
-    method_tree="torch.tensor.long",
+    method_tree="torch.Tensor.long",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=1,
@@ -2181,14 +2201,14 @@ def test_torch_instance_long(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="long",
     )
 
 
 # max
 @handle_frontend_method(
-    method_tree="torch.tensor.max",
+    method_tree="torch.Tensor.max",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
@@ -2215,14 +2235,14 @@ def test_torch_instance_max(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="max",
     )
 
 
 # device
 @handle_frontend_method(
-    method_tree="torch.tensor.device",
+    method_tree="torch.Tensor.device",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2245,14 +2265,14 @@ def test_torch_instance_device(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="device",
     )
 
 
 # is_cuda
 @handle_frontend_method(
-    method_tree="torch.tensor.is_cuda",
+    method_tree="torch.Tensor.is_cuda",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2296,14 +2316,14 @@ def test_torch_instance_is_cuda(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="is_cuda",
     )
 
 
 # bitwise_and
 @handle_frontend_method(
-    method_tree="torch.tensor.bitwise_and",
+    method_tree="torch.Tensor.bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2333,14 +2353,14 @@ def test_torch_instance_bitwise_and(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="bitwise_and",
     )
 
 
 # add_
 @handle_frontend_method(
-    method_tree="torch.tensor.add_",
+    method_tree="torch.Tensor.add_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -2366,14 +2386,14 @@ def test_torch_instance_add_(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="add_",
     )
 
 
 # arccos_
 @handle_frontend_method(
-    method_tree="torch.tensor.arccos_",
+    method_tree="torch.Tensor.arccos_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2398,14 +2418,14 @@ def test_torch_instance_arccos_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arccos_",
     )
 
 
 # arccos
 @handle_frontend_method(
-    method_tree="torch.tensor.arccos",
+    method_tree="torch.Tensor.arccos",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2430,14 +2450,14 @@ def test_torch_instance_arccos(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arccos",
     )
 
 
 # acos_
 @handle_frontend_method(
-    method_tree="torch.tensor.acos_",
+    method_tree="torch.Tensor.acos_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2466,14 +2486,14 @@ def test_torch_instance_acos_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="acos_",
     )
 
 
 # asin_
 @handle_frontend_method(
-    method_tree="torch.tensor.asin_",
+    method_tree="torch.Tensor.asin_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2502,14 +2522,14 @@ def test_torch_instance_asin_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="asin_",
     )
 
 
 # arcsin_
 @handle_frontend_method(
-    method_tree="torch.tensor.arcsin_",
+    method_tree="torch.Tensor.arcsin_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2534,14 +2554,14 @@ def test_torch_instance_arcsin_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arcsin_",
     )
 
 
 # atan_
 @handle_frontend_method(
-    method_tree="torch.tensor.atan_",
+    method_tree="torch.Tensor.atan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -2569,14 +2589,14 @@ def test_torch_instance_atan_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="atan_",
     )
 
 
 # tan_
 @handle_frontend_method(
-    method_tree="torch.tensor.tan_",
+    method_tree="torch.Tensor.tan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -2604,14 +2624,14 @@ def test_torch_instance_tan_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="tan_",
     )
 
 
 # atanh
 @handle_frontend_method(
-    method_tree="torch.tensor.atanh",
+    method_tree="torch.Tensor.atanh",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2636,14 +2656,14 @@ def test_torch_instance_atanh(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="atanh",
     )
 
 
 # atanh_
 @handle_frontend_method(
-    method_tree="torch.tensor.atanh_",
+    method_tree="torch.Tensor.atanh_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2668,14 +2688,14 @@ def test_torch_instance_atanh_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="atanh_",
     )
 
 
 # arctanh
 @handle_frontend_method(
-    method_tree="torch.tensor.arctanh",
+    method_tree="torch.Tensor.arctanh",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2700,14 +2720,14 @@ def test_torch_instance_arctanh(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arctanh",
     )
 
 
 # arctanh_
 @handle_frontend_method(
-    method_tree="torch.tensor.arctanh_",
+    method_tree="torch.Tensor.arctanh_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2732,14 +2752,14 @@ def test_torch_instance_arctanh_(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={},
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="arctanh_",
     )
 
 
 # pow
 @handle_frontend_method(
-    method_tree="torch.tensor.pow",
+    method_tree="torch.Tensor.pow",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -2772,14 +2792,14 @@ def test_torch_instance_pow(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="pow",
     )
 
 
 # pow_
 @handle_frontend_method(
-    method_tree="torch.tensor.pow_",
+    method_tree="torch.Tensor.pow_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -2805,14 +2825,14 @@ def test_torch_instance_pow_(
             "other": x[1],
         },
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="pow_",
     )
 
 
 # argmax
 @handle_frontend_method(
-    method_tree="torch.tensor.argmax",
+    method_tree="torch.Tensor.argmax",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
@@ -2848,13 +2868,13 @@ def test_torch_instance_argmax(
             "keepdim": keepdim,
         },
         frontend="torch",
-        class_name="tensor",
+        class_name="Tensor",
         method_name="argmax",
     )
 
 
 @handle_frontend_method(
-    method_tree="torch.tensor.ceil",
+    method_tree="torch.Tensor.ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2881,14 +2901,14 @@ def test_torch_instance_ceil(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="ceil",
     )
 
 
 # min
 @handle_frontend_method(
-    method_tree="torch.tensor.min",
+    method_tree="torch.Tensor.min",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
@@ -2913,7 +2933,7 @@ def test_torch_instance_min(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="min",
     )
 
@@ -2930,7 +2950,7 @@ def _get_dtype_and_multiplicative_matrices(draw):
 
 # matmul
 @handle_frontend_method(
-    method_tree="torch.tensor.matmul",
+    method_tree="torch.Tensor.matmul",
     dtype_indtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
 def test_torch_instance_matmul(
@@ -2955,6 +2975,6 @@ def test_torch_instance_matmul(
         native_array_flags_method=native_array,
         all_as_kwargs_np_method={"tensor2": tensor2},
         frontend="torch",
-        class_="tensor",
+        class_="Tensor",
         method_name="matmul",
     )
