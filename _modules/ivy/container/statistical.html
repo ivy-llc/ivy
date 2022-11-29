@@ -627,6 +627,146 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
+<div class="viewcode-block" id="ContainerWithStatistical.static_prod"><a class="viewcode-back" href="../../../data_classes/container/statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical.static_prod">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">static_prod</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">key_chains</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">to_apply</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">prune_unapplied</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">map_sequences</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Container static method variant of ivy.prod.</span>
+<span class="sd">        This method simply wraps the function, and so</span>
+<span class="sd">        the docstring for ivy.prod also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container. Should have a floating-point data type.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis or axes along which products must be computed. By</span>
+<span class="sd">            default, the product must be computed over the entire</span>
+<span class="sd">            array. If a tuple of integers, products must be</span>
+<span class="sd">            computed over multiple axes. Default: ``None``.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            bool, if True, the reduced axes (dimensions) must be</span>
+<span class="sd">            included in the result as singleton dimensions, and,</span>
+<span class="sd">            accordingly, the result must be compatible with the</span>
+<span class="sd">            input array (see Broadcasting). Otherwise, if False,</span>
+<span class="sd">            the reduced axes (dimensions) must not be included</span>
+<span class="sd">            in the result. Default: ``False``.</span>
+<span class="sd">        dtype</span>
+<span class="sd">            data type of the returned array.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to.</span>
+<span class="sd">            Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains,</span>
+<span class="sd">            otherwise key_chains will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was</span>
+<span class="sd">            not applied. Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output, for writing the result to.</span>
+<span class="sd">            It must have a shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            container, if the product was computed over the entire</span>
+<span class="sd">            array, a zero-dimensional array containing the product;</span>
+<span class="sd">            otherwise, a non-zero-dimensional array containing the</span>
+<span class="sd">            products. The returned array must have the same data type</span>
+<span class="sd">            as ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_prod(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(0.),</span>
+<span class="sd">            b: ivy.array(60.)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_prod(x, keepdims=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0.11000001]),</span>
+<span class="sd">            b: ivy.array([0.23100001])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, 3]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_prod(x, axis=1, keepdims=True)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[2]]),</span>
+<span class="sd">            b: ivy.array([[6]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_prod(x, out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(0),</span>
+<span class="sd">            b: ivy.array(0.30800003)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_prod(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array(-0.),</span>
+<span class="sd">            b: ivy.array(1.)</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_prod(x, axis=0, out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 4., 10.]),</span>
+<span class="sd">            b: ivy.array([18., 28., 40.])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),</span>
+<span class="sd">        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_prod(x, axis=1)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1., 8.]),</span>
+<span class="sd">            b: ivy.array([27., 64.])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+            <span class="s2">&quot;prod&quot;</span><span class="p">,</span>
+            <span class="n">x</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
 <div class="viewcode-block" id="ContainerWithStatistical.prod"><a class="viewcode-back" href="../../../data_classes/container/statistical/ContainerWithStatistical.html#ivy.container.statistical.ContainerWithStatistical.prod">[docs]</a>    <span class="k">def</span> <span class="nf">prod</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
@@ -746,23 +886,22 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),</span>
 <span class="sd">        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.prod(x, axis=1)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.prod(axis=1)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">        a: ivy.array([1., 8.]),</span>
-<span class="sd">        b: ivy.array([27., 64.])</span>
+<span class="sd">            a: ivy.array([1., 8.]),</span>
+<span class="sd">            b: ivy.array([27., 64.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
-                <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
-                <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
-                <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
-                <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
-                <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
-            <span class="p">),</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_prod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">key_chains</span><span class="o">=</span><span class="n">key_chains</span><span class="p">,</span>
+            <span class="n">to_apply</span><span class="o">=</span><span class="n">to_apply</span><span class="p">,</span>
+            <span class="n">prune_unapplied</span><span class="o">=</span><span class="n">prune_unapplied</span><span class="p">,</span>
+            <span class="n">map_sequences</span><span class="o">=</span><span class="n">map_sequences</span><span class="p">,</span>
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span></div>
 
