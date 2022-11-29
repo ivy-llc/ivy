@@ -100,7 +100,6 @@ def test_numpy_uniform(
     low,
     high,
 ):
-    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
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
