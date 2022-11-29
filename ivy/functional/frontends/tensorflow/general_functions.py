@@ -95,3 +95,8 @@ def zeros(shape, dtype=ivy.float32, name=None):
 @to_ivy_arrays_and_back
 def expand_dims(input, axis, name=None):
     return ivy.expand_dims(input, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def concat(values, axis, name=None):
+    return ivy.concat(values, axis=axis)
