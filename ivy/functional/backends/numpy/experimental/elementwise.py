@@ -243,6 +243,13 @@ def signbit(
 signbit.support_native_out = True
 
 
+def diff(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.diff(x)
+
+
+diff.support_native_out = False
+
+
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,

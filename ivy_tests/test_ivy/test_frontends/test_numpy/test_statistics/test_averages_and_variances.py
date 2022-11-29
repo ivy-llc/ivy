@@ -118,21 +118,20 @@ def test_numpy_nanmean(
     dtype_and_x=statistical_dtype_values(function="std"),
     dtype=helpers.get_dtypes("float", full=False, none=True),
     where=np_frontend_helpers.where(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.std"
-    ),
     keep_dims=st.booleans(),
 )
 def test_numpy_std(
-        dtype_and_x,
-        dtype,
-        where,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
-        keep_dims,
+    dtype_and_x,
+    dtype,
+    where,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    keep_dims,
 ):
     input_dtype, x, axis, axis_excess = dtype_and_x
     if isinstance(axis, tuple):
@@ -150,9 +149,9 @@ def test_numpy_std(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        fw=fw,
-        frontend="numpy",
-        fn_tree="std",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
         dtype=dtype,
@@ -160,7 +159,6 @@ def test_numpy_std(
         correction=0,
         keepdims=keep_dims,
         where=where,
-        test_values=False,
     )
 
 
