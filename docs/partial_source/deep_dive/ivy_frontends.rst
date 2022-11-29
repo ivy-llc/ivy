@@ -143,17 +143,10 @@ In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
 Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
 For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
+Additionally, :code:`casting` and :code:`order` are handled in the :code:`@handle_numpy_casting` and :code:`@to_ivy_arrays_and_back` decorators respectively.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 
-However, the arguments :code:`casting`, :code:`order` and :code:`subok` are completely unhandled here.
-This is for two reasons.
-
-In the case of :code:`casting`, support will be added for this via the inclusion of a decorator at some point in future, and so this is simply being deferred for the time being.
-
-In the case of :code:`order` and :code:`subok`, this is because the aspects which these arguments seek to control are simply not controllable when using Ivy.
-:code:`order` controls the low-level memory layout of the stored array.
-Similarly, :code:`subok` controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
-Again, this is a very framework-specific argument.
+However, the argument :code:`subok` is completely unhandled here because it controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
 All ivy functions by default do enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will be operating with :class:`ivy.Array` instances rather than :class:`numpy.ndarray` instances, and so we omit this argument.
 Again, it has no bearing on input-output behaviour and so this is not a problem when transpiling between frameworks.
 
@@ -163,6 +156,7 @@ See the section "Unused Arguments" below for more details.
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
     @from_zero_dim_arrays_to_float
+    @handle_numpy_casting
     @to_ivy_arrays_and_back
     def tan(
         x,
@@ -184,7 +178,7 @@ See the section "Unused Arguments" below for more details.
 
 For the second example, :func:`tan` has a sub-category of :mod:`trigonometric_functions` according to the `numpy mathematical functions`_ directory.
 By referring to the `numpy.tan`_ documentation, we can see it has the same additional arguments as the :func:`add` function.
-In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where` and :code:`dtype`, but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
+In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where`, :code:`dtype`, :code:`casting`, and :code:`order`but we omit support for :code:`subok`.
 
 **TensorFlow**
 
@@ -200,7 +194,7 @@ There are three arguments according to the `tf.math.add <https://www.tensorflow.
 Just like the previous examples, the implementation wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on which framework is set in Ivy's backend.
 
 The arguments :code:`x` and :code:`y` are both used in the implementation, but the argument :code:`name` is not used.
-Similar to the omitted arguments in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
+Similar to the omitted argument in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
 
@@ -277,8 +271,6 @@ As can be seen from the examples above, there are often cases where we do not ad
 Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
 The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
 Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
-
-* the layout of the array in memory, such as :code:`order` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
 
 * the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
 
@@ -437,6 +429,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
     @to_ivy_arrays_and_back
     def add(
     x1,
@@ -639,34 +632,34 @@ Frontends Duplicate Policy
 --------------------------
 Some frontend functions appear in multiple namespaces within the original framework that the frontend is replicating.
 For example the :func:`np.asarray` function appears in `Array manipulation routines`_ and also in `Array creation routines`_.
-Thus, rather than implementing these functions as duplicates in their respective namespaces in Ivy, this section outlines a policy
-that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:
+This section outlines a policy that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:
 
 **Listing duplicate frontend functions on the ToDo lists**
 
-When listing frontend functions, extra care should be taken to keep note of duplicate functions.
-If a function is duplicated across multiple namespaces then we should select one instance (in any namespace) to serve as the implementation by putting an `*` beside the function name on the ToDo list. All other instances of the duplicate should then be designated aliases of the implementation using the format `(alias of <frontend/namespace/function_name>)` written beside the function name.
+Essentially, there are two types of duplicate functions;
+
+1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function called from the same path as :func:`np.asarray`.
+
+2. Functions that are listed in multiple namespaces but are callable from different paths, for example the function :func:`tf.math.tan` and :func:`tf.raw_ops.Tan`.
+
+When listing frontend functions, extra care should be taken to keep note of these two type of duplicate functions.
+
+* For duplicate functions of the first type, we should list the function once in any namespace where it exists and leave it out of all other namespaces.
+
+* For duplicates of the second type, we should list the function in each namespace where it exists but there should be a note to highlight that the function(s) on the list are duplicates and should therefore be implemented as aliases. For example, most of the functions in `tf.raw_ops` are aliases and this point is made clear when listing the functions on the ToDo list `here <https://github.com/unifyai/ivy/issues/1565>`_.
 
 **Contributing duplicate frontend functions**
 
 Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
-If the function is an alias, you should check if the implementation designated with an `*` exists.
+If the function is an alias, you should check if there is an implementation that can be aliased.
 
-* If an implementation exist then simply import the implemented function in the `init.py` file for the namespace where the duplicate is listed.
+* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
 
-For example in the case of :func:`np.asarray`, the function is implemented `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/creation_routines/from_existing_data.py#L5>`_ and we use it as an alias by importing `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/numpy/manipulation_routines/init.py>`_.
-
-* If the function has not been implemented, then feel free to contribute the implementation with its unit test.
-
-* If two PRs contribute the implementation for a duplicate function (and no implementation for that function exists), then reviewers should select the most advanced (comprehensive) implementation to serve as the implementation while the second PR should be refactored as an alias by importing the implementation as explained earlier. Both contributors should be rewarded equally if need be.
+* If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
 
 **Testing duplicate functions**
 
-Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each identical alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.
-
-**Handling already contributed duplicates**
-
-In the case where two or more duplicate functions have been contributed already, we should select the most advanced implementation to serve as the function's implementation, then refactor all other instances of the duplicate as aliases.
+Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.
 
 **Round Up**
 

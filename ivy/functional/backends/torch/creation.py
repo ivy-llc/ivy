@@ -64,13 +64,13 @@ def arange(
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device, out=out
+                start, stop, step, dtype=torch.int64, device=device, out=out
             ).to(torch.int32)
         else:
-            return torch.arange(start, stop, step=step, device=device, out=out)
+            return torch.arange(start, stop, step, device=device, out=out)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
+        return torch.arange(start, stop, step, dtype=dtype, device=device, out=out)
 
 
 arange.support_native_out = True

@@ -181,15 +181,19 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
     ) -> Tuple[ivy.Array]:
-        return ivy.eigh(self._data)
+        return ivy.eigh(self._data, UPLO=UPLO, out=out)
 
     def eigvalsh(
         self: ivy.Array,
         /,
         *,
         UPLO: Optional[str] = "L",
-        out: Optional[ivy.Array] = None
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.eigvalsh.
@@ -452,6 +456,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def qr(
         self: ivy.Array,
+        /,
         *,
         mode: str = "reduced",
     ) -> Tuple[ivy.Array, ivy.Array]:

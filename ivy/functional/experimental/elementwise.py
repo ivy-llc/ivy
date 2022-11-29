@@ -763,6 +763,33 @@ def signbit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def diff(
+    x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Returns the n-th discrete difference along the given axis.
+
+    Parameters
+    ----------
+    x
+        array-like input.
+    out
+        optional output array, for writing the result to.
+    Returns
+    -------
+    ret
+        Rreturns the n-th discrete difference along the given axis.
+    Examples
+    --------
+    >>> x = ivy.array([1, 2, 4, 7, 0])
+    >>> ivy.diff(x)
+    ivy.array([ 1,  2,  3, -7])
+    """
+    return ivy.current_backend().diff(x, out=out)
+
+
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
@@ -904,3 +931,43 @@ def nextafter(
     ivy.array([1.4013e-45., 3.4028e+38])
     """
     return ivy.current_backend(x1, x2).nextafter(x1, x2, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def zeta(
+    x: Union[ivy.Array, ivy.NativeArray],
+    q: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> bool:
+    """
+    Compute the Hurwitz zeta function.
+
+    Parameters
+    ----------
+    x
+        First input array.
+    q
+        Second input array.
+    out
+        Alternate output array in which to place the result.
+        The default is None.
+
+    Returns
+    -------
+    ret
+        Array with values computed from zeta function from
+        input arrays' values.
+
+    Examples
+    --------
+    >>> x = ivy.array([5.0, 3.0])
+    >>> q = ivy.array([2.0])
+    >>> ivy.zeta(x, q)
+    ivy.array([0.0369, 0.2021])
+    """
+    return ivy.current_backend(x, q).zeta(x, q, out=out)

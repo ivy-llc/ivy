@@ -725,6 +725,37 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
+    def diff(
+        self: Union[ivy.Array, int, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+        Parameters
+        ----------
+        self
+            array-like input.
+        out
+            optional output array, for writing the result to.
+        Returns
+        -------
+        ret
+            Returns the n-th discrete difference along the given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ivy.diff(self._data, out=out)
+
     def fix(
         self: ivy.Array,
         /,
@@ -791,3 +822,40 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([1.4013e-45., 3.4028e+38])
         """
         return ivy.nextafter(self._data, x2, out=out)
+
+    def zeta(
+        self: ivy.Array,
+        q: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> bool:
+        """
+        ivy.Array instance method variant of ivy.zeta. This method simply
+        wraps the function, and so the docstring for ivy.zeta also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            First input array.
+        x2
+            Second input array.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            Array with values computed from zeta function from
+            input arrays' values.
+
+        Examples
+        --------
+        >>> x = ivy.array([5.0, 3.0])
+        >>> q = ivy.array([2.0])
+        >>> x.zeta(q)
+        ivy.array([0.0369, 0.2021])
+        """
+        return ivy.zeta(self._data, q, out=out)

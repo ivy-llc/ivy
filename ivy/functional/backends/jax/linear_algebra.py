@@ -85,11 +85,7 @@ def eigh(
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigvalsh(
-    x: JaxArray,
-    /,
-    *,
-    UPLO: Optional[str] = "L",
-    out: Optional[JaxArray] = None
+    x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
 ) -> JaxArray:
     return jnp.linalg.eigvalsh(x, UPLO=UPLO)
 
@@ -261,7 +257,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
+def qr(
+    x: JaxArray, /, *, mode: str = "reduced", out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -394,6 +392,7 @@ def diag(
     return jnp.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: JaxArray,
     /,

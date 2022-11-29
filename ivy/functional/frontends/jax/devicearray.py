@@ -6,19 +6,26 @@ import ivy.functional.frontends.jax as jax_frontend
 
 
 class DeviceArray:
-    def __init__(self, data):
-        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
+    def __init__(self, array):
+        self._ivy_array = (
+            ivy.array(array) if not isinstance(array, ivy.Array) else array
+        )
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self.data))
-            + ")"
+            "ivy.frontends.jax.DeviceArray(" + str(ivy.to_list(self._ivy_array)) + ")"
         )
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def ivy_array(self):
+        return self._ivy_array
 
     @property
     def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.data)
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #
@@ -66,7 +73,7 @@ class DeviceArray:
         return jax_frontend.numpy.dot(other, self)
 
     def __pos__(self):
-        return ivy.positive(self)
+        return self
 
     def __neg__(self):
         return jax_frontend.lax.neg(self)
@@ -132,4 +139,4 @@ class DeviceArray:
         return jax_frontend.lax.shift_right_logical(other, self)
 
     def __getitem__(self, index):
-        return ivy.get_item(self, index)
+        return self.at[index].get()

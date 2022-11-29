@@ -1869,6 +1869,86 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_diff(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.diff. This method simply wraps
+        the function, and so the docstring for ivy.diff also applies to this
+        method with minimal changes.
+        Parameters
+        ----------
+        x
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along
+            the given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "diff",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diff(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+        Parameters
+        ----------
+        self
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along the
+            given axis.
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return self.static_diff(self, out=out)
+
+    @staticmethod
     def static_fix(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -2077,6 +2157,136 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_nextafter(
             self,
             x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
+    def static_zeta(
+        x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        q: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.zeta. This method simply wraps
+        the function, and so the docstring for ivy.zeta also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input container containing first input arrays.
+        q
+            Input container containing second input arrays.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the zeta function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([5.0, 3.0]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> q = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([5.0]))
+        >>> ivy.Container.static_zeta(x1, x2)
+        {
+            a: ivy.array([0.0369, 0.2021]),
+            b: ivy.array([0.0006, 0.0244])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "zeta",
+            x,
+            q,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def zeta(
+        self: ivy.Container,
+        q: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.zeta. This method simply
+        wraps the function, and so the docstring for ivy.zeta also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input container containing first input array.
+        q
+            Input container containing second input array.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            Alternate output array in which to place the result.
+            The default is None.
+
+        Returns
+        -------
+        ret
+            container including the zeta function computed element-wise
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([5.0, 3.0]),\
+        ...                         b=ivy.array([2.0, 1.0])
+        >>> q = ivy.Container(a=ivy.array([2.0]),\
+        ...                         b=ivy.array([5.0]))
+        >>> x.zeta(q)
+        {
+            a: ivy.array([0.0369, 0.2021]),
+            b: ivy.array([0.0006, 0.0244])
+        }
+        """
+        return self.static_zeta(
+            self,
+            q,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
