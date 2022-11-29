@@ -157,7 +157,7 @@ class ndarray:
     
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
-            self.data,
+            self._ivyArray,
             offset=offset,
             axis1=axis1,
             axis2=axis2,
