@@ -6,10 +6,7 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 
 @to_ivy_arrays_and_back
 def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
-    if input_type in ["int8", "int16", "int32", "int64"]:
-        return ivy.astype(ivy.sum(ivy.array(inputs)), input_type)
-    else:
-        return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
 
 
 @to_ivy_arrays_and_back
