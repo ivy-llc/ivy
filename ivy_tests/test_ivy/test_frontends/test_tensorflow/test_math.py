@@ -1353,4 +1353,3 @@ def test_tensorflow_argmin(
         axis=axis,
         output_type=output_type,
     )
-
