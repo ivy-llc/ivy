@@ -45,6 +45,9 @@ class Tensor:
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
         return self
+    
+    def any(self, dim=None, keepdim=False):
+        return torch_frontend.any(self._ivy_array, dim=dim, keepdim=keepdim)
 
     def asin(self):
         return torch_frontend.asin(self._ivy_array)

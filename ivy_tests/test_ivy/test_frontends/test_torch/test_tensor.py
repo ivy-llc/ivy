@@ -102,6 +102,50 @@ def test_torch_instance_add(
     )
 
 
+# any
+@handle_frontend_method(
+    method_tree="torch.Tensor.any",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_axis=-1,
+        max_axis=0,
+        min_num_dims=1,
+        allow_inf=False,
+    ),
+    keepdim=st.booleans(),
+)
+def test_torch_instance_any(
+    dtype_input_axis,
+    keepdim,
+    as_variable,
+    num_positional_args,
+    native_array,
+    class_,
+    method_name,
+):
+    input_dtype, x, axis = dtype_input_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "keepdim": keepdim,
+        },
+        frontend="torch",
+        class_="Tensor",
+        method_name="any",
+    )
+
+
 # new_ones
 @handle_frontend_method(
     method_tree="torch.Tensor.new_ones",
