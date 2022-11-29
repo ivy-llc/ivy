@@ -107,7 +107,7 @@ def test_tensorflow_tan(
         x=x[0],
     )
 
-'''
+    
 # multiply
 @handle_frontend_test(
     fn_tree="tensorflow.math.multiply",
@@ -1353,4 +1353,4 @@ def test_tensorflow_argmin(
         axis=axis,
         output_type=output_type,
     )
-'''
+
