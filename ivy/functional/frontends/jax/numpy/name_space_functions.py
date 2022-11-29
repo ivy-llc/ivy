@@ -545,3 +545,8 @@ def log10(x):
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
     return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def diagonal(a, offset=0, axis1=0, axis2=1):
+    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
