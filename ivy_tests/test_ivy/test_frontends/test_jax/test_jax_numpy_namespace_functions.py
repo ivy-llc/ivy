@@ -3063,3 +3063,62 @@ def test_jax_numpy_logaddexp(
         x1=x[0],
         x2=x[1],
     )
+
+
+@st.composite
+def dims_and_offset(draw, shape):
+    shape_actual = draw(shape)
+    dim1 = draw(helpers.get_axis(shape=shape, force_int=True))
+    dim2 = draw(helpers.get_axis(shape=shape, force_int=True))
+    offset = draw(
+        st.integers(min_value=-shape_actual[dim1], max_value=shape_actual[dim1])
+    )
+    return dim1, dim2, offset
+
+
+# diagonal
+@handle_frontend_test(
+    fn_tree="jax.numpy.diagonal",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
+    ),
+    dims_and_offset=dims_and_offset(
+        shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape")
+    ),
+)
+def test_jax_numpy_diagonal(
+    *,
+    dtype_and_values,
+    dims_and_offset,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_and_values
+    axis1, axis2, offset = dims_and_offset
+    a = value[0]
+    num_of_dims = len(np.shape(a))
+    assume(axis1 != axis2)
+    if axis1 < 0:
+        assume(axis1 + num_of_dims != axis2)
+    if axis2 < 0:
+        assume(axis1 != axis2 + num_of_dims)
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=a,
+        offset=offset,
+        axis1=axis1,
+        axis2=axis2,
+    )
