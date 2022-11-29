@@ -53,6 +53,9 @@ class Tensor:
         self._ivy_array = self.asin().ivy_array
         return self
 
+    def sum(self):
+        return torch_frontend.sum(self._ivyArray)
+
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
 
