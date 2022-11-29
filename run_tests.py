@@ -40,9 +40,9 @@ def get_submodule(test_path):
             else:
                 coll = db_dict[name]
     submod_test = test_path[-1]
-    submod, test = submod_test.split("::")
-    submod = submod.split("_")[1].strip(".py")
-    return coll, submod, test
+    submod, test_fn = submod_test.split("::")
+    submod = submod.rstrip(".py").lstrip("test_")
+    return coll, submod, test_fn
 
 
 def update_individual_test_results(collection, id, submod, backend, test, result):
@@ -67,26 +67,24 @@ if __name__ == "__main__":
     with open("tests_to_run", "r") as f:
         for line in f:
             test, backend = line.split(",")
-
-            coll, submod, test = get_submodule(test)
-            print(coll, submod, test)
+            coll, submod, test_fn = get_submodule(test)
+            print(coll, submod, test_fn)
             if len(sys.argv) > 2:
                 ret = os.system(
                     f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend {backend} {test}'  # noqa
                 )
-                print(f"test_result-: {ret}")
             else:
                 ret = os.system(
                     f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest --backend {backend} {test}'  # noqa
                 )
             if ret != 0:
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test, "failure"
+                    db[coll[0]], coll[1], submod, backend, test_fn, "failure"
                 )
                 failed = True
             else:
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test, "success"
+                    db[coll[0]], coll[1], submod, backend, test_fn, "success"
                 )
 
     if failed:
