@@ -16,16 +16,16 @@ class DeviceArray:
             "ivy.frontends.jax.DeviceArray(" + str(ivy.to_list(self._ivy_array)) + ")"
         )
 
-    @property
-    def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
-
     # Properties #
     # ---------- #
 
     @property
     def ivy_array(self):
         return self._ivy_array
+
+    @property
+    def at(self):
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #

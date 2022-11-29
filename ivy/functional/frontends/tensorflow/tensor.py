@@ -30,6 +30,18 @@ class EagerTensor:
     def ivy_array(self):
         return self._ivy_array
 
+    @property
+    def device(self):
+        return self._ivy_array.device
+
+    @property
+    def dtype(self):
+        return self._ivy_array.dtype
+
+    @property
+    def shape(self):
+        return "TensorShape(" + str(list(self._ivy_array.shape)) + ")"
+
     # Instance Methods #
     # ---------------- #
 
