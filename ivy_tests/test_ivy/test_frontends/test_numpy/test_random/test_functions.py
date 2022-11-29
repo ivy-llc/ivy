@@ -79,17 +79,15 @@ def test_numpy_dirichlet(
 
 
 # uniform
-
 @handle_frontend_test(
     fn_tree="numpy.random.uniform",
     input_dtypes=helpers.get_dtypes("float", index=2),
-    low=st.floats(allow_nan=False,allow_infinity=False, width=32),
-    high=st.floats(allow_nan=False,allow_infinity=False, width=32),
+    low=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    high=st.floats(allow_nan=False, allow_infinity=False, width=32),
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
 )
-
 def test_numpy_uniform(
     input_dtypes,
     size,
@@ -102,7 +100,7 @@ def test_numpy_uniform(
     low,
     high,
 ):
-    
+    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
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
