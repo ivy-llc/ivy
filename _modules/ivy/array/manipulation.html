@@ -436,18 +436,23 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])</span>
-<span class="sd">        &gt;&gt;&gt; x.stack([y],axis=1)</span>
-<span class="sd">        ivy.array([[1, 3, 5, 7],</span>
-<span class="sd">            [2, 4, 6, 8]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; print(x.stack(y, axis=1))</span>
+<span class="sd">        ivy.array([[1, 5],</span>
+<span class="sd">                [2, 6]])</span>
+
 <span class="sd">        &gt;&gt;&gt; x.stack([y],axis=0)</span>
-<span class="sd">        ivy.array([[1, 2],</span>
-<span class="sd">            [3, 4],</span>
-<span class="sd">            [5, 6],</span>
-<span class="sd">            [7, 8]])</span>
+<span class="sd">        ivy.array([[[1, 2]],</span>
+<span class="sd">                [[5, 6]]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">arrays</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="n">arrays</span> <span class="o">=</span> <span class="p">[</span><span class="n">arrays</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arrays</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,)</span> <span class="o">+</span> <span class="n">arrays</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="n">arrays</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ArrayWithManipulation.clip"><a class="viewcode-back" href="../../../data_classes/array/manipulation/ArrayWithManipulation.html#ivy.array.manipulation.ArrayWithManipulation.clip">[docs]</a>    <span class="k">def</span> <span class="nf">clip</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
