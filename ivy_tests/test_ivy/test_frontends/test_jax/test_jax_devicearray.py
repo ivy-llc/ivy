@@ -260,6 +260,28 @@ def test_jax_special_rpow(
     )
 
 
+# __all__
+@handle_frontend_test(
+    fn_tree="jax.lax.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_jax_special_all(
+    dtype_x,
+):
+    input_dtype, x = dtype_x
+    ret = DeviceArray(x[0]) == True
+    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) == jnp.bool_(True)
+    ret = helpers.flatten_and_to_np(ret=ret)
+    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="jax",
+    )
+
+
 # __and__
 @handle_frontend_test(
     fn_tree="jax.lax.add",  # dummy fn_tree
