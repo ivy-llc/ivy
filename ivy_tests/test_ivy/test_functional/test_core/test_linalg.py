@@ -1278,16 +1278,18 @@ def test_svd(
     ret_flat_np, ret_from_gt_flat_np = results
 
     if uv:
-        U, S, Vh = ret_flat_np[:3]
+        for i in range(len(ret_flat_np) // 3):
+            U = ret_flat_np[i * 3]
+            S = ret_flat_np[i * 3 + 1]
+            Vh = ret_flat_np[i * 3 + 2]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np[
-            :3
-        ]  # fix the test_function module/temp fix
-        m = U.shape[-1]
-        n = Vh.shape[-1]
-        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+        
+        for i in range(len(ret_from_gt_flat_np) // 3):
+            U_gt = ret_from_gt_flat_np[i * 3]
+            S_gt = ret_from_gt_flat_np[i * 3 + 1]
+            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
