@@ -6201,7 +6201,7 @@ def trunc_divide(
     >>> print(y)
     ivy.array([ 0., -1., 14.])
     """
-    return ivy.trunc(ivy.divide(x1, x2, out=out))
+    return ivy.trunc(ivy.divide(x1, x2), out=out)
 
 
 @to_native_arrays_and_back
