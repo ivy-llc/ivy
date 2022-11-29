@@ -22,15 +22,23 @@ def histogram(
     density: Optional[bool] = False,
     out: Optional[torch.tensor] = None,
 ) -> Tuple[torch.tensor]:
-
     ret = torch.histogram(
         input=a, bins=bins, range=range, weight=weights, density=density, out=out
     )
-
-    if ivy.exists(out):
-        return ivy.inplace_update(out, ret)
-    else:
-        return ret
+    if extend_upper_interval:
+        if density:
+            pass
+        else:
+            ret.hist[-1] += a[a > range[1]].size()[0]
+    if extend_lower_interval:
+        if density:
+            pass
+        else:
+            ret.hist[0] += a[a < range[0]].size()[0]
+    if dtype:
+        ret.hist.type(dtype)
+        ret.bin_edges.type(dtype)
+    return ret
 
 
 histogram.support_native_out = True
