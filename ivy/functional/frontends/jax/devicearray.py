@@ -13,9 +13,7 @@ class DeviceArray:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self._ivy_array))
-            + ")"
+            "ivy.frontends.jax.DeviceArray(" + str(ivy.to_list(self._ivy_array)) + ")"
         )
 
     @property

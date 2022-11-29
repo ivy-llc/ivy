@@ -13,7 +13,7 @@ class EagerTensor:
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.tensorflow.EagerTensor("
+            "ivy.frontends.tensorflow.EagerTensor("
             + str(ivy.to_list(self._ivy_array))
             + ",shape="
             + str(self._ivy_array.shape)
