@@ -173,8 +173,8 @@ def depthwise_conv2d(
 @with_unsupported_devices({"2.9.1 and below": ("cpu",)}, backend_version)
 # noinspection PyDefaultArgument
 def conv3d(
-    x: Union[tf.Tensor, tf.Variable],
-    filters: Union[tf.Tensor, tf.Variable],
+    x: tf.Tensor,
+    filters: tf.Tensor,
     strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
