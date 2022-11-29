@@ -19,6 +19,9 @@ class ndarray:
         else:
             self._f_contiguous = False
 
+    def __repr__(self):
+        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+
     # Properties #
     # ---------- #
 
