@@ -11,6 +11,7 @@ def random_sample(size=None):
 def dirichlet(alpha, size=None):
     return ivy.dirichlet(alpha, size=size)
 
+
 @to_ivy_arrays_and_back
 def uniform(low=0.0, high=1.0, size=None):
     return ivy.random_uniform(low=low, high=high, shape=size, dtype="float64")
