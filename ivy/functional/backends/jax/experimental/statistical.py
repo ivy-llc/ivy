@@ -16,7 +16,35 @@ def histogram(
     weights: Optional[jnp.ndarray] = None,
     density: Optional[bool] = False,
 ) -> Tuple[jnp.ndarray]:
-    return jnp.histogram(a, bins=bins, range=range, weights=weights, density=density)
+    ret = jnp.histogram(
+        a=a,
+        bins=bins,
+        range=range,
+        weights=weights,
+        density=density
+    )
+    if extend_lower_interval:
+        if density:
+            ret[0][:] *= a[(a > range[0]) & (a < range[1])].size
+        if extend_upper_interval:
+            ret[0][0] += a[a < range[0]].size
+            ret[0][-1] += a[a > range[1]].size
+            if density:
+                ret[0][:] /= a.size
+        else:
+            ret[0][0] += a[a < range[0]].size
+            if density:
+                ret[0][:] /= a[a < range[1]].size
+    elif extend_upper_interval:
+        if density:
+            ret[0][:] *= a[(a > range[0]) & (a < range[1])].size
+        ret[0][-1] += a[a > range[1]].size
+        if density:
+            ret[0][:] /= a[a > range[0]].size
+    if dtype:
+        ret[0].astype(dtype)
+        ret[1].astype(dtype)
+    return ret
 
 
 def median(
