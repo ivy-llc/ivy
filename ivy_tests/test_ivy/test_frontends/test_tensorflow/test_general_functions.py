@@ -30,6 +30,48 @@ def _get_clip_inputs(draw):
     return x_dtype, x, min, max
 
 
+# argsort
+@handle_frontend_test(
+    fn_tree="tensorflow.argsort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    direction=st.sampled_from(["ASCENDING", "DESCENDING"]),
+)
+def test_tensorflow_argsort(
+    *,
+    dtype_input_axis,
+    direction,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        values=input[0],
+        axis=axis,
+        direction=direction,
+    )
+
+
 # clip_by_value
 @handle_frontend_test(
     fn_tree="tensorflow.clip_by_value",
@@ -239,4 +281,77 @@ def test_tensorflow_ones_like(
         on_device=on_device,
         input=x[0],
         dtype=dtype[0],
+    )
+
+
+# zeros_like
+@handle_frontend_test(
+    fn_tree="tensorflow.zeros_like",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric")
+    ),
+    dtype=helpers.get_dtypes("numeric", full=False),
+)
+def test_tensorflow_zeros_like(
+    dtype_and_x,
+    dtype,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dtype=dtype[0],
+    )
+        
+
+# expand_dims
+@handle_frontend_test(
+    fn_tree="tensorflow.expand_dims",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(), key="shape"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="shape"),
+        allow_neg=True,
+        force_int=True,
+    )
+)
+def test_tensorflow_expand_dims(
+    *,
+    dtype_value,
+    axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_value
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+        axis=axis,
     )
