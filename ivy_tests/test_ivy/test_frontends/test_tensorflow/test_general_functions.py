@@ -357,54 +357,21 @@ def test_tensorflow_expand_dims(
     )
 
 
-# noinspection DuplicatedCode
-@st.composite
-def _arrays_idx_n_dtypes(draw):
-    num_dims = draw(st.shared(helpers.ints(min_value=1, max_value=4), key="num_dims"))
-    num_arrays = draw(
-        st.shared(helpers.ints(min_value=2, max_value=4), key="num_arrays")
-    )
-    common_shape = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=4),
-            min_size=num_dims - 1,
-            max_size=num_dims - 1,
-        )
-    )
-    unique_idx = draw(helpers.ints(min_value=0, max_value=num_dims - 1))
-    unique_dims = draw(
-        helpers.lists(
-            arg=helpers.ints(min_value=2, max_value=3),
-            min_size=num_arrays,
-            max_size=num_arrays,
-        )
-    )
-    xs = list()
-    input_dtypes = draw(
-        helpers.array_dtypes(
-            available_dtypes=draw(helpers.get_dtypes("numeric")),
-            shared_dtype=True,
-        )
-    )
-    for ud, dt in zip(unique_dims, input_dtypes):
-        x = draw(
-            helpers.array_values(
-                shape=common_shape[:unique_idx] + [ud] + common_shape[unique_idx:],
-                dtype=dt,
-            )
-        )
-        xs.append(x)
-    return xs, input_dtypes, unique_idx
-
-
 # concat
 @handle_frontend_test(
     fn_tree="tensorflow.concat",
-    xs_n_input_dtypes_n_unique_idx=_arrays_idx_n_dtypes(),
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=st.integers(min_value=1, max_value=4),
+        min_num_dims=1,
+        valid_axis=True,
+        force_int_axis=True,
+        shared_dtype=True,
+    ),
 )
 def test_tensorflow_concat(
     *,
-    xs_n_input_dtypes_n_unique_idx,
+    dtype_input_axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -412,9 +379,9 @@ def test_tensorflow_concat(
     fn_tree,
     frontend,
 ):
-    xs, input_dtypes, unique_idx = xs_n_input_dtypes_n_unique_idx
+    input_dtype, x, axis = dtype_input_axis
     helpers.test_frontend_function(
-        input_dtypes=input_dtypes,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -422,8 +389,8 @@ def test_tensorflow_concat(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        values=xs,
-        axis=unique_idx,
+        values=x,
+        axis=axis,
     )
 
 
