@@ -24,7 +24,7 @@ if "tensorflow" in available_frameworks:
     ground_truth = "tensorflow"
 elif "torch" in available_frameworks:
     ground_truth = "torch"
-elif "iax" in available_frameworks:
+elif "jax" in available_frameworks:
     ground_truth = "jax"
 else: 
     ground_truth = "numpy"
