@@ -4,8 +4,8 @@ import sys
 from pymongo import MongoClient
 
 submodules = (
-    "test_core",
-    "test_nn",
+    "test_functional",
+    "test_experimental",
     "test_stateful",
     "test_tensorflow",
     "test_torch",
@@ -33,8 +33,12 @@ def get_submodule(test_path):
     test_path = test_path.split("/")
     for name in submodules:
         if name in test_path:
-            coll = db_dict[name]
-            break
+            if name == "test_functional":
+                coll = db_dict["test_functional/" + test_path[-2]]
+            elif name == "test_experimental":
+                coll = db_dict["test_experimental/" + test_path[-2]]
+            else:
+                coll = db_dict[name]
     submod_test = test_path[-1]
     submod, test = submod_test.split("::")
     submod = submod.split("_")[1].strip(".py")
