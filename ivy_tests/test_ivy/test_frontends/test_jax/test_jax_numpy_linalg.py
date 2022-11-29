@@ -755,7 +755,19 @@ def _get_inv_square_matrices(draw):
 
     batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
 
-    shape = (dim_size,) * batch_shape
+    generated_shape = (dim_size,) * batch_shape
+    generated_ind = int(np.floor(len(generated_shape) / 2))
+
+    handpicked_shape, handpicked_ind = draw(
+        st.sampled_from([[(24, 6, 4), 1], [(8, 3, 6, 4), 2], [(6, 7, 8, 16, 21), 3]])
+    )
+
+    shape, ind = draw(
+        st.sampled_from(
+            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
+        )
+    )
+
     input_dtype = draw(
         helpers.get_dtypes("float", index=1, full=False).filter(
             lambda x: x not in ["float16", "bfloat16"]
@@ -777,7 +789,6 @@ def _get_inv_square_matrices(draw):
         except np.linalg.LinAlgError:
             pass
 
-    ind = int(np.floor(len(shape) / 2))
     return input_dtype, a, ind
 
 
