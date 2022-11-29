@@ -414,7 +414,6 @@ This function requires us to create extra functions for generating :code:`shape`
             with_out=False,
             num_positional_args=num_positional_args,
             native_array_flags=native_array,
-            fw=fw,
             frontend="tensorflow",
             fn_tree="fill",
             dims=shape,
@@ -560,15 +559,12 @@ Frontend Instance Method Tests
 ------------------------------
 
 The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
+major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
+for example, :code:`ndarray.__add__` would expect an array as input, despite the :code:`self.array`. and to make our test is **complete** we need to generate seperate flags for each.
 
 **Important Helper Functions**
 
-:func:`helpers.test_frontend_instance_method` is used to test frontend instance methods.
-It is used in the same way as :func:`helpers.test_frontend_function`.
-
-**Useful Notes**
-The :func:`helpers.test_frontend_instance_method` takes an argument :code:`frontend_class` which is the frontend class to test.
-This is the relevant Ivy frontend class and not the native framework class.
+:func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
 
 
 Frontend Instance Method Test Examples
@@ -582,224 +578,199 @@ ivy.add()
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
-    @handle_cmd_line_args
-    @given(
+    @handle_frontend_method(
+        init_name="jax.numpy.array",
+        method_tree="jax.DeviceArray.__add__",
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric", full=True),
             num_arrays=2,
             shared_dtype=True,
         ),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.jax.DeviceArray.add",
-        ),
     )
     def test_jax_instance_add(
         dtype_and_x,
-        as_variable,
-        num_positional_args,
-        native_array,
-        fw,
-    ):
+        init_num_positional_args: pf.NumPositionalArgFn,
+        method_num_positional_args: pf.NumPositionalArgMethod,
+        as_variable: pf.AsVariableFlags,
+        native_array: pf.NativeArrayFlags,
+        method_name,
+        init_name,
+        frontend,
+       ):
         input_dtype, x = dtype_and_x
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="jax",
-            frontend_class=DeviceArray,
-            fn_tree="DeviceArray.add",
-            self=x[0],
-            other=x[1],
+        helpers.test_frontend_method(
+            init_input_dtypes=input_dtype,
+            init_as_variable_flags=as_variable,
+            init_num_positional_args=init_num_positional_args,
+            init_native_array_flags=native_array,
+            init_all_as_kwargs_np={
+                "data": x[0],
+            },
+            method_input_dtypes=input_dtype,
+            method_as_variable_flags=as_variable,
+            method_num_positional_args=method_num_positional_args,
+            method_native_array_flags=native_array,
+            method_all_as_kwargs_np={
+                "other": x[1],
+            },
+            frontend=frontend,
+            init_name=init_name,
+            method_name=method_name,
         )
 
-* We use :func:`test_frontend_array_instance_method` to test the instance method.
-* We import the frontend class :class:`DeviceArray` from :code:`frontends.jax.DeviceArray` and pass it to the :code:`frontend_class` argument.
-* We specify the :code:`fn_tree` to be :meth:`DeviceArray.add` which is the path to the function in the frontend class.
+* We use :func:`test_frontend_method` to test the instance method.
+* We specify the function that is used to initialize the array, for jax, we use :code:`jax.numpy.array` to create a :code:`DeviceArray`.
+* We specify the :code:`method_tree` to be :meth:`jax.DeviceArray.__add__` which is the path to the method in the frontend class.
+* We must tell the decorator which flags to generate using type hints, as we don't want to rely on the name of the parameter only, we use the type hints
+to tell the decorator that we should generate native array flags for :code:`init_as_variable_flags` by type hinting it with :code:`pf.NativeArrayFlags`.
     
 **NumPy**
 
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
-    @handle_cmd_line_args
-    @given(
+    @handle_frontend_method(
+        init_name="array",
+        method_tree="numpy.ndarray.__add__",
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            num_arrays=2,
+            available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
         ),
     )
-    def test_numpy_ndarray_add(
+    def test_numpy_instance_add__(
         dtype_and_x,
-        as_variable,
-        native_array,
-        fw,
+        as_variable: pf.AsVariableFlags,
+        native_array: pf.NativeArrayFlags,
+        init_num_positional_args: pf.NumPositionalArgFn,
+        method_num_positional_args: pf.NumPositionalArgMethod,
+        init_name,
+        method_name,
+        frontend,
     ):
-        input_dtype, x = dtype_and_x
+        input_dtype, xs = dtype_and_x
         helpers.test_frontend_method(
-            input_dtypes_init=input_dtype,
-            as_variable_flags_init=as_variable,
-            num_positional_args_init=0,
-            native_array_flags_init=native_array,
-            all_as_kwargs_np_init={
-                "data": x[0],
+            init_input_dtypes=input_dtype,
+            init_as_variable_flags=as_variable,
+            init_num_positional_args=init_num_positional_args,
+            init_native_array_flags=native_array,
+            init_all_as_kwargs_np={
+                "object": xs[0],
             },
-            input_dtypes_method=[input_dtype[1]],
-            as_variable_flags_method=as_variable,
-            num_positional_args_method=0,
-            native_array_flags_method=native_array,
-            all_as_kwargs_np_method={
-                "value": x[1],
+            method_input_dtypes=input_dtype,
+            method_as_variable_flags=as_variable,
+            method_native_array_flags=native_array,
+            method_num_positional_args=method_num_positional_args,
+            method_all_as_kwargs_np={
+                "value": xs[1],
             },
-            fw=fw,
-            frontend="numpy",
-            class_name="ndarray",
-            method_name="add",
+            frontend=frontend,
+            init_name=init_name,
+            method_name=method_name,
         )
 
-* We use :func:`np_frontend_helpers.test_frontend_array_instance_method` to test the instance method.
-  This handles the :code:`where` argument.
-* We import the frontend class :class:`ndarray` from :code:`frontends.numpy.ndarray` and pass it to the :code:`frontend_class` argument.
-* We specify the :code:`fn_tree` to be :meth:`ndarray.add` which is the path to the function in the frontend class.
-    
+* We specify the function that is used to initialize the array, for NumPy, we use :code:`numpy.array` to create a :code:`numpy.ndarray`.
+* We specify the :code:`method_tree` to be :meth:`numpy.ndarray.__add__` which is the path to the method in the frontend class.
+
 **TensorFlow**
 
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py
-    @handle_cmd_line_args
-    @given(
+    @handle_frontend_method(
+        init_name="constant",
+        method_tree="tensorflow.EagerTensor.__add__",
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shared_dtype=True,
         ),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="ivy.functional.frontends.tensorflow.Tensor.add",
-        ),
     )
     def test_tensorflow_instance_add(
-        dtype_and_x, as_variable, num_positional_args, native_array, fw
+        dtype_and_x,
+        as_variable: pf.AsVariableFlags,
+        native_array: pf.NativeArrayFlags,
+        init_num_positional_args: pf.NumPositionalArgFn,
+        method_num_positional_args: pf.NumPositionalArgMethod,
+        init_name,
+        method_name,
+        frontend,
     ):
         input_dtype, x = dtype_and_x
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=False,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="tensorflow",
-            frontend_class=Tensor,
-            fn_tree="Tensor.add",
-            self=x[0],
-            y=x[1],
+        helpers.test_frontend_method(
+            init_input_dtypes=input_dtype,
+            init_as_variable_flags=as_variable,
+            init_num_positional_args=init_num_positional_args,
+            init_native_array_flags=native_array,
+            init_all_as_kwargs_np={
+                "data": x[0],
+            },
+            method_input_dtypes=input_dtype,
+            method_as_variable_flags=as_variable,
+            method_num_positional_args=method_num_positional_args,
+            method_native_array_flags=native_array,
+            method_all_as_kwargs_np={
+                "y": x[1],
+            },
+            frontend=frontend,
+            init_name=init_name,
+            method_name=method_name,
         )
 
-* We import the frontend class :class:`Tensor` from :code:`frontends.tensorflow.tensor` and pass it to the :code:`frontend_class` argument.
-* We specify the :code:`fn_tree` to be :meth:`Tensor.add` which is the path to the function in the frontend class.
+
+* We specify the function that is used to initialize the array, for TensorFlow, we use :code:`tensorflow.constant` to create a :code:`tensorflow.EagerTensor`.
+* We specify the :code:`method_tree` to be :meth:`tensorflow.EagerTensor.__add__` which is the path to the method in the frontend class.
 
 **PyTorch**
 
 .. code-block:: python
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py
-    @handle_cmd_line_args
-    @given(
+    @handle_frontend_method(
+        init_name="tensor",
+        method_tree="torch.Tensor.add",
         dtype_and_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
+            available_dtypes=helpers.get_dtypes("float"),
             num_arrays=2,
             min_value=-1e04,
             max_value=1e04,
             allow_inf=False,
         ),
-        alpha=st.floats(min_value=-1e06, max_value=1e06, allow_infinity=False),
-        num_positional_args=helpers.num_positional_args(
-            fn_name="functional.frontends.torch.Tensor.add",
-        ),
+        alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
     )
     def test_torch_instance_add(
         dtype_and_x,
         alpha,
-        as_variable,
-        with_out,
-        num_positional_args,
-        native_array,
-        fw,
+        init_num_positional_args: pf.NumPositionalArgFn,
+        method_num_positional_args: pf.NumPositionalArgMethod,
+        as_variable: pf.AsVariableFlags,
+        native_array: pf.NativeArrayFlags,
+        method_name,
+        init_name,
+        frontend,
     ):
         input_dtype, x = dtype_and_x
-        helpers.test_frontend_array_instance_method(
-            input_dtypes=input_dtype,
-            as_variable_flags=as_variable,
-            with_out=with_out,
-            num_positional_args=num_positional_args,
-            native_array_flags=native_array,
-            fw=fw,
-            frontend="torch",
-            frontend_class=Tensor,
-            fn_tree="Tensor.add",
-            rtol=1e-04,
-            self=x[0],
-            other=x[1],
-            alpha=alpha,
-            out=None,
+        helpers.test_frontend_method(
+            init_input_dtypes=input_dtype,
+            init_as_variable_flags=as_variable,
+            init_num_positional_args=init_num_positional_args,
+            init_native_array_flags=native_array,
+            init_all_as_kwargs_np={
+                "data": x[0],
+            },
+            method_input_dtypes=input_dtype,
+            method_as_variable_flags=as_variable,
+            method_num_positional_args=method_num_positional_args,
+            method_native_array_flags=native_array,
+            method_all_as_kwargs_np={
+                "other": x[1],
+                "alpha": alpha,
+            },
+            frontend=frontend,
+            init_name=init_name,
+            method_name=method_name,
         )
 
-* We import the frontend class :class:`Tensor` from :code:`frontends.torch.tensor` and pass it to the :code:`frontend_class` argument.
-* We specify the :code:`fn_tree` to be :meth:`Tensor.add` which is the path to the function in the frontend class.
-
-
-Frontend Special Method Tests
------------------------------
-
-The implementation for the frontend special method tests are somewhat a little different from how the instance methods are being tested.
-
-**Important Helper Function**
-
-:func:`helpers.value_test` is being used to test frontend special methods.
-
-
-Frontend Special Method Test Examples
--------------------------------------
-
-ivy.add()
-^^^^^^^^^
-
-**Jax**
-
-.. code-block:: python
-
-    # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
-    @handle_cmd_line_args
-    @given(
-        dtype_x=helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric", full=True),
-            shared_dtype=True,
-            num_arrays=2,
-        )
-    )
-    def test_jax_special_add(
-        dtype_x,
-        fw,
-    ):
-        input_dtype, x = dtype_x
-        ret = DeviceArray(x[0]) + DeviceArray(x[1])
-        ret_gt = jnp.array(x[0]) + jnp.array(x[1], dtype=input_dtype[1])
-        ret = helpers.flatten_and_to_np(ret=ret)
-        ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-        for (u, v) in zip(ret, ret_gt):
-            helpers.value_test(
-                ret=u,
-                ret_from_gt=v,
-                ground_truth_backend="jax",
-            )
-
-* We use :func:`helpers.value_test` to test the special method.
-* We use the frontend class :class:`DeviceArray` to calculate jax frontend special method's result, which is then compared to the regular frontend function's result, when passed into the :func:`helpers.value_test`.
-* We use :func:`helpers.value_test`,which takes an argument :code:`ground_truth_backend` which is the frontend that is to be tested.
-
+* We specify the function that is used to initialize the array, for PyTorch, we use :code:`torch.tensor` to create a :code:`torch.Tensor`.
+* We specify the :code:`method_tree` to be :meth:`torch.Tensor.__add__` which is the path to the method in the frontend class.
 
 Hypothesis Helpers
 ------------------
