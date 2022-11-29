@@ -93,5 +93,10 @@ def ones_like(input, dtype=None, name=None):
 
 
 @to_ivy_arrays_and_back
+def zeros(shape, dtype=ivy.float32, name=None):
+    return ivy.zeros(shape=shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def expand_dims(input, axis, name=None):
     return ivy.expand_dims(input, axis=axis)

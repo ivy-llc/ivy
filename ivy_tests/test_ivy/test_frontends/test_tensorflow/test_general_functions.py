@@ -362,7 +362,7 @@ def test_tensorflow_zeros_like(
         input=x[0],
         dtype=dtype[0],
     )
-        
+
 
 # expand_dims
 @handle_frontend_test(
@@ -375,7 +375,7 @@ def test_tensorflow_zeros_like(
         shape=st.shared(helpers.get_shape(), key="shape"),
         allow_neg=True,
         force_int=True,
-    )
+    ),
 )
 def test_tensorflow_expand_dims(
     *,
@@ -401,4 +401,40 @@ def test_tensorflow_expand_dims(
         on_device=on_device,
         input=value[0],
         axis=axis,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.zeros",
+    input=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=0,
+        max_num_dims=10,
+        min_dim_size=0,
+        max_dim_size=10,
+    ),
+    dtype=helpers.get_dtypes("valid", full=False),
+)
+def test_tensorflow_zeros(
+    *,
+    input,
+    dtype,
+    as_variable,
+    native_array,
+    with_out,
+    frontend,
+    fn_tree,
+    on_device,
+    num_positional_args,
+):
+    helpers.test_frontend_function(
+        shape=input,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend="tensorflow",
+        fn_tree=fn_tree,
+        on_device=on_device,
     )
