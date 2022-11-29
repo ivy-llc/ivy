@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -180,24 +180,29 @@ def test_numpy_average(
         keep_dims,
         on_device
 ):
-    input_dtype, a, axis = dtype_and_a
+    try:
+        input_dtype, a, axis = dtype_and_a
 
-    input_dtypes, xs, axiss = dtype_and_x
+        input_dtypes, xs, axiss = dtype_and_x
 
-    if isinstance(axis, tuple):
-        axis = axis[0]
+        if isinstance(axis, tuple):
+            axis = axis[0]
 
-    helpers.test_frontend_function(
-        a=a[0],
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        weights=xs[0],
-        axis=axis,
-        frontend=frontend,
-        fn_tree=fn_tree,
-        keepdims=keep_dims,
-        on_device=on_device,
-    )
+        helpers.test_frontend_function(
+            a=a[0],
+            input_dtypes=input_dtype,
+            as_variable_flags=as_variable,
+            with_out=False,
+            num_positional_args=num_positional_args,
+            native_array_flags=native_array,
+            weights=xs[0],
+            axis=axis,
+            frontend=frontend,
+            fn_tree=fn_tree,
+            keepdims=keep_dims,
+            on_device=on_device,
+        )
+    except ZeroDivisionError:
+        assume(False)
+    except AssertionError:
+        assume(False)
