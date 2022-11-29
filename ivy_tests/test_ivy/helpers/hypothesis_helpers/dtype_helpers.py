@@ -201,5 +201,5 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     if x is None:
         return dtype, cast_dtype
     if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x)).tolist()
+        x = np.abs(np.asarray(x))
     return dtype, x, cast_dtype
