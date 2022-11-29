@@ -156,6 +156,12 @@ def atleast_2d(
     return tf.experimental.numpy.atleast_2d(*arys)
 
 
+def atleast_3d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_3d(*arys)
+
+
 def take_along_axis(
     arr: Union[tf.Tensor, tf.Variable],
     indices: Union[tf.Tensor, tf.Variable],
@@ -171,3 +177,13 @@ def take_along_axis(
         )
     indices = tf.dtypes.cast(indices, tf.int32)
     return tf.experimental.numpy.take_along_axis(arr, indices, axis)
+
+
+def hsplit(
+    ary: Union[tf.Tensor, tf.Variable],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    return tf.experimental.numpy.hsplit(ary, indices_or_sections)

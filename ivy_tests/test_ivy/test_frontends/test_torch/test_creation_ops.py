@@ -9,6 +9,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 # Helper functions
 
+
 @st.composite
 def _fill_value(draw):
     dtype = draw(st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"))[0]
@@ -24,13 +25,17 @@ def _start_stop_step(draw):
     start = draw(helpers.ints(min_value=0, max_value=50))
     stop = draw(helpers.ints(min_value=0, max_value=50))
     if start < stop:
-        step = draw(helpers.ints(min_value=0, max_value=50).filter(
-            lambda x: True if x != 0 else False
-        ))
+        step = draw(
+            helpers.ints(min_value=0, max_value=50).filter(
+                lambda x: True if x != 0 else False
+            )
+        )
     else:
-        step = draw(helpers.ints(min_value=-50, max_value=0).filter(
-            lambda x: True if x != 0 else False
-        ))
+        step = draw(
+            helpers.ints(min_value=-50, max_value=0).filter(
+                lambda x: True if x != 0 else False
+            )
+        )
     return start, stop, step
 
 
@@ -443,7 +448,9 @@ def test_torch_empty_like(
 @handle_frontend_test(
     fn_tree="torch.full_like",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype")
+        available_dtypes=st.shared(
+            helpers.get_dtypes("numeric", full=False), key="dtype"
+        )
     ),
     fill_value=_fill_value(),
     dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
@@ -479,7 +486,7 @@ def test_torch_full_like(
     )
 
 
-# as_tensor and tensor by proxy
+# as_tensor
 @handle_frontend_test(
     fn_tree="torch.as_tensor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
@@ -537,4 +544,35 @@ def test_torch_from_numpy(
         frontend=frontend,
         fn_tree=fn_tree,
         data=input[0],
+    )
+
+
+# tensor
+@handle_frontend_test(
+    fn_tree="torch.tensor",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, input = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        data=input[0],
+        device=on_device,
     )

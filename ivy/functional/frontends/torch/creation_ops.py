@@ -200,3 +200,15 @@ def from_numpy(data, /):
 
 
 from_numpy.supported_dtypes = ("ndarray",)
+
+
+@to_ivy_arrays_and_back
+def tensor(
+    data,
+    *,
+    dtype=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+):
+    return ivy.array(data, dtype=dtype, device=device)

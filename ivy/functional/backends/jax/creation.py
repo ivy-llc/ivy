@@ -26,9 +26,9 @@ from ivy.functional.ivy.creation import (
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
-    /,
     *,
     dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
