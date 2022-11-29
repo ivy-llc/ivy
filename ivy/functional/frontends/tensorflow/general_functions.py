@@ -95,3 +95,17 @@ def zeros(shape, dtype=ivy.float32, name=None):
 @to_ivy_arrays_and_back
 def expand_dims(input, axis, name=None):
     return ivy.expand_dims(input, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def sort(values, axis=-1, direction="ASCENDING", name=None):
+    descending = True
+    if direction == "ASCENDING":
+        descending = False
+    else:
+        ivy.assertions.check_equal(
+            direction,
+            "DESCENDING",
+            message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
+        )
+    return ivy.sort(values, axis=axis, descending=descending)
