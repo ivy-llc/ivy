@@ -347,7 +347,6 @@ def test_numpy_radian(
         test_values=False,
     )
 
-
 @handle_frontend_test(
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     dtype=helpers.get_dtypes("float", full=False, none=True),
