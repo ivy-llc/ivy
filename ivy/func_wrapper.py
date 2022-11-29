@@ -45,6 +45,7 @@ def _get_first_array(*args, **kwargs):
             arr = ivy.index_nest(kwargs, arr_idxs[0])
     return arr
 
+
 # Array Handling #
 # ---------------#
 
