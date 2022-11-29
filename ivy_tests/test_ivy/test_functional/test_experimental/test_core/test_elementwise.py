@@ -440,6 +440,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        allow_nan=True,
     ),
     keep_dims=st.booleans(),
 )
