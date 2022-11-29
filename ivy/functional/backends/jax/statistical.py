@@ -68,8 +68,6 @@ def prod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
