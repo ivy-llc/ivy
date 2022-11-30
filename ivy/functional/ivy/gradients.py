@@ -25,7 +25,7 @@ from ivy.exceptions import handle_exceptions
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
         def inner_fn(x):
-            if ivy.is_array(x):
+            if ivy.is_array(x, exclusive=True):
                 if ivy.is_int_dtype(x.dtype):
                     x = x.astype(ivy.default_float_dtype())
                 else:
@@ -71,7 +71,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
         xs = xs.prune_empty()
     else:
         xs = _remove_empty(xs)
-    if len(xs) == 1:
+    if len(xs) == 1 and isinstance(xs, list):
         return xs[0]
     return xs
 

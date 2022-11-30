@@ -5486,9 +5486,7 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([-0., -1., -2.]),
             b: ivy.array([-3., -4., 5.])
         }
-
         """
-
         return self.static_negative(
             self,
             key_chains=key_chains,

@@ -1,7 +1,7 @@
 import sys
 
 
-backends = ["numpy", "torch", "jax", "tensorflow"]
+backends = ["numpy", "jax", "tensorflow", "torch"]
 submodules = [
     "activations",
     "converters",

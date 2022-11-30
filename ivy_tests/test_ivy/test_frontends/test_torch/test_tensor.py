@@ -1,7 +1,6 @@
 # global
 import ivy
 import torch
-import numpy as np
 from hypothesis import assume, strategies as st
 import hypothesis.extra.numpy as hnp
 
@@ -47,8 +46,8 @@ def test_torch_tensor_property_ivy_array(
     _, data = dtype_x
     x = Tensor(data[0])
     x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
-    ret_gt = np.ravel(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
