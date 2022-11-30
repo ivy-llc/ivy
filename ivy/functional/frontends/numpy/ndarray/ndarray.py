@@ -19,6 +19,9 @@ class ndarray:
         else:
             self._f_contiguous = False
 
+    def __repr__(self):
+        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
+
     # Properties #
     # ---------- #
 
@@ -65,16 +68,16 @@ class ndarray:
             keepdims=keepdims,
         )
 
-    def reshape(self, shape, order="C"):
+    def reshape(self, newshape, /, *, order="C"):
         ivy.assertions.check_elem_in_list(
             order,
-            ["C", "F", "A", "K"],
-            message="order must be one of 'C', 'F', 'A', or 'K'",
+            ["C", "F", "A"],
+            message="order must be one of 'C', 'F', or 'A'",
         )
-        if (order in ["K", "A"] and self._f_contiguous) or order == "F":
-            return np_frontend.reshape(self._ivy_array, shape, order="F")
+        if (order == "A" and self._f_contiguous) or order == "F":
+            return np_frontend.reshape(self._ivy_array, newshape, order="F")
         else:
-            return np_frontend.reshape(self._ivy_array, shape, order="C")
+            return np_frontend.reshape(self._ivy_array, newshape, order="C")
 
     def transpose(self, *axes):
         if axes and isinstance(axes[0], tuple):
