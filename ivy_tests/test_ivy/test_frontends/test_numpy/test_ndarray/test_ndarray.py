@@ -182,7 +182,7 @@ def test_numpy_ndarray_reshape(
         method_native_array_flags=native_array,
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
-            "shape": shape,
+            "newshape": shape,
         },
         frontend=frontend,
         init_name=init_name,
