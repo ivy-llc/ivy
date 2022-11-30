@@ -142,7 +142,15 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.container</span> <span class="kn">import</span> <span class="n">Container</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">_get_first_array</span>
-<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">torch</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
+    <span class="n">torch</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span> <span class="o">=</span> <span class="n">SimpleNamespace</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span> <span class="o">=</span> <span class="n">SimpleNamespace</span>
 
 
 <span class="c1"># Base #</span>
