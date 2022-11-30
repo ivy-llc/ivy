@@ -997,12 +997,20 @@ def default_float_dtype(
             if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
             else:
-                ret = ivy.float32
+                def_dtype = default_dtype()
+                if ivy.is_float_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.float32
         elif isinstance(input, Number):
             if _check_float64(input):
                 ret = ivy.float64
             else:
-                ret = ivy.float32
+                def_dtype = default_dtype()
+                if ivy.is_float_dtype(def_dtype):
+                    ret = def_dtype
+                else:
+                    ret = ivy.float32
     else:
         global default_float_dtype_stack
         if not default_float_dtype_stack:
@@ -1270,7 +1278,13 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_argwhere(input, lambda x: x > 4294967295 and x != ivy.inf):
+            is_native = lambda x: ivy.is_native_array(x)
+            if ivy.nested_argwhere(
+                input,
+                lambda x: ivy.dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != ivy.inf,
+            ):
                 ret = ivy.uint64
             else:
                 def_dtype = ivy.default_dtype()
