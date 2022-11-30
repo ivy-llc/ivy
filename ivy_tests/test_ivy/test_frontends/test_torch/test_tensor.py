@@ -105,6 +105,7 @@ def test_torch_instance_add(
 
 # any
 @handle_frontend_method(
+    init_name="tensor",
     method_tree="torch.Tensor.any",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
