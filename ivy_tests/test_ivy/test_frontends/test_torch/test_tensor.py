@@ -1,6 +1,7 @@
 # global
 import ivy
 import torch
+import numpy as np
 from hypothesis import assume, strategies as st
 import hypothesis.extra.numpy as hnp
 
@@ -11,8 +12,8 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
     _get_dtype_input_and_matrices,
 )
 from ivy.functional.frontends.torch import Tensor
-from ivy_tests.test_ivy.helpers import handle_frontend_method
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 
 
 # Helper functions
@@ -34,6 +35,25 @@ def _requires_grad(draw):
     if ivy.is_int_dtype(dtype) or ivy.is_uint_dtype(dtype):
         return draw(st.just(False))
     return draw(st.booleans())
+
+
+@handle_frontend_test(
+    fn_tree="torch.argmax",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor_property_ivy_array(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
+    ret_gt = np.ravel(data[0])
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="torch",
+    )
 
 
 # add
@@ -251,6 +271,43 @@ def test_torch_instance_arcsin(
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        init_name=init_name,
+        method_name=method_name,
+    )
+
+
+# sum
+@handle_frontend_method(
+    init_name="tensor",
+    method_tree="torch.Tensor.sum",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_sum(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    frontend,
+    init_name,
+    method_name,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=["float64"] + input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=1,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=["float64"] + input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=0,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
@@ -1107,7 +1164,6 @@ def test_torch_instance_log(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -2334,7 +2390,6 @@ def test_torch_special_mod(
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
