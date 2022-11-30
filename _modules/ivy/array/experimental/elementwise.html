@@ -130,7 +130,7 @@
   <h1>Source code for ivy.array.experimental.elementwise</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -988,7 +988,80 @@
 <span class="sd">        &gt;&gt;&gt; x.zeta(q)</span>
 <span class="sd">        ivy.array([0.0369, 0.2021])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithElementWiseExperimental.gradient"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.gradient">[docs]</a>    <span class="k">def</span> <span class="nf">gradient</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">spacing</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">edge_order</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]]:</span>
+        <span class="sd">&quot;&quot;&quot;Calculates gradient of x with respect to (w.r.t.) spacing</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input array representing outcomes of the function</span>
+<span class="sd">            spacing</span>
+<span class="sd">            if not given, indices of x will be used</span>
+<span class="sd">            if scalar indices of x will be scaled with this value</span>
+<span class="sd">            if array gradient of x w.r.t. spacing</span>
+<span class="sd">        edge_order</span>
+<span class="sd">            1 or 2, for &#39;frist order&#39; and &#39;second order&#39; estimation</span>
+<span class="sd">            of boundary values of gradient respectively.</span>
+<span class="sd">            Note: jax supports edge_order=1 case only</span>
+<span class="sd">        axis</span>
+<span class="sd">            dimension(s) to approximate the gradient over</span>
+<span class="sd">            by default partial gradient is computed in every dimention</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Array with values computed from gradient function from</span>
+<span class="sd">            inputs</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; spacing = (ivy.array([-2., -1., 1., 4.]),)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([4., 1., 1., 16.], )</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x, spacing=spacing)</span>
+<span class="sd">        ivy.array([-3., -2.,  2.,  5.])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x)</span>
+<span class="sd">        [ivy.array([[ 9., 18., 36., 72.],</span>
+<span class="sd">           [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],</span>
+<span class="sd">           [10. , 15. , 30. , 40. ]])]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x, spacing=2.0)</span>
+<span class="sd">        [ivy.array([[ 4.5,  9. , 18. , 36. ],</span>
+<span class="sd">           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],</span>
+<span class="sd">           [ 5.  ,  7.5 , 15.  , 20.  ]])]</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x, axis=1)</span>
+<span class="sd">        ivy.array([[ 1. ,  1.5,  3. ,  4. ],</span>
+<span class="sd">           [10. , 15. , 30. , 40. ]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x, spacing=[3., 2.])</span>
+<span class="sd">        [ivy.array([[ 3.,  6., 12., 24.],</span>
+<span class="sd">           [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],</span>
+<span class="sd">           [ 5.  ,  7.5 , 15.  , 20.  ]])]</span>
+
+<span class="sd">        &gt;&gt;&gt; spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.gradient(x, spacing=spacing)</span>
+<span class="sd">        [ivy.array([[ 4.5,  9. , 18. , 36. ],</span>
+<span class="sd">           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333,  0.5,  1., 1.33333333],</span>
+<span class="sd">           [ 3.33333333,  5.        , 10.        , 13.33333333]])]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">edge_order</span><span class="o">=</span><span class="n">edge_order</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

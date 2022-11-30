@@ -54,6 +54,7 @@ Experimental
    experimental/fix.rst
    experimental/nextafter.rst
    experimental/zeta.rst
+   experimental/gradient.rst
    experimental/msort.rst
    experimental/flatten.rst
    experimental/moveaxis.rst
