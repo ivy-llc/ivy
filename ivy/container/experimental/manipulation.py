@@ -1789,6 +1789,130 @@ class ContainerWithManipulationExperimental(ContainerBase):
         )
 
     @staticmethod
+    def static_atleast_3d(
+        *arys: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """
+        ivy.Container static method variant of ivy.atleast_3d. This method simply wraps
+        the function, and so the docstring for ivy.atleast_3d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
+            (M, N) becomes a view of shape (M, N, 1).
+
+        Examples
+        --------
+        >>> ary = ivy.Container(a=ivy.array(1), b=ivy.array([3,4,5]),\
+                        c=ivy.array([[3]]))
+        >>> ivy.Container.static_atleast_3d(ary)
+        {
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4],
+                           [5]]]),
+            c: ivy.array([[[3]]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "atleast_3d",
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    def atleast_3d(
+        self: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        *arys: Union[ivy.Container, ivy.Array, ivy.NativeArray, bool, Number],
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+    ) -> List[ivy.Container]:
+        """ivy.Container instance method variant of ivy.atleast_3d. This method simply
+        wraps the function, and so the docstring for ivy.atleast_3d also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            container with array inputs.
+        arys
+            one or more container with array inputs.
+        key_chains
+            The keychains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+
+        Returns
+        -------
+        ret
+            container or list of container where each elements within container is
+            atleast 3D. Copies are made only if necessary. For example, a 1-D array
+            of shape (N,) becomes a view of shape (1, N, 1), and a 2-D array of shape
+            (M, N) becomes a view of shape (M, N, 1).
+
+        Examples
+        --------
+        >>> ary1 = ivy.Container(a=ivy.array(1), b=ivy.array([3,4]),\
+                            c=ivy.array([[5]]))
+        >>> ary2 = ivy.Container(a=ivy.array(9), b=ivy.array(2),\
+                            c=ivy.array(3))
+        >>> ary1.atleast_3d(ary2)
+        [{
+            a: ivy.array([[[1]]]),
+            b: ivy.array([[[3],
+                           [4]]]),
+            c: ivy.array([[[5]]])
+        }, {
+            a: ivy.array([[[9]]]),
+            b: ivy.array([[[2]]]),
+            c: ivy.array([[[3]]])
+        }]
+        """
+        return self.static_atleast_3d(
+            self,
+            *arys,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+        )
+
+    @staticmethod
     def static_take_along_axis(
         arr: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         indices: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -1923,4 +2047,156 @@ class ContainerWithManipulationExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_hsplit(
+        ary: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.hsplit. This method simply wraps
+        the function, and so the docstring for ivy.hsplit also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        ary
+            the container with array inputs.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n horizontally, each section will be of equal
+            size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including input arrays split horizontally.
+
+        Examples
+        --------
+        >>> ary = ivy.Container(
+            a = ivy.ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b=ivy.array(
+                    [[ 0.,  1.,  2.,  3.],
+                     [ 4.,  5.,  6.,  7.],
+                     [ 8.,  9., 10., 11.],
+                     [12., 13., 14., 15.]])
+                )
+            )
+        >>> ivy.Container.static_vsplit(ary, 2)
+        {
+            a: ivy.ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b: [ivy.array([[ 0.,  1.],
+                        [ 4.,  5.],
+                        [ 8.,  9.],
+                        [12., 13.]]),
+                ivy.array([[ 2.,  3.],
+                        [ 6.,  7.],
+                        [10., 11.],
+                        [14., 15.]])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "hsplit",
+            ary,
+            indices_or_sections=indices_or_sections,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def hsplit(
+        self: ivy.Container,
+        indices_or_sections: Union[int, Tuple[int]],
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.hsplit. This method simply
+        wraps the function, and so the docstring for ivy.hsplit also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            the container with array inputs.
+        indices_or_sections
+            If indices_or_sections is an integer n, the array is split into n sections.
+            If the array is divisible by n horizontally, each section will be of equal
+            size. If input is not divisible by n, the sizes of the first
+            int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1, and
+            the rest will have size int(ary.size(0) / n).
+            If indices_or_sections is a tuple of ints, then input is split at each of
+            the indices in the tuple.
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            container including arrays with the modified Bessel
+            function evaluated at each of the elements of x.
+
+        Examples
+        --------
+        >>> ary = ivy.Container(
+            a = ivy.ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b=ivy.array(
+                    [[ 0.,  1.,  2.,  3.],
+                     [ 4.,  5.,  6.,  7.],
+                     [ 8.,  9., 10., 11.],
+                     [12., 13., 14., 15.]])
+                )
+            )
+        >>> ary.hsplit(2)
+        {
+            a: ivy.ivy.array(
+                    [[[0.,  1.],
+                      [2.,  3.]],
+                      [[4.,  5.],
+                      [6.,  7.]]]
+                ),
+            b: [ivy.array([[ 0.,  1.],
+                        [ 4.,  5.],
+                        [ 8.,  9.],
+                        [12., 13.]]),
+                ivy.array([[ 2.,  3.],
+                        [ 6.,  7.],
+                        [10., 11.],
+                        [14., 15.]])
+        }
+        """
+        return self.static_hsplit(
+            self, indices_or_sections=indices_or_sections, out=out
         )

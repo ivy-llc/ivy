@@ -1,6 +1,7 @@
 # global
 import functools
 from typing import Callable, Any
+import inspect
 
 # local
 import ivy
@@ -143,14 +144,25 @@ def handle_numpy_casting_special(fn: Callable) -> Callable:
 
 def _numpy_frontend_to_ivy(x: Any) -> Any:
     if isinstance(x, ndarray):
-        return x.data
+        return x.ivy_array
     else:
         return x
 
 
 def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return ndarray(x)
+        a = ndarray(0)  # TODO Find better initialisation workaround
+        a.ivy_array = x
+        return a
+    else:
+        return x
+
+
+def _ivy_to_numpy_order_F(x: Any) -> Any:
+    if isinstance(x, ivy.Array) or ivy.is_native_array(x):
+        a = ndarray(0, order="F")  # TODO Find better initialisation workaround
+        a.ivy_array = x
+        return a
     else:
         return x
 
@@ -163,6 +175,37 @@ def _native_to_ivy_array(x):
 
 def _to_ivy_array(x):
     return _numpy_frontend_to_ivy(_native_to_ivy_array(x))
+
+
+def _check_C_order(x):
+    if isinstance(x, ivy.Array):
+        return True
+    elif isinstance(x, ndarray):
+        if x._f_contiguous:
+            return False
+        else:
+            return True
+    else:
+        return None
+
+
+def _set_order(args, order):
+    ivy.assertions.check_elem_in_list(
+        order,
+        ["C", "F", "A", "K", None],
+        message="order must be one of 'C', 'F', 'A', or 'K'",
+    )
+    if order in ["K", "A", None]:
+        check_order = ivy.nested_map(
+            args, _check_C_order, include_derived={tuple: True}
+        )
+        if all(v is None for v in check_order) or any(
+            ivy.multi_index_nest(check_order, ivy.all_nested_indices(check_order))
+        ):
+            order = "C"
+        else:
+            order = "F"
+    return order
 
 
 def inputs_to_ivy_arrays(fn: Callable) -> Callable:
@@ -203,19 +246,36 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
 
 def outputs_to_numpy_arrays(fn: Callable) -> Callable:
     @functools.wraps(fn)
-    def new_fn(*args, **kwargs):
+    def new_fn(*args, order="K", **kwargs):
         """
         Calls the function, and then converts all `ivy.Array` instances returned
         by the function into `ndarray` instances.
            The return of the function, with ivy arrays as numpy arrays.
         """
-        # call unmodified function
-        ret = fn(*args, **kwargs)
+        # handle order and call unmodified function
+        if contains_order:
+            if len(args) >= (order_pos + 1):
+                order = args[order_pos]
+                args = args[:-1]
+            order = _set_order(args, order)
+            ret = fn(*args, order=order, **kwargs)
+        else:
+            ret = fn(*args, **kwargs)
         if not ivy.get_array_mode():
             return ret
         # convert all returned arrays to `ndarray` instances
-        return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
+        if order == "F":
+            return ivy.nested_map(
+                ret, _ivy_to_numpy_order_F, include_derived={tuple: True}
+            )
+        else:
+            return ivy.nested_map(ret, _ivy_to_numpy, include_derived={tuple: True})
 
+    if "order" in list(inspect.signature(fn).parameters.keys()):
+        contains_order = True
+        order_pos = list(inspect.signature(fn).parameters).index("order")
+    else:
+        contains_order = False
     new_fn.outputs_to_numpy_arrays = True
     return new_fn
 

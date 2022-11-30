@@ -44,7 +44,6 @@ body:
         - label: TensorFlow
         - label: PyTorch
         - label: JAX
-        - label: MXNet
   - type: input
     id: device
     attributes:

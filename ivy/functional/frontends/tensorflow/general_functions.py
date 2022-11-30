@@ -9,6 +9,17 @@ from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
 @to_ivy_arrays_and_back
+def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
+    if direction == "DESCENDING":
+        descending = True
+    else:
+        descending = False
+    return ivy.argsort(values, axis=axis, descending=descending, stable=stable).astype(
+        "int32"
+    )
+
+
+@to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
     ivy.assertions.check_all_or_any_fn(
         clip_value_min,
@@ -31,6 +42,11 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
     return ivy.ones(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def zeros_like(input, dtype=None, name=None):
+    return ivy.zeros_like(input, dtype=dtype)
 
 
 def constant(
@@ -64,3 +80,31 @@ def einsum(equation, *inputs, **kwargs):
 @to_ivy_arrays_and_back
 def rank(input, **kwargs):
     return ivy.astype(ivy.array(input.ndim), ivy.int32)
+
+
+@to_ivy_arrays_and_back
+def ones_like(input, dtype=None, name=None):
+    return ivy.ones_like(input, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def zeros(shape, dtype=ivy.float32, name=None):
+    return ivy.zeros(shape=shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(input, axis, name=None):
+    return ivy.expand_dims(input, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def concat(values, axis, name=None):
+    return ivy.concat(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def shape(input, out_type=ivy.int32, name=None):
+    if out_type in ["int32", "int64"]:
+        return ivy.array(ivy.shape(input), dtype=out_type)
+    else:
+        return ivy.array(ivy.shape(input), dtype="int64")

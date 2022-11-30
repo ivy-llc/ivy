@@ -6,11 +6,11 @@ from tqdm import tqdm
 from random import shuffle
 import bz2
 import _pickle as cPickle
-
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 # Shared Map
 tests = {}
-BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
+BACKENDS = available_frameworks
 
 os.system("git config --global --add safe.directory /ivy")
 N = 32

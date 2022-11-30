@@ -23,9 +23,9 @@ from .data_type import as_native_dtype
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
-    /,
     *,
     dtype: Optional[np.dtype] = None,
     device: str,
