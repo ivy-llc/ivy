@@ -6,11 +6,6 @@ import numpy as np
 import ivy
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 
-try:
-    from scipy.special import erf as _erf
-except (ImportError, ModuleNotFoundError):
-    _erf = None
-
 
 @_scalar_output_to_0d_array
 def abs(
@@ -651,14 +646,24 @@ trunc.support_native_out = True
 
 @_scalar_output_to_0d_array
 def erf(x, /, *, out: Optional[np.ndarray] = None):
-    ivy.assertions.check_exists(
-        _erf,
-        message="scipy must be installed in order to call ivy.erf with a \
-        numpy backend.",
-    )
-    ret = _erf(x, out=out)
+    a1 = 0.254829592
+    a2 = -0.284496736
+    a3 = 1.421413741
+    a4 = -1.453152027
+    a5 = 1.061405429
+    p = 0.3275911
+
+    sign = np.sign(x)
+    x = np.abs(x)
+
+    # A&S formula 7.1.26
+    t = 1.0 / (1.0 + p * x)
+    y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * np.exp(-x * x)
+    ret = sign * y
     if hasattr(x, "dtype"):
-        ret = np.asarray(_erf(x, out=out), dtype=x.dtype)
+        ret = np.asarray(ret, dtype=x.dtype)
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
     return ret
 
 
