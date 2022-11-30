@@ -180,11 +180,11 @@ def _get_dtype_values_k_axes_for_rot90(
     axes = tuple(
         draw(
         st.lists(
-            helpers.ints(min_value=-(en(shape) - 2), max_value=len(shape) - 2),
+            helpers.ints(min_value=-(en(shape) - 1), max_value=len(shape) - 2),
             min_size=2,
             max_size=2,
             unique=True,
-        ).filter(lambda axes: abs(axes[0] - axes[1]) != len(shape))
+        ).filter(lambda axes: abs(axes[0] - axes[1]) != len(shape) - 1)
     ))
     dtype = draw(st.sampled_from(draw(available_dtypes)))
     values = draw(
