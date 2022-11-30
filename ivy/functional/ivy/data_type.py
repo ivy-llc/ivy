@@ -892,6 +892,8 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
 
 
 def _check_float64(input) -> bool:
+    if ivy.is_native_array(input):
+        return ivy.dtype(input) == "float64"
     if math.isfinite(input):
         m, e = math.frexp(input)
         return (abs(input) > 3.4028235e38) or (e < -126) or (e > 128)
@@ -995,20 +997,12 @@ def default_float_dtype(
             if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
-                else:
-                    ret = ivy.float32
+                ret = ivy.float32
         elif isinstance(input, Number):
             if _check_float64(input):
                 ret = ivy.float64
             else:
-                def_dtype = default_dtype()
-                if ivy.is_float_dtype(def_dtype):
-                    ret = def_dtype
-                else:
-                    ret = ivy.float32
+                ret = ivy.float32
     else:
         global default_float_dtype_stack
         if not default_float_dtype_stack:
