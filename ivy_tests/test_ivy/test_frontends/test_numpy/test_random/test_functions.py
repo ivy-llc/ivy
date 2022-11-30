@@ -120,7 +120,7 @@ def test_numpy_uniform(
     fn_tree="numpy.random.normal",
     input_dtypes=helpers.get_dtypes("float", index=2),
     loc=st.floats(allow_nan=False, allow_infinity=False, width=32),
-    scale=st.floats(allow_nan=False, allow_infinity=False, width=32,min_value=0),
+    scale=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
     size=st.tuples(
         st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
     ),
