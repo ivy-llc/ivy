@@ -2,7 +2,6 @@
 from hypothesis import strategies as st
 
 # local
-import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_method
 from ivy_tests.test_ivy.helpers import test_parameter_flags as pf
@@ -23,6 +22,7 @@ def _sparse_coo_indices_values_shape(draw):
             shape=(2, num_elem),
             min_value=0,
             max_value=dim1,
+            exclude_min=False,
         )
     )
     values = draw(helpers.array_values(dtype=value_dtype, shape=(num_elem,)))
@@ -43,6 +43,7 @@ def _sparse_csr_indices_values_shape(draw):
             shape=(num_elem,),
             min_value=0,
             max_value=dim2,
+            exclude_min=False,
         )
     )
     indices = draw(
@@ -51,6 +52,7 @@ def _sparse_csr_indices_values_shape(draw):
             shape=(dim1 - 1,),
             min_value=0,
             max_value=num_elem,
+            exclude_min=False,
         )
     )
     crow_indices = [0] + sorted(indices) + [num_elem]
@@ -79,15 +81,15 @@ def test_sparse_coo(
         init_num_positional_args=0,
         init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
-            "coo_indices": np.array(coo_ind, dtype="int64"),
-            "values": np.array(val, dtype=val_dtype),
+            "coo_indices": coo_ind,
+            "values": val,
             "dense_shape": shp,
         },
         method_input_dtypes=[],
         method_as_variable_flags=[],
         method_num_positional_args=0,
         method_native_array_flags=[],
-        method_container_flags=False,
+        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
@@ -115,16 +117,16 @@ def test_sparse_csr(
         init_num_positional_args=0,
         init_native_array_flags=init_native_array_flags,
         init_all_as_kwargs_np={
-            "csr_crow_indices": np.array(crow_indices, dtype="int64"),
-            "csr_col_indices": np.array(col_indices, dtype="int64"),
-            "values": np.array(values, dtype=value_dtype),
+            "csr_crow_indices": crow_indices,
+            "csr_col_indices": col_indices,
+            "values": values,
             "dense_shape": shape,
         },
         method_input_dtypes=[],
         method_as_variable_flags=[],
         method_num_positional_args=0,
         method_native_array_flags=[],
-        method_container_flags=False,
+        method_container_flags=[False],
         method_all_as_kwargs_np={},
         class_name=class_name,
         method_name=method_name,
