@@ -12,6 +12,9 @@ from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.available_frameworks import (
+    available_frameworks, ground_truth
+)
 
 cmd_line_args = (
     "with_out",
@@ -154,7 +157,7 @@ def _generate_shared_test_flags(
 
 def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_name: str):
     supported_device_dtypes = {}
-    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
+    backends = available_frameworks  # TODO temporary
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
@@ -166,7 +169,7 @@ def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_nam
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     supported_device_dtypes = {}
-    backends = ["numpy", "jax", "tensorflow", "torch"]  # TODO temporary
+    backends = available_frameworks  # TODO temporary
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
@@ -182,7 +185,7 @@ possible_fixtures = ["backend_fw", "on_device"]
 
 
 def handle_test(
-    *, fn_tree: str, ground_truth_backend: str = "tensorflow", **_given_kwargs
+    *, fn_tree: str, ground_truth_backend: str = ground_truth, **_given_kwargs
 ):
     fn_tree = "ivy." + fn_tree
     is_hypothesis_test = len(_given_kwargs) != 0
@@ -285,7 +288,7 @@ def _import_method(method_tree: str):
 
 
 def handle_method(
-    *, method_tree, ground_truth_backend: str = "tensorflow", **_given_kwargs
+    *, method_tree, ground_truth_backend: str = ground_truth, **_given_kwargs
 ):
     method_tree = "ivy." + method_tree
     is_hypothesis_test = len(_given_kwargs) != 0
