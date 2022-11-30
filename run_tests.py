@@ -15,15 +15,15 @@ submodules = (
     "test_numpy",
 )
 db_dict = {
-    "test_functional/test_core": ["intelligent_core", 10],
-    "test_experimental/test_core": ["intelligent_exp_core", 11],
-    "test_functional/test_nn": ["intelligent_nn", 12],
-    "test_experimental/test_nn": ["intelligent_exp_nn", 13],
-    "test_stateful": ["intelligent_stateful", 14],
-    "test_torch": ["intelligent_torch", 15],
-    "test_jax": ["intelligent_jax", 16],
-    "test_tensorflow": ["intelligent_tensorflow", 17],
-    "test_numpy": ["intelligent_numpy", 18],
+    "test_functional/test_core": ["core", 10],
+    "test_experimental/test_core": ["exp_core", 11],
+    "test_functional/test_nn": ["nn", 12],
+    "test_experimental/test_nn": ["exp_nn", 13],
+    "test_stateful": ["stateful", 14],
+    "test_torch": ["torch", 15],
+    "test_jax": ["jax", 16],
+    "test_tensorflow": ["tensorflow", 17],
+    "test_numpy": ["numpy", 18],
 }
 result_config = {
     "success": "https://img.shields.io/badge/-success-success",
