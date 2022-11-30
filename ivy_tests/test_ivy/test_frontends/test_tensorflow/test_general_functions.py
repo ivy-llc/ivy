@@ -436,7 +436,6 @@ def test_tensorflow_zeros(
     fn_tree="tensorflow.shape",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     output_dtype=st.sampled_from(["int32", "int64"]),
-
 )
 def test_tensorflow_shape(
     *,
@@ -450,7 +449,10 @@ def test_tensorflow_shape(
     fn_tree,
     frontend,
 ):
-    input_dtype, x, = dtype_and_x
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
