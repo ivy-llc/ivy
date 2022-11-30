@@ -183,17 +183,19 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return (
+            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            if ivy.get_array_mode()
+            else ret
+        )
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
 
 def _is_zero_dim_array(x):
-    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
@@ -604,7 +606,7 @@ def _dtype_device_wrapper_creator(attrib, t):
         }
         for key, value in version_dict.items():
             for i, v in enumerate(value):
-                if v in typesets.keys():
+                if v in typesets:
                     version_dict[key] = (
                         version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
                     )
