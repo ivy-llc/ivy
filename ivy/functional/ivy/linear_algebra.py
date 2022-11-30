@@ -1544,26 +1544,30 @@ def slogdet(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
 ) -> Tuple[Union[ivy.Array, ivy.NativeArray], Union[ivy.Array, ivy.NativeArray]]:
-    """Computes the sign and natural logarithm of the determinant of an array.
-
+    """
+    Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.
+    .. note::
+       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
     Parameters
     ----------
-    x
-        input array having shape (..., M, M) and whose innermost two dimensions form
-        square matrices. Should have a floating-point data type.
-
+    x:
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
     Returns
     -------
-    ret
-        This function returns NamedTuple with two values -
-            sign:
-            An array containing a number representing the sign of the determinant
-            for each square matrix.
+    ret:
+        a namedtuple (``sign``, ``logabsdet``) whose
+        -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.
+        -   second element must have the field name ``logabsdet`` and must be an array containing the determinant for each square matrix.
+        For a real matrix, the sign of the determinant must be either ``1``, ``0``, or ``-1``.
+        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued floating-point data type determined by :ref:`type-promotion`.
+        .. note::
+           If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).
 
-            logabsdet:
-            An array containing natural log of the absolute determinant of each
-            square matrix.
-
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
+        signatures.linalg.slogdet.html>`_ # noqa
+    in the standard.
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
@@ -1592,16 +1596,6 @@ def slogdet(
         b: (list[2], <class ivy.array.array.Array> shape=[])
     }
 
-
-    This function conforms to the `Array API Standard
-    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
-    `docstring <https://data-apis.org/array-api/latest/extensions/generated/\
-        signatures.linalg.slogdet.html>`_ # noqa
-    in the standard.
-
-    Both the description and the type hints above assumes an array input for simplicity,
-    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
 
     """
     return current_backend(x).slogdet(x)
