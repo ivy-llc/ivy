@@ -542,10 +542,10 @@ def log10(x):
 
 
 @to_ivy_arrays_and_back
-def logaddexp(x1, x2):
-    return ivy.logaddexp(x1, x2)
+def degrees(x):
+    return ivy.degrees(x)
 
 
 @to_ivy_arrays_and_back
-def degrees(x):
-    return ivy.degrees(x)
+def logaddexp(x1, x2):
+    return ivy.logaddexp(x1, x2)
