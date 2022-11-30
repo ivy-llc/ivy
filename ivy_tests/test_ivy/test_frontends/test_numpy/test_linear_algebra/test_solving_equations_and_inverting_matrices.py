@@ -1,27 +1,31 @@
 # global
 import numpy as np
-from hypothesis import given
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_first_matrix,
     _get_second_matrix,
 )
 
+
 # solve
-
-
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linalg.solve",
     x=_get_first_matrix(),
     y=_get_second_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.solve"
-    ),
 )
-def test_numpy_solve(x, y, as_variable, native_array, num_positional_args):
+def test_numpy_solve(
+    x,
+    y,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     dtype1, x1 = x
     dtype2, x2 = y
     helpers.test_frontend_function(
@@ -30,18 +34,17 @@ def test_numpy_solve(x, y, as_variable, native_array, num_positional_args):
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="linalg.solve",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x1,
         b=x2,
     )
 
 
 # inv
-
-
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linalg.inv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_dim_size=6,
@@ -49,11 +52,16 @@ def test_numpy_solve(x, y, as_variable, native_array, num_positional_args):
         min_num_dims=2,
         max_num_dims=2,
     ).filter(lambda x: np.linalg.det(x[1][0]) != 0),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.inv"
-    ),
 )
-def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args):
+def test_numpy_inv(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -61,27 +69,31 @@ def test_numpy_inv(dtype_and_x, as_variable, native_array, num_positional_args):
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="linalg.inv",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )
 
 
 # pinv
-
-
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="numpy.linalg.pinv",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
         max_num_dims=2,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.numpy.linalg.pinv"
-    ),
 )
-def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args):
+def test_numpy_pinv(
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -89,7 +101,8 @@ def test_numpy_pinv(dtype_and_x, as_variable, native_array, num_positional_args)
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="numpy",
-        fn_tree="linalg.pinv",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         a=x[0],
     )

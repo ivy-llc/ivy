@@ -37,23 +37,32 @@ def amin(
     initial=None,
     where=True,
 ):
+    where_mask = None
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        ax = axis
-
         if ivy.is_array(where):
-            a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)), out=out)
-        if axis is None:
-            ax = 0
-        if ivy.get_num_dims(s) < 2:
-            header = ivy.array([initial])
+            a = ivy.where(where, a, a.full_like(initial))
+            where_mask = ivy.all(ivy.logical_not(where), axis=axis, keepdims=keepdims)
+        s = ivy.shape(a, as_array=True)
+        if axis is not None:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                # introducing the initial in one dimension is enough
+                ax = axis[0] % len(s)
+                s[ax] = 1
+            else:
+                ax = axis % len(s)
+                s[ax] = 1
+        header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
+        if axis:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                a = ivy.concat([a, header], axis=axis[0])
+            else:
+                a = ivy.concat([a, header], axis=axis)
         else:
-            initial_shape = s.__setitem__(ax, 1)
-            header = ivy.full(ivy.Shape(tuple(initial_shape)), initial)
-
-        a = ivy.concat([a, header], axis=axis)
-
-    return ivy.min(a, axis=axis, keepdims=keepdims, out=out)
+            a = ivy.concat([a, header], axis=0)
+    res = ivy.min(a, axis=axis, keepdims=keepdims, out=out)
+    if where_mask is not None and ivy.any(where_mask):
+        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
+    return res
 
 
 @to_ivy_arrays_and_back
@@ -67,23 +76,32 @@ def amax(
     initial=None,
     where=True,
 ):
+    where_mask = None
     if initial is not None:
-        s = ivy.shape(a, as_array=True)
-        ax = axis
-
         if ivy.is_array(where):
-            a = ivy.where(where, a, ivy.default(out, ivy.zeros_like(a)), out=out)
-        if axis is None:
-            ax = 0
-        if ivy.get_num_dims(s) < 2:
-            header = ivy.array([initial])
+            a = ivy.where(where, a, a.full_like(initial))
+            where_mask = ivy.all(ivy.logical_not(where), axis=axis, keepdims=keepdims)
+        s = ivy.shape(a, as_array=True)
+        if axis is not None:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                # introducing the initial in one dimension is enough
+                ax = axis[0] % len(s)
+                s[ax] = 1
+            else:
+                ax = axis % len(s)
+                s[ax] = 1
+        header = ivy.full(ivy.Shape(s.to_list()), initial, dtype=ivy.dtype(a))
+        if axis:
+            if isinstance(axis, (tuple, list)) or ivy.is_array(axis):
+                a = ivy.concat([a, header], axis=axis[0])
+            else:
+                a = ivy.concat([a, header], axis=axis)
         else:
-            initial_shape = s.__setitem__(ax, 1)
-            header = ivy.full(ivy.Shape(tuple(initial_shape)), initial)
-
-        a = ivy.concat([a, header], axis=axis)
-
-    return ivy.max(a, axis=axis, keepdims=keepdims, out=out)
+            a = ivy.concat([a, header], axis=0)
+    res = ivy.max(a, axis=axis, keepdims=keepdims, out=out)
+    if where_mask is not None and ivy.any(where_mask):
+        res = ivy.where(ivy.logical_not(where_mask), res, ivy.nan, out=out)
+    return res
 
 
 @to_ivy_arrays_and_back

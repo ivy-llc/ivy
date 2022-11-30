@@ -8,6 +8,7 @@ from typing import (
     Callable,
     Any,
     Literal,
+    List,
 )
 from numbers import Number
 import ivy
@@ -30,6 +31,7 @@ def flatten(
     *,
     start_dim: Optional[int] = 0,
     end_dim: Optional[int] = -1,
+    order: Optional[str] = "C",
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Flattens input by reshaping it into a one-dimensional tensor.
@@ -45,6 +47,19 @@ def flatten(
         first dim to flatten. If not set, defaults to 0.
     end_dim
         last dim to flatten. If not set, defaults to -1.
+    order
+        Read the elements of the input container using this index order,
+        and place the elements into the reshaped array using this index order.
+        ‘C’ means to read / write the elements using C-like index order,
+        with the last axis index changing fastest, back to the first axis index
+        changing slowest.
+        ‘F’ means to read / write the elements using Fortran-like index order, with
+        the first index changing fastest, and the last index changing slowest.
+        Note that the ‘C’ and ‘F’ options take no account of the memory layout
+        of the underlying array, and only refer to the order of indexing.
+        Default order is 'C'
+    out
+        optional output array, for writing the result to.
 
     Returns
     -------
@@ -64,11 +79,15 @@ def flatten(
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = np.array([1,2], [3,4])
+    >>> x = ivy.array([[1,2], [3,4]])
     >>> ivy.flatten(x)
     ivy.array([1, 2, 3, 4])
 
-    >>> x = np.array(
+    >>> x = ivy.array([[1,2], [3,4]])
+    >>> ivy.flatten(x, order='F')
+    ivy.array([1, 3, 2, 4])
+
+    >>> x = ivy.array(
         [[[[ 5,  5,  0,  6],
          [17, 15, 11, 16],
          [ 6,  3, 13, 12]],
@@ -118,17 +137,18 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    if start_dim == end_dim and len(x.shape) != 0:
+    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {start_dim}"
         )
     if end_dim not in range(-len(x.shape), len(x.shape)):
         raise IndexError(
             f"Dimension out of range (expected to be in range of\
-            {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
+                {[-len(x.shape), len(x.shape) - 1]}, but got {end_dim}"
         )
     if start_dim < 0:
         start_dim = len(x.shape) + start_dim
@@ -143,7 +163,7 @@ def flatten(
             lst.insert(i, x.shape[i])
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
-    return ivy.reshape(x, tuple(lst))
+    return ivy.reshape(x, tuple(lst), order=order)
 
 
 @to_native_arrays_and_back
@@ -644,97 +664,85 @@ def i0(
     return ivy.current_backend(x).i0(x, out=out)
 
 
-def _scatter_at_0_axis(input, value, start=None, end=None):
-    dim_length = input.shape[0]
-    if start is None:
-        start = 0
-    elif start < 0:
-        start += dim_length
-    if end is None:
-        end = dim_length
-    elif end < 0:
-        end += dim_length
-    value = ivy.asarray(value, dtype=input.dtype)
-    if len(value.shape) > 1:
-        value = ivy.flatten(value)
-    i = 0
-    pre_ind_0 = 0
-    for ind in ivy.ndindex(input.shape):
-        if pre_ind_0 != ind[0]:
-            i = 0
-        if (ind[0] < end) and (ind[0] >= start):
-            if not hasattr(value, "__len__"):
-                input[ind] = value
-                continue
-            if len(value.shape) == 0:
-                try:
-                    input[ind] = value.item()
-                except Exception:
-                    input[ind] = value.numpy().item()
-                continue
-            if len(ind) == 1:
-                input[ind] = value[0]
-            else:
-                input[ind] = value[i]
-                i = i + 1
-        pre_ind_0 = ind[0]
-    return input
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
 
 
-def _set_pad_area(padded, width_pair, value_pair):
-    padded = _scatter_at_0_axis(padded, value_pair[0], end=width_pair[0])
-    padded = _scatter_at_0_axis(
-        padded, value_pair[1], start=padded.shape[0] - width_pair[1]
-    )
+def _set_pad_area(padded, axis, width_pair, value_pair):
+    if width_pair[0] > 0:
+        left_slice = _slice_at_axis(slice(None, width_pair[0]), axis)
+        padded[left_slice] = value_pair[0]
+    if width_pair[1] > 0:
+        right_slice = _slice_at_axis(
+            slice(padded.shape[axis] - width_pair[1], None), axis
+        )
+        padded[right_slice] = value_pair[1]
     return padded
 
 
-def _get_edges(padded, width_pair):
+def _get_edges(padded, axis, width_pair):
     left_index = width_pair[0]
-    left_edge = padded[left_index : left_index + 1, ...]
-    right_index = padded.shape[0] - width_pair[1]
-    right_edge = padded[right_index - 1 : right_index, ...]
+    left_slice = _slice_at_axis(slice(left_index, left_index + 1), axis)
+    left_edge = padded[left_slice]
+    right_index = padded.shape[axis] - width_pair[1]
+    right_slice = _slice_at_axis(slice(right_index - 1, right_index), axis)
+    right_edge = padded[right_slice]
     return left_edge, right_edge
 
 
-def _get_linear_ramps(padded, width_pair, end_value_pair):
-    edge_pair = _get_edges(padded, width_pair)
-    left_ramp, right_ramp = (
-        ivy.linspace(
-            end_value,
-            edge.squeeze(0),
-            num=width,
+def _get_linear_ramps(padded, axis, width_pair, end_value_pair):
+    edge_pair = _get_edges(padded, axis, width_pair)
+    if width_pair[0] > 0:
+        left_ramp = ivy.linspace(
+            end_value_pair[0],
+            ivy.array(edge_pair[0].squeeze(axis)),
+            num=width_pair[0],
             endpoint=False,
-            dtype=padded.dtype,
-            axis=0,
+            dtype=ivy.Dtype(str(padded.dtype)),
+            axis=axis,
         )
-        for end_value, edge, width in zip(end_value_pair, edge_pair, width_pair)
-    )
-    right_ramp = ivy.flip(right_ramp)
-    return left_ramp, right_ramp
+    else:
+        left_ramp = ivy.empty((0,))
+    if width_pair[1] > 0:
+        right_ramp = ivy.flip(
+            ivy.linspace(
+                end_value_pair[1],
+                ivy.array(edge_pair[1].squeeze(axis)),
+                num=width_pair[1],
+                endpoint=False,
+                dtype=ivy.Dtype(str(padded.dtype)),
+                axis=axis,
+            ),
+            axis=axis,
+        )
+    else:
+        right_ramp = ivy.empty((0,))
+    return left_ramp.to_numpy(), right_ramp.to_numpy()
 
 
-def _get_stats(padded, width_pair, length_pair, stat_func):
+def _get_stats(padded, axis, width_pair, length_pair, stat_func):
     left_index = width_pair[0]
-    right_index = padded.shape[0] - width_pair[1]
+    right_index = padded.shape[axis] - width_pair[1]
     max_length = right_index - left_index
     left_length, right_length = length_pair
     if left_length is None or max_length < left_length:
         left_length = max_length
     if right_length is None or max_length < right_length:
         right_length = max_length
-    left_chunk = padded[left_index : left_index + left_length, ...]
-    left_stat = stat_func(left_chunk, axis=0, keepdims=True)
+    left_slice = _slice_at_axis(slice(left_index, left_index + left_length), axis)
+    left_chunk = padded[left_slice]
+    left_stat = stat_func(ivy.array(left_chunk), axis=axis, keepdims=True)
     if left_length == right_length == max_length:
         return left_stat, left_stat
-    right_chunk = padded[right_index - right_length : right_index, ...]
-    right_stat = stat_func(right_chunk, axis=0, keepdims=True)
+    right_slice = _slice_at_axis(slice(right_index - right_length, right_index), axis)
+    right_chunk = padded[right_slice]
+    right_stat = stat_func(ivy.array(right_chunk), axis=axis, keepdims=True)
     return left_stat, right_stat
 
 
-def _set_reflect_both(padded, width_pair, method, include_edge=False):
+def _set_reflect_both(padded, axis, width_pair, method, include_edge=False):
     left_pad, right_pad = width_pair
-    old_length = padded.shape[0] - right_pad - left_pad
+    old_length = padded.shape[axis] - right_pad - left_pad
     if include_edge:
         edge_offset = 1
     else:
@@ -742,79 +750,71 @@ def _set_reflect_both(padded, width_pair, method, include_edge=False):
         old_length -= 1
     if left_pad > 0:
         chunk_length = min(old_length, left_pad)
-        stop = (left_pad - edge_offset) % len(padded.shape)
-        start = (stop + chunk_length) % len(padded.shape)
-        if stop < start:
-            tmp = start
-            start = stop
-            stop = tmp
-        left_chunk = ivy.flip(padded[start:stop, ...])
+        stop = left_pad - edge_offset
+        start = stop + chunk_length
+        left_slice = _slice_at_axis(slice(start, stop, -1), axis)
+        left_chunk = padded[left_slice]
         if method == "odd":
-            left_chunk = 2 * padded[left_pad : left_pad + 1, ...] - left_chunk
+            edge_slice = _slice_at_axis(slice(left_pad, left_pad + 1), axis)
+            left_chunk = 2 * padded[edge_slice] - left_chunk
         start = left_pad - chunk_length
         stop = left_pad
-        padded = _scatter_at_0_axis(padded, left_chunk, start=start, end=stop)
+        pad_area = _slice_at_axis(slice(start, stop), axis)
+        padded[pad_area] = left_chunk
         left_pad -= chunk_length
     if right_pad > 0:
         chunk_length = min(old_length, right_pad)
-        start = (-right_pad + edge_offset - 2) % len(padded.shape)
-        stop = (start - chunk_length) % len(padded.shape)
-        if stop > start:
-            tmp = start
-            start = stop
-            stop = tmp
-        right_chunk = ivy.flip(padded[start:stop, ...])
+        start = -right_pad + edge_offset - 2
+        stop = start - chunk_length
+        right_slice = _slice_at_axis(slice(start, stop, -1), axis)
+        right_chunk = padded[right_slice]
         if method == "odd":
-            right_chunk = 2 * padded[-right_pad - 1 : -right_pad, ...] - right_chunk
-        start = padded.shape[0] - right_pad
+            edge_slice = _slice_at_axis(slice(-right_pad - 1, -right_pad), axis)
+            right_chunk = 2 * padded[edge_slice] - right_chunk
+        start = padded.shape[axis] - right_pad
         stop = start + chunk_length
-        padded = _scatter_at_0_axis(padded, right_chunk, start=start, end=stop)
+        pad_area = _slice_at_axis(slice(start, stop), axis)
+        padded[pad_area] = right_chunk
         right_pad -= chunk_length
     return left_pad, right_pad, padded
 
 
-def _set_wrap_both(padded, width_pair):
+def _set_wrap_both(padded, axis, width_pair):
     left_pad, right_pad = width_pair
-    period = padded.shape[0] - right_pad - left_pad
+    period = padded.shape[axis] - right_pad - left_pad
     new_left_pad = 0
     new_right_pad = 0
     if left_pad > 0:
-        right_chunk = padded[
-            -right_pad - min(period, left_pad) : -right_pad if right_pad != 0 else None,
-            ...,
-        ]
+        right_slice = _slice_at_axis(
+            slice(
+                -right_pad - min(period, left_pad),
+                -right_pad if right_pad != 0 else None,
+            ),
+            axis,
+        )
+        right_chunk = padded[right_slice]
         if left_pad > period:
-            padded = _scatter_at_0_axis(
-                padded, right_chunk, start=left_pad - period, end=left_pad
-            )
+            pad_area = _slice_at_axis(slice(left_pad - period, left_pad), axis)
             new_left_pad = left_pad - period
         else:
-            padded = _scatter_at_0_axis(padded, right_chunk, end=left_pad)
+            pad_area = _slice_at_axis(slice(None, left_pad), axis)
+        padded[pad_area] = right_chunk
     if right_pad > 0:
-        left_chunk = padded[left_pad : left_pad + min(period, right_pad), ...]
+        left_slice = _slice_at_axis(
+            slice(
+                left_pad,
+                left_pad + min(period, right_pad),
+            ),
+            axis,
+        )
+        left_chunk = padded[left_slice]
         if right_pad > period:
-            padded = _scatter_at_0_axis(
-                padded, left_chunk, start=-right_pad, end=-right_pad + period
-            )
+            pad_area = _slice_at_axis(slice(-right_pad, -right_pad + period), axis)
             new_right_pad = right_pad - period
         else:
-            padded = _scatter_at_0_axis(padded, left_chunk, start=-right_pad)
+            pad_area = _slice_at_axis(slice(-right_pad, None), axis)
+        padded[pad_area] = left_chunk
     return new_left_pad, new_right_pad, padded
-
-
-def _to_pairs(x, n):
-    if ivy.isscalar(x):
-        return ((x, x),) * n
-    elif ivy.asarray(list(x)).shape == (2,):
-        return ((x[0], x[1]),) * n
-    ivy.assertions.check_equal(
-        ivy.asarray(list(x)).shape,
-        (n, 2),
-        message="values should be an integer or an iterable "
-        "of ndim pairs where ndim is the number of "
-        "the input's dimensions",
-    )
-    return x
 
 
 def _pad_simple(array, pad_width, fill_value=None):
@@ -824,22 +824,109 @@ def _pad_simple(array, pad_width, fill_value=None):
     padded = ivy.zeros(new_shape, dtype=array.dtype)
     if fill_value is not None:
         padded = ivy.ones_like(padded) * fill_value
-    sl = []
-    for size, (left, right) in zip(array.shape, pad_width):
-        sl.append(ivy.arange(left, left + size))
-    if len(array.shape) > 1:
-        array = ivy.flatten(array)
-    j = 0
-    for ind in ivy.ndindex(padded.shape):
-        flag = True
-        for i, k in enumerate(ind):
-            if ivy.argwhere(sl[i] - k).shape[0] == sl[i].shape[0]:
-                flag = False
-                break
-        if flag:
-            padded[ind] = array[j]
-            j += 1
-    return padded
+    original_area_slice = tuple(
+        slice(left, left + size) for size, (left, right) in zip(array.shape, pad_width)
+    )
+    padded = padded.to_numpy()
+    padded[original_area_slice] = array.to_numpy()
+    return padded, original_area_slice
+
+
+def _to_pairs(x, n):
+    if ivy.isscalar(x):
+        return ((x, x),) * n
+    elif ivy.asarray(list(x)).shape == (2,):
+        return ((x[0], x[1]),) * n
+    else:
+        ivy.assertions.check_equal(
+            ivy.asarray(list(x)).shape,
+            (n, 2),
+            message="tuple argument should contain "
+            "ndim pairs where ndim is the number of "
+            "the input's dimensions",
+        )
+    return x
+
+
+def _check_tuple_arg(arg, name):
+    flag_assert = False
+    if isinstance(arg, (tuple, list)):
+        for nested in arg:
+            if isinstance(nested, (tuple, list)):
+                for sub_nested in nested:
+                    if not isinstance(sub_nested, int):
+                        flag_assert = True
+                        break
+            elif not isinstance(nested, int):
+                flag_assert = True
+    elif not isinstance(arg, int):
+        flag_assert = True
+    if flag_assert:
+        raise ivy.exceptions.IvyException(
+            name + " should be int, tuple of ints or tuple of int tuples"
+        )
+
+
+def _check_arguments(
+    mode,
+    pad_width,
+    stat_length,
+    constant_values,
+    end_values,
+    reflect_type,
+):
+    ivy.assertions.check_true(
+        callable(mode)
+        or mode
+        in [
+            "constant",
+            "edge",
+            "linear_ramp",
+            "maximum",
+            "mean",
+            "median",
+            "minimum",
+            "reflect",
+            "symmetric",
+            "wrap",
+            "empty",
+        ],
+        message="the provided mode is not supported",
+    )
+    _check_tuple_arg(pad_width, "pad_width")
+    ivy.assertions.check_true(
+        all(element[1] >= 0 for element in ivy.ndenumerate(pad_width)),
+        message="the pad_widths must be greater or equal to zero",
+    )
+    if mode in ["maximum", "mean", "median", "minimum"]:
+        if stat_length is None:
+            raise ivy.exceptions.IvyException(
+                "stat_length is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(stat_length, "stat_length")
+            ivy.assertions.check_true(
+                all(element[1] > 0 for element in ivy.ndenumerate(stat_length)),
+                message="the stat lengths must be greater than zero",
+            )
+    elif mode == "constant":
+        if constant_values is None:
+            raise ivy.exceptions.IvyException(
+                "constant_values is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(constant_values, "constant_values")
+    elif mode == "linear_ramp":
+        if end_values is None:
+            raise ivy.exceptions.IvyException(
+                "end_values is required for mode: " + mode
+            )
+        else:
+            _check_tuple_arg(end_values, "end_values")
+    ivy.assertions.check_true(
+        reflect_type in ["even", "odd"],
+        message="the provided reflect_type is not supported",
+    )
 
 
 @to_native_arrays_and_back
@@ -870,10 +957,9 @@ def pad(
         ]
     ] = "constant",
     stat_length: Optional[Union[Iterable[Tuple[int]], int]] = None,
-    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
-    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = 0,
+    constant_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
+    end_values: Optional[Union[Iterable[Tuple[Number]], Number]] = None,
     reflect_type: Optional[Literal["even", "odd"]] = "even",
-    out: Optional[ivy.Array] = None,
     **kwargs: Optional[Any],
 ) -> ivy.Array:
     """Pads an array.
@@ -911,8 +997,8 @@ def pad(
                to pad the beginning.
              - "empty": Pads with undefined values.
              - <function>: Pads with a user-defined padding function. The padding
-               function should modify a rank 1 array in-place following a signature
-               like `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:
+               function should modify a rank 1 array following the signature
+               `padding_func(vector, iaxis_pad_width, iaxis, kwargs)`, where:
                     - `vector` is a rank 1 array already padded with zeros. Padded
                       values are `vector[:iaxis_pad_width[0]]` and
                       `vector[-iaxis_pad_width[1]:]`.
@@ -951,9 +1037,6 @@ def pad(
         unaltered reflection around the edge value. For the "odd" style, the extended
         part of the array is created by subtracting the reflected values from two
         times the edge value.
-    out
-        optional output array, for writing the result to. It must have a shape that
-        the input broadcasts to.
 
     Returns
     -------
@@ -1019,18 +1102,26 @@ def pad(
         b: ivy.array([0, 4, 5, 6, 0])
     }
     """
+    _check_arguments(
+        mode,
+        pad_width,
+        stat_length,
+        constant_values,
+        end_values,
+        reflect_type,
+    )
     input = ivy.asarray(input, dtype=input.dtype)
     pad_width = _to_pairs(pad_width, input.ndim)
     if callable(mode):
         func = mode
-        padded = _pad_simple(input, pad_width, fill_value=0)
+        padded, _ = _pad_simple(input, pad_width, fill_value=0)
         for axis in range(padded.ndim):
-            view = ivy.moveaxis(padded, axis, -1)
-            inds = ivy.ndindex(view.shape[:-1])
+            padded = ivy.moveaxis(padded, axis, -1)
+            inds = ivy.ndindex(padded.shape[:-1])
             for ind in inds:
-                view[ind] = func(view[ind], pad_width[axis], axis, kwargs)
+                padded[ind] = func(padded[ind], pad_width[axis], axis, kwargs)
         return padded
-    padded = _pad_simple(input, pad_width)
+    padded, original_area_slice = _pad_simple(input, pad_width)
     axes = range(padded.ndim)
     stat_functions = {
         "maximum": ivy.max,
@@ -1041,47 +1132,49 @@ def pad(
     if mode == "constant":
         constant_values = _to_pairs(constant_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, constant_values):
-            padded = _set_pad_area(padded, width_pair, value_pair)
-            padded = ivy.moveaxis(padded, 0, -1)
+            padded = _set_pad_area(padded, axis, width_pair, value_pair)
     elif mode == "empty":
         pass
     elif mode == "edge":
         for axis, width_pair in zip(axes, pad_width):
-            edge_pair = _get_edges(padded, width_pair)
-            padded = _set_pad_area(padded, width_pair, edge_pair)
-            padded = ivy.moveaxis(padded, 0, -1)
+            edge_pair = _get_edges(padded, axis, width_pair)
+            padded = _set_pad_area(padded, axis, width_pair, edge_pair)
     elif mode == "linear_ramp":
         end_values = _to_pairs(end_values, padded.ndim)
         for axis, width_pair, value_pair in zip(axes, pad_width, end_values):
-            ramp_pair = _get_linear_ramps(padded, width_pair, value_pair)
-            padded = _set_pad_area(padded, width_pair, ramp_pair)
-            padded = ivy.moveaxis(padded, 0, -1)
+            ramp_pair = _get_linear_ramps(padded, axis, width_pair, value_pair)
+            padded = _set_pad_area(padded, axis, width_pair, ramp_pair)
     elif mode in stat_functions:
         func = stat_functions[mode]
         stat_length = _to_pairs(stat_length, padded.ndim)
+        if mode == "median":
+            ivy.assertions.check_true(
+                ivy.is_float_dtype(input),
+                message="median interpolation is only supported for floats",
+            )
         for axis, width_pair, length_pair in zip(axes, pad_width, stat_length):
-            stat_pair = _get_stats(padded, width_pair, length_pair, func)
-            padded = _set_pad_area(padded, width_pair, stat_pair)
-            padded = ivy.moveaxis(padded, 0, -1)
+            stat_pair = _get_stats(padded, axis, width_pair, length_pair, func)
+            padded = _set_pad_area(padded, axis, width_pair, stat_pair)
     elif mode in {"reflect", "symmetric"}:
         include_edge = True if mode == "symmetric" else False
         for axis, (left_index, right_index) in zip(axes, pad_width):
-            if input.shape[0] == 1 and (left_index > 0 or right_index > 0):
-                edge_pair = _get_edges(padded, (left_index, right_index))
-                padded = _set_pad_area(padded, (left_index, right_index), edge_pair)
+            if input.shape[axis] == 1 and (left_index > 0 or right_index > 0):
+                edge_pair = _get_edges(padded, axis, (left_index, right_index))
+                padded = _set_pad_area(
+                    padded, axis, (left_index, right_index), edge_pair
+                )
                 continue
             while left_index > 0 or right_index > 0:
                 left_index, right_index, padded = _set_reflect_both(
-                    padded, (left_index, right_index), reflect_type, include_edge
+                    padded, axis, (left_index, right_index), reflect_type, include_edge
                 )
-            padded = ivy.moveaxis(padded, 0, -1)
     elif mode == "wrap":
         for axis, (left_index, right_index) in zip(axes, pad_width):
             while left_index > 0 or right_index > 0:
                 left_index, right_index, padded = _set_wrap_both(
-                    padded, (left_index, right_index)
+                    padded, axis, (left_index, right_index)
                 )
-            padded = ivy.moveaxis(padded, 0, -1)
+    padded = ivy.array(padded).to_native()
     return padded
 
 
@@ -1185,6 +1278,41 @@ def dsplit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+def atleast_1d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least one dimension.
+    Scalar inputs are converted to 1-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more input arrays.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 1D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_1d(ary1)
+    ivy.array([5])
+    >>> ary2 = ivy.array([[3,4]])
+    >>> ivy.atleast_1d(ary2)
+    ivy.array([[3, 4]])
+    >>> ivy.atleast_1d(6,7,8)
+    [ivy.array([6]), ivy.array([7]), ivy.array([8])]
+    """
+    return ivy.current_backend().atleast_1d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
 def dstack(
     arrays: Sequence[ivy.Array],
     /,
@@ -1217,6 +1345,184 @@ def dstack(
     ivy.array([[[1, 2]],
                [[2, 3]],
                [[3, 4]]])
-
     """
     return ivy.current_backend(arrays[0]).dstack(arrays)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_2d(
+    *arys: Union[ivy.Array, ivy.NativeArray],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least two dimension.
+    Scalar inputs are converted to 2-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have two or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with atleast 2D.
+        Copies are made only if necessary.
+
+    Examples
+    --------
+    >>> ary1 = ivy.array(5)
+    >>> ivy.atleast_2d(ary1)
+    ivy.array([[5]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_2d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ivy.atleast_2d(6,7,8)
+    [ivy.array([[6]]), ivy.array([[7]]), ivy.array([[8]])]
+    """
+    return ivy.current_backend().atleast_2d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def atleast_3d(
+    *arys: Union[ivy.Array, ivy.NativeArray, bool, Number],
+) -> List[ivy.Array]:
+    """Convert inputs to arrays with at least three dimension.
+    Scalar inputs are converted to 3-dimensional arrays, whilst
+    higher-dimensional inputs are preserved.
+
+    Parameters
+    ----------
+    arys
+        One or more array-like sequences. Non-array inputs are
+        converted to arrays. Arrays that already have three or more
+        dimensions are preserved.
+
+    Returns
+    -------
+    ret
+        An array, or list of arrays, each with a.ndim >= 3. Copies
+        are avoided where possible, and views with three or more
+        dimensions are returned. For example, a 1-D array of shape
+        (N,) becomes a view of shape (1, N, 1), and a 2-D array of
+        shape (M, N) becomes a view of shape (M, N, 1).
+
+    Examples
+    --------
+    >>> ary1 = ivy.array([5,6])
+    >>> ivy.atleast_3d(ary1)
+    ivy.array([[[5],
+            [6]]])
+    >>> ary2 = ivy.array([[[3,4]]])
+    >>> ivy.atleast_3d(ary2)
+    ivy.array([[[3, 4]]])
+    >>> ary3 = ivy.array([[3,4],[9,10]])
+    >>> ivy.atleast_3d(6,7,ary3)
+    [ivy.array([[[6]]]), ivy.array([[[7]]]), ivy.array([[[ 3],
+            [ 4]],
+
+           [[ 9],
+            [10]]])]
+    """
+    return ivy.current_backend().atleast_3d(*arys)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def take_along_axis(
+    arr: Union[ivy.Array, ivy.NativeArray],
+    indices: Union[ivy.Array, ivy.NativeArray],
+    axis: int,
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Take values from the input array by matching 1d index and data slices.
+
+    Parameters
+    ----------
+    arr
+        The source array.
+    indices
+        The indices of the values to extract.
+    axis
+        The axis over which to select values.
+    out
+        The output array.
+
+    Returns
+    -------
+    ret
+        The returned array has the same shape as `indices`.
+
+    Examples
+    --------
+    >>> arr = ivy.array([[4, 3, 5], [1, 2, 1]])
+    >>> indices = ivy.array([[0, 1, 1], [2, 0, 0]])
+    >>> y = ivy.take_along_axis(arr, indices, 1)
+    >>> print(y)
+    ivy.array([[4, 3, 3], [1, 1, 1]])
+    """
+    return ivy.current_backend(arr).take_along_axis(arr, indices, axis, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+def hsplit(
+    ary: Union[ivy.Array, ivy.NativeArray],
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Split an array into multiple sub-arrays horizontally.
+
+    Parameters
+    ----------
+    ary
+        Array input.
+    indices_or_sections
+        If indices_or_sections is an integer n, the array is split into n sections.
+        If the array is divisible by n along the 3rd axis, each section will be of
+        equal size. If input is not divisible by n, the sizes of the first
+        int(ary.size(0) % n) sections will have size int(ary.size(0) / n) + 1,
+        and the rest will have size int(ary.size(0) / n).
+        If indices_or_sections is a tuple of ints, then input is split at each of
+        the indices in the tuple.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        input array split horizontally.
+
+    Examples
+    --------
+    >>> ary = ivy.array(
+            [[0.,  1., 2., 3.],
+             [4.,  5., 6,  7.],
+             [8.,  9., 10., 11.],
+             [12., 13., 14., 15.]]
+            )
+    >>> ivy.vsplit(ary, 2)
+    [ivy.array([[ 0.,  1.],
+                    [ 4.,  5.],
+                    [ 8.,  9.],
+                    [12., 13.]]),
+         ivy.array([[ 2.,  3.],
+                    [ 6.,  7.],
+                    [10., 11.],
+                    [14., 15.]]))
+    """
+    return ivy.current_backend(ary).hsplit(
+        ary, indices_or_sections=indices_or_sections, out=out
+    )

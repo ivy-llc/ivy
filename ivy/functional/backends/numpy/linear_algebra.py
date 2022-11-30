@@ -31,6 +31,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -78,7 +79,7 @@ def eigh(
 def eigvalsh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.linalg.eigvalsh(x)
+    return np.linalg.eigvalsh(x, UPLO=UPLO)
 
 
 @_scalar_output_to_0d_array
@@ -263,7 +264,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: np.ndarray, /, *, mode: str = "reduced", out: Optional[np.ndarray] = None
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -324,8 +327,9 @@ def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -350,7 +354,12 @@ trace.support_native_out = True
 
 
 def vecdot(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
@@ -358,10 +367,11 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:

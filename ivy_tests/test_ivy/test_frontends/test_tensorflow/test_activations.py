@@ -1,23 +1,26 @@
-from hypothesis import given
 from hypothesis import strategies as st
 import tensorflow as tf
 import sys
 
 # local
-import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
 import ivy
+import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.hard_sigmoid",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.hard_sigmoid"
-    ),
 )
 def test_tensorflow_hard_sigmoid(
-    dtype_and_x, as_variable, num_positional_args, native_array
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -26,45 +29,28 @@ def test_tensorflow_hard_sigmoid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.hard_sigmoid",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.linear",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.linear"
-    ),
 )
-def test_tensorflow_linear(dtype_and_x, as_variable, num_positional_args, native_array):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.linear",
-        x=x[0],
-    )
-
-
-# sigmoid
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.sigmoid"
-    ),
-)
-def test_tensorflow_sigmoid(
-    dtype_and_x, as_variable, num_positional_args, native_array
+def test_tensorflow_linear(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -73,8 +59,38 @@ def test_tensorflow_sigmoid(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.sigmoid",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# sigmoid
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.sigmoid",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+)
+def test_tensorflow_sigmoid(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
@@ -82,14 +98,20 @@ def test_tensorflow_sigmoid(
 
 
 # tanh
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.tanh",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.tanh"
-    ),
 )
-def test_tensorflow_tanh(dtype_and_x, as_variable, num_positional_args, native_array):
+def test_tensorflow_tanh(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -97,8 +119,9 @@ def test_tensorflow_tanh(dtype_and_x, as_variable, num_positional_args, native_a
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.tanh",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
@@ -106,8 +129,8 @@ def test_tensorflow_tanh(dtype_and_x, as_variable, num_positional_args, native_a
 
 
 # softmax
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.softmax",
     dtype_x_and_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -115,12 +138,16 @@ def test_tensorflow_tanh(dtype_and_x, as_variable, num_positional_args, native_a
         force_int_axis=True,
         valid_axis=True,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softmax"
-    ),
 )
 def test_tensorflow_softmax(
-    dtype_x_and_axis, as_variable, num_positional_args, native_array
+    *,
+    dtype_x_and_axis,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x, axis = dtype_x_and_axis
     helpers.test_frontend_function(
@@ -129,24 +156,30 @@ def test_tensorflow_softmax(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.softmax",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         axis=axis,
     )
 
 
 # gelu test
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.gelu",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     approximate=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.gelu"
-    ),
 )
 def test_tensorflow_gelu(
-    dtype_and_x, approximate, as_variable, num_positional_args, native_array
+    *,
+    dtype_and_x,
+    approximate,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -155,24 +188,29 @@ def test_tensorflow_gelu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.gelu",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         approximate=approximate,
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.elu",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.relu"
-    ),
 )
 def test_tensorflow_relu(
-    dtype_and_x, as_variable, num_positional_args, native_array, fw
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -181,22 +219,27 @@ def test_tensorflow_relu(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.relu",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
 
 # softplus
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.softplus",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softplus"
-    ),
 )
 def test_tensorflow_softplus(
-    dtype_and_x, as_variable, num_positional_args, native_array
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -205,8 +248,9 @@ def test_tensorflow_softplus(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.softplus",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
@@ -214,20 +258,21 @@ def test_tensorflow_softplus(
 
 
 # softsign
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.softsign",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.softsign"
-    ),
 )
 def test_tensorflow_softsign(
+    *,
     dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -236,8 +281,9 @@ def test_tensorflow_softsign(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.softsign",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
@@ -245,14 +291,20 @@ def test_tensorflow_softsign(
 
 
 # swish
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.swish",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.swish"
-    ),
 )
-def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_array):
+def test_tensorflow_swish(
+    *,
+    dtype_and_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -260,8 +312,9 @@ def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.swish",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-2,
         atol=1e-2,
         x=x[0],
@@ -269,9 +322,9 @@ def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_
 
 
 # elu
-@handle_cmd_line_args
-@given(
-    dtype_x=helpers.dtype_and_values(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.elu",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-3,
         max_value=3,
@@ -286,37 +339,37 @@ def test_tensorflow_swish(dtype_and_x, as_variable, num_positional_args, native_
             max_value=3,
         )
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.elu"
-    ),
 )
 def test_tensorflow_elu(
-    dtype_x,
+    *,
+    dtype_and_x,
     alpha,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.elu",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
         alpha=alpha,
     )
 
 
 # selu
-@handle_cmd_line_args
-@given(
-    dtype_x=helpers.dtype_and_values(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.selu",
+    dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_value=-3,
         max_value=3,
@@ -325,27 +378,27 @@ def test_tensorflow_elu(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.tensorflow.keras.activations.selu"
-    ),
 )
 def test_tensorflow_selu(
-    dtype_x,
+    *,
+    dtype_and_x,
     as_variable,
     num_positional_args,
     native_array,
-    fw,
+    on_device,
+    fn_tree,
+    frontend,
 ):
-    input_dtype, x = dtype_x
+    input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        with_inplace=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="keras.activations.selu",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         x=x[0],
     )
 
@@ -407,8 +460,8 @@ def get_callable_functions(
 
 
 # deserialize
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.deserialize",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
         lambda x: not x[0].isupper()
         and x
@@ -423,18 +476,24 @@ def get_callable_functions(
         ]
     ),
     dtype_and_data=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("valid"),
         min_value=0,
         max_value=10,
         shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
 )
-def test_tensorflow_deserialize(fn_name, dtype_and_data):
+def test_tensorflow_deserialize(
+    *,
+    dtype_and_data,
+    fn_name,
+    fn_tree,
+    frontend,
+):
     dtype_data, data = dtype_and_data
     simple_test_two_function(
         fn_name=fn_name,
         x=data[0],
-        frontend="tensorflow",
+        frontend=frontend,
         fn_str="deserialize",
         dtype_data=dtype_data[0],
         rtol_=1e-01,
@@ -444,8 +503,8 @@ def test_tensorflow_deserialize(fn_name, dtype_and_data):
     )
 
 
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="tensorflow.keras.activations.get",
     fn_name=st.sampled_from(get_callable_functions("keras.activations")).filter(
         lambda x: not x[0].isupper()
         and x

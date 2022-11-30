@@ -27,4 +27,4 @@ def any(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     x = jnp.array(x, dtype="bool")
-    return jnp.any(x, axis, keepdims=keepdims)
+    return jnp.any(x, axis, keepdims=keepdims, out=out)

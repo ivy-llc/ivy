@@ -1,56 +1,59 @@
 # global
-from hypothesis import given, strategies as st
+import numpy as np
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
-import numpy as np
+from ivy_tests.test_ivy.helpers import handle_test
+
 
 # Helpers #
 # ------- #
 
 
 # sinc
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.sinc",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         large_abs_safety_factor=4,
         small_abs_safety_factor=4,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="sinc"),
 )
 def test_sinc(
     *,
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        rtol_=1e-02,
         atol_=1e-02,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="sinc",
+        ground_truth_backend="jax",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
         x=x[0],
     )
 
 
 # lcm
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.lcm",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -61,38 +64,41 @@ def test_sinc(
         max_value=100,
         allow_nan=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="lcm"),
 )
 def test_lcm(
     dtype_and_x,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="lcm",
-        test_gradients=True,
+        on_device=on_device,
+        ground_truth_backend="jax",
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_gradients=False,
         x1=x[0],
         x2=x[1],
     )
 
 
 # fmod
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.fmod",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -104,37 +110,40 @@ def test_lcm(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fmod"),
 )
 def test_fmod(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="fmod",
+        on_device=on_device,
+        ground_truth_backend="numpy",
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=x[0],
-        x2=x[0],
+        x2=x[1],
     )
 
 
 # fmax
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.fmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -147,31 +156,34 @@ def test_fmod(
         max_dim_size=3,
         allow_nan=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fmax"),
 )
 def test_fmax(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="fmax",
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend="tensorflow",
+        fn_name=fn_name,
         x1=x[0],
-        x2=x[0],
+        x2=x[1],
     )
 
 
@@ -181,7 +193,7 @@ def _either_x_dx(draw):
     rand = (draw(st.integers(min_value=0, max_value=1)),)
     if rand == 0:
         either_x_dx = draw(
-            helpers.dtype_and_x(
+            helpers.dtype_and_values(
                 avaliable_dtypes=st.shared(
                     helpers.get_dtypes("float"), key="trapz_dtype"
                 ),
@@ -201,8 +213,8 @@ def _either_x_dx(draw):
         return rand, either_x_dx
 
 
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.trapz",
     dtype_values_axis=helpers.dtype_values_axis(
         available_dtypes=st.shared(helpers.get_dtypes("float"), key="trapz_dtype"),
         min_value=-100,
@@ -216,18 +228,19 @@ def _either_x_dx(draw):
         force_int_axis=True,
     ),
     rand_either=_either_x_dx(),
-    num_positional_args=helpers.num_positional_args(fn_name="trapz"),
 )
 def test_trapz(
     dtype_values_axis,
     rand_either,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, y, axis = dtype_values_axis
     rand, either_x_dx = rand_either
@@ -240,16 +253,16 @@ def test_trapz(
         dx = either_x_dx
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        rtol_=1e-2,
-        atol_=1e-2,
-        fw=fw,
-        fn_name="trapz",
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend="tensorflow",
+        fn_name=fn_name,
         y=np.asarray(y[0], dtype=input_dtype[0]),
         x=x,
         dx=dx,
@@ -258,8 +271,8 @@ def test_trapz(
 
 
 # float_power
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.float_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -271,37 +284,40 @@ def test_trapz(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="float_power"),
 )
 def test_float_power(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="float_power",
+        on_device=on_device,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
         x1=np.asarray(x[0], dtype=input_dtype[0]),
         x2=np.asarray(x[1], dtype=input_dtype[1]),
     )
 
 
 # exp2
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.exp2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -311,29 +327,32 @@ def test_float_power(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="exp2"),
 )
 def test_exp2(
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
+        num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="exp2",
+        on_device=on_device,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
 
@@ -364,18 +383,17 @@ def _get_dtype_values_axis_for_count_nonzero(
 
 
 # count_nonzero
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.count_nonzero",
     dtype_values_axis=_get_dtype_values_axis_for_count_nonzero(
-        in_available_dtypes="numeric",
-        out_available_dtypes="numeric",
+        in_available_dtypes="integer",
+        out_available_dtypes="integer",
         min_num_dims=1,
         max_num_dims=10,
         min_dim_size=1,
         max_dim_size=10,
     ),
     keepdims=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="count_nonzero"),
 )
 def test_count_nonzero(
     dtype_values_axis,
@@ -384,9 +402,10 @@ def test_count_nonzero(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    on_device,
+    backend_fw,
 ):
     i_o_dtype, a, axis = dtype_values_axis
     helpers.test_function(
@@ -395,20 +414,22 @@ def test_count_nonzero(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        on_device=on_device,
+        fw=backend_fw,
+        ground_truth_backend="tensorflow",
         fn_name="count_nonzero",
-        a=a,
+        a=a[0],
         axis=axis,
         keepdims=keepdims,
-        dtype=i_o_dtype[1],
+        dtype=i_o_dtype[1][0],
     )
 
 
 # nansum
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.nansum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -420,20 +441,23 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        allow_nan=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="nansum"),
     keep_dims=st.booleans(),
 )
 def test_nansum(
+    *,
     dtype_x_axis,
     keep_dims,
+    num_positional_args,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
-    container,
+    container_flags,
+    on_device,
+    fn_name,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x, axis = dtype_x_axis
     helpers.test_function(
@@ -442,19 +466,21 @@ def test_nansum(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="nansum",
-        input=x[0],
+        fw=backend_fw,
+        on_device=on_device,
+        ground_truth_backend="tensorflow",
+        fn_name=fn_name,
+        x=x[0],
         axis=axis,
         keepdims=keep_dims,
     )
 
 
 # gcd
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.gcd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -465,17 +491,19 @@ def test_nansum(
         max_value=100,
         allow_nan=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="gcd"),
 )
 def test_gcd(
+    *,
     dtype_and_x,
     with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -484,18 +512,20 @@ def test_gcd(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="gcd",
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x1=x[0],
+        x2=x[1],
     )
 
 
 # isclose
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.isclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=-10,
@@ -511,20 +541,22 @@ def test_gcd(
     rtol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     atol=st.floats(min_value=0.0, max_value=0.1, exclude_min=True, exclude_max=True),
     equal_nan=st.booleans(),
-    num_positional_args=helpers.num_positional_args(fn_name="isclose"),
 )
 def test_isclose(
+    *,
     dtype_and_x,
     rtol,
     atol,
     equal_nan,
     with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -533,12 +565,14 @@ def test_isclose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="isclose",
-        a=np.asarray(x[0], dtype=input_dtype[0]),
-        b=np.asarray(x[1], dtype=input_dtype[1]),
+        ground_truth_backend="tensorflow",
+        on_device=on_device,
+        fw=backend_fw,
+        fn_name=fn_name,
+        a=x[0],
+        b=x[1],
         rtol=rtol,
         atol=atol,
         equal_nan=equal_nan,
@@ -546,8 +580,8 @@ def test_isclose(
 
 
 # isposinf
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.isposinf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -556,17 +590,19 @@ def test_isclose(
         max_dim_size=3,
         allow_inf=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isposinf"),
 )
 def test_isposinf(
+    *,
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -575,17 +611,19 @@ def test_isposinf(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="isposinf",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )
 
 
 # isneginf
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.isneginf",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -594,17 +632,19 @@ def test_isposinf(
         max_dim_size=3,
         allow_inf=True,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="isneginf"),
 )
 def test_isneginf(
+    *,
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -613,17 +653,19 @@ def test_isneginf(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="isneginf",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
     )
 
 
 # nan_to_num
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.nan_to_num",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -637,21 +679,23 @@ def test_isneginf(
     nan=st.floats(min_value=0.0, max_value=100),
     posinf=st.floats(min_value=5e100, max_value=5e100),
     neginf=st.floats(min_value=-5e100, max_value=-5e100),
-    num_positional_args=helpers.num_positional_args(fn_name="nan_to_num"),
 )
 def test_nan_to_num(
+    *,
     dtype_and_x,
     copy,
     nan,
     posinf,
     neginf,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -660,11 +704,13 @@ def test_nan_to_num(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="nan_to_num",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        ground_truth_backend="tensorflow",
+        x=x[0],
         copy=copy,
         nan=nan,
         posinf=posinf,
@@ -673,8 +719,8 @@ def test_nan_to_num(
 
 
 # logaddexp2
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.logaddexp2",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -685,17 +731,19 @@ def test_nan_to_num(
         max_value=100,
         allow_nan=False,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="logaddexp2"),
 )
 def test_logaddexp2(
+    *,
     dtype_and_x,
-    with_out,
-    as_variable,
     num_positional_args,
+    as_variable,
+    with_out,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    fn_name,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -704,57 +752,22 @@ def test_logaddexp2(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
-        fn_name="logaddexp2",
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
         rtol_=1e-03,
         atol_=1e-03,
-        x1=np.asarray(x[0], dtype=input_dtype[0]),
-        x2=np.asarray(x[1], dtype=input_dtype[1]),
-    )
-
-
-# signbit
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=3,
-    ),
-    num_positional_args=helpers.num_positional_args(fn_name="signbit"),
-)
-def test_signbit(
-    dtype_and_x,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    fw,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_function(
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=fw,
-        fn_name="signbit",
-        x=np.asarray(x[0], dtype=input_dtype[0]),
+        x1=x[0],
+        x2=x[1],
     )
 
 
 # allclose
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.allclose",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -776,9 +789,9 @@ def test_allclose(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -787,9 +800,10 @@ def test_allclose(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
         fn_name="allclose",
         x1=x[0],
         x2=x[1],
@@ -800,8 +814,8 @@ def test_allclose(
 
 
 # fix
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.fix",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=2),
         min_num_dims=1,
@@ -809,7 +823,6 @@ def test_allclose(
         min_dim_size=1,
         max_dim_size=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="fix"),
 )
 def test_fix(
     dtype_and_x,
@@ -817,9 +830,9 @@ def test_fix(
     as_variable,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
-    fw,
+    backend_fw,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_function(
@@ -828,17 +841,18 @@ def test_fix(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
         fn_name="fix",
         x=np.asarray(x[0], dtype=input_dtype[0]),
     )
 
 
 # nextafter
-@handle_cmd_line_args
-@given(
+@handle_test(
+    fn_tree="functional.experimental.nextafter",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=2),
         num_arrays=2,
@@ -848,9 +862,92 @@ def test_fix(
         min_num_dims=1,
         max_num_dims=3,
     ),
-    num_positional_args=helpers.num_positional_args(fn_name="nextafter"),
 )
 def test_nextafter(
+    dtype_and_x,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name="nextafter",
+        x1=x[0],
+        x2=x[1],
+    )
+
+
+# diff
+@handle_test(
+    fn_tree="functional.experimental.diff",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        num_arrays=2,
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+    ),
+)
+def test_diff(
+    *,
+    dtype_and_x,
+    with_out,
+    num_positional_args,
+    as_variable,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend="tensorflow",
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# zeta
+@handle_test(
+    fn_tree="functional.experimental.zeta",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float", index=2),
+        num_arrays=2,
+        shared_dtype=True,
+        min_value=-10,
+        max_value=10,
+        min_num_dims=1,
+        max_num_dims=3,
+    ),
+)
+def test_zeta(
     dtype_and_x,
     with_out,
     as_variable,
@@ -870,7 +967,57 @@ def test_nextafter(
         container_flags=container,
         instance_method=instance_method,
         fw=fw,
-        fn_name="nextafter",
-        x1=x[0],
-        x2=x[1],
+        fn_name="zeta",
+        rtol_=1e-03,
+        atol_=1e-03,
+        x=x[0],
+        q=x[1],
+    )
+
+
+# gradient
+@handle_test(
+    fn_tree="functional.experimental.gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float16", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+    ),
+    spacing=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_gradient(
+    *,
+    dtype_and_x,
+    spacing,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x[0],
+        spacing=spacing,
     )
