@@ -5,13 +5,33 @@ import numpy as np
 import importlib
 from hypothesis import strategies as st
 import typing
+from types import SimpleNamespace
 
 # local
 import ivy
-import ivy.functional.backends.jax as ivy_jax
+
+try:
+    import ivy.functional.backends.tensorflow as ivy_tf
+except ImportError:
+    ivy_tf = SimpleNamespace()
+    ivy_tf.valid_dtypes = ()
+    ivy_tf.invalid_dtypes = ()
+
+try:
+    import ivy.functional.backends.jax as ivy_jax
+except ImportError:
+    ivy_jax = SimpleNamespace()
+    ivy_jax.valid_dtypes = ()
+    ivy_jax.invalid_dtypes = ()
+
+try:
+    import ivy.functional.backends.torch as ivy_torch
+except ImportError:
+    ivy_torch = SimpleNamespace()
+    ivy_torch.valid_dtypes = ()
+    ivy_torch.invalid_dtypes = ()
+
 import ivy.functional.backends.numpy as ivy_np
-import ivy.functional.backends.tensorflow as ivy_tf
-import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
