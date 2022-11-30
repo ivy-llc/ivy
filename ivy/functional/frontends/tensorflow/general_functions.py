@@ -98,6 +98,19 @@ def expand_dims(input, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def concat(values, axis, name=None):
+    return ivy.concat(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def shape(input, out_type=ivy.int32, name=None):
+    if out_type in ["int32", "int64"]:
+        return ivy.array(ivy.shape(input), dtype=out_type)
+    else:
+        return ivy.array(ivy.shape(input), dtype="int64")
+
+
+@to_ivy_arrays_and_back
 def sort(values, axis=-1, direction="ASCENDING", name=None):
     descending = True
     if direction == "ASCENDING":

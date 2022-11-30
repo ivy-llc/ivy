@@ -461,9 +461,7 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
-    eigenvalues_np, eigenvectors_np = ret_np_flat[
-        :2
-    ]  # update this; values shouldn't be repeated
+
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
         eigenvalue = ret_np_flat[i * 2]
@@ -476,9 +474,7 @@ def test_eigh(
             reconstructed_np = eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
             )
-    eigenvalues_from_np, eigenvectors_from_np = ret_from_np_flat[
-        :2
-    ]  # update this; values shouldn't be repeated
+
     reconstructed_from_np = None
     for i in range(len(ret_from_np_flat) // 2):
         eigenvalue = ret_from_np_flat[i * 2]
@@ -1207,11 +1203,15 @@ def test_qr(
     )
     if results is None:
         return
-    ret_np_flat, ret_from_np_flat = results
-    q_np_flat, r_np_flat = ret_np_flat[:2]
-    q_from_np_flat, r_from_np_flat = ret_from_np_flat[:2]
 
+    ret_np_flat, ret_from_np_flat = results
+    for i in range(len(ret_np_flat) // 2):
+        q_np_flat = ret_np_flat[i * 2]
+        r_np_flat = ret_np_flat[i * 2 + 1]
     reconstructed_np_flat = np.matmul(q_np_flat, r_np_flat)
+    for i in range(len(ret_from_np_flat) // 2):
+        q_from_np_flat = ret_from_np_flat[i * 2]
+        r_from_np_flat = ret_from_np_flat[i * 2 + 1]
     reconstructed_from_np_flat = np.matmul(q_from_np_flat, r_from_np_flat)
 
     # value test
@@ -1278,16 +1278,18 @@ def test_svd(
     ret_flat_np, ret_from_gt_flat_np = results
 
     if uv:
-        U, S, Vh = ret_flat_np[:3]
+        for i in range(len(ret_flat_np) // 3):
+            U = ret_flat_np[i * 3]
+            S = ret_flat_np[i * 3 + 1]
+            Vh = ret_flat_np[i * 3 + 2]
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-        U_gt, S_gt, Vh_gt = ret_from_gt_flat_np[
-            :3
-        ]  # fix the test_function module/temp fix
-        m = U.shape[-1]
-        n = Vh.shape[-1]
-        S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
+
+        for i in range(len(ret_from_gt_flat_np) // 3):
+            U_gt = ret_from_gt_flat_np[i * 3]
+            S_gt = ret_from_gt_flat_np[i * 3 + 1]
+            Vh_gt = ret_from_gt_flat_np[i * 3 + 2]
         S_gt = np.expand_dims(S_gt, -2) if m > n else np.expand_dims(S_gt, -1)
 
         with ivy.functional.backends.numpy.use:
