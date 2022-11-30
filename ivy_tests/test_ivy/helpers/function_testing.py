@@ -1065,8 +1065,8 @@ def test_frontend_method(
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
-    class_: str,
-    method_name: str = "__init__",
+    init_name: str,
+    method_name: str,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1260,8 +1260,11 @@ def test_frontend_method(
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
+    ivy_frontend_creation_fn = ivy.functional.frontends.__dict__[frontend].__dict__[
+        init_name
+    ]
     # Run testing
-    ins = class_(*args_constructor, **kwargs_constructor)
+    ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
@@ -1302,8 +1305,10 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-    frontend_class = importlib.import_module(frontend).__getattribute__(class_.__name__)
-    ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
+    frontend_creation_fn = importlib.import_module(frontend).__getattribute__(init_name)
+    ins_gt = frontend_creation_fn(
+        *args_constructor_frontend, **kwargs_constructor_frontend
+    )
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
