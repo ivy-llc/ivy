@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -311,3 +311,16 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: np.ndarray,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if type(spacing) in (int, float):
+        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
+    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)
