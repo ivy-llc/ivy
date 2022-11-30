@@ -64,8 +64,8 @@ def _array_and_axes_permute_helper(
             max_dim_size=max_dim_size,
         )
     )
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    array = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     axes = draw(
         st.one_of(
             st.none(),
