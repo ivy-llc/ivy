@@ -566,3 +566,7 @@ def logaddexp(x1, x2):
 @to_ivy_arrays_and_back
 def expand_dims(a, axis):
     return ivy.expand_dims(a, axis=axis)
+
+@to_ivy_arrays_and_back
+def eye(N, M=None, k=0, dtype=None):
+    return ivy.eye(N, M, k=k, dtype=dtype)
