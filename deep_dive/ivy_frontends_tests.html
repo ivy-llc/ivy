@@ -175,7 +175,7 @@
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading"></a></h2>
 <p>Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder <a class="reference external" href="https://github.com/unifyai/ivy/tree/db9a22d96efd3820fb289e9997eb41dda6570868/ivy_tests/test_ivy">test ivy</a>.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!</p>
-<p><strong>Writing Ivy Tests</strong></p>
+<p><strong>Writing Ivy Frontend Tests</strong></p>
 <p>The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them for testing.</p>
 <p><strong>Ivy Decorators</strong></p>
@@ -898,8 +898,13 @@ We could simply copy and paste the implementation from <code class="xref py py-m
 Instead, we should simply import the helper function from the ivy test file into the frontend test file, like so <code class="code docutils literal notranslate"><span class="pre">from</span> <span class="pre">ivy_tests.test_ivy.test_frontends.test_manipulation</span> <span class="pre">import</span> <span class="pre">_arrays_idx_n_dtypes</span></code>.</p>
 <p>In cases where a helper function is uniquely useful for a frontend function without being useful for an Ivy function, then it should be implemented directly in <code class="xref py py-mod docutils literal notranslate"><span class="pre">/ivy_tests/test_ivy/test_frontends/test_&lt;framework&gt;/test_&lt;group&gt;.py</span></code> rather than in <code class="xref py py-mod docutils literal notranslate"><span class="pre">/ivy_tests/test_ivy/test_functional/test_core/test_&lt;closest_relevant_group&gt;.py</span></code>.
 However, as shown above, in many cases the same helper function can be shared between the Ivy API tests and the frontend tests, and we should strive for as much sharing as possible to minimize the amount of code.</p>
+<p><strong>Running Ivy Frontend Tests</strong></p>
+<p>The CI Pipeline runs the entire collection of Frontend Tests for the frontend that is being updated on every push to the repo.</p>
+<p>You will need to make sure the Frontend Test is passing for each Ivy Frontend function you introduce/modify.
+If a test fails on the CI, you can see details about the failure under <cite>Details -&gt; Run Frontend Tests</cite> as shown in <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/continuous_integration.html">CI Pipeline</a>.</p>
+<p>You can also run the tests locally before making a PR. See the relevant <a class="reference external" href="https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing">setting up</a> section for instructions on how to do so.</p>
 <p><strong>Round Up</strong></p>
-<p>These examples have hopefully given you a good understanding of Ivy Frontend Tests!</p>
+<p>This should have hopefully given you a good understanding of Ivy Frontend Tests!</p>
 <p>If you have any questions, please feel free to reach out on <a class="reference external" href="https://discord.gg/sXyFF8tDtm">discord</a> in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028267758028337193">ivy frontends tests channel</a> or in the <a class="reference external" href="https://discord.com/channels/799879767196958751/1028297887605587998">ivy frontends tests forum</a>!</p>
 </section>
 </section>
