@@ -235,6 +235,6 @@ def test_numpy_rot90(
         fn_tree=fn_tree,
         on_device=on_device,
         m=m[0],
-        k=k
+        k=k,
         axes=axes
     )
