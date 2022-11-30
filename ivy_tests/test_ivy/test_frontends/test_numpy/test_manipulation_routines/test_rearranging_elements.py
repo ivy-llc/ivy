@@ -177,14 +177,15 @@ def _get_dtype_values_k_axes_for_rot90(
         )
     )
     k = draw(helpers.ints(min_value=-4, max_value=4))
-    axes = draw(
+    axes = tuple(
+        draw(
         st.lists(
-            helpers.ints(min_value=-len(shape), max_value=len(shape) - 1),
+            helpers.ints(min_value=-(en(shape) - 2), max_value=len(shape) - 2),
             min_size=2,
             max_size=2,
             unique=True,
         ).filter(lambda axes: abs(axes[0] - axes[1]) != len(shape))
-    )
+    ))
     dtype = draw(st.sampled_from(draw(available_dtypes)))
     values = draw(
         helpers.array_values(
@@ -208,8 +209,8 @@ def _get_dtype_values_k_axes_for_rot90(
     fn_tree="numpy.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=2,
-        max_num_dims=5,
+        min_num_dims=3,
+        max_num_dims=6,
         min_dim_size=1,
         max_dim_size=10,
     ),
