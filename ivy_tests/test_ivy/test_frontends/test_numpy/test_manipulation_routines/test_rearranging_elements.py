@@ -208,7 +208,7 @@ def _get_dtype_values_k_axes_for_rot90(
     fn_tree="numpy.rot90",
     dtype_m_k_axes=_get_dtype_values_k_axes_for_rot90(
         available_dtypes=helpers.get_dtypes("numeric"),
-        min_num_dims=1,
+        min_num_dims=2,
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=10,
