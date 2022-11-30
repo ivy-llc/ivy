@@ -3,6 +3,8 @@ import os
 import sys
 from pymongo import MongoClient
 
+action_url = "https://github.com/unifyai/ivy/actions/runs/"
+
 submodules = (
     "test_functional",
     "test_experimental",
@@ -29,6 +31,12 @@ result_config = {
 }
 
 
+def make_clickable(url, name):
+    return '<a href="{}" rel="noopener noreferrer" '.format(
+        url
+    ) + 'target="_blank"><img src={}></a>'.format(name)
+
+
 def get_submodule(test_path):
     test_path = test_path.split("/")
     for name in submodules:
@@ -48,7 +56,7 @@ def get_submodule(test_path):
 def update_individual_test_results(collection, id, submod, backend, test, result):
     collection.update_one(
         {"_id": id},
-        {"$set": {submod + "." + backend + "." + test: result_config[result]}},
+        {"$set": {submod + "." + backend + "." + test: result}},
         upsert=True,
     )
     return
@@ -59,6 +67,7 @@ if __name__ == "__main__":
         redis_url = sys.argv[1]
         redis_pass = sys.argv[2]
         mongo_key = sys.argv[3]
+        run_id = sys.argv[4]
     failed = False
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
@@ -78,13 +87,15 @@ if __name__ == "__main__":
                     f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend}'  # noqa
                 )
             if ret != 0:
+                res = make_clickable(action_url + run_id, result_config["failure"])
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, "failure"
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
                 )
                 failed = True
             else:
+                res = make_clickable(action_url + run_id, result_config["success"])
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, "success"
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
                 )
 
     if failed:
