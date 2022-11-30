@@ -19,10 +19,8 @@ def lexsort(
     /,
     *,
     axis: int = -1,
-    out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    x_unq, inv = torch.unique(x.flip(0), dim=axis, sorted=True, return_inverse=True)
-    return torch.argsort(inv)
+    return torch.argsort((torch.unbind(x.flip(0), 0))[0], axis=axis)
 
 
 lexsort_support_native_out = True
