@@ -31,6 +31,16 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         shared_dtype=True,
         min_num_dims=2,
     ),
+    dtype_and_axis1=helpers.get_axis(
+        # available_dtypes=helpers.get_dtypes("numeric"),
+        shape=(2, 3),
+        min_size=1,
+    ),
+    dtype_and_axis2=helpers.get_axis(
+        # available_dtypes=helpers.get_dtypes("numeric"),
+        shape=(2, 3),
+        min_size=1,
+    ),
     # where=np_frontend_helpers.where(),
     # dtype_and_axis1=helpers.dtype_values_axis(
     #   available_dtypes=helpers.get_dtypes("numeric"),
@@ -41,8 +51,8 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     # min_num_dims=2,
     # ),
     offset=st.integers(min_value=-1, max_value=1),
-    axis1=st.integers(min_value=-2, max_value=2),
-    axis2=st.integers(min_value=-2, max_value=2),
+    # axis1=st.integers(min_value=-2, max_value=2),
+    # axis2=st.integers(min_value=-2, max_value=2),
     # axis1!=axis2,
     # dtype=helpers.get_dtypes("float", full=False, none=True),
     # where=np_frontend_helpers.where(),
@@ -55,13 +65,17 @@ def test_numpy_diagonal(
     # where,
     with_out,
     offset,
-    axis1,
-    axis2,
+    # axis1,
+    dtype_and_axis1,
+    # axis2,
+    dtype_and_axis2,
     on_device,
     fn_tree,
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    axis1 = dtype_and_axis1
+    axis2 = dtype_and_axis2
     as_variable = as_variable
 
     np_frontend_helpers.test_frontend_function(
