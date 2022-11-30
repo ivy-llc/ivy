@@ -723,7 +723,7 @@ def test_outer(
         max_value=5,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    ),
 )
 def test_slogdet(
     *,
@@ -740,6 +740,7 @@ def test_slogdet(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
