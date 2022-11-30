@@ -314,8 +314,11 @@
         <span class="c1"># call unmodified function</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># convert all arrays in the return to `ivy.Array` instances</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>\
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_array_mode</span><span class="p">()</span> <span class="k">else</span> <span class="n">ret</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="p">{</span><span class="nb">tuple</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_array_mode</span><span class="p">()</span>
+            <span class="k">else</span> <span class="n">ret</span>
+        <span class="p">)</span>
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">outputs_to_ivy_arrays</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span></div>
