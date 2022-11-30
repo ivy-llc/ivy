@@ -28,6 +28,8 @@ from . import tensor_functions
 from .tensor_functions import *
 from . import utilities
 from .utilities import *
+from . import linalg
+from .linalg import *
 import ivy
 from ivy import (
     uint8,
