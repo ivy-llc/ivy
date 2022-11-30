@@ -108,3 +108,17 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype=out_type)
     else:
         return ivy.array(ivy.shape(input), dtype="int64")
+
+
+@to_ivy_arrays_and_back
+def sort(values, axis=-1, direction="ASCENDING", name=None):
+    descending = True
+    if direction == "ASCENDING":
+        descending = False
+    else:
+        ivy.assertions.check_equal(
+            direction,
+            "DESCENDING",
+            message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
+        )
+    return ivy.sort(values, axis=axis, descending=descending)
