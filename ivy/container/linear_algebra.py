@@ -1694,7 +1694,6 @@ class ContainerWithLinearAlgebra(ContainerBase):
             ]
         }
 
-
         """
         return ContainerBase.multi_map_in_static_method(
             "slogdet",

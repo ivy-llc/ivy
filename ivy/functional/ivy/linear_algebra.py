@@ -1610,7 +1610,6 @@ def slogdet(
         ]
     }
 
-
     """
     return current_backend(x).slogdet(x)
 
