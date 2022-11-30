@@ -1,5 +1,5 @@
 import os
-
+from test_ivy.helpers.available_frameworks import available_frameworks
 this_dir = os.path.dirname(os.path.realpath(__file__))
 func_folder = os.path.join(this_dir, "array_api_methods_to_test")
 
@@ -7,24 +7,13 @@ func_folder = os.path.join(this_dir, "array_api_methods_to_test")
 func_fnames = os.listdir(func_folder)
 func_fnames.sort()
 
-func_fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
-
 # all filepaths
-fpaths = func_fpaths
+fpaths = [os.path.join(func_folder, fname) for fname in func_fnames]
 
 # test lists
-framework_tests_to_run = {
-    "jax": list(),
-    "numpy": list(),
-    "torch": list(),
-    "tensorflow": list(),
-}
-framework_tests_to_skip = {
-    "jax": list(),
-    "numpy": list(),
-    "torch": list(),
-    "tensorflow": list(),
-}
+framework_tests_to_run = {framework: list() for framework in available_frameworks}
+framework_tests_to_skip = {framework: list() for framework in available_frameworks}
+
 # add from each filepath
 for fpath in fpaths:
     # extract contents
