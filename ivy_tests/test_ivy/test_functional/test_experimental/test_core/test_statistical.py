@@ -175,7 +175,7 @@ def max_value_as_shape_prod(draw):
 
 
 @handle_test(
-    fn_tree="functional.experimental.unravel_index",
+    fn_tree="functional.experimental.nanmean",
     dtype_x_shape=max_value_as_shape_prod(),
 )
 def test_unravel_index(
