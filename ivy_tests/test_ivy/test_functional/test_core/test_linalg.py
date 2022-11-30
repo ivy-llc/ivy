@@ -755,7 +755,7 @@ def test_slogdet(
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=False,
         ret_grad_idxs=[["1"]],
         x=x[0],
     )
