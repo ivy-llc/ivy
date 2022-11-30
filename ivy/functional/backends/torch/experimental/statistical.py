@@ -30,28 +30,30 @@ def histogram(
         density=density,
         out=out
     )
+    histogram_values = ret[0]
+    bin_edges = ret[1]
     if extend_lower_interval:
         if density:
-            ret.hist[:] *= a[(a > range[0]) & (a < range[1])].size()[0]
+            histogram_values = torch.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size()[0])
         if extend_upper_interval:
-            ret.hist[0] += a[a < range[0]].size()[0]
-            ret.hist[-1] += a[a > range[1]].size()[0]
+            histogram_values[0] = torch.add(histogram_values[0], a[a < range[0]].size()[0])
+            histogram_values[-1] = torch.add(histogram_values[-1], a[a > range[1]].size()[0])
             if density:
-                ret.hist[:] /= a.size()[0]
+                histogram_values = torch.divide(histogram_values, a.size()[0])
         else:
-            ret.hist[0] += a[a < range[0]].size()[0]
+            histogram_values[0] = torch.add(histogram_values[0], a[a < range[0]].size()[0])
             if density:
-                ret.hist[:] /= a[a < range[1]].size()[0]
+                histogram_values = torch.divide(histogram_values, a[a < range[1]].size()[0])
     elif extend_upper_interval:
         if density:
-            ret.hist[:] *= a[(a > range[0]) & (a < range[1])].size()[0]
-        ret.hist[-1] += a[a > range[1]].size()[0]
+            histogram_values = torch.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size()[0])
+        histogram_values[-1] = torch.add(histogram_values[-1], a[a > range[1]].size()[0])
         if density:
-            ret.hist[:] /= a[a > range[0]].size()[0]
+            histogram_values = torch.divide(histogram_values, a[a > range[0]].size()[0])
     if dtype:
-        ret.hist.type(dtype)
-        ret.bin_edges.type(dtype)
-    return ret
+        histogram_values.type(dtype)
+        bin_edges.type(dtype)
+    return (histogram_values, bin_edges)
 
 
 histogram.support_native_out = True

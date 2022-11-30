@@ -42,9 +42,8 @@ def histogram(
     )
     if density:
         diff_bins = tf.experimental.numpy.diff(bins)
-        ret = ret / diff_bins / tf.math.reduce_sum(ret)
-        return ret
-    return ret
+        ret = tf.divide(tf.divide(ret, diff_bins), tf.math.reduce_sum(ret))
+    return (ret, bins)
 
 
 def median(

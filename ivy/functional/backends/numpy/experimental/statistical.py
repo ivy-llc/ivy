@@ -22,28 +22,30 @@ def histogram(
         weights=weights,
         density=density
     )
+    histogram_values = ret[0]
+    bin_edges = ret[1]
     if extend_lower_interval:
         if density:
-            ret[0][:] *= a[(a > range[0]) & (a < range[1])].size
+            histogram_values = np.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size)
         if extend_upper_interval:
-            ret[0][0] += a[a < range[0]].size
-            ret[0][-1] += a[a > range[1]].size
+            histogram_values[0] = np.add(histogram_values[0], a[a < range[0]].size)
+            histogram_values[-1] = np.add(histogram_values[-1], a[a > range[1]].size)
             if density:
-                ret[0][:] /= a.size
+                histogram_values = np.divide(histogram_values, a.size)
         else:
-            ret[0][0] += a[a < range[0]].size
+            histogram_values[0] = np.add(histogram_values[0], a[a < range[0]].size)
             if density:
-                ret[0][:] /= a[a < range[1]].size
+                histogram_values = np.divide(histogram_values, a[a < range[1]].size)
     elif extend_upper_interval:
         if density:
-            ret[0][:] *= a[(a > range[0]) & (a < range[1])].size
-        ret[0][-1] += a[a > range[1]].size
+            histogram_values = np.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size)
+        histogram_values[-1] = np.add(histogram_values[-1], a[a > range[1]].size)
         if density:
-            ret[0][:] /= a[a > range[0]].size
+            histogram_values = np.divide(histogram_values, a[a > range[0]].size)
     if dtype:
-        ret[0].astype(dtype)
-        ret[1].astype(dtype)
-    return ret
+        histogram_values.astype(dtype)
+        bin_edges.astype(dtype)
+    return (histogram_values, bin_edges)
 
 
 def median(
