@@ -1,10 +1,7 @@
-# global
-from typing import Any
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back, inputs_to_ivy_arrays
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
@@ -49,27 +46,19 @@ def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
 
 
-def constant(
-    value: Any,
-    dtype: Any = None,
-    shape: Any = None,
-) -> EagerTensor:
+def constant(value, dtype, shape, name=None):
     if shape:
-        value = ivy.reshape(ivy.array(value, dtype=dtype), shape=shape)
+        value = ivy.reshape(ivy.astype(value, dtype), shape=shape)
         return EagerTensor(value)
-    return EagerTensor(ivy.array(value, dtype=dtype))
+    return EagerTensor(ivy.astype(value, dtype))
 
 
-def convert_to_tensor(
-    value: Any,
-    dtype: Any = None,
-    dtype_hint: Any = None,
-) -> Any:
+def convert_to_tensor(value, dtype, dtype_hint, name=None):
     if dtype:
-        return EagerTensor(ivy.array(value, dtype=dtype))
+        return EagerTensor(ivy.astype(value, dtype))
     elif dtype_hint:
-        return EagerTensor(ivy.array(value, dtype=dtype_hint))
-    return EagerTensor(ivy.array(value))
+        return EagerTensor(ivy.astype(value, dtype_hint))
+    return EagerTensor(value)
 
 
 @to_ivy_arrays_and_back
