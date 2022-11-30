@@ -23,10 +23,11 @@ from ivy.exceptions import handle_exceptions
 @handle_array_like
 def argsort(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = -1,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices that sort an array ``x`` along a specified axis.
@@ -138,9 +139,10 @@ def argsort(
 def sort(
     x: Union[ivy.Array, ivy.NativeArray],
     axis: int = -1,
+    /,
+    *,
     descending: bool = False,
     stable: bool = True,
-    *,
     out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
 ) -> ivy.Array:
     """Returns a sorted copy of an array.
@@ -252,10 +254,10 @@ def sort(
 def searchsorted(
     x: Union[ivy.Array, ivy.NativeArray],
     v: Union[ivy.Array, ivy.NativeArray],
-    side: str = "left",
-    sorter: bool = None,
-    ret_dtype: ivy.IntDtype = ivy.int64,
-    *,
+    /,
+    side="left",
+    sorter=None,
+    ret_dtype=ivy.int64,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the indices of the inserted elements in a sorted array.
@@ -312,5 +314,11 @@ def searchsorted(
 
     """
     return ivy.current_backend(x, v).searchsorted(
+        x,
+        v,
+        side=side,
+        sorter=sorter,
+        out=out,
+        ret_dtype=ret_dtype,
         x, v, side=side, sorter=sorter, out=out, ret_dtype=ret_dtype,
     )
