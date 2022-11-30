@@ -78,11 +78,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#ivy-add">ivy.add()</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#frontend-special-method-tests">Frontend Special Method Tests</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#frontend-special-method-test-examples">Frontend Special Method Test Examples</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id1">ivy.add()</a></li>
-</ul>
-</li>
 <li class="toctree-l3"><a class="reference internal" href="#hypothesis-helpers">Hypothesis Helpers</a></li>
 </ul>
 </li>
@@ -183,16 +178,19 @@ In this section of the deep dive we are going to jump into Ivy Frontend Tests!</
 <p><strong>Writing Ivy Tests</strong></p>
 <p>The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them for testing.</p>
+<p><strong>Ivy Decorators</strong></p>
+<p>Ivy provides test decorators for frontend tests to make it easier and more maintainable, currently there are two:</p>
+<ul class="simple">
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;handle_frontend_test()</span></code> a decorator which is used to test frontend functions, for example <code class="xref py py-func docutils literal notranslate"><span class="pre">np.zeros()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">tensorflow.tan()</span></code>.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">&#64;handle_frontend_method()</span></code> a decorator which is used to test frontend methods and special methods, for example <code class="xref py py-func docutils literal notranslate"><span class="pre">torch.Tensor.add()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.ndarray.__add__()</span></code>.</p></li>
+</ul>
 <p><strong>Important Helper Functions</strong></p>
 <ul class="simple">
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">handle_cmd_line_args()</span></code> a decorator that should be added to every test function.
-For more information, visit the <a class="reference external" href="https://lets-unify.ai/ivy/deep_dive/3_function_wrapping.html">Function Wrapping</a> section of the docs.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code> helper function that is designed to do the heavy lifting and make testing Ivy Frontends easy!
 One of the many <a class="reference external" href="https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py">Function Testing Helpers</a>.
 It is used to test a frontend function for the current backend by comparing the result with the function in the associated framework.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.get_dtypes()</span></code> helper function that returns either a full list of data types or a single data type, we should <strong>always</strong> be using <cite>helpers.get_dtypes</cite> to sample data types.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.dtype_and_values()</span></code> is a convenience function that allows you to generate arrays of any dimension and their associated data types, returned as <code class="code docutils literal notranslate"><span class="pre">([dtypes],</span> <span class="pre">[np.array])</span></code>.</p></li>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.num_positional_args()</span></code> is a convenience function that specifies the number of positional arguments for a particular function.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.get_shape()</span></code> is a convenience function that allows you to generate an array shape of type <code class="code docutils literal notranslate"><span class="pre">tuple</span></code></p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.where()</span></code> a generation strategy to generate values for NumPy’s optional <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.test_frontend_function()</span></code> behaves identical to <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code> but handles NumPy’s optional <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument</p></li>
@@ -214,69 +212,69 @@ See the ‘Where to place a frontend function’ sub-section of the frontend API
 <h3>ivy.tan()<a class="headerlink" href="#ivy-tan" title="Permalink to this heading"></a></h3>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.lax.tan&quot;</span>
-    <span class="p">),</span>
-<span class="p">)</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;jax.lax.tan&quot;</span><span class="p">,</span>
+        <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
+        <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_jax_lax_tan</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">dtype_and_x</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
+        <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;lax.tan&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-    <span class="p">)</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>As you can see we generate almost everything we need to test a frontend function within the <code class="code docutils literal notranslate"><span class="pre">&#64;given</span></code> and <code class="code docutils literal notranslate"><span class="pre">&#64;handle_cmd_line_args</span></code> decorators.</p></li>
+<li><p>As you can see we generate almost everything we need to test a frontend function within the <code class="code docutils literal notranslate"><span class="pre">&#64;handle_frontend_test</span></code> decorator.</p></li>
+<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">jax.lax.tan</span></code> which is the path to the function in the Jax namespace.</p></li>
 <li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid <code class="code docutils literal notranslate"><span class="pre">float</span></code> data types specifically for Jax.</p></li>
-<li><p>We pass <code class="code docutils literal notranslate"><span class="pre">fn_name</span></code> to <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.num_positional_args()</span></code> which is used to determine the number of positional arguments for <code class="code docutils literal notranslate"><span class="pre">jax.lax.tan</span></code>.</p></li>
-<li><p>We do not generate any values for <code class="code docutils literal notranslate"><span class="pre">fw</span></code>, these values are generated by <code class="xref py py-func docutils literal notranslate"><span class="pre">handle_cmd_line_args()</span></code> and are only passed as an argument to <code class="xref py py-func docutils literal notranslate"><span class="pre">test_jax_lax_tan()</span></code>.</p></li>
+<li><p>We do not generate any values for <code class="code docutils literal notranslate"><span class="pre">as_variable</span></code>, <code class="code docutils literal notranslate"><span class="pre">native_array</span></code>, <code class="code docutils literal notranslate"><span class="pre">frontend</span></code>, <code class="code docutils literal notranslate"><span class="pre">num_positional_args</span></code>, <code class="code docutils literal notranslate"><span class="pre">on_device</span></code>, these values are generated by <code class="xref py py-func docutils literal notranslate"><span class="pre">handle_frontend_test()</span></code> and are only passed as an argument to <code class="xref py py-func docutils literal notranslate"><span class="pre">test_jax_lax_tan()</span></code>.</p></li>
 <li><p>We unpack the <code class="code docutils literal notranslate"><span class="pre">dtype_and_x</span></code> to <code class="code docutils literal notranslate"><span class="pre">input_dtype</span></code> and <code class="code docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
 <li><p>We then pass the generated values to <code class="code docutils literal notranslate"><span class="pre">helpers.test_frontend_function</span></code> which tests the frontend function.</p></li>
-<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">lax.tan</span></code> which is the path to the function in the Jax namespace.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">jax.lax.tan()</span></code> does not support <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments so we set <code class="code docutils literal notranslate"><span class="pre">with_out</span></code> to <code class="code docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
 <li><p>One last important note is that all helper functions are designed to take keyword arguments only.</p></li>
 </ul>
 <p><strong>NumPy</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_numpy/test_mathematical_functions/test_np_trigonometric_functions.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;numpy.tan&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
         <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">)</span>
     <span class="p">),</span>
-    <span class="n">dtype</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">none</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
     <span class="n">where</span><span class="o">=</span><span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">where</span><span class="p">(),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.tan&quot;</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_numpy_tan</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">,</span>
     <span class="n">where</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">with_out</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
     <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">dtype</span><span class="p">,</span> <span class="n">input_dtype</span><span class="p">,</span> <span class="n">casting</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_dtype_and_casting</span><span class="p">(</span>
+        <span class="n">dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">get_dtypes_kind</span><span class="o">=</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">where</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">native_array</span> <span class="o">=</span> <span class="n">np_frontend_helpers</span><span class="o">.</span><span class="n">handle_where_and_array_bools</span><span class="p">(</span>
         <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
         <span class="n">input_dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
@@ -289,35 +287,44 @@ See the ‘Where to place a frontend function’ sub-section of the frontend API
         <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">casting</span><span class="o">=</span><span class="n">casting</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="s2">&quot;K&quot;</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">subok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">numpy.tan</span></code> which is the path to the function in the NumPy namespace.</p></li>
 <li><p>Here we use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;numeric&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid <code class="code docutils literal notranslate"><span class="pre">numeric</span></code> data types specifically for NumPy.</p></li>
 <li><p>NumPy has an optional argument <code class="code docutils literal notranslate"><span class="pre">where</span></code> which is generated using <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.where()</span></code>.</p></li>
 <li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.tan()</span></code> supports <code class="code docutils literal notranslate"><span class="pre">out</span></code> arguments so we set generate values for <code class="code docutils literal notranslate"><span class="pre">with_out</span></code>.</p></li>
 <li><p>Using <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.handle_where_and_array_bools()</span></code> we do some processing on the generated <code class="code docutils literal notranslate"><span class="pre">where</span></code> value.</p></li>
 <li><p>Instead of <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code> we use <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.test_frontend_function()</span></code> which behaves the same but has some extra code to handle the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument.</p></li>
-<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">tan</span></code> which is the path to the function in the NumPy namespace.</p></li>
 <li><p><code class="code docutils literal notranslate"><span class="pre">casting</span></code>, <code class="code docutils literal notranslate"><span class="pre">order</span></code>, <code class="code docutils literal notranslate"><span class="pre">subok</span></code> and are other other optional arguments for <code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.tan()</span></code>.</p></li>
 </ul>
 <p><strong>TensorFlow</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_tensorflow/test_math.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="c1"># tan</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tensorflow.math.tan&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span><span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">)),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.tan&quot;</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_tensorflow_tan</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">num_positional_args</span><span class="p">,</span> <span class="n">native_array</span><span class="p">,</span> <span class="n">fw</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">num_positional_args</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
@@ -326,69 +333,59 @@ See the ‘Where to place a frontend function’ sub-section of the frontend API
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tan&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid float data types specifically for TensorFlow.</p></li>
-<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">tan</span></code> which is the path to the function in the TensorFlow namespace.</p></li>
+<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">tensorflow.math.tan</span></code> which is the path to the function in the TensorFlow namespace.</p></li>
+<li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid float data types specifically for the function.</p></li>
 </ul>
 <p><strong>PyTorch</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_non_linear_activation_functions.py</span>
-<span class="c1"># leaky_relu</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
-    <span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.nn.functional.leaky_relu&quot;</span>
-    <span class="p">),</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
-    <span class="n">with_inplace</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">(),</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_pointwise_ops.py</span>
+<span class="c1"># tan</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+<span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;torch.tan&quot;</span><span class="p">,</span>
+<span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+    <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
+        <span class="p">),</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_torch_leaky_relu</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">with_out</span><span class="p">,</span>
-    <span class="n">with_inplace</span><span class="p">,</span> <span class="c1"># does handle_cmd_line_args deals with this like with_out?</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
-        <span class="n">with_inplace</span><span class="o">=</span><span class="n">with_inplace</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;nn.functional.leaky_relu&quot;</span><span class="p">,</span>
-        <span class="nb">input</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">negative_slope</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">test_torch_tan</span><span class="p">(</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">dtype_and_x</span><span class="p">,</span>
+        <span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">with_out</span><span class="p">,</span>
+        <span class="n">num_positional_args</span><span class="p">,</span>
+        <span class="n">native_array</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+        <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
+            <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+            <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+            <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
+            <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
+            <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+            <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+            <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+            <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
+            <span class="nb">input</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid float data types specifically for PyTorch.</p></li>
-<li><p>We set <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to <code class="code docutils literal notranslate"><span class="pre">nn.functional.leaky_relu</span></code> which is the path to the function in the PyTorch namespace.</p></li>
-<li><p>We get <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> with hypothesis to test the function that supports direct inplace update in its arguments: when <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> is <code class="code docutils literal notranslate"><span class="pre">True</span></code> the function updates the <code class="code docutils literal notranslate"><span class="pre">input</span></code> argument with return value and the return value has the same reference as the input.</p></li>
-<li><p>We should set <code class="code docutils literal notranslate"><span class="pre">with_inplace</span></code> is <code class="code docutils literal notranslate"><span class="pre">True</span></code> for the special In-place versions of PyTorch functions that always do inplace update, as the <code class="code docutils literal notranslate"><span class="pre">input</span></code> argument is also updated with return value and the returned value has the same reference as the input.</p></li>
+<li><p>We use <code class="code docutils literal notranslate"><span class="pre">helpers.get_dtypes(&quot;float&quot;)</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">available_dtypes</span></code>, these are valid float data types specifically for the function.</p></li>
 </ul>
 </section>
 <section id="ivy-full">
 <h3>ivy.full()<a class="headerlink" href="#ivy-full" title="Permalink to this heading"></a></h3>
 <p>Here we are going to look at an example of a function that does not consume an <code class="code docutils literal notranslate"><span class="pre">array</span></code>.
-This is the creation
-function <code class="xref py py-func docutils literal notranslate"><span class="pre">full()</span></code>, which takes an array shape as an argument to create an array and filled with elements of a given value.
+This is the creation function <code class="xref py py-func docutils literal notranslate"><span class="pre">full()</span></code>, which takes an array shape as an argument to create an array and filled with elements of a given value.
 This function requires us to create extra functions for generating <code class="code docutils literal notranslate"><span class="pre">shape</span></code> and <code class="code docutils literal notranslate"><span class="pre">fill</span> <span class="pre">value</span></code>, these use the <code class="code docutils literal notranslate"><span class="pre">shared</span></code> hypothesis strategy.</p>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_lax_operators.py</span>
@@ -402,8 +399,8 @@ This function requires us to create extra functions for generating <code class="
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 
 
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;jax.lax.full&quot;</span><span class="p">,</span>
     <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
         <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -413,20 +410,18 @@ This function requires us to create extra functions for generating <code class="
     <span class="p">),</span>
     <span class="n">fill_value</span><span class="o">=</span><span class="n">_fill_value</span><span class="p">(),</span>
     <span class="n">dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.lax.full&quot;</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_jax_lax_full</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
@@ -434,9 +429,9 @@ This function requires us to create extra functions for generating <code class="
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;lax.full&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
         <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -461,8 +456,8 @@ This is used to specify the data type of the output array.</p></li>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;numpy.full&quot;</span><span class="p">,</span>
     <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
         <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -470,33 +465,31 @@ This is used to specify the data type of the output array.</p></li>
         <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">fill_value</span><span class="o">=</span><span class="n">_fill_value</span><span class="p">(),</span>
-    <span class="n">dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.numpy.full&quot;</span>
-    <span class="p">),</span>
+    <span class="n">input_fill_dtype</span><span class="o">=</span><span class="n">_input_fill_and_dtype</span><span class="p">(),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_numpy_full</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">,</span>
-    <span class="n">fill_value</span><span class="p">,</span>
-    <span class="n">dtypes</span><span class="p">,</span>
+    <span class="n">input_fill_dtype</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
 <span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">dtype_to_cast</span> <span class="o">=</span> <span class="n">input_fill_dtype</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
+        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="n">shape</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
-        <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span>
-        <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">fill_value</span><span class="o">=</span><span class="n">fill</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">dtype_to_cast</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -515,29 +508,27 @@ This is used to specify the data type of the output array.</p></li>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">ints</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">helpers</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">5</span><span class="p">))</span>
 
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;tensorflow.raw_ops.Fill&quot;</span><span class="p">,</span>
     <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
         <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">max_num_dims</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
         <span class="n">min_dim_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">max_dim_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
     <span class="p">),</span>
     <span class="n">fill_value</span><span class="o">=</span><span class="n">_fill_value</span><span class="p">(),</span>
-    <span class="n">dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.fill&quot;</span>
-    <span class="p">),</span>
+    <span class="n">dtypes</span><span class="o">=</span><span class="n">_dtypes</span><span class="p">(),</span>
 <span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_tensorflow_full</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">test_tensorflow_Fill</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
@@ -545,17 +536,17 @@ This is used to specify the data type of the output array.</p></li>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;fill&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
+        <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
         <span class="n">dims</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
         <span class="n">value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span>
-        <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-05</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.get_dtypes()</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, these are valid numeric data types specifically for TensorFlow.</p></li>
+<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.get_dtypes()</span></code> to generate <code class="code docutils literal notranslate"><span class="pre">dtype</span></code>, these are valid numeric data types specifically for this function.</p></li>
 <li><p>Tensorflow’s version of <code class="xref py py-func docutils literal notranslate"><span class="pre">full()</span></code> is named <code class="xref py py-func docutils literal notranslate"><span class="pre">fill()</span></code> therefore we specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> argument to be <code class="code docutils literal notranslate"><span class="pre">&quot;fill&quot;</span></code></p></li>
 <li><p>When running the test there where some small discrepancies between the values so we can use <code class="code docutils literal notranslate"><span class="pre">rtol</span></code> to specify the relative tolerance.</p></li>
 </ul>
@@ -580,8 +571,8 @@ This is used to specify the data type of the output array.</p></li>
         <span class="k">return</span> <span class="n">draw</span><span class="p">(</span><span class="n">st</span><span class="o">.</span><span class="n">booleans</span><span class="p">())</span>
 
 
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;torch.full&quot;</span><span class="p">,</span>
     <span class="n">shape</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_shape</span><span class="p">(</span>
         <span class="n">allow_none</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">min_num_dims</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -592,30 +583,24 @@ This is used to specify the data type of the output array.</p></li>
     <span class="n">fill_value</span><span class="o">=</span><span class="n">_fill_value</span><span class="p">(),</span>
     <span class="n">dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;dtype&quot;</span><span class="p">),</span>
     <span class="n">requires_grad</span><span class="o">=</span><span class="n">_requires_grad</span><span class="p">(),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.full&quot;</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_torch_full</span><span class="p">(</span>
     <span class="n">shape</span><span class="p">,</span>
     <span class="n">fill_value</span><span class="p">,</span>
     <span class="n">dtypes</span><span class="p">,</span>
     <span class="n">requires_grad</span><span class="p">,</span>
-    <span class="n">device</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">dtypes</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">as_variable_flags</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span>
         <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;full&quot;</span><span class="p">,</span>
+        <span class="n">native_array_flags</span><span class="o">=</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
         <span class="n">size</span><span class="o">=</span><span class="n">shape</span><span class="p">,</span>
         <span class="n">fill_value</span><span class="o">=</span><span class="n">fill_value</span><span class="p">,</span>
         <span class="n">dtype</span><span class="o">=</span><span class="n">dtypes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -651,39 +636,39 @@ Taking an example of <code class="xref py py-func docutils literal notranslate">
 </ul>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_comparison_ops.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_test</span><span class="p">(</span>
+    <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;torch.greater&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_inputs</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
         <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
         <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.torch.greater&quot;</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_torch_greater</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
     <span class="n">dtype_and_inputs</span><span class="p">,</span>
     <span class="n">as_variable</span><span class="p">,</span>
     <span class="n">with_out</span><span class="p">,</span>
     <span class="n">num_positional_args</span><span class="p">,</span>
     <span class="n">native_array</span><span class="p">,</span>
+    <span class="n">on_device</span><span class="p">,</span>
+    <span class="n">fn_tree</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">inputs</span> <span class="o">=</span> <span class="n">dtype_and_inputs</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_function</span><span class="p">(</span>
         <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
         <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
         <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
-        <span class="n">has_aliases</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">all_aliases</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;gt&quot;</span><span class="p">],</span>
         <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
         <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;greater&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">fn_tree</span><span class="o">=</span><span class="n">fn_tree</span><span class="p">,</span>
+        <span class="n">on_device</span><span class="o">=</span><span class="n">on_device</span><span class="p">,</span>
         <span class="nb">input</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="n">other</span><span class="o">=</span><span class="n">inputs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
@@ -695,13 +680,11 @@ Taking an example of <code class="xref py py-func docutils literal notranslate">
 </section>
 <section id="frontend-instance-method-tests">
 <h2>Frontend Instance Method Tests<a class="headerlink" href="#frontend-instance-method-tests" title="Permalink to this heading"></a></h2>
-<p>The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.</p>
+<p>The frontend instance method tests are similar to the frontend function test, but instead of testing the function directly we test the instance method of the frontend class.
+major difference is that we have more flags to pass now, most initialization functions take an array as an input. also some methods may take an array as input,
+for example, <code class="code docutils literal notranslate"><span class="pre">ndarray.__add__</span></code> would expect an array as input, despite the <code class="code docutils literal notranslate"><span class="pre">self.array</span></code>. and to make our test is <strong>complete</strong> we need to generate seperate flags for each.</p>
 <p><strong>Important Helper Functions</strong></p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_instance_method()</span></code> is used to test frontend instance methods.
-It is used in the same way as <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code>.</p>
-<p><strong>Useful Notes</strong>
-The <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_instance_method()</span></code> takes an argument <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> which is the frontend class to test.
-This is the relevant Ivy frontend class and not the native framework class.</p>
+<p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_method()</span></code> is used to test frontend instance methods. It is used in the same way as <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.test_frontend_function()</span></code>.</p>
 </section>
 <section id="frontend-instance-method-test-examples">
 <h2>Frontend Instance Method Test Examples<a class="headerlink" href="#frontend-instance-method-test-examples" title="Permalink to this heading"></a></h2>
@@ -709,216 +692,197 @@ This is the relevant Ivy frontend class and not the native framework class.</p>
 <h3>ivy.add()<a class="headerlink" href="#ivy-add" title="Permalink to this heading"></a></h3>
 <p><strong>Jax</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_method</span><span class="p">(</span>
+    <span class="n">init_name</span><span class="o">=</span><span class="s2">&quot;jax.numpy.array&quot;</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="o">=</span><span class="s2">&quot;jax.DeviceArray.__add__&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
         <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
         <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.jax.DeviceArray.add&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_jax_instance_add</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
-        <span class="n">frontend_class</span><span class="o">=</span><span class="n">DeviceArray</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;DeviceArray.add&quot;</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">other</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-    <span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_array_instance_method()</span></code> to test the instance method.</p></li>
-<li><p>We import the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.jax.DeviceArray</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
-<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">DeviceArray.add()</span></code> which is the path to the function in the frontend class.</p></li>
-</ul>
-<p><strong>NumPy</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
-        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">),</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_numpy_ndarray_add</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">init_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgFn</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgMethod</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">AsVariableFlags</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NativeArrayFlags</span><span class="p">,</span>
+    <span class="n">method_name</span><span class="p">,</span>
+    <span class="n">init_name</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+   <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
     <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_method</span><span class="p">(</span>
-        <span class="n">input_dtypes_init</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags_init</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">num_positional_args_init</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">native_array_flags_init</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">all_as_kwargs_np_init</span><span class="o">=</span><span class="p">{</span>
+        <span class="n">init_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">init_num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+        <span class="n">init_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">init_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
         <span class="p">},</span>
-        <span class="n">input_dtypes_method</span><span class="o">=</span><span class="p">[</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
-        <span class="n">as_variable_flags_method</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">num_positional_args_method</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-        <span class="n">native_array_flags_method</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">all_as_kwargs_np_method</span><span class="o">=</span><span class="p">{</span>
-            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">method_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">method_num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+        <span class="n">method_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">method_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
         <span class="p">},</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;numpy&quot;</span><span class="p">,</span>
-        <span class="n">class_name</span><span class="o">=</span><span class="s2">&quot;ndarray&quot;</span><span class="p">,</span>
-        <span class="n">method_name</span><span class="o">=</span><span class="s2">&quot;add&quot;</span><span class="p">,</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
+        <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">np_frontend_helpers.test_frontend_array_instance_method()</span></code> to test the instance method.
-This handles the <code class="code docutils literal notranslate"><span class="pre">where</span></code> argument.</p></li>
-<li><p>We import the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.numpy.ndarray</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
-<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">ndarray.add()</span></code> which is the path to the function in the frontend class.</p></li>
+<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">test_frontend_method()</span></code> to test the instance method.</p></li>
+<li><p>We specify the function that is used to initialize the array, for jax, we use <code class="code docutils literal notranslate"><span class="pre">jax.numpy.array</span></code> to create a <code class="code docutils literal notranslate"><span class="pre">DeviceArray</span></code>.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">method_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">jax.DeviceArray.__add__()</span></code> which is the path to the method in the frontend class.</p></li>
+<li><p>We must tell the decorator which flags to generate using type hints, as we don’t want to rely on the name of the parameter only, we use the type hints</p></li>
+</ul>
+<p>to tell the decorator that we should generate native array flags for <code class="code docutils literal notranslate"><span class="pre">init_as_variable_flags</span></code> by type hinting it with <code class="code docutils literal notranslate"><span class="pre">pf.NativeArrayFlags</span></code>.</p>
+<p><strong>NumPy</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py</span>
+<span class="nd">@handle_frontend_method</span><span class="p">(</span>
+    <span class="n">init_name</span><span class="o">=</span><span class="s2">&quot;array&quot;</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="o">=</span><span class="s2">&quot;numpy.ndarray.__add__&quot;</span><span class="p">,</span>
+    <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span> <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">),</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">test_numpy_instance_add__</span><span class="p">(</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">AsVariableFlags</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NativeArrayFlags</span><span class="p">,</span>
+    <span class="n">init_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgFn</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgMethod</span><span class="p">,</span>
+    <span class="n">init_name</span><span class="p">,</span>
+    <span class="n">method_name</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_method</span><span class="p">(</span>
+        <span class="n">init_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">init_num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+        <span class="n">init_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">init_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="n">method_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">method_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">method_num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+        <span class="n">method_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
+        <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We specify the function that is used to initialize the array, for NumPy, we use <code class="code docutils literal notranslate"><span class="pre">numpy.array</span></code> to create a <code class="code docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">method_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.ndarray.__add__()</span></code> which is the path to the method in the frontend class.</p></li>
 </ul>
 <p><strong>TensorFlow</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_method</span><span class="p">(</span>
+    <span class="n">init_name</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="o">=</span><span class="s2">&quot;tensorflow.EagerTensor.__add__&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">),</span>
         <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;ivy.functional.frontends.tensorflow.Tensor.add&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_tensorflow_instance_add</span><span class="p">(</span>
-    <span class="n">dtype_and_x</span><span class="p">,</span> <span class="n">as_variable</span><span class="p">,</span> <span class="n">num_positional_args</span><span class="p">,</span> <span class="n">native_array</span><span class="p">,</span> <span class="n">fw</span>
+    <span class="n">dtype_and_x</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">AsVariableFlags</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NativeArrayFlags</span><span class="p">,</span>
+    <span class="n">init_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgFn</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgMethod</span><span class="p">,</span>
+    <span class="n">init_name</span><span class="p">,</span>
+    <span class="n">method_name</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">,</span>
-        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.add&quot;</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_method</span><span class="p">(</span>
+        <span class="n">init_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">init_num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+        <span class="n">init_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">init_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="n">method_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">method_num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+        <span class="n">method_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">method_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
+        <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We import the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.tensorflow.tensor</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
-<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">Tensor.add()</span></code> which is the path to the function in the frontend class.</p></li>
+<li><p>We specify the function that is used to initialize the array, for TensorFlow, we use <code class="code docutils literal notranslate"><span class="pre">tensorflow.constant</span></code> to create a <code class="code docutils literal notranslate"><span class="pre">tensorflow.EagerTensor</span></code>.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">method_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">tensorflow.EagerTensor.__add__()</span></code> which is the path to the method in the frontend class.</p></li>
 </ul>
 <p><strong>PyTorch</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
+<span class="nd">@handle_frontend_method</span><span class="p">(</span>
+    <span class="n">init_name</span><span class="o">=</span><span class="s2">&quot;tensor&quot;</span><span class="p">,</span>
+    <span class="n">method_tree</span><span class="o">=</span><span class="s2">&quot;torch.Tensor.add&quot;</span><span class="p">,</span>
     <span class="n">dtype_and_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;valid&quot;</span><span class="p">),</span>
+        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;float&quot;</span><span class="p">),</span>
         <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="n">min_value</span><span class="o">=-</span><span class="mf">1e04</span><span class="p">,</span>
         <span class="n">max_value</span><span class="o">=</span><span class="mf">1e04</span><span class="p">,</span>
         <span class="n">allow_inf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="p">),</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mf">1e06</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">1e06</span><span class="p">,</span> <span class="n">allow_infinity</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
-    <span class="n">num_positional_args</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">num_positional_args</span><span class="p">(</span>
-        <span class="n">fn_name</span><span class="o">=</span><span class="s2">&quot;functional.frontends.torch.Tensor.add&quot;</span><span class="p">,</span>
-    <span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">st</span><span class="o">.</span><span class="n">floats</span><span class="p">(</span><span class="n">min_value</span><span class="o">=-</span><span class="mf">1e04</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mf">1e04</span><span class="p">,</span> <span class="n">allow_infinity</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
 <span class="p">)</span>
 <span class="k">def</span> <span class="nf">test_torch_instance_add</span><span class="p">(</span>
     <span class="n">dtype_and_x</span><span class="p">,</span>
     <span class="n">alpha</span><span class="p">,</span>
-    <span class="n">as_variable</span><span class="p">,</span>
-    <span class="n">with_out</span><span class="p">,</span>
-    <span class="n">num_positional_args</span><span class="p">,</span>
-    <span class="n">native_array</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
+    <span class="n">init_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgFn</span><span class="p">,</span>
+    <span class="n">method_num_positional_args</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NumPositionalArgMethod</span><span class="p">,</span>
+    <span class="n">as_variable</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">AsVariableFlags</span><span class="p">,</span>
+    <span class="n">native_array</span><span class="p">:</span> <span class="n">pf</span><span class="o">.</span><span class="n">NativeArrayFlags</span><span class="p">,</span>
+    <span class="n">method_name</span><span class="p">,</span>
+    <span class="n">init_name</span><span class="p">,</span>
+    <span class="n">frontend</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_and_x</span>
-    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_array_instance_method</span><span class="p">(</span>
-        <span class="n">input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
-        <span class="n">as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
-        <span class="n">with_out</span><span class="o">=</span><span class="n">with_out</span><span class="p">,</span>
-        <span class="n">num_positional_args</span><span class="o">=</span><span class="n">num_positional_args</span><span class="p">,</span>
-        <span class="n">native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
-        <span class="n">fw</span><span class="o">=</span><span class="n">fw</span><span class="p">,</span>
-        <span class="n">frontend</span><span class="o">=</span><span class="s2">&quot;torch&quot;</span><span class="p">,</span>
-        <span class="n">frontend_class</span><span class="o">=</span><span class="n">Tensor</span><span class="p">,</span>
-        <span class="n">fn_tree</span><span class="o">=</span><span class="s2">&quot;Tensor.add&quot;</span><span class="p">,</span>
-        <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-04</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-        <span class="n">other</span><span class="o">=</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-        <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span>
-        <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">helpers</span><span class="o">.</span><span class="n">test_frontend_method</span><span class="p">(</span>
+        <span class="n">init_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">init_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">init_num_positional_args</span><span class="o">=</span><span class="n">init_num_positional_args</span><span class="p">,</span>
+        <span class="n">init_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">init_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="n">method_input_dtypes</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">,</span>
+        <span class="n">method_as_variable_flags</span><span class="o">=</span><span class="n">as_variable</span><span class="p">,</span>
+        <span class="n">method_num_positional_args</span><span class="o">=</span><span class="n">method_num_positional_args</span><span class="p">,</span>
+        <span class="n">method_native_array_flags</span><span class="o">=</span><span class="n">native_array</span><span class="p">,</span>
+        <span class="n">method_all_as_kwargs_np</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;other&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">alpha</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">frontend</span><span class="o">=</span><span class="n">frontend</span><span class="p">,</span>
+        <span class="n">init_name</span><span class="o">=</span><span class="n">init_name</span><span class="p">,</span>
+        <span class="n">method_name</span><span class="o">=</span><span class="n">method_name</span><span class="p">,</span>
     <span class="p">)</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>We import the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">Tensor</span></code> from <code class="code docutils literal notranslate"><span class="pre">frontends.torch.tensor</span></code> and pass it to the <code class="code docutils literal notranslate"><span class="pre">frontend_class</span></code> argument.</p></li>
-<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">fn_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">Tensor.add()</span></code> which is the path to the function in the frontend class.</p></li>
-</ul>
-</section>
-</section>
-<section id="frontend-special-method-tests">
-<h2>Frontend Special Method Tests<a class="headerlink" href="#frontend-special-method-tests" title="Permalink to this heading"></a></h2>
-<p>The implementation for the frontend special method tests are somewhat a little different from how the instance methods are being tested.</p>
-<p><strong>Important Helper Function</strong></p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code> is being used to test frontend special methods.</p>
-</section>
-<section id="frontend-special-method-test-examples">
-<h2>Frontend Special Method Test Examples<a class="headerlink" href="#frontend-special-method-test-examples" title="Permalink to this heading"></a></h2>
-<section id="id1">
-<h3>ivy.add()<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
-<p><strong>Jax</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py</span>
-<span class="nd">@handle_cmd_line_args</span>
-<span class="nd">@given</span><span class="p">(</span>
-    <span class="n">dtype_x</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">dtype_and_values</span><span class="p">(</span>
-        <span class="n">available_dtypes</span><span class="o">=</span><span class="n">helpers</span><span class="o">.</span><span class="n">get_dtypes</span><span class="p">(</span><span class="s2">&quot;numeric&quot;</span><span class="p">,</span> <span class="n">full</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
-        <span class="n">shared_dtype</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">num_arrays</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-<span class="k">def</span> <span class="nf">test_jax_special_add</span><span class="p">(</span>
-    <span class="n">dtype_x</span><span class="p">,</span>
-    <span class="n">fw</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="n">input_dtype</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">dtype_x</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">DeviceArray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">DeviceArray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">ret_gt</span> <span class="o">=</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">jnp</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">input_dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-    <span class="n">ret</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret</span><span class="p">)</span>
-    <span class="n">ret_gt</span> <span class="o">=</span> <span class="n">helpers</span><span class="o">.</span><span class="n">flatten_and_to_np</span><span class="p">(</span><span class="n">ret</span><span class="o">=</span><span class="n">ret_gt</span><span class="p">)</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ret_gt</span><span class="p">):</span>
-        <span class="n">helpers</span><span class="o">.</span><span class="n">value_test</span><span class="p">(</span>
-            <span class="n">ret</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
-            <span class="n">ret_from_gt</span><span class="o">=</span><span class="n">v</span><span class="p">,</span>
-            <span class="n">ground_truth_backend</span><span class="o">=</span><span class="s2">&quot;jax&quot;</span><span class="p">,</span>
-        <span class="p">)</span>
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code> to test the special method.</p></li>
-<li><p>We use the frontend class <code class="xref py py-class docutils literal notranslate"><span class="pre">DeviceArray</span></code> to calculate jax frontend special method’s result, which is then compared to the regular frontend function’s result, when passed into the <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code>.</p></li>
-<li><p>We use <code class="xref py py-func docutils literal notranslate"><span class="pre">helpers.value_test()</span></code>,which takes an argument <code class="code docutils literal notranslate"><span class="pre">ground_truth_backend</span></code> which is the frontend that is to be tested.</p></li>
+<li><p>We specify the function that is used to initialize the array, for PyTorch, we use <code class="code docutils literal notranslate"><span class="pre">torch.tensor</span></code> to create a <code class="code docutils literal notranslate"><span class="pre">torch.Tensor</span></code>.</p></li>
+<li><p>We specify the <code class="code docutils literal notranslate"><span class="pre">method_tree</span></code> to be <code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.Tensor.__add__()</span></code> which is the path to the method in the frontend class.</p></li>
 </ul>
 </section>
 </section>
