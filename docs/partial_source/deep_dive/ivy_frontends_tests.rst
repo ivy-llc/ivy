@@ -11,6 +11,9 @@ Ivy Frontend Tests
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html
+.. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
+
 
 Introduction
 ------------
@@ -18,7 +21,7 @@ Introduction
 Just like the backend functional API, our frontend functional API has a collection of Ivy tests located in subfolder `test ivy`_.
 In this section of the deep dive we are going to jump into Ivy Frontend Tests!
 
-**Writing Ivy Tests**
+**Writing Ivy Frontend Tests**
 
 The Ivy tests in this section make use of hypothesis for performing property based testing which is documented in detail in the Ivy Tests section of the Deep Dive.
 We assume knowledge of hypothesis data generation strategies and how to implement them for testing.
@@ -783,9 +786,18 @@ Instead, we should simply import the helper function from the ivy test file into
 In cases where a helper function is uniquely useful for a frontend function without being useful for an Ivy function, then it should be implemented directly in :mod:`/ivy_tests/test_ivy/test_frontends/test_<framework>/test_<group>.py` rather than in :mod:`/ivy_tests/test_ivy/test_functional/test_core/test_<closest_relevant_group>.py`.
 However, as shown above, in many cases the same helper function can be shared between the Ivy API tests and the frontend tests, and we should strive for as much sharing as possible to minimize the amount of code.
 
+**Running Ivy Frontend Tests**
+
+The CI Pipeline runs the entire collection of Frontend Tests for the frontend that is being updated on every push to the repo.
+
+You will need to make sure the Frontend Test is passing for each Ivy Frontend function you introduce/modify.
+If a test fails on the CI, you can see details about the failure under `Details -> Run Frontend Tests` as shown in `CI Pipeline`_.
+
+You can also run the tests locally before making a PR. See the relevant `setting up`_ section for instructions on how to do so.
+
 
 **Round Up**
 
-These examples have hopefully given you a good understanding of Ivy Frontend Tests!
+This should have hopefully given you a good understanding of Ivy Frontend Tests!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends tests channel`_ or in the `ivy frontends tests forum`_!
