@@ -4,9 +4,8 @@ import os  # noqa
 import bz2
 import _pickle as cPickle
 import sys
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
-BACKENDS = available_frameworks
+BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
 
 
 def get_all_tests():
