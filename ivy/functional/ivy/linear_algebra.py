@@ -1573,15 +1573,23 @@ def slogdet(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Examples
-    --------
+    Functional Examples
+    -------------------
+
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.array([[1.0, 2.0],
+    >>> x = ivy.array([[2.0, 1.0],
     ...                [3.0, 4.0]])
     >>> y = ivy.slogdet(x)
     >>> print(y)
-    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+    slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.609438))
+
+    >>> x = ivy.array([[1.2, 2.0, 3.1],
+    ...                [6.0, 5.2, 4.0],
+    ...                [9.0, 8.0, 7.0]])
+    >>> y = ivy.slogdet(x)
+    >>> print(y)
+    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
 
     With :class:`ivy.Container` input:
 
@@ -1592,8 +1600,14 @@ def slogdet(
     >>> y = ivy.slogdet(x)
     >>> print(y)
     {
-        a: (list[2], <class ivy.array.array.Array> shape=[]),
-        b: (list[2], <class ivy.array.array.Array> shape=[])
+        a: [
+            sign = ivy.array(-1.),
+            logabsdet = ivy.array(0.6931472)
+        ],
+        b: [
+            sign = ivy.array(-1.),
+            logabsdet = ivy.array(1.0986123)
+        ]
     }
 
 
