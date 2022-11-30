@@ -54,12 +54,13 @@
 <li class="toctree-l3"><a class="reference internal" href="#dockerless-doc-building">Dockerless Doc-building</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#using-miniconda">Using miniconda</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#using-venv">Using venv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Building the docs</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#working-of-the-documentation-building-pipeline">Working of the Documentation Building Pipeline</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#make-docs-sh">make_docs.sh:</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#entrypoint-sh">entrypoint.sh:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">_make_docs.sh:</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">_make_docs.sh:</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#generate-src-rst-files-py">generate_src_rst_files.py:</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sphinx-build-py">sphinx-build.py</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#correct-built-html-files-py">correct_built_html_files.py</a></li>
@@ -287,6 +288,9 @@ After cloning repos, we need to create a virtual environment using either <a cla
 </div></blockquote>
 </li>
 </ol>
+</section>
+<section id="id1">
+<h3>Building the docs<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
 <p>After setting up the virtual environment, we can build the documentation locally.
 Move to the <code class="code docutils literal notranslate"><span class="pre">ivy/docs</span></code> folder in a terminal and execute the following command to build the docs from inside the virtual environment.</p>
 <ol class="arabic">
@@ -334,8 +338,8 @@ It uses the unifyai/doc-builder:latest image and creates a container for documen
 It installs the requirements, synchronizes the container’s folder with the project’s build folder.
 It is responsible for executing the rest of the pipeline as it runs the <code class="code docutils literal notranslate"><span class="pre">_make_docs.sh</span></code> and <code class="code docutils literal notranslate"><span class="pre">remove_docs.sh</span></code> files.</p>
 </section>
-<section id="id1">
-<h3>_make_docs.sh:<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h3>
+<section id="id2">
+<h3>_make_docs.sh:<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
 <div class="line-block">
 <div class="line">This file contains commands for executing files involved in generation of the documentation. _ at the start is to indicate that this is a privately accessed file.</div>
 <div class="line">This file fulfils the following purpose</div>
