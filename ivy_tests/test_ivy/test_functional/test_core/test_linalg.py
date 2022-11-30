@@ -461,7 +461,7 @@ def test_eigh(
     if results is None:
         return
     ret_np_flat, ret_from_np_flat = results
- 
+
     reconstructed_np = None
     for i in range(len(ret_np_flat) // 2):
         eigenvalue = ret_np_flat[i * 2]
@@ -474,7 +474,7 @@ def test_eigh(
             reconstructed_np = eigenvalue * np.matmul(
                 eigenvector.reshape(1, -1), eigenvector.reshape(-1, 1)
             )
-    
+
     reconstructed_from_np = None
     for i in range(len(ret_from_np_flat) // 2):
         eigenvalue = ret_from_np_flat[i * 2]
@@ -1203,7 +1203,7 @@ def test_qr(
     )
     if results is None:
         return
-    
+
     ret_np_flat, ret_from_np_flat = results
     for i in range(len(ret_np_flat) // 2):
         q_np_flat = ret_np_flat[i * 2]
@@ -1285,7 +1285,7 @@ def test_svd(
         m = U.shape[-1]
         n = Vh.shape[-1]
         S = np.expand_dims(S, -2) if m > n else np.expand_dims(S, -1)
-        
+
         for i in range(len(ret_from_gt_flat_np) // 3):
             U_gt = ret_from_gt_flat_np[i * 3]
             S_gt = ret_from_gt_flat_np[i * 3 + 1]
