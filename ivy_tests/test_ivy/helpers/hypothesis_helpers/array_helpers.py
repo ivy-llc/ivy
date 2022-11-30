@@ -740,7 +740,7 @@ def array_values(
                             -abs_smallest_val, floats_info[dtype]["width"]
                         ),
                         allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
+                        # allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
                         width=floats_info[dtype]["width"],
                         exclude_min=exclude_min,
@@ -752,7 +752,7 @@ def array_values(
                         ),
                         max_value=float_of(max_value, floats_info[dtype]["width"]),
                         allow_nan=allow_nan,
-                        allow_subnormal=allow_subnormal,
+                        # allow_subnormal=allow_subnormal,
                         allow_infinity=allow_inf,
                         width=floats_info[dtype]["width"],
                         exclude_min=exclude_min,

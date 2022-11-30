@@ -168,6 +168,7 @@ def test_numpy_std(
     dtype_and_a=statistical_dtype_values(function="average"),
     dtype_and_x=statistical_dtype_values(function="average"),
     keep_dims=st.booleans(),
+    returned=st.booleans()
 )
 def test_numpy_average(
         dtype_and_a,
@@ -178,6 +179,7 @@ def test_numpy_average(
         frontend,
         fn_tree,
         keep_dims,
+        returned,
         on_device
 ):
     try:
@@ -200,6 +202,7 @@ def test_numpy_average(
             frontend=frontend,
             fn_tree=fn_tree,
             keepdims=keep_dims,
+            returned=returned,
             on_device=on_device,
         )
     except ZeroDivisionError:
