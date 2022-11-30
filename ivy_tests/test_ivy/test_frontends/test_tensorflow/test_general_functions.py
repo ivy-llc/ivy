@@ -3,6 +3,7 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
@@ -221,6 +222,104 @@ def test_tensorflow_einsum(
         on_device=on_device,
         equation=eq,
         **kw,
+    )
+
+
+@st.composite
+def _constant_helper(draw):
+    x_dtype = draw(helpers.get_dtypes("valid", full=False))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=st.shared(helpers.get_shape(), key="value_shape"),
+        ),
+    )
+    to_shape = draw(
+        helpers.reshape_shapes(
+            shape=st.shared(helpers.get_shape(), key="value_shape")
+        ),
+    )
+    cast_dtype = x_dtype[0]  # draw(
+    #     helpers.get_dtypes("valid", full=False)
+    #     .map(lambda t: t[0])
+    #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
+    # )
+    return x_dtype, x, cast_dtype, to_shape
+
+
+# constant
+@handle_frontend_test(
+    fn_tree="tensorflow.constant",
+    all_args=_constant_helper(),
+)
+def test_tensorflow_constant(
+    *,
+    all_args,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, cast_dtype, to_shape = all_args
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        dtype=cast_dtype,
+        shape=to_shape,
+    )
+
+
+@st.composite
+def _convert_to_tensor_helper(draw):
+    x_dtype = draw(helpers.get_dtypes("valid", full=False))
+    x_dtype, x = draw(helpers.dtype_and_values(dtype=x_dtype,))
+    cast_dtype = x_dtype[0]  # draw(
+    #     helpers.get_dtypes("valid", full=False)
+    #     .map(lambda t: t[0])
+    #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
+    # )
+    return x_dtype, x, cast_dtype
+
+
+# convert_to_tensor
+@handle_frontend_test(
+    fn_tree="tensorflow.convert_to_tensor",
+    dtype_x_cast=_convert_to_tensor_helper(),
+    dtype_hint=helpers.get_dtypes("valid", full=False),
+)
+def test_tensorflow_convert_to_tensor(
+    *,
+    dtype_x_cast,
+    dtype_hint,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, cast_dtype = dtype_x_cast
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        dtype=cast_dtype,
+        dtype_hint=dtype_hint[0],
     )
 
 
