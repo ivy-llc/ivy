@@ -49,7 +49,7 @@ def get_submodule(test_path):
                 coll = db_dict[name]
     submod_test = test_path[-1]
     submod, test_fn = submod_test.split("::")
-    submod = submod.rstrip(".py").lstrip("test_")
+    submod = submod.replace("test_", "").replace(".py", "")
     return coll, submod, test_fn
 
 
