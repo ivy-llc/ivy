@@ -157,9 +157,11 @@ def dtypes_x_reshape(draw):
     init_name="array",
     method_tree="numpy.ndarray.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
+    order=st.sampled_from(["C", "F", "A"]),
 )
 def test_numpy_ndarray_reshape(
     dtypes_x_shape,
+    order,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -183,6 +185,7 @@ def test_numpy_ndarray_reshape(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
             "newshape": shape,
+            "order": order,
         },
         frontend=frontend,
         init_name=init_name,
