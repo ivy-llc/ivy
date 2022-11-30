@@ -12,11 +12,7 @@ class Tensor:
         )
 
     def __repr__(self):
-        return (
-            "ivy.functional.frontends.torch.Tensor("
-            + str(ivy.to_list(self._ivy_array))
-            + ")"
-        )
+        return "ivy.frontends.torch.Tensor(" + str(ivy.to_list(self._ivy_array)) + ")"
 
     # Properties #
     # ---------- #
@@ -52,6 +48,9 @@ class Tensor:
     def asin_(self):
         self._ivy_array = self.asin().ivy_array
         return self
+
+    def sum(self):
+        return torch_frontend.sum(self._ivyArray)
 
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
