@@ -582,7 +582,6 @@
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])</span>
 
-
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),</span>
@@ -590,27 +589,6 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.asin(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([-1, -0.5, 0.6, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.asin()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([-1.57,-0.524,0.644,1.57])</span>
-
-<span class="sd">    Using :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),b=ivy.array([0.3, 0.4, 0.5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x.asin()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a:ivy.array([0.,0.1,0.201]),</span>
-<span class="sd">        b:ivy.array([0.305,0.412,0.524])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -2770,25 +2748,6 @@
 <span class="sd">        a: ivy.array([True, True]),</span>
 <span class="sd">        b: ivy.array([True, False])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    With :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[9, float(&#39;-0&#39;)], [ivy.nan, ivy.inf]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.isfinite()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([[ True,  True],</span>
-<span class="sd">        [False, False]])</span>
-
-<span class="sd">    With :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 999999999999]),</span>
-<span class="sd">    ...                   b=ivy.array([float(&#39;-0&#39;), ivy.nan]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x.isfinite()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([True, True]),</span>
-<span class="sd">        b: ivy.array([True, False])</span>
-<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -2877,34 +2836,6 @@
 <span class="sd">        b: ivy.array([True, False, False])</span>
 <span class="sd">    }</span>
 
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    With :class:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; x.isinf()</span>
-<span class="sd">    ivy.array([False, False, False])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isinf()</span>
-<span class="sd">    ivy.array([[False, False, False]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [float(&#39;inf&#39;)], [-6.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isinf()</span>
-<span class="sd">    ivy.array([[[False],[True],[False]]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-float(&#39;inf&#39;), float(&#39;inf&#39;), 0.0]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isinf()</span>
-<span class="sd">    ivy.array([[ True, True, False]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.zeros((3, 3))</span>
-<span class="sd">    &gt;&gt;&gt; x.isinf()</span>
-<span class="sd">    ivy.array([[False, False, False],</span>
-<span class="sd">        [False, False, False],</span>
-<span class="sd">        [False, False, False]])</span>
-
-
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]),</span>
@@ -2914,21 +2845,6 @@
 <span class="sd">        a: ivy.array([False, True, False]),</span>
 <span class="sd">        b: ivy.array([True, False, False])</span>
 <span class="sd">    }</span>
-
-
-<span class="sd">    Container Static Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;inf&#39;), 1.23]),</span>
-<span class="sd">    ...                   b=ivy.array([float(&#39;inf&#39;), 3.3, -4.2]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_isinf(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([True, False, False])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
