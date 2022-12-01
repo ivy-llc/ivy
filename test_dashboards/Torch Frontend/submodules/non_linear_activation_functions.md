@@ -1,0 +1,4 @@
+|                      | torch                                                                                                                                                                  |
+|                      |                                                                                                                                                                        |
+|:---------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_torch_normalize | <a href="https://github.com/unifyai/ivy/actions/runs/3594695463" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
