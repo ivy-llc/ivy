@@ -3386,8 +3386,8 @@ def logical_not(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x=ivy.array([1,0,1,1,0])
@@ -3422,36 +3422,6 @@ def logical_not(
         a: ivy.array([False, True, False, True]),
         b: ivy.array([False, False, True, False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x=ivy.array([0,1,1,0])
-    >>> x.logical_not()
-    ivy.array([ True, False, False,  True])
-
-    >>> x=ivy.array([2,0,3,9])
-    >>> x.logical_not()
-    ivy.array([False,  True, False, False])
-
-    With :class:`ivy.Container` input:
-
-    >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
-    >>> x.logical_not()
-    {
-        a: ivy.array([False, True, True, False]),
-        b: ivy.array([False, False, False, True])
-    }
-
-    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
-    >>> x.logical_not()
-    {
-        a: ivy.array([False, True, False, True]),
-        b: ivy.array([False, False, True, False])
-    }
-
     """
     return ivy.current_backend(x).logical_not(x, out=out)
 
@@ -3535,38 +3505,6 @@ def logical_or(
     >>> y = ivy.Container(a=ivy.array([False, True, False]),
     ...                   b=ivy.array([True, True, False]))
     >>> z = ivy.logical_or(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, True]),
-        b: ivy.array([True, True, True])
-    }
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([False, 3, 0])
-    >>> y = ivy.array([2, True, False])
-    >>> z = x.logical_or(y)
-    >>> print(z)
-    ivy.array([ True,  True, False])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
-    >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
-    >>> z = x.logical_or(y)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, True]),
-        b: ivy.array([True, True, True])
-    }
-
-    With :class:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([False, False, True]),
-    ...                   b=ivy.array([True, False, True]))
-    >>> y = ivy.Container(a=ivy.array([False, True, False]),
-    ...                   b=ivy.array([True, True, False]))
-    >>> z = ivy.Container.static_logical_or(x, y)
     >>> print(z)
     {
         a: ivy.array([False, True, True]),
