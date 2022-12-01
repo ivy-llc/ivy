@@ -8,17 +8,17 @@ try:
     import tensorflow as tf
 except ImportError:
     tf = types.SimpleNamespace()
-    tf.constant = lambda x : x
+    tf.constant = lambda x: x
 try:
-    import torch 
+    import torch
 except ImportError:
     torch = types.SimpleNamespace()
-    torch.tensor = lambda x : x
+    torch.tensor = lambda x: x
 try:
     import jax.numpy as jnp
 except ImportError:
     jnp = types.SimpleNamespace()
-    jnp.array = lambda x : x
+    jnp.array = lambda x: x
 
 import numpy as np
 
@@ -38,7 +38,7 @@ available_array_types_class = [
 available_array_types_input = [
     ("numpy", np.array(3.0)),
 ]
-    
+
 if "tensorflow" in available_frameworks:
     available_array_types_input.append(("tensorflow", tf.constant([3.0])))
     available_array_types_class.append(
@@ -54,9 +54,7 @@ if "jax" in available_frameworks:
 
 if "torch" in available_frameworks:
     available_array_types_input.append(("torch", torch.tensor([3.0])))
-    available_array_types_class.append(
-        ("torch", "<class 'torch.Tensor'>")
-    )
+    available_array_types_class.append(("torch", "<class 'torch.Tensor'>"))
 
 
 @pytest.mark.parametrize(
@@ -128,22 +126,21 @@ def test_current_backend(backend, array_type):
     # test backend inference from arguments when stack clear
     ivy.clear_backend_stack()
     ivy.assertions.check_equal(
-        ivy.current_backend(array_type), 
-        importlib.import_module(_backend_dict[backend])
+        ivy.current_backend(array_type), importlib.import_module(_backend_dict[backend])
     )
 
     # global_backend > argument's backend.
     if "torch" in available_frameworks:
         ivy.set_backend("torch")
         ivy.assertions.check_equal(
-            ivy.current_backend(array_type), 
-            importlib.import_module(_backend_dict["torch"])
+            ivy.current_backend(array_type),
+            importlib.import_module(_backend_dict["torch"]),
         )
     else:
         ivy.set_backend("numpy")
         ivy.assertions.check_equal(
-            ivy.current_backend(array_type), 
-            importlib.import_module(_backend_dict["numpy"])
+            ivy.current_backend(array_type),
+            importlib.import_module(_backend_dict["numpy"]),
         )
 
 
