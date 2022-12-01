@@ -163,7 +163,7 @@ def huber_loss(
 
     loss = ivy.where(_diff_abs < delta,  # If |xᵢ - yᵢ| < δ
                      0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
-                     delta * (_diff_abs - 0.5*delta))  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
+                     delta * (_diff_abs - 0.5 * delta))  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
 
     reduction = _get_reduction(reduction)
     ret = reduction(loss)
