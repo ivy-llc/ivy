@@ -2958,6 +2958,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the rounded result for each element in ``x``. The
             returned array must have the same data type as ``x``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = ivy.Container.static_floor(x)
+        >>> print(y)
+        {
+            a: ivy.array([2., 0., -2.]),
+            b: ivy.array([5., -4., 5.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "floor",
