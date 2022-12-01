@@ -1584,9 +1584,8 @@ def cosh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4])
@@ -1610,22 +1609,10 @@ def cosh(
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
     >>> y = ivy.cosh(x)
     >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> y = x.cosh()
-    >>> print(y)
-    ivy.array([1.54,3.76,10.1])
-
-    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
-    >>> y = x.cosh()
-    >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
+    {
+        a:ivy.array([1.54,3.76,10.1]),
+        b:ivy.array([202.,548.,1490.])
+    }
     """
     return ivy.current_backend(x).cosh(x, out=out)
 
@@ -4781,8 +4768,8 @@ def sqrt(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 4., 8.])
@@ -4809,28 +4796,6 @@ def sqrt(
         b: ivy.array([[7., 1.],
                       [0., 4.47]])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[1., 2.],  [3., 4.]])
-    >>> y = x.sqrt()
-    >>> print(y)
-    ivy.array([[1.  , 1.41],
-               [1.73, 2.  ]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
-    >>> y = x.sqrt()
-    >>> print(y)
-    {
-        a: ivy.array([0., 10., 5.2]),
-        b: ivy.array([9.64, 7.35, 5.])
-    }
-
     """
     return ivy.current_backend(x).sqrt(x, out=out)
 
