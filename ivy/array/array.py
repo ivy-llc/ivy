@@ -588,6 +588,41 @@ class Array(
         return ivy.equal(self._data, other)
 
     def __ne__(self, other):
+        """
+        ivy.Array special method variant of ivy.not_equal. This method
+        simply wraps the function, and so the docstring for ivy.not_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. May have any data type.
+        other
+            second input array. Must be compatible with x1 (with Broadcasting). May have any
+            data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instances:
+
+        >>> x1 = ivy.array([1, 0, 1, 1])
+        >>> x2 = ivy.array([1, 0, 0, -1])
+        >>> y = x1 != x2
+        >>> print(y)
+        ivy.array([False, False, True, True])
+
+        >>> x1 = ivy.array([1, 0, 1, 0])
+        >>> x2 = ivy.array([0, 1, 0, 1])
+        >>> y = x1 != x2
+        >>> print(y)
+        ivy.array([True, True, True, True])
+        """
         return ivy.not_equal(self._data, other)
 
     def __gt__(self, other):
