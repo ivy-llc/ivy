@@ -533,14 +533,17 @@ def test_frontend_function(
 
         if "torch" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+
             convs["torch"] = convtorch
 
         if "tensorflow" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+
             convs["tensorflow"] = convtensor
 
         if "jax" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+
             convs["jax"] = convjax
 
         if frontend in convs:
