@@ -788,6 +788,7 @@ def nested_map(
     _list_check_fn: Optional[Callable] = None,
     _dict_check_fn: Optional[Callable] = None,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
+    inplace: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -869,6 +870,7 @@ def nested_map(
                 list_check_fn,
                 dict_check_fn,
                 extra_nest_types,
+                inplace,
             )
             for i in x
         ]
@@ -881,43 +883,50 @@ def nested_map(
             return class_instance(ret_list)
     elif list_check_fn(x, list) or isinstance(x, extra_nest_types):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
-            return fn(x)
-        return class_instance(
-            [
-                nested_map(
-                    i,
-                    fn,
-                    include_derived,
-                    to_mutable,
-                    max_depth,
-                    _depth + 1,
-                    tuple_check_fn,
-                    list_check_fn,
-                    dict_check_fn,
-                    extra_nest_types,
-                )
-                for i in x
-            ]
-        )
+            ret = fn(x)
+            if inplace:
+                return ivy.inplace_update(x, ret)
+            return ret
+        ret_list = [
+            nested_map(
+                i,
+                fn,
+                include_derived,
+                to_mutable,
+                max_depth,
+                _depth + 1,
+                tuple_check_fn,
+                list_check_fn,
+                dict_check_fn,
+                extra_nest_types,
+                inplace,
+            )
+            for i in x
+        ]
+        if inplace:
+            x[:] = ret_list[:]
+        return class_instance(ret_list)
     elif dict_check_fn(x, dict):
         class_instance = type(x)
-        return class_instance(
-            {
-                k: nested_map(
-                    v,
-                    fn,
-                    include_derived,
-                    to_mutable,
-                    max_depth,
-                    _depth + 1,
-                    tuple_check_fn,
-                    list_check_fn,
-                    dict_check_fn,
-                    extra_nest_types,
-                )
-                for k, v in x.items()
-            }
-        )
+        ret = {
+            k: nested_map(
+                v,
+                fn,
+                include_derived,
+                to_mutable,
+                max_depth,
+                _depth + 1,
+                tuple_check_fn,
+                list_check_fn,
+                dict_check_fn,
+                extra_nest_types,
+                inplace,
+            )
+            for k, v in x.items()
+        }
+        if inplace:
+            x.update(ret)
+        return class_instance(ret)
     return fn(x)
 
 
