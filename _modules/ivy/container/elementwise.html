@@ -2309,6 +2309,17 @@
 <span class="sd">        ret</span>
 <span class="sd">            an container containing the rounded result for each element in ``x``.</span>
 <span class="sd">            The returned array must have the same data type as ``x``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),</span>
+<span class="sd">        ...                   b=ivy.array([5.4, -3.2, 5.2]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_ceil(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([3., 1., -1.]),</span>
+<span class="sd">            b: ivy.array([6., -3., 6.])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;ceil&quot;</span><span class="p">,</span>
