@@ -1076,6 +1076,39 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.isnan()
+        ivy.array([False, False, False])
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> x.isnan()
+        ivy.array([[False, False, False]])
+
+        >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+        >>> x.isnan()
+        ivy.array([[[False],
+                [False],
+                [False]]])
+
+        >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
+        >>> x.isnan()
+        ivy.array([[ True, True, False]])
+
+        >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
+        >>> x.isnan()
+        ivy.array([[ True, False,  True, False]])
+
+        >>> x = ivy.zeros((3, 3))
+        >>> x.isnan()
+        ivy.array([[False, False, False],
+            [False, False, False],
+            [False, False, False]])
+
         """
         return ivy.isnan(self._data, out=out)
 
@@ -1255,7 +1288,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([0.693, 1.1  , 1.39 ])
 
         >>> x = ivy.array([0.1 , .001 ])
-        >>> x.log1p( out = x)
+        >>> x.log1p(out = x)
         >>> print(x)
         ivy.array([0.0953, 0.001 ])
 
