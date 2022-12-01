@@ -323,6 +323,9 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def permute(self, dims):
+        return torch_frontend.permute(self, dims)
+
     # Special Methods #
     # -------------------#
 
