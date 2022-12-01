@@ -2729,7 +2729,6 @@ def isnan(
        [False, False, False]])
 
 
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
@@ -2740,64 +2739,6 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> x.isnan()
-    ivy.array([False, False, False])
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> x.isnan()
-    ivy.array([[False, False, False]])
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> x.isnan()
-    ivy.array([[[False],
-            [False],
-            [False]]])
-
-    >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, True, False]])
-
-    >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, False,  True, False]])
-
-    >>> x = ivy.zeros((3, 3))
-    >>> x.isnan()
-    ivy.array([[False, False, False],
-        [False, False, False],
-        [False, False, False]])
-
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> x.isnan()
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
-    Container Static Method Examples
-    ------------------------
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> z = ivy.Container.static_isnan(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -3116,19 +3057,14 @@ def log1p(
     ivy.array([0.   , 0.693])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],[4.4, 5.5, 6.6]])
-    >>> ivy.log1p(x , out = x)
+    >>> ivy.log1p(x, out = x)
     >>> print(x)
     ivy.array([[0.742, 1.16 , 1.46 ],[1.69 , 1.87 , 2.03 ]])
-
-    >>> x = ivy.array([1e-9] , dtype = ivy.float32)
-    >>> y = x.log1p()
-    >>> print(y)
-    ivy.array([1.e-09])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
-    >>> y = ivy.Container.static_log1p(x)
+    >>> y = ivy.log1p(x)
     >>> print(y)
     {
         a: ivy.array([0., 0.693, 1.1]),
