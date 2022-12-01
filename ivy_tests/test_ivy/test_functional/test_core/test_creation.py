@@ -27,6 +27,7 @@ def test_native_array(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
@@ -43,6 +44,7 @@ def test_native_array(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -80,6 +82,7 @@ def test_linspace(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
@@ -101,6 +104,7 @@ def test_linspace(
         axis=axis,
         device=on_device,
         dtype=dtype[0],
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -139,6 +143,7 @@ def test_logspace(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, start_stop = dtype_and_start_stop
     helpers.test_function(
@@ -160,6 +165,7 @@ def test_logspace(
         base=base,
         axis=axis,
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -184,6 +190,7 @@ def test_arange(
     with_out,
     backend_fw,
     fn_name,
+    ground_truth_backend,
     on_device,
 ):
     helpers.test_function(
@@ -202,6 +209,7 @@ def test_arange(
         step=step,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -229,6 +237,7 @@ def test_asarray(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
 
@@ -255,6 +264,7 @@ def test_asarray(
         object_in=x,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -282,6 +292,7 @@ def test_empty(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     ret = helpers.test_function(
         input_dtypes=dtype,
@@ -298,6 +309,7 @@ def test_empty(
         dtype=dtype[0],
         device=on_device,
         test_values=False,
+        ground_truth_backend=ground_truth_backend,
     )
     if not ivy.exists(ret):
         return
@@ -331,6 +343,7 @@ def test_empty_like(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     ret = helpers.test_function(
@@ -348,6 +361,7 @@ def test_empty_like(
         dtype=dtype[0],
         device=on_device,
         test_values=False,
+        ground_truth_backend=ground_truth_backend,
     )
     if not ivy.exists(ret):
         return
@@ -384,6 +398,7 @@ def test_eye(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
         input_dtypes=dtype,
@@ -402,6 +417,7 @@ def test_eye(
         batch_shape=batch_shape,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -427,6 +443,7 @@ def test_from_dlpack(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -441,6 +458,7 @@ def test_from_dlpack(
         fw=backend_fw,
         fn_name=fn_name,
         x=x[0],
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -482,6 +500,7 @@ def test_full(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
         input_dtypes=dtypes,
@@ -498,6 +517,7 @@ def test_full(
         fill_value=fill_value,
         dtype=dtypes[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -533,6 +553,7 @@ def test_full_like(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -550,6 +571,7 @@ def test_full_like(
         fill_value=fill_value,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -578,6 +600,7 @@ def test_meshgrid(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, arrays = dtype_and_arrays
     kw = {}
@@ -602,6 +625,7 @@ def test_meshgrid(
         **kw,
         sparse=sparse,
         indexing=indexing,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -629,6 +653,7 @@ def test_ones(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
         input_dtypes=dtype,
@@ -644,6 +669,7 @@ def test_ones(
         shape=shape,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -671,6 +697,7 @@ def test_ones_like(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -687,6 +714,7 @@ def test_ones_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -715,6 +743,7 @@ def test_tril(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
 
@@ -731,6 +760,7 @@ def test_tril(
         fn_name=fn_name,
         x=x[0],
         k=k,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -758,6 +788,7 @@ def test_triu(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
 
@@ -774,6 +805,7 @@ def test_triu(
         fn_name=fn_name,
         x=x[0],
         k=k,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -801,6 +833,7 @@ def test_zeros(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     helpers.test_function(
         input_dtypes=dtype,
@@ -816,6 +849,7 @@ def test_zeros(
         shape=shape,
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -841,6 +875,7 @@ def test_zeros_like(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
@@ -857,6 +892,7 @@ def test_zeros_like(
         x=x[0],
         dtype=dtype[0],
         device=on_device,
+        ground_truth_backend=ground_truth_backend,
     )
 
 
@@ -870,6 +906,7 @@ def test_copy_array(
     *,
     dtype_and_x,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     # smoke test
@@ -930,6 +967,7 @@ def test_one_hot(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, indices, depth, axis = dtype_indices_depth_axis
     on_value, off_value, dtype = on_off_dtype
@@ -950,4 +988,5 @@ def test_one_hot(
         off_value=off_value,
         axis=axis,
         dtype=dtype,
+        ground_truth_backend=ground_truth_backend,
     )

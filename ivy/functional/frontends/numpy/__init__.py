@@ -4,7 +4,6 @@ from ivy.exceptions import handle_exceptions
 from typing import Union, Iterable, Tuple
 from numbers import Number
 
-# from .linalg.norms_and_other_numbers import trace
 from ivy import (
     int8,
     int16,
@@ -256,6 +255,6 @@ from .linalg.matrix_and_vector_products import (
 from .linalg.decompositions import cholesky, qr, svd
 
 
-from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm
+from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
 
 from .linalg.solving_equations_and_inverting_matrices import pinv, inv, solve

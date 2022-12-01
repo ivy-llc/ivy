@@ -103,9 +103,11 @@ def test_torch_flip(
     ),
     shift=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
     ),
     axis=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        force_tuple=True,
     ),
 )
 def test_torch_roll(
@@ -189,7 +191,7 @@ def test_torch_fliplr(
         max_axes_size=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_torch_cumsum(
     *,
@@ -215,7 +217,7 @@ def test_torch_cumsum(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -265,6 +267,7 @@ def test_torch_diagonal(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["diagonal"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -363,12 +366,14 @@ def test_torch_triu(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-100,
+        max_value=100,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
         force_int_axis=True,
     ),
-    dtype=helpers.get_dtypes("numeric", none=True),
+    dtype=helpers.get_dtypes("numeric", none=True, full=False),
 )
 def test_torch_cumprod(
     *,
@@ -394,7 +399,7 @@ def test_torch_cumprod(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -437,14 +442,14 @@ def test_torch_trace(
     row=st.integers(min_value=0, max_value=10),
     col=st.integers(min_value=0, max_value=10),
     offset=st.integers(),
-    dtype_result=helpers.get_dtypes("valid"),
+    dtype=helpers.get_dtypes("valid", none=True, full=False),
 )
 def test_torch_tril_indices(
     *,
     row,
     col,
     offset,
-    dtype_result,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -465,7 +470,7 @@ def test_torch_tril_indices(
         row=row,
         col=col,
         offset=offset,
-        dtype=dtype_result,
+        dtype=dtype[0],
     )
 
 
@@ -763,7 +768,7 @@ def test_torch_repeat_interleave(
     dtype, values, repeats, axis, output_size = dtype_values_repeats_axis_output_size
 
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=dtype[0],
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -771,8 +776,8 @@ def test_torch_repeat_interleave(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=values,
-        repeats=repeats,
+        input=values[0],
+        repeats=repeats[0],
         dim=axis,
         output_size=output_size,
     )
@@ -956,7 +961,6 @@ def test_torch_einsum(
     dtype,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     on_device,
     fn_tree,
@@ -1047,7 +1051,7 @@ def dtype_value1_value2_axis(
 
 
 @handle_frontend_test(
-    fn_tree="torch.einsum",
+    fn_tree="torch.cross",
     dtype_input_other_dim=dtype_value1_value2_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,

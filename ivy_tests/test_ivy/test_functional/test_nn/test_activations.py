@@ -31,9 +31,11 @@ def test_relu(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -74,9 +76,11 @@ def test_leaky_relu(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -120,9 +124,11 @@ def test_gelu(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -164,9 +170,11 @@ def test_sigmoid(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -210,9 +218,11 @@ def test_softmax(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -259,11 +269,13 @@ def test_softplus(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     assume(beta != 0)
     assume(threshold != 0)
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -309,9 +321,11 @@ def test_log_softmax(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

@@ -239,7 +239,10 @@ class Array(
     def __repr__(self):
         sig_fig = ivy.array_significant_figures()
         dec_vals = ivy.array_decimal_values()
-        arr_np = ivy.get_backend(self.backend).to_numpy(self._data)
+        backend = (
+            ivy.get_backend(self.backend) if self.backend else ivy.current_backend()
+        )
+        arr_np = backend.to_numpy(self._data)
         rep = ivy.vec_sig_fig(arr_np, sig_fig) if self._size > 0 else np.array(arr_np)
         with np.printoptions(precision=dec_vals):
             return (

@@ -98,9 +98,11 @@ def test_stop_gradient(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -139,6 +141,7 @@ def test_execute_with_gradients(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     def func(xs):
         if isinstance(xs, ivy.Container):
@@ -155,6 +158,7 @@ def test_execute_with_gradients(
 
     dtype, xs = dtype_and_xs
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -269,11 +273,10 @@ def test_grad(x, dtype, func, backend_fw):
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(
         num_arrays=3,
         no_lr=True,
-        min_value=-1e08,
+        min_value=1e-05,
         max_value=1e08,
-        abs_smallest_val=1e-05,
-        large_abs_safety_factor=2.0,
-        small_abs_safety_factor=2.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
     ),
     step=helpers.ints(min_value=1, max_value=3),
     beta1_n_beta2_n_epsilon=helpers.lists(
@@ -295,6 +298,7 @@ def test_adam_step(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [dcdw, mw, vw] = dtype_n_dcdw_n_mw_n_vw
     (
@@ -303,6 +307,7 @@ def test_adam_step(
         epsilon,
     ) = beta1_n_beta2_n_epsilon
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -343,9 +348,11 @@ def test_optimizer_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, effective_grad], lr = dtype_n_ws_n_effgrad_n_lr
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -383,9 +390,11 @@ def test_gradient_descent_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -427,12 +436,14 @@ def test_lars_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw], lr = dtype_n_ws_n_dcdw_n_lr
     # ToDo: Add testing for bfloat16 back when it returns consistent gradients for jax
     if "bfloat16" in input_dtypes:
         return
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -456,8 +467,14 @@ def test_lars_update(
 # adam_update
 @handle_test(
     fn_tree="functional.ivy.adam_update",
-    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
-    step=st.integers(min_value=1, max_value=100),
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(
+        num_arrays=4,
+        min_value=1e-05,
+        max_value=1e08,
+        large_abs_safety_factor=2.0,
+        small_abs_safety_factor=2.0,
+    ),
+    step=st.integers(min_value=1, max_value=10),
     beta1_n_beta2_n_epsilon=helpers.lists(
         arg=helpers.floats(min_value=1e-2, max_value=1),
         min_size=3,
@@ -479,11 +496,13 @@ def test_adam_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     beta1, beta2, epsilon = beta1_n_beta2_n_epsilon
     stop_gradients = stopgrad
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,
@@ -547,6 +566,7 @@ def test_lamb_update(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     input_dtypes, [w, dcdw, mw_tm1, vw_tm1], lr = dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr
     (
@@ -557,6 +577,7 @@ def test_lamb_update(
     ) = beta1_n_beta2_n_epsilon_n_lambda
     max_trust_ratio, stop_gradients = mtr, stopgrad
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtypes,
         with_out=with_out,
         as_variable_flags=as_variable,

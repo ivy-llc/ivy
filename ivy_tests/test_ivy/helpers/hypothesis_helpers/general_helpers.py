@@ -382,13 +382,16 @@ def get_axis(
             )
 
     axis = draw(st.one_of(*valid_strategies))
+    if unique and allow_neg and isinstance(axis, list):
+        while not all([ax_i != axes + ax_j for ax_i in axis for ax_j in axis]):
+            axis = draw(st.one_of(*valid_strategies))
 
     if type(axis) == list:
         if sorted:
 
             def sort_key(ele, max_len):
                 if ele < 0:
-                    return ele + max_len - 1
+                    return ele + max_len
                 return ele
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))

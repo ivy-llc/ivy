@@ -346,6 +346,39 @@ def test_torch_mean(
 
 
 @handle_frontend_test(
+    fn_tree="torch.nanmean",
+    dtype_and_x=statistical_dtype_values(function="nanmean"),
+    keepdims=st.booleans(),
+)
+def test_torch_nanmean(
+    *,
+    dtype_and_x,
+    keepdims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        keepdim=keepdims,
+    )
+
+
+@handle_frontend_test(
     fn_tree="torch.std",
     dtype_and_x=statistical_dtype_values(function="std"),
     keepdims=st.booleans(),
@@ -609,4 +642,38 @@ def test_torch_max(
         input=x[0],
         dim=axis,
         keepdim=keepdim,
+    )
+
+
+@handle_frontend_test(
+    fn_tree="torch.std_mean",
+    dtype_and_x=statistical_dtype_values(function="std_mean"),
+    keepdims=st.booleans(),
+)
+def test_torch_std_mean(
+    *,
+    dtype_and_x,
+    keepdims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x, axis, correction = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        dim=axis,
+        unbiased=bool(correction),
+        keepdim=keepdims,
     )

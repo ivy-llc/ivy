@@ -13,6 +13,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -28,7 +29,7 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
                 if ivy.is_int_dtype(x.dtype):
                     x = x.astype(ivy.default_float_dtype())
                 else:
-                    x = ivy.stop_gradient(x)
+                    x = stop_gradient(x, preserve_type=False)
 
                 return _variable(x)
             return x
@@ -59,11 +60,44 @@ def _get_required_native_variables(xs, xs_grad_idxs):
             return x
         return None
 
-    xs = ivy.nested_map(xs, map_fn, include_derived=True)
+    xs = ivy.nested_map(xs, map_fn, include_derived=True, to_mutable=True)
     none_idxs = ivy.nested_argwhere(xs, lambda x: x is None)
     if not _check_if_empty(none_idxs):
         none_idxs.reverse()
         ivy.prune_nest_at_indices(xs, none_idxs)
+    if ivy.is_array(xs):
+        return xs
+    elif isinstance(xs, ivy.Container):
+        xs = xs.prune_empty()
+    else:
+        xs = _remove_empty(xs)
+    if len(xs) == 1 and isinstance(xs, list):
+        return xs[0]
+    return xs
+
+
+def _remove_empty(xs):
+    valid = False
+    if isinstance(xs, dict):
+        keys = [k for k in xs]
+        for k in keys:
+            xs[k] = _remove_empty(xs[k])
+            if xs[k] is not None:
+                valid = True
+        for k in keys:
+            if xs[k] is None:
+                del xs[k]
+    elif isinstance(xs, (list, tuple)):
+        xs = list(xs)
+        for i in range(len(xs)):
+            xs[i] = _remove_empty(xs[i])
+            if xs[i] is not None:
+                valid = True
+        for i in range(len(xs) - 1, -1, -1):
+            if xs[i] is None:
+                del xs[i]
+    if not valid and not ivy.is_array(xs):
+        return None
     return xs
 
 
@@ -335,6 +369,7 @@ def unset_with_grads():
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def stop_gradient(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -410,6 +445,7 @@ def stop_gradient(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
@@ -422,7 +458,8 @@ def execute_with_gradients(
         Function for which we compute the gradients of the output with respect to xs
         input.
     xs
-        Variables for which to compute the function gradients with respective to.
+        Variables for which to compute the function gradients with respective to. This
+        can be a single array or an arbitrary nest of arrays.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
     xs_grad_idxs
@@ -559,6 +596,7 @@ grad.computes_gradients = True
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def adam_step(
     dcdw: Union[ivy.Array, ivy.NativeArray],
     mw: Union[ivy.Array, ivy.NativeArray],
@@ -711,6 +749,7 @@ adam_step.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def optimizer_update(
     w: Union[ivy.Array, ivy.NativeArray],
     effective_grad: Union[ivy.Array, ivy.NativeArray],
@@ -832,6 +871,7 @@ def optimizer_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def gradient_descent_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -923,6 +963,7 @@ def gradient_descent_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def lars_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -972,6 +1013,7 @@ def lars_update(
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
 def adam_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],
@@ -1044,6 +1086,8 @@ adam_update.out_index = 0
 
 @inputs_to_ivy_arrays
 @handle_exceptions
+@handle_array_like
+@handle_array_like
 def lamb_update(
     w: Union[ivy.Array, ivy.NativeArray],
     dcdw: Union[ivy.Array, ivy.NativeArray],

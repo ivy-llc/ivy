@@ -6,8 +6,9 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method
+from ivy_tests.test_ivy.helpers import handle_method, handle_test
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy.array import Array
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
@@ -139,6 +140,151 @@ def _getitem_setitem(draw, available_dtypes=None):
     return index, x
 
 
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_data(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_dtype(
+    dtype_x,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.dtype, ivy.dtype(data))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_device(
+    dtype_x,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.device, ivy.dev(data))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_array_property_ndim(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.ndim, len(input_shape))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_array_property_shape(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.shape, ivy.Shape(input_shape))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+        min_num_dims=1,
+    ),
+)
+def test_array_property_size(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    size_gt = 1
+    for dim in input_shape:
+        size_gt *= dim
+    ivy.assertions.check_equal(x.size, size_gt)
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+    ),
+)
+def test_array_property_mT(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.mT)
+    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+)
+def test_array_property_T(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.T)
+    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
 @handle_method(method_tree="Array.__getitem__", query_dtype_and_x=_getitem_setitem())
 def test_array__getitem__(
     query_dtype_and_x,
@@ -151,10 +297,12 @@ def test_array__getitem__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     query, x_dtype = query_dtype_and_x
     dtype, x = x_dtype
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -188,10 +336,12 @@ def test_array__setitem__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     query, x_dtype = query_dtype_and_x
     dtype, x = x_dtype
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -225,9 +375,11 @@ def test_array__pos__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -261,9 +413,11 @@ def test_array__neg__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -295,6 +449,7 @@ def test_array__pow__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     # check if power isn't a float when x1 is integer
@@ -305,6 +460,7 @@ def test_array__pow__(
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -336,6 +492,7 @@ def test_array__rpow__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     # check if power isn't a float when x1 is integer
@@ -346,6 +503,7 @@ def test_array__rpow__(
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -377,6 +535,7 @@ def test_array__ipow__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     # check if power isn't a float when x1 is integer
@@ -387,6 +546,7 @@ def test_array__ipow__(
     x[0] = _not_too_close_to_zero(x[0])
     x[1] = _not_too_close_to_zero(x[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -425,9 +585,11 @@ def test_array__add__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -466,9 +628,11 @@ def test_array__radd__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -507,9 +671,11 @@ def test_array__iadd__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -548,9 +714,11 @@ def test_array__sub__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -589,9 +757,11 @@ def test_array__rsub__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -630,9 +800,11 @@ def test_array__isub__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -671,9 +843,11 @@ def test_array__mul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -712,9 +886,11 @@ def test_array__rmul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -753,9 +929,11 @@ def test_array__imul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -794,10 +972,12 @@ def test_array__mod__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -836,10 +1016,12 @@ def test_array__rmod__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -878,10 +1060,12 @@ def test_array__imod__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -920,10 +1104,12 @@ def test_array__divmod__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -962,10 +1148,12 @@ def test_array__rdivmod__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1004,9 +1192,11 @@ def test_array__truediv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1045,9 +1235,11 @@ def test_array__rtruediv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1086,9 +1278,11 @@ def test_array__itruediv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1127,10 +1321,12 @@ def test_array__floordiv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1169,10 +1365,12 @@ def test_array__rfloordiv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1211,10 +1409,12 @@ def test_array__ifloordiv__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1248,10 +1448,12 @@ def test_array__matmul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype1, x1 = x1
     dtype2, x2 = x2
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x1},
         init_input_dtypes=dtype1,
         init_as_variable_flags=init_as_variable,
@@ -1285,10 +1487,12 @@ def test_array__rmatmul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype1, x1 = x1
     dtype2, x2 = x2
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x2},
         init_input_dtypes=dtype1,
         init_as_variable_flags=init_as_variable,
@@ -1322,10 +1526,12 @@ def test_array__imatmul__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype1, x1 = x1
     dtype2, x2 = x2
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x1},
         init_input_dtypes=dtype1,
         init_as_variable_flags=init_as_variable,
@@ -1359,9 +1565,11 @@ def test_array__abs__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1396,9 +1604,11 @@ def test_array__float__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1435,9 +1645,11 @@ def test_array__int__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1474,9 +1686,11 @@ def test_array__bool__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1512,9 +1726,11 @@ def test_array__lt__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1550,9 +1766,11 @@ def test_array__le__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1588,9 +1806,11 @@ def test_array__eq__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1626,9 +1846,11 @@ def test_array__ne__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1664,9 +1886,11 @@ def test_array__gt__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1702,9 +1926,11 @@ def test_array__ge__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1740,9 +1966,11 @@ def test_array__and__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1778,9 +2006,11 @@ def test_array__rand__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1816,9 +2046,11 @@ def test_array__iand__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1854,9 +2086,11 @@ def test_array__or__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1892,9 +2126,11 @@ def test_array__ror__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1930,9 +2166,11 @@ def test_array__ior__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -1966,9 +2204,11 @@ def test_array__invert__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2004,9 +2244,11 @@ def test_array__xor__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2042,9 +2284,11 @@ def test_array__rxor__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2080,9 +2324,11 @@ def test_array__ixor__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2118,10 +2364,12 @@ def test_array__lshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2157,10 +2405,12 @@ def test_array__rlshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[0] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2196,10 +2446,12 @@ def test_array__ilshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2236,10 +2488,12 @@ def test_array__rshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2275,10 +2529,12 @@ def test_array__rrshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[0] = np.asarray(np.clip(x[0], 0, np.iinfo(dtype[0]).bits - 1), dtype=dtype[0])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2314,10 +2570,12 @@ def test_array__irshift__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     x[1] = np.asarray(np.clip(x[1], 0, np.iinfo(dtype[1]).bits - 1), dtype=dtype[1])
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2351,9 +2609,11 @@ def test_array__deepcopy__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2389,9 +2649,11 @@ def test_array__len__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,
@@ -2427,9 +2689,11 @@ def test_array__iter__(
     method_container: pf.ContainerFlags,
     method_name,
     class_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     helpers.test_method(
+        ground_truth_backend=ground_truth_backend,
         init_all_as_kwargs_np={"data": x[0]},
         init_input_dtypes=dtype,
         init_as_variable_flags=init_as_variable,

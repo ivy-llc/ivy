@@ -4,6 +4,7 @@ import abc
 
 # local
 import ivy
+from ivy.functional.ivy.gradients import _variable
 
 
 # Initializer #
@@ -75,7 +76,7 @@ class Constant(Initializer):
         fan_in: Optional[float] = None,
         dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     ) -> ivy.Array:
-        return ivy.variable(
+        return _variable(
             ivy.full(var_shape, self._constant, device=device, dtype=dtype),
         )
 
@@ -196,7 +197,7 @@ class Uniform(Initializer):
                 "fan_sum | fan_avg ] "
             )
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(
+        return _variable(
             ivy.random_uniform(
                 low=-wlim, high=wlim, shape=var_shape, device=device, dtype=dtype
             ),
@@ -337,7 +338,7 @@ class KaimingNormal(Initializer):
                 "fan_sum | fan_avg ] "
             )
         std = (2 / ((1 + negative_slope**2) * fan)) ** 0.5
-        return ivy.variable(
+        return _variable(
             ivy.random_normal(
                 mean=self._mean, std=std, shape=var_shape, device=device, dtype=dtype
             )
