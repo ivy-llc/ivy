@@ -682,8 +682,52 @@
     <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+<div class="viewcode-block" id="Array.__gt__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array special method variant of ivy.greater. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.greater</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array. May have any data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array. Must be compatible with x1 (with Broadcasting). May have any</span>
+<span class="sd">            data type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise results. The returned array must have a</span>
+<span class="sd">            data type of bool.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([6, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 3])</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt; y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([True,False,False])</span>
+
+<span class="sd">        With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.1], [6.]]),b=ivy.array([[-3.6], [6.], [7.]]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt; y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[True, False, False],</span>
+<span class="sd">                          [False, False, False],</span>
+<span class="sd">                          [False, False, False]]),</span>
+<span class="sd">            b: ivy.array([[True, True, False],</span>
+<span class="sd">                          [False, False, False],</span>
+<span class="sd">                          [False, False, False]])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__ge__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__ge__">[docs]</a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -718,12 +762,16 @@
 <span class="sd">        With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.1], [6.]]),b=ivy.array([[5.], [6.], [7.]]))</span>
 <span class="sd">        &gt;&gt;&gt; z = x &gt;= y</span>
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
-<span class="sd">            a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),</span>
-<span class="sd">            b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])</span>
+<span class="sd">            a: ivy.array([[True, False, False],</span>
+<span class="sd">                          [True, False, False],</span>
+<span class="sd">                          [False, False, False]]),</span>
+<span class="sd">            b: ivy.array([[True, False, False],</span>
+<span class="sd">                          [False, False, False],</span>
+<span class="sd">                          [False, False, False]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
