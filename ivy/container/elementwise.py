@@ -2048,6 +2048,17 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned container must have a data type determined by
             :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([89]), b = ivy.array([3]))
+        >>> y = ivy.Container(a = ivy.array([12]), b = ivy.array([5]))
+        >>> z = ivy.Container.static_bitwise_xor(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([85]),
+            b: ivy.array([6])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "bitwise_xor",
@@ -2109,11 +2120,14 @@ class ContainerWithElementwise(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a = ivy.array([89]))
-        >>> y = ivy.Container(a = ivy.array([12]))
+        >>> x = ivy.Container(a = ivy.array([89]), b = ivy.array([3]))
+        >>> y = ivy.Container(a = ivy.array([12]), b = ivy.array([5]))
         >>> z = x.bitwise_xor(y)
         >>> print(z)
-        {a:ivy.array([85])}
+        {
+            a: ivy.array([85]),
+            b: ivy.array([6])
+        }
         """
         return self.static_bitwise_xor(
             self,
