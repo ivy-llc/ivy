@@ -505,7 +505,7 @@ class SparseArray:
 
     def to_dense_array(self, *, native=False):
         all_coordinates = []
-        print(self._coo_indices)
+
         if self._coo_indices is not None:
             # COO sparse array
             for i in range(self._values.shape[0]):
