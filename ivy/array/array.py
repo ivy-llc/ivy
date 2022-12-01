@@ -557,12 +557,23 @@ class Array(
 
     def __ge__(self, other):
         """
-        Greater than or equal to
+        ivy.Array special method variant of ivy.greater_equal. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_xor
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. May have any data type.
+        other
+            second input array. Must be compatible with x1 (with Broadcasting). May have any
+            data type.
 
         Returns
         -------
-        An array containing the element-wise results. The returned array must have a
-        data type of bool.
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type of bool.
 
         Examples
         --------
@@ -573,17 +584,6 @@ class Array(
         >>> z = x >= y
         >>> print(z)
         ivy.array([True,False,False])
-
-        With :class:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-        >>> z = x >= y
-        >>> print(z)
-        {
-            a:ivy.array([True,True,True]),
-            b:ivy.array([False,False,False])
-        }
 
         With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
@@ -651,14 +651,6 @@ class Array(
         >>> y = a ^ b
         >>> print(y)
         ivy.array([2,0,2])
-
-        With :class:`ivy.Container` instances:
-
-        >>> x = ivy.Container(a = ivy.array([89]))
-        >>> y = ivy.Container(a = ivy.array([12]))
-        >>> z = x ^ y
-        >>> print(z)
-        {a:ivy.array([85])}
 
         With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
 
