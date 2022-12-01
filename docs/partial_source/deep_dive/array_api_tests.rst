@@ -18,7 +18,7 @@ Array API Tests
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`ivy tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`final section`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
-.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
