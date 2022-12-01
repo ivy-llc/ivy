@@ -2087,6 +2087,16 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the square root of each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[1., 2.],  [3., 4.]])
+        >>> y = x.sqrt()
+        >>> print(y)
+        ivy.array([[1.  , 1.41],
+                   [1.73, 2.  ]])
         """
         return ivy.sqrt(self._data, out=out)
 

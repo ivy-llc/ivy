@@ -2391,7 +2391,7 @@ class ContainerWithElementwise(ContainerBase):
         >>> x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),
         ...                   b=ivy.array([0.67, -0.98, -3]))
         >>> y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))
-        >>> ivy.Container.cosh(x, out=y)
+        >>> x.cosh(out=y)
         >>> print(y)
         {
             a: ivy.array([10.1, 1.06, 3.76]),
@@ -6806,6 +6806,18 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        with :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 100., 27.]),
+        ...                   b=ivy.native_array([93., 54., 25.]))
+        >>> y = ivy.Container.static_sqrt(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 10., 5.2]),
+            b: ivy.array([9.64, 7.35, 5.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "sqrt",
@@ -6857,6 +6869,18 @@ class ContainerWithElementwise(ContainerBase):
             ``self``. The returned container must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        with :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 100., 27.]),
+        ...                   b=ivy.native_array([93., 54., 25.]))
+        >>> y = x.sqrt()
+        >>> print(y)
+        {
+            a: ivy.array([0., 10., 5.2]),
+            b: ivy.array([9.64, 7.35, 5.])
+        }
         """
         return self.static_sqrt(
             self,
