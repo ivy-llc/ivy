@@ -1145,7 +1145,6 @@ def bitwise_or(
         b: ivy.array([5,6,7])
     }
 
-
     """
     return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out)
 
@@ -3836,113 +3835,6 @@ def not_equal(
         a: ivy.array([False, False, False]),
         b: ivy.array([False, False, False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x1 = ivy.array([1, 0, 1, 1])
-    >>> x2 = ivy.array([1, 0, 0, -1])
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    ivy.array([False, False, True, True])
-
-    >>> x1 = ivy.array([1, 0, 1, 0])
-    >>> x2 = ivy.array([0, 1, 0, 1])
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    ivy.array([True, True, True, True])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> x1 = ivy.array([1, 0, 1, 1])
-    >>> x2 = ivy.array([1, 0, 0, -1])
-    >>> y = (x1 != x2)
-    >>> print(y)
-    ivy.array([False, False, True, True])
-
-    >>> x1 = ivy.array([1, 0, 1, 0])
-    >>> x2 = ivy.array([0, 1, 0, 1])
-    >>> y = (x1 != x2)
-    >>> print(y)
-    ivy.array([True, True, True, True])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, False, False])
-    }
-
     """
     return ivy.current_backend(x1, x2).not_equal(x1, x2, out=out)
 
