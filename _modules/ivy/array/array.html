@@ -709,8 +709,56 @@
     <span class="k">def</span> <span class="fm">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+<div class="viewcode-block" id="Array.__xor__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__xor__">[docs]</a>    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array special method variant of ivy.bitwise_xor. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.bitwise_xor</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array. Should have an integer or boolean data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).</span>
+<span class="sd">            Should have an integer or boolean data type.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">            inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise results. The returned array must have a</span>
+<span class="sd">            data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([3, 2, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = a ^ b</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([2,0,2])</span>
+
+<span class="sd">        With :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([89]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a = ivy.array([12]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x ^ y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {a:ivy.array([85])}</span>
+
+<span class="sd">        With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a = ivy.array([-67, 21]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([12, 13])</span>
+<span class="sd">        &gt;&gt;&gt; z = x ^ y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {a: ivy.array([-79, 24])}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_xor</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
