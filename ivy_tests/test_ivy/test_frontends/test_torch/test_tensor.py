@@ -3389,9 +3389,9 @@ def _array_idxes_n_dtype(draw, **kwargs):
 )
 def test_torch_instance_permute(
     dtype_values_axis,
-    as_variable,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
     num_positional_args,
-    native_array,
     init_name,
     method_name,
     frontend,
