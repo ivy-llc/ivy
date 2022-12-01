@@ -326,6 +326,9 @@ class Tensor:
     def permute(self, dims):
         return torch_frontend.permute(self, dims)
 
+    def mean(self, dim=None, keepdim=False):
+        return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=False)
+
     # Special Methods #
     # -------------------#
 
