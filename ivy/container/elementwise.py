@@ -4015,6 +4015,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :code:'ivy.Container' inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.2, 4.1]), b=ivy.array([1, 0.7, 3.8]))
+        >>> y = ivy.Container.static_less_equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, False]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "less_equal",
@@ -4072,6 +4085,8 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
 
+        Examples
+        --------
         With :code:'ivy.Container' inputs:
 
         >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 9.2]), b=ivy.array([2., 1.1, 5.5]))
@@ -4093,8 +4108,6 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([False, False, False]),
             b: ivy.array([True, True, True])
         }
-
-
         """
         return self.static_less_equal(
             self,
