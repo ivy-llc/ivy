@@ -1842,19 +1842,19 @@
 <span class="sd">        With :class:`ivy.Array` input:</span>
 
 <span class="sd">         &gt;&gt;&gt; x = ivy.array([2, 3 ,5, 7])</span>
-<span class="sd">        &gt;&gt;&gt; y = ivy.negative(x)</span>
+<span class="sd">        &gt;&gt;&gt; y = x.negative()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([-2, -3, -5, -7])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0,-1,-0.5,2,3])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.zeros(5)</span>
-<span class="sd">        &gt;&gt;&gt; ivy.negative(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; x.negative(out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],</span>
 <span class="sd">        ...                [-4.4, -5.5, -6.6]])</span>
-<span class="sd">        &gt;&gt;&gt; ivy.negative(x, out=x)</span>
+<span class="sd">        &gt;&gt;&gt; x.negative(out=x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        ivy.array([[ -1.1, -2.2, -3.3],</span>
 <span class="sd">        [4.4, 5.5, 6.6]])</span>
