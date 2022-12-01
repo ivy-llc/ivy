@@ -529,12 +529,23 @@ class Array(
 
     def __le__(self, other):
         """
-        Less than or equal to
+        ivy.Array special method variant of ivy.less_equal. This method
+        simply wraps the function, and so the docstring for ivy.less_equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. May have any data type.
+        other
+            second input array. Must be compatible with x1 (with Broadcasting). May have any
+            data type.
 
         Returns
         -------
-        an array containing the element-wise results. The returned array must have a
-        data type of bool.
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type of bool.
 
         Examples
         --------

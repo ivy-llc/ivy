@@ -390,6 +390,37 @@ class Container(
         return self.map(lambda x, kc: x < other, map_sequences=True)
 
     def __le__(self, other):
+        """
+        ivy.Container special method for the less_equal operator, calling
+        :code:`operator.le` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 3]),b=ivy.array([5, 3, 7]))
+        >>> z = x <= y
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, True, True])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
@@ -477,7 +508,7 @@ class Container(
         >>> print(z)
         {
             a:ivy.array([True,True,True]),
-            b:ivy.array([False,False,False])
+            b:ivy.array([False,True,False])
         }
         """
         if isinstance(other, ivy.Container):
