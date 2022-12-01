@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
@@ -235,9 +234,7 @@ def _constant_helper(draw):
         ),
     )
     to_shape = draw(
-        helpers.reshape_shapes(
-            shape=st.shared(helpers.get_shape(), key="value_shape")
-        ),
+        helpers.reshape_shapes(shape=st.shared(helpers.get_shape(), key="value_shape")),
     )
     cast_dtype = x_dtype[0]  # draw(
     #     helpers.get_dtypes("valid", full=False)
@@ -281,7 +278,11 @@ def test_tensorflow_constant(
 @st.composite
 def _convert_to_tensor_helper(draw):
     x_dtype = draw(helpers.get_dtypes("valid", full=False))
-    x_dtype, x = draw(helpers.dtype_and_values(dtype=x_dtype,))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+        )
+    )
     cast_dtype = x_dtype[0]  # draw(
     #     helpers.get_dtypes("valid", full=False)
     #     .map(lambda t: t[0])

@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back, inputs_to_ivy_arrays
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
