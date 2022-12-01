@@ -685,8 +685,48 @@
     <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+<div class="viewcode-block" id="Array.__ge__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__ge__">[docs]</a>    <span class="k">def</span> <span class="fm">__ge__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Greater than or equal to</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        An array containing the element-wise results. The returned array must have a</span>
+<span class="sd">        data type of bool.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([6, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.array([4, 5, 6])</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;= y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        ivy.array([True,False,False])</span>
+
+<span class="sd">        With :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;= y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([True,True,True]),</span>
+<span class="sd">            b:ivy.array([False,False,False])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[5.1, 2.3, -3.6]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x &gt;= y</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),</span>
+<span class="sd">            b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
