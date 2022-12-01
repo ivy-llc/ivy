@@ -7,6 +7,7 @@ try:
     import torch.nn
 except ImportError:
     import types
+
     torch = types.SimpleNamespace()
     torch.nn = types.SimpleNamespace()
     torch.nn.Module = types.SimpleNamespace
@@ -15,6 +16,7 @@ try:
     import haiku as hk
 except ImportError:
     import types
+
     hk = types.SimpleNamespace()
     hk.Module = types.SimpleNamespace
 
@@ -22,6 +24,7 @@ try:
     import jax.numpy as jnp
 except ImportError:
     import types
+
     jnp = types.SimpleNamespace()
 
 

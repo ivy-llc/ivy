@@ -11,7 +11,7 @@ Ivy Frontend Tests
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
 .. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 
 
