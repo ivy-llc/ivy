@@ -114,3 +114,41 @@ def test_numpy_uniform(
         high=high,
         size=size,
     )
+
+
+# normal
+@handle_frontend_test(
+    fn_tree="numpy.random.normal",
+    input_dtypes=helpers.get_dtypes("float", index=2),
+    loc=st.floats(allow_nan=False, allow_infinity=False, width=32),
+    scale=st.floats(allow_nan=False, allow_infinity=False, width=32, min_value=0),
+    size=st.tuples(
+        st.integers(min_value=2, max_value=5), st.integers(min_value=2, max_value=5)
+    ),
+)
+def test_numpy_normal(
+    input_dtypes,
+    size,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    loc,
+    scale,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        loc=loc,
+        scale=scale,
+        size=size,
+    )
