@@ -313,6 +313,7 @@ def test_matrix_power(
     ground_truth_backend,
 ):
     dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
