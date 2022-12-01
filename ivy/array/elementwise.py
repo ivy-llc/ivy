@@ -966,6 +966,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.greater_equal(y)
+        >>> print(z)
+        ivy.array([False,False,False])
         """
         return ivy.greater_equal(self._data, x2, out=out)
 
