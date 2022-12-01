@@ -777,10 +777,12 @@ def diff(
         array-like input.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Rreturns the n-th discrete difference along the given axis.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 4, 7, 0])

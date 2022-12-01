@@ -9,6 +9,9 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
 
 
 @st.composite
@@ -310,6 +313,7 @@ def test_matrix_power(
     ground_truth_backend,
 ):
     dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -723,7 +727,7 @@ def test_outer(
         max_value=5,
         safety_factor_scale="log",
         shape=helpers.ints(min_value=2, max_value=20).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1][0].tolist()) < 1 / sys.float_info.epsilon),
+    ),
 )
 def test_slogdet(
     *,
@@ -740,6 +744,7 @@ def test_slogdet(
     ground_truth_backend,
 ):
     input_dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
@@ -754,7 +759,7 @@ def test_slogdet(
         atol_=1e-2,
         fn_name=fn_name,
         on_device=on_device,
-        test_gradients=True,
+        test_gradients=False,
         ret_grad_idxs=[["1"]],
         x=x[0],
     )
@@ -1352,6 +1357,7 @@ def test_matrix_norm(
     ground_truth_backend,
 ):
     dtype, x = dtype_value_shape
+    assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,

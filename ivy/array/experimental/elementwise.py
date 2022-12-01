@@ -734,16 +734,19 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         """ivy.Array instance method variant of ivy.diff. This method simply
         wraps the function, and so the docstring for ivy.diff also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         self
             array-like input.
         out
             optional output array, for writing the result to.
+
         Returns
         -------
         ret
             Returns the n-th discrete difference along the given axis.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
