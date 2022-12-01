@@ -3329,7 +3329,6 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([True, True, True]),
             b: ivy.array([False, False, False])
         }
-
         """
         return self.static_greater(
             self,

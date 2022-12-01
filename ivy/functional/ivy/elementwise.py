@@ -2161,7 +2161,6 @@ def greater(
     >>> print(x)
     ivy.array([False, False,  True])
 
-
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
