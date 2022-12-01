@@ -276,14 +276,20 @@ data type of bool.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.__le__">
 <span class="sig-name descname"><span class="pre">__le__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/array/array.html#Array.__le__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array.Array.__le__" title="Permalink to this definition"></a></dt>
-<dd><p>Less than or equal to</p>
+<dd><p>ivy.Array special method variant of ivy.less_equal. This method
+simply wraps the function, and so the docstring for ivy.less_equal
+also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>an array containing the element-wise results. The returned array must have a</em></p></li>
-<li><p><em>data type of bool.</em></p></li>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – first input array. May have any data type.</p></li>
+<li><p><strong>other</strong> – second input array. Must be compatible with x1 (with Broadcasting). May have any
+data type.</p></li>
 </ul>
-</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – an array containing the element-wise results. The returned array must have a
+data type of bool.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
