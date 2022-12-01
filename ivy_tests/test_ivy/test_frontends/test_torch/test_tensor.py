@@ -3358,3 +3358,62 @@ def test_torch_instance_matmul(
         init_name=init_name,
         method_name=method_name,
     )
+
+
+@st.composite
+def _array_idxes_n_dtype(draw, **kwargs):
+    num_dims = draw(helpers.ints(min_value=1, max_value=4))
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            **kwargs, min_num_dims=num_dims, max_num_dims=num_dims, shared_dtype=True
+        )
+    )
+    idxes = draw(
+        st.lists(
+            helpers.ints(min_value=0, max_value=num_dims - 1),
+            min_size=num_dims,
+            max_size=num_dims,
+            unique=True,
+        )
+    )
+    return x, idxes, dtype
+
+
+# permute
+@handle_frontend_method(
+    init_name="tensor",
+    method_tree="torch.Tensor.permute",
+    dtype_values_axis=_array_idxes_n_dtype(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_permute(
+    dtype_values_axis,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    init_name,
+    method_name,
+    frontend,
+):
+    x, idxes, dtype = dtype_values_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtype,
+        method_num_positional_args=method_num_positional_args,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dims": idxes,
+        },
+        frontend=frontend,
+        init_name=init_name,
+        method_name=method_name,
+    )
