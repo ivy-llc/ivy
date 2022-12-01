@@ -382,8 +382,10 @@ must have a data type of <code class="docutils literal notranslate"><span class=
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">    ivy.array([False, False, False, False])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">ivy.array([False, False, False, False])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
 <span class="go">{</span>
 <span class="go">    a: ivy.array([True, False, True]),</span>
 <span class="go">    b: ivy.array([False, False, False])</span>
@@ -439,15 +441,26 @@ must have a data type of <code class="docutils literal notranslate"><span class=
 &gt;&gt;&gt; y = m.logical_and(n)
 &gt;&gt;&gt; z = k.logical_and(l)
 &gt;&gt;&gt; print(w)
-{a:ivy.array([True,False,False,False])}</p>
+{</p>
+<blockquote>
+<div><p>a:ivy.array([True,False,False,False])</p>
+</div></blockquote>
+<p>}</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="go">{a:ivy.array([False,True,False,False])}</span>
+<span class="go">{</span>
+<span class="go">    a:ivy.array([False,True,False,False])</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">    ivy.array([False, False, False, False])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-<span class="go">{a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}</span>
+<span class="go">ivy.array([False, False, False, False])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a:ivy.array([True,False,True]),</span>
+<span class="go">    b:ivy.array([False,False,False])</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>

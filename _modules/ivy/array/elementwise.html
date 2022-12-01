@@ -1594,6 +1594,18 @@
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the element-wise results.</span>
 <span class="sd">            The returned array must have a data type of ``bool``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x=ivy.array([0,1,1,0])</span>
+<span class="sd">        &gt;&gt;&gt; x.logical_not()</span>
+<span class="sd">        ivy.array([ True, False, False,  True])</span>
+
+<span class="sd">        &gt;&gt;&gt; x=ivy.array([2,0,3,9])</span>
+<span class="sd">        &gt;&gt;&gt; x.logical_not()</span>
+<span class="sd">        ivy.array([False,  True, False, False])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

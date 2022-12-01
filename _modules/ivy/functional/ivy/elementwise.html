@@ -3516,8 +3516,8 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x=ivy.array([1,0,1,1,0])</span>
@@ -3552,36 +3552,6 @@
 <span class="sd">        a: ivy.array([False, True, False, True]),</span>
 <span class="sd">        b: ivy.array([False, False, True, False])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([0,1,1,0])</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    ivy.array([ True, False, False,  True])</span>
-
-<span class="sd">    &gt;&gt;&gt; x=ivy.array([2,0,3,9])</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    ivy.array([False,  True, False, False])</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False, True])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
-<span class="sd">    &gt;&gt;&gt; x.logical_not()</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False, True]),</span>
-<span class="sd">        b: ivy.array([False, False, True, False])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3665,38 +3635,6 @@
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]),</span>
 <span class="sd">    ...                   b=ivy.array([True, True, False]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.logical_or(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, True]),</span>
-<span class="sd">        b: ivy.array([True, True, True])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([False, 3, 0])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([2, True, False])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.logical_or(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([ True,  True, False])</span>
-
-<span class="sd">    Using :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))</span>
-<span class="sd">    &gt;&gt;&gt; z = x.logical_or(y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, True]),</span>
-<span class="sd">        b: ivy.array([True, True, True])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With :class:`ivy.Container` static method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([False, False, True]),</span>
-<span class="sd">    ...                   b=ivy.array([True, False, True]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([False, True, False]),</span>
-<span class="sd">    ...                   b=ivy.array([True, True, False]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_logical_or(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([False, True, True]),</span>

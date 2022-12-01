@@ -4979,7 +4979,6 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container.static_logical_and(j, m)</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_logical_and(m, n)</span>
 <span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_logical_and(k, l)</span>
-
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([True, False, False, False])</span>
 <span class="sd">        }</span>
@@ -4990,7 +4989,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">            ivy.array([False, False, False, False])</span>
+<span class="sd">        ivy.array([False, False, False, False])</span>
 
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
 <span class="sd">        {</span>
@@ -5073,16 +5072,23 @@
 <span class="sd">        &gt;&gt;&gt; z = k.logical_and(l)</span>
 
 <span class="sd">        &gt;&gt;&gt; print(w)</span>
-<span class="sd">        {a:ivy.array([True,False,False,False])}</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([True,False,False,False])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
-<span class="sd">        {a:ivy.array([False,True,False,False])}</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([False,True,False,False])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">            ivy.array([False, False, False, False])</span>
+<span class="sd">        ivy.array([False, False, False, False])</span>
 
 <span class="sd">        &gt;&gt;&gt; print(z)</span>
-<span class="sd">        {a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([True,False,True]),</span>
+<span class="sd">            b:ivy.array([False,False,False])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_and</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -5135,6 +5141,16 @@
 <span class="sd">            a container containing the evaluated result for each element in ``x``.</span>
 <span class="sd">            The returned container must have a data type of ``bool``.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using &#39;ivy.Container&#39; instance</span>
+
+<span class="sd">        &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_logical_not(x)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, True, False]),</span>
+<span class="sd">            b: ivy.array([False, False, False, True])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;logical_not&quot;</span><span class="p">,</span>
@@ -5185,6 +5201,23 @@
 <span class="sd">            a container containing the evaluated result for each element in ``self``.</span>
 <span class="sd">            The returned container must have a data type of ``bool``.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using &#39;ivy.Container&#39; instance</span>
+
+<span class="sd">        &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))</span>
+<span class="sd">        &gt;&gt;&gt; x.logical_not()</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, True, False]),</span>
+<span class="sd">            b: ivy.array([False, False, False, True])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))</span>
+<span class="sd">        &gt;&gt;&gt; x.logical_not()</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, False, True]),</span>
+<span class="sd">            b: ivy.array([False, False, True, False])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_logical_not</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

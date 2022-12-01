@@ -235,6 +235,16 @@ that the inputs broadcast to.</p></li>
 The returned container must have a data type of <code class="docutils literal notranslate"><span class="pre">bool</span></code>.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Using ‘ivy.Container’ instance
+&gt;&gt;&gt; x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
+&gt;&gt;&gt; ivy.Container.static_logical_not(x)
+{</p>
+<blockquote>
+<div><p>a: ivy.array([False, True, True, False]),
+b: ivy.array([False, False, False, True])</p>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">
