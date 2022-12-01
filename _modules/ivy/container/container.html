@@ -595,12 +595,80 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">==</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.__ne__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Container special method for the not_equal operator, calling</span>
+<span class="sd">        :code:`operator.ne` for each of the corresponding leaves of the two containers.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input Container. May have any data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input Container. Must be compatible with x1 (with Broadcasting).</span>
+<span class="sd">            May have any data type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A container containing the element-wise results. Any returned array inside</span>
+<span class="sd">            must have a data type of bool.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, False, False]),</span>
+<span class="sd">            b: ivy.array([False, True, False])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),</span>
+<span class="sd">        ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, True, False]),</span>
+<span class="sd">            b: ivy.array([False, False, False])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),</span>
+<span class="sd">        ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, False, False]),</span>
+<span class="sd">            b: ivy.array([False, False, False])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 3, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
+<span class="sd">        ...                    b=ivy.array([1, 4, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([False, False, False]),</span>
+<span class="sd">            b: ivy.array([False, True, False])</span>
+<span class="sd">        }</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">xs</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">operator</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="p">[</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">],</span> <span class="n">map_nests</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="o">!=</span> <span class="n">other</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.__gt__"><a class="viewcode-back" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

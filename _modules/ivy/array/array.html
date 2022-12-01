@@ -717,8 +717,43 @@
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+<div class="viewcode-block" id="Array.__ne__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__ne__">[docs]</a>    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array special method variant of ivy.not_equal. This method</span>
+<span class="sd">        simply wraps the function, and so the docstring for ivy.not_equal</span>
+<span class="sd">        also applies to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            first input array. May have any data type.</span>
+<span class="sd">        other</span>
+<span class="sd">            second input array. Must be compatible with x1 (with Broadcasting). May have any</span>
+<span class="sd">            data type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise results. The returned array must have a</span>
+<span class="sd">            data type of bool.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` instances:</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 1])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1, 0, 0, -1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([False, False, True, True])</span>
+
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 0])</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.array([0, 1, 0, 1])</span>
+<span class="sd">        &gt;&gt;&gt; y = x1 != x2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([True, True, True, True])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Array.__gt__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__gt__">[docs]</a>    <span class="k">def</span> <span class="fm">__gt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

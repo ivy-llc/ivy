@@ -1275,7 +1275,6 @@
 <span class="sd">        b: ivy.array([5,6,7])</span>
 <span class="sd">    }</span>
 
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">bitwise_or</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3966,113 +3965,6 @@
 <span class="sd">        a: ivy.array([False, False, False]),</span>
 <span class="sd">        b: ivy.array([False, False, False])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 1])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1, 0, 0, -1])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, False, True, True])</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 0])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0, 1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, True, True, True])</span>
-
-<span class="sd">    Using :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, False]),</span>
-<span class="sd">        b: ivy.array([False, True, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x1.not_equal(x2, out=x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Operator Examples</span>
-<span class="sd">    -----------------</span>
-
-<span class="sd">    With :class:`ivy.Array` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 1])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1, 0, 0, -1])</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([False, False, True, True])</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 0, 1, 0])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([0, 1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([True, True, True, True])</span>
-
-<span class="sd">    With :class:`ivy.Container` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, False]),</span>
-<span class="sd">        b: ivy.array([False, True, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 3, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, False]),</span>
-<span class="sd">        b: ivy.array([False, True, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),</span>
-<span class="sd">    ...                    b=ivy.array([1.0, 4.0, 5.0]))</span>
-<span class="sd">    &gt;&gt;&gt; y = (x1 != x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, False, False]),</span>
-<span class="sd">        b: ivy.array([False, False, False])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">not_equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
