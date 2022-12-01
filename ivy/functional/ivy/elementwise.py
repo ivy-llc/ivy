@@ -89,13 +89,6 @@ def abs(
     ivy.array([[ 1.1,  2.2,  3.3],
                [4.4, 5.5, 6.6]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
-    >>> y = ivy.abs(x)
-    >>> print(y)
-    ivy.array([ 0., 0., 2.6, 1., 1., 3.6])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),b=ivy.array([4.5, -5.3, -0, -2.3]))
@@ -174,14 +167,6 @@ def acos(
     >>> print(y)
     ivy.array([0.  , 1.57, 3.14])
 
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.array([1., 0., -1.])
-    >>> y = ivy.acos(x)
-    >>> print(y)
-    ivy.array([0.  , 1.57, 3.14])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1, 1]), b=ivy.array([1., 0., -1]))
@@ -191,8 +176,6 @@ def acos(
         a: ivy.array([1.57, 3.14, 0.]),
         b: ivy.array([0., 1.57, 3.14])
     }
-
-
     """
     return ivy.current_backend(x).acos(x, out=out)
 
@@ -262,13 +245,6 @@ def acosh(
     >>> ivy.acosh(x, out=y)
     >>> print(y)
     ivy.array([0.  , 1.32, 2.48])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.array([1., 2., 10.])
-    >>> y = ivy.acosh(x)
-    >>> print(y)
-    ivy.array([0.  , 1.32, 2.99])
 
     With :class:`ivy.Container` input:
 
@@ -476,12 +452,6 @@ def asin(
     >>> print(x)
     ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1, -0.5, 0.6, 1])
-    >>> y = ivy.asin(x)
-    >>> print(y)
-    ivy.array([-1.57,-0.524,0.644,1.57])
 
     With :class:`ivy.Container` input:
 
@@ -588,13 +558,6 @@ def asinh(
     ivy.array([[ 0.199, 0.39, 0.569],
                [-0.733, -0.881, -1.44]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0, -2.6, 1, 3.6])
-    >>> y = ivy.asinh(x)
-    >>> print(y)
-    ivy.array([ 0. , -1.68 , 0.881, 1.99 ])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1, 2]),
@@ -676,14 +639,6 @@ def atan(
     >>> ivy.atan(x, out=y)
     >>> print(y)
     ivy.array([ 1.33,  0.  , -1.41])
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.array([1., 0., 2.])
-    >>> y = ivy.atan(x)
-    >>> print(y)
-    ivy.array([0.785, 0.   , 1.11 ])
 
     With :class:`ivy.Container` input:
 
@@ -847,14 +802,6 @@ def atan2(
     ivy.array([[ 0.785,  0.785,  0.785],
         [-2.36 , -2.36 , -2.36 ]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, -0, -2.6, -1, 1, 3.6])
-    >>> y = ivy.native_array([-1.1, 2.5, -2.0, 1.0, 5.0, -2.5])
-    >>> z = ivy.atan2(x, y)
-    >>> print(z)
-    ivy.array([ 3.14 ,  0.   , -2.23 , -0.785,  0.197,  2.18 ])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
@@ -934,13 +881,6 @@ def atanh(
     >>> ivy.atanh(x, out=y)
     >>> print(y)
     ivy.array([ 0.549, -0.549,  0.   ])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.array([ 0., 0.5])
-    >>> y = ivy.atanh(x)
-    >>> print(y)
-    ivy.array([0.   , 0.549])
 
     With :class:`ivy.Container` input:
 
@@ -1022,22 +962,6 @@ def bitwise_and(
     >>> ivy.bitwise_and(x, y, out=y)
     >>> print(y)
     ivy.array([1])
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[True, False]])
-    >>> y = ivy.native_array([[True], [False]])
-    >>> z = ivy.bitwise_and(x, y)
-    >>> print(z)
-    ivy.array([[True, False],[False, False]])
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.array([[6, 5], [3, 7]])
-    >>> y = ivy.native_array([[2, 11], [9, 13]])
-    >>> z = ivy.bitwise_and(x, y)
-    >>> print(z)
-    ivy.array([[2, 1],[1, 5]])
 
     With :class:`ivy.Container` input:
 
@@ -1322,16 +1246,6 @@ def bitwise_right_shift(
                [21, 10],
                [ 2,  4]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> a = ivy.native_array([[32, 40, 55],
-    ...                       [16, 33, 170]])
-    >>> b = ivy.native_array([5, 2, 1])
-    >>> y = ivy.bitwise_right_shift(a, b)
-    >>> print(y)
-    ivy.array([[ 1, 10, 27],
-               [ 0,  8, 85]])
-
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> a = ivy.array([[10, 64],[43, 87],[5, 37]])
@@ -1441,14 +1355,6 @@ def bitwise_xor(
     >>> ivy.bitwise_xor(a, b, out = a)
     >>> print(a)
     ivy.array([2, 0, 2])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> a = ivy.native_array([0, 1, 3, 67, 91])
-    >>> b = ivy.native_array([4, 7, 90, 89, 98])
-    >>> y = ivy.bitwise_xor(a, b)
-    >>> print(y)
-    ivy.array([ 4, 6, 89, 26, 57])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -1583,13 +1489,6 @@ def ceil(
     >>> print(x)
     ivy.array([[ 4.,  5.,  6.],
                [-6., -7., -8.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, -0, -2.5, -1, 2, 3.5])
-    >>> y = ivy.ceil(x)
-    >>> print(y)
-    ivy.array([ 0.,  0., -2., -1.,  2.,  4.])
 
     With :class:`ivy.Container` input:
 
@@ -1836,14 +1735,6 @@ def divide(
     >>> print(y)
     ivy.array([0.667, 1.75, 15.])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([2., 7., 9.])
-    >>> x2 = ivy.native_array([2., 2., 2.])
-    >>> y = ivy.divide(x1, x2)
-    >>> print(y)
-    ivy.array([1., 3.5, 4.5])
-
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([5., 6., 9.])
@@ -1928,14 +1819,6 @@ def equal(
     >>> y = ivy.equal(x1, x2)
     >>> print(y)
     ivy.array([False, True, True])
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([2.5, 7.3, 9.375])
-    >>> x2 = ivy.native_array([2.5, 2.9, 9.375])
-    >>> y = ivy.equal(x1, x2)
-    >>> print(y)
-    ivy.array([True, False,  True])
 
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2093,14 +1976,6 @@ def expm1(
     >>> ivy.expm1(x, out=y)
     ivy.array([  inf,  1.72, -1.  ])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x = ivy.native_array([[1], [5], [-ivy.inf]])
-    >>> ivy.expm1(x)
-    ivy.array([[  1.72],
-       [147.  ],
-       [ -1.  ]])
-
     With :class:`ivy.Array` instance method:
 
     >>> x = ivy.array([20])
@@ -2210,14 +2085,6 @@ def floor(
     ivy.array([[ 1.,  2.,  3.],
                [-5., -6., -7.]])
 
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, -0, -1.5, -1, 1, 2.5])
-    >>> y = ivy.floor(x)
-    >>> print(y)
-    ivy.array([ 0.,  0., -2., -1.,  1.,  2.])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1.5, -2.4]),
@@ -2286,14 +2153,6 @@ def floor_divide(
     >>> y = ivy.floor_divide(x1, x2)
     >>> print(y)
     ivy.array([4., 3., 1.])
-
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([3., 4., 5.])
-    >>> x2 = ivy.native_array([5., 2., 1.])
-    >>> y = ivy.floor_divide(x1, x2)
-    >>> print(y)
-    ivy.array([0., 2., 5.])
 
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2383,14 +2242,6 @@ def greater(
     >>> ivy.greater(x, y, out=x)
     >>> print(x)
     ivy.array([[[False],[True],[False]]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2])
-    >>> y = ivy.native_array([4, 5])
-    >>> z = ivy.greater(x, y)
-    >>> print(z)
-    ivy.array([False,False])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2498,14 +2349,6 @@ def greater_equal(
     >>> ivy.greater_equal(x, y, out=x)
     >>> print(x)
     ivy.array([[[False],[True],[False]]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2])
-    >>> y = ivy.native_array([4, 5])
-    >>> z = ivy.greater_equal(x, y)
-    >>> print(z)
-    ivy.array([False,False])
 
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
@@ -2766,14 +2609,6 @@ def multiply(
     >>> print(y)
     ivy.array([12., 30., 56.])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([1., 3., 9.])
-    >>> x2 = ivy.native_array([4., 7.2, 1.])
-    >>> y = ivy.multiply(x1, x2)
-    >>> print(y)
-    ivy.array([ 4. , 21.6,  9. ])
-
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([8., 6., 7.])
@@ -2847,13 +2682,6 @@ def isfinite(
     >>> print(x)
     ivy.array([[ True,  True],
         [False, False]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0, -0, ivy.nan , -1, ivy.inf])
-    >>> y = ivy.isfinite(x)
-    >>> print(y)
-    ivy.array([ True,  True, False,  True, False])
 
     With :class:`ivy.Container` input:
 
@@ -3227,14 +3055,6 @@ def less(
     >>> print(x)
     ivy.array([[[True],[False],[True]]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2])
-    >>> y = ivy.native_array([4, 5])
-    >>> z = ivy.less(x, y)
-    >>> print(z)
-    ivy.array([ True,  True])
-
     With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x = ivy.array([1, 2, 3])
@@ -3331,13 +3151,6 @@ def log(
     ivy.array([[nan, 0., 1.61, inf],
                [-inf, nan, nan, nan]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([5.78, float('-inf')])
-    >>> y = ivy.log(x)
-    >>> print(y)
-    ivy.array([1.75, nan])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
@@ -3420,13 +3233,6 @@ def log10(
     >>> print(y)
     ivy.array([[nan, 0., 0.699, inf],
                [-inf, nan, nan, nan]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([5.78, float('-inf')])
-    >>> y = ivy.log10(x)
-    >>> print(y)
-    ivy.array([0.762, nan])
 
     With :class:`ivy.Container` input:
 
@@ -3524,13 +3330,6 @@ def log1p(
     >>> y = x.log1p()
     >>> print(y)
     ivy.array([1.e-09])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([10., 20.])
-    >>> y = ivy.log1p(x)
-    >>> print(y)
-    ivy.array([2.4 , 3.04])
 
     With :class:`ivy.Container` input:
 
@@ -3780,13 +3579,6 @@ def logical_and(
         b: ivy.array([False, False, False])
     }
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([True, True, False])
-    >>> y = ivy.native_array([True, False, True])
-    >>> print(ivy.logical_and(x, y))
-    ivy.array([True,False,False])
-
 
     >>> x = ivy.Container(a=ivy.array([False, True, True]),
     ...                   b=ivy.array([True, False, False]))
@@ -3877,13 +3669,6 @@ def logical_not(
     >>> y=ivy.logical_not(x)
     >>> print(y)
     ivy.array([False, True, False, False])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x=ivy.native_array([1,0,1,1,0])
-    >>> y=ivy.logical_not(x)
-    >>> print(y)
-    ivy.array([False, True, False, False,  True])
 
     >>> x=ivy.native_array([1,0,6,5])
     >>> y=ivy.logical_not(x)
@@ -4011,14 +3796,6 @@ def logical_or(
     >>> y = ivy.array([2, True, False])
     >>> ivy.logical_or(x, y, out=x)
     >>> print(x)
-    ivy.array([ True,  True, False])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([True, False, False])
-    >>> y = ivy.native_array([2, True, False])
-    >>> z = ivy.logical_or(x, y)
-    >>> print(z)
     ivy.array([ True,  True, False])
 
     With :class:`ivy.Container` input:
@@ -4223,13 +4000,6 @@ def negative(
     >>> print(x)
     ivy.array([[-1.1, -2.2, -3.3],
        [4.4, 5.5, 6.6]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1.1, -1, 0, 1, 1.1])
-    >>> y = ivy.negative(x)
-    >>> print(y)
-    ivy.array([1.1, 1., -0., -1., -1.1])
 
     With :class:`ivy.Container` input:
 
@@ -4569,13 +4339,6 @@ def positive(
     ivy.array([[ 1.1,  2.2,  3.3],
        [-4.4, -5.5, -6.6]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-1.1, -1, 0, 1, 1.1])
-    >>> y = ivy.positive(x)
-    >>> print(y)
-    ivy.array([-1.1, -1.,  0.,  1.,  1.1])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -4801,14 +4564,6 @@ def remainder(
     >>> print(y)
     ivy.array([2., 1., 3.])
 
-    With :class:`ivy.NativeArray` inputs:
-
-    >>> x1 = ivy.native_array([2., 4., 7.])
-    >>> x2 = ivy.native_array([3., 2., 5.])
-    >>> y = ivy.remainder(x1, x2)
-    >>> print(y)
-    ivy.array([2., 0., 2.])
-
     With mixed :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.array([23., 1., 6.])
@@ -4915,13 +4670,6 @@ def round(
     >>> print(x)
     ivy.array([[0.,5.,-343.,2.],[-6.,44.,12.,12.]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([20.2, 30.5, -5.81])
-    >>> y = ivy.round(x)
-    >>> print(y)
-    ivy.array([20.,30.,-6.])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([4.20, 8.6, 6.90, 0.0]),
@@ -4995,13 +4743,6 @@ def sign(
     >>> print(y)
     ivy.array([[ 1., -1., -1.,  0.],
                [-1.,  1.,  1., -1.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([8.95, -124.6, -0.001, 0, 1.5, 7.1])
-    >>> y = ivy.sign(x)
-    >>> print(y)
-    ivy.array([ 1., -1., -1.,  0.,  1.,  1.])
 
     With :class:`ivy.Container` input:
 
@@ -5090,13 +4831,6 @@ def sin(
     ivy.array([[0.841, 0.909, 0.141],
                [0.757, 0.959, 0.279]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1.2, -2.3, 3.6])
-    >>> y = ivy.sin(x)
-    >>> print(y)
-    ivy.array([0., 0.932, -0.746, -0.443])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2., 3.]),
@@ -5175,13 +4909,6 @@ def sinh(
     >>> ivy.sinh(x, out=x)
     >>> print(x)
         ivy.array([0.232, 10., -1.51])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([2, 4, 7])
-    >>> y = ivy.sinh(x)
-    >>> print(y)
-        ivy.array([3.63, 27.3, 548.])
 
     With :class:`ivy.Container` input:
 
@@ -5264,13 +4991,6 @@ def sqrt(
     >>> X = ivy.array([40., 24., 100.])
     >>> ivy.sqrt(x, out=x)
     >>> ivy.array([6.32455532, 4.89897949, 10.])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-50., 1000., 34.])
-    >>> y = ivy.sqrt(x)
-    >>> print(y)
-    ivy.array([nan, 31.6, 5.83])
 
     With :class:`ivy.Container` input:
 
@@ -5364,13 +5084,6 @@ def square(
     >>> ivy.square(x, out=x)
     >>> print(x)
     ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> a = ivy.native_array([1, 2, 3])
-    >>> b = ivy.square(a)
-    >>> print(b)
-    ivy.array([1, 4, 9])
 
     With :class:`ivy.Container` input:
 
@@ -5640,13 +5353,6 @@ def tanh(
     ivy.array([[0.8, 0.976, 0.997],
               [-1., -1., -1.]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., 2.])
-    >>> y = ivy.tanh(x)
-    >>> print(y)
-    ivy.array([0., 0.762, 0.964])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
@@ -5731,13 +5437,6 @@ def trunc(
     >>> print(y)
     ivy.array([[ 0., -8.,  0.],
            [ 0.,  0.,  2.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0.34, -6., 0.09, 25.4])
-    >>> y = ivy.trunc(x)
-    >>> print(y)
-    ivy.array([ 0., -6.,  0., 25.])
 
     With :class:`ivy.Container` input:
 
@@ -6040,12 +5739,6 @@ def deg2rad(
     ivy.array([[ 0.0192,  0.0384,  0.0576],
         [-0.0768, -0.096 , -0.115 ]])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
-    >>> y=ivy.deg2rad(x)
-    >>> print(y)
-    ivy.array([ 0.   ,  0.351, -0.881,    nan])
 
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
@@ -6122,13 +5815,6 @@ def rad2deg(
     >>> print(x)
     ivy.array([[  63.,  126.,  189.],
         [-252., -315., -378.]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x=ivy.native_array([-0,20.1,-50.5,-ivy.nan])
-    >>> y=ivy.rad2deg(x)
-    >>> print(y)
-    ivy.array([    0.,  1150., -2890.,    nan])
 
     >>> x=ivy.native_array([-0,20.1,ivy.nan])
     >>> y=ivy.zeros(3)
@@ -6253,12 +5939,6 @@ def isreal(
     >>> z = ivy.isreal(x)
     >>> print(z)
     ivy.array([ True, False, False])
-
-    With :class:`ivy.NativeArray` inputs:
-    >>> x = ivy.native_array([[1], [5+6.9j], [-5.5]])
-    >>> z = ivy.isreal(x)
-    >>> print(z)
-    ivy.array([[True], [False], [True]])
 
     With :class:`ivy.Container` input:
     >>> x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),\
