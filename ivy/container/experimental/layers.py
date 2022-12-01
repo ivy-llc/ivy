@@ -790,10 +790,10 @@ class ContainerWithLayersExperimental(ContainerBase):
         >>> print(x.max_pool3d(2, 1, "VALID"))
         {
             a: ivy.array([], shape=(1, 1, 0, 2, 2)),
-            b: ivy.array([[[[[10., 11.],
-                             [12., 13.]]]],
-                       [[[[34., 35.],
-                             [36., 37.]]]]])
+            b: ivy.array([[[[[20, 21],
+                             [22, 23]]]],
+                       [[[[44, 45],
+                             [46, 47]]]]])
         }
         """
         return self.static_avg_pool3d(

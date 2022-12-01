@@ -606,7 +606,7 @@ class ArrayWithElementwise(abc.ABC):
 
         >>> x = ivy.array([-3., 0., 3.])
         >>> y = ivy.zeros(3)
-        >>> ivy.cos(x, out=y)
+        >>> x.cos(out=y)
         >>> print(y)
         ivy.array([-0.99,  1.  , -0.99])
 
@@ -966,6 +966,14 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results. The returned array
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x.greater_equal(y)
+        >>> print(z)
+        ivy.array([False,False,False])
         """
         return ivy.greater_equal(self._data, x2, out=out)
 
@@ -1019,6 +1027,32 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.isinf()
+        ivy.array([False, False, False])
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> x.isinf()
+        ivy.array([[False, False, False]])
+
+        >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+        >>> x.isinf()
+        ivy.array([[[False],[True],[False]]])
+
+        >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
+        >>> x.isinf()
+        ivy.array([[ True, True, False]])
+
+        >>> x = ivy.zeros((3, 3))
+        >>> x.isinf()
+        ivy.array([[False, False, False],
+            [False, False, False],
+            [False, False, False]])
         """
         return ivy.isinf(self._data, out=out)
 
@@ -1042,6 +1076,39 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.isnan()
+        ivy.array([False, False, False])
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> x.isnan()
+        ivy.array([[False, False, False]])
+
+        >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+        >>> x.isnan()
+        ivy.array([[[False],
+                [False],
+                [False]]])
+
+        >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
+        >>> x.isnan()
+        ivy.array([[ True, True, False]])
+
+        >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
+        >>> x.isnan()
+        ivy.array([[ True, False,  True, False]])
+
+        >>> x = ivy.zeros((3, 3))
+        >>> x.isnan()
+        ivy.array([[False, False, False],
+            [False, False, False],
+            [False, False, False]])
+
         """
         return ivy.isnan(self._data, out=out)
 
@@ -1221,7 +1288,7 @@ class ArrayWithElementwise(abc.ABC):
         ivy.array([0.693, 1.1  , 1.39 ])
 
         >>> x = ivy.array([0.1 , .001 ])
-        >>> x.log1p( out = x)
+        >>> x.log1p(out = x)
         >>> print(x)
         ivy.array([0.0953, 0.001 ])
 
@@ -1397,6 +1464,18 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results.
             The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x=ivy.array([0,1,1,0])
+        >>> x.logical_not()
+        ivy.array([ True, False, False,  True])
+
+        >>> x=ivy.array([2,0,3,9])
+        >>> x.logical_not()
+        ivy.array([False,  True, False, False])
         """
         return ivy.logical_not(self._data, out=out)
 
@@ -1633,19 +1712,19 @@ class ArrayWithElementwise(abc.ABC):
         With :class:`ivy.Array` input:
 
          >>> x = ivy.array([2, 3 ,5, 7])
-        >>> y = ivy.negative(x)
+        >>> y = x.negative()
         >>> print(y)
         ivy.array([-2, -3, -5, -7])
 
         >>> x = ivy.array([0,-1,-0.5,2,3])
         >>> y = ivy.zeros(5)
-        >>> ivy.negative(x, out=y)
+        >>> x.negative(out=y)
         >>> print(y)
         ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
-        >>> ivy.negative(x, out=x)
+        >>> x.negative(out=x)
         >>> print(x)
         ivy.array([[ -1.1, -2.2, -3.3],
         [4.4, 5.5, 6.6]])
@@ -1746,19 +1825,19 @@ class ArrayWithElementwise(abc.ABC):
         With :class:`ivy.Array` input:
 
         >>> x = ivy.array([2, 3 ,5, 7])
-        >>> y = ivy.positive(x)
+        >>> y = x.positive()
         >>> print(y)
         ivy.array([2, 3, 5, 7])
 
         >>> x = ivy.array([0, -1, -0.5, 2, 3])
         >>> y = ivy.zeros(5)
-        >>> ivy.positive(x, out=y)
+        >>> x.positive(out=y)
         >>> print(y)
         ivy.array([0., -1., -0.5,  2.,  3.])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
-        >>> ivy.positive(x,out=x)
+        >>> x.positive(out=x)
         >>> print(x)
         ivy.array([[ 1.1,  2.2,  3.3],
         [-4.4, -5.5, -6.6]])
@@ -2053,6 +2132,16 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the square root of each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([[1., 2.],  [3., 4.]])
+        >>> y = x.sqrt()
+        >>> print(y)
+        ivy.array([[1.  , 1.41],
+                   [1.73, 2.  ]])
         """
         return ivy.sqrt(self._data, out=out)
 

@@ -1,6 +1,3 @@
-# global
-from typing import Any
-
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -49,27 +46,19 @@ def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
 
 
-def constant(
-    value: Any,
-    dtype: Any = None,
-    shape: Any = None,
-) -> EagerTensor:
+def constant(value, dtype, shape, name=None):
     if shape:
-        value = ivy.reshape(ivy.array(value, dtype=dtype), shape=shape)
+        value = ivy.reshape(ivy.astype(value, dtype), shape=shape)
         return EagerTensor(value)
-    return EagerTensor(ivy.array(value, dtype=dtype))
+    return EagerTensor(ivy.astype(value, dtype))
 
 
-def convert_to_tensor(
-    value: Any,
-    dtype: Any = None,
-    dtype_hint: Any = None,
-) -> Any:
+def convert_to_tensor(value, dtype, dtype_hint, name=None):
     if dtype:
-        return EagerTensor(ivy.array(value, dtype=dtype))
+        return EagerTensor(ivy.astype(value, dtype))
     elif dtype_hint:
-        return EagerTensor(ivy.array(value, dtype=dtype_hint))
-    return EagerTensor(ivy.array(value))
+        return EagerTensor(ivy.astype(value, dtype_hint))
+    return EagerTensor(value)
 
 
 @to_ivy_arrays_and_back
@@ -108,3 +97,17 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype=out_type)
     else:
         return ivy.array(ivy.shape(input), dtype="int64")
+
+
+@to_ivy_arrays_and_back
+def sort(values, axis=-1, direction="ASCENDING", name=None):
+    descending = True
+    if direction == "ASCENDING":
+        descending = False
+    else:
+        ivy.assertions.check_equal(
+            direction,
+            "DESCENDING",
+            message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
+        )
+    return ivy.sort(values, axis=axis, descending=descending)

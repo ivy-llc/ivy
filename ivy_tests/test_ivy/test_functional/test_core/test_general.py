@@ -3,20 +3,49 @@
 # global
 import time
 import math
-import tensorflow as tf
-import jax.numpy as jnp
+from types import SimpleNamespace
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = SimpleNamespace()
+    tf.__version__ = None
+
+
+try:
+    import jax.numpy as jnp
+except ImportError:
+    jnp = SimpleNamespace()
+
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np
 from collections.abc import Sequence
-import torch.multiprocessing as multiprocessing
+
+try:
+    import torch.multiprocessing as multiprocessing
+except ImportError:
+    multiprocessing = SimpleNamespace()
 
 # local
 import threading
 import ivy
-import ivy.functional.backends.jax
-import ivy.functional.backends.tensorflow
-import ivy.functional.backends.torch
+
+try:
+    import ivy.functional.backends.jax
+except ImportError:
+    ivy.functional.backends.jax = SimpleNamespace()
+
+try:
+    import ivy.functional.backends.tensorflow
+except ImportError:
+    ivy.functional.backends.tensorflow = SimpleNamespace()
+
+try:
+    import ivy.functional.backends.torch
+except ImportError:
+    ivy.functional.backends.torch = SimpleNamespace()
+
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
 from ivy_tests.test_ivy.helpers.assertions import assert_all_close

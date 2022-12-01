@@ -1279,10 +1279,11 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1370,10 +1371,11 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumprod(
         self: ivy.Container,
+        /,
+        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

@@ -561,3 +561,8 @@ def log10(x):
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
     return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
