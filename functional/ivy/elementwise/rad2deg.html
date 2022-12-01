@@ -246,13 +246,6 @@ inputs broadcast to.</p></li>
 <span class="go">    [-252., -315., -378.]])</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="o">-</span><span class="mi">0</span><span class="p">,</span><span class="mf">20.1</span><span class="p">,</span><span class="o">-</span><span class="mf">50.5</span><span class="p">,</span><span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">ivy.array([    0.,  1150., -2890.,    nan])</span>
-</pre></div>
-</div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="o">-</span><span class="mi">0</span><span class="p">,</span><span class="mf">20.1</span><span class="p">,</span><span class="n">ivy</span><span class="o">.</span><span class="n">nan</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">out</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>

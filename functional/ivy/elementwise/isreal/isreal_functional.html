@@ -250,11 +250,6 @@ ivy.array([[[True], [True], [True]]])</p>
 <span class="go">ivy.array([ True, False, False])</span>
 </pre></div>
 </div>
-<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> inputs:
-&gt;&gt;&gt; x = ivy.native_array([[1], [5+6.9j], [-5.5]])
-&gt;&gt;&gt; z = ivy.isreal(x)
-&gt;&gt;&gt; print(z)
-ivy.array([[True], [False], [True]])</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
 &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-6.7-7j, -np.inf, 1.23]),                          b=ivy.array([5j, 5-6j, 3]))
 &gt;&gt;&gt; z = ivy.isreal(x)
