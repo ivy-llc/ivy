@@ -452,7 +452,6 @@ def asin(
     >>> print(x)
     ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])
 
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),
@@ -460,27 +459,6 @@ def asin(
     >>> y = ivy.asin(x)
     >>> print(y)
     {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1, -0.5, 0.6, 1])
-    >>> y = x.asin()
-    >>> print(y)
-    ivy.array([-1.57,-0.524,0.644,1.57])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),b=ivy.array([0.3, 0.4, 0.5]))
-    >>> y = x.asin()
-    >>> print(y)
-    {
-        a:ivy.array([0.,0.1,0.201]),
-        b:ivy.array([0.305,0.412,0.524])
-    }
-
     """
     return ivy.current_backend(x).asin(x, out=out)
 
@@ -2640,25 +2618,6 @@ def isfinite(
         a: ivy.array([True, True]),
         b: ivy.array([True, False])
     }
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
-    >>> y = x.isfinite()
-    >>> print(y)
-    ivy.array([[ True,  True],
-        [False, False]])
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
-    ...                   b=ivy.array([float('-0'), ivy.nan]))
-    >>> y = x.isfinite()
-    >>> print(y)
-    {
-        a: ivy.array([True, True]),
-        b: ivy.array([True, False])
-    }
     """
     return ivy.current_backend(x).isfinite(x, out=out)
 
@@ -2747,34 +2706,6 @@ def isinf(
         b: ivy.array([True, False, False])
     }
 
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> x.isinf()
-    ivy.array([False, False, False])
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> x.isinf()
-    ivy.array([[False, False, False]])
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> x.isinf()
-    ivy.array([[[False],[True],[False]]])
-
-    >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
-    >>> x.isinf()
-    ivy.array([[ True, True, False]])
-
-    >>> x = ivy.zeros((3, 3))
-    >>> x.isinf()
-    ivy.array([[False, False, False],
-        [False, False, False],
-        [False, False, False]])
-
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
@@ -2784,21 +2715,6 @@ def isinf(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
-
-    Container Static Method Examples
-    ------------------------
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
-    ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
-    >>> z = ivy.Container.static_isinf(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
     """
     return ivy.current_backend(x).isinf(x, out=out)
 

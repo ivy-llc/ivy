@@ -1019,6 +1019,32 @@ class ArrayWithElementwise(abc.ABC):
             an array containing test results. An element ``out_i`` is ``True``
             if ``self_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> x.isinf()
+        ivy.array([False, False, False])
+
+        >>> x = ivy.array([[1.1, 2.3, -3.6]])
+        >>> x.isinf()
+        ivy.array([[False, False, False]])
+
+        >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
+        >>> x.isinf()
+        ivy.array([[[False],[True],[False]]])
+
+        >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
+        >>> x.isinf()
+        ivy.array([[ True, True, False]])
+
+        >>> x = ivy.zeros((3, 3))
+        >>> x.isinf()
+        ivy.array([[False, False, False],
+            [False, False, False],
+            [False, False, False]])
         """
         return ivy.isinf(self._data, out=out)
 
