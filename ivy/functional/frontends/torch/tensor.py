@@ -329,6 +329,9 @@ class Tensor:
     def mean(self, dim=None, keepdim=False):
         return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=False)
 
+    def neg(self):
+        return ivy.negative(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
