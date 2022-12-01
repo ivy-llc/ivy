@@ -2816,6 +2816,16 @@ class ContainerWithElementwise(ContainerBase):
             The returned array must have areal-valued floating-point data type
             determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        With :class:`ivy.Container` static method:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> print(ivy.Container.static_expm1(x))
+        {
+            a: ivy.array([1.71828175, 6.38905621]),
+            b: ivy.array([19.08553696, 53.59815216])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "expm1",
@@ -2880,7 +2890,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> y = ivy.Container(a=ivy.array([0., 0.]))
         >>> x = ivy.Container(a=ivy.array([4., -2.]))
-        >>> _ = x.expm1(out=y)
+        >>> x.expm1(out=y)
         >>> print(y)
         {
             a: ivy.array([53.6, -0.865])
