@@ -2946,6 +2946,16 @@
 <span class="sd">            The returned array must have areal-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` static method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; print(ivy.Container.static_expm1(x))</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1.71828175, 6.38905621]),</span>
+<span class="sd">            b: ivy.array([19.08553696, 53.59815216])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;expm1&quot;</span><span class="p">,</span>
@@ -3010,7 +3020,7 @@
 
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([0., 0.]))</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([4., -2.]))</span>
-<span class="sd">        &gt;&gt;&gt; _ = x.expm1(out=y)</span>
+<span class="sd">        &gt;&gt;&gt; x.expm1(out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([53.6, -0.865])</span>

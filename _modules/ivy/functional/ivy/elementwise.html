@@ -2076,12 +2076,6 @@
 <span class="sd">    &gt;&gt;&gt; ivy.expm1(x, out=y)</span>
 <span class="sd">    ivy.array([  inf,  1.72, -1.  ])</span>
 
-<span class="sd">    With :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([20])</span>
-<span class="sd">    &gt;&gt;&gt; x.expm1()</span>
-<span class="sd">    ivy.array([4.85e+08])</span>
-
 <span class="sd">    With :class:`ivy.Container` inputs:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, 0,]),</span>
@@ -2091,23 +2085,6 @@
 <span class="sd">        a: ivy.array([-0.632, 0.]),</span>
 <span class="sd">        b: ivy.array([2.20e+04, 1.72e+00])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    With :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([10, 13]))</span>
-<span class="sd">    &gt;&gt;&gt; x.expm1(x)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([22000., 442000.])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With :class:`ivy.Container` static method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1]))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.Container.static_expm1(x)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([1.72])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">expm1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
