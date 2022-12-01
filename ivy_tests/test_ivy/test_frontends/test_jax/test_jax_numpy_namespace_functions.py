@@ -3137,3 +3137,52 @@ def test_jax_expand_dims(
         a=x[0],
         axis=axis,
     )
+
+
+# mean
+@handle_frontend_test(
+    fn_tree="jax.numpy.mean",
+    dtype_x_axis_castable=_get_castable_dtype(),
+    where=np_helpers.where(),
+    keepdims=st.booleans(),
+)
+def test_jax_numpy_mean(
+        *,
+        dtype_x_axis_castable,
+        where,
+        keepdims,
+        with_out,
+        num_positional_args,
+        as_variable,
+        native_array,
+        on_device,
+        fn_tree,
+        frontend,
+):
+    x_dtype, x, axis, castable_dtype = dtype_x_axis_castable
+
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
+        where=where,
+        input_dtype=x_dtype,
+        as_variable=as_variable,
+        native_array=native_array,
+    )
+
+    np_helpers.test_frontend_function(
+        input_dtypes=[x_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+        dtype=castable_dtype,
+        out=None,
+        keepdims=keepdims,
+        where=where,
+    )
