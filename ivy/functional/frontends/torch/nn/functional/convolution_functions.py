@@ -367,7 +367,10 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     batch_size = input.shape[0]
     n_output_channels = int(n_input_channels / (kernel_width * kernel_height))
 
-    output = ivy.zeros((batch_size, n_output_channels, int(output_height), int(output_width)))
+    output = ivy.zeros((batch_size,
+                        n_output_channels,
+                        int(output_height),
+                        int(output_width)))
 
     height_col = int(
         (output_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1))
