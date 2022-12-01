@@ -286,7 +286,7 @@ def test_torch_smooth_l1_loss(
     delta=helpers.floats(min_value=0, max_value=5),
     reduction=st.sampled_from(["none", "mean", "sum"]),
 )
-def test_huber_loss(
+def test_torch_huber_loss(
     *,
     dtype_and_x,
     delta,
