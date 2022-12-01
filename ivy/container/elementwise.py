@@ -3618,6 +3618,18 @@ class ContainerWithElementwise(ContainerBase):
             if ``x_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
+        ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
+        >>> z = ivy.Container.static_isinf(x)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "isinf",
@@ -3669,6 +3681,18 @@ class ContainerWithElementwise(ContainerBase):
             if ``self_i`` is either positive or negative infinity and ``False``
             otherwise. The returned array must have a data type of ``bool``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
+        ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
+        >>> z = x.isinf()
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
         """
         return self.static_isinf(
             self,
