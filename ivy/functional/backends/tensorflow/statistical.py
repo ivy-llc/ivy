@@ -157,10 +157,11 @@ def var(
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[tf.DType] = None,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
