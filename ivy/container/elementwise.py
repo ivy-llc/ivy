@@ -3386,6 +3386,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
+        >>> z = ivy.Container.static_greater_equal(y)
+        >>> print(z)
+        {
+            a:ivy.array([True,True,True]),
+            b:ivy.array([False,False,False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "greater_equal",
@@ -3442,6 +3455,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([5, 6, 7]))
+        >>> z = x.greater_equal(y)
+        >>> print(z)
+        {
+            a:ivy.array([True,True,True]),
+            b:ivy.array([False,False,False])
+        }
         """
         return self.static_greater_equal(
             self,

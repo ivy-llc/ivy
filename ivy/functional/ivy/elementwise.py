@@ -2304,61 +2304,6 @@ def greater_equal(
         a:ivy.array([True,True,True]),
         b:ivy.array([False,False,False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = z = x.greater_equal(y)
-    >>> print(z)
-    ivy.array([False,False,False])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
-    ...                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                   b=ivy.array([5, 6, 7]))
-    >>> z = x.greater_equal(y)
-    >>> print(z)
-    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> x = ivy.array([6, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x >= y
-    >>> print(z)
-    ivy.array([True,False,False])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([True,True,True]),
-        b:ivy.array([False,False,False])
-    }
-
-    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),
-        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])
-    }
-
     """
     return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
