@@ -736,7 +736,7 @@
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([-3., 0., 3.])</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.zeros(3)</span>
-<span class="sd">        &gt;&gt;&gt; ivy.cos(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; x.cos(out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        ivy.array([-0.99,  1.  , -0.99])</span>
 
@@ -1206,6 +1206,39 @@
 <span class="sd">            an array containing test results. An element ``out_i`` is ``True``</span>
 <span class="sd">            if ``self_i`` is ``NaN`` and ``False`` otherwise.</span>
 <span class="sd">            The returned array should have a data type of ``bool``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([False, False, False])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([[False, False, False]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[[1.1], [float(&#39;inf&#39;)], [-6.3]]])</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([[[False],</span>
+<span class="sd">                [False],</span>
+<span class="sd">                [False]]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[-float(&#39;nan&#39;), float(&#39;nan&#39;), 0.0]])</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([[ True, True, False]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[-float(&#39;nan&#39;), float(&#39;inf&#39;), float(&#39;nan&#39;), 0.0]])</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([[ True, False,  True, False]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.zeros((3, 3))</span>
+<span class="sd">        &gt;&gt;&gt; x.isnan()</span>
+<span class="sd">        ivy.array([[False, False, False],</span>
+<span class="sd">            [False, False, False],</span>
+<span class="sd">            [False, False, False]])</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -1385,7 +1418,7 @@
 <span class="sd">        ivy.array([0.693, 1.1  , 1.39 ])</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.array([0.1 , .001 ])</span>
-<span class="sd">        &gt;&gt;&gt; x.log1p( out = x)</span>
+<span class="sd">        &gt;&gt;&gt; x.log1p(out = x)</span>
 <span class="sd">        &gt;&gt;&gt; print(x)</span>
 <span class="sd">        ivy.array([0.0953, 0.001 ])</span>
 

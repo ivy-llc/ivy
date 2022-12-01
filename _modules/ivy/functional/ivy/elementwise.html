@@ -2859,7 +2859,6 @@
 <span class="sd">       [False, False, False]])</span>
 
 
-
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
@@ -2870,64 +2869,6 @@
 <span class="sd">        a: ivy.array([False, True, False]),</span>
 <span class="sd">        b: ivy.array([True, False, False])</span>
 <span class="sd">    }</span>
-
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    With :class:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([False, False, False])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.3, -3.6]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([[False, False, False]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [float(&#39;inf&#39;)], [-6.3]]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([[[False],</span>
-<span class="sd">            [False],</span>
-<span class="sd">            [False]]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-float(&#39;nan&#39;), float(&#39;nan&#39;), 0.0]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([[ True, True, False]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[-float(&#39;nan&#39;), float(&#39;inf&#39;), float(&#39;nan&#39;), 0.0]])</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([[ True, False,  True, False]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.zeros((3, 3))</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    ivy.array([[False, False, False],</span>
-<span class="sd">        [False, False, False],</span>
-<span class="sd">        [False, False, False]])</span>
-
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
-<span class="sd">    ...                   b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
-<span class="sd">    &gt;&gt;&gt; x.isnan()</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([True, False, False])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Container Static Method Examples</span>
-<span class="sd">    ------------------------</span>
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1, -float(&#39;nan&#39;), 1.23]),</span>
-<span class="sd">    ...                   b=ivy.array([float(&#39;nan&#39;), 3.3, -4.2]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.Container.static_isnan(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([False, True, False]),</span>
-<span class="sd">        b: ivy.array([True, False, False])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -3246,19 +3187,14 @@
 <span class="sd">    ivy.array([0.   , 0.693])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3],[4.4, 5.5, 6.6]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.log1p(x , out = x)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.log1p(x, out = x)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([[0.742, 1.16 , 1.46 ],[1.69 , 1.87 , 2.03 ]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1e-9] , dtype = ivy.float32)</span>
-<span class="sd">    &gt;&gt;&gt; y = x.log1p()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1.e-09])</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container.static_log1p(x)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.log1p(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0., 0.693, 1.1]),</span>
