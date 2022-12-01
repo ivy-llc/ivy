@@ -4849,7 +4849,6 @@ class ContainerWithElementwise(ContainerBase):
         >>> x = ivy.Container.static_logical_and(j, m)
         >>> y = ivy.Container.static_logical_and(m, n)
         >>> z = ivy.Container.static_logical_and(k, l)
-
         {
             a: ivy.array([True, False, False, False])
         }
@@ -4860,7 +4859,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         >>> print(y)
-            ivy.array([False, False, False, False])
+        ivy.array([False, False, False, False])
 
         >>> print(z)
         {
@@ -4943,16 +4942,23 @@ class ContainerWithElementwise(ContainerBase):
         >>> z = k.logical_and(l)
 
         >>> print(w)
-        {a:ivy.array([True,False,False,False])}
+        {
+            a:ivy.array([True,False,False,False])
+        }
 
         >>> print(x)
-        {a:ivy.array([False,True,False,False])}
+        {
+            a:ivy.array([False,True,False,False])
+        }
 
         >>> print(y)
-            ivy.array([False, False, False, False])
+        ivy.array([False, False, False, False])
 
         >>> print(z)
-        {a:ivy.array([True,False,True]),b:ivy.array([False,False,False])}
+        {
+            a:ivy.array([True,False,True]),
+            b:ivy.array([False,False,False])
+        }
         """
         return self.static_logical_and(
             self,
@@ -5005,6 +5011,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``x``.
             The returned container must have a data type of ``bool``.
 
+        Examples
+        --------
+        Using 'ivy.Container' instance
+
+        >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
+        >>> ivy.Container.static_logical_not(x)
+        {
+            a: ivy.array([False, True, True, False]),
+            b: ivy.array([False, False, False, True])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "logical_not",
@@ -5055,6 +5071,23 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``self``.
             The returned container must have a data type of ``bool``.
 
+        Examples
+        --------
+        Using 'ivy.Container' instance
+
+        >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
+        >>> x.logical_not()
+        {
+            a: ivy.array([False, True, True, False]),
+            b: ivy.array([False, False, False, True])
+        }
+
+        >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
+        >>> x.logical_not()
+        {
+            a: ivy.array([False, True, False, True]),
+            b: ivy.array([False, False, True, False])
+        }
         """
         return self.static_logical_not(
             self,
