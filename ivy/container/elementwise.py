@@ -3770,6 +3770,19 @@ class ContainerWithElementwise(ContainerBase):
             if ``x_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
+        ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
+        >>> z = ivy.Container.static_isnan(x)
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "isnan",
@@ -3820,6 +3833,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the test result. An element ``out_i`` is ``True``
             if ``self_i`` is ``NaN`` and ``False`` otherwise.
             The returned array should have a data type of ``bool``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
+        ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
+        >>> x.isnan()
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, False, False])
+        }
 
         """
         return self.static_isnan(
@@ -4305,7 +4328,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         >>> x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([ 4., 5.1]))
-        >>> ivy.Container.static_log1p(x , out = x)
+        >>> ivy.Container.static_log1p(x, out = x)
         >>> print(y)
         {
             a: ivy.array([0., 0.693, 1.1]),
