@@ -5575,6 +5575,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., -5.]))
+        >>> y = ivy.Container.static_negative(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array([-3., -4., 5.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "negative",
@@ -5631,7 +5643,7 @@ class ContainerWithElementwise(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
         ...                   b=ivy.array([3., 4., -5.]))
-        >>> y = ivy.negative(x)
+        >>> y = x.negative()
         >>> print(y)
         {
             a: ivy.array([-0., -1., -2.]),

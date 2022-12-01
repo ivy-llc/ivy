@@ -1712,19 +1712,19 @@ class ArrayWithElementwise(abc.ABC):
         With :class:`ivy.Array` input:
 
          >>> x = ivy.array([2, 3 ,5, 7])
-        >>> y = ivy.negative(x)
+        >>> y = x.negative()
         >>> print(y)
         ivy.array([-2, -3, -5, -7])
 
         >>> x = ivy.array([0,-1,-0.5,2,3])
         >>> y = ivy.zeros(5)
-        >>> ivy.negative(x, out=y)
+        >>> x.negative(out=y)
         >>> print(y)
         ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
-        >>> ivy.negative(x, out=x)
+        >>> x.negative(out=x)
         >>> print(x)
         ivy.array([[ -1.1, -2.2, -3.3],
         [4.4, 5.5, 6.6]])
