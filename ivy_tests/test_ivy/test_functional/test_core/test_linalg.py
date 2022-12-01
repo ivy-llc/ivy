@@ -1490,13 +1490,14 @@ def test_cholesky(
     num_positional_args=helpers.num_positional_args(fn_name="cov"),
 )
 def test_cov(
+    *,
     dtype_x1_x2,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
     fn_name,
-    container,
+    container_flags,
     instance_method,
     fw,
 ):
@@ -1507,7 +1508,7 @@ def test_cov(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=fw,
         fn_name=fn_name,
