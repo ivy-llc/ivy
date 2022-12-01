@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 
 # local
 import ivy
@@ -725,6 +725,40 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
+    def diff(
+        self: Union[ivy.Array, int, float, list, tuple],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            array-like input.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Returns the n-th discrete difference along the given axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ivy.diff(self._data, out=out)
+
     def fix(
         self: ivy.Array,
         /,
@@ -828,3 +862,76 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([0.0369, 0.2021])
         """
         return ivy.zeta(self._data, q, out=out)
+
+    def gradient(
+        self: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        spacing: Optional[Union[int, list, tuple]] = 1,
+        edge_order: Optional[int] = 1,
+        axis: Optional[Union[int, list, tuple]] = None,
+    ) -> Union[ivy.Array, List[ivy.Array]]:
+        """Calculates gradient of x with respect to (w.r.t.) spacing
+
+        Parameters
+        ----------
+        x
+            input array representing outcomes of the function
+            spacing
+            if not given, indices of x will be used
+            if scalar indices of x will be scaled with this value
+            if array gradient of x w.r.t. spacing
+        edge_order
+            1 or 2, for 'frist order' and 'second order' estimation
+            of boundary values of gradient respectively.
+            Note: jax supports edge_order=1 case only
+        axis
+            dimension(s) to approximate the gradient over
+            by default partial gradient is computed in every dimention
+
+
+        Returns
+        -------
+        ret
+            Array with values computed from gradient function from
+            inputs
+
+        Examples
+        --------
+        >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
+        >>> x = ivy.array([4., 1., 1., 16.], )
+        >>> ivy.gradient(x, spacing=spacing)
+        ivy.array([-3., -2.,  2.,  5.])
+
+        >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+        >>> ivy.gradient(x)
+        [ivy.array([[ 9., 18., 36., 72.],
+           [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+           [10. , 15. , 30. , 40. ]])]
+
+        >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+        >>> ivy.gradient(x, spacing=2.0)
+        [ivy.array([[ 4.5,  9. , 18. , 36. ],
+           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+           [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+        >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+        >>> ivy.gradient(x, axis=1)
+        ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+           [10. , 15. , 30. , 40. ]])
+
+        >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+        >>> ivy.gradient(x, spacing=[3., 2.])
+        [ivy.array([[ 3.,  6., 12., 24.],
+           [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+           [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+        >>> spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))
+        >>> ivy.gradient(x, spacing=spacing)
+        [ivy.array([[ 4.5,  9. , 18. , 36. ],
+           [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333,  0.5,  1., 1.33333333],
+           [ 3.33333333,  5.        , 10.        , 13.33333333]])]
+        """
+        return ivy.gradient(
+            self._data, spacing=spacing, axis=axis, edge_order=edge_order
+        )

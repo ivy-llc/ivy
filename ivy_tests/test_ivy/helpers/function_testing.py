@@ -2,7 +2,16 @@
 import copy
 from typing import Union, List
 import numpy as np
-import tensorflow as tf
+import types
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = types.SimpleNamespace()
+    tf.TensorShape = None
+
+
 import importlib
 import inspect
 
@@ -10,24 +19,49 @@ import inspect
 import ivy
 from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
-from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
-from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
-from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
-from ivy_tests.test_ivy.test_frontends.test_jax import convjax
-from ivy.functional.backends.jax.general import is_native_array as is_jax_native_array
+
+
+def empty_func(*args, **kwargs):
+    return None
+
+
+try:
+    from ivy.functional.backends.jax.general import (
+        is_native_array as is_jax_native_array,
+    )
+except ImportError:
+    is_jax_native_array = empty_func
+
+
 from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
-from ivy.functional.backends.numpy.general import (
-    is_native_array as is_numpy_native_array,
-)
-from ivy.functional.backends.tensorflow.general import (
-    is_native_array as is_tensorflow_native_array,
-)
-from ivy.functional.backends.torch.general import (
-    is_native_array as is_torch_native_array,
-)
+
+
+try:
+    from ivy.functional.backends.numpy.general import (
+        is_native_array as is_numpy_native_array,
+    )
+except ImportError:
+    is_numpy_native_array = empty_func
+
+
+try:
+    from ivy.functional.backends.tensorflow.general import (
+        is_native_array as is_tensorflow_native_array,
+    )
+except ImportError:
+    is_tensorflow_native_array = empty_func
+
+
+try:
+    from ivy.functional.backends.torch.general import (
+        is_native_array as is_torch_native_array,
+    )
+except ImportError:
+    is_torch_native_array = empty_func
+
 
 from .assertions import (
     value_test,
@@ -492,14 +526,26 @@ def test_frontend_function(
     def _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy):
         # frontend function
         frontend_fn = getattr(function_module, fn_name)
-
         # check and replace NativeClass object in arguments with ivy counterparts
-        convs = {
-            "jax": convjax,
-            "numpy": convnumpy,
-            "tensorflow": convtensor,
-            "torch": convtorch,
-        }
+        from ivy_tests.test_ivy.test_frontends.test_numpy import convnumpy
+
+        convs = {"numpy": convnumpy}
+
+        if "torch" in available_frameworks:
+            from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+
+            convs["torch"] = convtorch
+
+        if "tensorflow" in available_frameworks:
+            from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+
+            convs["tensorflow"] = convtensor
+
+        if "jax" in available_frameworks:
+            from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+
+            convs["jax"] = convjax
+
         if frontend in convs:
             conv = convs[frontend]
             args = ivy.nested_map(args, fn=conv, include_derived=True)
@@ -658,7 +704,7 @@ def test_frontend_function(
 
     # Call the frontend testing function
 
-    _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+    ret, frontend_ret = _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
 
     # testing all alias functions
     if all_aliases is not None:
@@ -678,6 +724,8 @@ def test_frontend_function(
 
             # calling the testing function
             _test_frontend_function(args, kwargs, args_ivy, kwargs_ivy)
+    if not test_values:
+        return ret, frontend_ret
 
 
 # Method testing
@@ -699,14 +747,9 @@ def gradient_test(
     ret_grad_idxs=None,
     ground_truth_backend: str,
 ):
-    def grad_fn(xs):
-        arg_array_vals = xs[0]
-        kwarg_array_vals = xs[1]
-        args_writeable = ivy.copy_nest(args)
-        kwargs_writeable = ivy.copy_nest(kwargs)
-        ivy.set_nest_at_indices(args_writeable, args_idxs, arg_array_vals)
-        ivy.set_nest_at_indices(kwargs_writeable, kwargs_idxs, kwarg_array_vals)
-        ret = ivy.__dict__[fn_name](*args_writeable, **kwargs_writeable)
+    def grad_fn(all_args):
+        args, kwargs = all_args
+        ret = ivy.__dict__[fn_name](*args, **kwargs)
         return ivy.nested_map(ret, ivy.mean, include_derived=True)
 
     # extract all arrays from the arguments and keyword arguments
@@ -725,11 +768,8 @@ def gradient_test(
         native_array_flags=native_array_flags,
         container_flags=container_flags,
     )
-    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
-    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = [arg_array_vals, kwarg_array_vals]
     _, grads = ivy.execute_with_gradients(
-        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
     grads_np_flat = flatten_and_to_np(ret=grads)
 
@@ -754,11 +794,8 @@ def gradient_test(
         native_array_flags=native_array_flags,
         container_flags=container_flags,
     )
-    arg_array_vals = list(ivy.multi_index_nest(args, args_idxs))
-    kwarg_array_vals = list(ivy.multi_index_nest(kwargs, kwargs_idxs))
-    xs = [arg_array_vals, kwarg_array_vals]
     _, grads_from_gt = ivy.execute_with_gradients(
-        grad_fn, xs, xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
+        grad_fn, [args, kwargs], xs_grad_idxs=xs_grad_idxs, ret_grad_idxs=ret_grad_idxs
     )
     grads_np_from_gt_flat = flatten_and_to_np(ret=grads_from_gt)
     ivy.unset_backend()
@@ -1074,8 +1111,8 @@ def test_frontend_method(
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
-    class_: str,
-    method_name: str = "__init__",
+    init_name: str,
+    method_name: str,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1269,8 +1306,11 @@ def test_frontend_method(
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
+    ivy_frontend_creation_fn = ivy.functional.frontends.__dict__[frontend].__dict__[
+        init_name
+    ]
     # Run testing
-    ins = class_(*args_constructor, **kwargs_constructor)
+    ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
         ins.__getattribute__(method_name), *args_method, **kwargs_method
     )
@@ -1311,8 +1351,10 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-    frontend_class = importlib.import_module(frontend).__getattribute__(class_.__name__)
-    ins_gt = frontend_class(*args_constructor_frontend, **kwargs_constructor_frontend)
+    frontend_creation_fn = importlib.import_module(frontend).__getattribute__(init_name)
+    ins_gt = frontend_creation_fn(
+        *args_constructor_frontend, **kwargs_constructor_frontend
+    )
     frontend_ret = ins_gt.__getattribute__(method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
@@ -1545,9 +1587,9 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     """
     ret = fn(*args, **kwargs)
     if _is_frontend_array(ret):
-        ret = ret.data
+        ret = ret.ivy_array
     if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
-        ret = ret.data
+        ret = ret.ivy_array
     return ret, flatten_and_to_np(ret=ret)
 
 
@@ -1601,6 +1643,6 @@ def _frontend_array_to_ivy(x):
         or isinstance(x, tf_tensor)
         or isinstance(x, DeviceArray)
     ):
-        return x.data
+        return x.ivy_array
     else:
         return x

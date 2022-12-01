@@ -456,6 +456,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def qr(
         self: ivy.Array,
+        /,
         *,
         mode: str = "reduced",
     ) -> Tuple[ivy.Array, ivy.Array]:

@@ -64,8 +64,8 @@ def _array_and_axes_permute_helper(
             max_dim_size=max_dim_size,
         )
     )
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    array = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     axes = draw(
         st.one_of(
             st.none(),
@@ -122,14 +122,14 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    if kwargs["rtol"] is not None:
-        rtol = kwargs["rtol"]
-    else:
-        rtol = 1e-4
-    if kwargs["atol"] is not None:
-        atol = kwargs["atol"]
-    else:
-        atol = 1e-6
+    rtol = 1e-4
+    atol = 1e-6
+    if "rtol" in kwargs:
+        if kwargs["rtol"] is not None:
+            rtol = kwargs["rtol"]
+    if "atol" in kwargs:
+        if kwargs["atol"] is not None:
+            atol = kwargs["atol"]
     helpers.value_test(
         ret_np_flat=ret_flat,
         ret_np_from_gt_flat=frontend_ret_flat,
@@ -195,6 +195,7 @@ def handle_dtype_and_casting(
 @st.composite
 def get_dtype_and_values_and_casting(
     draw,
+    *,
     get_dtypes_kind="valid",
     get_dtypes_index=0,
     get_dtypes_none=True,
@@ -206,7 +207,7 @@ def get_dtype_and_values_and_casting(
     if casting in ["no", "equiv"]:
         dtype = input_dtype[0]
         input_dtype = [dtype for x in input_dtype]
-        return input_dtype, [dtype], x, casting
+        return dtype, input_dtype, x, casting
     dtype = draw(
         helpers.get_dtypes(
             get_dtypes_kind,
@@ -227,4 +228,4 @@ def get_dtype_and_values_and_casting(
                     key=get_dtypes_key,
                 )
             )
-    return input_dtype, dtype, x, casting
+    return dtype[0], input_dtype, x, casting

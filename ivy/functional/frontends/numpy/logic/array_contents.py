@@ -79,3 +79,23 @@ def isclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
             both_nan = ivy.bitwise_and(ivy.isnan(a), ivy.isnan(b))
             ret[both_nan] = both_nan[both_nan]
         return ret
+
+
+@inputs_to_ivy_arrays
+def isnat(
+    x,
+    /,
+    out=None,
+    *,
+    where=True,
+    casting="same_kind",
+    order="K",
+    dtype=None,
+    subok=True,
+):
+    if dtype:
+        x = ivy.astype(ivy.array(x), ivy.as_ivy_dtype(dtype))
+    ret = ivy.isnat(x, out=out)
+    if ivy.is_array(where):
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+    return ret

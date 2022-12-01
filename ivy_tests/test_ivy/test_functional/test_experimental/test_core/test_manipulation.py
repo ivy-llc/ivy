@@ -5,7 +5,6 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -588,9 +587,14 @@ def test_flatten(
     )
 
 
+def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=False):
+    return st.lists(elements, min_size=min_size, max_size=max_size,
+                    unique_by=unique_by, unique=unique).map(tuple)
+
+
 def _st_tuples_or_int(n_pairs, min_val=0):
     return st.one_of(
-        hypothesis_helpers.tuples(
+        st_tuples(
             st.tuples(
                 st.integers(min_value=min_val, max_value=4),
                 st.integers(min_value=min_val, max_value=4),
@@ -917,6 +921,46 @@ def test_atleast_2d(
     )
 
 
+@handle_test(
+    fn_tree="functional.experimental.atleast_3d",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=helpers.ints(min_value=1, max_value=5),
+    ),
+)
+def test_atleast_3d(
+    dtype_and_x,
+    as_variable,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtypes, arrays = dtype_and_x
+    kw = {}
+    for i, (array, idtype) in enumerate(zip(arrays, input_dtypes)):
+        kw["x{}".format(i)] = np.asarray(array, dtype=idtype)
+    num_positional_args = len(kw)
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        **kw,
+    )
+
+
 # take_along_axis
 @handle_test(
     fn_tree="functional.take_along_axis",
@@ -959,6 +1003,7 @@ def test_take_along_axis(
         indices=indices,
         axis=axis,
     )
+
 
 # hsplit
 @handle_test(
@@ -1006,4 +1051,3 @@ def test_hsplit(
         x=x[0],
         indices_or_sections=indices_or_sections,
     )
-
