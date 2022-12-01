@@ -280,7 +280,7 @@ def test_torch_l1_loss(
         allow_inf=False,
         shared_dtype=True,
     ),
-    delta=helpers.floats(min_value=0, max_value=0.9),
+    delta=helpers.floats(min_value=0, max_value=5),
     reduction=st.sampled_from(["none", "mean", "sum"]),
 )
 def test_huber_loss(
