@@ -293,10 +293,7 @@ def test_function(
         test_ret = ret
         if isinstance(ret, tuple):
             test_ret = ret[getattr(ivy.__dict__[fn_name], "out_index")]
-        try:
-            assert test_ret is out
-        except AssertionError:
-            d=0
+        assert test_ret is out
         if not max(container_flags) and ivy.native_inplace_support:
             # these backends do not always support native inplace updates
             assert test_ret.data is out.data
