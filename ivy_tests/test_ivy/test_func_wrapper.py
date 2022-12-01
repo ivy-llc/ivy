@@ -36,8 +36,8 @@ def test_handle_array_like(fn, x, expected_type):
 
 def test_outputs_to_ivy_arrays():
     assert isinstance(
-        ivy.outputs_to_ivy_arrays(_fn1)(ivy.to_native(ivy.array([2.]))),
-        ivy.Array)
+        ivy.outputs_to_ivy_arrays(_fn1)(ivy.to_native(ivy.array([2.0]))), ivy.Array
+    )
     assert ivy.outputs_to_ivy_arrays(_fn1)(ivy.array(1)) == ivy.array(1)
 
 
@@ -60,8 +60,8 @@ def test_inputs_to_ivy_arrays():
 
 
 def test_from_zero_dim_arrays_to_float():
-    assert ivy.func_wrapper.from_zero_dim_arrays_to_float(_fn1)(ivy.array(1.)) == 1.
-    assert ivy.func_wrapper.from_zero_dim_arrays_to_float(_fn1)(ivy.array(1)) == 1.
+    assert ivy.func_wrapper.from_zero_dim_arrays_to_float(_fn1)(ivy.array(1.0)) == 1.0
+    assert ivy.func_wrapper.from_zero_dim_arrays_to_float(_fn1)(ivy.array(1)) == 1.0
 
 
 def _fn7(x):
@@ -71,7 +71,7 @@ def _fn7(x):
 
 
 def test_to_native_arrays_and_back():
-    x = ivy.array(1.)
+    x = ivy.array(1.0)
     res = ivy.func_wrapper.to_native_arrays_and_back(_fn7)(x)
     assert isinstance(res, ivy.Array)
 
@@ -79,10 +79,12 @@ def test_to_native_arrays_and_back():
 @pytest.mark.parametrize(
     ("x", "expected"),
     [
-        (ivy.array(1), ivy.array(1.)),
-        (ivy.array([1, 3], dtype="int16"), ivy.array([1., 3.])),
-        (ivy.array([[[1, 0], [-2, 1.]]], dtype="float32"),
-         ivy.array([[[1., 0.], [-2., 1.]]]))
+        (ivy.array(1), ivy.array(1.0)),
+        (ivy.array([1, 3], dtype="int16"), ivy.array([1.0, 3.0])),
+        (
+            ivy.array([[[1, 0], [-2, 1.0]]], dtype="float32"),
+            ivy.array([[[1.0, 0.0], [-2.0, 1.0]]]),
+        ),
     ],
 )
 def test_integer_arrays_to_float(x, expected):

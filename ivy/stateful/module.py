@@ -17,6 +17,7 @@ try:
     import torch
 except ImportError:
     from types import SimpleNamespace
+
     torch = SimpleNamespace()
     torch.nn = SimpleNamespace()
     torch.nn.Module = SimpleNamespace
