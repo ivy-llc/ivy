@@ -1946,12 +1946,6 @@ def expm1(
     >>> ivy.expm1(x, out=y)
     ivy.array([  inf,  1.72, -1.  ])
 
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([20])
-    >>> x.expm1()
-    ivy.array([4.85e+08])
-
     With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a=ivy.array([-1, 0,]),
@@ -1961,23 +1955,6 @@ def expm1(
         a: ivy.array([-0.632, 0.]),
         b: ivy.array([2.20e+04, 1.72e+00])
     }
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([10, 13]))
-    >>> x.expm1(x)
-    {
-        a: ivy.array([22000., 442000.])
-    }
-
-    With :class:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([1]))
-    >>> ivy.Container.static_expm1(x)
-    {
-        a: ivy.array([1.72])
-    }
-
     """
     return ivy.current_backend(x).expm1(x, out=out)
 
