@@ -23,7 +23,6 @@ def flipud(m):
     return ivy.flipud(m, out=None)
 
 
-#Rot90
 @to_ivy_arrays_and_back
 def rot90(m, k=1, axes=(0, 1)):
     return ivy.rot90(m, k=k, axes=axes)
