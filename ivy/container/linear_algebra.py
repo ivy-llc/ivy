@@ -1589,12 +1589,13 @@ class ContainerWithLinearAlgebra(ContainerBase):
     @staticmethod
     def static_qr(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        mode: str = "reduced",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        mode: str = "reduced",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
@@ -1610,21 +1611,22 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
     def qr(
         self: ivy.Container,
+        /,
+        *,
+        mode: str = "reduced",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        *,
-        mode: str = "reduced",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return self.static_qr(
             self,
-            key_chains,
-            to_apply,
-            prune_unapplied,
-            map_sequences,
             mode=mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 

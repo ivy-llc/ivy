@@ -187,7 +187,12 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
         else:
             max_val = 1
         if x is None:
-            max_x = -1
+            if ivy.is_int_dtype(dtype):
+                max_x = ivy.iinfo(dtype).max
+            elif ivy.is_float_dtype(dtype):
+                max_x = ivy.finfo(dtype).max
+            else:
+                max_x = 1
         else:
             max_x = np.max(np.abs(np.asarray(x)))
         return max_x <= max_val and ivy.dtype_bits(d) >= ivy.dtype_bits(dtype)
@@ -196,5 +201,5 @@ def get_castable_dtype(draw, available_dtypes, dtype: str, x: Optional[list] = N
     if x is None:
         return dtype, cast_dtype
     if "uint" in cast_dtype:
-        x = np.abs(np.asarray(x)).tolist()
+        x = np.abs(np.asarray(x))
     return dtype, x, cast_dtype
