@@ -5704,6 +5704,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = ivy.Container.static_not_equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([False, True, True]),
+            b: ivy.array([True, True, True])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "not_equal",
@@ -5836,6 +5849,18 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated result for each element in ``x``.
             The returned container must have the same data type as ``x``.
 
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]),
+        ...                   b=ivy.array([3., 4., -5.]))
+        >>> y = ivy.Container.static_positive(x)
+        >>> print(y)
+        {
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., -5.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "positive",
@@ -5895,8 +5920,8 @@ class ContainerWithElementwise(ContainerBase):
         >>> y = ivy.positive(x)
         >>> print(y)
         {
-        a: ivy.array([0., 1., 2.]),
-        b: ivy.array([3., 4., -5.])
+            a: ivy.array([0., 1., 2.]),
+            b: ivy.array([3., 4., -5.])
         }
 
         """
