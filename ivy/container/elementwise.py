@@ -2179,6 +2179,17 @@ class ContainerWithElementwise(ContainerBase):
         ret
             an container containing the rounded result for each element in ``x``.
             The returned array must have the same data type as ``x``.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([2.5, 0.5, -1.4]),
+        ...                   b=ivy.array([5.4, -3.2, 5.2]))
+        >>> y = ivy.Container.static_ceil(x)
+        >>> print(y)
+        {
+            a: ivy.array([3., 1., -1.]),
+            b: ivy.array([6., -3., 6.])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "ceil",
