@@ -990,13 +990,13 @@ class ContainerWithLayers(ContainerBase):
     def static_conv3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
         dilations: Optional[
-            Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+            Union[int, Tuple[int, int, int]]
         ] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
@@ -1066,13 +1066,13 @@ class ContainerWithLayers(ContainerBase):
     def conv3d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
         dilations: Optional[
-            Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+            Union[int, Tuple[int, int, int]]
         ] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,

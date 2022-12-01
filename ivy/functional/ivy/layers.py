@@ -1215,15 +1215,15 @@ def depthwise_conv2d(
 @handle_exceptions
 @handle_array_like
 def conv3d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    filters: Union[ivy.Array, ivy.NativeArray],
-    strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NDHWC",
     dilations: Optional[
-        Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+        Union[int, Tuple[int, int, int]]
     ] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:

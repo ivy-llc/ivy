@@ -361,13 +361,13 @@ class ArrayWithLayers(abc.ABC):
     def conv3d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]],
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
         dilations: Optional[
-            Union[int, Tuple[int], Tuple[int, int], Tuple[int, int, int]]
+            Union[int, Tuple[int, int, int]]
         ] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
