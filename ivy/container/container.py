@@ -466,6 +466,74 @@ class Container(
         return self.map(lambda x, kc: x == other, map_sequences=True)
 
     def __ne__(self, other):
+        """
+        ivy.Container special method for the not_equal operator, calling
+        :code:`operator.ne` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 3, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([False, True, False])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 3, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([False, True, False])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
