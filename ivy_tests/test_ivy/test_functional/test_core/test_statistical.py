@@ -33,7 +33,7 @@ def statistical_dtype_values(draw, *, function):
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if function == "var" or function == "std":
+    if function == "var" or "std" in function:
         if size == 1:
             correction = 0
         elif isinstance(axis, int):
