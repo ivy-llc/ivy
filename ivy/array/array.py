@@ -580,6 +580,54 @@ class Array(
         return ivy.bitwise_invert(self._data)
 
     def __xor__(self, other):
+        """
+        ivy.Array special method variant of ivy.bitwise_xor. This method
+        simply wraps the function, and so the docstring for ivy.bitwise_xor
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have an integer or boolean data type.
+        other
+            second input array. Must be compatible with ``x1`` (see :ref:`broadcasting`).
+            Should have an integer or boolean data type.
+        out
+            optional output array, for writing the result to. It must have a shape that the
+            inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instances:
+
+        >>> a = ivy.array([1, 2, 3])
+        >>> b = ivy.array([3, 2, 1])
+        >>> y = a ^ b
+        >>> print(y)
+        ivy.array([2,0,2])
+
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a = ivy.array([89]))
+        >>> y = ivy.Container(a = ivy.array([12]))
+        >>> z = x ^ y
+        >>> print(z)
+        {a:ivy.array([85])}
+
+        With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a = ivy.array([-67, 21]))
+        >>> y = ivy.array([12, 13])
+        >>> z = x ^ y
+        >>> print(z)
+        {a: ivy.array([-79, 24])}
+        """
         return ivy.bitwise_xor(self._data, other)
 
     def __rxor__(self, other):

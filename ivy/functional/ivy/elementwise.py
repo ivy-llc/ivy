@@ -1329,7 +1329,7 @@ def bitwise_xor(
     `docstring <https://data-apis.org/array-api/latest/API_specification/generated/signatures.elementwise_functions.bitwise_xor.html>`_  # noqa
     in the standard.
 
-    Both the description and the type hints above assumes an array input for simplicity,
+    Both the description and the type hints above assume an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
@@ -1367,13 +1367,11 @@ def bitwise_xor(
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a = ivy.array([89]))
-    >>> b = ivy.array([90])
     >>> y = ivy.Container(a = ivy.array([12]))
-    >>> b = ivy.array([78])
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
-    a:ivy.array([85])
+        a:ivy.array([85])
     }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
@@ -1384,36 +1382,8 @@ def bitwise_xor(
     >>> z = ivy.bitwise_xor(x, y)
     >>> print(z)
     {
-    a: ivy.array([-79, 24])
+        a: ivy.array([-79, 24])
     }
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> a = ivy.array([1, 2, 3])
-    >>> b = ivy.array([3, 2, 1])
-    >>> y = a ^ b
-    >>> print(y)
-    ivy.array([2,0,2])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a = ivy.array([89]))
-    >>> y = ivy.Container(a = ivy.array([12]))
-    >>> z = x ^ y
-    >>> print(z)
-    {a:ivy.array([85])}
-
-    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a = ivy.array([-67, 21]))
-    >>> b = ivy.array([78, 34])
-    >>> y = ivy.array([12, 13])
-    >>> z = x ^ y
-    >>> print(z)
-    {a: ivy.array([-79, 24])}
     """
     return ivy.current_backend(x1, x2).bitwise_xor(x1, x2, out=out)
 
