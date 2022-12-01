@@ -1584,9 +1584,8 @@ def cosh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4])
@@ -1610,22 +1609,10 @@ def cosh(
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
     >>> y = ivy.cosh(x)
     >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> y = x.cosh()
-    >>> print(y)
-    ivy.array([1.54,3.76,10.1])
-
-    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
-    >>> y = x.cosh()
-    >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
+    {
+        a:ivy.array([1.54,3.76,10.1]),
+        b:ivy.array([202.,548.,1490.])
+    }
     """
     return ivy.current_backend(x).cosh(x, out=out)
 
@@ -2161,7 +2148,6 @@ def greater(
     >>> print(x)
     ivy.array([False, False,  True])
 
-
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
@@ -2304,61 +2290,6 @@ def greater_equal(
         a:ivy.array([True,True,True]),
         b:ivy.array([False,False,False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = z = x.greater_equal(y)
-    >>> print(z)
-    ivy.array([False,False,False])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
-    ...                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                   b=ivy.array([5, 6, 7]))
-    >>> z = x.greater_equal(y)
-    >>> print(z)
-    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> x = ivy.array([6, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x >= y
-    >>> print(z)
-    ivy.array([True,False,False])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([True,True,True]),
-        b:ivy.array([False,False,False])
-    }
-
-    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),
-        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])
-    }
-
     """
     return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
@@ -2798,7 +2729,6 @@ def isnan(
        [False, False, False]])
 
 
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
@@ -2809,64 +2739,6 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> x.isnan()
-    ivy.array([False, False, False])
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> x.isnan()
-    ivy.array([[False, False, False]])
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> x.isnan()
-    ivy.array([[[False],
-            [False],
-            [False]]])
-
-    >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, True, False]])
-
-    >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, False,  True, False]])
-
-    >>> x = ivy.zeros((3, 3))
-    >>> x.isnan()
-    ivy.array([[False, False, False],
-        [False, False, False],
-        [False, False, False]])
-
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> x.isnan()
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
-    Container Static Method Examples
-    ------------------------
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> z = ivy.Container.static_isnan(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -3185,19 +3057,14 @@ def log1p(
     ivy.array([0.   , 0.693])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],[4.4, 5.5, 6.6]])
-    >>> ivy.log1p(x , out = x)
+    >>> ivy.log1p(x, out = x)
     >>> print(x)
     ivy.array([[0.742, 1.16 , 1.46 ],[1.69 , 1.87 , 2.03 ]])
-
-    >>> x = ivy.array([1e-9] , dtype = ivy.float32)
-    >>> y = x.log1p()
-    >>> print(y)
-    ivy.array([1.e-09])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
-    >>> y = ivy.Container.static_log1p(x)
+    >>> y = ivy.log1p(x)
     >>> print(y)
     {
         a: ivy.array([0., 0.693, 1.1]),
@@ -4837,8 +4704,8 @@ def sqrt(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 4., 8.])
@@ -4865,28 +4732,6 @@ def sqrt(
         b: ivy.array([[7., 1.],
                       [0., 4.47]])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[1., 2.],  [3., 4.]])
-    >>> y = x.sqrt()
-    >>> print(y)
-    ivy.array([[1.  , 1.41],
-               [1.73, 2.  ]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
-    >>> y = x.sqrt()
-    >>> print(y)
-    {
-        a: ivy.array([0., 10., 5.2]),
-        b: ivy.array([9.64, 7.35, 5.])
-    }
-
     """
     return ivy.current_backend(x).sqrt(x, out=out)
 
