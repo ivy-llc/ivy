@@ -2217,6 +2217,16 @@
 <span class="sd">            an array containing the square root of each element in ``self``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :class:`ivy.Array` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1., 2.],  [3., 4.]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sqrt()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[1.  , 1.41],</span>
+<span class="sd">                   [1.73, 2.  ]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

@@ -2521,7 +2521,7 @@
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-3, 0.34, 2.]),</span>
 <span class="sd">        ...                   b=ivy.array([0.67, -0.98, -3]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.zeros(3), b=ivy.zeros(3))</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.cosh(x, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; x.cosh(out=y)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([10.1, 1.06, 3.76]),</span>
@@ -6936,6 +6936,18 @@
 <span class="sd">            The returned container must have a real-valued floating-point</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        with :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 100., 27.]),</span>
+<span class="sd">        ...                   b=ivy.native_array([93., 54., 25.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_sqrt(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 10., 5.2]),</span>
+<span class="sd">            b: ivy.array([9.64, 7.35, 5.])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;sqrt&quot;</span><span class="p">,</span>
@@ -6987,6 +6999,18 @@
 <span class="sd">            ``self``. The returned container must have a real-valued</span>
 <span class="sd">            floating-point data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        with :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 100., 27.]),</span>
+<span class="sd">        ...                   b=ivy.native_array([93., 54., 25.]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.sqrt()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([0., 10., 5.2]),</span>
+<span class="sd">            b: ivy.array([9.64, 7.35, 5.])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_sqrt</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
