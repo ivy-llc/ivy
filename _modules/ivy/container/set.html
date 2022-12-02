@@ -225,8 +225,8 @@
 <span class="sd">        &gt;&gt;&gt; y = ivy.static_unique_counts(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: (list[2],&lt;classivy.array.Array&gt;shape=[4]),</span>
-<span class="sd">            b: (list[2],&lt;classivy.array.Array&gt;shape=[4])</span>
+<span class="sd">            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],</span>
+<span class="sd">            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
@@ -291,9 +291,8 @@
 <span class="sd">        &gt;&gt;&gt; y = x.unique_counts()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: (list[2],&lt;classivy.array.array.Array&gt;shape=[4]),</span>
-<span class="sd">            b: (list[2],&lt;classivy.array.array.Array&gt;shape=[4])</span>
-<span class="sd">        }</span>
+<span class="sd">            a:[values=ivy.array([0.,1.,2.,3.]),counts=ivy.array([2,2,1,1])],</span>
+<span class="sd">            b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]}</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_unique_counts</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -413,10 +412,9 @@
 <span class="sd">        ...                   b=ivy.array([7,6,4,5,6,3,2]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.unique_inverse()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">             {</span>
-<span class="sd">               a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[5]),</span>
-<span class="sd">               b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[6])</span>
-<span class="sd">             }</span>
+<span class="sd">        {</span>
+<span class="sd">            a:[values=ivy.array([3.,4.,5.,8.,9.]),inverse_indices=ivy.array([1,3,0,2,4,1])],</span>
+<span class="sd">            b:[values=ivy.array([2,3,4,5,6,7]),inverse_indices=ivy.array([5,4,2,3,4,1,0])]}</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_unique_inverse</span><span class="p">(</span>

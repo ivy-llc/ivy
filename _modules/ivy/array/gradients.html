@@ -230,9 +230,9 @@
 <span class="sd">        &gt;&gt;&gt; step = ivy.array(3)</span>
 <span class="sd">        &gt;&gt;&gt; adam_step_delta = dcdw.adam_step(mw, vw, step)</span>
 <span class="sd">        &gt;&gt;&gt; print(adam_step_delta)</span>
-<span class="sd">        (ivy.array([0.182, 0.182, 0.182]),</span>
-<span class="sd">         ivy.array([0.9, 0.9, 0.9]),</span>
-<span class="sd">         ivy.array([0.999, 0.999, 0.999]))</span>
+<span class="sd">        (ivy.array([0.2020105,0.22187898,0.24144873]),</span>
+<span class="sd">            ivy.array([1.,1.10000002,1.20000005]),</span>
+<span class="sd">            ivy.array([1.,1.00300002,1.00800002]))</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span>

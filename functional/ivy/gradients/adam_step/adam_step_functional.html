@@ -191,9 +191,9 @@ have a shape that the inputs broadcast to.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">adam_step_delta</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_step</span><span class="p">(</span><span class="n">dcdw</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">adam_step_delta</span><span class="p">)</span>
-<span class="go">(ivy.array([0.182, 0.182, 0.182]),</span>
-<span class="gp">... </span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]),</span>
-<span class="gp">... </span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.999</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">,</span> <span class="mf">0.999</span><span class="p">]))</span>
+<span class="go">(ivy.array([0.2020105,0.22187898,0.24144873]),</span>
+<span class="go">    ivy.array([1.,1.10000002,1.20000005]),</span>
+<span class="go">    ivy.array([1.,1.00300002,1.00800002]))</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dcdw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.</span><span class="p">],</span> <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]])</span>

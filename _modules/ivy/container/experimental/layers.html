@@ -384,7 +384,7 @@
 <span class="sd">        &gt;&gt;&gt; a = ivy.arange(12).reshape((2, 1, 3, 2))</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.arange(48).reshape((2, 4, 3, 2))</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container({&#39;a&#39;: a, &#39;b&#39;: b})</span>
-<span class="sd">        &gt;&gt;&gt; print(x.max_pool2d(2, 2), (1, 1), &quot;SAME&quot;))</span>
+<span class="sd">        &gt;&gt;&gt; print(x.max_pool2d((2, 2), (1, 1), &quot;SAME&quot;))</span>
 <span class="sd">        {</span>
 <span class="sd">            a: (&lt;class ivy.array.array.Array&gt; shape=[2, 1, 3, 2]),</span>
 <span class="sd">            b: (&lt;class ivy.array.array.Array&gt; shape=[2, 4, 3, 2])</span>
