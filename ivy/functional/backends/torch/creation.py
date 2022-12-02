@@ -556,7 +556,7 @@ def logspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 logspace.support_native_out = True
