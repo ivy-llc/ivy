@@ -310,6 +310,40 @@ class Array(
         return ivy.negative(self._data)
 
     def __pow__(self, power):
+        """
+        ivy.Array special method variant of ivy.pow. This method simply wraps the
+        function, and so the docstring for ivy.pow also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array or float.
+        other
+            Array or float power. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x ** 2
+        >>> print(y)
+        ivy.array([1, 4, 9])
+
+        >>> x = ivy.array([1.2, 2.1, 3.5])
+        >>> y = x ** 2.9
+        >>> print(y)
+        ivy.array([ 1.69678056,  8.59876156, 37.82660675])
+
+        """
         return ivy.pow(self._data, power)
 
     def __rpow__(self, power):
