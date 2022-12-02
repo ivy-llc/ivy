@@ -1769,7 +1769,7 @@ class ArrayWithElementwise(abc.ABC):
 
         >>> x = ivy.array([[7, 3]])
         >>> y = ivy.array([0, 7])
-        >>> x.minimum(x, y, out=x)
+        >>> x.minimum(y, out=x)
         >>> print(x)
         ivy.array([[0, 3]])
         """
