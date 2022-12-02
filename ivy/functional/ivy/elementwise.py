@@ -5006,6 +5006,11 @@ def erf(
     ret
         The Gauss error function of x.
 
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.3, 0.7, 1.0])
+    >>> ivy.erf(x)
+    ivy.array([0., 0.328, 0.677, 0.842])
     """
     return ivy.current_backend(x).erf(x, out=out)
 
@@ -5130,7 +5135,6 @@ def minimum(
     -------
     ret
         An array with the elements of x1, but clipped to not exceed the x2 values.
-
 
     Examples
     --------

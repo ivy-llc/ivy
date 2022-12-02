@@ -2372,6 +2372,12 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the Gauss error of ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 0.3, 0.7, 1.0])
+        >>> x.erf()
+        ivy.array([0., 0.328, 0.677, 0.842])
         """
         return ivy.erf(self._data, out=out)
 
