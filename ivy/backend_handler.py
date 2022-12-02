@@ -259,9 +259,8 @@ def set_backend(backend: str):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
-        compositional = False
+        compositional = k not in backend.__dict__
         if k not in backend.__dict__:
-            compositional = True
             if k in backend.invalid_dtypes and k in ivy.__dict__:
                 del ivy.__dict__[k]
                 continue
