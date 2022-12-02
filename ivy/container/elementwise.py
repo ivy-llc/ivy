@@ -4317,14 +4317,11 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the evaluated base ``2`` logarithm for
             each element in ``x``. The returned array must have a real-valued
-            floating-point data type determined by :ref:`type-promotion`.
+            floating-point data type determined by :ref:`type-promotion.
 
-	
-	Examples
+        Examples
         --------
-
         Using :code:`ivy.Container` input:
-
 
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),\
                               b=ivy.array([-0., -4, float('+inf')]),\
@@ -4336,11 +4333,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-inf, nan, inf]),
             c: ivy.array([2., 2.1375, 0.])
         }
-
-
-
         """
-
         return ContainerBase.multi_map_in_static_method(
             "log2",
             x,
@@ -4390,8 +4383,8 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the evaluated base ``2`` logarithm for each
             element in ``self``. The returned array must have a real-valued
             floating-point data type determined by :ref:`type-promotion`.
-	
-	Examples
+
+        Examples
         --------
         Using :code:`ivy.Container` instance method:
         >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]), \
@@ -4404,7 +4397,6 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-inf, nan, inf]),
             c: ivy.array([3.293, 0.1375, 0.])
         }
-
         """
         return self.static_log2(
             self,
