@@ -2024,9 +2024,9 @@ def promote_types_of_inputs(
     otherwise it might give unexpected results.
     """
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
-        x2 = ivy.asarray(x2)
+        x2 = ivy.asarray(x2, dtype=x1.dtype)
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1)
+        x1 = ivy.asarray(x1, dtype=x2.dtype)
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
