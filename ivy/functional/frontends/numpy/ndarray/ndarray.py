@@ -83,9 +83,7 @@ class ndarray:
             casting=casting,
             subok=subok,
             copy=copy
-        )
-
-    
+        ) 
     def reshape(self, newshape, /, *, order="C"):
         ivy.assertions.check_elem_in_list(
             order,
