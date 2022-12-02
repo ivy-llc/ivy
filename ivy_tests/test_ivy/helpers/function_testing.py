@@ -1106,6 +1106,8 @@ def test_frontend_method(
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
+    ivy_init_module: str,
+    framework_init_module: str,
     init_name: str,
     method_name: str,
     rtol_: float = None,
