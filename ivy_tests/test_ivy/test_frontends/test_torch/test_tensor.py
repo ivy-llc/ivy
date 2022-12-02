@@ -3501,10 +3501,7 @@ def test_torch_instance_transpose(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "dim0": dim0,
-            "dim1": dim1
-        },
+        method_all_as_kwargs_np={"dim0": dim0, "dim1": dim1},
         frontend=frontend,
         init_name=init_name,
         method_name=method_name,

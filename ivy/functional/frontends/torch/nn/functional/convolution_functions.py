@@ -54,7 +54,15 @@ def _valid_shapes(input, weight, bias, stride, padding, groups, transpose=False)
         )
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
@@ -87,7 +95,15 @@ def conv1d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
@@ -118,7 +134,15 @@ def conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     _valid_shapes(input, weight, bias, stride, padding, groups)
@@ -159,7 +183,15 @@ def conv3d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
     return ret
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("uint8", "integer",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "uint8",
+            "integer",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def unfold(input, kernel_size, dilation=1, padding=0, stride=1):
 
@@ -367,10 +399,9 @@ def fold(input, output_size, kernel_size, dilation=1, padding=0, stride=1):
     batch_size = input.shape[0]
     n_output_channels = int(n_input_channels / (kernel_width * kernel_height))
 
-    output = ivy.zeros((batch_size,
-                        n_output_channels,
-                        int(output_height),
-                        int(output_width)))
+    output = ivy.zeros(
+        (batch_size, n_output_channels, int(output_height), int(output_width))
+    )
 
     height_col = int(
         (output_height + 2 * pad_height - (dilation_height * (kernel_height - 1) + 1))
