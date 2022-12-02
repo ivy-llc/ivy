@@ -4141,7 +4141,36 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
 
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pow(x, 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([1, 8, 27])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1.5, -0.8, 0.3])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.pow(x, 2, out=y)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([2.25, 0.64, 0.09])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.2, 2, 3.1], [1, 2.5, 9]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.pow(x, 2.3, out=x)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    ivy.array([[  1.52095687,   4.92457771,  13.49372482],</span>
+<span class="sd">           [  1.        ,   8.22738838, 156.5877228 ]])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.pow(x, 3)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a:ivy.array([0,1]),</span>
+<span class="sd">        b:ivy.array([8,27])</span>
+<span class="sd">    }</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -4731,9 +4760,8 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    ------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
@@ -4757,45 +4785,10 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.square(x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {a:ivy.array([0,1]),b:ivy.array([4,9])}</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.square()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1, 4, 9])</span>
-
-<span class="sd">    With :class:`ivy.Container` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x.square()</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {a:ivy.array([0,1]),b:ivy.array([4,9])}</span>
-
-<span class="sd">    Operator Examples</span>
-<span class="sd">    -----------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; y = x ** 2</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    ivy.array([1, 4, 9])</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
-<span class="sd">    &gt;&gt;&gt; y = x ** 2</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0, 1]),</span>
-<span class="sd">        b: ivy.array([4, 9])</span>
+<span class="sd">        a:ivy.array([0,1]),</span>
+<span class="sd">        b:ivy.array([4,9])</span>
 <span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

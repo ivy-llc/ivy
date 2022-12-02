@@ -6109,6 +6109,18 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_pow(x, 2)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([0,1]),</span>
+<span class="sd">            b:ivy.array([8,27])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;pow&quot;</span><span class="p">,</span>
@@ -6165,6 +6177,18 @@
 <span class="sd">        ret</span>
 <span class="sd">            a container containing the element-wise results. The returned container</span>
 <span class="sd">            must have a data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.pow(3)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([0,1]),</span>
+<span class="sd">            b:ivy.array([8,27])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_pow</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -6926,6 +6950,16 @@
 <span class="sd">            The returned container must have a real-valued floating-point</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_square(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([0,1]),</span>
+<span class="sd">            b:ivy.array([4,9])</span>
+<span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;square&quot;</span><span class="p">,</span>
@@ -6976,6 +7010,16 @@
 <span class="sd">            a container containing the square of each element in ``self``.</span>
 <span class="sd">            The returned container must have a real-valued floating-point</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.square()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([0,1]),</span>
+<span class="sd">            b:ivy.array([4,9])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_square</span><span class="p">(</span>

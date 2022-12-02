@@ -2006,6 +2006,21 @@
 <span class="sd">            an array containing the element-wise results.</span>
 <span class="sd">            The returned array must have a data type determined</span>
 <span class="sd">            by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.pow(3)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1, 8, 27])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1.5, -0.8, 0.3])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.zeros(3)</span>
+<span class="sd">        &gt;&gt;&gt; x.pow(2, out=y)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([2.25, 0.64, 0.09])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -2239,6 +2254,20 @@
 <span class="sd">            an array containing the square of each element in ``self``.</span>
 <span class="sd">            The returned array must have a real-valued floating-point data type</span>
 <span class="sd">            determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` instance method:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.square()</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1, 4, 9])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])</span>
+<span class="sd">        &gt;&gt;&gt; x.square(out=x)</span>
+<span class="sd">        &gt;&gt;&gt; print(x)</span>
+<span class="sd">        ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

@@ -439,8 +439,42 @@
     <span class="k">def</span> <span class="fm">__neg__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">negative</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span>
+<div class="viewcode-block" id="Array.__pow__"><a class="viewcode-back" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array.__pow__">[docs]</a>    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array special method variant of ivy.pow. This method simply wraps the</span>
+<span class="sd">        function, and so the docstring for ivy.pow also applies to this method</span>
+<span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            Input array or float.</span>
+<span class="sd">        other</span>
+<span class="sd">            Array or float power. Must be compatible with ``self``</span>
+<span class="sd">            (see :ref:`broadcasting`). Should have a numeric data type.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the element-wise sums. The returned array must have a</span>
+<span class="sd">            data type determined by :ref:`type-promotion`.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1, 2, 3])</span>
+<span class="sd">        &gt;&gt;&gt; y = x ** 2</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([1, 4, 9])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([1.2, 2.1, 3.5])</span>
+<span class="sd">        &gt;&gt;&gt; y = x ** 2.9</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([ 1.69678056,  8.59876156, 37.82660675])</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__rpow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">power</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">power</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>

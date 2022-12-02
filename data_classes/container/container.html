@@ -436,6 +436,44 @@ must have a data type of bool.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.container.Container.__pow__">
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/container.html#Container.__pow__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container.Container.__pow__" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container special method for the power operator, calling
+<code class="code docutils literal notranslate"><span class="pre">operator.pow</span></code> for each of the corresponding leaves of
+the two containers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – input container. Should have a numeric data type.</p></li>
+<li><p><strong>other</strong> – input array or container of powers. Must be compatible
+with <code class="docutils literal notranslate"><span class="pre">self</span></code> (see <span class="xref std std-ref">broadcasting</span>). Should have a numeric
+data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>ret</em> – a container containing the element-wise sums. The returned array must have a
+data type determined by <span class="xref std std-ref">type-promotion</span>.</p></li>
+<li><p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input</p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = x *</em> 2*</p></li>
+<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
+<li><p><em>{</em> – a: ivy.array([0, 1]),
+b: ivy.array([4, 9])</p></li>
+<li><p><em>}</em></p></li>
+<li><p><em>&gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1.2]), b=ivy.array([2.2, 3.]))</em></p></li>
+<li><p><em>&gt;&gt;&gt; y = x *</em> 3.1*</p></li>
+<li><p><em>&gt;&gt;&gt; print(y)</em></p></li>
+<li><p><em>{</em> – a: ivy.array([0., 1.75979435]),
+b: ivy.array([11.52153397, 30.13532257])</p></li>
+<li><p><em>}</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.container.Container.__radd__">
 <span class="sig-name descname"><span class="pre">__radd__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/container.html#Container.__radd__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container.Container.__radd__" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container reverse special method for the add operator, calling

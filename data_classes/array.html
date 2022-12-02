@@ -395,6 +395,41 @@ data type of bool.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.array.array.Array.__pow__">
+<span class="sig-name descname"><span class="pre">__pow__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">power</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array.html#Array.__pow__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array.Array.__pow__" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array special method variant of ivy.pow. This method simply wraps the
+function, and so the docstring for ivy.pow also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – Input array or float.</p></li>
+<li><p><strong>other</strong> – Array or float power. Must be compatible with <code class="docutils literal notranslate"><span class="pre">self</span></code>
+(see <span class="xref std std-ref">broadcasting</span>). Should have a numeric data type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – an array containing the element-wise sums. The returned array must have a
+data type determined by <span class="xref std std-ref">type-promotion</span>.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([1, 4, 9])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="mf">2.9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([ 1.69678056,  8.59876156, 37.82660675])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.array.array.Array.__radd__">
 <span class="sig-name descname"><span class="pre">__radd__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/array/array.html#Array.__radd__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array.Array.__radd__" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Array reverse special method variant of ivy.add. This method simply wraps
