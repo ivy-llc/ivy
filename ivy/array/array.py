@@ -572,9 +572,9 @@ class Array(
         Returns
         -------
         ret
-                an array containing the absolute value of each element
-                in ``self``. The returned array must have the same data
-                type as ``self``.
+            an array containing the absolute value of each element
+            in ``self``. The returned array must have the same data
+            type as ``self``.
 
         Examples
         --------
