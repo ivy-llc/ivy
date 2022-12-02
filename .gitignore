@@ -28,4 +28,4 @@ with_time_logs/
 internal_automation_tools/
 .vscode/*
 .idea/*
-ivy_tests/
+_array_module.py
