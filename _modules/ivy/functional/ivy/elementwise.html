@@ -874,38 +874,38 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.0, 2.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([-2.0, 3.0])</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.zeros(2)</span>
-<span class="sd">    &gt;&gt;&gt; x.atan2(y, out=z)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.atan2(x, y, out=z)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([2.68 , 0.588])</span>
 
 <span class="sd">    &gt;&gt;&gt; nan = float(&quot;nan&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1.0, +0, -0, +0, -0])</span>
-<span class="sd">    &gt;&gt;&gt; x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])</span>
-<span class="sd">    &gt;&gt;&gt; x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])</span>
-<span class="sd">    &gt;&gt;&gt; y.atan2(x)</span>
-<span class="sd">    ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])</span>
 
 <span class="sd">    &gt;&gt;&gt; inf = float(&quot;infinity&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([inf, -inf, inf, inf, -inf, -inf])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([-3.5, 2, 0, 0, 5])</span>
-<span class="sd">    &gt;&gt;&gt; z = x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])</span>
-<span class="sd">    &gt;&gt;&gt; y = x.atan2(x)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.atan2(x, x)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[ 0.785,  0.785,  0.785],</span>
 <span class="sd">        [-2.36 , -2.36 , -2.36 ]])</span>
@@ -915,7 +915,7 @@
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),</span>
 <span class="sd">    ...                   b=ivy.array([4.5, -5.3, -0]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([3.0, 2.0, 1.0])</span>
-<span class="sd">    &gt;&gt;&gt; x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0., 0.915, -1.29]),</span>
 <span class="sd">        b: ivy.array([0.983, -1.21, 0.])</span>
@@ -925,7 +925,7 @@
 <span class="sd">    ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),</span>
 <span class="sd">    ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))</span>
-<span class="sd">    &gt;&gt;&gt; z = x.atan2(y)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.atan2(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([3.14, 0.978, -0.785]),</span>
@@ -3323,7 +3323,6 @@
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([ 3.31,  5.05, 15.  ])</span>
 
-
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1.1], [3.2], [-6.3]]])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([[8.4], [2.5], [1.6]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.logaddexp(x, y, out=x)</span>
@@ -4345,13 +4344,10 @@
 <span class="sd">    ret</span>
 <span class="sd">        An array of the same shape and type as x, with the elements rounded to integers.</span>
 
-
-
 <span class="sd">    Note: PyTorch supports an additional argument :code:`decimals` for the</span>
 <span class="sd">    `round function &lt;https://pytorch.org/docs/stable/generated/torch.round.html&gt;`_.</span>
 <span class="sd">    It has been deliberately omitted here due to the imprecise</span>
 <span class="sd">    nature of the argument in :code:`torch.round`.</span>
-
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -4362,8 +4358,8 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1.2, 2.4, 3.6])</span>
@@ -4989,7 +4985,6 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments</span>
-
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
