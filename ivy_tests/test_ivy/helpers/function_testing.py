@@ -488,11 +488,6 @@ def test_frontend_function(
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
 
     def _get_function(fn_tree):
-        # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-        # split_index = fn_tree.rfind(".")
-        # fn_name = fn_tree[split_index + 1:]
-        # fn_module = fn_tree[:split_index]
-        # frontend_fn = importlib.import_module(fn_module).__dict__[fn_name]
         split_index = fn_tree.rfind(".")
         fn_mod, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
         function_module = importlib.import_module(fn_mod)
@@ -533,14 +528,17 @@ def test_frontend_function(
 
         if "torch" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+
             convs["torch"] = convtorch
 
         if "tensorflow" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+
             convs["tensorflow"] = convtensor
 
         if "jax" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+
             convs["jax"] = convjax
 
         if frontend in convs:

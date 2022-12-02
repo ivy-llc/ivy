@@ -3,7 +3,6 @@ from hypothesis import strategies as st
 import numpy as np
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
@@ -235,9 +234,7 @@ def _constant_helper(draw):
         ),
     )
     to_shape = draw(
-        helpers.reshape_shapes(
-            shape=st.shared(helpers.get_shape(), key="value_shape")
-        ),
+        helpers.reshape_shapes(shape=st.shared(helpers.get_shape(), key="value_shape")),
     )
     cast_dtype = x_dtype[0]  # draw(
     #     helpers.get_dtypes("valid", full=False)
@@ -281,7 +278,11 @@ def test_tensorflow_constant(
 @st.composite
 def _convert_to_tensor_helper(draw):
     x_dtype = draw(helpers.get_dtypes("valid", full=False))
-    x_dtype, x = draw(helpers.dtype_and_values(dtype=x_dtype,))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+        )
+    )
     cast_dtype = x_dtype[0]  # draw(
     #     helpers.get_dtypes("valid", full=False)
     #     .map(lambda t: t[0])
@@ -563,6 +564,43 @@ def test_tensorflow_shape(
         on_device=on_device,
         input=x[0],
         out_type=output_dtype,
+    )
+
+
+# range
+@handle_frontend_test(
+    fn_tree="tensorflow.range",
+    start=helpers.ints(min_value=-50, max_value=0),
+    limit=helpers.ints(min_value=1, max_value=50),
+    delta=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+)
+def test_tensorflow_range(
+    *,
+    start,
+    limit,
+    delta,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        start=start,
+        limit=limit,
+        delta=delta,
+        dtype=dtype[0],
     )
 
 

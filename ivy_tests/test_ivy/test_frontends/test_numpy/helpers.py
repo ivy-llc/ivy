@@ -122,14 +122,14 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    if kwargs["rtol"] is not None:
-        rtol = kwargs["rtol"]
-    else:
-        rtol = 1e-4
-    if kwargs["atol"] is not None:
-        atol = kwargs["atol"]
-    else:
-        atol = 1e-6
+    rtol = 1e-4
+    atol = 1e-6
+    if "rtol" in kwargs:
+        if kwargs["rtol"] is not None:
+            rtol = kwargs["rtol"]
+    if "atol" in kwargs:
+        if kwargs["atol"] is not None:
+            atol = kwargs["atol"]
     helpers.value_test(
         ret_np_flat=ret_flat,
         ret_np_from_gt_flat=frontend_ret_flat,

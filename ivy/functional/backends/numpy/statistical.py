@@ -113,7 +113,7 @@ def sum(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        dtype = x.dtype
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
         np.sum(

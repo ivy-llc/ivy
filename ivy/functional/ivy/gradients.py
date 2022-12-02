@@ -25,7 +25,7 @@ from ivy.exceptions import handle_exceptions
 def _arrays_to_float_variables(xs, xs_grad_idxs=None):
     def map_fn(x):
         def inner_fn(x):
-            if ivy.is_array(x):
+            if ivy.is_array(x, exclusive=True):
                 if ivy.is_int_dtype(x.dtype):
                     x = x.astype(ivy.default_float_dtype())
                 else:

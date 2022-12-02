@@ -16,7 +16,7 @@ try:
     import jax.numpy as jnp
 except ImportError:
     jnp = SimpleNamespace()
-    
+
 import pytest
 from hypothesis import given, assume, strategies as st
 import numpy as np

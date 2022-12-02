@@ -1,7 +1,7 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back, inputs_to_ivy_arrays
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
 
@@ -97,6 +97,12 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype=out_type)
     else:
         return ivy.array(ivy.shape(input), dtype="int64")
+
+
+@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
+    return ivy.arange(start, limit, delta, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
