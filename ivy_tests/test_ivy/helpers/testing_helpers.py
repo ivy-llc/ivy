@@ -12,6 +12,7 @@ from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
     available_frameworks,
     ground_truth,
@@ -357,8 +358,10 @@ def handle_method(
 def handle_frontend_method(
     *, class_tree: str, init_tree: str, method_name: str, **_given_kwargs
 ):
-    framework_init_module = init_tree
-    init_name = init_tree[init_tree.rfind(".") :]
+    split_index = init_tree.rfind(".")
+    framework_init_module = init_tree[:split_index]
+    ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
+    init_name = init_tree[split_index + 1 :]
     init_tree = f"ivy.functional.frontends.{init_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
@@ -397,12 +400,13 @@ def handle_frontend_method(
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
-            possible_arguments = {
-                "ivy_init_module": init_tree,
-                "framework_init_module": framework_init_module,
-                "init_name": init_name,
-                "method_name": method_name,
-            }
+            frontend_helper_data = FrontendMethodData(
+                ivy_init_module=importlib.import_module(ivy_init_module),
+                framework_init_module=importlib.import_module(framework_init_module),
+                init_name=init_name,
+                method_name=method_name,
+            )
+            possible_arguments = {"frontend_method_data": frontend_helper_data}
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
             wrapped_test = partial(wrapped_test, **partial_kwargs)
