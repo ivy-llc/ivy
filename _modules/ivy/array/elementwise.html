@@ -2502,6 +2502,12 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            an array containing the Gauss error of ``self``.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([0, 0.3, 0.7, 1.0])</span>
+<span class="sd">        &gt;&gt;&gt; x.erf()</span>
+<span class="sd">        ivy.array([0., 0.328, 0.677, 0.842])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">erf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
