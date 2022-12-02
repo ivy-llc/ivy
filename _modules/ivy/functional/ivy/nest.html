@@ -1032,7 +1032,7 @@
     <span class="k">elif</span> <span class="n">dict_check_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
         <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span>
-            <span class="p">{</span>
+            <span class="o">**</span><span class="p">{</span>
                 <span class="n">k</span><span class="p">:</span> <span class="n">nested_map</span><span class="p">(</span>
                     <span class="n">v</span><span class="p">,</span>
                     <span class="n">fn</span><span class="p">,</span>
