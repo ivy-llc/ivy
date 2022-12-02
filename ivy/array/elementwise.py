@@ -1464,6 +1464,18 @@ class ArrayWithElementwise(abc.ABC):
         ret
             an array containing the element-wise results.
             The returned array must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x=ivy.array([0,1,1,0])
+        >>> x.logical_not()
+        ivy.array([ True, False, False,  True])
+
+        >>> x=ivy.array([2,0,3,9])
+        >>> x.logical_not()
+        ivy.array([False,  True, False, False])
         """
         return ivy.logical_not(self._data, out=out)
 
@@ -1700,19 +1712,19 @@ class ArrayWithElementwise(abc.ABC):
         With :class:`ivy.Array` input:
 
          >>> x = ivy.array([2, 3 ,5, 7])
-        >>> y = ivy.negative(x)
+        >>> y = x.negative()
         >>> print(y)
         ivy.array([-2, -3, -5, -7])
 
         >>> x = ivy.array([0,-1,-0.5,2,3])
         >>> y = ivy.zeros(5)
-        >>> ivy.negative(x, out=y)
+        >>> x.negative(out=y)
         >>> print(y)
         ivy.array([-0. ,  1. ,  0.5, -2. , -3. ])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
-        >>> ivy.negative(x, out=x)
+        >>> x.negative(out=x)
         >>> print(x)
         ivy.array([[ -1.1, -2.2, -3.3],
         [4.4, 5.5, 6.6]])
@@ -1813,19 +1825,19 @@ class ArrayWithElementwise(abc.ABC):
         With :class:`ivy.Array` input:
 
         >>> x = ivy.array([2, 3 ,5, 7])
-        >>> y = ivy.positive(x)
+        >>> y = x.positive()
         >>> print(y)
         ivy.array([2, 3, 5, 7])
 
         >>> x = ivy.array([0, -1, -0.5, 2, 3])
         >>> y = ivy.zeros(5)
-        >>> ivy.positive(x, out=y)
+        >>> x.positive(out=y)
         >>> print(y)
         ivy.array([0., -1., -0.5,  2.,  3.])
 
         >>> x = ivy.array([[1.1, 2.2, 3.3],
         ...                [-4.4, -5.5, -6.6]])
-        >>> ivy.positive(x,out=x)
+        >>> x.positive(out=x)
         >>> print(x)
         ivy.array([[ 1.1,  2.2,  3.3],
         [-4.4, -5.5, -6.6]])
