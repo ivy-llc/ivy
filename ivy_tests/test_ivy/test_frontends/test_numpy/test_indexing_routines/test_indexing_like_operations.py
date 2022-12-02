@@ -12,8 +12,7 @@ import ivy_tests.test_ivy.helpers as helpers
 # )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-
-# import ivy
+import ivy
 
 
 @st.composite
@@ -49,13 +48,36 @@ def st_dtype_arr_and_axes(draw):
 
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
-    dtype_arr_and_axes=st_dtype_arr_and_axes(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=1,
+        # min_value=0,
+        # max_value = 1,
+        shared_dtype=True,
+        min_num_dims=2,
+    ),
+    # dtype_arr_and_axes=st_dtype_arr_and_axes(),
+    dtype_and_axis=helpers.get_axis(
+        shape=st.shared(
+            helpers.get_shape(
+                allow_none=False,
+                min_num_dims=2,
+                max_num_dims=5,
+                min_dim_size=2,
+                max_dim_size=10,
+            )
+        ),
+        unique=True,
+        max_size=2,
+        min_size=2,
+        force_tuple=True,
+    ),
     offset=st.integers(min_value=-1, max_value=1),
 )
 def test_numpy_diagonal(
-    dtype_arr_and_axes,
-    # dtype_and_x,
-    # dtype_and_axis,
+    # dtype_arr_and_axes,
+    dtype_and_x,
+    dtype_and_axis,
     as_variable,
     num_positional_args,
     native_array,
@@ -70,19 +92,19 @@ def test_numpy_diagonal(
     fn_tree,
     frontend,
 ):
-    input_dtype, x, axis1, axis2 = dtype_arr_and_axes
-    print(
-        "axis1",
-        axis1,
-        "axis2",
-        axis2,
-    )
+    (
+        input_dtype,
+        x,
+    ) = dtype_and_x
+    axis = dtype_and_axis
+    print("axis", axis)
+
     # axes = dtype_and_axis
     # print(axes)
     as_variable = as_variable
 
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=[input_dtype],
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         on_device=on_device,
         frontend=frontend,
@@ -94,8 +116,8 @@ def test_numpy_diagonal(
         # fw=fw,
         # frontend="numpy",
         # fn_tree="diagonal",
-        a=x,  # ivy.native_array(x, dtype=ivy.int32),
+        a=ivy.native_array(x, dtype=ivy.int32),
         offset=offset,
-        axis1=axis1,
-        axis2=axis2,
+        axis1=axis[0],
+        axis2=axis[1],
     )
