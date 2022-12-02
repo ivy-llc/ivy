@@ -505,6 +505,33 @@ class Array(
         return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
 
     def __truediv__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.divide. This method simply wraps
+        the function, and so the docstring for ivy.divide also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x / y
+        >>> print(z)
+        ivy.array([0.25      , 0.40000001, 0.5       ])
+        """
         return ivy.divide(self._data, other)
 
     def __rtruediv__(self, other):

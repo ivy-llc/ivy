@@ -284,6 +284,45 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.atan2(y)
         >>> print(z)
         ivy.array([ 0.785,  0.245,  3.14 , -1.57 ,  0.   ])
+
+        >>> x = ivy.array([1.0, 2.0])
+        >>> y = ivy.array([-2.0, 3.0])
+        >>> z = ivy.zeros(2)
+        >>> x.atan2(y, out=z)
+        >>> print(z)
+        ivy.array([2.68 , 0.588])
+
+        >>> nan = float("nan")
+        >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
+        >>> y = ivy.array([1.0, +0, -0, +0, -0])
+        >>> x.atan2(y)
+        ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
+
+        >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
+        >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
+        >>> x.atan2(y)
+        ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+        >>> y.atan2(x)
+        ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
+
+        >>> inf = float("infinity")
+        >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
+        >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
+        >>> z = x.atan2(y)
+        >>> print(z)
+        ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
+
+        >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
+        >>> y = ivy.array([-3.5, 2, 0, 0, 5])
+        >>> z = x.atan2(y)
+        >>> print(z)
+        ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
+
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+        >>> y = x.atan2(x)
+        >>> print(y)
+        ivy.array([[ 0.785,  0.785,  0.785],
+            [-2.36 , -2.36 , -2.36 ]])
         """
         return ivy.atan2(self._data, x2, out=out)
 
