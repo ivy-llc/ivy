@@ -263,6 +263,7 @@ def map_nest_at_index(
         ret = fn(nest[index[0]])
         if inplace:
             nest[index[0]] = ret
+        _result[index[0]] = ret
         return ret
     else:
         tupled = [False, False]  # for turning tuple back into tuple from list
@@ -275,16 +276,10 @@ def map_nest_at_index(
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
             tupled[1] = True
-        if len(index) == 2:
-            # updating in _result if length of index is 2
-            _result[index[0]][index[1]] = map_nest_at_index(
-                nest[index[0]], index[1:], fn, _result[index[0]], inplace
-            )
-        else:
-            map_nest_at_index(nest[index[0]], index[1:], fn, _result[index[0]], inplace)
+        map_nest_at_index(nest[index[0]], index[1:], fn, _result[index[0]], inplace)
+        # turning back to tuple if outer nest was tuple
         if tupled[1]:
             _result[index[0]] = tuple(_result[index[0]])
-        # turning back to tuple if outer nest was tuple
         if tupled[0]:
             _result = tuple(_result)
         return _result
@@ -463,7 +458,16 @@ def map_nest_at_indices(
     >>> print(nest)
     ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
-    [map_nest_at_index(nest, index, fn, inplace=inplace) for index in indices]
+    result = None
+    for i, index in enumerate(indices):
+        if i == 0:
+            result = map_nest_at_index(nest, index, fn, inplace=inplace)
+            continue
+        if inplace:
+            result = map_nest_at_index(nest, index, fn, inplace=inplace)
+        else:
+            result = map_nest_at_index(result, index, fn, inplace=inplace)
+    return result
 
 
 @handle_exceptions
