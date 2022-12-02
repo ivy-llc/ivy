@@ -2537,6 +2537,17 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([12., 1.52, 2.1]),
             b: ivy.array([1.25, 0.333, 0.45])
         }
+
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=5, b=4)
+        >>> z = x.divide(y)
+        >>> print(z)
+        {
+            a: 0.2,
+            b: 0.5
+        }
         """
         return self.static_divide(
             self,
