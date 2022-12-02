@@ -395,6 +395,52 @@ class Container(
         )
 
     def __truediv__(self, other):
+        """
+        ivy.Container special method for the divide operator, calling
+        :code:`operator.truediv` for each of the corresponding leaves of
+        the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=5, b=4)
+        >>> z = x / y
+        >>> print(z)
+        {
+            a: 0.2,
+            b: 0.5
+        }
+
+        With :class:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([6, 5, 4]))
+        >>> z = x / y
+        >>> print(z)
+        {
+            a: ivy.array([0.25, 0.40000001, 0.5]),
+            b: ivy.array([0.66666669, 0.60000002, 0.5])
+        }
+
+        """
         return ivy.Container.multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
         )
