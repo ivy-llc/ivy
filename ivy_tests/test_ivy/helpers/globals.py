@@ -5,15 +5,26 @@ Should not be used inside any of the test functions.
 """
 
 from dataclasses import dataclass
+from .available_frameworks import available_frameworks
 
 FWS_DICT = {
-    "numpy": lambda: _get_ivy_numpy(),
-    "jax": lambda: _get_ivy_jax(),
-    "tensorflow": lambda: _get_ivy_tensorflow(),
-    "tensorflow_graph": lambda: _get_ivy_tensorflow(),
-    "torch": lambda: _get_ivy_torch(),
     "": lambda: None,
 }
+
+if "numpy" in available_frameworks:
+    FWS_DICT["numpy"] = lambda: _get_ivy_numpy()
+
+if "jax" in available_frameworks:
+    FWS_DICT["jax"] = lambda: _get_ivy_jax()
+
+if "tensorflow" in available_frameworks:
+    FWS_DICT["tensorflow"] = lambda: _get_ivy_tensorflow()
+    FWS_DICT["tensorflow_graph"] = lambda: _get_ivy_tensorflow()
+
+if "torch" in available_frameworks:
+    FWS_DICT["torch"] = lambda: _get_ivy_torch()
+
+
 # This is used to make sure the variable is not being overriden
 _Notsetval = object()
 CURRENT_GROUND_TRUTH_BACKEND: callable = _Notsetval

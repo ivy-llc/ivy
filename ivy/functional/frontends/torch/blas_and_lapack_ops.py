@@ -90,7 +90,7 @@ def cholesky(input, upper=False, *, out=None):
 
 @to_ivy_arrays_and_back
 def det(input):
-    return ivy.det(input)
+    return torch_frontend.det(input)
 
 
 @to_ivy_arrays_and_back
@@ -101,7 +101,7 @@ def ger(input, vec2, *, out=None):
 
 @to_ivy_arrays_and_back
 def inverse(input, *, out=None):
-    return ivy.inv(input, out=out)
+    return torch_frontend.inv(input, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -117,7 +117,7 @@ def matmul(input, other, *, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
-    return ivy.matrix_power(input, n, out=out)
+    return torch_frontend.matrix_power(input, n, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -166,7 +166,7 @@ def qr(input, some=True, *, out=None):
 
 @to_ivy_arrays_and_back
 def slogdet(input):
-    return ivy.slogdet(input)
+    return torch_frontend.slogdet(input)
 
 
 @to_ivy_arrays_and_back

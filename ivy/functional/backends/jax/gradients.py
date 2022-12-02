@@ -54,11 +54,16 @@ def _set_duplicates(xs, duplicate_key_chains):
 def _forward_fn(
     xs, x, func, duplicate_key_chains, xs_grad_idxs=None, ret_grad_idxs=None
 ):
+    x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
+    x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
-        ivy.set_nest_at_indices(xs, xs_grad_idxs, x)
-    else:
+        ivy.set_nest_at_indices(xs, xs_grad_idxs, x_arr_values)
+    elif ivy.is_array(xs):
         xs = x
-    if isinstance(xs, ivy.Container):
+    else:
+        xs_arr_idxs = ivy.nested_argwhere(xs, lambda x: ivy.is_array(x))
+        ivy.set_nest_at_indices(xs, xs_arr_idxs, x_arr_values)
+    if not ivy.is_array(xs):
         xs = _set_duplicates(xs, duplicate_key_chains)
     ret = func(xs)
     _, ret_values = _get_native_variables_and_indices(ret, idxs=ret_grad_idxs)

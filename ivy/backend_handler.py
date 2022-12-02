@@ -8,7 +8,6 @@ from typing import Optional
 # local
 from ivy.func_wrapper import _wrap_function
 
-
 backend_stack = []
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()

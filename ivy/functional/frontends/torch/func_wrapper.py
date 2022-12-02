@@ -9,7 +9,7 @@ import ivy.functional.frontends.torch as torch_frontend
 
 def _from_torch_frontend_tensor_to_ivy_array(x):
     if isinstance(x, torch_frontend.Tensor):
-        return x.data
+        return x.ivy_array
     return x
 
 
@@ -19,7 +19,9 @@ def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=No
             x, _from_ivy_array_to_torch_frontend_tensor, include_derived
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return torch_frontend.Tensor(x)
+        a = torch_frontend.Tensor(0)  # TODO: Find better initialisation workaround
+        a.ivy_array = x
+        return a
     return x
 
 
