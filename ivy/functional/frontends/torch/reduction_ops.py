@@ -57,6 +57,11 @@ def mean(input, dim, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
 def std(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 

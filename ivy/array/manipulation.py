@@ -155,8 +155,8 @@ class ArrayWithManipulation(abc.ABC):
         shape: Union[ivy.Shape, ivy.NativeShape, Sequence[int]],
         *,
         copy: Optional[bool] = None,
-        out: Optional[ivy.Array] = None,
         order: Optional[str] = "C",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
         ivy.Array instance method variant of ivy.reshape. This method simply wraps the
@@ -178,9 +178,6 @@ class ArrayWithManipulation(abc.ABC):
             raise a ValueError in case a copy would be necessary.
             If None, the function must reuse existing memory buffer if possible
             and copy otherwise. Default: ``None``.
-        out
-            optional output array, for writing the result to. It must have a shape that
-            the inputs broadcast to.
         order
             Read the elements of the input array using this index order,
             and place the elements into the reshaped array using this index order.
@@ -192,6 +189,9 @@ class ArrayWithManipulation(abc.ABC):
             Note that the ‘C’ and ‘F’ options take no account of the memory layout
             of the underlying array, and only refer to the order of indexing.
             Default order is 'C'
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
 
         Returns
         -------
@@ -306,18 +306,23 @@ class ArrayWithManipulation(abc.ABC):
 
         Examples
         --------
-        >>> x = ivy.array([ivy.array([1,2]),ivy.native_array([3,4])])
-        >>> y = ivy.array([ivy.array([5,6]),ivy.array([7,8])])
-        >>> x.stack([y],axis=1)
-        ivy.array([[1, 3, 5, 7],
-            [2, 4, 6, 8]])
+        >>> x = ivy.array([1, 2])
+        >>> y = ivy.array([5, 6])
+        >>> print(x.stack(y, axis=1))
+        ivy.array([[1, 5],
+                [2, 6]])
+
         >>> x.stack([y],axis=0)
-        ivy.array([[1, 2],
-            [3, 4],
-            [5, 6],
-            [7, 8]])
+        ivy.array([[[1, 2]],
+                [[5, 6]]])
         """
-        return ivy.stack(self.concat(arrays), axis=axis, out=out)
+        if not isinstance(arrays, (tuple, list)):
+            arrays = [arrays]
+        if isinstance(arrays, tuple):
+            x = (self._data,) + arrays
+        else:
+            x = [self._data] + arrays
+        return ivy.stack(x, axis=axis, out=out)
 
     def clip(
         self: ivy.Array,

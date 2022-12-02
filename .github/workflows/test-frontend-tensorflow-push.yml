@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         backends: [numpy, torch, jax, tensorflow ]
-        submodules: [activations, layers, math, metrics, nest, nn, quantization, random, raw_ops,
+        submodules: [activations, general_functions, layers, math, metrics, nest, nn, quantization, random, raw_ops,
                     regularizers, sets, signal, sparse, tensor]
     continue-on-error: true
     runs-on: ubuntu-latest

@@ -273,11 +273,10 @@ def test_grad(x, dtype, func, backend_fw):
     dtype_n_dcdw_n_mw_n_vw=get_gradient_arguments_with_lr(
         num_arrays=3,
         no_lr=True,
-        min_value=-1e08,
+        min_value=1e-05,
         max_value=1e08,
-        abs_smallest_val=1e-05,
-        large_abs_safety_factor=2.0,
-        small_abs_safety_factor=2.0,
+        large_abs_safety_factor=2,
+        small_abs_safety_factor=2,
     ),
     step=helpers.ints(min_value=1, max_value=3),
     beta1_n_beta2_n_epsilon=helpers.lists(
@@ -468,8 +467,14 @@ def test_lars_update(
 # adam_update
 @handle_test(
     fn_tree="functional.ivy.adam_update",
-    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(num_arrays=4),
-    step=st.integers(min_value=1, max_value=100),
+    dtype_n_ws_n_dcdw_n_mwtm1_n_vwtm1_n_lr=get_gradient_arguments_with_lr(
+        num_arrays=4,
+        min_value=1e-05,
+        max_value=1e08,
+        large_abs_safety_factor=2.0,
+        small_abs_safety_factor=2.0,
+    ),
+    step=st.integers(min_value=1, max_value=10),
     beta1_n_beta2_n_epsilon=helpers.lists(
         arg=helpers.floats(min_value=1e-2, max_value=1),
         min_size=3,
