@@ -1,0 +1,4 @@
+|                     | tensorflow                                                                                                                                                             |
+|                     |                                                                                                                                                                        |
+|:--------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_lamb_optimizer | <a href="https://github.com/unifyai/ivy/actions/runs/3601469935" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
