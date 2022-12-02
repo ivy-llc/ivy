@@ -101,15 +101,7 @@ def shape(input, out_type=ivy.int32, name=None):
 
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def range(
-    start,
-    limit=None,
-    delta=1,
-    /,
-    *,
-    dtype=None,
-    name=None
-):
+def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
     return ivy.arange(start, limit, delta, dtype=dtype)
 
 
