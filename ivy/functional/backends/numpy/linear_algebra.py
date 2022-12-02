@@ -264,7 +264,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: np.ndarray, /, *, mode: str = "reduced", out: Optional[np.ndarray] = None
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)

@@ -183,10 +183,12 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return (
+            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            if ivy.get_array_mode()
+            else ret
+        )
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
@@ -403,9 +405,14 @@ def handle_out_argument(fn: Callable) -> Callable:
             # compute return, with backend inplace update handled by
             # the backend function
             ret = fn(*args, out=native_out, **kwargs)
-            out.data = ivy.to_native(ret)
+            if isinstance(ret, (tuple, list)):
+                for i in range(len(ret)):
+                    out[i].data = ivy.to_native(ret[i])
+            else:
+                out.data = ivy.to_native(ret)
             return out
         # compute return, and then handle the inplace update explicitly
+
         ret = fn(*args, **kwargs)
         return ivy.inplace_update(out, ret)
 
@@ -604,7 +611,7 @@ def _dtype_device_wrapper_creator(attrib, t):
         }
         for key, value in version_dict.items():
             for i, v in enumerate(value):
-                if v in typesets.keys():
+                if v in typesets:
                     version_dict[key] = (
                         version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
                     )

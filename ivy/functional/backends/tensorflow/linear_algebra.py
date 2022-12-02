@@ -452,7 +452,13 @@ def pinv(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: Union[tf.Tensor, tf.Variable], /, *, mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    mode: str = "reduced",
+    out: Optional[tf.Tensor] = None,
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
         q, r = tf.linalg.qr(x, full_matrices=False)
