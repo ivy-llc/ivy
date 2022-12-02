@@ -284,6 +284,45 @@ class ArrayWithElementwise(abc.ABC):
         >>> z = x.atan2(y)
         >>> print(z)
         ivy.array([ 0.785,  0.245,  3.14 , -1.57 ,  0.   ])
+
+        >>> x = ivy.array([1.0, 2.0])
+        >>> y = ivy.array([-2.0, 3.0])
+        >>> z = ivy.zeros(2)
+        >>> x.atan2(y, out=z)
+        >>> print(z)
+        ivy.array([2.68 , 0.588])
+
+        >>> nan = float("nan")
+        >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
+        >>> y = ivy.array([1.0, +0, -0, +0, -0])
+        >>> x.atan2(y)
+        ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
+
+        >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
+        >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
+        >>> x.atan2(y)
+        ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
+        >>> y.atan2(x)
+        ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
+
+        >>> inf = float("infinity")
+        >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
+        >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
+        >>> z = x.atan2(y)
+        >>> print(z)
+        ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
+
+        >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
+        >>> y = ivy.array([-3.5, 2, 0, 0, 5])
+        >>> z = x.atan2(y)
+        >>> print(z)
+        ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
+
+        >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
+        >>> y = x.atan2(x)
+        >>> print(y)
+        ivy.array([[ 0.785,  0.785,  0.785],
+            [-2.36 , -2.36 , -2.36 ]])
         """
         return ivy.atan2(self._data, x2, out=out)
 
@@ -1876,6 +1915,21 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.pow(3)
+        >>> print(y)
+        ivy.array([1, 8, 27])
+
+        >>> x = ivy.array([1.5, -0.8, 0.3])
+        >>> y = ivy.zeros(3)
+        >>> x.pow(2, out=y)
+        >>> print(y)
+        ivy.array([2.25, 0.64, 0.09])
         """
         return ivy.pow(self._data, x2, out=out)
 
@@ -2109,6 +2163,20 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the square of each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.square()
+        >>> print(y)
+        ivy.array([1, 4, 9])
+
+        >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
+        >>> x.square(out=x)
+        >>> print(x)
+        ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
         """
         return ivy.square(self._data, out=out)
 
@@ -2304,6 +2372,12 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             an array containing the Gauss error of ``self``.
+
+        Examples
+        --------
+        >>> x = ivy.array([0, 0.3, 0.7, 1.0])
+        >>> x.erf()
+        ivy.array([0., 0.328, 0.677, 0.842])
         """
         return ivy.erf(self._data, out=out)
 
