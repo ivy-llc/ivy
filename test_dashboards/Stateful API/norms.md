@@ -1,4 +1,4 @@
 |                       | torch                                                                                                                                                              |
 |                       |                                                                                                                                                                    |
 |:----------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_layer_norm_layer | <a href="https://github.com/unifyai/ivy/actions/runs/3602947825" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+| test_layer_norm_layer | <a href="https://github.com/unifyai/ivy/actions/runs/3603814775" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
