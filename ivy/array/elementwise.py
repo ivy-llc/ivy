@@ -1876,6 +1876,21 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the element-wise results.
             The returned array must have a data type determined
             by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.pow(3)
+        >>> print(y)
+        ivy.array([1, 8, 27])
+
+        >>> x = ivy.array([1.5, -0.8, 0.3])
+        >>> y = ivy.zeros(3)
+        >>> x.pow(2, out=y)
+        >>> print(y)
+        ivy.array([2.25, 0.64, 0.09])
         """
         return ivy.pow(self._data, x2, out=out)
 
@@ -2109,6 +2124,20 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the square of each element in ``self``.
             The returned array must have a real-valued floating-point data type
             determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x.square()
+        >>> print(y)
+        ivy.array([1, 4, 9])
+
+        >>> x = ivy.array([[1.2, 2, 3.1], [-1, -2.5, -9]])
+        >>> x.square(out=x)
+        >>> print(x)
+        ivy.array([[1.44,4.,9.61],[1.,6.25,81.]])
         """
         return ivy.square(self._data, out=out)
 

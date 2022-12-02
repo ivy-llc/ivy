@@ -5979,6 +5979,18 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = ivy.Container.static_pow(x, 2)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([8,27])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "pow",
@@ -6035,6 +6047,18 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x.pow(3)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([8,27])
+        }
         """
         return self.static_pow(
             self,
@@ -6796,6 +6820,16 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = ivy.Container.static_square(x)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([4,9])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "square",
@@ -6846,6 +6880,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the square of each element in ``self``.
             The returned container must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x.square()
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([4,9])
+        }
 
         """
         return self.static_square(

@@ -4011,7 +4011,36 @@ def pow(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    ivy.array([1, 8, 27])
+
+    >>> x = ivy.array([1.5, -0.8, 0.3])
+    >>> y = ivy.zeros(3)
+    >>> ivy.pow(x, 2, out=y)
+    >>> print(y)
+    ivy.array([2.25, 0.64, 0.09])
+
+    >>> x = ivy.array([[1.2, 2, 3.1], [1, 2.5, 9]])
+    >>> ivy.pow(x, 2.3, out=x)
+    >>> print(x)
+    ivy.array([[  1.52095687,   4.92457771,  13.49372482],
+           [  1.        ,   8.22738838, 156.5877228 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    {
+        a:ivy.array([0,1]),
+        b:ivy.array([8,27])
+    }
     """
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
 
@@ -4601,9 +4630,8 @@ def square(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -4627,45 +4655,10 @@ def square(
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = ivy.square(x)
     >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.square()
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x.square()
-    >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x ** 2
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x ** 2
-    >>> print(y)
     {
-        a: ivy.array([0, 1]),
-        b: ivy.array([4, 9])
+        a:ivy.array([0,1]),
+        b:ivy.array([4,9])
     }
-
     """
     return ivy.current_backend(x).square(x, out=out)
 
