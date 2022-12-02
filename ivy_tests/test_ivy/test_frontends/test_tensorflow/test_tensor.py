@@ -84,7 +84,7 @@ def test_tensorflow_instance_add(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -125,7 +125,7 @@ def test_tensorflow_instance_div(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -166,7 +166,7 @@ def test_tensorflow_instance_get_shape(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -204,7 +204,7 @@ def test_tensorflow_instance_eq(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -246,7 +246,7 @@ def test_tensorflow_instance_floordiv(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -287,7 +287,7 @@ def test_tensorflow_instance_ge(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -328,7 +328,7 @@ def test_tensorflow_instance_gt(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -369,7 +369,7 @@ def test_tensorflow_instance_le(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -410,7 +410,7 @@ def test_tensorflow_instance_lt(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -451,7 +451,7 @@ def test_tensorflow_instance_mul(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -493,7 +493,7 @@ def test_tensorflow_instance_mod(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -537,7 +537,7 @@ def test_tensorflow_instance_sub(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -579,7 +579,7 @@ def test_tensorflow_instance_ne(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -621,7 +621,7 @@ def test_tensorflow_instance_radd(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -663,7 +663,7 @@ def test_tensorflow_instance_rfloordiv(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -705,7 +705,7 @@ def test_tensorflow_instance_rsub(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -747,7 +747,7 @@ def test_tensorflow_instance_and(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -789,7 +789,7 @@ def test_tensorflow_instance_rand(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -831,7 +831,7 @@ def test_tensorflow_instance_or(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -873,7 +873,7 @@ def test_tensorflow_instance_ror(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -915,7 +915,7 @@ def test_tensorflow_instance_truediv(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -957,7 +957,7 @@ def test_tensorflow_instance_rtruediv(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -998,7 +998,7 @@ def test_tensorflow_instance_bool(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -1037,7 +1037,7 @@ def test_tensorflow_instance_nonzero(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -1082,7 +1082,7 @@ def test_tensorflow_instance_neg(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -1122,7 +1122,7 @@ def test_tensorflow_instance_rxor(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1164,7 +1164,7 @@ def test_tensorflow_instance_xor(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1213,7 +1213,7 @@ def test_tensorflow_instance_matmul(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1262,7 +1262,7 @@ def test_tensorflow_instance_rmatmul(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1302,7 +1302,7 @@ def test_tensorflow_instance_array(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -1340,7 +1340,7 @@ def test_tensorflow_instance_invert(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
@@ -1382,7 +1382,7 @@ def test_tensorflow_instance_rmul(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1420,7 +1420,7 @@ def test_tensorflow_instance_rpow(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1475,7 +1475,7 @@ def test_tensorflow_instance_pow(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -1569,7 +1569,7 @@ def test_tensorflow_instance_getitem(
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
-        init_all_as_kwargs_np={"data": data},
+        init_all_as_kwargs_np={"value": data},
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
@@ -1649,7 +1649,7 @@ def test_tensorflow_instance_set_shape(
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
-        init_all_as_kwargs_np={"data": x[0]},
+        init_all_as_kwargs_np={"value": x[0]},
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
@@ -1687,7 +1687,7 @@ def test_tensorflow_instance_len(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "data": x[0],
+            "value": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=[],
