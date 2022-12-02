@@ -32,8 +32,8 @@ def test_numpy_ndarray_property_ivy_array(
     dtype, data, shape = dtype_x
     x = ndarray(shape, dtype[0])
     x.ivy_array = data[0]
-    ret = helpers.flatten_and_to_np(ret=x.ivy_array)
-    ret_gt = np.ravel(data[0])
+    ret = helpers.flatten_and_to_np(ret=x.ivy_array.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data[0])
     helpers.value_test(
         ret_np_flat=ret,
         ret_np_from_gt_flat=ret_gt,
@@ -77,7 +77,6 @@ def test_numpy_ndarray_property_shape(
     fn_tree="numpy.argmax",  # dummy fn_tree
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        min_num_dims=2,
         ret_shape=True,
     ),
 )
@@ -89,7 +88,7 @@ def test_numpy_ndarray_property_T(
     x.ivy_array = data[0]
     ret = helpers.flatten_and_to_np(ret=x.T.ivy_array)
     ret_gt = helpers.flatten_and_to_np(
-        ret=ivy.matrix_transpose(ivy.native_array(data[0]))
+        ret=ivy.permute_dims(ivy.native_array(data[0]), list(range(len(shape)))[::-1])
     )
     helpers.value_test(
         ret_np_flat=ret,
@@ -158,9 +157,11 @@ def dtypes_x_reshape(draw):
     init_name="array",
     method_tree="numpy.ndarray.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
+    order=st.sampled_from(["C", "F", "A"]),
 )
 def test_numpy_ndarray_reshape(
     dtypes_x_shape,
+    order,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -183,7 +184,8 @@ def test_numpy_ndarray_reshape(
         method_native_array_flags=native_array,
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={
-            "shape": shape,
+            "newshape": shape,
+            "order": order,
         },
         frontend=frontend,
         init_name=init_name,

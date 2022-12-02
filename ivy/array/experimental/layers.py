@@ -14,7 +14,7 @@ class ArrayWithLayersExperimental(abc.ABC):
         padding: str,
         /,
         *,
-        data_format: str = "NHWC",
+        data_format: str = "NWC",
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """

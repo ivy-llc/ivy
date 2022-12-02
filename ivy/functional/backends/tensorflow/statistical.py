@@ -113,7 +113,7 @@ def sum(
 ) -> Union[tf.Tensor, tf.Variable]:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        dtype = x.dtype
     axis = tuple(axis) if isinstance(axis, list) else axis
     return tf.experimental.numpy.sum(x, axis, dtype, keepdims)
 

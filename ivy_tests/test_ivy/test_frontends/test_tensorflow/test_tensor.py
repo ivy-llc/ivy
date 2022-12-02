@@ -3,14 +3,58 @@ import pytest
 from hypothesis import strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
-from ivy_tests.test_ivy.helpers import handle_frontend_method
+from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy.functional.frontends.tensorflow import EagerTensor
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_device(
+    dtype_x,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = EagerTensor(data)
+    ivy.assertions.check_equal(x.device, ivy.dev(data))
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_numpy_ndarray_property_dtype(
+    dtype_x,
+):
+    dtype, data = dtype_x
+    x = EagerTensor(data[0])
+    ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.math.add",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_numpy_ndarray_property_shape(
+    dtype_x,
+):
+    dtype, data, shape = dtype_x
+    x = EagerTensor(data[0])
+    ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
 
 
 # __add__

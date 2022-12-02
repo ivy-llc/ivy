@@ -1883,6 +1883,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.diff. This method simply wraps
         the function, and so the docstring for ivy.diff also applies to this
         method with minimal changes.
+
         Parameters
         ----------
         x
@@ -1890,11 +1891,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with the n-th discrete difference along
             the given axis.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
@@ -1924,6 +1927,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         """ivy.Container instance method variant of ivy.diff. This method simply
         wraps the function, and so the docstring for ivy.diff also applies to
         this method with minimal changes.
+
         Parameters
         ----------
         self
@@ -1931,11 +1935,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         
         out
             optional output container, for writing the result to.
+
         Returns
         -------
         ret
             Container including arrays with the n-th discrete difference along the
             given axis.
+
         Examples
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
@@ -2307,17 +2313,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         edge_order: Optional[int] = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
-        """
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
-        Examples
-        --------
-        """
         return ContainerBase.multi_map_in_static_method(
             "gradient",
             x,

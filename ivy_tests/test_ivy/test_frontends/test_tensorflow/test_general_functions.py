@@ -224,6 +224,106 @@ def test_tensorflow_einsum(
     )
 
 
+@st.composite
+def _constant_helper(draw):
+    x_dtype = draw(helpers.get_dtypes("valid", full=False))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+            shape=st.shared(helpers.get_shape(), key="value_shape"),
+        ),
+    )
+    to_shape = draw(
+        helpers.reshape_shapes(shape=st.shared(helpers.get_shape(), key="value_shape")),
+    )
+    cast_dtype = x_dtype[0]  # draw(
+    #     helpers.get_dtypes("valid", full=False)
+    #     .map(lambda t: t[0])
+    #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
+    # )
+    return x_dtype, x, cast_dtype, to_shape
+
+
+# constant
+@handle_frontend_test(
+    fn_tree="tensorflow.constant",
+    all_args=_constant_helper(),
+)
+def test_tensorflow_constant(
+    *,
+    all_args,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, cast_dtype, to_shape = all_args
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        dtype=cast_dtype,
+        shape=to_shape,
+    )
+
+
+@st.composite
+def _convert_to_tensor_helper(draw):
+    x_dtype = draw(helpers.get_dtypes("valid", full=False))
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            dtype=x_dtype,
+        )
+    )
+    cast_dtype = x_dtype[0]  # draw(
+    #     helpers.get_dtypes("valid", full=False)
+    #     .map(lambda t: t[0])
+    #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
+    # )
+    return x_dtype, x, cast_dtype
+
+
+# convert_to_tensor
+@handle_frontend_test(
+    fn_tree="tensorflow.convert_to_tensor",
+    dtype_x_cast=_convert_to_tensor_helper(),
+    dtype_hint=helpers.get_dtypes("valid", full=False),
+)
+def test_tensorflow_convert_to_tensor(
+    *,
+    dtype_x_cast,
+    dtype_hint,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    x_dtype, x, cast_dtype = dtype_x_cast
+    helpers.test_frontend_function(
+        input_dtypes=x_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        value=x[0],
+        dtype=cast_dtype,
+        dtype_hint=dtype_hint[0],
+    )
+
+
 # rank
 @handle_frontend_test(
     fn_tree="tensorflow.rank",
@@ -464,4 +564,83 @@ def test_tensorflow_shape(
         on_device=on_device,
         input=x[0],
         out_type=output_dtype,
+    )
+
+
+# range
+@handle_frontend_test(
+    fn_tree="tensorflow.range",
+    start=helpers.ints(min_value=-50, max_value=0),
+    limit=helpers.ints(min_value=1, max_value=50),
+    delta=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+)
+def test_tensorflow_range(
+    *,
+    start,
+    limit,
+    delta,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        start=start,
+        limit=limit,
+        delta=delta,
+        dtype=dtype[0],
+    )
+
+
+# sort
+@handle_frontend_test(
+    fn_tree="tensorflow.sort",
+    dtype_input_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=5,
+        min_axis=-1,
+        max_axis=0,
+    ),
+    descending=st.sampled_from(["ASCENDING", "DESCENDING"]),
+)
+def test_tensorflow_sort(
+    *,
+    dtype_input_axis,
+    descending,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, input, axis = dtype_input_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        values=input[0],
+        axis=axis,
+        direction=descending,
     )
