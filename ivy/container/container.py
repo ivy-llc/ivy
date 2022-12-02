@@ -140,6 +140,43 @@ class Container(
         return self.map(lambda x, kc: -x, map_sequences=True)
 
     def __pow__(self, power):
+        """
+        ivy.Container special method for the power operator, calling
+        :code:`operator.pow` for each of the corresponding leaves of
+        the two containers.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        other
+            input array or container of powers. Must be compatible
+            with ``self`` (see :ref:`broadcasting`). Should have a numeric
+            data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x ** 2
+        >>> print(y)
+        {
+            a: ivy.array([0, 1]),
+            b: ivy.array([4, 9])
+        }
+        >>> x = ivy.Container(a=ivy.array([0, 1.2]), b=ivy.array([2.2, 3.]))
+        >>> y = x ** 3.1
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.75979435]),
+            b: ivy.array([11.52153397, 30.13532257])
+        }
+        """
         if isinstance(power, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
