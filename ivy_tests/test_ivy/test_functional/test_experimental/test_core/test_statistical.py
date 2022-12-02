@@ -174,38 +174,38 @@ def max_value_as_shape_prod(draw):
     return dtype_and_x, shape
 
 
-@handle_test(
-    fn_tree="functional.experimental.nanmean",
-    dtype_x_shape=max_value_as_shape_prod(),
-)
-def test_unravel_index(
-    dtype_x_shape,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-    ground_truth_backend,
-):
-    dtype_and_x, shape = dtype_x_shape
-    input_dtype, x = dtype_and_x[0], dtype_and_x[1]
-    helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        indices=np.asarray(x[0], dtype=input_dtype[0]),
-        shape=shape,
-    )
+# @handle_test(
+#     fn_tree="functional.experimental.nanmean",
+#     dtype_x_shape=max_value_as_shape_prod(),
+# )
+# def test_unravel_index(
+#     dtype_x_shape,
+#     as_variable,
+#     with_out,
+#     num_positional_args,
+#     native_array,
+#     container_flags,
+#     instance_method,
+#     backend_fw,
+#     fn_name,
+#     ground_truth_backend,
+# ):
+#     dtype_and_x, shape = dtype_x_shape
+#     input_dtype, x = dtype_and_x[0], dtype_and_x[1]
+#     helpers.test_function(
+#         ground_truth_backend=ground_truth_backend,
+#         input_dtypes=input_dtype,
+#         as_variable_flags=as_variable,
+#         with_out=with_out,
+#         num_positional_args=num_positional_args,
+#         native_array_flags=native_array,
+#         container_flags=container_flags,
+#         instance_method=instance_method,
+#         fw=backend_fw,
+#         fn_name=fn_name,
+#         indices=np.asarray(x[0], dtype=input_dtype[0]),
+#         shape=shape,
+#     )
 
 # quantile
 
