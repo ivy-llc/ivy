@@ -566,3 +566,24 @@ def logaddexp(x1, x2):
 @to_ivy_arrays_and_back
 def expand_dims(a, axis):
     return ivy.expand_dims(a, axis=axis)
+
+@to_ivy_arrays_and_back
+def mean(
+        a,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        *,
+        where=None
+):
+    if dtype is None:
+        dtype = "float64" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
+
+    ret = ivy.mean(a, axis=axis, out=out, keepdims=keepdims)
+
+    if ivy.is_array(where):
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
