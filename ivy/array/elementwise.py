@@ -1693,6 +1693,30 @@ class ArrayWithElementwise(abc.ABC):
         ret
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+        >>> x = ivy.array([7, 9, 5])
+        >>> y = ivy.array([9, 3, 2])
+        >>> z = x.maximum(y)
+        >>> print(z)
+        ivy.array([9, 9, 5])
+
+        >>> x = ivy.array([1, 5, 9, 8, 3, 7])
+        >>> y = ivy.array([[9], [3], [2]])
+        >>> z = ivy.zeros((3, 6))
+        >>> x.maximum(y, out=z)
+        >>> print(z)
+        ivy.array([[9.,9.,9.,9.,9.,9.],
+                   [3.,5.,9.,8.,3.,7.],
+                   [2.,5.,9.,8.,3.,7.]])
+
+        >>> x = ivy.array([[7, 3]])
+        >>> y = ivy.array([0, 7])
+        >>> x.maximum(y, out=x)
+        >>> print(x)
+        ivy.array([[7, 7]])
         """
         return ivy.maximum(self, x2, use_where=use_where, out=out)
 
@@ -1723,6 +1747,31 @@ class ArrayWithElementwise(abc.ABC):
         -------
         ret
             An array with the elements of x1, but clipped to not exceed the x2 values.
+
+        Examples
+        --------
+        With :class:`ivy.Array` inputs:
+
+        >>> x = ivy.array([7, 9, 5])
+        >>> y = ivy.array([9, 3, 2])
+        >>> z = x.minimum(y)
+        >>> print(z)
+        ivy.array([7, 3, 2])
+
+        >>> x = ivy.array([1, 5, 9, 8, 3, 7])
+        >>> y = ivy.array([[9], [3], [2]])
+        >>> z = ivy.zeros((3, 6))
+        >>> x.minimum(y, out=z)
+        >>> print(z)
+        ivy.array([[1.,5.,9.,8.,3.,7.],
+                   [1.,3.,3.,3.,3.,3.],
+                   [1.,2.,2.,2.,2.,2.]])
+
+        >>> x = ivy.array([[7, 3]])
+        >>> y = ivy.array([0, 7])
+        >>> x.minimum(x, y, out=x)
+        >>> print(x)
+        ivy.array([[0, 3]])
         """
         return ivy.minimum(self, x2, use_where=use_where, out=out)
 
