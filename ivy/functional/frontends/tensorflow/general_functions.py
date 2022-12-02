@@ -99,6 +99,20 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype="int64")
 
 
+@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def range(
+    start,
+    limit=None,
+    delta=1,
+    /,
+    *,
+    dtype=None,
+    name=None
+):
+    return ivy.arange(start, limit, delta, dtype=dtype)
+
+
 @to_ivy_arrays_and_back
 def sort(values, axis=-1, direction="ASCENDING", name=None):
     descending = True
