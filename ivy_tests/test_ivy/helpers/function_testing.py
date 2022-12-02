@@ -706,7 +706,7 @@ def test_frontend_function(
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_module, fn_name, frontend_submods = _get_function(
-                fn_tree=fn_tree
+                fn_tree=f"ivy.functional.frontends.{frontend}.{alias}"
             )
 
             # testing unsupported in that backend
