@@ -27,9 +27,8 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
-@to_ivy_arrays_and_back
-def fill(dims, value, *, name=None):
-    return ivy.full(dims, value)
+def full(shape, fill_value, *, dtype=None):
+    return ivy.full(shape, fill_value, dtype=dtype)
 
 
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
