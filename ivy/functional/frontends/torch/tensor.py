@@ -336,6 +336,9 @@ class Tensor:
         self._ivy_array = self.transpose(dim0, dim1).ivy_array
         return self
 
+    def flatten(self, start_dim, end_dim):
+        return torch_frontend.flatten(self._ivy_array, start_dim=start_dim, end_dim=end_dim)
+
     # Special Methods #
     # -------------------#
 
