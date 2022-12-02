@@ -7750,6 +7750,20 @@ class ContainerWithElementwise(ContainerBase):
         -------
             Container object with all sub-arrays having the minimum values computed.
 
+        Examples
+        --------
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 3, 1]),
+        ...                   b=ivy.array([2, 8, 5]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 6]),
+        ...                   b=ivy.array([5, 9, 7]))
+        >>> z = ivy.Container.static_minimum(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([1, 3, 1]),
+            b: ivy.array([2, 8, 5])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "minimum",
@@ -7780,7 +7794,6 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.minimum also applies to this method with minimal changes.
 
-
         Parameters
         ----------
         self
@@ -7809,6 +7822,21 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
             Container object with all sub-arrays having the minimum values computed.
+
+        Examples
+        --------
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 3, 1]),
+        ...                   b=ivy.array([2, 8, 5]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 6]),
+        ...                   b=ivy.array([5, 9, 7]))
+        >>> z = x.minimum(y)
+        >>> print(z)
+        {
+            a: ivy.array([1, 3, 1]),
+            b: ivy.array([2, 8, 5])
+        }
 
         """
         return self.static_minimum(
@@ -7871,7 +7899,23 @@ class ContainerWithElementwise(ContainerBase):
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
 
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
 
+        >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+        >>> y = ivy.Container(a=ivy.array([1, 0,]),
+        ...                   b=ivy.array([-5, 9]))
+        >>> z = ivy.Container.static_maximum(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[1, 3],
+                          [2, 4],
+                          [3, 7]]),
+            b: ivy.array([[1, 9],
+                          [2, 9],
+                          [3, 9]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "maximum",
@@ -7932,6 +7976,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+        >>> y = ivy.Container(a=ivy.array([1, 0,]),
+        ...                   b=ivy.array([-5, 9]))
+        >>> z = x.maximum(y)
+        >>> print(z)
+        {
+            a: ivy.array([[1, 3],
+                          [2, 4],
+                          [3, 7]]),
+            b: ivy.array([[1, 9],
+                          [2, 9],
+                          [3, 9]])
+        }
         """
         return self.static_maximum(
             self,
