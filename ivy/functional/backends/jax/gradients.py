@@ -75,7 +75,6 @@ def _forward_fn(
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
-    # duplicate array keychains should be calculated at the start
     duplicate_key_chains = ()
     if isinstance(xs, ivy.Container):
         duplicate_key_chains = xs.duplicate_array_keychains()
