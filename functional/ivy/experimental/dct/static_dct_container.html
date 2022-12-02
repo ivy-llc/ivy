@@ -214,6 +214,61 @@
              
   <section id="ivy-container-static-dct">
 <h1>ivy.Container.static_dct<a class="headerlink" href="#ivy-container-static-dct" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_dct">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_dct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_dct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_dct" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="../dct/dct_functional.html">ivy.dct</a>. This method simply wraps
+the function, and so the docstring for <a href="../dct/dct_functional.html">ivy.dct</a> also applies to this method
+with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – Container with the input signals.</p></li>
+<li><p><strong>type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[1, 2, 3, 4]]) – The type of the dct. Must be 1, 2, 3 or 4. (default: <code class="docutils literal notranslate"><span class="pre">2</span></code>)</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – The lenght of the transform. If n is less than the input signal lenght, (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+then x is truncated, if n is larger than x is zero-padded.</p></li>
+<li><p><strong>norm</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘ortho’]]) – The type of normalization to be applied. Must be either None or “ortho”. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – The transformed input.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([8, 16, 24, 32, 40, 48, 56, 64]),
+…                   b=ivy.array([1,  2,  3,  4,  5,  6,  7,  8]))
+&gt;&gt;&gt; ivy.Container.static_dct(x, type=2, norm=’ortho’)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0.,</dt><dd><p>-0.406]),</p>
+</dd>
+<dt>b: ivy.array([12.7, -6.44, 0., -0.673, 0., -0.201, 0.,</dt><dd><p>-0.0507])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}
+With multiple <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span>  <span class="mi">24</span><span class="p">,</span>  <span class="mi">32</span><span class="p">,</span>   <span class="mi">40</span><span class="p">,</span>   <span class="mi">48</span><span class="p">,</span>   <span class="mi">56</span><span class="p">,</span>   <span class="mi">64</span><span class="p">]),</span>
+<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">11.</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="mf">23.</span><span class="p">,</span> <span class="mf">13.</span><span class="p">,</span> <span class="mf">255.</span><span class="p">,</span> <span class="mf">255.</span><span class="p">,</span> <span class="mf">132.</span><span class="p">,</span> <span class="mf">182.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="s2">&quot;ortho&quot;</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_dct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([96., -28.2, -31.9, 22.9, -26., 19.8, -17., 10.9,</span>
+<span class="go">                -5.89]),</span>
+<span class="go">    b: ivy.array([242., -253., 286., -515., 467.])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

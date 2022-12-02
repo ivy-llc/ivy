@@ -214,6 +214,129 @@
              
   <section id="ivy-flatten">
 <h1>ivy.flatten<a class="headerlink" href="#ivy-flatten" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.experimental.flatten">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/experimental.html#flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.flatten" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Flattens input by reshaping it into a one-dimensional tensor.</dt><dd><p>If start_dim or end_dim are passed, only dimensions starting
+with start_dim and ending with end_dim are flattened.
+The order of elements in input is unchanged.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array to flatten.</p></li>
+<li><p><strong>start_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – first dim to flatten. If not set, defaults to 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>end_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – last dim to flatten. If not set, defaults to -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Read the elements of the input container using this index order, (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
+and place the elements into the reshaped array using this index order.
+‘C’ means to read / write the elements using C-like index order,
+with the last axis index changing fastest, back to the first axis index
+changing slowest.
+‘F’ means to read / write the elements using Fortran-like index order, with
+the first index changing fastest, and the last index changing slowest.
+Note that the ‘C’ and ‘F’ options take no account of the memory layout
+of the underlying array, and only refer to the order of indexing.
+Default order is ‘C’</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>ret</em> – the flattened array over the specified dimensions.</p></li>
+<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
+<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html&gt;`_ )</p></li>
+<li><p><em>in the standard.</em></p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([1, 2, 3, 4])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;F&#39;</span><span class="p">)</span>
+<span class="go">ivy.array([1, 3, 2, 4])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+<span class="go">    [[[[ 5,  5,  0,  6],</span>
+<span class="go">     [17, 15, 11, 16],</span>
+<span class="go">     [ 6,  3, 13, 12]],</span>
+</pre></div>
+</div>
+<blockquote>
+<div><blockquote>
+<div><dl class="simple">
+<dt>[[ 6, 18, 10,  4],</dt><dd><p>[ 5,  1, 17,  3],
+[14, 14, 18,  6]]],</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl>
+<dt>[[[12,  0,  1, 13],</dt><dd><blockquote>
+<div><p>[ 8,  7,  0,  3],
+[19, 12,  6, 17]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[ 4, 15,  6, 15],</dt><dd><p>[ 0,  5, 17,  9],
+[ 9,  3,  6, 19]]],</p>
+</dd>
+</dl>
+</dd>
+<dt>[[[17, 13, 11, 16],</dt><dd><blockquote>
+<div><p>[ 4, 18, 17,  4],
+[10, 10,  9,  1]],</p>
+</div></blockquote>
+<dl class="simple">
+<dt>[[19, 17, 13, 10],</dt><dd><p>[ 4, 19, 16, 17],
+[ 2, 12,  8, 14]]]]
+)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_dim</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end_dim</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+<span class="go">ivy.array(</span>
+<span class="go">    [[[ 5,  5,  0,  6],</span>
+<span class="go">      [17, 15, 11, 16],</span>
+<span class="go">      [ 6,  3, 13, 12],</span>
+<span class="go">      [ 6, 18, 10,  4],</span>
+<span class="go">      [ 5,  1, 17,  3],</span>
+<span class="go">      [14, 14, 18,  6]],</span>
+</pre></div>
+</div>
+<blockquote>
+<div><dl class="simple">
+<dt>[[12,  0,  1, 13],</dt><dd><p>[ 8,  7,  0,  3],
+[19, 12,  6, 17],
+[ 4, 15,  6, 15],
+[ 0,  5, 17,  9],
+[ 9,  3,  6, 19]],</p>
+</dd>
+<dt>[[17, 13, 11, 16],</dt><dd><p>[ 4, 18, 17,  4],
+[10, 10,  9,  1],
+[19, 17, 13, 10],
+[ 4, 19, 16, 17],
+[ 2, 12,  8, 14]]]))</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

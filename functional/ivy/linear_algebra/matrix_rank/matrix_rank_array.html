@@ -169,6 +169,67 @@
              
   <section id="ivy-array-matrix-rank">
 <h1>ivy.Array.matrix_rank<a class="headerlink" href="#ivy-array-matrix-rank" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.array.array_methods.matrix_rank">
+<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">matrix_rank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/linear_algebra.html#ArrayWithLinear_algebra.matrix_rank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.matrix_rank" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Array instance method variant of <a href="../matrix_rank/matrix_rank_functional.html">ivy.matrix_rank</a>. This method returns
+the rank (i.e., number of non-zero singular values) of a matrix (or a stack of
+matrices).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two dimensions
+form <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
+<li><p><strong>atol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – absolute tolerance. When None it’s considered to be zero. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values. Singular values approximately (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+less than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.
+If a <code class="docutils literal notranslate"><span class="pre">float</span></code>, the value is equivalent to a zero-dimensional array having
+a floating-point data type determined by <span class="xref std std-ref">type-promotion</span>
+(as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>) and must be broadcast against each matrix.
+If an <code class="docutils literal notranslate"><span class="pre">array</span></code>, must have a floating-point data type and must be
+compatible with <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> (see <span class="xref std std-ref">broadcasting</span>).
+If <code class="docutils literal notranslate"><span class="pre">None</span></code>, the default value is <code class="docutils literal notranslate"><span class="pre">max(M,</span> <span class="pre">N)</span> <span class="pre">*</span> <span class="pre">eps</span></code>, where <code class="docutils literal notranslate"><span class="pre">eps</span></code> must
+be the machine epsilon associated with the floating-point data type
+determined by <span class="xref std std-ref">type-promotion</span> (as applied to <code class="docutils literal notranslate"><span class="pre">x</span></code>).
+Default: <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. It must have a shape that (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+the inputs broadcast to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – a container containing the ranks. The returned array must have a
+floating-point data type determined by <span class="xref std std-ref">type-promotion</span> and
+must have shape <code class="docutils literal notranslate"><span class="pre">(...)</span></code>
+(i.e., must have a shape equal to <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code>).</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>1. Full Matrix
+&gt;&gt;&gt; x = ivy.array([[1., 2.], [3., 4.]])
+&gt;&gt;&gt; ivy.matrix_rank(x)
+ivy.array(2.)
+2. Rank Deficient Matrix</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(1.)</span>
+<span class="go">3. 1 Dimension - rank 1 unless all 0</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(1.)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array(0)</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

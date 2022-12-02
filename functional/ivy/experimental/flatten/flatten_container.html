@@ -214,6 +214,59 @@
              
   <section id="ivy-container-flatten">
 <h1>ivy.Container.flatten<a class="headerlink" href="#ivy-container-flatten" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.flatten">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.flatten" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of <a href="../flatten/flatten_functional.html">ivy.flatten</a>. This method simply
+wraps the function, and so the docstring for <a href="../flatten/flatten_functional.html">ivy.flatten</a> also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container to flatten at leaves.</p></li>
+<li><p><strong>start_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – first dim to flatten. If not set, defaults to 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>end_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – last dim to flatten. If not set, defaults to -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Read the elements of the input container using this index order, (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
+and place the elements into the reshaped array using this index order.
+‘C’ means to read / write the elements using C-like index order,
+with the last axis index changing fastest, back to the first axis index
+changing slowest.
+‘F’ means to read / write the elements using Fortran-like index order, with
+the first index changing fastest, and the last index changing slowest.
+Note that the ‘C’ and ‘F’ options take no account of the memory layout
+of the underlying array, and only refer to the order of indexing.
+Default order is ‘C’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Container with arrays flattened at leaves.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+…                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+&gt;&gt;&gt; x.flatten()
+[{</p>
+<blockquote>
+<div><p>a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</p>
+</div></blockquote>
+<p>}]</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
+<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="go">[{</span>
+<span class="go">    a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])</span>
+<span class="go">    b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])</span>
+<span class="go">}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

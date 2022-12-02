@@ -214,6 +214,178 @@
              
   <section id="ivy-pad">
 <h1>ivy.pad<a class="headerlink" href="#ivy-pad" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.experimental.pad">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'constant'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">constant_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reflect_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'even'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/experimental.html#pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.pad" title="Permalink to this definition"></a></dt>
+<dd><p>Pads an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – Input array to pad.</p></li>
+<li><p><strong>pad_width</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – <dl class="simple">
+<dt>Number of values padded to the edges of each axis.</dt><dd><ul>
+<li><p>((before_1, after_1), … (before_N, after_N)) yields unique pad widths
+for each axis.</p></li>
+<li><p>((before, after),) yields same before and after pad for each axis.</p></li>
+<li><p>pad (integer) is shortcut for before = after = pad width for all axes.</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>mode</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘constant’, ‘edge’, ‘linear_ramp’, ‘maximum’, ‘mean’, ‘median’, ‘minimum’, ‘reflect’, ‘symmetric’, ‘wrap’, ‘empty’], <code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code>]]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">'constant'</span></code>)
+One of the following string values or a user-supplied function.</p>
+<blockquote>
+<div><ul>
+<li><p>”constant”: Pads with a constant value.</p></li>
+<li><p>”edge”: Pads with the input’s edge values.</p></li>
+<li><p>”linear_ramp”: Pads with the linear ramp between end_value
+and the input’s edge value.</p></li>
+<li><p>”maximum”: Pads with the maximum value of all or part of the vector
+along each axis.</p></li>
+<li><p>”mean”: Pads with the mean value of all or part of the vector along
+each axis.</p></li>
+<li><p>”median”: Pads with the median value of all or part of the vector
+along each axis.</p></li>
+<li><p>”minimum”: Pads with the minimum value of all or part of the vector
+along each axis.</p></li>
+<li><p>”reflect”: Pads with the reflection mirrored on the first and last
+values of the vector along each axis.</p></li>
+<li><p>”symmetric”: Pads with the reflection of the vector mirrored along
+the edge of the input.</p></li>
+<li><p>”wrap”: Pads with the wrap of the vector along the axis.
+The first values are used to pad the end and the end values are used
+to pad the beginning.</p></li>
+<li><p>”empty”: Pads with undefined values.</p></li>
+<li><p>&lt;function&gt;: Pads with a user-defined padding function. The padding
+function should modify a rank 1 array following the signature
+<cite>padding_func(vector, iaxis_pad_width, iaxis, kwargs)</cite>, where:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>vector</cite> is a rank 1 array already padded with zeros. Padded
+values are <cite>vector[:iaxis_pad_width[0]]</cite> and
+<cite>vector[-iaxis_pad_width[1]:]</cite>.</p></li>
+<li><p><cite>iaxis_pad_width</cite> is a 2-tuple of ints, where
+<cite>iaxis_pad_width[0]</cite> represents the number of values padded at
+the beginning of <cite>vector</cite> and <cite>iaxis_pad_width[1]</cite> represents
+the number of values padded at the end of <cite>vector</cite>.</p></li>
+<li><p><cite>iaxis</cite> is the axis currently being calculated.</p></li>
+<li><p><cite>kwargs</cite> is a dict of keyword arguments the function requires.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>stat_length</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – <p>Used in “maximum”, “mean”, “median”, and “minimum”. Number of values at edge (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+of each axis used to calculate the statistic value.</p>
+<blockquote>
+<div><ul>
+<li><p>((before_1, after_1), … (before_N, after_N)) yields unique statistic
+lengths for each axis.</p></li>
+<li><p>((before, after),) yields same before and after statistic lengths for
+each axis.</p></li>
+<li><p>stat_length (integer) is a shortcut for before = after = stat_length
+length for all axes.</p></li>
+<li><p>None uses the entire axis.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>constant_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]]) – <p>(default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+Used in “constant”. The values to set the padded values for each axis.</p>
+<blockquote>
+<div><ul>
+<li><p>((before_1, after_1), … (before_N, after_N)) yields unique pad
+constants for each axis.</p></li>
+<li><p>((before, after),) yields same before and after constants for each axis.</p></li>
+<li><p>constant (integer) is a shortcut for before = after = constant for
+all axes.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>end_values</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]], <code class="xref py py-class docutils literal notranslate"><span class="pre">Number</span></code>]]) – <p>Used in “linear_ramp”. The values used for the ending value of the linear_ramp (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+and that will form the edge of the padded array.</p>
+<blockquote>
+<div><ul>
+<li><p>((before_1, after_1), … (before_N, after_N)) yields unique end values
+for each axis.</p></li>
+<li><p>((before, after),) yields same before and after end values for each axis</p></li>
+<li><p>end (integer) is a shortcut for before = after = end for all axes.</p></li>
+</ul>
+</div></blockquote>
+</p></li>
+<li><p><strong>reflect_type</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[‘even’, ‘odd’]]) – Used in “reflect”, and “symmetric”. The “even” style is the default with an (default: <code class="docutils literal notranslate"><span class="pre">'even'</span></code>)
+unaltered reflection around the edge value. For the “odd” style, the extended
+part of the array is created by subtracting the reflected values from two
+times the edge value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Padded array of the same rank as the input but with shape increased according
+to pad_width.</p>
+</dd>
+</dl>
+<p>Both the description and the type hints above assume an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
+<p class="rubric">Examples</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">padding</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[0, 0, 0, 0, 0, 0, 0],</span>
+<span class="go">           [0, 0, 1, 2, 3, 0, 0],</span>
+<span class="go">           [0, 0, 4, 5, 6, 0, 0],</span>
+<span class="go">           [0, 0, 0, 0, 0, 0, 0]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">padding</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;reflect&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[6, 5, 4, 5, 6, 5, 4],</span>
+<span class="go">           [3, 2, 1, 2, 3, 2, 1],</span>
+<span class="go">           [6, 5, 4, 5, 6, 5, 4],</span>
+<span class="go">           [3, 2, 1, 2, 3, 2, 1]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">padding</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;symmetric&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[2, 1, 1, 2, 3, 3, 2],</span>
+<span class="go">           [2, 1, 1, 2, 3, 3, 2],</span>
+<span class="go">           [5, 4, 4, 5, 6, 6, 5],</span>
+<span class="go">           [5, 4, 4, 5, 6, 6, 5]])</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.NativeArray</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">padding</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">,</span> <span class="n">constant_values</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">ivy.array([[7, 7, 7, 7, 7, 7, 7],</span>
+<span class="go">           [7, 7, 1, 2, 3, 7, 7],</span>
+<span class="go">           [7, 7, 4, 5, 6, 7, 7],</span>
+<span class="go">           [7, 7, 7, 7, 7, 7, 7]])</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">padding</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;constant&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([0, 0, 1, 2, 0]),</span>
+<span class="go">    b: ivy.array([0, 4, 5, 6, 0])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

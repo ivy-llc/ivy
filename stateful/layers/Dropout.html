@@ -146,6 +146,31 @@
              
   <section id="dropout">
 <h1>Dropout<a class="headerlink" href="#dropout" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Dropout">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">Dropout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Dropout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.stateful.layers.Dropout.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prob</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Dropout.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input
+tensor with probability p using samples from a Bernoull distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob</strong> – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> – Whether to scale the output by 1/(1-prob), default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
+etc. Default is cpu.</p></li>
+<li><p><strong>dtype</strong> – the desired data type of the internal variables to be created.
+Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
