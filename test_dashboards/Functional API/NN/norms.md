@@ -1,4 +1,4 @@
 |                 | jax                                                                                                                                                                    |
 |                 |                                                                                                                                                                        |
 |:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_layer_norm | <a href="https://github.com/unifyai/ivy/actions/runs/3585164754" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
+| test_layer_norm | <a href="https://github.com/unifyai/ivy/actions/runs/3601517543" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
