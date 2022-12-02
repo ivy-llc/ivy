@@ -1550,14 +1550,14 @@ def slogdet(
        The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
     
     Parameters
-    
     ----------
+    
     x:
         input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.
     
     Returns
-    
     -------
+    
     ret:
         a namedtuple (``sign``, ``logabsdet``) whose
         -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.
