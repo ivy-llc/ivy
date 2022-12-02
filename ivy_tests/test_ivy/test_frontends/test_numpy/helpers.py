@@ -222,13 +222,13 @@ def dtypes_values_casting_dtype(
 ):
     dtypes, values = [], []
     casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
-    for idx, func in enumerate(arr_func):
+    for func in arr_func:
         typ, val = draw(func())
-        if casting in ["no", "equiv"] and idx > 0:
-            dtypes.append(dtypes[0])
-        else:
-            dtypes += typ if isinstance(typ, list) else [typ]
+        dtypes += typ if isinstance(typ, list) else [typ]
         values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
 
     if special:
         dtype = draw(st.sampled_from(["bool", None]))
