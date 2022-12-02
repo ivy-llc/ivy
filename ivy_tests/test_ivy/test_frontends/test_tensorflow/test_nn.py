@@ -878,3 +878,48 @@ def test_tensorflow_local_response_normalization(
         alpha=alpha,
         beta=beta,
     )
+
+
+@handle_cmd_line_args
+@given(
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        transpose=True,
+    ),
+    as_variable=st.booleans(),
+    num_positional_args=helpers.num_positional_args(
+        fn_name="ivy.functional.frontends.tensorflow.conv_transpose"
+    ),
+    native_array=st.booleans(),
+)
+def test_conv_transpose(x_f_d_df, as_variable, num_positional_args, native_array, fw):
+    (
+        input_dtype,
+        x,
+        filters,
+        dilation,
+        data_format,
+        stride,
+        padding,
+        output_shape,
+    ) = x_f_d_df
+    input_dtype = [input_dtype] * 2
+    as_variable = [as_variable] * 2
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        with_out=False,
+        native_array_flags=native_array,
+        fw=fw,
+        frontend="tensorflow",
+        fn_tree="nn.conv_transpose",
+        input=np.asarray(x, dtype=input_dtype[0]),
+        filters=np.asarray(filters, dtype=input_dtype[1]),
+        output_shape=output_shape,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )

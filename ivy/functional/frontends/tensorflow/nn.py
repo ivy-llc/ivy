@@ -225,3 +225,25 @@ def local_response_normalization(
         ]
     div = ivy.multiply(input_perm, ivy.pow(math.add(sqr_sum * alpha, bias), -beta))
     return ivy.permute_dims(div, [0, 2, 3, 1])
+
+
+@to_ivy_arrays_and_back
+def conv_transpose(
+    input,
+    filters,
+    output_shape,
+    strides,
+    padding="SAME",
+    data_format=None,
+    dilations=None,
+    name=None,
+):
+    return ivy.conv_transpose(
+        input,
+        filters,
+        strides,
+        padding,
+        output_shape=output_shape,
+        data_format=data_format,
+        dilations=dilations,
+    )
