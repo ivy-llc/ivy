@@ -97,12 +97,10 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /):
 
 @handle_exceptions
 def set_nest_at_index(
-    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
+    nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple],
     index: Sequence[Union[str, int]],
     value: Any,
-    _result: Optional[
-        Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List]
-    ] = None,
+    _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List] = None,
     /,
     inplace: bool = False,
 ):
@@ -259,20 +257,19 @@ def map_nest_at_index(
     }
 
     """
+    tupled = [False, False]  # for turning tuple back into tuple from list
+    if _result is None:
+        _result = copy.deepcopy(nest)
+        # turning outer nest to list so it can be updated
+        if isinstance(nest, tuple):
+            tupled[0] = True
+            _result = list(_result)
     if len(index) == 1:
         ret = fn(nest[index[0]])
         if inplace:
             nest[index[0]] = ret
         _result[index[0]] = ret
-        return ret
     else:
-        tupled = [False, False]  # for turning tuple back into tuple from list
-        if _result is None:
-            _result = copy.deepcopy(nest)
-            # turning outer nest to list so it can be updated
-            if isinstance(nest, tuple):
-                tupled[0] = True
-                _result = list(_result)
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
             tupled[1] = True
@@ -280,9 +277,9 @@ def map_nest_at_index(
         # turning back to tuple if outer nest was tuple
         if tupled[1]:
             _result[index[0]] = tuple(_result[index[0]])
-        if tupled[0]:
-            _result = tuple(_result)
-        return _result
+    if tupled[0]:
+        _result = tuple(_result)
+    return _result
 
 
 @handle_exceptions
