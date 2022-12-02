@@ -902,7 +902,7 @@ def nested_map(
     elif dict_check_fn(x, dict):
         class_instance = type(x)
         return class_instance(
-            {
+            **{
                 k: nested_map(
                     v,
                     fn,

@@ -892,6 +892,8 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
 
 
 def _check_float64(input) -> bool:
+    if ivy.is_native_array(input):
+        return ivy.dtype(input) == "float64"
     if math.isfinite(input):
         m, e = math.frexp(input)
         return (abs(input) > 3.4028235e38) or (e < -126) or (e > 128)
@@ -992,7 +994,9 @@ def default_float_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_argwhere(input, lambda x: _check_float64(x)):
+            if ivy.nested_argwhere(
+                input, lambda x: _check_float64(x), stop_after_n_found=1
+            ):
                 ret = ivy.float64
             else:
                 def_dtype = default_dtype()
@@ -1174,16 +1178,21 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            get_scalar = lambda x: ivy.to_scalar(x) if ivy.is_array(x) else x
+            is_native = lambda x: ivy.is_native_array(x)
             if ivy.nested_argwhere(
                 input,
-                lambda x: get_scalar(x) > 9223372036854775807
-                and get_scalar(x) != ivy.inf,
+                lambda x: ivy.dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != ivy.inf,
+                stop_after_n_found=1,
             ):
                 ret = ivy.uint64
             elif ivy.nested_argwhere(
                 input,
-                lambda x: get_scalar(x) > 2147483647 and get_scalar(x) != ivy.inf,
+                lambda x: ivy.dtype(x) == "int64"
+                if is_native(x)
+                else x > 2147483647 and x != ivy.inf,
+                stop_after_n_found=1,
             ):
                 ret = ivy.int64
             else:
@@ -1273,7 +1282,14 @@ def default_uint_dtype(
         elif isinstance(input, np.ndarray):
             ret = input.dtype
         elif isinstance(input, (list, tuple, dict)):
-            if ivy.nested_argwhere(input, lambda x: x > 4294967295 and x != ivy.inf):
+            is_native = lambda x: ivy.is_native_array(x)
+            if ivy.nested_argwhere(
+                input,
+                lambda x: ivy.dtype(x) == "uint64"
+                if is_native(x)
+                else x > 9223372036854775807 and x != ivy.inf,
+                stop_after_n_found=1,
+            ):
                 ret = ivy.uint64
             else:
                 def_dtype = ivy.default_dtype()
