@@ -100,7 +100,11 @@ def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
     value: Any,
+    _result: Optional[
+        Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List]
+    ] = None,
     /,
+    inplace: bool = False,
 ):
     """Set the value of a nested item at a specified index.
 
@@ -164,7 +168,9 @@ def set_nest_at_index(
     }
     """
     if len(index) == 1:
-        nest[index[0]] = value
+        if inplace:
+            nest[index[0]] = value
+        return value
     else:
         ret = nest[index[0]]
         ivy.set_nest_at_index(ret, index[1:], value)
@@ -183,12 +189,13 @@ def insert_into_nest_at_index(nest: Iterable, index: Tuple, value, /):
         insert_into_nest_at_index(nest[index[0]], index[1:], value)
 
 
-@handle_exceptions
 def map_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List],
     index: Sequence[Union[str, int]],
     fn: Callable[[Any], Any],
+    _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List] = None,
     /,
+    inplace: bool = False,
 ) -> None:
     """Map a function to the value of a nested item at a specified index.
 
@@ -253,9 +260,34 @@ def map_nest_at_index(
 
     """
     if len(index) == 1:
-        nest[index[0]] = fn(nest[index[0]])
+        ret = fn(nest[index[0]])
+        if inplace:
+            nest[index[0]] = ret
+        return ret
     else:
-        map_nest_at_index(nest[index[0]], index[1:], fn)
+        tupled = [False, False]  # for turning tuple back into tuple from list
+        if _result is None:
+            _result = copy.deepcopy(nest)
+            # turning outer nest to list so it can be updated
+            if isinstance(nest, tuple):
+                tupled[0] = True
+                _result = list(_result)
+        if isinstance(_result[index[0]], tuple):
+            _result[index[0]] = list(_result[index[0]])
+            tupled[1] = True
+        if len(index) == 2:
+            # updating in _result if length of index is 2
+            _result[index[0]][index[1]] = map_nest_at_index(
+                nest[index[0]], index[1:], fn, _result[index[0]], inplace
+            )
+        else:
+            map_nest_at_index(nest[index[0]], index[1:], fn, _result[index[0]], inplace)
+        if tupled[1]:
+            _result[index[0]] = tuple(_result[index[0]])
+        # turning back to tuple if outer nest was tuple
+        if tupled[0]:
+            _result = tuple(_result)
+        return _result
 
 
 @handle_exceptions
@@ -374,7 +406,14 @@ def insert_into_nest_at_indices(nest: Iterable, indices: Tuple, values, /):
 
 
 @handle_exceptions
-def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
+def map_nest_at_indices(
+    nest: Iterable,
+    indices: Tuple,
+    fn: Callable,
+    /,
+    inplace: bool = False,
+    to_mutable: bool = False,
+):
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
@@ -424,7 +463,7 @@ def map_nest_at_indices(nest: Iterable, indices: Tuple, fn: Callable, /):
     >>> print(nest)
     ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
-    [map_nest_at_index(nest, index, fn) for index in indices]
+    [map_nest_at_index(nest, index, fn, inplace=inplace) for index in indices]
 
 
 @handle_exceptions
