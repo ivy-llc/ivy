@@ -7880,6 +7880,20 @@
 <span class="sd">        -------</span>
 <span class="sd">            Container object with all sub-arrays having the minimum values computed.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 3, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 8, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 5, 6]),</span>
+<span class="sd">        ...                   b=ivy.array([5, 9, 7]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_minimum(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 3, 1]),</span>
+<span class="sd">            b: ivy.array([2, 8, 5])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;minimum&quot;</span><span class="p">,</span>
@@ -7910,7 +7924,6 @@
 <span class="sd">        This method simply wraps the function, and so the docstring for</span>
 <span class="sd">        ivy.minimum also applies to this method with minimal changes.</span>
 
-
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
@@ -7939,6 +7952,21 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            Container object with all sub-arrays having the minimum values computed.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With multiple :class:`ivy.Container` inputs:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 3, 1]),</span>
+<span class="sd">        ...                   b=ivy.array([2, 8, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 5, 6]),</span>
+<span class="sd">        ...                   b=ivy.array([5, 9, 7]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x.minimum(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([1, 3, 1]),</span>
+<span class="sd">            b: ivy.array([2, 8, 5])</span>
+<span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_minimum</span><span class="p">(</span>
@@ -8001,7 +8029,23 @@
 <span class="sd">            An array with the elements of x1, but clipped to not be lower than the x2</span>
 <span class="sd">            values.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
 
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 3], [2, 4], [3, 7]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]),</span>
+<span class="sd">        ...                   b=ivy.array([-5, 9]))</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.Container.static_maximum(x, y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[1, 3],</span>
+<span class="sd">                          [2, 4],</span>
+<span class="sd">                          [3, 7]]),</span>
+<span class="sd">            b: ivy.array([[1, 9],</span>
+<span class="sd">                          [2, 9],</span>
+<span class="sd">                          [3, 9]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;maximum&quot;</span><span class="p">,</span>
@@ -8062,6 +8106,24 @@
 <span class="sd">        ret</span>
 <span class="sd">            An array with the elements of x1, but clipped to not be lower than the x2</span>
 <span class="sd">            values.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With one :class:`ivy.Container` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 3], [2, 4], [3, 7]])</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]),</span>
+<span class="sd">        ...                   b=ivy.array([-5, 9]))</span>
+<span class="sd">        &gt;&gt;&gt; z = x.maximum(y)</span>
+<span class="sd">        &gt;&gt;&gt; print(z)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[1, 3],</span>
+<span class="sd">                          [2, 4],</span>
+<span class="sd">                          [3, 7]]),</span>
+<span class="sd">            b: ivy.array([[1, 9],</span>
+<span class="sd">                          [2, 9],</span>
+<span class="sd">                          [3, 9]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_maximum</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>

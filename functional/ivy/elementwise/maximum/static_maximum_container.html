@@ -239,6 +239,25 @@ It must have a shape that the inputs broadcast to.</p></li>
 values.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.array([[1, 3], [2, 4], [3, 7]])
+&gt;&gt;&gt; y = ivy.Container(a=ivy.array([1, 0,]),
+…                   b=ivy.array([-5, 9]))
+&gt;&gt;&gt; z = ivy.Container.static_maximum(x, y)
+&gt;&gt;&gt; print(z)
+{</p>
+<blockquote>
+<div><dl class="simple">
+<dt>a: ivy.array([[1, 3],</dt><dd><p>[2, 4],
+[3, 7]]),</p>
+</dd>
+<dt>b: ivy.array([[1, 9],</dt><dd><p>[2, 9],
+[3, 9]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
 </dd></dl>
 
 <div class="line-block">
