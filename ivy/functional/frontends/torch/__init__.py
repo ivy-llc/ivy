@@ -43,6 +43,14 @@ from ivy import (
     bfloat16,
     bool,
 )
+from ivy import (
+    int16 as short,
+    int32 as int,
+    int64 as long,
+    float16 as half,
+    float32 as float,
+    float64 as double,
+)
 from ivy.exceptions import handle_exceptions
 
 # global

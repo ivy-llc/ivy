@@ -4,7 +4,9 @@ import numpy as np
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
+from . import backend_version
 
 
 @_scalar_output_to_0d_array
@@ -201,6 +203,7 @@ def cos(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 cos.support_native_out = True
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 @_scalar_output_to_0d_array
 def cosh(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.cosh(x, out=out)

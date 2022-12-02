@@ -512,18 +512,6 @@ def test_torch_ger(
     )
 
 
-# inverse
-def test_torch_inverse():
-    # alias function
-    pass
-
-
-# det
-def test_torch_det():
-    # alias function
-    pass
-
-
 # logdet
 @handle_frontend_test(
     fn_tree="torch.logdet",
@@ -552,12 +540,6 @@ def test_torch_logdet(
         on_device=on_device,
         input=x,
     )
-
-
-# slogdet
-def test_torch_slogdet():
-    # alias function
-    pass
 
 
 # matmul
@@ -591,12 +573,6 @@ def test_torch_matmul(
         other=y,
         out=None,
     )
-
-
-# matrix_power
-def test_torch_matrix_power():
-    # alias function
-    pass
 
 
 # matrix_rank

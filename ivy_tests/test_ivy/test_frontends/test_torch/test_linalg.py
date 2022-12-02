@@ -21,12 +21,6 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
-# diagonal
-def test_torch_diagonal():
-    # alias function
-    pass
-
-
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
@@ -53,6 +47,7 @@ def test_torch_inv(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["inverse"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -84,6 +79,7 @@ def test_torch_det(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["det"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -114,6 +110,7 @@ def test_torch_slogdet(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["slogdet"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
@@ -146,6 +143,7 @@ def test_torch_matrix_power(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
+        all_aliases=["matrix_power"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,

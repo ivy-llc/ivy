@@ -9,8 +9,9 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers \
-    import matrix_is_stable
+from ivy_tests.test_ivy.helpers.hypothesis_helpers.general_helpers import (
+    matrix_is_stable,
+)
 
 
 @st.composite
@@ -312,6 +313,7 @@ def test_matrix_power(
     ground_truth_backend,
 ):
     dtype, x = dtype_x
+    assume(matrix_is_stable(x[0]))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
@@ -1355,6 +1357,7 @@ def test_matrix_norm(
     ground_truth_backend,
 ):
     dtype, x = dtype_value_shape
+    assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,

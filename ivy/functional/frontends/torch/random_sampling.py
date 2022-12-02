@@ -5,6 +5,7 @@ try:
     from torch import Generator
 except ImportError:
     from types import SimpleNamespace
+
     Generator = SimpleNamespace
 
 

@@ -6,7 +6,10 @@ Should not be used inside any of the test functions.
 
 from dataclasses import dataclass
 from .available_frameworks import available_frameworks
-FWS_DICT = {"": lambda: None, }
+
+FWS_DICT = {
+    "": lambda: None,
+}
 
 if "numpy" in available_frameworks:
     FWS_DICT["numpy"] = lambda: _get_ivy_numpy()
