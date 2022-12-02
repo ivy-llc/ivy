@@ -1,4 +1,4 @@
 |                     | tensorflow                                                                                                                                                             |
 |                     |                                                                                                                                                                        |
 |:--------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_torch_logspace | <a href="https://github.com/unifyai/ivy/actions/runs/3602396621" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
+| test_torch_logspace | <a href="https://github.com/unifyai/ivy/actions/runs/3603759307" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
