@@ -559,6 +559,36 @@ class Array(
         return ivy.matmul(self._data, other)
 
     def __abs__(self):
+        """
+        ivy.Array special method variant of ivy.abs. This method
+        simply wraps the function, and so the docstring for ivy.abs
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+                an array containing the absolute value of each element
+                in ``self``. The returned array must have the same data
+                type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([6, -2, 0, -1])
+        >>> print(abs(x))
+        ivy.array([6, 2, 0, 1])
+
+        >>> x = ivy.array([-1.2, 1.2])
+        >>> print(abs(x))
+        ivy.array([1.2, 1.2])
+
+        """
         return ivy.abs(self._data)
 
     def __float__(self):

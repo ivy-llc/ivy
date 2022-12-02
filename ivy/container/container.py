@@ -463,6 +463,35 @@ class Container(
         return self.map(lambda x, kc: other // x, map_sequences=True)
 
     def __abs__(self):
+        """
+        ivy.Container special method for the abs operator, calling
+        :code:`operator.abs` for each of the corresponding leaves of the
+        two containers.
+
+        Parameters
+        ----------
+        self
+            input Container. Should have leaves with numeric data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([1, -2, 3]),
+        ...                    b=ivy.array([-1, 0, 5]))
+        >>> y = abs(x)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([1, 0, 5])
+        }
+
+        """
         return self.map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
