@@ -337,7 +337,10 @@ class Tensor:
         return self
 
     def flatten(self, start_dim, end_dim):
-        return torch_frontend.flatten(self._ivy_array, start_dim=start_dim, end_dim=end_dim)
+        return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
+
+    def cumsum(self, dim, dtype):
+        return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
     # Special Methods #
     # -------------------#
