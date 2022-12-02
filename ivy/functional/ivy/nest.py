@@ -390,12 +390,12 @@ def set_nest_at_indices(
     result = None
     for i, (index, value) in enumerate(zip(indices, values)):
         if i == 0:
-            result = set_nest_at_index(nest, index, value)
+            result = set_nest_at_index(nest, index, value, inplace)
             continue
         if inplace:
             result = set_nest_at_index(nest, index, value, inplace)
         else:
-            result = set_nest_at_index(result, index, value)
+            result = set_nest_at_index(result, index, value, inplace)
     return result
 
 
