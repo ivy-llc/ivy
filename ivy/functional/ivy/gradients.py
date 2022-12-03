@@ -3,6 +3,7 @@
 # global
 from typing import Union, Optional, Tuple
 import numpy as np
+import itertools
 
 # local
 import ivy
@@ -170,6 +171,21 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
+
+
+def _set_duplicates(xs, duplicate_index_chains):
+    originals = [
+        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
+    ]
+    originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
+    duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
+    nullifying_index_chains = (
+        [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+        if isinstance(xs, ivy.Container)
+        else list(itertools.chain(*duplicates))
+    )
+    ivy.set_nest_at_indices(xs, nullifying_index_chains, originals)
+    return xs
 
 
 def _stop_grad_and_index(func_ret, retain_grads, grads):
