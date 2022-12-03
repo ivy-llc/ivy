@@ -21,7 +21,6 @@ from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -164,6 +163,9 @@ def flatten(
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
     return ivy.reshape(x, tuple(lst), order=order)
+
+
+flatten.mixed_function = True
 
 
 @to_native_arrays_and_back
