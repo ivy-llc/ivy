@@ -56,7 +56,6 @@ def test_numpy_split(
     indices_or_sections, ary, axis = dtype_and_x
     helpers.test_frontend_function(
         as_variable_flags=as_variable,
-        input_dtypes=input_dtypes,
         with_out=False,
         num_positional_args=num_positional_args,
         frontend="numpy",
