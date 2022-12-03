@@ -89,6 +89,20 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
+) -> Tuple[torch.Tensor]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", torch.Tensor), ("eigenvectors", torch.Tensor)]
+    )
+    eigenvalues, eigenvectors = torch.linalg.eig(x, out=out)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+eig.support_native_out = True
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: torch.Tensor, /, *, UPLO: Optional[str] = "L", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor]:
