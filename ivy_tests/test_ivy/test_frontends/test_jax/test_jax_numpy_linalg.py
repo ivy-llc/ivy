@@ -121,7 +121,17 @@ def test_jax_numpy_det(
 # eig
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.eig",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
 )
 def test_jax_numpy_eig(
     *,
@@ -134,7 +144,14 @@ def test_jax_numpy_eig(
     frontend,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    x = np.array(x[0], dtype=dtype[0])
+    """
+    make symmetric positive-definite since ivy does not support complex
+    data dtypes currently.
+    """
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -143,9 +160,20 @@ def test_jax_numpy_eig(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-04,
-        atol=1e-04,
-        a=x[0],
+        test_values=False,
+        a=x,
+    )
+
+    ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
+    frontend_ret = [x.astype(np.float64) for x in frontend_ret[0]]
+
+    L, Q = ret
+    frontend_L, frontend_Q = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-02,
     )
 
 
