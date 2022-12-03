@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, strategies as st
+from hypothesis import assume, strategies as st, given
 
 # local
 import ivy
@@ -8,7 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
     assert_all_close,
-    handle_frontend_test,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -19,8 +18,7 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.numpy import ndarray
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -41,8 +39,7 @@ def test_numpy_ndarray_property_ivy_array(
     )
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -57,8 +54,7 @@ def test_numpy_ndarray_property_dtype(
     ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -73,8 +69,7 @@ def test_numpy_ndarray_property_shape(
     ivy.assertions.check_equal(x.shape, ivy.Shape(shape))
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
