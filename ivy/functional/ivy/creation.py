@@ -1048,6 +1048,42 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With float input:
+ 
+    >>> ivy.linspace(1, 2, 4)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> ivy.linspace(1, 2, 4, endpoint=False)
+    ivy.array([1., 1.25, 1.5 , 1.75])
+
+    >>> ivy.linspace(1, 10, 4, dtype = int)
+    ivy.array([ 1,  4,  7, 10])
+
+    >>> ivy.linspace(1, 2, 4, device = "cuda:0")
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2])
+    >>> y = ivy.array([4,5])
+
+    >>> ivy.linspace(x, y, 4)
+    ivy.array([[1, 2, 3, 4],[2, 3, 4, 5]])
+
+    >>> ivy.linspace(x, y, 4, axis = 0)
+    ivy.array([[1, 2],
+               [2, 3],
+               [3, 4],
+               [4, 5]])
+
     """
     return current_backend(start).linspace(
         start,
