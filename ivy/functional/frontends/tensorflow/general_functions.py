@@ -46,11 +46,12 @@ def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
 
 
-def constant(value, dtype, shape, name=None):
-    if shape:
-        value = ivy.reshape(ivy.astype(value, dtype), shape=shape)
-        return EagerTensor(value)
-    return EagerTensor(ivy.astype(value, dtype))
+def constant(value, dtype=None, shape=None, name=None):
+    if shape is not None:
+        value = ivy.reshape(value, shape=shape)
+    if dtype is not None:
+        return EagerTensor(ivy.astype(value, dtype))
+    return EagerTensor(value)
 
 
 def convert_to_tensor(value, dtype, dtype_hint, name=None):
@@ -97,6 +98,12 @@ def shape(input, out_type=ivy.int32, name=None):
         return ivy.array(ivy.shape(input), dtype=out_type)
     else:
         return ivy.array(ivy.shape(input), dtype="int64")
+
+
+@with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
+@to_ivy_arrays_and_back
+def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
+    return ivy.arange(start, limit, delta, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
