@@ -460,3 +460,15 @@ def test_nested_any_w_extra_nest_types(fn):
     x_copy_bool = is_true_any(x_copy)
 
     assert x_copy_bool == x_bool
+
+
+# duplicate_array_index_chains
+x = ivy.array([-1.0])
+y = ivy.array([1.0])
+
+
+@pytest.mark.parametrize("nest", [[{"a": x, "b": {"c": y, "d": x}}, (x, y)]])
+def test_duplicate_array_index_chains(nest):
+    duplicate_index_chains = ivy.duplicate_array_index_chains(nest)
+    assert duplicate_index_chains[0] == [[0, "a"], [0, "b", "d"], [1, 0]]
+    assert duplicate_index_chains[1] == [[0, "b", "c"], [1, 1]]
