@@ -32,24 +32,6 @@ def histogram(
     )
     histogram_values = ret[0]
     bin_edges = ret[1]
-    if extend_lower_interval:
-        if density:
-            histogram_values = torch.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size()[0])
-        if extend_upper_interval:
-            histogram_values[0] = torch.add(histogram_values[0], a[a < range[0]].size()[0])
-            histogram_values[-1] = torch.add(histogram_values[-1], a[a > range[1]].size()[0])
-            if density:
-                histogram_values = torch.divide(histogram_values, a.size()[0])
-        else:
-            histogram_values[0] = torch.add(histogram_values[0], a[a < range[0]].size()[0])
-            if density:
-                histogram_values = torch.divide(histogram_values, a[a < range[1]].size()[0])
-    elif extend_upper_interval:
-        if density:
-            histogram_values = torch.multiply(histogram_values, a[(a > range[0]) & (a < range[1])].size()[0])
-        histogram_values[-1] = torch.add(histogram_values[-1], a[a > range[1]].size()[0])
-        if density:
-            histogram_values = torch.divide(histogram_values, a[a > range[0]].size()[0])
     if dtype:
         histogram_values.type(dtype)
         bin_edges.type(dtype)

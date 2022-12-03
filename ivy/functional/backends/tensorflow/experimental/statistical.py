@@ -22,14 +22,7 @@ def histogram(
 ) -> Tuple[tf.Tensor]:
     if range:
         if type(bins) == int:
-            try:
-                bins = tf.linspace(start=range[0], stop=range[1], num=bins + 1)
-            except IndexError as e:
-                raise ivy.exceptions.IvyError(histogram.__name__, str(e)) from None
-            except Exception as e:
-                raise ivy.exceptions.IvyBackendException(
-                    histogram.__name__, str(e)
-                ) from None
+            bins = tf.linspace(start=range[0], stop=range[1], num=bins + 1)
     ret = tfp.stats.histogram(
         x=a,
         edges=bins,
