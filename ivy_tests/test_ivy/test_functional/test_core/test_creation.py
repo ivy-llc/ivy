@@ -224,6 +224,7 @@ def test_arange(
         max_num_dims=5,
         min_dim_size=1,
         max_dim_size=5,
+        shared_dtype=True,
     ),
     as_list=st.booleans(),
 )
