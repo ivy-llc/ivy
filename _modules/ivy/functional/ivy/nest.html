@@ -1383,13 +1383,14 @@
     <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">index_chain</span> <span class="ow">in</span> <span class="n">all_index_chains</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index_chain</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="n">duplicates</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
-                <span class="n">duplicate_index_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_chain</span><span class="p">)</span>
-                <span class="k">break</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-            <span class="n">duplicate_index_chains</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">index_chain</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="n">duplicates</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">duplicate_index_chains</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index_chain</span><span class="p">)</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">duplicate_index_chains</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">index_chain</span><span class="p">]</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">duplicate_index_chains</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 </pre></div>
 

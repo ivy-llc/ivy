@@ -133,6 +133,7 @@
 <span class="c1"># global</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -300,6 +301,21 @@
         <span class="n">arr_values</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">arr_idxs</span><span class="p">)</span>
         <span class="n">arr_idxs</span> <span class="o">=</span> <span class="n">_idxs_to_str</span><span class="p">(</span><span class="n">arr_idxs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">arr_idxs</span><span class="p">,</span> <span class="n">arr_values</span>
+
+
+<span class="k">def</span> <span class="nf">_set_duplicates</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">duplicate_index_chains</span><span class="p">):</span>
+    <span class="n">originals</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="n">key_chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">key_chains</span> <span class="ow">in</span> <span class="n">duplicate_index_chains</span>
+    <span class="p">]</span>
+    <span class="n">originals</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">originals</span><span class="p">)))</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">index_chains</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">index_chains</span> <span class="ow">in</span> <span class="n">duplicate_index_chains</span><span class="p">]</span>
+    <span class="n">nullifying_index_chains</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">[</span><span class="n">index_chain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">index_chain</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">duplicates</span><span class="p">))]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+        <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">duplicates</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_nest_at_indices</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">nullifying_index_chains</span><span class="p">,</span> <span class="n">originals</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xs</span>
 
 
 <span class="k">def</span> <span class="nf">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
