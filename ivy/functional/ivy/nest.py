@@ -1253,11 +1253,12 @@ def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterabl
     duplicate_index_chains = {}
     for index_chain in all_index_chains:
         val = ivy.index_nest(nest, index_chain)
-        for i in range(len(duplicates)):
-            if val is duplicates[i]:
-                duplicate_index_chains[i].append(index_chain)
-                break
-        else:
-            duplicates.append(val)
-            duplicate_index_chains[len(duplicates) - 1] = [index_chain]
+        if ivy.is_array(val):
+            for i in range(len(duplicates)):
+                if val is duplicates[i]:
+                    duplicate_index_chains[i].append(index_chain)
+                    break
+            else:
+                duplicates.append(val)
+                duplicate_index_chains[len(duplicates) - 1] = [index_chain]
     return list(duplicate_index_chains.values())
