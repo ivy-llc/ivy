@@ -179,6 +179,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         return ivy.diag(self._data, k=k, out=out)
 
+    def eig(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.eig(self._data, out=out)
+
     def eigh(
         self: ivy.Array,
         /,
