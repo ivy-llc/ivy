@@ -567,6 +567,43 @@ def test_tensorflow_shape(
     )
 
 
+# range
+@handle_frontend_test(
+    fn_tree="tensorflow.range",
+    start=helpers.ints(min_value=-50, max_value=0),
+    limit=helpers.ints(min_value=1, max_value=50),
+    delta=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+)
+def test_tensorflow_range(
+    *,
+    start,
+    limit,
+    delta,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        start=start,
+        limit=limit,
+        delta=delta,
+        dtype=dtype[0],
+    )
+
+
 # sort
 @handle_frontend_test(
     fn_tree="tensorflow.sort",

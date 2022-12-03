@@ -244,15 +244,15 @@ def dev(
     Parameters
     ----------
     x
-          array for which to get the device handle.
+        array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is ``False``.
+        Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
     ret
-          Device handle for the array, in native framework format.
+        Device handle for the array, in native framework format.
 
     Functional Examples
     --------------------
