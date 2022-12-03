@@ -408,6 +408,7 @@ def test_jax_special_rpow(
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__and_(
@@ -444,6 +445,7 @@ def test_jax_devicearray__and_(
     method_name="__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__rand_(
@@ -480,6 +482,7 @@ def test_jax_devicearray__rand_(
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__or_(
@@ -516,6 +519,7 @@ def test_jax_devicearray__or_(
     method_name="__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__ror_(
