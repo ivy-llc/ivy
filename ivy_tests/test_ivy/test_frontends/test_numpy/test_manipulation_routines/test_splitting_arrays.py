@@ -1,7 +1,7 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from helpers.hypothesis_helpers.array_helpers import array_indices_axis
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-from hypothesis import strategies as st
 
 
 # split
