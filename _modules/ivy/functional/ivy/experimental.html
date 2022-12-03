@@ -2675,8 +2675,7 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
+<div class="viewcode-block" id="flatten"><a class="viewcode-back" href="../../../../functional/ivy/experimental/flatten/flatten_functional.html#ivy.functional.ivy.experimental.flatten">[docs]</a><span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">flatten</span><span class="p">(</span>
@@ -2818,6 +2817,9 @@
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">end_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>
         <span class="n">lst</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">lst</span><span class="p">),</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span></div>
+
+
+<span class="n">flatten</span><span class="o">.</span><span class="n">mixed_function</span> <span class="o">=</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="moveaxis"><a class="viewcode-back" href="../../../../functional/ivy/experimental/moveaxis/moveaxis_functional.html#ivy.functional.ivy.experimental.moveaxis">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
