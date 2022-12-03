@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 import torch
 
 # local
@@ -47,3 +47,38 @@ def nanmean(
 
 
 nanmean_support_native_out = True
+
+@with_unsupported_dtypes({"1.11.0 and below":
+                          ("bfloat16", "bfloat32", "float16")}, backend_version)
+def quantile(
+    a: torch.tensor,
+    q: Union[torch.tensor, float],
+    /,
+    *,
+    axis: Optional[Union[Sequence[int], int]] = None,
+    keepdims: bool = False,
+    interpolation: str = 'linear',
+    out: Optional[torch.tensor] = None
+) -> torch.tensor:
+
+    if axis is None:
+        return torch.quantile(a,
+                              q,
+                              keepdim=keepdims,
+                              interpolation=interpolation)
+
+    if isinstance(axis, list) or isinstance(axis, tuple):
+        for i in axis:
+            a = torch.quantile(a,
+                               q,
+                               i,
+                               keepdim=keepdims, 
+                               interpolation=interpolation)
+        return a
+
+    return torch.quantile(a,
+                          q, 
+                          dim=axis,
+                          keepdim=keepdims,
+                          interpolation=interpolation)
+
