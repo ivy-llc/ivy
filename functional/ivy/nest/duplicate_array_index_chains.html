@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>prune_nest_at_index &mdash; Ivy 1.0 documentation</title>
+  <title>duplicate_array_index_chains &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="set_nest_at_index" href="set_nest_at_index.html" />
-    <link rel="prev" title="index_nest" href="index_nest.html" /> 
+    <link rel="next" title="Norms" href="../norms.html" />
+    <link rel="prev" title="nested_multi_map" href="nested_multi_map.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -70,7 +70,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../nest.html">Nest</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index_nest.html">index_nest</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">prune_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prune_nest_at_index.html">prune_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_index.html">insert_into_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_index.html">map_nest_at_index</a></li>
@@ -86,7 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nested_any.html">nested_any</a></li>
 <li class="toctree-l2"><a class="reference internal" href="copy_nest.html">copy_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_multi_map.html">nested_multi_map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="duplicate_array_index_chains.html">duplicate_array_index_chains</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">duplicate_array_index_chains</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
@@ -141,9 +141,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../nest.html">Nest</a> &raquo;</li>
-      <li>prune_nest_at_index</li>
+      <li>duplicate_array_index_chains</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/nest/prune_nest_at_index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/nest/duplicate_array_index_chains.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -151,18 +151,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="prune-nest-at-index">
-<h1>prune_nest_at_index<a class="headerlink" href="#prune-nest-at-index" title="Permalink to this heading"></a></h1>
+  <section id="duplicate-array-index-chains">
+<h1>duplicate_array_index_chains<a class="headerlink" href="#duplicate-array-index-chains" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_nest_at_index">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">prune_nest_at_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_index" title="Permalink to this definition"></a></dt>
-<dd><p>Prune a nested object at a specified index.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.duplicate_array_index_chains">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">duplicate_array_index_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#duplicate_array_index_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.duplicate_array_index_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Group all unique index chains in a nest. This function is useful for finding
+all unique index chains in a nest, and then duplicating the values at those
+index chains for functional frameworks.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to prune.</p></li>
-<li><p><strong>index</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of indices for the index at which to prune.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>nest</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – nest to get duplicate index chains for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list of index chains to duplicate.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -178,8 +180,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index_nest.html" class="btn btn-neutral float-left" title="index_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="set_nest_at_index.html" class="btn btn-neutral float-right" title="set_nest_at_index" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nested_multi_map.html" class="btn btn-neutral float-left" title="nested_multi_map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../norms.html" class="btn btn-neutral float-right" title="Norms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

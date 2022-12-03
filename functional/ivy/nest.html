@@ -86,6 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_any.html">nested_any</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_multi_map.html">nested_multi_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/duplicate_array_index_chains.html">duplicate_array_index_chains</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
@@ -231,6 +232,22 @@ nest or not</p></li>
 <span class="go">{&#39;first&#39;: [23.0, 24.0, 25], &#39;second&#39;: [46.0, 48.0, 50]}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.duplicate_array_index_chains">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">duplicate_array_index_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#duplicate_array_index_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.duplicate_array_index_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Group all unique index chains in a nest. This function is useful for finding
+all unique index chains in a nest, and then duplicating the values at those
+index chains for functional frameworks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nest</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>]) – nest to get duplicate index chains for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>list of index chains to duplicate.</em></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

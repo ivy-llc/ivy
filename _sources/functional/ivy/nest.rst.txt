@@ -30,6 +30,7 @@ Nest
    nest/nested_any.rst
    nest/copy_nest.rst
    nest/nested_multi_map.rst
+   nest/duplicate_array_index_chains.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 
 .. _`nest forum`: https://discord.com/channels/799879767196958751/1028299238964219924
