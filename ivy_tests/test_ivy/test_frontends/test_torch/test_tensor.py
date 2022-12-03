@@ -1,7 +1,7 @@
 # global
 import ivy
 import torch
-from hypothesis import assume, strategies as st
+from hypothesis import assume, strategies as st, given
 import hypothesis.extra.numpy as hnp
 
 # local
@@ -12,7 +12,7 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 )
 from ivy.functional.frontends.torch import Tensor
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
 # Helper functions
@@ -36,8 +36,7 @@ def _requires_grad(draw):
     return draw(st.booleans())
 
 
-@handle_frontend_test(
-    fn_tree="torch.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_torch_tensor_property_ivy_array(
