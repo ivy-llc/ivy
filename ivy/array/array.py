@@ -310,6 +310,40 @@ class Array(
         return ivy.negative(self._data)
 
     def __pow__(self, power):
+        """
+        ivy.Array special method variant of ivy.pow. This method simply wraps the
+        function, and so the docstring for ivy.pow also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Input array or float.
+        other
+            Array or float power. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = x ** 2
+        >>> print(y)
+        ivy.array([1, 4, 9])
+
+        >>> x = ivy.array([1.2, 2.1, 3.5])
+        >>> y = x ** 2.9
+        >>> print(y)
+        ivy.array([ 1.69678056,  8.59876156, 37.82660675])
+
+        """
         return ivy.pow(self._data, power)
 
     def __rpow__(self, power):
@@ -471,6 +505,33 @@ class Array(
         return tuple([ivy.divide(other, self._data), ivy.remainder(other, self._data)])
 
     def __truediv__(self, other):
+        """
+        ivy.Array reverse special method variant of ivy.divide. This method simply wraps
+        the function, and so the docstring for ivy.divide also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. Should have a numeric data type.
+        other
+            second input array. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.array([1, 2, 3])
+        >>> y = ivy.array([4, 5, 6])
+        >>> z = x / y
+        >>> print(z)
+        ivy.array([0.25      , 0.40000001, 0.5       ])
+        """
         return ivy.divide(self._data, other)
 
     def __rtruediv__(self, other):
@@ -498,6 +559,36 @@ class Array(
         return ivy.matmul(self._data, other)
 
     def __abs__(self):
+        """
+        ivy.Array special method variant of ivy.abs. This method
+        simply wraps the function, and so the docstring for ivy.abs
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array. Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            an array containing the absolute value of each element
+            in ``self``. The returned array must have the same data
+            type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([6, -2, 0, -1])
+        >>> print(abs(x))
+        ivy.array([6, 2, 0, 1])
+
+        >>> x = ivy.array([-1.2, 1.2])
+        >>> print(abs(x))
+        ivy.array([1.2, 1.2])
+
+        """
         return ivy.abs(self._data)
 
     def __float__(self):
@@ -585,6 +676,41 @@ class Array(
         return ivy.less_equal(self._data, other)
 
     def __eq__(self, other):
+        """
+        ivy.Array special method variant of ivy.equal. This method
+        simply wraps the function, and so the docstring for ivy.equal
+        also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            first input array. May have any data type.
+        other
+            second input array. Must be compatible with x1 (with Broadcasting). May have any
+            data type.
+
+        Returns
+        -------
+        ret
+            an array containing the element-wise results. The returned array must have a
+            data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Array` instances:
+
+        >>> x1 = ivy.array([1, 0, 1, 1])
+        >>> x2 = ivy.array([1, 0, 0, -1])
+        >>> y = x1 == x2
+        >>> print(y)
+        ivy.array([True, True, False, False])
+
+        >>> x1 = ivy.array([1, 0, 1, 0])
+        >>> x2 = ivy.array([0, 1, 0, 1])
+        >>> y = x1 == x2
+        >>> print(y)
+        ivy.array([False, False, False, False])
+        """
         return ivy.equal(self._data, other)
 
     def __ne__(self, other):

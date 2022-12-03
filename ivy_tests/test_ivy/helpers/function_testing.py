@@ -488,11 +488,6 @@ def test_frontend_function(
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
 
     def _get_function(fn_tree):
-        # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-        # split_index = fn_tree.rfind(".")
-        # fn_name = fn_tree[split_index + 1:]
-        # fn_module = fn_tree[:split_index]
-        # frontend_fn = importlib.import_module(fn_module).__dict__[fn_name]
         split_index = fn_tree.rfind(".")
         fn_mod, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
         function_module = importlib.import_module(fn_mod)
@@ -711,7 +706,7 @@ def test_frontend_function(
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_module, fn_name, frontend_submods = _get_function(
-                fn_tree=fn_tree
+                fn_tree=f"ivy.functional.frontends.{frontend}.{alias}"
             )
 
             # testing unsupported in that backend
