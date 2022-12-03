@@ -75,6 +75,9 @@ def _forward_fn(
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
+    duplicate_key_chains = ()
+    if isinstance(xs, ivy.Container):
+        duplicate_key_chains = xs.duplicate_array_keychains()
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     func_ret = func(xs)
     xs_required = _get_required_native_variables(ivy.copy_nest(xs), xs_grad_idxs)
@@ -88,9 +91,6 @@ def execute_with_gradients(
         y = ret_values[0]
     else:
         y = ret_values
-    duplicate_key_chains = ()
-    if isinstance(xs, ivy.Container):
-        duplicate_key_chains = xs.duplicate_array_keychains()
     if isinstance(y, ivy.NativeArray):
         grad_fn = jax.grad(
             lambda x: _forward_fn(

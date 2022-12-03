@@ -442,7 +442,8 @@ def test_torch_sort(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        # TODO: figure out what's wrong with the `num_positional_args` computation
+        num_positional_args=1,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
@@ -603,10 +604,14 @@ def test_torch_not_equal(
         num_arrays=2,
         shared_dtype=True,
     ),
+    assume_unique=st.booleans(),
+    invert=st.booleans(),
 )
 def test_torch_isin(
     *,
     dtype_and_inputs,
+    assume_unique,
+    invert,
     as_variable,
     with_out,
     num_positional_args,
@@ -627,6 +632,8 @@ def test_torch_isin(
         on_device=on_device,
         elements=inputs[0],
         test_elements=inputs[1],
+        assume_unique=assume_unique,
+        invert=invert,
     )
 
 
@@ -815,7 +822,7 @@ def test_torch_maximum(
         min_num_dims=1,
         valid_axis=True,
         force_int_axis=True,
-    ),
+    ).filter(lambda v: len(np.unique(v[1][0])) == len(np.ravel(v[1][0]))),
     k=st.integers(min_value=1),
     keepdim=st.booleans(),
 )
@@ -834,7 +841,6 @@ def test_torch_kthvalue(
 ):
     input_dtype, input, dim = dtype_input_axis
     assume(k <= input[0].shape[dim])
-    assume("float16" not in input_dtype)  # unsupported by torch.kthvalue
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -855,7 +861,7 @@ def test_torch_kthvalue(
 # TODO: add value test after the stable sorting is added to torch
 # https://github.com/pytorch/pytorch/issues/88184
 @handle_frontend_test(
-    fn_tree="torch.kthvalue",
+    fn_tree="torch.topk",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=1,
@@ -868,12 +874,14 @@ def test_torch_kthvalue(
     dim=helpers.ints(min_value=-1, max_value=0),
     k=helpers.ints(min_value=1, max_value=4),
     largest=st.booleans(),
+    sorted=st.booleans(),
 )
 def test_torch_topk(
     dtype_and_x,
     k,
     dim,
     largest,
+    sorted,
     as_variable,
     with_out,
     num_positional_args,
@@ -894,6 +902,7 @@ def test_torch_topk(
         k=k,
         dim=dim,
         largest=largest,
+        sorted=sorted,
         out=None,
         test_values=False,
     )

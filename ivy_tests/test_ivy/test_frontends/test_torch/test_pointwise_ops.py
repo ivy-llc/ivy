@@ -1370,7 +1370,7 @@ def test_torch_ceil(
 
 # round
 @handle_frontend_test(
-    fn_tree="torch.ceil",
+    fn_tree="torch.round",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1981,6 +1981,7 @@ def test_torch_logaddexp(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-05,
         x1=x[0],
         x2=x[1],
     )

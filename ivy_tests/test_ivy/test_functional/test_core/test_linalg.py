@@ -1357,6 +1357,7 @@ def test_matrix_norm(
     ground_truth_backend,
 ):
     dtype, x = dtype_value_shape
+    assume(matrix_is_stable(x[0], cond_limit=10))
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
