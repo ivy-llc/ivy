@@ -53,7 +53,7 @@ Ivy Tests
 .. _`dtype_and_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L83
 .. _`dtype_values_axis`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L235
 .. _`array_values`: https://github.com/unifyai/ivy/blob/e50f71e283313caa9737f3c284496022ac67b58b/ivy_tests/test_ivy/helpers/hypothesis_helpers/array_helpers.py#L543
-.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
 .. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 
 
