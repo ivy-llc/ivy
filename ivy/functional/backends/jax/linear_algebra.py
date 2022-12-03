@@ -73,6 +73,15 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
 ) -> Tuple[JaxArray]:
