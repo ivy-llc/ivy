@@ -213,6 +213,9 @@ def log_cosh(y_true, y_pred):
     return ivy.mean(diff + ivy.softplus(-2.0 * diff) - log_val, axis=-1)
 
 
+logcosh = log_cosh
+
+
 @to_ivy_arrays_and_back
 def mean_absolute_error(y_true, y_pred):
     return ivy.mean(ivy.abs(y_true - y_pred), axis=-1)

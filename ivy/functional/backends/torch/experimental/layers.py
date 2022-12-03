@@ -31,7 +31,7 @@ def max_pool1d(
         kernel = (kernel[0],)
 
     if data_format == "NWC":
-        x = x.permute(0, 2, 1)
+        x = x.permute((0, 2, 1))
     x_shape = x.shape[2]
     pad_w = ivy.handle_padding(x_shape, strides[0], kernel[0], padding)
     x = torch.nn.functional.pad(
@@ -41,7 +41,7 @@ def max_pool1d(
     res = torch.nn.functional.max_pool1d(x, kernel, strides, 0)
 
     if data_format == "NWC":
-        res = res.permute(0, 2, 1)
+        res = res.permute((0, 2, 1))
     return res
 
 

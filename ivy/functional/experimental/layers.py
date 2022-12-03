@@ -9,7 +9,7 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
-@handle_out_argument
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def max_pool1d(
@@ -204,7 +204,7 @@ def max_pool3d(
     )
 
 
-@handle_out_argument
+@handle_nestable
 @to_native_arrays_and_back
 @handle_out_argument
 def avg_pool1d(

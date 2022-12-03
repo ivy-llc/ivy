@@ -6,6 +6,7 @@ from typing import Dict
 # local
 from ivy import DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 
 GENERAL_CONFIG_DICT = {}
@@ -29,7 +30,7 @@ def pytest_configure(config):
     # framework
     raw_value = config.getoption("--backend")
     if raw_value == "all":
-        backend_strs = ["numpy", "jax", "tensorflow", "torch"]
+        backend_strs = available_frameworks
     else:
         backend_strs = raw_value.split(",")
 
@@ -70,7 +71,11 @@ def pytest_configure(config):
 def run_around_tests(request, on_device, backend_fw, compile_graph, implicit):
     if hasattr(request.function, "test_data"):
         try:
-            test_globals.setup_api_test(request.function.test_data, backend_fw.backend)
+            test_globals.setup_api_test(
+                request.function.test_data,
+                backend_fw.backend,
+                request.function.ground_truth_backend,
+            )
         except Exception as e:
             test_globals.teardown_api_test()
             raise RuntimeError(f"Setting up test for {request.function} failed.") from e

@@ -92,13 +92,14 @@ def execute_with_gradients(
                     create_graph=retain_grads,
                     allow_unused=True,
                 )[0]
-                return grad if grad is not None else ivy.zeros_like(x)
+                return grad if grad is not None else 0
 
             grads = ivy.nested_map(
                 xs,
                 grad_,
                 include_derived=True,
             )
+            grads = ivy.nested_multi_map(lambda x, _: (x[0] + x[1]), [grads, grads_])
         return grads
 
     if isinstance(y, ivy.NativeArray):

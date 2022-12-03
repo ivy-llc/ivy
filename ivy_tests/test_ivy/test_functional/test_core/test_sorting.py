@@ -36,9 +36,11 @@ def test_argsort(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -83,9 +85,11 @@ def test_sort(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x, axis = dtype_x_axis
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -170,6 +174,7 @@ def test_searchsorted(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtypes, xs = dtypes_and_xs
     if use_sorter:
@@ -180,6 +185,7 @@ def test_searchsorted(
         sorter = None
         xs[0] = np.sort(xs[0])
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,

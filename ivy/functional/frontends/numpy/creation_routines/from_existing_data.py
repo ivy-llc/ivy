@@ -3,6 +3,11 @@ from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
 
 
 @to_ivy_arrays_and_back
+def array(object, dtype=None, *, copy=True, order="K", subok=False, ndmin=0, like=None):
+    return ivy.array(object, copy=copy, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def asarray(
     a,
     dtype=None,

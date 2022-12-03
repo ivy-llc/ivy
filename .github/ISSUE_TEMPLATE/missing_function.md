@@ -1,8 +1,8 @@
 ---
-name: Missing Function Suggestion
+name: 🔍 Missing Function Suggestion
 about: Request the implementation of a function in the Ivy functional API.
 title: "ivy.<FUNC_NAME>"
-labels: Ivy API, Experimental, Next Release, Suggestion
+labels: Ivy API, Ivy API Experimental, Next Release, Suggestion
 assignees: ''
 
 ---

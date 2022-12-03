@@ -74,12 +74,14 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
+    order: Optional[str] = "C",
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:
         newarr = jnp.copy(x)
-        return jnp.reshape(newarr, shape)
-    return jnp.reshape(x, shape)
+        return jnp.reshape(newarr, shape, order=order)
+    return jnp.reshape(x, shape, order=order)
 
 
 def roll(

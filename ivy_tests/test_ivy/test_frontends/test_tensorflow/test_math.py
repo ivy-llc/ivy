@@ -248,7 +248,10 @@ def test_tensorflow_divide(
 @handle_frontend_test(
     fn_tree="tensorflow.math.negative",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric")
+        available_dtypes=st.one_of(
+            helpers.get_dtypes("signed_integer"),
+            helpers.get_dtypes("float"),
+        )
     ),
 )
 def test_tensorflow_negative(
@@ -547,7 +550,14 @@ def test_tensorflow_argmax(
     ),
 )
 def test_tensorflow_reduce_max(
-    dtype_and_x, as_variable, num_positional_args, native_array
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -556,8 +566,9 @@ def test_tensorflow_reduce_max(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="math.reduce_max",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input_tensor=x[0],
     )
 
@@ -813,8 +824,9 @@ def test_tensorflow_scalar_mul(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="tensorflow",
-        fn_tree="math.scalar_mul",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         scalar=scalar[0][0],
         x=x[0],
     )
@@ -1268,7 +1280,42 @@ def test_tensorflow_pow(
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
-        fn_tere=fn_tree,
+        fn_tree=fn_tree,
         x=x[0],
         y=x[1],
+    )
+
+
+# argmin
+@handle_frontend_test(
+    fn_tree="tensorflow.math.argmin",
+    dtype_and_x=statistical_dtype_values(function="argmin"),
+    output_type=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_argmin(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+    output_type,
+):
+    input_dtype, x, axis = dtype_and_x
+    if isinstance(axis, tuple):
+        axis = axis[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        axis=axis,
+        output_type=output_type,
     )

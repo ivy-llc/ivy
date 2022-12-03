@@ -1,7 +1,10 @@
 import ivy
 import functools
+import logging
 from types import FunctionType
 from typing import Callable
+
+# import typing
 
 
 # for wrapping (sequence matters)
@@ -16,6 +19,8 @@ FN_DECORATORS = [
     "handle_nestable",
     "handle_exceptions",
     "with_unsupported_dtypes",
+    "handle_nans",
+    "handle_array_like",
 ]
 
 
@@ -43,6 +48,40 @@ def _get_first_array(*args, **kwargs):
 
 # Array Handling #
 # ---------------#
+
+
+def handle_array_like(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        # args = list(args)
+        # num_args = len(args)
+        # try:
+        #     type_hints = typing.get_type_hints(fn)
+        # except TypeError:
+        #     return fn(*args, **kwargs)
+        # parameters = type_hints
+        # annotations = type_hints.values()
+        #
+        # for i, (annotation, parameter, arg) in enumerate(
+        #     zip(annotations, parameters, args)
+        # ):
+        #     annotation_str = str(annotation)
+        #     if "Array" in annotation_str and all(
+        #         sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+        #     ):
+        #
+        #         if i < num_args:
+        #             if isinstance(arg, (list, tuple)):
+        #                 args[i] = ivy.array(arg)
+        #         elif parameters in kwargs:
+        #             kwarg = kwargs[parameter]
+        #             if isinstance(kwarg, (list, tuple)):
+        #                 kwargs[parameter] = ivy.array(kwarg)
+
+        return fn(*args, **kwargs)
+
+    new_fn.handle_array_like = True
+    return new_fn
 
 
 def inputs_to_native_arrays(fn: Callable) -> Callable:
@@ -144,17 +183,19 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return (
+            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            if ivy.get_array_mode()
+            else ret
+        )
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
 
 def _is_zero_dim_array(x):
-    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
@@ -364,9 +405,14 @@ def handle_out_argument(fn: Callable) -> Callable:
             # compute return, with backend inplace update handled by
             # the backend function
             ret = fn(*args, out=native_out, **kwargs)
-            out.data = ivy.to_native(ret)
+            if isinstance(ret, (tuple, list)):
+                for i in range(len(ret)):
+                    out[i].data = ivy.to_native(ret[i])
+            else:
+                out.data = ivy.to_native(ret)
             return out
         # compute return, and then handle the inplace update explicitly
+
         ret = fn(*args, **kwargs)
         return ivy.inplace_update(out, ret)
 
@@ -421,7 +467,9 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
+def _wrap_function(
+    key: str, to_wrap: Callable, original: Callable, compositional: bool = False
+) -> Callable:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
@@ -434,6 +482,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         the new implementation to potentially wrap
     original
         the original implementation of `to_wrap` which tells us which wrappers we need.
+    compositional
+        indicates whether the function being wrapped is compositional
+        (Default Value = ``False``).
 
     Returns
     -------
@@ -450,7 +501,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
-                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                    linalg_k,
+                    linalg_v,
+                    ivy.__dict__[linalg_k],
+                    compositional=compositional,
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
@@ -465,9 +519,25 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
+        to_replace, additional_wrappers = {}, {}
+        if not compositional:
+            to_replace = {
+                "inputs_to_ivy_arrays": [
+                    "outputs_to_ivy_arrays",
+                    "inputs_to_native_arrays",
+                ]
+            }
+            additional_wrappers = {"handle_nestable", "handle_out_argument"}
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                to_wrap = getattr(ivy, attr)(to_wrap)
+                if compositional and attr in additional_wrappers:
+                    continue
+                if attr in to_replace:
+                    attrs = to_replace[attr]
+                    for attr in attrs:
+                        to_wrap = getattr(ivy, attr)(to_wrap)
+                else:
+                    to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
 
 
@@ -554,6 +624,22 @@ def _dtype_device_wrapper_creator(attrib, t):
     """
 
     def _wrapper_outer(version_dict, version):
+
+        typesets = {
+            "valid": ivy.valid_dtypes,
+            "numeric": ivy.valid_numeric_dtypes,
+            "float": ivy.valid_float_dtypes,
+            "integer": ivy.valid_int_dtypes,
+            "unsigned": ivy.valid_uint_dtypes,
+            "complex": ivy.valid_complex_dtypes,
+        }
+        for key, value in version_dict.items():
+            for i, v in enumerate(value):
+                if v in typesets:
+                    version_dict[key] = (
+                        version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
+                    )
+
         def _wrapped(func):
             val = _versioned_attribute_factory(
                 lambda: _dtype_from_version(version_dict, version), t
@@ -565,6 +651,72 @@ def _dtype_device_wrapper_creator(attrib, t):
         return _wrapped
 
     return _wrapper_outer
+
+
+# nans Handling #
+# --------------#
+
+
+def _leaf_has_nans(x):
+    if isinstance(x, ivy.Container):
+        return x.has_nans()
+    elif ivy.is_array(x):
+        return ivy.isnan(x).any()
+    elif x is float("nan"):
+        return True
+    return False
+
+
+def _nest_has_nans(x):
+    return ivy.nested_any(x, _leaf_has_nans)
+
+
+def handle_nans(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, **kwargs):
+        """
+        Checks for the existence of nans in all arrays in the `args`
+        and `kwargs`. The presence of nans is then handled depending
+        on the enabled `nan_policy`.
+
+        Following policies apply:
+        raise_exception: raises an exception in case nans are present
+        warns: warns a user in case nans are present
+        nothing: does nothing
+
+        Parameters
+        ----------
+        args
+            The arguments to be passed to the function.
+        kwargs
+            The keyword arguments to be passed to the function.
+
+        Returns
+        -------
+            The return of the function, with handling of inputs based
+            on the selected `nan_policy`.
+        """
+        nan_policy = ivy.get_nan_policy()
+        # skip the check if the current nan policy is `nothing``
+        if nan_policy == "nothing":
+            return fn(*args, **kwargs)
+
+        # check all args and kwards for presence of nans
+        result = _nest_has_nans(args) or _nest_has_nans(kwargs)
+
+        if result:
+            # handle nans based on the selected policy
+            if nan_policy == "raise_exception":
+                raise ivy.exceptions.IvyException(
+                    "Nans are not allowed in `raise_exception` policy."
+                )
+            elif nan_policy == "warns":
+                logging.warning("Nans are present in the input.")
+
+        return fn(*args, **kwargs)
+
+    new_fn.handle_nans = True
+    return new_fn
 
 
 # Decorators to allow for versioned attributes

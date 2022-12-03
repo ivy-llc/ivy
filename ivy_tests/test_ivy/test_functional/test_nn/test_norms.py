@@ -105,9 +105,11 @@ def test_layer_norm(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x, normalize_axis, weight, bias = values_tuple
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

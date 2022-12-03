@@ -30,10 +30,12 @@ def test_all(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -72,10 +74,12 @@ def test_any(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     input_dtype, x, axis = dtype_x_axis
     axis = axis if axis is None or isinstance(axis, int) else axis[0]
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,

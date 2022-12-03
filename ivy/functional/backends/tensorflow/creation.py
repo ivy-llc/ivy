@@ -248,6 +248,10 @@ def full_like(
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
 
 
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
+
+
 def linspace(
     start: Union[tf.Tensor, tf.Variable, float],
     stop: Union[tf.Tensor, tf.Variable, float],
@@ -266,11 +270,17 @@ def linspace(
         start = tf.constant(start, dtype=dtype)
         stop = tf.constant(stop, dtype=dtype)
         if not endpoint:
-            ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
+            ans = tf.linspace(start, stop, num + 1, axis=axis)
+            if axis < 0:
+                axis += len(ans.shape)
+            ans = tf.convert_to_tensor(
+                ans.numpy()[_slice_at_axis(slice(None, -1), axis)]
+            )
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
-        ans = tf.cast(ans, dtype)
-        return ans
+        if dtype.is_integer and ans.dtype.is_floating:
+            ans = tf.math.floor(ans)
+        return tf.cast(ans, dtype)
 
 
 def meshgrid(
@@ -386,7 +396,7 @@ def logspace(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 def one_hot(

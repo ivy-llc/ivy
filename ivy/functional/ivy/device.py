@@ -22,6 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -243,15 +244,15 @@ def dev(
     Parameters
     ----------
     x
-          array for which to get the device handle.
+        array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is ``False``.
+        Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
     ret
-          Device handle for the array, in native framework format.
+        Device handle for the array, in native framework format.
 
     Functional Examples
     --------------------
@@ -278,7 +279,7 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert native data type to string representation.
+    """Convert device to string representation.
 
     Parameters
     ----------
@@ -750,6 +751,7 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -831,9 +833,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 @handle_exceptions
 def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
+    factor: float, /, *, device: Union[ivy.Device, ivy.NativeDevice] = None
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.

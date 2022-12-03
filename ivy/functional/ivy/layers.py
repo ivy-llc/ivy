@@ -10,6 +10,7 @@ from ivy.func_wrapper import (
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -22,6 +23,7 @@ from ivy.exceptions import handle_exceptions
 
 
 @handle_exceptions
+@handle_array_like
 def linear(
     x: Union[ivy.Array, ivy.NativeArray],
     weight: Union[ivy.Array, ivy.NativeArray],
@@ -165,6 +167,7 @@ def linear(
 
 
 @handle_exceptions
+@handle_array_like
 def dropout(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -211,6 +214,7 @@ def dropout(
 
 @handle_exceptions
 @to_native_arrays_and_back
+@handle_array_like
 def dropout1d(
     x: Union[ivy.Array, ivy.NativeArray],
     prob: float,
@@ -255,6 +259,7 @@ def dropout1d(
 
 
 @handle_exceptions
+@handle_array_like
 def scaled_dot_product_attention(
     q: Union[ivy.Array, ivy.NativeArray],
     k: Union[ivy.Array, ivy.NativeArray],
@@ -513,10 +518,11 @@ def scaled_dot_product_attention(
 
 
 @handle_exceptions
+@handle_array_like
 def multi_head_attention(
     x: Union[ivy.Array, ivy.NativeArray],
-    scale,
-    num_heads,
+    scale: float,
+    num_heads: int,
     /,
     *,
     context: Union[ivy.Array, ivy.NativeArray] = None,
@@ -569,6 +575,134 @@ def multi_head_attention(
         The output following application of multi-head attention.
         *[batch_shape,num_queries,out_feat_dim]*
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([[[0.2, 1.],
+    ...                 [2.2, 3.],
+    ...                 [4.4, 5.6]]])
+    >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
+    ...                       [2.2, 3., 0.9, 3.6],
+    ...                       [4.4, 5.6, 2.2, 0.4]]])
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
+    >>> print(result)
+    ivy.array([[[1.5678761 , 0.65441847],
+    ...         [2.18969631, 0.40131447],
+    ...         [2.19991851, 0.40000153]]])
+
+    With :class:`ivy.NativeArray` input:
+
+    >>> x = ivy.native_array([[[0.2, 1.],
+    ...                        [2.2, 3.],
+    ...                        [4.4, 5.6]]])
+    >>> context = ivy.native_array([[[0.2, 1., 1.1, 4.2],
+    ...                              [2.2, 3., 0.9, 3.6],
+    ...                              [4.4, 5.6, 2.2, 0.4]]])
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
+    >>> print(result)
+    ivy.array([[[1.5678761 , 0.65441847],
+    ...         [2.18969631, 0.40131447],
+    ...         [2.19991851, 0.40000153]]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1], [2.2, 3.4], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.4, 0.3], [1.2, 3.9], [0.4, 3.7]]]))
+    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2],
+    ...                                       [2.2, 3.3, 0.9, 3.6],
+    ...                                       [4.4, 5.6, 2.2, 0.4]]]),
+    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6],
+    ...                                       [1.2, 3.9, 4.2, 5.1],
+    ...                                       [0.4, 3.7, 4.3, 5.3]]]))
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
+    >>> print(result)
+    {
+        a: ivy.array([[[1.5678761, 0.68589532],
+                       [2.18969631, 0.40129396],
+                       [2.19991851, 0.40000817]]]),
+        b: ivy.array([[[4.31219625, 5.25698996],
+                       [4.31022024, 5.16286421],
+                       [4.30296469, 5.16460133]]])
+    }
+
+    With a mix of :class:`ivy.Container` and :class:`ivy.Array` inputs:
+
+    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1], [2.2, 3.4], [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.4, 0.3], [1.2, 3.9], [0.4, 3.7]]]))
+    >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
+    ...                       [2.2, 3., 0.9, 3.6],
+    ...                       [4.4, 5.6, 2.2, 0.4]]])
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
+    >>> print(result)
+    {
+        a: ivy.array([[[1.5678761, 0.59497029],
+                       [2.18969631, 0.40046397],
+                       [2.19991851, 0.40000153]]]),
+        b: ivy.array([[[2.14009905, 1.81691194],
+                       [2.10732293, 0.40012637],
+                       [1.73519301, 0.40021262]]])
+    }
+
+    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
+
+    >>> x = ivy.array([[[0.2, 1.],
+    ...                 [2.2, 3.],
+    ...                 [4.4, 5.6]]])
+    >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2],
+    ...                                       [2.2, 3.3, 0.9, 3.6],
+    ...                                       [4.4, 5.6, 2.2, 0.4]]]),
+    ...                         b=ivy.array([[[1.4, 0.3, 4.4, 5.6],
+    ...                                       [1.2, 3.9, 4.2, 5.1],
+    ...                                       [0.4, 3.7, 4.3, 5.3]]]))
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context)
+    >>> print(result)
+    {
+        a: ivy.array([[[1.5678761, 0.7615059],
+                       [2.18969631, 0.40326414],
+                       [2.19991851, 0.40000817]]]),
+        b: ivy.array([[[4.30141067, 5.19610119],
+                       [4.32028484, 5.1708746],
+                       [4.34100914, 5.14920235]]])
+    }
+
+    With :class:`ivy.Array` inputs and :class:`ivy.Array` mask:
+
+    >>> x = ivy.array([[[0.2, 1.],
+    ...                 [2.2, 3.],
+    ...                 [4.4, 5.6]]])
+    >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
+    ...                       [2.2, 3., 0.9, 3.6],
+    ...                       [4.4, 5.6, 2.2, 0.4]]])
+    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
+    >>> result = ivy.multi_head_attention(x, 1, 2, context=context, mask=mask)
+    >>> print(result)
+    ivy.array([[[1.40000009, 2.73333335],
+    ...         [1.40000009, 2.73333335],
+    ...         [1.40000009, 2.73333335]]])
+
+    With :class:`ivy.Array` inputs and lambda to_q_fn and to_kv_fn functions specified:
+
+    >>> x = ivy.array([[[0.2, 1.],
+    ...                 [2.2, 3.],
+    ...                 [4.4, 5.6]]])
+    >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
+    ...                       [2.2, 3., 0.9, 3.6],
+    ...                       [4.4, 5.6, 2.2, 0.4]]])
+    >>> to_q_fn = lambda n, v: n
+    >>> to_kv_fn = lambda n, v: ivy.split(n, num_or_size_splits=2, axis=-1)
+    >>> result = layers.multi_head_attention(x, 1, 2, context=context,
+    ...                                      to_q_fn=to_q_fn, to_kv_fn=to_kv_fn)
+    >>> print(result)
+    ivy.array([[[1.5678761 , 0.65441847],
+    ...         [2.18969631, 0.40131447],
+    ...         [2.19991851, 0.40000153]]])
+
+
     """
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
@@ -619,6 +753,7 @@ def multi_head_attention(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv1d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -704,6 +839,7 @@ def conv1d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv1d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -760,6 +896,7 @@ def conv1d_transpose(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
+@handle_array_like
 def conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -884,6 +1021,7 @@ def conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv2d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -941,6 +1079,7 @@ def conv2d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def depthwise_conv2d(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1074,15 +1213,16 @@ def depthwise_conv2d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv3d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    filters: Union[ivy.Array, ivy.NativeArray],
-    strides: int,
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -1111,22 +1251,62 @@ def conv3d(
     ret
         The result of the convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    >>> x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]
-    >>> x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
-    >>> x = ivy.array([[x1,x2]]) #NDHWC
-    >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
-    >>> result = ivy.conv3d( x, filters, 1, 'VALID',data_format="NDHWC", dilations= 1)
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array\
+               ([[[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
+                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
+                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]]]).reshape((1, 3, 3, 3, 1))
+
+    >>> filters = ivy.array([[[0.,1.,0.],\
+                              [0.,1.,0.],\
+                              [0.,1.,0.]]]).reshape((1,3,3,1,1))
+
+
+    >>> result = ivy.conv3d(x, filters, (1,1,1), 'SAME', data_format = 'NDHWC',\
+                            dilations = (1,1,1))
+
     >>> print(result)
-    ivy.array([[
-        [
-            [[1.]],[[1.]],[[1.]]
-        ],
-        [
-            [[3.]],[[3.]],[[3.]]
-        ]
-            ]])
+    ivy.array([[[[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
+                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
+                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]]]])
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
+
+    >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
+
+    >>> result = ivy.conv3d(x, filters, 2, 'SAME')
+    >>> print(result)
+    {
+        a: ivy.array([[[[[8.],[8.]],[[8.],[8.]]],[[[8.],[8.]],[[8.],[8.]]]]])
+    }
+
+    With multiple :class:`ivy.Container` input:
+
+    >>> x = ivy.Container( a = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 3, 5, 5, 1]),\
+                           b = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 5, 32 ,32, 3]),\
+                           c = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 32, 32, 32, 1]))
+
+    >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO
+
+    >>> result = ivy.conv3d(x, filters, 1, 'SAME')
+    >>> print(result.shapes)
+    {
+        a: [1,3,5,5,3],
+        b: [1,5,32,32,3],
+        c: [1,32,32,32,3]
+    }
 
     """
     return current_backend(x).conv3d(
@@ -1144,6 +1324,7 @@ def conv3d(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv3d_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1285,6 +1466,7 @@ def conv3d_transpose(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv_general_dilated(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1346,6 +1528,7 @@ def conv_general_dilated(
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def conv_general_transpose(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1405,6 +1588,7 @@ def conv_general_transpose(
 
 @handle_out_argument
 @handle_exceptions
+@handle_array_like
 def conv(
     x: Union[ivy.Array, ivy.NativeArray],
     filters: Union[ivy.Array, ivy.NativeArray],
@@ -1455,6 +1639,7 @@ def conv(
 
 @to_native_arrays_and_back
 @handle_exceptions
+@handle_array_like
 def lstm_update(
     x: Union[ivy.Array, ivy.NativeArray],
     init_h: Union[ivy.Array, ivy.NativeArray],
@@ -1590,6 +1775,7 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_exceptions
+@handle_array_like
 def fft(
     x: Union[ivy.Array, ivy.NativeArray],
     dim: int,

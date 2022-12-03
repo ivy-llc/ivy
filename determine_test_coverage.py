@@ -7,7 +7,6 @@ from random import shuffle
 import bz2
 import _pickle as cPickle
 
-
 # Shared Map
 tests = {}
 BACKENDS = ["numpy", "jax", "tensorflow", "torch"]
@@ -22,7 +21,6 @@ os.system(
 test_names_without_backend = []
 test_names = []
 with open("test_names") as f:
-    i = 0
     for line in f:
         if "ERROR" in line:
             break
@@ -40,6 +38,7 @@ for test_name in test_names_without_backend:
         test_backend = test_name + "," + backend
         test_names.append(test_backend)
 
+test_names = list(set(test_names))
 
 # Create a Dictionary of Test Names to Index
 tests["index_mapping"] = test_names
@@ -48,50 +47,16 @@ for i in range(len(test_names)):
     tests["tests_mapping"][test_names[i]] = i
 
 
-directories = [
-    "ivy",
-    "ivy/array",
-    "ivy/container",
-    "ivy/functional",
-    "ivy/functional/backends",
-    "ivy/functional/backends/jax",
-    "ivy/functional/backends/numpy",
-    "ivy/functional/backends/torch",
-    "ivy/functional/backends/tensorflow",
-    "ivy/functional/frontends",
-    "ivy/functional/frontends/jax",
-    "ivy/functional/frontends/numpy",
-    "ivy/functional/frontends/torch",
-    "ivy/functional/frontends/tensorflow",
-    "ivy/functional/ivy",
-    "ivy/stateful",
-    "ivy_tests",
-    "ivy_tests/test_ivy",
-    "ivy_tests/test_ivy/test_frontends",
-    "ivy_tests/test_ivy/test_frontends/test_jax",
-    "ivy_tests/test_ivy/test_frontends/test_numpy",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_creation_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_fft",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_indexing_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_linear_algebra",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_logic",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ma",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_manipulation_routines",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_matrix",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_random",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_sorting_searching_counting",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_statistics",
-    "ivy_tests/test_ivy/test_frontends/test_numpy/test_ufunc",
-    "ivy_tests/test_ivy/test_frontends/test_tensorflow",
-    "ivy_tests/test_ivy/test_frontends/test_torch",
-    "ivy_tests/test_ivy/test_functional",
-    "ivy_tests/test_ivy/test_functional/test_core",
-    "ivy_tests/test_ivy/test_functional/test_nn",
-    "ivy_tests/test_ivy/test_stateful",
-]
-
 if __name__ == "__main__":
+    directories = (
+        [x[0] for x in os.walk("ivy")]
+        + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+        + ["ivy_tests"]
+    )
+    directories_filtered = [
+        x for x in directories if not (x.endswith("__pycache__") or "hypothesis" in x)
+    ]
+    directories = set(directories_filtered)
     num_tests = len(test_names)
     tests_per_run = num_tests // N
     start = run_iter * tests_per_run

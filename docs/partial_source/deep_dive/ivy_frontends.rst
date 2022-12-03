@@ -19,6 +19,8 @@ Ivy Frontends
 .. _`ivy frontends channel`: https://discord.com/channels/799879767196958751/998782045494976522
 .. _`ivy frontends forum`: https://discord.com/channels/799879767196958751/1028297849735229540
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
+.. _`Array manipulation routines`: https://numpy.org/doc/stable/reference/routines.array-manipulation.html#
+.. _`Array creation routines`: https://numpy.org/doc/stable/reference/routines.array-creation.html
 
 Introduction
 ------------
@@ -87,6 +89,7 @@ We start with the function :func:`lax.add` as an example.
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def add(x, y):
         return ivy.add(x, y)
 
@@ -100,6 +103,7 @@ In this case, the function will then simply return :func:`ivy.add`, which in tur
 .. code-block:: python
 
     # in ivy/functional/frontends/jax/lax/operators.py
+    @to_ivy_arrays_and_back
     def tan(x):
         return ivy.tan(x)
 
@@ -112,6 +116,8 @@ In the same manner as our :func:`add` function, we simply link its return to :fu
 .. code-block:: python
 
     # in ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
     def add(
         x1,
         x2,
@@ -137,17 +143,10 @@ In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
 Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
 For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
+Additionally, :code:`casting` and :code:`order` are handled in the :code:`@handle_numpy_casting` and :code:`@to_ivy_arrays_and_back` decorators respectively.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 
-However, the arguments :code:`casting`, :code:`order` and :code:`subok` are completely unhandled here.
-This is for two reasons.
-
-In the case of :code:`casting`, support will be added for this via the inclusion of a decorator at some point in future, and so this is simply being deferred for the time being.
-
-In the case of :code:`order` and :code:`subok`, this is because the aspects which these arguments seek to control are simply not controllable when using Ivy.
-:code:`order` controls the low-level memory layout of the stored array.
-Similarly, :code:`subok` controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
-Again, this is a very framework-specific argument.
+However, the argument :code:`subok` is completely unhandled here because it controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
 All ivy functions by default do enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will be operating with :class:`ivy.Array` instances rather than :class:`numpy.ndarray` instances, and so we omit this argument.
 Again, it has no bearing on input-output behaviour and so this is not a problem when transpiling between frameworks.
 
@@ -157,6 +156,8 @@ See the section "Unused Arguments" below for more details.
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
     @from_zero_dim_arrays_to_float
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
     def tan(
         x,
         /,
@@ -177,13 +178,14 @@ See the section "Unused Arguments" below for more details.
 
 For the second example, :func:`tan` has a sub-category of :mod:`trigonometric_functions` according to the `numpy mathematical functions`_ directory.
 By referring to the `numpy.tan`_ documentation, we can see it has the same additional arguments as the :func:`add` function.
-In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where` and :code:`dtype`, but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
+In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where`, :code:`dtype`, :code:`casting`, and :code:`order`but we omit support for :code:`subok`.
 
 **TensorFlow**
 
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         return ivy.add(x, y)
 
@@ -192,13 +194,14 @@ There are three arguments according to the `tf.math.add <https://www.tensorflow.
 Just like the previous examples, the implementation wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on which framework is set in Ivy's backend.
 
 The arguments :code:`x` and :code:`y` are both used in the implementation, but the argument :code:`name` is not used.
-Similar to the omitted arguments in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
+Similar to the omitted argument in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
 
 .. code-block:: python
 
     # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def tan(x, name=None):
         return ivy.tan(x)
 
@@ -206,11 +209,43 @@ Likewise, :code:`tan` is also placed under :mod:`math`.
 By referring to the `tf.math.tan`_ documentation, we add the same arguments, and simply wrap :func:`ivy.tan` in this case.
 Again, we do not support the :code:`name` argument for the reasons outlined above.
 
+**NOTE**
+
+Many of the functions in the :mod:`tf.raw_ops` module have identical behaviour to functions in the general TensorFlow namespace e.g :func:`tf.argmax`, with the exception of functions in the module :mod:`tf.raw_ops`. However, these functions are specified to have key-word only arguments and in some cases they have different argument names.
+In order to tackle these variations in behaviour, the :code:`map_raw_ops_alias` decorator was designed to wrap the functions that exist in the TensorFlow namespace, thus reducing unnecessary re-implementations.
+
+.. code-block:: python
+    
+    # in ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
+    def argmax(input, axis, output_type=None, name=None):
+        if output_type in ["uint16", "int16", "int32", "int64"]:
+            return ivy.astype(ivy.argmax(input, axis=axis), output_type)
+        else:
+            return ivy.astype(ivy.argmax(input, axis=axis), "int64")
+
+This function :func:`argmax` is implemented in the :mod:`tf.math` module of the TensorFlow framework, there exists an identical function in the :mod:`tf.raw_ops` module implemented as :func:`ArgMax`. Both the functions have identical behaviour except for the fact that all arguments are passed as key-word only for :func:`tf.raw_ops.ArgMax`. In some corner cases, arguments are renamed such as :func:`tf.math.argmax`, the :code:`dimension` argument replaces the :code:`axis` argument. 
+Let's see how the :code:`map_raw_ops_alias` decorator can be used to tackle these variations.
+
+.. code-block:: python
+
+    # in ivy/functional/frontends/tensorflow/raw_ops.py
+    ArgMax = to_ivy_arrays_and_back(
+        map_raw_ops_alias(
+            tf_frontend.math.argmax,
+            kwargs_to_update={"dimension": "axis"},
+        )
+    )
+
+The decorator :code:`map_raw_ops_alias` here, takes the existing behaviour of :func:`tf_frontend.math.argmax` as its first parameter, and changes all its arguments to key-word only. The argument :code:`kwargs_to_update` is a dictionary indicating all updates in arguments names to be made, in the case of :func:`tf.raw_ops.ArgMax`, :code:`dimension` is replacing :code:`axis`.
+The wrapper mentioned above is implemnted here `map_raw_ops_alias <https://github.com/unifyai/ivy/blob/54cc9cd955b84c50a1743dddddaf6e961f688dd5/ivy/functional/frontends/tensorflow/func_wrapper.py#L127>`_  in the ivy codebase.
+
 **PyTorch**
 
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def add(input, other, *, alpha=None, out=None):
         return ivy.add(input, other, alpha=alpha, out=out)
 
@@ -222,6 +257,7 @@ We wrap :func:`ivy.add` as usual.
 .. code-block:: python
 
     # in ivy/functional/frontends/torch/pointwise_ops.py
+    @to_ivy_arrays_and_back
     def tan(input, *, out=None):
         return ivy.tan(input, out=out)
 
@@ -235,8 +271,6 @@ As can be seen from the examples above, there are often cases where we do not ad
 Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
 The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
 Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
-
-* the layout of the array in memory, such as :code:`order` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
 
 * the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
 
@@ -291,6 +325,7 @@ For example, we can simply reverse the result by calling :func:`ivy.flip` on the
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def cumprod(x, axis=0, exclusive=False, reverse=False, name=None):
         ret = ivy.cumprod(x, axis, exclusive)
         if reverse:
@@ -335,6 +370,7 @@ However, Ivy's `implementation <https://github.com/unifyai/ivy/blob/6089953297b4
 
 .. code-block:: python
 
+    @to_ivy_arrays_and_back
     def logical_and(x, y, name="LogicalAnd"):
         return ivy.logical_and(x, y)
 
@@ -393,6 +429,8 @@ Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
+    @to_ivy_arrays_and_back
     def add(
     x1,
     x2,
@@ -440,6 +478,7 @@ The implementation for the :func:`tf_frontend.math.add` is shown as follows:
 .. code-block:: python
 
     # ivy/functional/frontends/tensorflow/math.py
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
     return ivy.add(x, y)
 
@@ -499,6 +538,7 @@ The function can be accessed through calling :func:`promote_types_of_<frontend>_
     # ivy/functional/frontends/tensorflow/math.py
     from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
     ...
+    @to_ivy_arrays_and_back
     def add(x, y, name=None):
         x, y = promote_types_of_tensorflow_inputs(x, y)
         return ivy.add(x, y)
@@ -587,9 +627,43 @@ An example function using this is the :func:`numpy.isfinite` function.
             ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
         return ret
 
+
+Frontends Duplicate Policy
+--------------------------
+Some frontend functions appear in multiple namespaces within the original framework that the frontend is replicating.
+For example the :func:`np.asarray` function appears in `Array manipulation routines`_ and also in `Array creation routines`_.
+This section outlines a policy that should serve as a guide for handling duplicate functions. The following sub-headings outline the policy:
+
+**Listing duplicate frontend functions on the ToDo lists**
+
+Essentially, there are two types of duplicate functions;
+
+1. Functions that are listed in multiple namespaces but are callable from the same path, for example :func:`asarray` is listed in `manipulation routines` and `creation routines` however this function called from the same path as :func:`np.asarray`.
+
+2. Functions that are listed in multiple namespaces but are callable from different paths, for example the function :func:`tf.math.tan` and :func:`tf.raw_ops.Tan`.
+
+When listing frontend functions, extra care should be taken to keep note of these two type of duplicate functions.
+
+* For duplicate functions of the first type, we should list the function once in any namespace where it exists and leave it out of all other namespaces.
+
+* For duplicates of the second type, we should list the function in each namespace where it exists but there should be a note to highlight that the function(s) on the list are duplicates and should therefore be implemented as aliases. For example, most of the functions in `tf.raw_ops` are aliases and this point is made clear when listing the functions on the ToDo list `here <https://github.com/unifyai/ivy/issues/1565>`_.
+
+**Contributing duplicate frontend functions**
+
+Before working on a frontend function, contributors should check if the function is designated as an alias on the ToDo list.
+If the function is an alias, you should check if there is an implementation that can be aliased.
+
+* If an implementation exist then simply create an alias of the implementation, for example many functions in `ivy/functional/frontends/tensorflow/raw_ops` are implemented as aliases `here <https://github.com/unifyai/ivy/blob/master/ivy/functional/frontends/tensorflow/raw_ops.py>`_.
+
+* If there is no implementation to be aliased then feel free to contribute the implementation first, then go ahead to create the alias.
+
+**Testing duplicate functions**
+
+Unit tests should be written for all aliases. This is arguably a duplication, but having a unique test for each alias helps us to keep the testing code organised and aligned with the groupings in the frontend API.
+
 **Round Up**
 
-This should hopefully have given you a better grasp on the what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
+This should hopefully have given you a better grasp on what the Ivy Frontend APIs are for, how they should be implemented, and the things to watch out for!
 We also have a short `YouTube tutorial series`_ on this as well if you prefer a video explanation!
 
 If you have any questions, please feel free to reach out on `discord`_ in the `ivy frontends channel`_ or in the `ivy frontends forum`_!

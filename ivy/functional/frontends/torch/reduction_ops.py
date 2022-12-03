@@ -57,6 +57,11 @@ def mean(input, dim, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
+
+
+@to_ivy_arrays_and_back
 def std(input, dim, unbiased, keepdim=False, *, out=None):
     return ivy.std(input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out)
 
@@ -106,3 +111,12 @@ def max(input, dim=None, keepdim=False, *, out=None):
 @to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
+    temp_std = ivy.std(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
+    temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+    return temp_std, temp_mean
