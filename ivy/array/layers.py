@@ -366,9 +366,7 @@ class ArrayWithLayers(abc.ABC):
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: Optional[
-            Union[int, Tuple[int, int, int]]
-        ] = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """
