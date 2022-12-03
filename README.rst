@@ -48,7 +48,7 @@ Status
 * `Array API Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
 * `Functional Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Functional%20API>`_
 * `Stateful Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Stateful%20API>`_
-* `Experimental Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Experimental%20APId>`_
+* `Experimental Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Experimental%20API>`_
 * `Torch Frontend Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Torch%20Frontend>`_
 * `Jax Frontend Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Jax%20Frontend>`_
 * `Tensorflow Frontend Tests <https://github.com/unifyai/ivy/tree/dashboard/test_dashboards/Tensorflow%20Frontend>`_
