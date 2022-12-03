@@ -573,19 +573,33 @@ def norm_helper(draw):
 # norm
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.norm",
-    params=norm_helper().filter(lambda s: "bfloat16" not in s[0] or "bool" not in s[0]),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_axis=-2,
+        max_axis=1,
+    ),
+    keepdims=st.booleans(),
+    ord=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2]),
 )
-def test_jax_norm(
-    *,
-    params,
+def test_jax_numpy_norm(
+    dtype_values_axis,
+    keepdims,
+    ord,
     as_variable,
     num_positional_args,
     native_array,
-    on_device,
-    fn_tree,
     frontend,
+    fn_tree,
+    on_device,
 ):
-    dtype, x, ord_param, axis, keepdims = params
+    dtype, x, axis = dtype_values_axis
+
+    if len(np.shape(x)) == 1:
+        axis = None
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -597,9 +611,10 @@ def test_jax_norm(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        ord=ord_param,
+        ord=ord,
         axis=axis,
         keepdims=keepdims,
+        atol=1e-1,
     )
 
 
