@@ -18,7 +18,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -68,7 +68,7 @@ jobs:
            fetch-depth: 100
       
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -117,7 +117,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -166,7 +166,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -215,7 +215,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -264,7 +264,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -313,7 +313,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -362,7 +362,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -411,7 +411,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -460,7 +460,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -509,7 +509,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -558,7 +558,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -607,7 +607,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -656,7 +656,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -705,7 +705,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -754,7 +754,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -803,7 +803,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -852,7 +852,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -901,7 +901,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -950,7 +950,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -999,7 +999,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1048,7 +1048,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1097,7 +1097,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1146,7 +1146,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1195,7 +1195,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1244,7 +1244,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1293,7 +1293,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1342,7 +1342,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1391,7 +1391,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1440,7 +1440,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1489,7 +1489,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
@@ -1538,7 +1538,7 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Get Current Job Log URL
+       - name: Get Job URL
          uses: Tiryoh/gha-jobid-action@v0
          id: jobs
          with:
