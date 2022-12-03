@@ -80,6 +80,8 @@ def pinv(a, rcond=None):
 
 @to_ivy_arrays_and_back
 def norm(x, ord=None, axis=None, keepdims=False):
+    if ord is None:
+        ord = 2
     if type(axis) in [list, tuple] and len(axis) == 2:
         return ivy.matrix_norm(x, ord=ord, axis=axis, keepdims=keepdims)
     return ivy.vector_norm(x, ord=ord, axis=axis, keepdims=keepdims)
