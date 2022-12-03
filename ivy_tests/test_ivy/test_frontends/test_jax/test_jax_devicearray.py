@@ -5,211 +5,353 @@ import jax.numpy as jnp
 # local
 from ivy.functional.frontends.jax.devicearray import DeviceArray
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_test, handle_frontend_method
 import ivy.functional.backends.torch as ivy_torch
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 
 
-# __pos__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
-)
-def test_jax_special_pos(
-    dtype_x,
-):
-    input_dtype, x = dtype_x
-    ret = +DeviceArray(x[0])
-    ret_gt = +jnp.array(x[0], dtype=input_dtype[0])
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
-    )
+CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
 
 
-# __neg__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
-)
-def test_jax_special_neg(
-    dtype_x,
-):
-    input_dtype, x = dtype_x
-    ret = -DeviceArray(x[0])
-    ret_gt = -jnp.array(x[0], dtype=input_dtype[0])
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
-    )
-
-
-# __eq__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__pos__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_special_eq(
-    dtype_x,
+def test_jax_devicearray__pos_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) == DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) == jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __ne__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__neg__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_special_ne(
-    dtype_x,
+def test_jax_devicearray__neg_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) != DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) != jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __lt__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__eq__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_lt(
-    dtype_x,
+def test_jax_devicearray__eq_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) < DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) < jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __le__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__ne__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_le(
-    dtype_x,
+def test_jax_devicearray__ne_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) <= DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) <= jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __gt__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__lt__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_gt(
-    dtype_x,
+def test_jax_devicearray__lt_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) > DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) > jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __ge__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__le__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_ge(
-    dtype_x,
+def test_jax_devicearray__le_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) >= DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >= jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __abs__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("numeric")),
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__gt__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
 )
-def test_jax_special_abs(
-    dtype_x,
+def test_jax_devicearray__gt_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = abs(DeviceArray(x[0]))
-    ret_gt = abs(jnp.array(x[0], dtype=input_dtype[0]))
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__ge__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+    ),
+)
+def test_jax_devicearray__ge_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__abs__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+    ),
+)
+def test_jax_devicearray__abs_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -260,169 +402,259 @@ def test_jax_special_rpow(
     )
 
 
-# __and__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__and__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_and(
-    dtype_x,
+def test_jax_devicearray__and_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) & DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) & jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rand__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rand__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_rand(
-    dtype_x,
+def test_jax_devicearray__rand_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[1]).__rand__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__rand__(
-        jnp.array(x[0], dtype=input_dtype[0])
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __or__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__or__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_or(
-    dtype_x,
+def test_jax_devicearray__or_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) | DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) | jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __ror__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__ror__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
-def test_jax_special_ror(
-    dtype_x,
+def test_jax_devicearray__ror_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[1]).__ror__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__ror__(
-        jnp.array(x[0], dtype=input_dtype[0])
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __xor__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__xor__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_special_xor(
-    dtype_x,
+def test_jax_devicearray__xor_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[0]) ^ DeviceArray(x[1])
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) ^ jnp.array(
-        x[1], dtype=input_dtype[1]
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rxor__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer"), num_arrays=2
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rxor__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_special_rxor(
-    dtype_x,
+def test_jax_devicearray__rxor_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = DeviceArray(x[1]).__rxor__(DeviceArray(x[0]))
-    ret_gt = jnp.array(x[1], dtype=input_dtype[1]).__rxor__(
-        jnp.array(x[0], dtype=input_dtype[0])
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __invert__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("signed_integer")
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__invert__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
 )
-def test_jax_special_invert(
-    dtype_x,
+def test_jax_devicearray__invert_(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    input_dtype, x = dtype_x
-    ret = ~DeviceArray(x[0])
-    ret_gt = ~jnp.array(x[0], dtype=input_dtype[0])
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": x[1]},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 

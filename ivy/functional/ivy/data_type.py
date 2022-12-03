@@ -2023,16 +2023,23 @@ def promote_types_of_inputs(
     as inputs only for those functions that expect an array-like or tensor-like objects,
     otherwise it might give unexpected results.
     """
+
     def _special_case(a1, a2):
         # check for float number and integer array case
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
-        x2 = ivy.asarray(x2, dtype=x1.dtype) \
-            if not _special_case(x2, x1) else ivy.asarray(x2, dtype="float64")
+        x2 = (
+            ivy.asarray(x2, dtype=x1.dtype)
+            if not _special_case(x2, x1)
+            else ivy.asarray(x2, dtype="float64")
+        )
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
-        x1 = ivy.asarray(x1, dtype=x2.dtype) \
-            if not _special_case(x1, x2) else ivy.asarray(x1, dtype="float64")
+        x1 = (
+            ivy.asarray(x1, dtype=x2.dtype)
+            if not _special_case(x1, x2)
+            else ivy.asarray(x1, dtype="float64")
+        )
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
