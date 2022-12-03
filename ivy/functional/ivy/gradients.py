@@ -28,8 +28,8 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         def inner_fn(x):
             if ivy.is_array(x, exclusive=True):
                 if ivy.is_int_dtype(x.dtype):
-                    x = x.astype(ivy.default_float_dtype())
-                else:
+                    x = ivy.astype(x, ivy.default_float_dtype())
+                elif _is_variable(x):
                     x = stop_gradient(x, preserve_type=False)
 
                 return _variable(x)
