@@ -257,8 +257,7 @@ def test_get_item(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        test_gradients=test_gradients,
-        xs_grad_idxs=[[0, 0]],
+        test_gradients=False,
         x=x,
         query=indices,
     )
