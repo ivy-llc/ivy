@@ -472,8 +472,8 @@ def test_tensorflow_instance_mul(
 )
 def test_tensorflow_instance_mod(
     dtype_and_x,
-    as_variable,
-    native_array,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
