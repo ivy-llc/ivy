@@ -19,6 +19,11 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
+def eig(tensor, name=None):
+    return ivy.eig(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigh(tensor, name=None):
     return ivy.eigh(tensor)
 
