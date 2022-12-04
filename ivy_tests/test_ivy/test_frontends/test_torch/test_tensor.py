@@ -159,6 +159,58 @@ def test_torch_instance_new_ones(
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
+    method_name="new_zeros",
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    size=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=_dtypes(),
+    requires_grad=_requires_grad(),
+)
+def test_torch_instance_new_zeros(
+    dtype_and_x,
+    size,
+    dtypes,
+    requires_grad,
+    on_device,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtypes,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "size": size,
+            "dtype": dtypes[0],
+            "requires_grad": requires_grad,
+            "device": on_device,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
     method_name="reshape",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
