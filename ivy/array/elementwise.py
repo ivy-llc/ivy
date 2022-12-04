@@ -1354,6 +1354,27 @@ class ArrayWithElementwise(abc.ABC):
             an array containing the evaluated base ``2`` logarithm for each element
             in ``self``. The returned array must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
+        
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([2.0, 0., -inf, nan])
+
+        >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([nan, nan, -inf, 0., 2.322, inf])
+
+        >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+        ...                [+0, -1.0, -5, float('-inf')]])
+        >>> y = x.log2()
+        >>> print(y)
+        ivy.array([[nan, 0., 2.322, inf],
+                   [-inf, nan, nan, nan]])
         """
         return ivy.log2(self._data, out=out)
 
@@ -1390,13 +1411,13 @@ class ArrayWithElementwise(abc.ABC):
         >>> x = ivy.array([float('nan'), -5.0, -0.0, 1.0, 5.0, float('+inf')])
         >>> y = x.log10()
         >>> print(y)
-        ivy.array([nan, nan, -inf, 0., 0.699, inf])
+        ivy.array([nan, nan, -inf, 0., 2.322, inf])
 
         >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
         ...                [+0, -1.0, -5, float('-inf')]])
         >>> y = x.log10()
         >>> print(y)
-        ivy.array([[nan, 0., 0.699, inf],
+        ivy.array([[nan, 0., 2.322, inf],
                    [-inf, nan, nan, nan]])
         """
         return ivy.log10(self._data, out=out)
