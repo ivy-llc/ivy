@@ -1,3 +1,5 @@
+
+.idea/*
 *.egg-info/
 **/.idea/workspace.xml
 **/.idea/tasks.xml
@@ -27,4 +29,3 @@ with_time_logs/
 .array_api_tests_k_flag*
 internal_automation_tools/
 .vscode/*
-.idea/*
