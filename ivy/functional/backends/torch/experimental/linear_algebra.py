@@ -6,7 +6,7 @@ from typing import Optional
 
 import ivy
 
-
+@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -65,7 +65,9 @@ def diagflat(
         )
 
     temp = x - torch.full(x.shape, padding_value).type(x.dtype)
-    diagonal_to_add = torch.diag(temp, diagonal=offset).type(x.dtype)
+    diagonal_to_add = torch.diag(temp, diagonal=offset).type(
+        x.dtype
+    )  # diag does not support float16
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     diagonal_to_add = diagonal_to_add.to(x.dtype)
@@ -87,6 +89,9 @@ def diagflat(
         ivy.inplace_update(out, ret)
 
     return ret
+
+
+diagflat.support_native_out = False
 
 
 def kron(
