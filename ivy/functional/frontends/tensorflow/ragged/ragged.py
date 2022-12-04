@@ -2,6 +2,12 @@ import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
 from typing import Any
 
+#TODO: Align behavior with tensorflow, modify so that the elements of the raggedTensor object are of type EagerTensor
+# ensure that the values and row_splits are of type EagerTensor too
+
+
+
+
 class RaggedTensor:
     def __init__(self, values, row_partition, internal=False, data=None):
         if not internal:
@@ -74,6 +80,36 @@ class RaggedTensor:
         return cls.from_row_splits(values,row_starts)
 
 
+    def to_list(self):
+        vals=[]
+        for i in self:
+            if isinstance(i,RaggedTensor):
+                vals.append(i.to_list())
+            else:
+                vals.append(ivy.to_list(i))
+        return vals
 
+    @property
+    def values(self):
+        return self._values
 
+    @property
+    def flat_values(self):
+        values=self.values
+        while isinstance(values,RaggedTensor):
+            values=values.values
+        return values
+
+    @property
+    def row_splits(self):
+        return self._row_partition
+
+    @property
+    def nested_row_splits(self):
+        rt_nested_splits = [self.row_splits]
+        rt_values = self.values
+        while isinstance(rt_values, RaggedTensor):
+            rt_nested_splits.append(rt_values.row_splits)
+            rt_values = rt_values.values
+        return tuple(rt_nested_splits)
 
