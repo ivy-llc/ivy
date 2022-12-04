@@ -1,6 +1,7 @@
 # global
 import ivy.functional.frontends.tensorflow.ragged as ragged_tf
 import ivy
+
 # try:
 #     import tensorflow as tf
 # except ImportError:
@@ -12,7 +13,7 @@ import ivy
 
 
 def _is_composite_array(x):
-    if isinstance(x, ragged_tf.ragged.RaggedTensor ):
+    if isinstance(x, ragged_tf.ragged.RaggedTensor):
         return True
     if ivy.is_ivy_sparse_array(x) or ivy.is_native_sparse_array(x):
         return True
