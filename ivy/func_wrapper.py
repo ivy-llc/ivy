@@ -519,25 +519,21 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
-        to_replace, additional_wrappers = {}, {}
-        if not compositional:
+        mixed = hasattr(original, "mixed_function")
+        if mixed:
             to_replace = {
-                "inputs_to_ivy_arrays": [
+                True: ["inputs_to_ivy_arrays"],
+                False: [
                     "outputs_to_ivy_arrays",
                     "inputs_to_native_arrays",
-                ]
+                ],
             }
-            additional_wrappers = {"handle_nestable", "handle_out_argument"}
+            for attr in to_replace[compositional]:
+                setattr(original, attr, True)
+
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                if compositional and attr in additional_wrappers:
-                    continue
-                if attr in to_replace:
-                    attrs = to_replace[attr]
-                    for attr in attrs:
-                        to_wrap = getattr(ivy, attr)(to_wrap)
-                else:
-                    to_wrap = getattr(ivy, attr)(to_wrap)
+                to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
 
 

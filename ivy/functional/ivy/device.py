@@ -303,6 +303,30 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     ----------
     device
         The device string to convert to native device handle.
+        A native device handle can be passed in instead - in this case
+        the unmodified parameter is returned.
+
+    Examples
+    --------
+    With :class:`ivy.Device` input:
+
+    >>> ivy.set_backend("numpy")
+    >>> ivy.as_native_dev("cpu")
+    'cpu'
+
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.as_native_dev("tpu:3")
+    '/TPU:3'
+
+    With :class:`ivy.NativeDevice` input:
+
+    >>> import torch
+    >>> device = torch.device("cuda")
+    >>> device
+    device(type='cuda')
+    >>> ivy.as_native_dev(device)
+    device(type='cuda')
+
 
     Returns
     -------
