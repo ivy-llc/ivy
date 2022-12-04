@@ -5,8 +5,11 @@ import torch
 from typing import Optional
 
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 
+@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
     /,
@@ -91,7 +94,6 @@ def diagflat(
     return ret
 
 
-diagflat.unsupported_dtypes = ("float16",)
 diagflat.support_native_out = False
 
 
