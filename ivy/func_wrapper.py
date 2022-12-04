@@ -183,17 +183,19 @@ def outputs_to_ivy_arrays(fn: Callable) -> Callable:
         """
         # call unmodified function
         ret = fn(*args, **kwargs)
-        if not ivy.get_array_mode():
-            return ret
         # convert all arrays in the return to `ivy.Array` instances
-        return ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+        return (
+            ivy.to_ivy(ret, nested=True, include_derived={tuple: True})
+            if ivy.get_array_mode()
+            else ret
+        )
 
     new_fn.outputs_to_ivy_arrays = True
     return new_fn
 
 
 def _is_zero_dim_array(x):
-    return x.shape == () and not (ivy.isinf(x) or ivy.isnan(x))
+    return x.shape == () and not ivy.isinf(x) and not ivy.isnan(x)
 
 
 def from_zero_dim_arrays_to_float(fn: Callable) -> Callable:
@@ -403,9 +405,14 @@ def handle_out_argument(fn: Callable) -> Callable:
             # compute return, with backend inplace update handled by
             # the backend function
             ret = fn(*args, out=native_out, **kwargs)
-            out.data = ivy.to_native(ret)
+            if isinstance(ret, (tuple, list)):
+                for i in range(len(ret)):
+                    out[i].data = ivy.to_native(ret[i])
+            else:
+                out.data = ivy.to_native(ret)
             return out
         # compute return, and then handle the inplace update explicitly
+
         ret = fn(*args, **kwargs)
         return ivy.inplace_update(out, ret)
 
@@ -460,7 +467,9 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
+def _wrap_function(
+    key: str, to_wrap: Callable, original: Callable, compositional: bool = False
+) -> Callable:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
@@ -473,6 +482,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         the new implementation to potentially wrap
     original
         the original implementation of `to_wrap` which tells us which wrappers we need.
+    compositional
+        indicates whether the function being wrapped is compositional
+        (Default Value = ``False``).
 
     Returns
     -------
@@ -489,7 +501,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
-                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                    linalg_k,
+                    linalg_v,
+                    ivy.__dict__[linalg_k],
+                    compositional=compositional,
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
@@ -504,6 +519,18 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
+        mixed = hasattr(original, "mixed_function")
+        if mixed:
+            to_replace = {
+                True: ["inputs_to_ivy_arrays"],
+                False: [
+                    "outputs_to_ivy_arrays",
+                    "inputs_to_native_arrays",
+                ],
+            }
+            for attr in to_replace[compositional]:
+                setattr(original, attr, True)
+
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)
@@ -604,7 +631,7 @@ def _dtype_device_wrapper_creator(attrib, t):
         }
         for key, value in version_dict.items():
             for i, v in enumerate(value):
-                if v in typesets.keys():
+                if v in typesets:
                     version_dict[key] = (
                         version_dict[key][:i] + typesets[v] + version_dict[key][i + 1 :]
                     )

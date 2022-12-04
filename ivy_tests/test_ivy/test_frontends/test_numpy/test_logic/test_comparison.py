@@ -118,7 +118,7 @@ def test_numpy_greater(
         dtypes=input_dtype,
         get_dtypes_kind="float",
     )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -169,7 +169,7 @@ def test_numpy_greater_equal(
         dtypes=input_dtype,
         get_dtypes_kind="float",
     )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -220,7 +220,7 @@ def test_numpy_less(
         dtypes=input_dtype,
         get_dtypes_kind="float",
     )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -271,7 +271,7 @@ def test_numpy_less_equal(
         dtypes=input_dtype,
         get_dtypes_kind="float",
     )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,
@@ -322,7 +322,7 @@ def test_numpy_not_equal(
         dtypes=input_dtype,
         get_dtypes_kind="float",
     )
-    where = np_frontend_helpers.handle_where_and_array_bools(
+    where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
         input_dtype=input_dtype,
         as_variable=as_variable,

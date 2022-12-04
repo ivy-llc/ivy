@@ -1840,8 +1840,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1851,8 +1851,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self.static_allclose(
@@ -1867,6 +1867,92 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             map_sequences=map_sequences,
             out=out,
         )
+
+    @staticmethod
+    def static_diff(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.diff. This method simply wraps
+        the function, and so the docstring for ivy.diff also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along
+            the given axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "diff",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def diff(
+        self: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.diff. This method simply
+        wraps the function, and so the docstring for ivy.diff also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container with array-like items.
+        
+        out
+            optional output container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            Container including arrays with the n-th discrete difference along the
+            given axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
+                               b=ivy.array([1, 2, 4, 7, 0]))
+        >>> ivy.Container.static_diff(x)
+        {
+            a: ivy.array([ 1,  2,  3, -7])
+            b: ivy.array([ 1,  2,  3, -7])
+        }
+        """
+        return self.static_diff(self, out=out)
 
     @staticmethod
     def static_fix(
@@ -2212,4 +2298,165 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    @staticmethod
+    def static_gradient(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        spacing: Optional[Union[int, list, tuple]] = 1,
+        edge_order: Optional[int] = 1,
+        axis: Optional[Union[int, list, tuple]] = None,
+    ) -> ivy.Container:
+        return ContainerBase.multi_map_in_static_method(
+            "gradient",
+            x,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            spacing=spacing,
+            edge_order=edge_order,
+            axis=axis,
+        )
+
+    def gradient(
+        self: ivy.Container,
+        /,
+        *,
+        spacing: Optional[Union[int, list, tuple]] = 1,
+        edge_order: Optional[int] = 1,
+        axis: Optional[Union[int, list, tuple]] = None,
+    ) -> ivy.Container:
+        """Calculates gradient of x with respect to (w.r.t.) spacing
+        Parameters
+        ----------
+            x
+                input array representing outcomes of the function
+                spacing
+                if not given, indices of x will be used
+                if scalar indices of x will be scaled with this value
+                if array gradient of x w.r.t. spacing
+            edge_order
+                1 or 2, for 'frist order' and 'second order' estimation
+                of boundary values of gradient respectively.
+            axis
+                dimension(s) to approximate the gradient over.
+                By default, partial gradient is computed in every dimension
+
+
+        Returns
+        -------
+        ret
+            Array with values computed from gradient function from
+            inputs
+
+        Examples
+        --------
+        >>> coordinates = ivy.Container(
+        >>>     a=(ivy.array([-2., -1., 1., 4.]),),
+        >>>     b=(ivy.array([2., 1., -1., -4.]),)
+        >>> )
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([4., 1., 1., 16.]),
+        >>>     b=ivy.array([4., 1., 1., 16.])
+        >>> )
+        >>> ivy.gradient(values, spacing=coordinates)
+        {
+            a: ivy.array([-3., -2., 2., 5.]),
+            b: ivy.array([3., 2., -2., -5.])
+        }
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values)
+        [{
+            a: ivy.array([[9., 18., 36., 72.],
+                          [9., 18., 36., 72.]]),
+            b: ivy.array([[-9., -18., -36., -72.],
+                          [-9., -18., -36., -72.]])
+        }, {
+            a: ivy.array([[1., 1.5, 3., 4.],
+                          [10., 15., 30., 40.]]),
+            b: ivy.array([[-1., -1.5, -3., -4.],
+                          [-10., -15., -30., -40.]])
+        }]
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, spacing=2.0)
+        [{
+            a: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]]),
+            b: ivy.array([[-4.5, -9., -18., -36.],
+                          [-4.5, -9., -18., -36.]])
+        }, {
+            a: ivy.array([[0.5, 0.75, 1.5, 2.],
+                          [5., 7.5, 15., 20.]]),
+            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
+                          [-5., -7.5, -15., -20.]])
+        }]
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, axis=1)
+        {
+            a: ivy.array([[1., 1.5, 3., 4.],
+                          [10., 15., 30., 40.]]),
+            b: ivy.array([[-1., -1.5, -3., -4.],
+                          [-10., -15., -30., -40.]])
+        }
+
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>> )
+        >>> ivy.gradient(values, spacing = [3., 2.])
+        [{
+            a: ivy.array([[3., 6., 12., 24.],
+                          [3., 6., 12., 24.]]),
+            b: ivy.array([[-3., -6., -12., -24.],
+                          [-3., -6., -12., -24.]])
+        }, {
+            a: ivy.array([[0.5, 0.75, 1.5, 2.],
+                          [5., 7.5, 15., 20.]]),
+            b: ivy.array([[-0.5, -0.75, -1.5, -2.],
+                          [-5., -7.5, -15., -20.]])
+        }]
+
+        >>> coords = ivy.Container(
+        >>>    a=(ivy.array([0, 2]), ivy.array([0, 3, 6, 9])),
+        >>>    b=(ivy.array([0, -2]), ivy.array([0, -3, -6, -9]))
+        >>>)
+        >>> values = ivy.Container(
+        >>>     a=ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]]),
+        >>>     b=ivy.array([[-1, -2, -4, -8], [-10, -20, -40, -80]])
+        >>>)
+        >>> ivy.gradient(values, spacing = coords)
+        [{
+            a: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]]),
+            b: ivy.array([[4.5, 9., 18., 36.],
+                          [4.5, 9., 18., 36.]])
+        }, {
+            a: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
+                          [3.33333333, 5., 10., 13.33333333]]),
+            b: ivy.array([[0.33333333, 0.5, 1., 1.33333333],
+                          [3.33333333, 5., 10., 13.33333333]])
+        }]
+
+        """
+        return self.static_gradient(
+            self, spacing=spacing, edge_order=edge_order, axis=axis
         )

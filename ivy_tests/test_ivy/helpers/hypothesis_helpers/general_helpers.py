@@ -391,7 +391,7 @@ def get_axis(
 
             def sort_key(ele, max_len):
                 if ele < 0:
-                    return ele + max_len - 1
+                    return ele + max_len
                 return ele
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))
