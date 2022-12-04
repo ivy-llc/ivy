@@ -64,5 +64,4 @@ def quantile(
         axis=axis,
         method=interpolation,
         keepdims=keepdims,
-        out=out
-    ).astype(a.dtype)
+        out=out).astype(a.dtype)
