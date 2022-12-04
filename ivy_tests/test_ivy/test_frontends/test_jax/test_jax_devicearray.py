@@ -556,6 +556,7 @@ def test_jax_devicearray__ror_(
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__xor_(
@@ -592,6 +593,7 @@ def test_jax_devicearray__xor_(
     method_name="__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__rxor_(
@@ -628,6 +630,7 @@ def test_jax_devicearray__rxor_(
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
     ),
 )
 def test_jax_devicearray__invert_(
