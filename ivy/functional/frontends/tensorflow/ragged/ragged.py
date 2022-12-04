@@ -12,8 +12,15 @@ class RaggedTensor:
 
     @classmethod
     def from_row_splits(cls, values, row_splits, name=None, validate=True):
-        values = ivy.reshape(values, -1)
-        data=[values[row_splits[i]:row_splits[i + 1]]
+        #TODO : modify this, if necessary, to accept raggedTensor inputs too
+
+        if values.shape[0]!=row_splits[-1] or row_splits[0]!=0:
+            if values.shape[0]!=row_splits[-1]:
+                ivy.exceptions.IvyException("first dimension of shape of values should be equal to the last dimension of row_splits")
+            else:
+                ivy.exceptions.IvyException(
+                    "first value of row_splits should be equal to zero.")
+        data=[values[row_splits[i]:row_splits[i + 1],:]
           for i in range(len(row_splits) - 1)]
 
         return cls(values=values,row_partition=row_splits, internal=True, data =data)
@@ -22,27 +29,49 @@ class RaggedTensor:
     def from_row_lengths(cls,
         values, row_lengths, name=None,
     ):
-        values = ivy.reshape(values, -1)
-        data =[[values.pop(0) for i in range(length)]
-          for length in row_lengths]
+        # TODO : modify this, if necessary, to accept raggedTensor inputs too
+        if sum(row_lengths)!=values.shape[0]:
+            ivy.exceptions.IvyException("first dimension of values should be equal to sum(row_lengths) ")
+        data=[]
+        z=0
+        for length in row_lengths:
+            temp=[]
+            for i in range(length):
+                temp.append(values[z,:])
+                z+=1
+
+            data.append(ivy.asarray(temp))
+
+        # data =[[values[0+i,:] for i in range(length)]
+        #   for length in row_lengths]
         return cls(values=values, row_partition=row_lengths, internal=True, data=data)
 
     @classmethod
     def from_value_rowids(cls,
         values, value_rowids, nrows=None, name=None,
     ):
-        values=ivy.reshape(values,-1)
-        data= [[values[i] for i in range(len(values)) if value_rowids[i] == row]
-          for row in range(nrows)]
+        if not nrows:
+            nrows=value_rowids[-1]+1
+        data=[]
+        for row in range(nrows):
+            temp=[]
+            for i in range(len(values)):
+                if value_rowids[i]==row:
+                    temp.append(values[i,:])
+            data.append(ivy.asarray(temp))
+
+        # data= [[values[i,:] for i in range(len(values)) if value_rowids[i] == row]
+        #   for row in range(nrows)]
         return cls(values=values, row_partition=value_rowids, internal=True, data=data)
 
     @classmethod
     def from_row_starts(cls,
         values, row_starts, name=None,
     ):
-        values = ivy.reshape(values, -1)
-
-        return cls(values=values, row_partition=row_starts, internal=True, data=data)
+        #TODO since row_starts will be a tensor try appending using concat after ensuring row_starts
+        # is a tensor
+        row_starts.append(len(values))
+        return cls.from_row_splits(values,row_starts)
 
 
 
