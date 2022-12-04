@@ -65,7 +65,9 @@ def diagflat(
         )
 
     temp = x - torch.full(x.shape, padding_value).type(x.dtype)
-    diagonal_to_add = torch.diag(temp, diagonal=offset).type(x.dtype) # diag does not support float16
+    diagonal_to_add = torch.diag(temp, diagonal=offset).type(
+        x.dtype
+    )  # diag does not support float16
 
     diagonal_to_add = diagonal_to_add[tuple(slice(0, n) for n in output_array.shape)]
     diagonal_to_add = diagonal_to_add.to(x.dtype)
