@@ -6,17 +6,17 @@ from typing import Optional
 
 import ivy
 
-@with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
+
 def diagflat(
-    x: torch.Tensor,
-    /,
-    *,
-    offset: Optional[int] = 0,
-    padding_value: Optional[float] = 0,
-    align: Optional[str] = "RIGHT_LEFT",
-    num_rows: Optional[int] = -1,
-    num_cols: Optional[int] = -1,
-    out: Optional[torch.Tensor] = None,
+        x: torch.Tensor,
+        /,
+        *,
+        offset: Optional[int] = 0,
+        padding_value: Optional[float] = 0,
+        align: Optional[str] = "RIGHT_LEFT",
+        num_rows: Optional[int] = -1,
+        num_cols: Optional[int] = -1,
+        out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) > 1:
         x = torch.flatten(x)
@@ -91,15 +91,16 @@ def diagflat(
     return ret
 
 
+diagflat.unsupported_dtypes = ("float16",)
 diagflat.support_native_out = False
 
 
 def kron(
-    a: torch.Tensor,
-    b: torch.Tensor,
-    /,
-    *,
-    out: Optional[torch.Tensor] = None,
+        a: torch.Tensor,
+        b: torch.Tensor,
+        /,
+        *,
+        out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
     return torch.kron(a, b, out=out)
 
