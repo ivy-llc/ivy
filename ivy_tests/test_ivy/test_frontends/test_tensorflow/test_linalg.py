@@ -530,6 +530,7 @@ def test_tensorflow_normalize(
         tensor=x[0],
         ord=ord,
         axis=axis,
+        atol=1e-08
     )
 
 
