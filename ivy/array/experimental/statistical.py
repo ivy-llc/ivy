@@ -129,8 +129,6 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         """
         return ivy.unravel_index(self._data, shape, out=out)
 
-
-
     def quantile(
         self: ivy.Array,
         q: Union[ivy.Array, float],

@@ -46,6 +46,7 @@ def unravel_index(
     ret = tf.unravel_index(indices, shape)
     return [tf.constant(ret[i]) for i in range(0, len(ret))]
 
+
 def quantile(
     a: Union[tf.Tensor, tf.Variable],
     q: Union[tf.Tensor, float],

@@ -326,8 +326,6 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         """
         return self.static_unravel_index(self, shape, out=out)
 
-
-
     @staticmethod
     def static_quantile(
         a: Union[ivy.Container, ivy.Array, ivy.NativeArray],

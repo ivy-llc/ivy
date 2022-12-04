@@ -40,6 +40,7 @@ def unravel_index(
 ) -> JaxArray:
     return jnp.unravel_index(indices, shape)
 
+
 def quantile(
     a: JaxArray,
     q: Union[float, JaxArray],

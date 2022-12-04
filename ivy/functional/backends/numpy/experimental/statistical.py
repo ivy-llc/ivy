@@ -42,6 +42,7 @@ def unravel_index(
 ) -> np.ndarray:
     return np.unravel_index(indices, shape)
 
+
 def quantile(
     a: np.ndarray,
     q: Union[float, np.ndarray],
