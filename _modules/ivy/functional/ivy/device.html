@@ -433,6 +433,30 @@
 <span class="sd">    ----------</span>
 <span class="sd">    device</span>
 <span class="sd">        The device string to convert to native device handle.</span>
+<span class="sd">        A native device handle can be passed in instead - in this case</span>
+<span class="sd">        the unmodified parameter is returned.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Device` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;numpy&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.as_native_dev(&quot;cpu&quot;)</span>
+<span class="sd">    &#39;cpu&#39;</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.as_native_dev(&quot;tpu:3&quot;)</span>
+<span class="sd">    &#39;/TPU:3&#39;</span>
+
+<span class="sd">    With :class:`ivy.NativeDevice` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; device</span>
+<span class="sd">    device(type=&#39;cuda&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.as_native_dev(device)</span>
+<span class="sd">    device(type=&#39;cuda&#39;)</span>
+
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
