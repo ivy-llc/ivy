@@ -20,13 +20,8 @@ def lexsort(
     *,
     axis: int = -1,
 ) -> torch.Tensor:
-    x_unq = torch.unique(x.flip(0), dim=axis, sorted=True, return_inverse=True)
-    inv = []
-    for i in range(0, x.size()[1]):
-        for j in range(0, x.size()[1]):
-            if (x.flip(0)[:, j] == x_unq[:, i]).all():
-                inv.append(j)
-    return inv
+    inverse_indices = torch.unique(x.flip(0), sorted=True, return_inverse=True, return_counts=False, dim=axis)[1]
+    return torch.argsort(inverse_indices, dim=axis)
 
 
 lexsort_support_native_out = True
