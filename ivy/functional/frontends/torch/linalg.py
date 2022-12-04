@@ -30,7 +30,9 @@ def matrix_power(input, n, *, out=None):
 
 
 @to_ivy_arrays_and_back 
-def vector_norm(input, ord=2, dim=None, keep_dim=False, *, dtype=None, 
-out=None):
-    return ivy.vector_norm(input, ord=ord, dim=dim, keep_dim=keep_dim, 
-    dtype=dtype, out=out)
+def vector_norm(
+    input, ord=2, dim=None, keep_dim=False, *, dtype=None, out=None
+):
+    return ivy.vector_norm(
+        input, ord=ord, dim=dim, keep_dim=keep_dim, dtype=dtype, out=out
+    )
