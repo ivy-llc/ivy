@@ -307,6 +307,7 @@ class Array(
         return ivy.positive(self._data)
 
     def __neg__(self):
+
         return ivy.negative(self._data)
 
     def __pow__(self, power):
