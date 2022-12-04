@@ -83,7 +83,7 @@ def test_tensorflow_pinv(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
+        input=x[0],
         atol=1e-15,
         rtol=1e-15,
     )
