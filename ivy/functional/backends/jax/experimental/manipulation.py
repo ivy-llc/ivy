@@ -90,10 +90,10 @@ def top_k(
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
     else:
-        x *= -1
+        x = -x
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
     val = jnp.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)

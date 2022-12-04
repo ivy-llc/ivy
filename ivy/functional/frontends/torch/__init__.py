@@ -28,6 +28,8 @@ from . import tensor_functions
 from .tensor_functions import *
 from . import utilities
 from .utilities import *
+from . import linalg
+from .linalg import *
 import ivy
 from ivy import (
     uint8,
@@ -40,6 +42,14 @@ from ivy import (
     float64,
     bfloat16,
     bool,
+)
+from ivy import (
+    int16 as short,
+    int32 as int,
+    int64 as long,
+    float16 as half,
+    float32 as float,
+    float64 as double,
 )
 from ivy.exceptions import handle_exceptions
 

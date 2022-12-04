@@ -339,6 +339,7 @@ def test_torch_mean(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-05,
         input=x[0],
         dim=axis,
         keepdim=keepdims,
@@ -451,7 +452,7 @@ def test_torch_prod(
         on_device=on_device,
         input=x[0],
         dim=axis,
-        dtype=dtype,
+        dtype=dtype[0],
         keepdim=keepdims,
     )
 

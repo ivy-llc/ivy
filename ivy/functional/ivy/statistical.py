@@ -994,10 +994,11 @@ def cumsum(
 @handle_array_like
 def cumprod(
     x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
