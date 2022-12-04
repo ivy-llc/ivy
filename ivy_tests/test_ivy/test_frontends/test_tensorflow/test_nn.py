@@ -1,4 +1,3 @@
-
 # global
 import ivy
 from hypothesis import strategies as st
@@ -59,7 +58,6 @@ def _x_and_filters(
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
-
             x_w = x_shape[1]
         else:
             x_shape = draw(
