@@ -434,7 +434,9 @@ def linspace_helper(start, stop, num, axis=None, *, device):
 
 
 def meshgrid(
-    *arrays: torch.Tensor, sparse: bool = False, indexing="xy"
+    *arrays: torch.Tensor,
+    sparse: bool = False,
+    indexing: str = "xy",
 ) -> List[torch.Tensor]:
     if not sparse:
         return list(torch.meshgrid(*arrays, indexing=indexing))

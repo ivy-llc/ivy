@@ -288,7 +288,7 @@ class ArrayWithCreation(abc.ABC):
         self: ivy.Array,
         /,
         *arrays: Union[ivy.Array, ivy.NativeArray],
-        sparse=False,
+        sparse: bool = False,
         indexing: str = "xy",
     ) -> List[ivy.Array]:
         list_arrays = [self._data] + list(arrays)
