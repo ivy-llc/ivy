@@ -4,6 +4,7 @@ from typing import Any
 
 # TODO: Align behavior with tensorflow, modify so that the elements of the raggedTensor object are of type EagerTensor
 # ensure that the values and row_splits are of type EagerTensor too
+# add more initializer methods
 
 
 class RaggedTensor:
