@@ -3126,6 +3126,35 @@ def log2(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([4.0, 1, -0.0, -5.0])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([2.0, 0., -inf, nan])
+
+    >>> x = ivy.array([[float('nan'), 1, 5.0, float('+inf')],
+    ...                [+0, -1.0, -5, float('-inf')]])
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    ivy.array([[nan, 0., 2.322, inf],
+               [-inf, nan, nan, nan]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0.0, float('nan')]),
+    ...                   b=ivy.array([-0., -3.9, float('+inf')]),
+    ...                   c=ivy.array([7.9, 1.1, 1.]))
+    >>> y = ivy.log2(x)
+    >>> print(y)
+    {
+        a: ivy.array([-inf, nan]),
+        b: ivy.array([-inf, nan, inf]),
+        c: ivy.array([2.982, 0.137, 0.])
+    }
+
     """
     return ivy.current_backend(x).log2(x, out=out)
 
