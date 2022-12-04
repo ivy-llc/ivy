@@ -118,3 +118,10 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
         )
     return ivy.sort(values, axis=axis, descending=descending)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
+    if out_type not in ["int32", "int64"]:
+        out_type = "int64"
+    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)
