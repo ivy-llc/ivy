@@ -1,8 +1,8 @@
 import ivy
-import ivy.functional.frontends.tensorflow as tf_frontend
-from typing import Any
 
-# TODO: Align behavior with tensorflow, modify so that the elements of the raggedTensor object are of type EagerTensor
+
+# TODO: Align behavior with tensorflow, modify so that the elements of the raggedTensor
+#  object are of type EagerTensor
 # ensure that the values and row_splits are of type EagerTensor too
 # add more initializer methods
 
@@ -11,7 +11,9 @@ class RaggedTensor:
     def __init__(self, values, row_partition, internal=False, data=None):
         if not internal:
             raise ivy.exceptions.IvyException(
-                "RaggedTensor constructor is private; please use one of the factory methods instead (e.g., RaggedTensor.from_row_lengths())"
+                "RaggedTensor constructor is private; please use one of the "
+                "factory methods instead "
+                "(e.g., RaggedTensor.from_row_lengths())"
             )
         self._values = values
         self.data = data
@@ -24,7 +26,8 @@ class RaggedTensor:
         if values.shape[0] != row_splits[-1] or row_splits[0] != 0:
             if values.shape[0] != row_splits[-1]:
                 ivy.exceptions.IvyException(
-                    "first dimension of shape of values should be equal to the last dimension of row_splits"
+                    "first dimension of shape of values should be equal to the"
+                    " last dimension of row_splits"
                 )
             else:
                 ivy.exceptions.IvyException(
@@ -92,7 +95,8 @@ class RaggedTensor:
         row_starts,
         name=None,
     ):
-        # TODO since row_starts will be a tensor try appending using concat after ensuring row_starts
+        # TODO since row_starts will be a tensor try appending using concat after
+        #  ensuring row_starts
         # is a tensor
         row_starts.append(len(values))
         return cls.from_row_splits(values, row_starts)
