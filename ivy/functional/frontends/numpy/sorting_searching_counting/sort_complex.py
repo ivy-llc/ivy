@@ -6,7 +6,7 @@ from ivy.functional.frontends.numpy.func_wrapper import (
 
 @handle_numpy_casting
 @to_ivy_arrays_and_back
-def sort_complex(array):
+def sort_complex(array, /):
     if len(array) == 1:
         return array
     else:
