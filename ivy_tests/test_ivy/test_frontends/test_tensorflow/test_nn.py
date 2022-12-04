@@ -1,3 +1,4 @@
+
 # global
 import ivy
 from hypothesis import strategies as st
@@ -58,6 +59,7 @@ def _x_and_filters(
                     helpers.ints(min_value=d_in, max_value=d_in),
                 )
             )
+
             x_w = x_shape[1]
         else:
             x_shape = draw(
@@ -877,4 +879,43 @@ def test_tensorflow_local_response_normalization(
         bias=bias,
         alpha=alpha,
         beta=beta,
+    )
+@st.composite
+def df(draw,data_format):
+    data_format=draw(data_format)
+    return data_format
+
+#max_pool1d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool1d",
+    data_format=df(data_format=st.sampled_from(["NWC"])),
+    x_k_s_p= helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_tensorflow_max_pool1d(
+    *,
+    x_k_s_p ,
+    data_format,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format=data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )
