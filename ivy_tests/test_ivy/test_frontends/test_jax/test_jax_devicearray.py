@@ -364,41 +364,75 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     return x_dtype, x, x_int
 
 
-# __pow__
-@handle_frontend_test(
-    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__pow__",
+    dtype_x_pow=_get_dtype_x_and_int(),
 )
 def test_jax_special_pow(
     dtype_x_pow,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    x_dtype, x, pow = dtype_x_pow
-    ret = DeviceArray(x[0]) ** pow
-    ret_gt = jnp.array(x[0], dtype=x_dtype[0]) ** pow
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x, pow = dtype_x_pow
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": pow,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rpow__
-@handle_frontend_test(
-    fn_tree="jax.lax.add", dtype_x_pow=_get_dtype_x_and_int()  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rpow__",
+    dtype_x_pow=_get_dtype_x_and_int(),
 )
 def test_jax_special_rpow(
     dtype_x_pow,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
-    x_dtype, x, pow = dtype_x_pow
-    ret = DeviceArray(pow).__rpow__(DeviceArray(x[0]))
-    ret_gt = jnp.array(pow).__rpow__(jnp.array(x[0], dtype=x_dtype[0]))
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    input_dtype, x, pow = dtype_x_pow
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": pow,
+        },
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -630,7 +664,6 @@ def test_jax_devicearray__rxor_(
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
     ),
 )
 def test_jax_devicearray__invert_(
@@ -655,89 +688,145 @@ def test_jax_devicearray__invert_(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"other": x[1]},
+        method_all_as_kwargs_np={},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
 
 
-# __lshift__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__lshift__",
     dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_lshift(
     dtype_x_shift,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
     input_dtype, x, shift = dtype_x_shift
-    ret = DeviceArray(x[0]) << shift
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) << shift
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": shift},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rlshift__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rlshift__",
     dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rlshift(
     dtype_x_shift,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
     input_dtype, x, shift = dtype_x_shift
-    ret = DeviceArray(shift).__rlshift__(DeviceArray(x[0]))
-    ret_gt = jnp.array(shift).__rlshift__(jnp.array(x[0], dtype=input_dtype[0]))
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": shift},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rshift__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rshift__",
     dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rshift(
     dtype_x_shift,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
     input_dtype, x, shift = dtype_x_shift
-    ret = DeviceArray(x[0]) >> shift
-    ret_gt = jnp.array(x[0], dtype=input_dtype[0]) >> shift
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": shift},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
-# __rrshift__
-@handle_frontend_test(
-    fn_tree="jax.lax.add",  # dummy fn_tree
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="jax.numpy.array",
+    method_name="__rrshift__",
     dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
 )
 def test_jax_special_rrshift(
     dtype_x_shift,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
 ):
     input_dtype, x, shift = dtype_x_shift
-    ret = DeviceArray(shift).__rrshift__(DeviceArray(x[0]))
-    ret_gt = jnp.array(shift).__rrshift__(jnp.array(x[0], dtype=input_dtype[0]))
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    helpers.value_test(
-        ret_np_flat=ret,
-        ret_np_from_gt_flat=ret_gt,
-        ground_truth_backend="jax",
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "object": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={"other": shift},
+        frontend=frontend,
+        frontend_method_data=frontend_method_data,
     )
 
 
