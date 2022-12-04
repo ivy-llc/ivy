@@ -60,7 +60,7 @@ def test_torch_inv(
 
 # pinv
 @handle_frontend_test(
-    fn_tree="tensorflow.linalg.pinv",
+    fn_tree="torch.linalg.pinv",
     dtype_and_input=_get_dtype_and_square_matrix(),
 )
 def test_tensorflow_pinv(
