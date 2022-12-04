@@ -20,6 +20,11 @@ def det(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def eigvalsh(input, UPLO="L", *, out=None):
+    return ivy.eigvalsh(input, UPLO=UPLO, out=out)
+
+
+@to_ivy_arrays_and_back
 def slogdet(input, *, out=None):
     return ivy.slogdet(input, out=out)
 

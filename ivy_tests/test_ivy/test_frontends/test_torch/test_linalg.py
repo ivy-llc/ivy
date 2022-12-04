@@ -120,6 +120,35 @@ def test_torch_slogdet(
     )
 
 
+# eigvalsh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigvalsh",
+    dtype_and_input=_get_dtype_and_square_matrix(),
+)
+def test_tensorflow_eigvalsh(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+    )
+
+
 # matrix_power
 @handle_frontend_test(
     fn_tree="torch.linalg.matrix_power",
