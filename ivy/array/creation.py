@@ -318,7 +318,7 @@ class ArrayWithCreation(abc.ABC):
             one-dimensional arrays having lengths ``Ni = len(xi)``.
         
         """
-        return ivy.meshgrid(*list_arrays, sparse, indexing=indexing)
+        return ivy.meshgrid(*list_arrays, sparse=sparse, indexing=indexing)
 
     def from_dlpack(
         self: ivy.Array,
