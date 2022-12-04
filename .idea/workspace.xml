@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="96fc034e-af7a-4169-bcd5-197a4e2e8b7f" name="Changes" comment="" />
+    <list default="true" id="96fc034e-af7a-4169-bcd5-197a4e2e8b7f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -322,7 +324,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1669999170246</updated>
-      <workItem from="1669999172031" duration="7691000" />
+      <workItem from="1669999172031" duration="8672000" />
     </task>
     <servers />
   </component>
@@ -345,7 +347,7 @@
     <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_add.coverage" NAME="pytest for test_elementwise.test_add Coverage Results" MODIFIED="1670181485879" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
     <SUITE FILE_PATH="coverage/ivy$pytest.coverage" NAME="pytest Coverage Results" MODIFIED="1670000609396" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
     <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_acosh.coverage" NAME="pytest for test_elementwise.test_acosh Coverage Results" MODIFIED="1670001371102" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
-    <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_atan.coverage" NAME="pytest for test_elementwise.test_atan Coverage Results" MODIFIED="1670191038248" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
+    <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_atan.coverage" NAME="pytest for test_elementwise.test_atan Coverage Results" MODIFIED="1670193061016" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
     <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_asin.coverage" NAME="pytest for test_elementwise.test_asin Coverage Results" MODIFIED="1670181803098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
     <SUITE FILE_PATH="coverage/ivy$pytest_for_test_elementwise_test_asinh.coverage" NAME="pytest for test_elementwise.test_asinh Coverage Results" MODIFIED="1670182359076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/ivy" />
   </component>
