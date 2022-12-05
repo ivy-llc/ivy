@@ -99,9 +99,9 @@ norm.supported_dtypes = (
 @to_ivy_arrays_and_back
 @with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
-    tensor = tf_frontend.convert_to_tensor(tensor,
-                                           dtype=ivy.dtype(tensor), 
-                                           dtype_hint="Any")
+    tensor = tf_frontend.convert_to_tensor(
+        tensor, dtype=ivy.dtype(tensor), dtype_hint="Any"
+    )
     _norm = norm(tensor, ord=ord, axis=axis, keepdims=True)
     normalized = tf_frontend.math.divide(tensor, _norm)
     return normalized, _norm
