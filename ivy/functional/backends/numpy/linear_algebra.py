@@ -401,6 +401,7 @@ def diag(
     return np.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,

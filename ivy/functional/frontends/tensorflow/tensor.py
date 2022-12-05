@@ -64,6 +64,9 @@ class EagerTensor:
                     f"Tensor's shape {x_shape} is not compatible with supplied shape "
                     f"{shape}."
                 )
+    
+    def __abs__(self, name="abs"):
+        return ivy.abs(self.data)
 
     def numpy(self):
         return ivy.to_numpy(self._ivy_array)
@@ -156,11 +159,17 @@ class EagerTensor:
     def __rand__(self, x, name="rand"):
         return tf_frontend.math.logical_and(x, self._ivy_array, name=name)
 
+    def __rdiv__(self, x, name="rdiv"):
+        return tf_frontend.math.divide(x, self.data, name=name)
+
     def __rfloordiv__(self, x, name="rfloordiv"):
         return tf_frontend.raw_ops.FloorDiv(x=x, y=self._ivy_array, name=name)
 
     def __rmatmul__(self, x, name="rmatmul"):
         return tf_frontend.raw_ops.MatMul(a=x, b=self._ivy_array, name=name)
+
+    def __rmod__(self, x, name="rmod"):
+        return ivy.remainder(x, self.data)
 
     def __rmul__(self, x, name="rmul"):
         return tf_frontend.raw_ops.Mul(x=x, y=self._ivy_array, name=name)
