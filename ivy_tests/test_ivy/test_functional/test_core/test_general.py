@@ -1554,7 +1554,7 @@ def test_is_ivy_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
-    # as_variable=False as the result can never be consistent across backends
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1595,7 +1595,7 @@ def test_is_native_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
-    # as_variable=False as the result can never be consistent across backends
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1625,7 +1625,6 @@ def test_is_array(
     x_val_and_dtypes,
     exclusive,
     num_positional_args,
-    as_variable,
     with_out,
     native_array,
     container_flags,
@@ -1636,10 +1635,11 @@ def test_is_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
+        as_variable_flags=[False],
         with_out=with_out,
         native_array_flags=native_array,
         container_flags=container_flags,
