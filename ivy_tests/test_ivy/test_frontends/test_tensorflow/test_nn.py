@@ -885,6 +885,7 @@ def df(draw, data_format):
     data_format = draw(data_format)
     return data_format
 
+
 # max_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool1d",
