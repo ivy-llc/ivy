@@ -3,6 +3,7 @@
 # global
 from typing import Union, Optional, Tuple
 import numpy as np
+import itertools
 
 # local
 import ivy
@@ -27,8 +28,8 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         def inner_fn(x):
             if ivy.is_array(x, exclusive=True):
                 if ivy.is_int_dtype(x.dtype):
-                    x = x.astype(ivy.default_float_dtype())
-                else:
+                    x = ivy.astype(x, ivy.default_float_dtype())
+                elif _is_variable(x):
                     x = stop_gradient(x, preserve_type=False)
 
                 return _variable(x)
@@ -170,6 +171,21 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
+
+
+def _set_duplicates(xs, duplicate_index_chains):
+    originals = [
+        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
+    ]
+    originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
+    duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
+    nullifying_index_chains = (
+        [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+        if isinstance(xs, ivy.Container)
+        else list(itertools.chain(*duplicates))
+    )
+    ivy.set_nest_at_indices(xs, nullifying_index_chains, originals)
+    return xs
 
 
 def _stop_grad_and_index(func_ret, retain_grads, grads):
@@ -649,9 +665,9 @@ def adam_step(
     >>> step = ivy.array(3)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-    (ivy.array([0.182, 0.182, 0.182]),
-    ... ivy.array([0.9, 0.9, 0.9]),
-    ... ivy.array([0.999, 0.999, 0.999]))
+    (ivy.array([0.2020105,0.22187898,0.24144873]),
+        ivy.array([1.,1.10000002,1.20000005]),
+        ivy.array([1.,1.00300002,1.00800002]))
 
     >>> dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])
     >>> mw = ivy.zeros((2,3))

@@ -323,6 +323,25 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def permute(self, dims):
+        return torch_frontend.permute(self, dims)
+
+    def mean(self, dim=None, keepdim=False):
+        return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
+
+    def transpose(self, dim0, dim1):
+        return torch_frontend.transpose(self._ivy_array, dim0=dim0, dim1=dim1)
+
+    def transpose_(self, dim0, dim1):
+        self._ivy_array = self.transpose(dim0, dim1).ivy_array
+        return self
+
+    def flatten(self, start_dim, end_dim):
+        return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
+
+    def cumsum(self, dim, dtype):
+        return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
     # Special Methods #
     # -------------------#
 

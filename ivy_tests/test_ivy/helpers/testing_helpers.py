@@ -12,8 +12,10 @@ from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 from ivy_tests.test_ivy.helpers.available_frameworks import (
-    available_frameworks, ground_truth
+    available_frameworks,
+    ground_truth,
 )
 
 cmd_line_args = (
@@ -155,13 +157,14 @@ def _generate_shared_test_flags(
     return _given_kwargs
 
 
-def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_name: str):
+def _get_method_supported_devices_dtypes(
+    method_name: str, class_module: str, class_name: str
+):
     supported_device_dtypes = {}
-    backends = available_frameworks  # TODO temporary
+    backends = available_frameworks
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
-        _tmp_mod = importlib.import_module(fn_module)
-        _fn = getattr(_tmp_mod.__dict__[class_name], fn_name)
+        _fn = getattr(class_module.__dict__[class_name], method_name)
         supported_device_dtypes[b] = ivy.function_supported_devices_and_dtypes(_fn)
         ivy.unset_backend()
     return supported_device_dtypes
@@ -169,7 +172,7 @@ def _get_method_supported_devices_dtypes(fn_name: str, fn_module: str, class_nam
 
 def _get_supported_devices_dtypes(fn_name: str, fn_module: str):
     supported_device_dtypes = {}
-    backends = available_frameworks  # TODO temporary
+    backends = available_frameworks
     for b in backends:  # ToDo can optimize this ?
         ivy.set_backend(b)
         _tmp_mod = importlib.import_module(fn_module)
@@ -352,18 +355,28 @@ def handle_method(
     return test_wrapper
 
 
-def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs):
-    frontend = method_tree.split(".")[0]
-    method_tree = "ivy.functional.frontends." + method_tree
+def handle_frontend_method(
+    *, class_tree: str, init_tree: str, method_name: str, **_given_kwargs
+):
+    split_index = init_tree.rfind(".")
+    framework_init_module = init_tree[:split_index]
+    ivy_init_module = f"ivy.functional.frontends.{init_tree[:split_index]}"
+    init_name = init_tree[split_index + 1 :]
+    init_tree = f"ivy.functional.frontends.{init_tree}"
     is_hypothesis_test = len(_given_kwargs) != 0
 
     def test_wrapper(test_fn):
-        # Get the frontend we're testing for
-        # assuming the function hierarchy does not change TODO
+        split_index = class_tree.rfind(".")
+        class_module_path, class_name = (
+            class_tree[:split_index],
+            class_tree[split_index + 1 :],
+        )
+        class_module = importlib.import_module(class_module_path)
 
-        callable_method, method_name, _, class_name, _ = _import_method(method_tree)
+        method_class = getattr(class_module, class_name)
+        callable_method = getattr(method_class, method_name)
         supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, callable_method.__module__, class_name
+            method_name, class_module, class_name
         )
 
         if is_hypothesis_test:
@@ -383,16 +396,17 @@ def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs)
                     )
                 # TODO temporay, should also handle if the init is a method.
                 elif v is pf.NumPositionalArgFn:
-                    _given_kwargs[k] = num_positional_args(
-                        fn_name="functional.frontends." + frontend + "." + init_name
-                    )
+                    _given_kwargs[k] = num_positional_args(fn_name=init_tree[4:])
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             _name = wrapped_test.__name__
-            possible_arguments = {
-                "init_name": init_name,
-                "method_name": method_name,
-            }
+            frontend_helper_data = FrontendMethodData(
+                ivy_init_module=importlib.import_module(ivy_init_module),
+                framework_init_module=importlib.import_module(framework_init_module),
+                init_name=init_name,
+                method_name=method_name,
+            )
+            possible_arguments = {"frontend_method_data": frontend_helper_data}
             filtered_args = set(param_names).intersection(possible_arguments.keys())
             partial_kwargs = {k: possible_arguments[k] for k in filtered_args}
             wrapped_test = partial(wrapped_test, **partial_kwargs)
@@ -402,7 +416,7 @@ def handle_frontend_method(*, init_name: str, method_tree: str, **_given_kwargs)
 
         wrapped_test.test_data = TestData(
             test_fn=wrapped_test,
-            fn_tree=method_tree,
+            fn_tree=f"{init_tree}.{method_name}",
             fn_name=method_name,
             supported_device_dtypes=supported_device_dtypes,
         )

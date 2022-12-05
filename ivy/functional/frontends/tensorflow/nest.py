@@ -5,6 +5,7 @@ try:
     import tensorflow as tf
 except ImportError:
     import types
+
     tf = types.SimpleNamespace()
     tf.Tensor = None
     tf.RaggedTensor = None

@@ -19,6 +19,7 @@ import inspect
 import ivy
 from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
 
 
 def empty_func(*args, **kwargs):
@@ -488,11 +489,6 @@ def test_frontend_function(
     # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
 
     def _get_function(fn_tree):
-        # parse function name and frontend submodules (jax.lax, jax.numpy etc.)
-        # split_index = fn_tree.rfind(".")
-        # fn_name = fn_tree[split_index + 1:]
-        # fn_module = fn_tree[:split_index]
-        # frontend_fn = importlib.import_module(fn_module).__dict__[fn_name]
         split_index = fn_tree.rfind(".")
         fn_mod, fn_name = fn_tree[:split_index], fn_tree[split_index + 1 :]
         function_module = importlib.import_module(fn_mod)
@@ -533,14 +529,17 @@ def test_frontend_function(
 
         if "torch" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_torch import convtorch
+
             convs["torch"] = convtorch
 
         if "tensorflow" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_tensorflow import convtensor
+
             convs["tensorflow"] = convtensor
 
         if "jax" in available_frameworks:
             from ivy_tests.test_ivy.test_frontends.test_jax import convjax
+
             convs["jax"] = convjax
 
         if frontend in convs:
@@ -708,7 +707,7 @@ def test_frontend_function(
         # for each alias in aliases list
         for alias in all_aliases:
             function, function_module, fn_name, frontend_submods = _get_function(
-                fn_tree=fn_tree
+                fn_tree=f"ivy.functional.frontends.{frontend}.{alias}"
             )
 
             # testing unsupported in that backend
@@ -1108,8 +1107,7 @@ def test_frontend_method(
     method_native_array_flags: List[bool],
     method_all_as_kwargs_np: dict,
     frontend: str,
-    init_name: str,
-    method_name: str,
+    frontend_method_data: FrontendMethodData,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1147,10 +1145,6 @@ def test_frontend_method(
         input arguments to the method as keyword arguments.
     frontend
         current frontend (framework).
-    class_
-        name of the class to test.
-    method_name
-        name of the method to test.
     rtol_
         relative tolerance value.
     atol_
@@ -1303,13 +1297,15 @@ def test_frontend_method(
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
-    ivy_frontend_creation_fn = ivy.functional.frontends.__dict__[frontend].__dict__[
-        init_name
-    ]
+    ivy_frontend_creation_fn = getattr(
+        frontend_method_data.ivy_init_module, frontend_method_data.init_name
+    )
     # Run testing
     ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins.__getattribute__(method_name), *args_method, **kwargs_method
+        ins.__getattribute__(frontend_method_data.method_name),
+        *args_method,
+        **kwargs_method,
     )
 
     # Compute the return with the native frontend framework
@@ -1348,11 +1344,13 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-    frontend_creation_fn = importlib.import_module(frontend).__getattribute__(init_name)
+    frontend_creation_fn = getattr(
+        frontend_method_data.framework_init_module, frontend_method_data.init_name
+    )
     ins_gt = frontend_creation_fn(
         *args_constructor_frontend, **kwargs_constructor_frontend
     )
-    frontend_ret = ins_gt.__getattribute__(method_name)(
+    frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
