@@ -886,7 +886,6 @@ def df(draw, data_format):
     return data_format
 
 # max_pool1d
-
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool1d",
     data_format=df(data_format=st.sampled_from(["NWC"])),
