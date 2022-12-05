@@ -21,6 +21,21 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
+@st.composite
+def _get_dtype_and_matrix(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
@@ -123,7 +138,7 @@ def test_torch_slogdet(
 # eigvalsh
 @handle_frontend_test(
     fn_tree="torch.linalg.eigvalsh",
-    dtype_and_input=_get_dtype_and_square_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_eigvalsh(
     *,
