@@ -276,6 +276,40 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.permute_dims also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input array.</span>
+<span class="sd">        axes</span>
+<span class="sd">            tuple containing a permutation of (0, 1, ..., N-1) where N is</span>
+<span class="sd">            the number of axes (dimensions) of x.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a</span>
+<span class="sd">            shape that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an array containing the axes permutation. The returned array</span>
+<span class="sd">            must have the same data type as x.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        With :class:`ivy.Array` input:</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.array([[1, 2, 3], [4, 5, 6]])</span>
+<span class="sd">        &gt;&gt;&gt; y = x.permute_dims(axes=(1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[1, 4],</span>
+<span class="sd">                   [2, 5],</span>
+<span class="sd">                   [3, 6]])</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.zeros((2, 3))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.permute_dims(axes=(1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        ivy.array([[0., 0.],</span>
+<span class="sd">                   [0., 0.],</span>
+<span class="sd">                   [0., 0.]])</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -433,6 +467,22 @@
 <span class="sd">        ivy.Array instance method variant of ivy.stack. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.stack also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        arrays</span>
+<span class="sd">            input arrays to join. Each array must have the same shape.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis along which the arrays will be joined. More details can be found in</span>
+<span class="sd">            the ``ivy.stack`` documentation.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            output array made by joining the input arrays along the specified axis.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>

@@ -502,6 +502,32 @@
 <span class="sd">        ivy.Container static method variant of ivy.permute_dims. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.permute_dims also applies</span>
 <span class="sd">        to this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            tuple containing a permutation of (0, 1, ..., N-1) where N is the number</span>
+<span class="sd">            of axes (dimensions) of x.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A container with the elements of ``self`` permuted along the given axes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_permute_dims(x, axes=(1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([[0.],[1.],[2.]]),</span>
+<span class="sd">            b:ivy.array([[3.],[4.],[5.]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;permute_dims&quot;</span><span class="p">,</span>
@@ -529,6 +555,32 @@
 <span class="sd">        ivy.Container instance method variant of ivy.permute_dims. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.permute_dims also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            tuple containing a permutation of (0, 1, ..., N-1) where N is the number</span>
+<span class="sd">            of axes (dimensions) of x.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A container with the elements of ``self`` permuted along the given axes.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.permute_dims(axes=(1, 0))</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a:ivy.array([[0.],[1.],[2.]]),</span>
+<span class="sd">            b:ivy.array([[3.],[4.],[5.]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_permute_dims</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
@@ -1094,6 +1146,52 @@
 <span class="sd">        ivy.Container static method variant of ivy.squeeze. This method simply</span>
 <span class="sd">        wraps the function, and so the docstring for ivy.squeeze also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis (or axes) to squeeze.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container with the results.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[10.], [11.]]]),</span>
+<span class="sd">        ...                   b=ivy.array([[[11.], [12.]]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_squeeze(x, 0)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[10., 11.]]),</span>
+<span class="sd">            b: ivy.array([[11., 12.]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[10.], [11.]]]),</span>
+<span class="sd">        ...                   b=ivy.array([[[11.], [12.]]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_squeeze(x, [0, 2])</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[10.], [11.]]),</span>
+<span class="sd">            b: ivy.array([[11.], [12.]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;squeeze&quot;</span><span class="p">,</span>
@@ -1121,6 +1219,32 @@
 <span class="sd">        ivy.Container instance method variant of ivy.squeeze. This method simply wraps</span>
 <span class="sd">        the function, and so the docstring for ivy.squeeze also applies to this method</span>
 <span class="sd">        with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            input container.</span>
+<span class="sd">        axis</span>
+<span class="sd">            axis (or axes) to squeeze.</span>
+<span class="sd">        key_chains</span>
+<span class="sd">            The key-chains to apply or not apply the method to. Default is ``None``.</span>
+<span class="sd">        to_apply</span>
+<span class="sd">            If True, the method will be applied to key_chains, otherwise key_chains</span>
+<span class="sd">            will be skipped. Default is ``True``.</span>
+<span class="sd">        prune_unapplied</span>
+<span class="sd">            Whether to prune key_chains for which the function was not applied.</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        map_sequences</span>
+<span class="sd">            Whether to also map method to sequences (lists, tuples).</span>
+<span class="sd">            Default is ``False``.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output container, for writing the result to. It must have a shape</span>
+<span class="sd">            that the inputs broadcast to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            an output container with the results.</span>
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -1247,15 +1371,6 @@
 <span class="sd">                        [1, 0]]]),</span>
 <span class="sd">            b: ivy.array([[[4, 5]],</span>
 <span class="sd">                        [[1, 0]]])</span>
-<span class="sd">        }</span>
-<span class="sd">        &gt;&gt;&gt; ivy.Container.static_stack([x,y],axis=1)</span>
-<span class="sd">        {</span>
-<span class="sd">            a: ivy.array([[[0, 1],</span>
-<span class="sd">                        [3, 2]],</span>
-<span class="sd">                        [[2, 3],</span>
-<span class="sd">                        [1, 0]]]),</span>
-<span class="sd">            b: ivy.array([[[4, 5],</span>
-<span class="sd">                        [1, 0]]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>

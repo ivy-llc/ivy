@@ -608,12 +608,12 @@ data type as x.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">a: ivy.array([[0.],</span>
-<span class="go">              [1.],</span>
-<span class="go">              [2.]]),</span>
-<span class="go">b: ivy.array([[3.],</span>
-<span class="go">              [4.],</span>
-<span class="go">              [5.]])</span>
+<span class="go">    a: ivy.array([[0.],</span>
+<span class="go">                  [1.],</span>
+<span class="go">                  [2.]]),</span>
+<span class="go">    b: ivy.array([[3.],</span>
+<span class="go">                  [4.],</span>
+<span class="go">                  [5.]])</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -621,19 +621,13 @@ data type as x.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">out</span><span class="o">=</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">a: ivy.array([[0.],</span>
-<span class="go">              [1.],</span>
-<span class="go">              [2.]]),</span>
-<span class="go">b: ivy.array([[3.],</span>
-<span class="go">              [4.],</span>
-<span class="go">              [5.]])</span>
+<span class="go">    a: ivy.array([[0.],</span>
+<span class="go">                  [1.],</span>
+<span class="go">                  [2.]]),</span>
+<span class="go">    b: ivy.array([[3.],</span>
+<span class="go">                  [4.],</span>
+<span class="go">                  [5.]])</span>
 <span class="go">}</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">]]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">permute_dims</span><span class="p">(</span> <span class="n">axes</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">{a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}</span>
 </pre></div>
 </div>
 <p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
@@ -1101,25 +1095,6 @@ instances in place of any of the arguments.</p>
 </div>
 <p>With :code: <cite>ivy.Array</cite> input and different <cite>axis</cite> :</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">ivy.array([[ 0.,  6.],</span>
-<span class="go">    [ 1.,  7.],</span>
-<span class="go">    [ 2.,  8.],</span>
-<span class="go">    [ 3.,  9.],</span>
-<span class="go">    [ 4., 10.]])</span>
-</pre></div>
-</div>
-<p>With :code: <cite>ivy.native_array</cite> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">6.</span><span class="p">,</span><span class="mf">7.</span><span class="p">,</span><span class="mf">8.</span><span class="p">,</span><span class="mf">9.</span><span class="p">,</span><span class="mf">10.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">))</span>
-<span class="go">ivy.array([[ 0.,  1.,  2.,  3.,  4.],</span>
-<span class="go">    [ 6.,  7.,  8.,  9., 10.]])</span>
-</pre></div>
-</div>
-<p>With :code: <cite>ivy.native_array</cite> input and different <cite>axis</cite> :</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mf">6.</span><span class="p">,</span><span class="mf">7.</span><span class="p">,</span><span class="mf">8.</span><span class="p">,</span><span class="mf">9.</span><span class="p">,</span><span class="mf">10.</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="go">ivy.array([[ 0.,  6.],</span>
 <span class="go">    [ 1.,  7.],</span>
 <span class="go">    [ 2.,  8.],</span>
