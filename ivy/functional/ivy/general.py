@@ -120,6 +120,7 @@ def get_referrers_recursive(
     return ret_cont
 
 
+@handle_nestable
 @handle_exceptions
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
@@ -156,6 +157,7 @@ def is_native_array(
         return False
 
 
+@handle_nestable
 @handle_exceptions
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
