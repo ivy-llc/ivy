@@ -496,6 +496,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
+        >>> x = ivy.array([[1.2, 2.0, 3.1],
+        ...                [6.0, 5.2, 4.0],
+        ...                [9.0, 8.0, 7.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
+
         """
         return ivy.slogdet(self._data)
 
