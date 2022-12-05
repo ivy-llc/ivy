@@ -36,4 +36,3 @@ def vector_norm(
     return ivy.vector_norm(
         input, ord=ord, dim=dim, keep_dim=keep_dim, dtype=dtype, out=out
     )
-
