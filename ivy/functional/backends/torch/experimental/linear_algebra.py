@@ -13,7 +13,7 @@ from .. import backend_version
 @with_unsupported_dtypes({"1.13.0 and below": ("float16",)}, backend_version)
 def diagflat(
     x: torch.Tensor,
-        /,
+    /,
         *,
         offset: Optional[int] = 0,
         padding_value: Optional[float] = 0,
