@@ -1814,9 +1814,16 @@
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_slogdet(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="sd">            b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="sd">            a: [</span>
+<span class="sd">                sign = ivy.array(-1.),</span>
+<span class="sd">                logabsdet = ivy.array(0.6931472)</span>
+<span class="sd">            ],</span>
+<span class="sd">            b: [</span>
+<span class="sd">                sign = ivy.array(-1.),</span>
+<span class="sd">                logabsdet = ivy.array(1.0986123)</span>
+<span class="sd">            ]</span>
 <span class="sd">        }</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;slogdet&quot;</span><span class="p">,</span>
@@ -1878,8 +1885,14 @@
 <span class="sd">        &gt;&gt;&gt; y = x.slogdet()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="sd">            b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="sd">            a: [</span>
+<span class="sd">                sign = ivy.array(-1.),</span>
+<span class="sd">                logabsdet = ivy.array(0.6931472)</span>
+<span class="sd">            ],</span>
+<span class="sd">            b: [</span>
+<span class="sd">                sign = ivy.array(-1.),</span>
+<span class="sd">                logabsdet = ivy.array(1.0986123)</span>
+<span class="sd">            ]</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>

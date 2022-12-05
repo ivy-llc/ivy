@@ -1674,54 +1674,26 @@
     <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the sign and natural logarithm of the determinant of an array.</span>
-
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) ``x``.</span>
+<span class="sd">    .. note::</span>
+<span class="sd">       The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x</span>
-<span class="sd">        input array having shape (..., M, M) and whose innermost two dimensions form</span>
-<span class="sd">        square matrices. Should have a floating-point data type.</span>
-
+<span class="sd">    x:</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        This function returns NamedTuple with two values -</span>
-<span class="sd">            sign:</span>
-<span class="sd">            An array containing a number representing the sign of the determinant</span>
-<span class="sd">            for each square matrix.</span>
-
-<span class="sd">            logabsdet:</span>
-<span class="sd">            An array containing natural log of the absolute determinant of each</span>
-<span class="sd">            square matrix.</span>
-
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.0, 2.0],</span>
-<span class="sd">    ...                [3.0, 4.0]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],</span>
-<span class="sd">    ...                                [3.0, 4.0]]),</span>
-<span class="sd">    ...                   b=ivy.array([[1.0, 2.0],</span>
-<span class="sd">    ...                                [2.0, 1.0]]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
-<span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="sd">        b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
-<span class="sd">    }</span>
-
+<span class="sd">    ret:</span>
+<span class="sd">        a namedtuple (``sign``, ``logabsdet``) whose</span>
+<span class="sd">        -   first element must have the field name ``sign`` and must be an array containing a number representing the sign of the determinant for each square matrix.</span>
+<span class="sd">        -   second element must have the field name ``logabsdet`` and must be an array containing the determinant for each square matrix.</span>
+<span class="sd">        For a real matrix, the sign of the determinant must be either ``1``, ``0``, or ``-1``.</span>
+<span class="sd">        Each returned array must have shape ``shape(x)[:-2]`` and a real-valued floating-point data type determined by :ref:`type-promotion`.</span>
+<span class="sd">        .. note::</span>
+<span class="sd">           If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).</span>
 
 <span class="sd">    This function conforms to the `Array API Standard</span>
 <span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
@@ -1732,6 +1704,43 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[2.0, 1.0],</span>
+<span class="sd">    ...                [3.0, 4.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.609438))</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1.2, 2.0, 3.1],</span>
+<span class="sd">    ...                [6.0, 5.2, 4.0],</span>
+<span class="sd">    ...                [9.0, 8.0, 7.0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1.0, 2.0],</span>
+<span class="sd">    ...                                [3.0, 4.0]]),</span>
+<span class="sd">    ...                   b=ivy.array([[1.0, 2.0],</span>
+<span class="sd">    ...                                [2.0, 1.0]]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.slogdet(x)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: [</span>
+<span class="sd">            sign = ivy.array(-1.),</span>
+<span class="sd">            logabsdet = ivy.array(0.6931472)</span>
+<span class="sd">        ],</span>
+<span class="sd">        b: [</span>
+<span class="sd">            sign = ivy.array(-1.),</span>
+<span class="sd">            logabsdet = ivy.array(1.0986123)</span>
+<span class="sd">        ]</span>
+<span class="sd">    }</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>

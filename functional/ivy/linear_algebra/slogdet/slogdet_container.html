@@ -214,8 +214,14 @@ each square.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">slogdet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="go">    b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="go">    a: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(0.6931472)</span>
+<span class="go">    ],</span>
+<span class="go">    b: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(1.0986123)</span>
+<span class="go">    ]</span>
 <span class="go">}</span>
 </pre></div>
 </div>

@@ -171,39 +171,56 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.linear_algebra.slogdet">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">slogdet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/linear_algebra.html#slogdet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.linear_algebra.slogdet" title="Permalink to this definition"></a></dt>
-<dd><p>Computes the sign and natural logarithm of the determinant of an array.</p>
+<dd><p>Returns the sign and the natural logarithm of the absolute value of the determinant of a square matrix (or a stack of square matrices) <code class="docutils literal notranslate"><span class="pre">x</span></code>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The purpose of this function is to calculate the determinant more accurately when the determinant is either very small or very large, as calling ``det`` may overflow or underflow.
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape (…, M, M) and whose innermost two dimensions form
-square matrices. Should have a floating-point data type.</p>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">M)</span></code> and whose innermost two dimensions form square matrices. Should have a real-valued floating-point data type.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>], <code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><p><em>ret</em> –</p>
-<dl>
-<dt>This function returns NamedTuple with two values -</dt><dd><p>sign:
-An array containing a number representing the sign of the determinant
-for each square matrix.</p>
-<p>logabsdet:
-An array containing natural log of the absolute determinant of each
-square matrix.</p>
-</dd>
-</dl>
+<dd class="field-odd"><p><ul>
+<li><p><em>ret</em> – a namedtuple (<code class="docutils literal notranslate"><span class="pre">sign</span></code>, <code class="docutils literal notranslate"><span class="pre">logabsdet</span></code>) whose
+-   first element must have the field name <code class="docutils literal notranslate"><span class="pre">sign</span></code> and must be an array containing a number representing the sign of the determinant for each square matrix.
+-   second element must have the field name <code class="docutils literal notranslate"><span class="pre">logabsdet</span></code> and must be an array containing the determinant for each square matrix.
+For a real matrix, the sign of the determinant must be either <code class="docutils literal notranslate"><span class="pre">1</span></code>, <code class="docutils literal notranslate"><span class="pre">0</span></code>, or <code class="docutils literal notranslate"><span class="pre">-1</span></code>.
+Each returned array must have shape <code class="docutils literal notranslate"><span class="pre">shape(x)[:-2]</span></code> and a real-valued floating-point data type determined by <span class="xref std std-ref">type-promotion</span>.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>If a determinant is zero, then the corresponding ``sign`` should be ``0`` and ``logabsdet`` should be ``-infinity``; however, depending on the underlying algorithm, the returned result may differ. In all cases, the determinant should be equal to ``sign * exp(logsabsdet)`` (although, again, the result may be subject to numerical precision errors).
+</pre></div>
+</div>
+</li>
+<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
+<li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/extensions/generated/        signatures.linalg.slogdet.html&gt;`_ )</p></li>
+<li><p><em>in the standard.</em></p></li>
+<li><p><em>Both the description and the type hints above assumes an array input for simplicity,</em></p></li>
+<li><p>but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code></p></li>
+<li><p><em>instances in place of any of the arguments.</em></p></li>
+</ul>
 </p>
 </dd>
 </dl>
-<p>Both the description and the type hints above assumes an array input for simplicity,
-but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-instances in place of any of the arguments.</p>
-<p class="rubric">Examples</p>
+<p class="rubric">Functional Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
 <span class="gp">... </span>               <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-<span class="go">slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))</span>
+<span class="go">slogdet(sign=ivy.array(1.), logabsdet=ivy.array(1.609438))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))</span>
 </pre></div>
 </div>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
@@ -214,17 +231,17 @@ instances in place of any of the arguments.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="go">    b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="go">    a: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(0.6931472)</span>
+<span class="go">    ],</span>
+<span class="go">    b: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(1.0986123)</span>
+<span class="go">    ]</span>
 <span class="go">}</span>
 </pre></div>
 </div>
-<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>. This docstring is an extension of the
-<a class="reference external" href="https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.slogdet.html">docstring</a> 
-in the standard.</p>
-<p>Both the description and the type hints above assumes an array input for simplicity,
-but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
-instances in place of any of the arguments.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -261,6 +278,14 @@ square matrix.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">slogdet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="p">[</span><span class="mf">6.0</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">],</span>
+<span class="gp">... </span>               <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">slogdet</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -310,8 +335,14 @@ each square.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">slogdet</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="go">    b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="go">    a: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(0.6931472)</span>
+<span class="go">    ],</span>
+<span class="go">    b: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(1.0986123)</span>
+<span class="go">    ]</span>
 <span class="go">}</span>
 </pre></div>
 </div>
@@ -362,8 +393,14 @@ square matrix.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_slogdet</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 <span class="go">{</span>
-<span class="go">    a: (list[2], &lt;class ivy.array.array.Array&gt; shape=[]),</span>
-<span class="go">    b: (list[2], &lt;class ivy.array.array.Array&gt; shape=[])</span>
+<span class="go">    a: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(0.6931472)</span>
+<span class="go">    ],</span>
+<span class="go">    b: [</span>
+<span class="go">        sign = ivy.array(-1.),</span>
+<span class="go">        logabsdet = ivy.array(1.0986123)</span>
+<span class="go">    ]</span>
 <span class="go">}</span>
 </pre></div>
 </div>
