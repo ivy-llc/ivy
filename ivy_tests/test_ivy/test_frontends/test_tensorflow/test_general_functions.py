@@ -146,7 +146,7 @@ def test_tensorflow_ones(
     shape=helpers.get_shape(),
     input_fill_dtype=_input_fill_and_dtype(),
 )
-def test_tensorflow_full(
+def test_tensorflow_fill(
     shape,
     input_fill_dtype,
     as_variable,
