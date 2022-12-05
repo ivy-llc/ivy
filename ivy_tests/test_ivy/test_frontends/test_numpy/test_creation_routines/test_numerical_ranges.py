@@ -175,6 +175,7 @@ def test_numpy_logspace(
     indexing=st.sampled_from(["xy", "ij"]),
 )
 def test_numpy_meshgrid(
+    *,
     dtype_and_arrays,
     copy,
     sparse,
@@ -189,10 +190,10 @@ def test_numpy_meshgrid(
     kw = {}
     i = 0
     for x_ in arrays:
-        kw["x{}".format(i)] = x_
+        kw[f"x{i}"] = x_
         i += 1
     num_positional_args = len(arrays)
-    ret, ret_gt = helpers.test_frontend_function(
+    helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
         with_out=False,
@@ -202,13 +203,11 @@ def test_numpy_meshgrid(
         fn_tree=fn_tree,
         on_device=on_device,
         test_values=False,
+        **kw,
         copy=copy,
         sparse=sparse,
         indexing=indexing,
-        **kw
     )
-    for u, v in zip(ret, ret_gt):
-        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)
 
 
 # mgrid

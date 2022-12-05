@@ -1,6 +1,7 @@
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_unsupported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -11,6 +12,13 @@ def inv(a):
 @to_ivy_arrays_and_back
 def det(a):
     return ivy.det(a)
+
+
+@to_ivy_arrays_and_back
+def svd(a, /, *, full_matrices=True, compute_uv=True, hermitian=None):
+    if not compute_uv:
+        return ivy.svdvals(a)
+    return ivy.svd(a, full_matrices=full_matrices)
 
 
 @to_ivy_arrays_and_back
@@ -108,3 +116,20 @@ def tensorsolve(a, b, axes=None):
     res = ivy.solve(a, b)
     res = ivy.reshape(res, shape=ret_shape)
     return res
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, "jax")
+def tensorinv(a, ind=2):
+    old_shape = ivy.shape(a)
+    prod = 1
+    if ind > 0:
+        invshape = old_shape[ind:] + old_shape[:ind]
+        for k in old_shape[ind:]:
+            prod *= k
+    else:
+        raise ValueError("Invalid ind argument.")
+    a = ivy.reshape(a, shape=(prod, -1))
+    ia = ivy.inv(a)
+    new_shape = tuple([*invshape])
+    return ivy.reshape(ia, shape=new_shape)

@@ -8,7 +8,11 @@ from torch import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_device_and_dtypes
+from ivy.func_wrapper import (
+    with_unsupported_dtypes,
+    with_unsupported_device_and_dtypes,
+    _get_first_array,
+)
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -64,16 +68,30 @@ def arange(
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
             return torch.arange(
-                start, stop, step=step, dtype=torch.int64, device=device, out=out
+                start, stop, step, dtype=torch.int64, device=device, out=out
             ).to(torch.int32)
         else:
-            return torch.arange(start, stop, step=step, device=device, out=out)
+            return torch.arange(start, stop, step, device=device, out=out)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return torch.arange(start, stop, step=step, dtype=dtype, device=device, out=out)
+        return torch.arange(start, stop, step, dtype=dtype, device=device, out=out)
 
 
 arange.support_native_out = True
+
+
+def _stack_tensors(x, dtype):
+    if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
+        for i, item in enumerate(x):
+            x[i] = _stack_tensors(item, dtype)
+        x = torch.stack(x)
+    else:
+        if isinstance(x, (list, tuple)):
+            if isinstance(x[0], torch.Tensor):
+                x = torch.stack([torch.as_tensor(i, dtype=dtype) for i in x])
+            else:
+                x = torch.as_tensor(x, dtype=dtype)
+    return x
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16",)}, backend_version)
@@ -104,11 +122,20 @@ def asarray(
         else:
             return obj.to(device) if obj.device != device else obj
     elif isinstance(obj, (list, tuple, dict)) and len(obj) != 0:
+        contain_tensor = False
+        if isinstance(obj[0], (list, tuple)):
+            first_tensor = _get_first_array(obj)
+            if ivy.exists(first_tensor):
+                contain_tensor = True
+                dtype = first_tensor.dtype
         if dtype is None:
             dtype = ivy.default_dtype(item=obj, as_native=True)
 
-        # if `obj` is a list of specifically tensors
-        if isinstance(obj[0], torch.Tensor):
+        # if `obj` is a list of specifically tensors or
+        # a multidimensional list which contains a tensor
+        if isinstance(obj[0], torch.Tensor) or contain_tensor:
+            if len(obj) == 1:
+                dtype = obj[0].dtype
             if copy is True:
                 return (
                     torch.stack([torch.as_tensor(i, dtype=dtype) for i in obj])
@@ -117,9 +144,7 @@ def asarray(
                     .to(device)
                 )
             else:
-                return torch.stack(
-                    tuple([torch.as_tensor(i, dtype=dtype) for i in obj])
-                ).to(device)
+                return _stack_tensors(obj, dtype).to(device)
 
         # if obj is a list of other objects, expected to be a numerical type.
         else:
@@ -531,7 +556,7 @@ def logspace(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 logspace.support_native_out = True

@@ -4,7 +4,9 @@ from typing import Union, Optional, Sequence
 
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.backends.jax import JaxArray
+from . import backend_version
 
 
 # Array API Standard #
@@ -66,8 +68,6 @@ def prod(
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
         dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
-        x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.prod(a=x, axis=axis, dtype=dtype, keepdims=keepdims)
 
@@ -96,7 +96,7 @@ def sum(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+        dtype = x.dtype
     if dtype != x.dtype:
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -139,12 +139,14 @@ def var(
 # ------#
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def cumprod(
     x: JaxArray,
+    /,
+    *,
     axis: int = 0,
     exclusive: bool = False,
     reverse: bool = False,
-    *,
     dtype: Optional[jnp.dtype] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:

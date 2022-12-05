@@ -4,6 +4,8 @@ import sys
 import numpy as np
 from hypothesis import strategies as st
 
+import ivy
+
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
@@ -114,15 +116,20 @@ def test_numpy_svd(
     x = (
         np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     )  # make symmetric positive-definite
-    helpers.test_frontend_function(
+    ret, ret_gt = helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
+        test_values=False,
         fn_tree=fn_tree,
         on_device=on_device,
         rtol=1e-02,
         a=x,
     )
+    for u, v in zip(ret, ret_gt):
+        u = ivy.to_numpy(ivy.abs(u))
+        v = ivy.to_numpy(ivy.abs(v))
+        helpers.value_test(ret_np_flat=u, ret_np_from_gt_flat=v)

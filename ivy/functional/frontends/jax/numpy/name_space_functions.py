@@ -1,3 +1,6 @@
+import warnings
+
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -41,45 +44,22 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
-def _compute_allclose_with_tol(input, other, rtol, atol):
-    return ivy.all(
-        ivy.less_equal(
-            ivy.abs(ivy.subtract(input, other)),
-            ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
+@to_ivy_arrays_and_back
+def argsort(a, axis=-1, kind="stable", order=None):
+    if kind != "stable":
+        warnings.warn(
+            "'kind' argument to argsort is ignored; only 'stable' sorts "
+            "are supported."
         )
-    )
+    if order is not None:
+        raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
 
-
-def _compute_isclose_with_tol(input, other, rtol, atol):
-    return ivy.less_equal(
-        ivy.abs(ivy.subtract(input, other)),
-        ivy.add(atol, ivy.multiply(rtol, ivy.abs(other))),
-    )
+    return ivy.argsort(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
 def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
-    finite_input = ivy.isfinite(a)
-    finite_other = ivy.isfinite(b)
-    if ivy.all(finite_input) and ivy.all(finite_other):
-        ret = _compute_allclose_with_tol(a, b, rtol, atol)
-        ret = ivy.all_equal(True, ret)
-    else:
-        finites = ivy.bitwise_and(finite_input, finite_other)
-        ret = ivy.zeros_like(finites)
-        ret_ = ret.astype(int)
-        input = a * ivy.ones_like(ret_)
-        other = b * ivy.ones_like(ret_)
-        ret[finites] = _compute_allclose_with_tol(
-            input[finites], other[finites], rtol, atol
-        )
-        nans = ivy.bitwise_invert(finites)
-        ret[nans] = ivy.equal(input[nans], other[nans])
-        if equal_nan:
-            both_nan = ivy.bitwise_and(ivy.isnan(input), ivy.isnan(other))
-            ret[both_nan] = both_nan[both_nan]
-        ret = ivy.all(ret)
-    return ivy.array(ret, dtype=ivy.bool)
+    return ivy.allclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 @to_ivy_arrays_and_back
@@ -167,7 +147,7 @@ def mod(x1, x2):
 
 @to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
-    return ivy.reshape(a, newshape)
+    return ivy.reshape(a, shape=newshape, order=order)
 
 
 @to_ivy_arrays_and_back
@@ -192,7 +172,7 @@ def tanh(x):
 
 @to_ivy_arrays_and_back
 def uint16(x):
-    return ivy.astype(x, ivy.uint16)
+    return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
 @to_ivy_arrays_and_back
@@ -333,7 +313,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
 @to_ivy_arrays_and_back
 def cumprod(a, axis=0, dtype=None, out=None):
     if dtype is None:
-        dtype = ivy.uint8
+        dtype = ivy.as_ivy_dtype(a.dtype)
     return ivy.cumprod(a, axis, dtype=dtype, out=out)
 
 
@@ -458,10 +438,12 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, keepdims=False, *, where=True):
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
     return ret
 
 
@@ -569,3 +551,18 @@ def max(a, axis=None, out=None, keepdims=False, where=None):
 
 
 amax = max
+
+
+@to_ivy_arrays_and_back
+def log10(x):
+    return ivy.log10(x)
+
+
+@to_ivy_arrays_and_back
+def logaddexp(x1, x2):
+    return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)

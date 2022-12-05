@@ -3,6 +3,7 @@
 # global
 from typing import Union, Optional, Tuple
 import numpy as np
+import itertools
 
 # local
 import ivy
@@ -27,9 +28,9 @@ def _arrays_to_float_variables(xs, xs_grad_idxs=None):
         def inner_fn(x):
             if ivy.is_array(x, exclusive=True):
                 if ivy.is_int_dtype(x.dtype):
-                    x = x.astype(ivy.default_float_dtype())
-                else:
-                    x = ivy.stop_gradient(x)
+                    x = ivy.astype(x, ivy.default_float_dtype())
+                elif _is_variable(x):
+                    x = stop_gradient(x, preserve_type=False)
 
                 return _variable(x)
             return x
@@ -60,11 +61,44 @@ def _get_required_native_variables(xs, xs_grad_idxs):
             return x
         return None
 
-    xs = ivy.nested_map(xs, map_fn, include_derived=True)
+    xs = ivy.nested_map(xs, map_fn, include_derived=True, to_mutable=True)
     none_idxs = ivy.nested_argwhere(xs, lambda x: x is None)
     if not _check_if_empty(none_idxs):
         none_idxs.reverse()
         ivy.prune_nest_at_indices(xs, none_idxs)
+    if ivy.is_array(xs):
+        return xs
+    elif isinstance(xs, ivy.Container):
+        xs = xs.prune_empty()
+    else:
+        xs = _remove_empty(xs)
+    if len(xs) == 1 and isinstance(xs, list):
+        return xs[0]
+    return xs
+
+
+def _remove_empty(xs):
+    valid = False
+    if isinstance(xs, dict):
+        keys = [k for k in xs]
+        for k in keys:
+            xs[k] = _remove_empty(xs[k])
+            if xs[k] is not None:
+                valid = True
+        for k in keys:
+            if xs[k] is None:
+                del xs[k]
+    elif isinstance(xs, (list, tuple)):
+        xs = list(xs)
+        for i in range(len(xs)):
+            xs[i] = _remove_empty(xs[i])
+            if xs[i] is not None:
+                valid = True
+        for i in range(len(xs) - 1, -1, -1):
+            if xs[i] is None:
+                del xs[i]
+    if not valid and not ivy.is_array(xs):
+        return None
     return xs
 
 
@@ -137,6 +171,21 @@ def _get_native_variables_and_indices(x, reshape=True, idxs=None, create_var=Fal
         arr_values = ivy.multi_index_nest(x, arr_idxs)
         arr_idxs = _idxs_to_str(arr_idxs)
         return arr_idxs, arr_values
+
+
+def _set_duplicates(xs, duplicate_index_chains):
+    originals = [
+        [key_chains[0]] * (len(key_chains) - 1) for key_chains in duplicate_index_chains
+    ]
+    originals = ivy.multi_index_nest(xs, list(itertools.chain(*originals)))
+    duplicates = [list(index_chains[1:]) for index_chains in duplicate_index_chains]
+    nullifying_index_chains = (
+        [index_chain.split("/") for index_chain in list(itertools.chain(*duplicates))]
+        if isinstance(xs, ivy.Container)
+        else list(itertools.chain(*duplicates))
+    )
+    ivy.set_nest_at_indices(xs, nullifying_index_chains, originals)
+    return xs
 
 
 def _stop_grad_and_index(func_ret, retain_grads, grads):
@@ -425,7 +474,8 @@ def execute_with_gradients(
         Function for which we compute the gradients of the output with respect to xs
         input.
     xs
-        Variables for which to compute the function gradients with respective to.
+        Variables for which to compute the function gradients with respective to. This
+        can be a single array or an arbitrary nest of arrays.
     retain_grads
         Whether to retain the gradients of the returned values. (Default value = False)
     xs_grad_idxs
@@ -615,9 +665,9 @@ def adam_step(
     >>> step = ivy.array(3)
     >>> adam_step_delta = ivy.adam_step(dcdw, mw, vw, step)
     >>> print(adam_step_delta)
-    (ivy.array([0.182, 0.182, 0.182]),
-    ... ivy.array([0.9, 0.9, 0.9]),
-    ... ivy.array([0.999, 0.999, 0.999]))
+    (ivy.array([0.2020105,0.22187898,0.24144873]),
+        ivy.array([1.,1.10000002,1.20000005]),
+        ivy.array([1.,1.00300002,1.00800002]))
 
     >>> dcdw = ivy.array([[1., 4., -3.], [2., 3., 0.5]])
     >>> mw = ivy.zeros((2,3))

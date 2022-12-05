@@ -93,7 +93,7 @@ def arange(
     device=None,
     requires_grad=False,
 ):
-    ret = ivy.arange(start, stop=end, step=step, dtype=dtype, device=device)
+    ret = ivy.arange(start, end, step, dtype=dtype, device=device)
     return ret
 
 
@@ -108,7 +108,7 @@ def range(
     device=None,
     requires_grad=False,
 ):
-    ret = arange(end, start=start, step=step, dtype=dtype, device=device)
+    ret = arange(end, start, step, dtype=dtype, device=device)
     return ret
 
 
@@ -196,7 +196,19 @@ def as_tensor(
 
 @to_ivy_arrays_and_back
 def from_numpy(data, /):
-    return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
+    return ivy.asarray(data, dtype=ivy.dtype(data))
 
 
 from_numpy.supported_dtypes = ("ndarray",)
+
+
+@to_ivy_arrays_and_back
+def tensor(
+    data,
+    *,
+    dtype=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+):
+    return ivy.array(data, dtype=dtype, device=device)

@@ -688,8 +688,8 @@ class ContainerWithManipulation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         copy: Optional[bool] = None,
+        order: Optional[str] = "C",
         out: Optional[ivy.Container] = None,
-        order="C",
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.reshape. This method
@@ -722,9 +722,6 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output container, for writing the result to. It must have a shape
-            that the inputs broadcast to.
         order
             Read the elements of the input container using this index order,
             and place the elements into the reshaped array using this index order.
@@ -736,6 +733,9 @@ class ContainerWithManipulation(ContainerBase):
             Note that the ‘C’ and ‘F’ options take no account of the memory layout
             of the underlying array, and only refer to the order of indexing.
             Default order is 'C'
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
 
         Returns
         -------

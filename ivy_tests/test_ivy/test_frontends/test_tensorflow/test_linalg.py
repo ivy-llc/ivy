@@ -530,6 +530,7 @@ def test_tensorflow_normalize(
         tensor=x[0],
         ord=ord,
         axis=axis,
+        atol=1e-08
     )
 
 
@@ -626,4 +627,48 @@ def test_tensorflow_matrix_transpose(
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
+    )
+
+
+@st.composite
+def _get_dtype_and_sequence_of_arrays(draw):
+    array_dtype = draw(helpers.get_dtypes("float", full=False))
+    arbitrary_size = draw(st.integers(min_value=2, max_value=10))
+    values = []
+    for i in range(arbitrary_size):
+        values.append(
+            draw(
+                helpers.array_values(
+                    dtype=array_dtype[0], shape=helpers.get_shape(), allow_nan=True
+                )
+            )
+        )
+    return array_dtype, values
+
+
+@handle_frontend_test(
+    fn_tree="tensorflow.linalg.global_norm",
+    dtype_and_input=_get_dtype_and_sequence_of_arrays(),
+)
+def test_tensorflow_global_norm(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        t_list=x,
     )

@@ -2,6 +2,8 @@ name: intelligent-tests
 on:
   workflow_dispatch:
   push:
+    branches:
+      - 'master'
 permissions:
   actions: read
 jobs:
@@ -16,19 +18,26 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+           github_token: ${{ secrets.GITHUB_TOKEN }}
+           job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
-           python determine_tests.py
+           python determine_tests.py extra
            cd ..
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }} 
          continue-on-error: true
 
        - name: Push Mapping
@@ -57,12 +66,20 @@ jobs:
            persist-credentials: false
            submodules: "recursive"
            fetch-depth: 100
+      
+
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
 
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master2 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -70,7 +87,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -100,11 +117,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master3 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -112,7 +136,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -142,11 +166,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master4 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -154,7 +185,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -184,11 +215,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master5 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo 
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -196,7 +234,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -226,11 +264,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master6 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -238,7 +283,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -268,11 +313,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master7 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -280,7 +332,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -310,11 +362,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master8 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -322,7 +381,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -352,11 +411,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master9 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -364,7 +430,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -394,11 +460,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master10 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -406,7 +479,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -436,11 +509,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master11 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -448,7 +528,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -478,11 +558,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master12 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -490,7 +577,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -520,11 +607,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master13 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -532,7 +626,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -562,11 +656,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master14 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -574,7 +675,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -604,11 +705,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master15 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -616,7 +724,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -646,11 +754,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master16 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -658,7 +773,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -688,11 +803,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master17 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -700,7 +822,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -730,11 +852,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master18 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -742,7 +871,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -772,11 +901,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master19 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -784,7 +920,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -814,11 +950,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master20 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -826,7 +969,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -856,11 +999,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master21 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -868,7 +1018,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -898,11 +1048,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master22 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -910,7 +1067,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -940,11 +1097,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master23 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -952,7 +1116,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -982,11 +1146,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master24 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -994,7 +1165,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1024,11 +1195,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master25 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1036,7 +1214,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1066,11 +1244,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master26 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1078,7 +1263,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1108,11 +1293,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master27 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1120,7 +1312,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1150,11 +1342,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master28 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1162,7 +1361,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1192,11 +1391,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master29 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1204,7 +1410,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1234,11 +1440,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master30 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1246,7 +1459,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1276,11 +1489,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master31 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1288,7 +1508,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping
@@ -1318,11 +1538,18 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
+       - name: Get Job URL
+         uses: Tiryoh/gha-jobid-action@v0
+         id: jobs
+         with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            job_name: ${{ github.job }}
+
        - name: Determine and Run Tests
          id: tests
          run: |
            git clone -b master32 https://github.com/unifyai/Mapping.git --depth 1
-           pip install pydriller
+           pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py
@@ -1330,7 +1557,7 @@ jobs:
            mkdir tests
            cp ivy/tests.pbz2 tests/
            cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }}
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
 
        - name: Push Mapping

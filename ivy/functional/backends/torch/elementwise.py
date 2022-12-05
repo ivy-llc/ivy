@@ -593,7 +593,12 @@ def remainder(
         res_floored = torch.where(res >= 0, torch.floor(res), torch.ceil(res))
         diff = res - res_floored
         diff, x2 = ivy.promote_types_of_inputs(diff, x2)
-        return torch.round(torch.mul(diff, x2, out=out), out=out).to(x1.dtype)
+        if ivy.exists(out):
+            if out.dtype != x2.dtype:
+                return ivy.inplace_update(
+                    out, torch.round(torch.mul(diff, x2)).to(x1.dtype)
+                )
+        return torch.round(torch.mul(diff, x2), out=out).to(x1.dtype)
     return torch.remainder(x1, x2, out=out).to(x1.dtype)
 
 

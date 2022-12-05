@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
 import numpy as np
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -125,9 +125,10 @@ def count_nonzero(
 ) -> np.ndarray:
     if isinstance(axis, list):
         axis = tuple(axis)
-    if dtype is None:
-        return np.count_nonzero(x, axis=axis, keepdims=keepdims)
-    return np.array(np.count_nonzero(x, axis=axis, keepdims=keepdims), dtype=dtype)
+    ret = np.count_nonzero(x, axis=axis, keepdims=keepdims)
+    if np.isscalar(ret):
+        return np.array(ret, dtype=dtype)
+    return ret.astype(dtype)
 
 
 count_nonzero.support_native_out = False
@@ -137,7 +138,7 @@ def nansum(
     x: np.ndarray,
     /,
     *,
-    axis: Optional[Union[tuple, int]] = None,
+    axis: Optional[Union[Tuple[int], int]] = None,
     dtype: Optional[np.dtype] = None,
     keepdims: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
@@ -242,6 +243,13 @@ def signbit(
 signbit.support_native_out = True
 
 
+def diff(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+    return np.diff(x)
+
+
+diff.support_native_out = False
+
+
 def allclose(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -303,3 +311,16 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: np.ndarray,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[np.ndarray, List[np.ndarray]]:
+    if type(spacing) in (int, float):
+        return np.gradient(x, spacing, axis=axis, edge_order=edge_order)
+    return np.gradient(x, *spacing, axis=axis, edge_order=edge_order)

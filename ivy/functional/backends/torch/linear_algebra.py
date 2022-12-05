@@ -252,7 +252,7 @@ pinv.support_native_out = True
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def qr(
-    x: torch.Tensor, mode: str = "reduced", out: Optional[torch.Tensor] = None
+    x: torch.Tensor, /, *, mode: str = "reduced", out: Optional[torch.Tensor] = None
 ) -> Tuple[torch.Tensor, torch.Tensor]:
     res = namedtuple("qr", ["Q", "R"])
     if mode == "reduced":
@@ -347,8 +347,9 @@ svdvals.support_native_out = True
 def tensordot(
     x1: torch.Tensor,
     x2: torch.Tensor,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     # find the type to promote to

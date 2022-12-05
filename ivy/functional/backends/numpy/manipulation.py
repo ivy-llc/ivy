@@ -84,8 +84,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[np.ndarray] = None,
     order: Optional[str] = "C",
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:

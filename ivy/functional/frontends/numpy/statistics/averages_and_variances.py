@@ -84,3 +84,37 @@ def std(
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
 
     return ret
+
+
+# @from_zero_dim_arrays_to_float
+@to_ivy_arrays_and_back
+def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
+    axis = tuple(axis) if isinstance(axis, list) else axis
+    global avg
+    avg = 0
+
+    if keepdims is None:
+        keepdims_kw = {}
+    else:
+        keepdims_kw = {"keepdims": keepdims}
+
+    dtype = a.dtype
+    if weights is None:
+        avg = a.mean(axis, **keepdims_kw)
+        weights_sum = avg.dtype.type(a.count(axis))
+    else:
+        if a.shape != weights.shape:
+            if axis is None:
+                return 0
+            weights = ivy.broadcast_to(weights, (a.ndim - 1) * (1,) + weights.shape)
+            weights = weights.swapaxes(-1, axis)
+        weights_sum = weights.sum(axis=axis, **keepdims_kw)
+        mul = ivy.multiply(a, weights)
+        avg = ivy.sum(mul, axis=axis, **keepdims_kw) / weights_sum
+
+    if returned:
+        if weights_sum.shape != avg.shape:
+            weights_sum = ivy.broadcast_to(weights_sum, avg.shape).copy()
+        return avg.astype(dtype), weights_sum
+    else:
+        return avg.astype(dtype)

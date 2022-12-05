@@ -18,7 +18,7 @@ ivy_dtype_dict = {
     np.dtype("uint16"): "uint16",
     np.dtype("uint32"): "uint32",
     np.dtype("uint64"): "uint64",
-    np.dtype("bfloat16"): "bfloat16",
+    # np.dtype("bfloat16"): "bfloat16",
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",

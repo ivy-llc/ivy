@@ -6,6 +6,7 @@ from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
 
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+import ivy.functional.frontends.tensorflow as tf_frontend
 
 
 @to_ivy_arrays_and_back
@@ -96,17 +97,14 @@ norm.supported_dtypes = (
 
 
 @to_ivy_arrays_and_back
+@with_supported_dtypes({"2.9.0 and below": ("float32", "float64")}, "tensorflow")
 def normalize(tensor, ord="euclidean", axis=None, name=None):
+    tensor = tf_frontend.convert_to_tensor(tensor,
+                                           dtype=ivy.dtype(tensor), 
+                                           dtype_hint="Any")
     _norm = norm(tensor, ord=ord, axis=axis, keepdims=True)
-    _norm = ivy.astype(_norm, ivy.dtype(tensor))
-    normalized = ivy.divide(tensor, _norm)
+    normalized = tf_frontend.math.divide(tensor, _norm)
     return normalized, _norm
-
-
-normalize.supported_dtypes = (
-    "float32",
-    "float64",
-)
 
 
 @to_ivy_arrays_and_back
@@ -127,3 +125,17 @@ def matrix_transpose(a, name="matrix_transpose", conjugate=False):
     # Conjugate is ignored - Should be added as an argument
     # if complex numbers become supported
     return ivy.matrix_transpose(a)
+
+
+@to_ivy_arrays_and_back
+def global_norm(t_list, name=None):
+    l2_norms = [
+        ivy.sqrt((ivy.sum(ivy.square(t)))) ** 2 for t in t_list if t is not None
+    ]
+    return ivy.sqrt(ivy.sum(ivy.asarray(l2_norms, dtype=ivy.dtype(l2_norms[0]))))
+
+
+global_norm.supported_dtypes = (
+    "float32",
+    "float64",
+)

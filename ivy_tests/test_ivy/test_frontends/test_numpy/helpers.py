@@ -64,8 +64,8 @@ def _array_and_axes_permute_helper(
             max_dim_size=max_dim_size,
         )
     )
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    array = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     axes = draw(
         st.one_of(
             st.none(),
@@ -94,15 +94,48 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     if values is None:
         return
     ret, frontend_ret = values
+    # set backend to frontend to flatten the frontend array
+    ivy.set_backend(kwargs["frontend"])
+    try:
+        # get flattened arrays from returned value
+        if ivy.isscalar(frontend_ret):
+            frontend_ret_np_flat = [np.asarray(frontend_ret)]
+        else:
+            if not isinstance(frontend_ret, tuple):
+                frontend_ret = (frontend_ret,)
+            frontend_ret_idxs = ivy.nested_argwhere(frontend_ret, ivy.is_native_array)
+            frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
+            frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
+    except Exception as e:
+        ivy.unset_backend()
+        raise e
+    # set backend back to original
+    ivy.unset_backend()
+
+    # handling where size
+    where = np.broadcast_to(where, ret.shape)
+
     ret_flat = [
         np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["fw"])
+        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
     ]
     frontend_ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=frontend_ret, fw=kwargs["frontend"])
+        np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    helpers.value_test(ret_np_flat=ret_flat, ret_np_from_gt_flat=frontend_ret_flat)
+    rtol = 1e-4
+    atol = 1e-6
+    if "rtol" in kwargs:
+        if kwargs["rtol"] is not None:
+            rtol = kwargs["rtol"]
+    if "atol" in kwargs:
+        if kwargs["atol"] is not None:
+            atol = kwargs["atol"]
+    helpers.value_test(
+        ret_np_flat=ret_flat,
+        ret_np_from_gt_flat=frontend_ret_flat,
+        rtol=rtol,
+        atol=atol,
+    )
 
 
 # noinspection PyShadowingNames
@@ -120,8 +153,9 @@ def test_frontend_function(*args, where=None, **kwargs):
 
 # noinspection PyShadowingNames
 def handle_where_and_array_bools(where, input_dtype, as_variable, native_array):
-    if isinstance(where, list):
-        input_dtype += ["bool"]
+    if isinstance(where, list) or isinstance(where, tuple):
+        input_dtype = list(input_dtype) + ["bool"]
+        where = where[0]
         return where, as_variable + [False], native_array + [False]
     return where, as_variable, native_array
 
@@ -161,6 +195,7 @@ def handle_dtype_and_casting(
 @st.composite
 def get_dtype_and_values_and_casting(
     draw,
+    *,
     get_dtypes_kind="valid",
     get_dtypes_index=0,
     get_dtypes_none=True,
@@ -172,7 +207,7 @@ def get_dtype_and_values_and_casting(
     if casting in ["no", "equiv"]:
         dtype = input_dtype[0]
         input_dtype = [dtype for x in input_dtype]
-        return input_dtype, [dtype], x, casting
+        return dtype, input_dtype, x, casting
     dtype = draw(
         helpers.get_dtypes(
             get_dtypes_kind,
@@ -193,4 +228,4 @@ def get_dtype_and_values_and_casting(
                     key=get_dtypes_key,
                 )
             )
-    return input_dtype, dtype, x, casting
+    return dtype[0], input_dtype, x, casting

@@ -14,6 +14,79 @@ from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
 )
 
 
+# svd
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.svd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
+    full_matrices=st.booleans(),
+    compute_uv=st.booleans(),
+)
+def test_jax_numpy_svd(
+    *,
+    dtype_and_x,
+    full_matrices,
+    compute_uv,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    x = np.asarray(x[0], dtype=dtype[0])
+    # make symmetric positive-definite beforehand
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    ret, frontend_ret = helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        test_values=False,
+        x=x,
+        full_matrices=full_matrices,
+        compute_uv=compute_uv,
+    )
+
+    if compute_uv:
+        ret = [ivy.to_numpy(x) for x in ret]
+        frontend_ret = [np.asarray(x) for x in frontend_ret]
+
+        u, s, vh = ret
+        frontend_u, frontend_s, frontend_vh = frontend_ret
+
+        assert_all_close(
+            ret_np=u @ np.diag(s) @ vh,
+            ret_from_gt_np=frontend_u @ np.diag(frontend_s) @ frontend_vh,
+            rtol=1e-2,
+            atol=1e-2,
+            ground_truth_backend=frontend,
+        )
+    else:
+        assert_all_close(
+            ret_np=ivy.to_numpy(ret),
+            ret_from_gt_np=np.asarray(frontend_ret[0]),
+            rtol=1e-2,
+            atol=1e-2,
+            ground_truth_backend=frontend,
+        )
+
+
 # det
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.det",
@@ -469,29 +542,20 @@ def test_jax_numpy_solve(
 
 @st.composite
 def norm_helper(draw):
-    while 1:
-        dtype, x, axis = draw(
-            helpers.dtype_values_axis(
-                available_dtypes=helpers.get_dtypes("valid"),
-                min_num_dims=1,
-                force_int_axis=True,
-                max_axes_size=2,
-                safety_factor_scale="log",
-                valid_axis=True,
-                large_abs_safety_factor=2,
-            )
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+            available_dtypes=helpers.get_dtypes("valid"),
+            min_num_dims=1,
+            safety_factor_scale="log",
+            large_abs_safety_factor=2,
         )
-        # avoid duplicate axes
-        if type(axis) in [tuple, list]:
-            if len(axis) == 2:
-                if (
-                    len(x[0].shape) + axis[0] != axis[1]
-                    and len(x[0].shape) + axis[1] != axis[0]
-                    and axis[0] != axis[1]
-                ):
-                    break
-        else:
-            break
+    )
+    axis = draw(
+        helpers.get_axis(
+            shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+        )
+    )
     if type(axis) in [tuple, list]:
         if len(axis) == 2:
             ord_param = draw(
@@ -680,4 +744,79 @@ def test_jax_numpy_pinv(
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
+    )
+
+
+# tensorinv
+@st.composite
+def _get_inv_square_matrices(draw):
+
+    dim_size = draw(helpers.ints(min_value=1, max_value=10))
+
+    batch_shape = draw(st.sampled_from([2, 4, 6, 8, 10]))
+
+    generated_shape = (dim_size,) * batch_shape
+    generated_ind = int(np.floor(len(generated_shape) / 2))
+
+    handpicked_shape, handpicked_ind = draw(
+        st.sampled_from([[(24, 6, 4), 1], [(8, 3, 6, 4), 2], [(6, 7, 8, 16, 21), 3]])
+    )
+
+    shape, ind = draw(
+        st.sampled_from(
+            [(generated_shape, generated_ind), (handpicked_shape, handpicked_ind)]
+        )
+    )
+
+    input_dtype = draw(
+        helpers.get_dtypes("float", index=1, full=False).filter(
+            lambda x: x not in ["float16", "bfloat16"]
+        )
+    )
+    invertible = False
+    while not invertible:
+        a = draw(
+            helpers.array_values(
+                dtype=input_dtype[0],
+                shape=shape,
+                min_value=-100,
+                max_value=100,
+            )
+        )
+        try:
+            np.linalg.inv(a)
+            invertible = True
+        except np.linalg.LinAlgError:
+            pass
+
+    return input_dtype, a, ind
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.linalg.tensorinv", params=_get_inv_square_matrices()
+)
+def test_jax_numpy_tensorinv(
+    *,
+    params,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x, ind = params
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        rtol=1e-01,
+        atol=1e-01,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x,
+        ind=ind,
     )
