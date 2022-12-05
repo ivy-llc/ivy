@@ -401,24 +401,23 @@ def test_shape(
     as_array,
     num_positional_args,
     as_variable,
-    with_out,
     native_array,
     container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x0_n_x1_n_res
+    # instance_method=False because the shape property would overwrite the shape method
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         native_array_flags=native_array,
         container_flags=container_flags,
-        instance_method=instance_method,
+        instance_method=False,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
@@ -474,8 +473,9 @@ def _vector_norm_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
             min_num_dims=1,
-            large_abs_safety_factor=4,
-            small_abs_safety_factor=4,
+            min_value=-100,
+            max_value=100,
+            abs_smallest_val=1e-2,
             safety_factor_scale="log",
         )
     )
@@ -488,17 +488,13 @@ def _vector_norm_helper(draw):
         max_p = math.log(max_val) / math.log(max_x)
     else:
         max_p = math.log(max_val)
-    p = draw(
-        helpers.floats(
-            small_abs_safety_factor=2, safety_factor_scale="log", max_value=max_p
-        )
-    )
+    p = draw(helpers.floats(abs_smallest_val=1e-2, min_value=-max_p, max_value=max_p))
     max_norm_val = math.log(max_val / max_x)
     max_norm = draw(
         helpers.floats(
-            small_abs_safety_factor=2,
+            large_abs_safety_factor=4,
             safety_factor_scale="log",
-            min_value=0,
+            min_value=1e-2,
             max_value=max_norm_val,
         )
     )
@@ -1548,7 +1544,6 @@ def test_is_ivy_array(
     x_val_and_dtypes,
     exclusive,
     num_positional_args,
-    as_variable,
     with_out,
     native_array,
     container_flags,
@@ -1559,10 +1554,11 @@ def test_is_ivy_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
+        as_variable_flags=[False],
         with_out=with_out,
         native_array_flags=native_array,
         container_flags=container_flags,
@@ -1589,7 +1585,6 @@ def test_is_native_array(
     x_val_and_dtypes,
     exclusive,
     num_positional_args,
-    as_variable,
     with_out,
     native_array,
     container_flags,
@@ -1600,10 +1595,11 @@ def test_is_native_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
+        as_variable_flags=[False],
         with_out=with_out,
         native_array_flags=native_array,
         container_flags=container_flags,
@@ -1629,7 +1625,6 @@ def test_is_array(
     x_val_and_dtypes,
     exclusive,
     num_positional_args,
-    as_variable,
     with_out,
     native_array,
     container_flags,
@@ -1640,10 +1635,11 @@ def test_is_array(
     ground_truth_backend,
 ):
     dtype, x = x_val_and_dtypes
+    # as_variable=False as the result can't be consistent across backends
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
-        as_variable_flags=as_variable,
+        as_variable_flags=[False],
         with_out=with_out,
         native_array_flags=native_array,
         container_flags=container_flags,
@@ -1671,7 +1667,6 @@ def test_is_ivy_container(
     with_out,
     native_array,
     container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
@@ -1685,7 +1680,7 @@ def test_is_ivy_container(
         with_out=with_out,
         native_array_flags=native_array,
         container_flags=container_flags,
-        instance_method=instance_method,
+        instance_method=False,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
