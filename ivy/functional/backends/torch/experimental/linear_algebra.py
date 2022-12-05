@@ -103,7 +103,7 @@ def kron(
     b: torch.Tensor,
     /,
     *,
-        out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ) -> torch.tensor:
     return torch.kron(a, b, out=out)
 
