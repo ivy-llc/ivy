@@ -313,7 +313,7 @@ def test_torch_huber_loss(
         input=pred,
         target=true,
         reduction=reduction,
-        delta=delta
+        delta=delta,
     )
 
 

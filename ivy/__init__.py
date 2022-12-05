@@ -124,6 +124,33 @@ class Dtype(str):
 
         return self < other or self == other
 
+    @property
+    def is_bool_dtype(self):
+        return is_bool_dtype(self)
+
+    @property
+    def is_int_dtype(self):
+        return is_int_dtype(self)
+
+    @property
+    def is_float_dtype(self):
+        return is_float_dtype(self)
+
+    @property
+    def is_uint_dtype(self):
+        return is_uint_dtype(self)
+
+    @property
+    def dtype_bits(self):
+        return dtype_bits(self)
+
+    @property
+    def as_native_dtype(self):
+        return as_native_dtype(self)
+
+    def can_cast(self, to):
+        return can_cast(self, to)
+
 
 class Shape(tuple):
     def __new__(cls, shape_tup):
@@ -154,6 +181,10 @@ class IntDtype(Dtype):
             )
         return str.__new__(cls, dtype_str)
 
+    @property
+    def info(self):
+        return iinfo(self)
+
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
@@ -165,6 +196,10 @@ class FloatDtype(Dtype):
             )
         return str.__new__(cls, dtype_str)
 
+    @property
+    def info(self):
+        return finfo(self)
+
 
 class UintDtype(IntDtype):
     def __new__(cls, dtype_str):
@@ -175,6 +210,10 @@ class UintDtype(IntDtype):
                 "dtype must be string and starts with uint"
             )
         return str.__new__(cls, dtype_str)
+
+    @property
+    def info(self):
+        return iinfo(self)
 
 
 class ComplexDtype(Dtype):

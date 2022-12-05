@@ -46,11 +46,12 @@ def zeros_like(input, dtype=None, name=None):
     return ivy.zeros_like(input, dtype=dtype)
 
 
-def constant(value, dtype, shape, name=None):
-    if shape:
-        value = ivy.reshape(ivy.astype(value, dtype), shape=shape)
-        return EagerTensor(value)
-    return EagerTensor(ivy.astype(value, dtype))
+def constant(value, dtype=None, shape=None, name=None):
+    if shape is not None:
+        value = ivy.reshape(value, shape=shape)
+    if dtype is not None:
+        return EagerTensor(ivy.astype(value, dtype))
+    return EagerTensor(value)
 
 
 def convert_to_tensor(value, dtype, dtype_hint, name=None):
@@ -101,15 +102,7 @@ def shape(input, out_type=ivy.int32, name=None):
 
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
-def range(
-    start,
-    limit=None,
-    delta=1,
-    /,
-    *,
-    dtype=None,
-    name=None
-):
+def range(start, limit=None, delta=1, /, *, dtype=None, name=None):
     return ivy.arange(start, limit, delta, dtype=dtype)
 
 
@@ -125,3 +118,10 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
         )
     return ivy.sort(values, axis=axis, descending=descending)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
+    if out_type not in ["int32", "int64"]:
+        out_type = "int64"
+    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)

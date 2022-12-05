@@ -265,10 +265,12 @@ def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
     sorted_input = ivy.sort(input, axis=dim)
     sort_indices = ivy.argsort(input, axis=dim)
 
-    values = ivy.asarray(ivy.gather(sorted_input, ivy.array(k - 1), axis=dim),
-                         dtype=input.dtype)
-    indices = ivy.asarray(ivy.gather(sort_indices, ivy.array(k - 1), axis=dim),
-                          dtype="int64")
+    values = ivy.asarray(
+        ivy.gather(sorted_input, ivy.array(k - 1), axis=dim), dtype=input.dtype
+    )
+    indices = ivy.asarray(
+        ivy.gather(sort_indices, ivy.array(k - 1), axis=dim), dtype="int64"
+    )
 
     if keepdim:
         values = ivy.expand_dims(values, axis=dim)
@@ -288,6 +290,8 @@ def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if sorted:
         return namedtuple("topk", ["values", "indices"])(
             ivy.sort(ivy.top_k(input, k, axis=dim, largest=largest, out=out).values),
-            ivy.argsort(ivy.top_k(input, k, axis=dim, largest=largest, out=out).indices)
+            ivy.argsort(
+                ivy.top_k(input, k, axis=dim, largest=largest, out=out).indices
+            ),
         )
     return ivy.top_k(input, k, axis=dim, largest=largest, out=out)

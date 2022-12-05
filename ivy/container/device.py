@@ -44,8 +44,8 @@ class ContainerWithDevice(ContainerBase):
         >>> y = x.dev(as_native=as_native)
         >>> print(y)
         {
-            a: cpu,
-            b: device(type=cpu)
+            a:cpu,
+            b:cpu
         }
         """
         return self.static_dev(self, as_native=as_native)

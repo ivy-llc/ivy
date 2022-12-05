@@ -2537,6 +2537,17 @@ class ContainerWithElementwise(ContainerBase):
             a: ivy.array([12., 1.52, 2.1]),
             b: ivy.array([1.25, 0.333, 0.45])
         }
+
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=5, b=4)
+        >>> z = x.divide(y)
+        >>> print(z)
+        {
+            a: 0.2,
+            b: 0.5
+        }
         """
         return self.static_divide(
             self,
@@ -2593,6 +2604,19 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type of ``bool``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` inputs:
+
+        >>> x1 = ivy.Container(a=ivy.array([12, 3.5, 6.3]), b=ivy.array([3., 1., 0.9]))
+        >>> x2 = ivy.Container(a=ivy.array([12, 2.3, 3]), b=ivy.array([2.4, 3., 2.]))
+        >>> y = ivy.Container.static_equal(x1, x2)
+        >>> print(y)
+        {
+            a: ivy.array([True, False, False]),
+            b: ivy.array([False, False, False])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "equal",
@@ -5979,6 +6003,18 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = ivy.Container.static_pow(x, 2)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([8,27])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "pow",
@@ -6035,6 +6071,18 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x.pow(3)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([8,27])
+        }
         """
         return self.static_pow(
             self,
@@ -6796,6 +6844,16 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = ivy.Container.static_square(x)
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([4,9])
+        }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "square",
@@ -6846,6 +6904,16 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the square of each element in ``self``.
             The returned container must have a real-valued floating-point
             data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x.square()
+        >>> print(y)
+        {
+            a:ivy.array([0,1]),
+            b:ivy.array([4,9])
+        }
 
         """
         return self.static_square(
@@ -7556,6 +7624,16 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the Gauss error of ``x``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+        ...                   b=ivy.array([12, -3.5, 1.234]))
+        >>> y = ivy.Container.static_erf(x)
+        >>> print(y)
+        {
+            a: ivy.array([-0.27632612, 1., 0.934008]),
+            b: ivy.array([1., -0.99999928, 0.91903949])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "erf",
@@ -7605,6 +7683,16 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container containing the Gauss error of ``self``.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([-0.25, 4, 1.3]),
+        ...                   b=ivy.array([12, -3.5, 1.234]))
+        >>> y = x.erf()
+        >>> print(y)
+        {
+            a: ivy.array([-0.27632612, 1., 0.934008]),
+            b: ivy.array([1., -0.99999928, 0.91903949])
+        }
         """
         return self.static_erf(
             self,
@@ -7662,6 +7750,20 @@ class ContainerWithElementwise(ContainerBase):
         -------
             Container object with all sub-arrays having the minimum values computed.
 
+        Examples
+        --------
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 3, 1]),
+        ...                   b=ivy.array([2, 8, 5]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 6]),
+        ...                   b=ivy.array([5, 9, 7]))
+        >>> z = ivy.Container.static_minimum(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([1, 3, 1]),
+            b: ivy.array([2, 8, 5])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "minimum",
@@ -7692,7 +7794,6 @@ class ContainerWithElementwise(ContainerBase):
         This method simply wraps the function, and so the docstring for
         ivy.minimum also applies to this method with minimal changes.
 
-
         Parameters
         ----------
         self
@@ -7721,6 +7822,21 @@ class ContainerWithElementwise(ContainerBase):
         Returns
         -------
             Container object with all sub-arrays having the minimum values computed.
+
+        Examples
+        --------
+        With multiple :class:`ivy.Container` inputs:
+
+        >>> x = ivy.Container(a=ivy.array([1, 3, 1]),
+        ...                   b=ivy.array([2, 8, 5]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 6]),
+        ...                   b=ivy.array([5, 9, 7]))
+        >>> z = x.minimum(y)
+        >>> print(z)
+        {
+            a: ivy.array([1, 3, 1]),
+            b: ivy.array([2, 8, 5])
+        }
 
         """
         return self.static_minimum(
@@ -7783,7 +7899,23 @@ class ContainerWithElementwise(ContainerBase):
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
 
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
 
+        >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+        >>> y = ivy.Container(a=ivy.array([1, 0,]),
+        ...                   b=ivy.array([-5, 9]))
+        >>> z = ivy.Container.static_maximum(x, y)
+        >>> print(z)
+        {
+            a: ivy.array([[1, 3],
+                          [2, 4],
+                          [3, 7]]),
+            b: ivy.array([[1, 9],
+                          [2, 9],
+                          [3, 9]])
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "maximum",
@@ -7844,6 +7976,24 @@ class ContainerWithElementwise(ContainerBase):
         ret
             An array with the elements of x1, but clipped to not be lower than the x2
             values.
+
+        Examples
+        --------
+        With one :class:`ivy.Container` input:
+
+        >>> x = ivy.array([[1, 3], [2, 4], [3, 7]])
+        >>> y = ivy.Container(a=ivy.array([1, 0,]),
+        ...                   b=ivy.array([-5, 9]))
+        >>> z = x.maximum(y)
+        >>> print(z)
+        {
+            a: ivy.array([[1, 3],
+                          [2, 4],
+                          [3, 7]]),
+            b: ivy.array([[1, 9],
+                          [2, 9],
+                          [3, 9]])
+        }
         """
         return self.static_maximum(
             self,

@@ -467,7 +467,9 @@ def handle_nestable(fn: Callable) -> Callable:
 # Functions #
 
 
-def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
+def _wrap_function(
+    key: str, to_wrap: Callable, original: Callable, compositional: bool = False
+) -> Callable:
     """Apply wrapping to backend implementation `to_wrap` if the original implementation
     `original` is also wrapped, and if `to_wrap` is not already wrapped. Attributes
     `handle_nestable`, `infer_device` etc are set during wrapping, hence indicate to
@@ -480,6 +482,9 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         the new implementation to potentially wrap
     original
         the original implementation of `to_wrap` which tells us which wrappers we need.
+    compositional
+        indicates whether the function being wrapped is compositional
+        (Default Value = ``False``).
 
     Returns
     -------
@@ -496,7 +501,10 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
                 and not linalg_k.startswith("_")
             ):
                 to_wrap.__dict__[linalg_k] = _wrap_function(
-                    linalg_k, linalg_v, ivy.__dict__[linalg_k]
+                    linalg_k,
+                    linalg_v,
+                    ivy.__dict__[linalg_k],
+                    compositional=compositional,
                 )
         return to_wrap
     if isinstance(to_wrap, FunctionType):
@@ -511,6 +519,18 @@ def _wrap_function(key: str, to_wrap: Callable, original: Callable) -> Callable:
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
+        mixed = hasattr(original, "mixed_function")
+        if mixed:
+            to_replace = {
+                True: ["inputs_to_ivy_arrays"],
+                False: [
+                    "outputs_to_ivy_arrays",
+                    "inputs_to_native_arrays",
+                ],
+            }
+            for attr in to_replace[compositional]:
+                setattr(original, attr, True)
+
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
                 to_wrap = getattr(ivy, attr)(to_wrap)

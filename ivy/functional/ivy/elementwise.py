@@ -744,38 +744,38 @@ def atan2(
     >>> x = ivy.array([1.0, 2.0])
     >>> y = ivy.array([-2.0, 3.0])
     >>> z = ivy.zeros(2)
-    >>> x.atan2(y, out=z)
+    >>> ivy.atan2(x, y, out=z)
     >>> print(z)
     ivy.array([2.68 , 0.588])
 
     >>> nan = float("nan")
     >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
     >>> y = ivy.array([1.0, +0, -0, +0, -0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
     ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
 
     >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
     >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
     ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
-    >>> y.atan2(x)
-    ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
 
     >>> inf = float("infinity")
     >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
     >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
 
     >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
     >>> y = ivy.array([-3.5, 2, 0, 0, 5])
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
-    >>> y = x.atan2(x)
+    >>> y = ivy.atan2(x, x)
     >>> print(y)
     ivy.array([[ 0.785,  0.785,  0.785],
         [-2.36 , -2.36 , -2.36 ]])
@@ -785,7 +785,7 @@ def atan2(
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
     ...                   b=ivy.array([4.5, -5.3, -0]))
     >>> y = ivy.array([3.0, 2.0, 1.0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     {
         a: ivy.array([0., 0.915, -1.29]),
         b: ivy.array([0.983, -1.21, 0.])
@@ -795,7 +795,7 @@ def atan2(
     ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
     >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
     ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     {
         a: ivy.array([3.14, 0.978, -0.785]),
@@ -3193,7 +3193,6 @@ def logaddexp(
     >>> print(z)
     ivy.array([ 3.31,  5.05, 15.  ])
 
-
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.logaddexp(x, y, out=x)
@@ -4011,7 +4010,36 @@ def pow(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    ivy.array([1, 8, 27])
+
+    >>> x = ivy.array([1.5, -0.8, 0.3])
+    >>> y = ivy.zeros(3)
+    >>> ivy.pow(x, 2, out=y)
+    >>> print(y)
+    ivy.array([2.25, 0.64, 0.09])
+
+    >>> x = ivy.array([[1.2, 2, 3.1], [1, 2.5, 9]])
+    >>> ivy.pow(x, 2.3, out=x)
+    >>> print(x)
+    ivy.array([[  1.52095687,   4.92457771,  13.49372482],
+           [  1.        ,   8.22738838, 156.5877228 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    {
+        a:ivy.array([0,1]),
+        b:ivy.array([8,27])
+    }
     """
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
 
@@ -4186,13 +4214,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
-
-
     Note: PyTorch supports an additional argument :code:`decimals` for the
     `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
     It has been deliberately omitted here due to the imprecise
     nature of the argument in :code:`torch.round`.
-
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -4203,8 +4228,8 @@ def round(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.2, 2.4, 3.6])
@@ -4601,9 +4626,8 @@ def square(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -4627,45 +4651,10 @@ def square(
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = ivy.square(x)
     >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.square()
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x.square()
-    >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x ** 2
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x ** 2
-    >>> print(y)
     {
-        a: ivy.array([0, 1]),
-        b: ivy.array([4, 9])
+        a:ivy.array([0,1]),
+        b:ivy.array([4,9])
     }
-
     """
     return ivy.current_backend(x).square(x, out=out)
 
@@ -4867,7 +4856,6 @@ def tanh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -5018,6 +5006,11 @@ def erf(
     ret
         The Gauss error function of x.
 
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.3, 0.7, 1.0])
+    >>> ivy.erf(x)
+    ivy.array([0., 0.328, 0.677, 0.842])
     """
     return ivy.current_backend(x).erf(x, out=out)
 
@@ -5142,7 +5135,6 @@ def minimum(
     -------
     ret
         An array with the elements of x1, but clipped to not exceed the x2 values.
-
 
     Examples
     --------
@@ -5382,7 +5374,6 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -5425,6 +5416,9 @@ def trunc_divide(
     ivy.array([ 0., -1., 14.])
     """
     return ivy.trunc(ivy.divide(x1, x2), out=out)
+
+
+trunc_divide.mixed_function = True
 
 
 @to_native_arrays_and_back
