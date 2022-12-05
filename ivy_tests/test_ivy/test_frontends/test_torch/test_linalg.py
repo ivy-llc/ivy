@@ -153,3 +153,73 @@ def test_torch_matrix_power(
         input=x,
         n=n,
     )
+
+
+@st.composite
+def st_dtype_arr_and_axes(draw):
+    dtypes, xs, x_shape = draw(
+        helpers.dtype_and_values(
+            num_arrays=1,
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=st.shared(
+                helpers.get_shape(
+                    allow_none=False,
+                    min_num_dims=2,
+                    max_num_dims=5,
+                    min_dim_size=2,
+                    max_dim_size=10,
+                )
+            ),
+            ret_shape=True,
+        )
+    )
+
+    axis = draw(
+        helpers.get_axis(
+            shape=x_shape,
+            sorted=False,
+            unique=True,
+            min_size=2,
+            max_size=2,
+            force_tuple=True,
+        )
+    )
+    return dtypes[0], xs[0], axis
+
+
+@handle_frontend_test(
+    fn_tree="torch.linalg.matrix_norm",
+    dtype_values_axis=st_dtype_arr_and_axes(),
+    ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
+    keepdim=st.booleans(),
+)
+def test_torch_matrix_norm(
+    *,
+    dtype_values_axis,
+    ord,
+    keepdim,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, axis = dtype_values_axis
+    helpers.test_frontend_function(
+        input_dtypes=[input_dtype],
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["matrix_norm"],
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        ord=ord,
+        dim=axis,
+        keepdim=keepdim,
+        dtype=input_dtype,
+    )

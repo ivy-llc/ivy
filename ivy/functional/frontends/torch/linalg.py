@@ -27,3 +27,17 @@ def slogdet(input, *, out=None):
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
+
+
+@to_ivy_arrays_and_back
+def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
+    # ToDO: if input is complex valued, it computes the norm of input.abs()
+    if dtype:
+        input = ivy.astype(input, dtype)
+    return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
+
+
+matrix_norm.supported_dtypes = (
+    "float32",
+    "float64",
+)
