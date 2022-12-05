@@ -1667,7 +1667,6 @@ def test_is_ivy_container(
     with_out,
     native_array,
     container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
