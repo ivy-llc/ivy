@@ -1684,9 +1684,16 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = ivy.Container.static_slogdet(x)
         >>> print(y)
         {
-            a: (list[2], <class ivy.array.array.Array> shape=[]),
-            b: (list[2], <class ivy.array.array.Array> shape=[])
+            a: [
+                sign = ivy.array(-1.),
+                logabsdet = ivy.array(0.6931472)
+            ],
+            b: [
+                sign = ivy.array(-1.),
+                logabsdet = ivy.array(1.0986123)
+            ]
         }
+
         """
         return ContainerBase.multi_map_in_static_method(
             "slogdet",
@@ -1748,8 +1755,14 @@ class ContainerWithLinearAlgebra(ContainerBase):
         >>> y = x.slogdet()
         >>> print(y)
         {
-            a: (list[2], <class ivy.array.array.Array> shape=[]),
-            b: (list[2], <class ivy.array.array.Array> shape=[])
+            a: [
+                sign = ivy.array(-1.),
+                logabsdet = ivy.array(0.6931472)
+            ],
+            b: [
+                sign = ivy.array(-1.),
+                logabsdet = ivy.array(1.0986123)
+            ]
         }
 
         """
