@@ -156,7 +156,6 @@ def test_torch_eigvalsh(
         native_array_flags=native_array,
         as_variable_flags=as_variable,
         with_out=False,
-        all_aliases=["eigvalsh"],
         num_positional_args=num_positional_args,
         frontend=frontend,
         fn_tree=fn_tree,
