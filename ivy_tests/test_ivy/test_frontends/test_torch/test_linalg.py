@@ -6,6 +6,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy import inf
 
 
 # helpers
@@ -159,10 +160,16 @@ def test_torch_matrix_power(
 @handle_frontend_test(
     fn_tree="torch.linalg.vector_norm",
     dtype_and_x=_get_dtype_and_square_matrix(),
+    keepdim=st.booleans(),
+    ord=st.sampled_from([2.0, 1.0, 0, -1.0, -2.0, 'fro', 'nuc', None, inf, -inf]),
+    dim=st.sampled_from([None, 1, 2]),
 )
 def test_torch_vector_norm(
     *,
     dtype_and_x,
+    keepdim,
+    ord,
+    dim,
     as_variable,
     with_out,
     num_positional_args,
@@ -183,6 +190,8 @@ def test_torch_vector_norm(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
+        keepdim=keepdim,
+        ord=ord,
+        dim=dim,
     )
-    
     
