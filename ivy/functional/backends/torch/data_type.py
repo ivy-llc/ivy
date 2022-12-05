@@ -158,11 +158,11 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 
 
 def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dtype:
-    if dtype_in == int:
+    if dtype_in is int:
         return ivy.default_int_dtype()
-    if dtype_in == float:
+    if dtype_in is float:
         return ivy.default_float_dtype()
-    if dtype_in == bool:
+    if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
@@ -171,11 +171,11 @@ def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dty
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
 def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
-    if dtype_in == int:
+    if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
-    if dtype_in == float:
+    if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
-    if dtype_in == bool:
+    if dtype_in is bool:
         return torch.bool
     if not isinstance(dtype_in, str):
         return dtype_in

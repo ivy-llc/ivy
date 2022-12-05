@@ -200,11 +200,11 @@ def result_type(
 
 
 def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
-    if dtype_in == int:
+    if dtype_in is int:
         return ivy.default_int_dtype()
-    if dtype_in == float:
+    if dtype_in is float:
         return ivy.default_float_dtype()
-    if dtype_in == bool:
+    if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
@@ -212,11 +212,11 @@ def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
 
 
 def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> tf.DType:
-    if dtype_in == int:
+    if dtype_in is int:
         return ivy.default_int_dtype(as_native=True)
-    if dtype_in == float:
+    if dtype_in is float:
         return ivy.default_float_dtype(as_native=True)
-    if dtype_in == bool:
+    if dtype_in is bool:
         return tf.bool
     if not isinstance(dtype_in, str):
         return dtype_in
