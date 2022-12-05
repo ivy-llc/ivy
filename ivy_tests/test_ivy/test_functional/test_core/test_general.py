@@ -401,24 +401,23 @@ def test_shape(
     as_array,
     num_positional_args,
     as_variable,
-    with_out,
     native_array,
     container_flags,
-    instance_method,
     backend_fw,
     fn_name,
     on_device,
     ground_truth_backend,
 ):
     dtype, x = x0_n_x1_n_res
+    # instance_method=False because the shape property would overwrite the shape method
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         native_array_flags=native_array,
         container_flags=container_flags,
-        instance_method=instance_method,
+        instance_method=False,
         ground_truth_backend=ground_truth_backend,
         on_device=on_device,
         fw=backend_fw,
