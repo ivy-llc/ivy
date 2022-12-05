@@ -20,7 +20,7 @@ def diagflat(
     align: Optional[str] = "RIGHT_LEFT",
     num_rows: Optional[int] = -1,
     num_cols: Optional[int] = -1,
-        out: Optional[torch.Tensor] = None,
+    out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) > 1:
         x = torch.flatten(x)
