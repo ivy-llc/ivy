@@ -407,7 +407,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         }
 
         >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
-                              y=ivy.array([1., 2., 3., 4.])                                )
+                              y=ivy.array([1., 2., 3., 4.]))
         >>> q = ivy.array([0.5, 0.75])
         >>> b = ivy.Container.static_quantile(a, q, axis = 0)
         >>> print(b)
@@ -531,7 +531,8 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: ivy.array([2.5, 3.25])
         }
 
-        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),y=ivy.array([1., 2., 3., 4.]))
+        >>> a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
+                              y=ivy.array([1., 2., 3., 4.]))
         >>> q = ivy.array([0.5, 0.75])
         >>> b = a.quantile(q, axis = 0)
         >>> print(b)
