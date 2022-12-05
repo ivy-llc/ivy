@@ -28,7 +28,6 @@ def _x_and_filters(
     dtype = draw(dtypes)
     padding = draw(padding)
     dilations = draw(helpers.ints(min_value=dilation_min, max_value=dilation_max))
-    ksize = draw(helpers.ints(min_value=ksize_min, max_value=ksize_max))
     if transpose and atrous:
         stride = dilations
     else:
@@ -214,7 +213,7 @@ def _x_and_filters(
         )
     )
     if not transpose:
-        return dtype, x, filters, dilations, data_format, stride, padding, ksize
+        return dtype, x, filters, dilations, data_format, stride, padding
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
 
 
@@ -434,16 +433,12 @@ def test_tensorflow_gelu(
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool2d",
-    x_f_d_df=_x_and_filters(
-        dtypes=helpers.get_dtypes("float", full=False),
-        data_format=st.sampled_from(["NHWC"]),
-        padding=st.sampled_from(["VALID", "SAME"]),
-        type="2d",
-    ),
+    data_format=st.sampled_from(["NHWC"]),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=1, max_dims=3, min_side=1, max_side=4),
 )
 def test_tensorflow_avg_pool2d(
     *,
-    x_f_d_df,
+    x_k_s_p,
     as_variable,
     num_positional_args,
     native_array,
@@ -451,7 +446,8 @@ def test_tensorflow_avg_pool2d(
     fn_tree,
     on_device
 ):
-    input_dtype, x, filters, dilation, data_format, stride, padding, ksize = x_f_d_df
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -463,7 +459,7 @@ def test_tensorflow_avg_pool2d(
         on_device=on_device,
         input=x,
         ksize=ksize,
-        strides=stride,
+        strides=strides,
         padding=padding,
         data_format=data_format,
     )
