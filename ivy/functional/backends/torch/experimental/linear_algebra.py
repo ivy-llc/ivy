@@ -104,5 +104,7 @@ kron.support_native_out = True
 
 def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor, ...]:
     if not torch.is_complex(x):
-        return torch.linalg.eig(x.to(torch.complex128))
-    return torch.linalg.eig(x)
+        ret = torch.linalg.eig(x.to(torch.complex128))
+    else:
+        ret = torch.linalg.eig(x)
+    return tuple(ret)

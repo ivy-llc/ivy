@@ -73,7 +73,7 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         Examples
         --------
          >>> x = ivy.array([[1,2], [3,4]])
-        >>> ivy.eig(x)
+        >>> x.eig()
         (
         ivy.array([-0.37228132+0.j,  5.37228132+0.j]),
         ivy.array([[-0.82456484+0.j, -0.41597356+0.j],

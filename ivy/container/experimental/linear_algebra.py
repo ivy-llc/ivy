@@ -182,7 +182,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
     ) -> ivy.Container:
         """
-        ivy.Container instance method variant of ivy.eig.
+        ivy.Container static method variant of ivy.eig.
         This method simply wraps the function, and so the docstring for
         ivy.eig also applies to this method with minimal changes.
 
@@ -194,19 +194,20 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         Returns
         -------
             ret
-                container including arrays corresponding
-                eigenvealues and eigenvectors of input arrays
+                container including tuple of arrays corresponding to
+                eigenvealues and eigenvectors of input array
 
         Examples
         --------
-        >>>c=ivy.Container({'x':{'xx':x}})
-        >>>ivy.eig(c)
+        >>>x = ivy.array([[1,2], [3,4]])
+        >>>c = ivy.Container({'x':{'xx':x}})
+        >>>ivy.Container.eig(c)
         {
             x:  {
                     xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
                 }
         }
-        >>>ivy.eig(c)['x']['xx']
+        >>>ivy.Container.eig(c)['x']['xx']
         (
             ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
             ivy.array([
@@ -250,14 +251,15 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
 
         Examples
         --------
-        >>>c=ivy.Container({'x':{'xx':x}})
-        >>>ivy.eig(c)
+        >>>x = ivy.array([[1,2], [3,4]])
+        >>>c = ivy.Container({'x':{'xx':x}})
+        >>>c.eig()
         {
             x:  {
                     xx: (tuple(2), <class ivy.array.array.Array>, shape=[2, 2])
                 }
         }
-        >>>ivy.eig(c)['x']['xx']
+        >>>c.eig()['x']['xx']
         (
             ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
             ivy.array([
