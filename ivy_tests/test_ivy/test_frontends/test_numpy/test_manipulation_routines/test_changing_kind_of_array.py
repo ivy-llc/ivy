@@ -13,9 +13,11 @@ def test_numpy_asanyarray(
     *,
     dtype_and_x,
     as_variable,
+    like,
     num_positional_args,
     native_array,
     on_device,
+    order,
     fn_tree,
     frontend,
 ):
@@ -31,4 +33,6 @@ def test_numpy_asanyarray(
         on_device=on_device,
         a=x,
         dtype=input_dtype[0],
+        order=order,
+        like=like,
     )
