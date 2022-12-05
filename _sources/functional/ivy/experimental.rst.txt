@@ -16,6 +16,7 @@ Experimental
    experimental/median.rst
    experimental/nanmean.rst
    experimental/unravel_index.rst
+   experimental/quantile.rst
    experimental/max_pool1d.rst
    experimental/max_pool2d.rst
    experimental/max_pool3d.rst

@@ -130,7 +130,7 @@
   <h1>Source code for ivy.array.experimental.statistical</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">abc</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -257,7 +257,93 @@
 <span class="sd">        &gt;&gt;&gt; indices.unravel_index((7,6))</span>
 <span class="sd">        (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ArrayWithStatisticalExperimental.quantile"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithStatisticalExperimental.quantile">[docs]</a>    <span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;ivy.Array instance method variant of ivy.quantile.</span>
+<span class="sd">        This method simply wraps the function, and so the docstring</span>
+<span class="sd">        for ivy.quantile also applies to this method with minimal</span>
+<span class="sd">        changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        a</span>
+<span class="sd">            Input array. </span>
+<span class="sd">        q</span>
+<span class="sd">            Quantile or sequence of quantiles to compute, which must be</span>
+<span class="sd">            between 0 and 1 inclusive.</span>
+<span class="sd">        axis</span>
+<span class="sd">            Axis or axes along which the quantiles are computed. The default</span>
+<span class="sd">            is to compute the quantile(s) along a flattened version of the array.</span>
+<span class="sd">        keepdims</span>
+<span class="sd">            If this is set to True, the axes which are reduced are left in the result</span>
+<span class="sd">            as dimensions with size one. With this option, the result will broadcast</span>
+<span class="sd">            correctly against the original array a.</span>
+<span class="sd">        interpolation</span>
+<span class="sd">            {&#39;nearest&#39;, &#39;linear&#39;, &#39;lower&#39;, &#39;higher&#39;, &#39;midpoint&#39;}. Default value:</span>
+<span class="sd">            &#39;linear&#39;.</span>
+<span class="sd">            This specifies the interpolation method to use when the desired quantile</span>
+<span class="sd">            lies between two data points i &lt; j:</span>
+<span class="sd">            - linear: i + (j - i) * fraction, where fraction is the fractional part of</span>
+<span class="sd">            the index surrounded by i and j.</span>
+<span class="sd">            - lower: i.</span>
+<span class="sd">            - higher: j.</span>
+<span class="sd">            - nearest: i or j, whichever is nearest.</span>
+<span class="sd">            - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with</span>
+<span class="sd">            integer dtypes.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, </span>
+<span class="sd">            if axis is None, a rank(q) array. The first rank(q) dimensions index </span>
+<span class="sd">            quantiles for different values of q.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
+<span class="sd">        &gt;&gt;&gt; q = ivy.array(0.5)</span>
+<span class="sd">        &gt;&gt;&gt; a.quantile(q)</span>
+<span class="sd">        ivy.array(3.5)</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
+<span class="sd">        &gt;&gt;&gt; q = 0.5</span>
+<span class="sd">        &gt;&gt;&gt; a.quantile(q)</span>
+<span class="sd">        ivy.array(3.5)</span>
+
+<span class="sd">        &gt;&gt;&gt; a.quantile(q, axis=0)</span>
+<span class="sd">        ivy.array([6.5, 4.5, 2.5])</span>
+
+<span class="sd">        &gt;&gt;&gt; a.quantile(q, axis=1)</span>
+<span class="sd">        ivy.array([7.,  2.])</span>
+
+<span class="sd">        &gt;&gt;&gt; a.quantile(q, axis=1, keepdims=True)</span>
+<span class="sd">        ivy.array([[7.],[2.]])</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([1., 2., 3., 4.])</span>
+<span class="sd">        &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
+<span class="sd">        &gt;&gt;&gt; a.quantile(q, interpolation=&#39;lower&#39;)</span>
+<span class="sd">        ivy.array([1., 3.])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
+            <span class="n">q</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
+            <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>
