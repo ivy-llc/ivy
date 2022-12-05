@@ -459,7 +459,6 @@ def stop_gradient(
 # AutoGrad #
 
 
-@inputs_to_ivy_arrays
 @handle_exceptions
 @handle_array_like
 def execute_with_gradients(
