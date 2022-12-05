@@ -63,7 +63,7 @@ def test_torch_inv(
     fn_tree="torch.linalg.pinv",
     dtype_and_input=_get_dtype_and_square_matrix(),
 )
-def test_tensorflow_pinv(
+def test_torch_pinv(
     *,
     dtype_and_input,
     num_positional_args,
