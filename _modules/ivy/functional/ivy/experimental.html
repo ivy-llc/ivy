@@ -823,7 +823,7 @@
 <span class="sd">    ivy.array([102., -51.5, 0., -5.39, 0., -1.61, 0., -0.406])</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([[[8, 16, 24, 32], [40, 48, 56, 64]],</span>
-<span class="sd">               [[1,  2,  3,  4], [ 5,  6,  7,  8]]])</span>
+<span class="sd">    ...                [[1,  2,  3,  4], [ 5,  6,  7,  8]]])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.dct(x, type=1, n=None, axis=0, norm=None)</span>
 <span class="sd">    ivy.array([[[ 9., 18., 27., 36.],</span>
 <span class="sd">                [45., 54., 63., 72.]],</span>
@@ -2878,7 +2878,8 @@
 <span class="sd">          [ 4, 19, 16, 17],</span>
 <span class="sd">          [ 2, 12,  8, 14]]]))</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># if it&#39;s 0-d convert to 1-d</span>
+    <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
     <span class="k">if</span> <span class="n">start_dim</span> <span class="o">==</span> <span class="n">end_dim</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">x</span>
     <span class="k">if</span> <span class="n">start_dim</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)):</span>

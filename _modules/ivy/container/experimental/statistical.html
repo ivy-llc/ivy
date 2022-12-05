@@ -515,10 +515,9 @@
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = 0.5</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.Container.static_quantile(a, q)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -527,10 +526,8 @@
 <span class="sd">            y: 2.5</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.5, 0.75])</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.Container.static_quantile(a, q)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -539,10 +536,8 @@
 <span class="sd">            y: ivy.array([2.5, 3.25])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.5, 0.75])</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.Container.static_quantile(a, q, axis = 0)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -552,9 +547,7 @@
 <span class="sd">            y: ivy.array([2.5, 3.25])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                x=ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
-<span class="sd">                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.Container.static_quantile(a, q, axis = 1, keepdims=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
 <span class="sd">        {</span>
@@ -564,10 +557,8 @@
 <span class="sd">                    [2.5]]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
 <span class="sd">        &gt;&gt;&gt; b = ivy.Container.static_quantile(a, q, axis = 0, interpolation=&quot;lower&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -650,10 +641,8 @@
 <span class="sd">        --------</span>
 <span class="sd">        With one :class:`ivy.Container` input:</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),\</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = 0.5</span>
 <span class="sd">        &gt;&gt;&gt; b = a.quantile(q)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -662,22 +651,18 @@
 <span class="sd">            y: 2.5</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.5, 0.75])</span>
-<span class="sd">        &gt;&gt;&gt; b = a.uantile(q)</span>
+<span class="sd">        &gt;&gt;&gt; b = a.quantile(q)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
 <span class="sd">        {</span>
 <span class="sd">            x: ivy.array([3.5, 6.25]),</span>
 <span class="sd">            y: ivy.array([2.5, 3.25])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.5, 0.75])</span>
 <span class="sd">        &gt;&gt;&gt; b = a.quantile(q, axis = 0)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
@@ -687,9 +672,7 @@
 <span class="sd">            y: ivy.array([2.5, 3.25])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                x=ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
-<span class="sd">                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]))</span>
 <span class="sd">        &gt;&gt;&gt; b = a.quantile(q, axis = 1, keepdims=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
 <span class="sd">        {</span>
@@ -699,10 +682,8 @@
 <span class="sd">                    [2.5]]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        &gt;&gt;&gt; a = ivy.Container(</span>
-<span class="sd">                                x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
-<span class="sd">                                y=ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">                                )</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.Container(x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),</span>
+<span class="sd">                              y=ivy.array([1., 2., 3., 4.]))</span>
 <span class="sd">        &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
 <span class="sd">        &gt;&gt;&gt; b = a.quantile(q, axis = 0, interpolation=&quot;lower&quot;)</span>
 <span class="sd">        &gt;&gt;&gt; print(b)</span>
