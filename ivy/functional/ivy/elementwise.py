@@ -452,7 +452,6 @@ def asin(
     >>> print(x)
     ivy.array([[0.1,0.201,0.305],[-0.412,-0.524,-0.644]])
 
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),
@@ -460,27 +459,6 @@ def asin(
     >>> y = ivy.asin(x)
     >>> print(y)
     {a:ivy.array([0.,0.1,0.201]),b:ivy.array([0.305,0.412,0.524])}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1, -0.5, 0.6, 1])
-    >>> y = x.asin()
-    >>> print(y)
-    ivy.array([-1.57,-0.524,0.644,1.57])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 0.1, 0.2]),b=ivy.array([0.3, 0.4, 0.5]))
-    >>> y = x.asin()
-    >>> print(y)
-    {
-        a:ivy.array([0.,0.1,0.201]),
-        b:ivy.array([0.305,0.412,0.524])
-    }
-
     """
     return ivy.current_backend(x).asin(x, out=out)
 
@@ -766,38 +744,38 @@ def atan2(
     >>> x = ivy.array([1.0, 2.0])
     >>> y = ivy.array([-2.0, 3.0])
     >>> z = ivy.zeros(2)
-    >>> x.atan2(y, out=z)
+    >>> ivy.atan2(x, y, out=z)
     >>> print(z)
     ivy.array([2.68 , 0.588])
 
     >>> nan = float("nan")
     >>> x = ivy.array([nan, 1.0, 1.0, -1.0, -1.0])
     >>> y = ivy.array([1.0, +0, -0, +0, -0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
     ivy.array([  nan,  1.57,  1.57, -1.57, -1.57])
 
     >>> x = ivy.array([+0, +0, +0, +0, -0, -0, -0, -0])
     >>> y = ivy.array([1.0, +0, -0, -1.0, 1.0, +0, -0, -1.0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
+    >>> print(z)
     ivy.array([0.  , 0.  , 0.  , 3.14, 0.  , 0.  , 0.  , 3.14])
-    >>> y.atan2(x)
-    ivy.array([ 1.57,  0.  ,  0.  , -1.57,  1.57,  0.  ,  0.  , -1.57])
 
     >>> inf = float("infinity")
     >>> x = ivy.array([inf, -inf, inf, inf, -inf, -inf])
     >>> y = ivy.array([1.0, 1.0, inf, -inf, inf, -inf])
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     ivy.array([ 1.57 , -1.57 ,  0.785,  2.36 , -0.785, -2.36 ])
 
     >>> x = ivy.array([2.5, -1.75, 3.2, 0, -1.0])
     >>> y = ivy.array([-3.5, 2, 0, 0, 5])
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     ivy.array([ 2.52 , -0.719,  1.57 ,  0.   , -0.197])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3], [-4.4, -5.5, -6.6]])
-    >>> y = x.atan2(x)
+    >>> y = ivy.atan2(x, x)
     >>> print(y)
     ivy.array([[ 0.785,  0.785,  0.785],
         [-2.36 , -2.36 , -2.36 ]])
@@ -807,7 +785,7 @@ def atan2(
     >>> x = ivy.Container(a=ivy.array([0., 2.6, -3.5]),
     ...                   b=ivy.array([4.5, -5.3, -0]))
     >>> y = ivy.array([3.0, 2.0, 1.0])
-    >>> x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     {
         a: ivy.array([0., 0.915, -1.29]),
         b: ivy.array([0.983, -1.21, 0.])
@@ -817,7 +795,7 @@ def atan2(
     ...                   b=ivy.array([4.5, -5.3, -0, -2.3]))
     >>> y = ivy.Container(a=ivy.array([-2.5, 1.75, 3.5]),
     ...                   b=ivy.array([2.45, 6.35, 0, 1.5]))
-    >>> z = x.atan2(y)
+    >>> z = ivy.atan2(x, y)
     >>> print(z)
     {
         a: ivy.array([3.14, 0.978, -0.785]),
@@ -1166,7 +1144,6 @@ def bitwise_or(
         a: ivy.array([5,7,7]),
         b: ivy.array([5,6,7])
     }
-
 
     """
     return ivy.current_backend(x1, x2).bitwise_or(x1, x2, out=out)
@@ -1606,9 +1583,8 @@ def cosh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3, 4])
@@ -1632,22 +1608,10 @@ def cosh(
     >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
     >>> y = ivy.cosh(x)
     >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1., 2., 3.])
-    >>> y = x.cosh()
-    >>> print(y)
-    ivy.array([1.54,3.76,10.1])
-
-    >>> x = ivy.Container(a=ivy.array([1., 2., 3.]), b=ivy.array([6., 7., 8.]))
-    >>> y = x.cosh()
-    >>> print(y)
-    {a:ivy.array([1.54,3.76,10.1]),b:ivy.array([202.,548.,1490.])}
+    {
+        a:ivy.array([1.54,3.76,10.1]),
+        b:ivy.array([202.,548.,1490.])
+    }
     """
     return ivy.current_backend(x).cosh(x, out=out)
 
@@ -2183,7 +2147,6 @@ def greater(
     >>> print(x)
     ivy.array([False, False,  True])
 
-
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
     >>> ivy.greater(x, y, out=x)
@@ -2326,61 +2289,6 @@ def greater_equal(
         a:ivy.array([True,True,True]),
         b:ivy.array([False,False,False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = z = x.greater_equal(y)
-    >>> print(z)
-    ivy.array([False,False,False])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),
-    ...                   b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                   b=ivy.array([5, 6, 7]))
-    >>> z = x.greater_equal(y)
-    >>> print(z)
-    {a:ivy.array([True,True,True]),b:ivy.array([False,False,False])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> x = ivy.array([6, 2, 3])
-    >>> y = ivy.array([4, 5, 6])
-    >>> z = x >= y
-    >>> print(z)
-    ivy.array([True,False,False])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
-    >>> y = ivy.Container(a=ivy.array([1, 2, 3]),b=ivy.array([5, 6, 7]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([True,True,True]),
-        b:ivy.array([False,False,False])
-    }
-
-    With mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x = ivy.array([[5.1, 2.3, -3.6]])
-    >>> y = ivy.Container(a=ivy.array([[4.], [5.], [6.]]),b=ivy.array([[5.], [6.], [7.]]))
-    >>> z = x >= y
-    >>> print(z)
-    {
-        a:ivy.array([[True,False,False],[True,False,False],[False,False,False]]),
-        b:ivy.array([[True,False,False],[False,False,False],[False,False,False]])
-    }
-
     """
     return ivy.current_backend(x1, x2).greater_equal(x1, x2, out=out)
 
@@ -2640,25 +2548,6 @@ def isfinite(
         a: ivy.array([True, True]),
         b: ivy.array([True, False])
     }
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[9, float('-0')], [ivy.nan, ivy.inf]])
-    >>> y = x.isfinite()
-    >>> print(y)
-    ivy.array([[ True,  True],
-        [False, False]])
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 999999999999]),
-    ...                   b=ivy.array([float('-0'), ivy.nan]))
-    >>> y = x.isfinite()
-    >>> print(y)
-    {
-        a: ivy.array([True, True]),
-        b: ivy.array([True, False])
-    }
     """
     return ivy.current_backend(x).isfinite(x, out=out)
 
@@ -2747,34 +2636,6 @@ def isinf(
         b: ivy.array([True, False, False])
     }
 
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> x.isinf()
-    ivy.array([False, False, False])
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> x.isinf()
-    ivy.array([[False, False, False]])
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> x.isinf()
-    ivy.array([[[False],[True],[False]]])
-
-    >>> x = ivy.array([[-float('inf'), float('inf'), 0.0]])
-    >>> x.isinf()
-    ivy.array([[ True, True, False]])
-
-    >>> x = ivy.zeros((3, 3))
-    >>> x.isinf()
-    ivy.array([[False, False, False],
-        [False, False, False],
-        [False, False, False]])
-
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
@@ -2784,21 +2645,6 @@ def isinf(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
-
-    Container Static Method Examples
-    ------------------------
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('inf'), 1.23]),
-    ...                   b=ivy.array([float('inf'), 3.3, -4.2]))
-    >>> z = ivy.Container.static_isinf(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
     """
     return ivy.current_backend(x).isinf(x, out=out)
 
@@ -2882,7 +2728,6 @@ def isnan(
        [False, False, False]])
 
 
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
@@ -2893,64 +2738,6 @@ def isnan(
         a: ivy.array([False, True, False]),
         b: ivy.array([True, False, False])
     }
-
-
-    Instance Method Examples
-    ------------------------
-    With :class:`ivy.Array` inputs:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> x.isnan()
-    ivy.array([False, False, False])
-
-    >>> x = ivy.array([[1.1, 2.3, -3.6]])
-    >>> x.isnan()
-    ivy.array([[False, False, False]])
-
-    >>> x = ivy.array([[[1.1], [float('inf')], [-6.3]]])
-    >>> x.isnan()
-    ivy.array([[[False],
-            [False],
-            [False]]])
-
-    >>> x = ivy.array([[-float('nan'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, True, False]])
-
-    >>> x = ivy.array([[-float('nan'), float('inf'), float('nan'), 0.0]])
-    >>> x.isnan()
-    ivy.array([[ True, False,  True, False]])
-
-    >>> x = ivy.zeros((3, 3))
-    >>> x.isnan()
-    ivy.array([[False, False, False],
-        [False, False, False],
-        [False, False, False]])
-
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> x.isnan()
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
-    Container Static Method Examples
-    ------------------------
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([-1, -float('nan'), 1.23]),
-    ...                   b=ivy.array([float('nan'), 3.3, -4.2]))
-    >>> z = ivy.Container.static_isnan(x)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([True, False, False])
-    }
-
     """
     return ivy.current_backend(x).isnan(x, out=out)
 
@@ -3269,19 +3056,14 @@ def log1p(
     ivy.array([0.   , 0.693])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],[4.4, 5.5, 6.6]])
-    >>> ivy.log1p(x , out = x)
+    >>> ivy.log1p(x, out = x)
     >>> print(x)
     ivy.array([[0.742, 1.16 , 1.46 ],[1.69 , 1.87 , 2.03 ]])
-
-    >>> x = ivy.array([1e-9] , dtype = ivy.float32)
-    >>> y = x.log1p()
-    >>> print(y)
-    ivy.array([1.e-09])
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.1]))
-    >>> y = ivy.Container.static_log1p(x)
+    >>> y = ivy.log1p(x)
     >>> print(y)
     {
         a: ivy.array([0., 0.693, 1.1]),
@@ -3410,7 +3192,6 @@ def logaddexp(
     >>> z = ivy.logaddexp(x, y)
     >>> print(z)
     ivy.array([ 3.31,  5.05, 15.  ])
-
 
     >>> x = ivy.array([[[1.1], [3.2], [-6.3]]])
     >>> y = ivy.array([[8.4], [2.5], [1.6]])
@@ -3603,8 +3384,8 @@ def logical_not(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x=ivy.array([1,0,1,1,0])
@@ -3639,36 +3420,6 @@ def logical_not(
         a: ivy.array([False, True, False, True]),
         b: ivy.array([False, False, True, False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x=ivy.array([0,1,1,0])
-    >>> x.logical_not()
-    ivy.array([ True, False, False,  True])
-
-    >>> x=ivy.array([2,0,3,9])
-    >>> x.logical_not()
-    ivy.array([False,  True, False, False])
-
-    With :class:`ivy.Container` input:
-
-    >>> x=ivy.Container(a=ivy.array([1,0,0,1]), b=ivy.array([3,1,7,0]))
-    >>> x.logical_not()
-    {
-        a: ivy.array([False, True, True, False]),
-        b: ivy.array([False, False, False, True])
-    }
-
-    >>> x=ivy.Container(a=ivy.array([1,0,1,0]), b=ivy.native_array([5,2,0,3]))
-    >>> x.logical_not()
-    {
-        a: ivy.array([False, True, False, True]),
-        b: ivy.array([False, False, True, False])
-    }
-
     """
     return ivy.current_backend(x).logical_not(x, out=out)
 
@@ -3752,38 +3503,6 @@ def logical_or(
     >>> y = ivy.Container(a=ivy.array([False, True, False]),
     ...                   b=ivy.array([True, True, False]))
     >>> z = ivy.logical_or(x, y)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, True]),
-        b: ivy.array([True, True, True])
-    }
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([False, 3, 0])
-    >>> y = ivy.array([2, True, False])
-    >>> z = x.logical_or(y)
-    >>> print(z)
-    ivy.array([ True,  True, False])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([False,True,True]), b=ivy.array([3.14, 2.718, 1.618]))
-    >>> y = ivy.Container(a=ivy.array([0, 5.2, 0.8]), b=ivy.array([0.2, 0, 0.9]))
-    >>> z = x.logical_or(y)
-    >>> print(z)
-    {
-        a: ivy.array([False, True, True]),
-        b: ivy.array([True, True, True])
-    }
-
-    With :class:`ivy.Container` static method:
-
-    >>> x = ivy.Container(a=ivy.array([False, False, True]),
-    ...                   b=ivy.array([True, False, True]))
-    >>> y = ivy.Container(a=ivy.array([False, True, False]),
-    ...                   b=ivy.array([True, True, False]))
-    >>> z = ivy.Container.static_logical_or(x, y)
     >>> print(z)
     {
         a: ivy.array([False, True, True]),
@@ -3925,9 +3644,8 @@ def negative(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0,1,1,2])
@@ -4116,113 +3834,6 @@ def not_equal(
         a: ivy.array([False, False, False]),
         b: ivy.array([False, False, False])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x1 = ivy.array([1, 0, 1, 1])
-    >>> x2 = ivy.array([1, 0, 0, -1])
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    ivy.array([False, False, True, True])
-
-    >>> x1 = ivy.array([1, 0, 1, 0])
-    >>> x2 = ivy.array([0, 1, 0, 1])
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    ivy.array([True, True, True, True])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = x1.not_equal(x2, out=x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` instances:
-
-    >>> x1 = ivy.array([1, 0, 1, 1])
-    >>> x2 = ivy.array([1, 0, 0, -1])
-    >>> y = (x1 != x2)
-    >>> print(y)
-    ivy.array([False, False, True, True])
-
-    >>> x1 = ivy.array([1, 0, 1, 0])
-    >>> x2 = ivy.array([0, 1, 0, 1])
-    >>> y = (x1 != x2)
-    >>> print(y)
-    ivy.array([True, True, True, True])
-
-    With :class:`ivy.Container` instances:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, True, False]),
-        b: ivy.array([False, False, False])
-    }
-
-    With a mix of :class:`ivy.Array` and :class:`ivy.Container` instances:
-
-    >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 3, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, True, False])
-    }
-
-    >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
-    ...                    b=ivy.array([1, 4, 5]))
-    >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
-    ...                    b=ivy.array([1.0, 4.0, 5.0]))
-    >>> y = (x1 != x2)
-    >>> print(y)
-    {
-        a: ivy.array([False, False, False]),
-        b: ivy.array([False, False, False])
-    }
-
     """
     return ivy.current_backend(x1, x2).not_equal(x1, x2, out=out)
 
@@ -4399,7 +4010,36 @@ def pow(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
+    Examples
+    --------
+    With :class:`ivy.Array` input:
 
+    >>> x = ivy.array([1, 2, 3])
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    ivy.array([1, 8, 27])
+
+    >>> x = ivy.array([1.5, -0.8, 0.3])
+    >>> y = ivy.zeros(3)
+    >>> ivy.pow(x, 2, out=y)
+    >>> print(y)
+    ivy.array([2.25, 0.64, 0.09])
+
+    >>> x = ivy.array([[1.2, 2, 3.1], [1, 2.5, 9]])
+    >>> ivy.pow(x, 2.3, out=x)
+    >>> print(x)
+    ivy.array([[  1.52095687,   4.92457771,  13.49372482],
+           [  1.        ,   8.22738838, 156.5877228 ]])
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+    >>> y = ivy.pow(x, 3)
+    >>> print(y)
+    {
+        a:ivy.array([0,1]),
+        b:ivy.array([8,27])
+    }
     """
     return ivy.current_backend(x1, x2).pow(x1, x2, out=out)
 
@@ -4574,13 +4214,10 @@ def round(
     ret
         An array of the same shape and type as x, with the elements rounded to integers.
 
-
-
     Note: PyTorch supports an additional argument :code:`decimals` for the
     `round function <https://pytorch.org/docs/stable/generated/torch.round.html>`_.
     It has been deliberately omitted here due to the imprecise
     nature of the argument in :code:`torch.round`.
-
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -4591,8 +4228,8 @@ def round(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.2, 2.4, 3.6])
@@ -4921,8 +4558,8 @@ def sqrt(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-    Functional Examples
-    -------------------
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0, 4., 8.])
@@ -4949,28 +4586,6 @@ def sqrt(
         b: ivy.array([[7., 1.],
                       [0., 4.47]])
     }
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([[1., 2.],  [3., 4.]])
-    >>> y = x.sqrt()
-    >>> print(y)
-    ivy.array([[1.  , 1.41],
-               [1.73, 2.  ]])
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., 100., 27.]), b=ivy.native_array([93., 54., 25.]))
-    >>> y = x.sqrt()
-    >>> print(y)
-    {
-        a: ivy.array([0., 10., 5.2]),
-        b: ivy.array([9.64, 7.35, 5.])
-    }
-
     """
     return ivy.current_backend(x).sqrt(x, out=out)
 
@@ -5011,9 +4626,8 @@ def square(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    ------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -5037,45 +4651,10 @@ def square(
     >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
     >>> y = ivy.square(x)
     >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x.square()
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x.square()
-    >>> print(y)
-    {a:ivy.array([0,1]),b:ivy.array([4,9])}
-
-    Operator Examples
-    -----------------
-
-    With :class:`ivy.Array` input:
-
-    >>> x = ivy.array([1, 2, 3])
-    >>> y = x ** 2
-    >>> print(y)
-    ivy.array([1, 4, 9])
-
-    With :class:`ivy.Container` input:
-
-    >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
-    >>> y = x ** 2
-    >>> print(y)
     {
-        a: ivy.array([0, 1]),
-        b: ivy.array([4, 9])
+        a:ivy.array([0,1]),
+        b:ivy.array([4,9])
     }
-
     """
     return ivy.current_backend(x).square(x, out=out)
 
@@ -5277,7 +4856,6 @@ def tanh(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments
 
-
     Examples
     --------
     With :class:`ivy.Array` input:
@@ -5428,6 +5006,11 @@ def erf(
     ret
         The Gauss error function of x.
 
+    Examples
+    --------
+    >>> x = ivy.array([0, 0.3, 0.7, 1.0])
+    >>> ivy.erf(x)
+    ivy.array([0., 0.328, 0.677, 0.842])
     """
     return ivy.current_backend(x).erf(x, out=out)
 
@@ -5552,7 +5135,6 @@ def minimum(
     -------
     ret
         An array with the elements of x1, but clipped to not exceed the x2 values.
-
 
     Examples
     --------
@@ -5792,7 +5374,6 @@ def rad2deg(
     return ivy.current_backend(x).rad2deg(x, out=out)
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -5835,6 +5416,9 @@ def trunc_divide(
     ivy.array([ 0., -1., 14.])
     """
     return ivy.trunc(ivy.divide(x1, x2), out=out)
+
+
+trunc_divide.mixed_function = True
 
 
 @to_native_arrays_and_back

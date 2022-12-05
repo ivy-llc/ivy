@@ -1840,8 +1840,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1851,8 +1851,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: True,
+            b: True
         }
         """
         return self.static_allclose(

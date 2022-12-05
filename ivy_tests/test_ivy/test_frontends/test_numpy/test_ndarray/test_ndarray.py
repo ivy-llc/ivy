@@ -1,6 +1,6 @@
 # global
 import numpy as np
-from hypothesis import assume, strategies as st
+from hypothesis import assume, strategies as st, given
 
 # local
 import ivy
@@ -8,7 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import (
     handle_frontend_method,
     assert_all_close,
-    handle_frontend_test,
 )
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
@@ -19,8 +18,10 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.numpy import ndarray
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+CLASS_TREE = "ivy.functional.frontends.numpy.ndarray"
+
+
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -41,8 +42,7 @@ def test_numpy_ndarray_property_ivy_array(
     )
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -57,8 +57,7 @@ def test_numpy_ndarray_property_dtype(
     ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -73,8 +72,7 @@ def test_numpy_ndarray_property_shape(
     ivy.assertions.check_equal(x.shape, ivy.Shape(shape))
 
 
-@handle_frontend_test(
-    fn_tree="numpy.argmax",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -98,8 +96,9 @@ def test_numpy_ndarray_property_T(
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.argmax",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="argmax",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         num_arrays=2,
@@ -111,9 +110,8 @@ def test_numpy_ndarray_argmax(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -130,8 +128,7 @@ def test_numpy_ndarray_argmax(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -154,8 +151,9 @@ def dtypes_x_reshape(draw):
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.reshape",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="reshape",
     dtypes_x_shape=dtypes_x_reshape(),
     order=st.sampled_from(["C", "F", "A"]),
 )
@@ -166,8 +164,7 @@ def test_numpy_ndarray_reshape(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, shape = dtypes_x_shape
@@ -188,14 +185,14 @@ def test_numpy_ndarray_reshape(
             "order": order,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.transpose",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="transpose",
     array_and_axes=np_frontend_helpers._array_and_axes_permute_helper(
         min_num_dims=2,
         max_num_dims=5,
@@ -209,8 +206,7 @@ def test_numpy_ndarray_transpose(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     array, dtype, axes = array_and_axes
@@ -230,8 +226,7 @@ def test_numpy_ndarray_transpose(
             "axes": axes,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -260,8 +255,9 @@ def dtype_values_and_axes(draw):
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.swapaxes",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="swapaxes",
     dtype_x_and_axes=dtype_values_and_axes(),
 )
 def test_numpy_ndarray_swapaxes(
@@ -271,8 +267,7 @@ def test_numpy_ndarray_swapaxes(
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
     frontend,
-    init_name,
-    method_name,
+    frontend_method_data,
 ):
     input_dtype, x, axis1, axis2 = dtype_x_and_axes
     helpers.test_frontend_method(
@@ -292,15 +287,15 @@ def test_numpy_ndarray_swapaxes(
             "axis2": axis2,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # any
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.any",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="any",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -321,8 +316,7 @@ def test_numpy_ndarray_any(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -351,14 +345,14 @@ def test_numpy_ndarray_any(
             "where": where,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.all",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="all",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -379,8 +373,7 @@ def test_numpy_ndarray_all(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -409,14 +402,14 @@ def test_numpy_ndarray_all(
             "where": where,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.argsort",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="argsort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -431,8 +424,7 @@ def test_numpy_instance_argsort(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -449,8 +441,7 @@ def test_numpy_instance_argsort(
         method_native_array_flags=native_array,
         method_num_positional_args=method_num_positional_args,
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
         method_all_as_kwargs_np={
             "axis": axis,
             "kind": None,
@@ -460,8 +451,9 @@ def test_numpy_instance_argsort(
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.mean",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="mean",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
@@ -476,8 +468,7 @@ def test_numpy_ndarray_mean(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -499,14 +490,14 @@ def test_numpy_ndarray_mean(
             "out": None,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.min",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="min",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -523,8 +514,7 @@ def test_numpy_instance_min(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -546,14 +536,14 @@ def test_numpy_instance_min(
             "keepdims": keepdims,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.argmin",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="argmin",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -569,8 +559,7 @@ def test_numpy_ndarray_argmin(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -591,14 +580,14 @@ def test_numpy_ndarray_argmin(
             "keepdims": keepdims,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.clip",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="clip",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
@@ -610,8 +599,7 @@ def test_numpy_instance_clip(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -629,14 +617,14 @@ def test_numpy_instance_clip(
         },
         method_all_as_kwargs_np={"a_min": 0, "a_max": 1},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.max",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="max",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -653,8 +641,7 @@ def test_numpy_instance_max(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -676,14 +663,14 @@ def test_numpy_instance_max(
             "keepdims": keepdims,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.cumprod",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -700,8 +687,7 @@ def test_numpy_instance_cumprod(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -724,14 +710,14 @@ def test_numpy_instance_cumprod(
             "out": None,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.cumsum",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="cumsum",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_axis=-1,
@@ -748,8 +734,7 @@ def test_numpy_instance_cumsum(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -772,14 +757,14 @@ def test_numpy_instance_cumsum(
             "out": None,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.sort",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="sort",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
         min_axis=-1,
@@ -794,8 +779,7 @@ def test_numpy_instance_sort(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -816,8 +800,7 @@ def test_numpy_instance_sort(
             "axis": axis,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
         test_values=False,
     )
     frontend_ret = np.sort(x[0], axis=axis)
@@ -831,8 +814,9 @@ def test_numpy_instance_sort(
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.copy",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="copy",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -844,8 +828,7 @@ def test_numpy_instance_copy(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -864,14 +847,14 @@ def test_numpy_instance_copy(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.nonzero",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="nonzero",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -882,8 +865,7 @@ def test_numpy_instance_nonzero(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, a = dtype_and_a
@@ -902,14 +884,14 @@ def test_numpy_instance_nonzero(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.ravel",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="ravel",
     dtype_and_a=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -920,8 +902,7 @@ def test_numpy_instance_ravel(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, a = dtype_and_a
@@ -940,14 +921,14 @@ def test_numpy_instance_ravel(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.repeat",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="repeat",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=2,
@@ -964,8 +945,7 @@ def test_numpy_instance_repeat(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -987,14 +967,14 @@ def test_numpy_instance_repeat(
             "axis": axis,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.searchsorted",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="searchsorted",
     dtype_x_v=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("signed_integer"),
         min_num_dims=1,
@@ -1010,8 +990,7 @@ def test_numpy_instance_searchsorted(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_x_v
@@ -1034,14 +1013,14 @@ def test_numpy_instance_searchsorted(
             "sorter": np.argsort(xs[0]),
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.squeeze",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="squeeze",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         min_axis=-1,
@@ -1056,8 +1035,7 @@ def test_numpy_instance_squeeze(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -1078,14 +1056,14 @@ def test_numpy_instance_squeeze(
             "axis": axis,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.std",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="std",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
         max_value=100,
@@ -1103,8 +1081,7 @@ def test_numpy_instance_std(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    method_name,
-    init_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
@@ -1134,14 +1111,14 @@ def test_numpy_instance_std(
             "where": where,
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__add__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -1152,8 +1129,7 @@ def test_numpy_instance_add__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1174,14 +1150,14 @@ def test_numpy_instance_add__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__sub__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -1192,8 +1168,7 @@ def test_numpy_instance_sub__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1214,14 +1189,14 @@ def test_numpy_instance_sub__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__mul__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1233,8 +1208,7 @@ def test_numpy_instance_mul__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1255,14 +1229,14 @@ def test_numpy_instance_mul__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__truediv__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1273,8 +1247,7 @@ def test_numpy_instance_truediv__(
     as_variable,
     num_positional_args_method,
     native_array,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1295,15 +1268,15 @@ def test_numpy_instance_truediv__(
         method_all_as_kwargs_np={
             "value": xs[1],
         },
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        method_name=method_name,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__and__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -1315,8 +1288,7 @@ def test_numpy_instance_and__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1337,14 +1309,14 @@ def test_numpy_instance_and__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__or__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -1356,8 +1328,7 @@ def test_numpy_instance_or__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1378,14 +1349,14 @@ def test_numpy_instance_or__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__xor__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -1397,8 +1368,7 @@ def test_numpy_instance_xor__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1419,14 +1389,14 @@ def test_numpy_instance_xor__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__matmul__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__matmul__",
     x=_get_first_matrix_and_dtype(),
     y=_get_second_matrix_and_dtype(),
 )
@@ -1437,8 +1407,7 @@ def test_numpy_instance_matmul__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     dtype1, x1 = x
@@ -1461,14 +1430,14 @@ def test_numpy_instance_matmul__(
             "value": x2,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__copy__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__copy__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1480,8 +1449,7 @@ def test_numpy_instance_copy__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1500,14 +1468,14 @@ def test_numpy_instance_copy__(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__neg__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1519,8 +1487,7 @@ def test_numpy_instance_neg__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1539,14 +1506,14 @@ def test_numpy_instance_neg__(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__pos__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__pos__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1558,8 +1525,7 @@ def test_numpy_instance_pos__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1578,14 +1544,14 @@ def test_numpy_instance_pos__(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__bool__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
@@ -1597,8 +1563,7 @@ def test_numpy_instance_bool__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1617,14 +1582,14 @@ def test_numpy_instance_bool__(
         method_num_positional_args=method_num_positional_args,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__ne__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1636,8 +1601,7 @@ def test_numpy_instance_ne__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1658,14 +1622,14 @@ def test_numpy_instance_ne__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__eq__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1677,8 +1641,7 @@ def test_numpy_instance_eq__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1699,14 +1662,14 @@ def test_numpy_instance_eq__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__ge__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1718,8 +1681,7 @@ def test_numpy_instance_ge__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1740,14 +1702,14 @@ def test_numpy_instance_ge__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__gt__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1759,8 +1721,7 @@ def test_numpy_instance_gt__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1781,14 +1742,14 @@ def test_numpy_instance_gt__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__le__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1800,8 +1761,7 @@ def test_numpy_instance_le__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1822,14 +1782,14 @@ def test_numpy_instance_le__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__lt__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1841,8 +1801,7 @@ def test_numpy_instance_lt__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, xs = dtype_and_x
@@ -1863,14 +1822,14 @@ def test_numpy_instance_lt__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__int__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__int__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
@@ -1883,9 +1842,8 @@ def test_numpy_instance_int__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1903,14 +1861,14 @@ def test_numpy_instance_int__(
         },
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__float__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__float__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
@@ -1923,9 +1881,8 @@ def test_numpy_instance_float__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1943,14 +1900,14 @@ def test_numpy_instance_float__(
         },
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__contains__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__contains__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -1961,9 +1918,8 @@ def test_numpy_instance_contains__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -1983,14 +1939,14 @@ def test_numpy_instance_contains__(
             "key": xs[0].reshape(-1)[0],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__iadd__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__iadd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -2001,9 +1957,8 @@ def test_numpy_instance_iadd__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2023,14 +1978,14 @@ def test_numpy_instance_iadd__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__isub__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__isub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -2041,9 +1996,8 @@ def test_numpy_instance_isub__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2063,14 +2017,14 @@ def test_numpy_instance_isub__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__imul__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__imul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),
@@ -2081,9 +2035,8 @@ def test_numpy_instance_imul__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2103,14 +2056,14 @@ def test_numpy_instance_imul__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__ipow__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ipow__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2123,9 +2076,8 @@ def test_numpy_instance_ipow__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2145,14 +2097,14 @@ def test_numpy_instance_ipow__(
             "value": power,
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__iand__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__iand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -2164,9 +2116,8 @@ def test_numpy_instance_iand__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2186,14 +2137,14 @@ def test_numpy_instance_iand__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__ior__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ior__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -2205,9 +2156,8 @@ def test_numpy_instance_ior__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2227,14 +2177,14 @@ def test_numpy_instance_ior__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__ixor__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__ixor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("bool"),
         num_arrays=2,
@@ -2246,9 +2196,8 @@ def test_numpy_instance_ixor__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
 
@@ -2268,14 +2217,14 @@ def test_numpy_instance_ixor__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__imod__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__imod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -2289,9 +2238,8 @@ def test_numpy_instance_imod__(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, xs = dtype_and_x
     helpers.test_frontend_method(
@@ -2310,14 +2258,14 @@ def test_numpy_instance_imod__(
             "value": xs[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="array",
-    method_tree="numpy.ndarray.__abs__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__abs__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -2328,8 +2276,7 @@ def test_numpy_instance_abs__(
     as_variable: pf.AsVariableFlags,
     num_positional_args_method: pf.NumPositionalArgMethod,
     native_array: pf.NativeArrayFlags,
-    method_name,
-    init_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2348,6 +2295,5 @@ def test_numpy_instance_abs__(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )

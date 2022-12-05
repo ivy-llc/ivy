@@ -567,6 +567,43 @@ def test_tensorflow_shape(
     )
 
 
+# range
+@handle_frontend_test(
+    fn_tree="tensorflow.range",
+    start=helpers.ints(min_value=-50, max_value=0),
+    limit=helpers.ints(min_value=1, max_value=50),
+    delta=helpers.ints(min_value=1, max_value=5),
+    dtype=helpers.get_dtypes("float"),
+)
+def test_tensorflow_range(
+    *,
+    start,
+    limit,
+    delta,
+    dtype,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=[],
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        on_device=on_device,
+        fn_tree=fn_tree,
+        frontend=frontend,
+        start=start,
+        limit=limit,
+        delta=delta,
+        dtype=dtype[0],
+    )
+
+
 # sort
 @handle_frontend_test(
     fn_tree="tensorflow.sort",
@@ -606,4 +643,45 @@ def test_tensorflow_sort(
         values=input[0],
         axis=axis,
         direction=descending,
+    )
+
+
+# searchsorted
+@handle_frontend_test(
+    fn_tree="tensorflow.searchsorted",
+    dtype_x_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+    ),
+    side=st.sampled_from(["left", "right"]),
+    out_type=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_searchsorted(
+    dtype_x_v,
+    side,
+    out_type,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_x_v
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        sorted_sequence=np.sort(xs[0]),
+        values=xs[1],
+        side=side,
+        out_type=out_type,
     )

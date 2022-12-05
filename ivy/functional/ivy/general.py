@@ -120,6 +120,7 @@ def get_referrers_recursive(
     return ret_cont
 
 
+@handle_nestable
 @handle_exceptions
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
@@ -156,6 +157,7 @@ def is_native_array(
         return False
 
 
+@handle_nestable
 @handle_exceptions
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
@@ -189,6 +191,7 @@ def is_ivy_array(
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
+@handle_nestable
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array or a Native Array.
@@ -1062,7 +1065,7 @@ def fourier_encode(
     return sin_x, cos_x
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 @handle_array_like
@@ -2317,6 +2320,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @to_native_arrays_and_back
+@handle_nestable
 @handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],

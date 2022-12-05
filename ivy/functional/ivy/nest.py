@@ -902,7 +902,7 @@ def nested_map(
     elif dict_check_fn(x, dict):
         class_instance = type(x)
         return class_instance(
-            {
+            **{
                 k: nested_map(
                     v,
                     fn,
@@ -1231,3 +1231,34 @@ def nested_multi_map(
         if ivy.is_ivy_container(nest0)
         else return_nest
     )
+
+
+@handle_exceptions
+def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterable]):
+    """Group all unique index chains in a nest. This function is useful for finding
+    all unique index chains in a nest, and then duplicating the values at those
+    index chains for functional frameworks.
+
+    Parameters
+    ----------
+    nest
+        nest to get duplicate index chains for.
+
+    Returns
+    -------
+        list of index chains to duplicate.
+    """
+    all_index_chains = ivy.nested_argwhere(nest, lambda _: True)
+    duplicates = []
+    duplicate_index_chains = {}
+    for index_chain in all_index_chains:
+        val = ivy.index_nest(nest, index_chain)
+        if ivy.is_array(val):
+            for i in range(len(duplicates)):
+                if val is duplicates[i]:
+                    duplicate_index_chains[i].append(index_chain)
+                    break
+            else:
+                duplicates.append(val)
+                duplicate_index_chains[len(duplicates) - 1] = [index_chain]
+    return list(duplicate_index_chains.values())

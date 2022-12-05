@@ -11,7 +11,7 @@ Ivy Frontend Tests
 .. _`open task`: https://lets-unify.ai/ivy/contributing/open_tasks.html#open-tasks
 .. _`Ivy Tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`Function Testing Helpers`: https://github.com/unifyai/ivy/blob/bf0becd459004ae6cffeb3c38c02c94eab5b7721/ivy_tests/test_ivy/helpers/function_testing.py
-.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
 .. _`setting up`: https://lets-unify.ai/ivy/contributing/setting_up.html#setting-up-testing
 
 
@@ -562,6 +562,11 @@ for example, :code:`ndarray.__add__` would expect an array as input, despite the
 
 **Important Helper Functions**
 
+:func:`@handle_frontend_method` requires 3 keyword only parameters:
+    - :code:`class_tree` A full path to the array class in **Ivy** namespace. 
+    - :code:`init_tree` A full path to initialization function.
+    - :code:`method_name` The name of the method to test. 
+
 :func:`helpers.test_frontend_method` is used to test frontend instance methods. It is used in the same way as :func:`helpers.test_frontend_function`.
 
 
@@ -577,8 +582,9 @@ ivy.add()
 
     # ivy_tests/test_ivy/test_frontends/test_jax/test_jax_devicearray.py
     @handle_frontend_method(
-        init_name="jax.numpy.array",
-        method_tree="jax.DeviceArray.__add__",
+        class_tree="ivy.functional.frontends.jax.DeviceArray"
+        init_tree="jax.numpy.array",
+        method_name="__add__",
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric", full=True),
             num_arrays=2,
@@ -591,9 +597,8 @@ ivy.add()
         method_num_positional_args: pf.NumPositionalArgMethod,
         as_variable: pf.AsVariableFlags,
         native_array: pf.NativeArrayFlags,
-        method_name,
-        init_name,
         frontend,
+        frontend_method_data,
        ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_method(
@@ -602,7 +607,7 @@ ivy.add()
             init_num_positional_args=init_num_positional_args,
             init_native_array_flags=native_array,
             init_all_as_kwargs_np={
-                "data": x[0],
+                "object": x[0],
             },
             method_input_dtypes=input_dtype,
             method_as_variable_flags=as_variable,
@@ -612,13 +617,13 @@ ivy.add()
                 "other": x[1],
             },
             frontend=frontend,
-            init_name=init_name,
-            method_name=method_name,
+            frontend_method_data=frontend_method_data,
         )
 
 * We use :func:`test_frontend_method` to test the instance method.
+* We specify the :code:`class_tree` to be :meth:`ivy.functional.frontends.jax.DeviceArray` which is the path to the class in ivy namespace.
 * We specify the function that is used to initialize the array, for jax, we use :code:`jax.numpy.array` to create a :code:`DeviceArray`.
-* We specify the :code:`method_tree` to be :meth:`jax.DeviceArray.__add__` which is the path to the method in the frontend class.
+* We specify the :code:`method_name` to be :meth:`__add__` which is the path to the method in the frontend class.
 * We must tell the decorator which flags to generate using type hints, as we don't want to rely on the name of the parameter only, we use the type hints
 to tell the decorator that we should generate native array flags for :code:`init_as_variable_flags` by type hinting it with :code:`pf.NativeArrayFlags`.
     
@@ -628,8 +633,9 @@ to tell the decorator that we should generate native array flags for :code:`init
 
     # ivy_tests/test_ivy/test_frontends/test_numpy/test_ndarray.py
     @handle_frontend_method(
-        init_name="array",
-        method_tree="numpy.ndarray.__add__",
+        class_tree="numpy.ndarray"
+        init_tree="numpy.array",
+        method_name="__add__",
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
         ),
@@ -640,9 +646,8 @@ to tell the decorator that we should generate native array flags for :code:`init
         native_array: pf.NativeArrayFlags,
         init_num_positional_args: pf.NumPositionalArgFn,
         method_num_positional_args: pf.NumPositionalArgMethod,
-        init_name,
-        method_name,
         frontend,
+        frontend_method_data,
     ):
         input_dtype, xs = dtype_and_x
         helpers.test_frontend_method(
@@ -661,12 +666,12 @@ to tell the decorator that we should generate native array flags for :code:`init
                 "value": xs[1],
             },
             frontend=frontend,
-            init_name=init_name,
-            method_name=method_name,
+            frontend_method_data=frontend_method_data,
         )
 
-* We specify the function that is used to initialize the array, for NumPy, we use :code:`numpy.array` to create a :code:`numpy.ndarray`.
-* We specify the :code:`method_tree` to be :meth:`numpy.ndarray.__add__` which is the path to the method in the frontend class.
+* We specify the :code:`class_tree` to be :meth:`ivy.functional.frontends.numpy.array` which is the path to the class in ivy namespace.
+* We specify the function that is used to initialize the array, for jax, we use :code:`numpy.array` to create a :code:`numpy.ndarray`.
+* We specify the :code:`method_name` to be :meth:`__add__` which is the path to the method in the frontend class.
 
 **TensorFlow**
 
@@ -674,8 +679,9 @@ to tell the decorator that we should generate native array flags for :code:`init
 
     # ivy_tests/test_ivy/test_frontends/test_tensorflow/test_tensor.py
     @handle_frontend_method(
-        init_name="constant",
-        method_tree="tensorflow.EagerTensor.__add__",
+        class_tree="tensorflow.EagerTensor"
+        init_tree="tensorflow.constant",
+        method_name="__add__",
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
@@ -688,9 +694,8 @@ to tell the decorator that we should generate native array flags for :code:`init
         native_array: pf.NativeArrayFlags,
         init_num_positional_args: pf.NumPositionalArgFn,
         method_num_positional_args: pf.NumPositionalArgMethod,
-        init_name,
-        method_name,
         frontend,
+        frontend_method_data,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_method(
@@ -709,8 +714,7 @@ to tell the decorator that we should generate native array flags for :code:`init
                 "y": x[1],
             },
             frontend=frontend,
-            init_name=init_name,
-            method_name=method_name,
+            frontend_method_data=frontend_method_data,
         )
 
 
@@ -723,8 +727,9 @@ to tell the decorator that we should generate native array flags for :code:`init
 
     # ivy_tests/test_ivy/test_frontends/test_torch/test_tensor.py
     @handle_frontend_method(
-        init_name="tensor",
-        method_tree="torch.Tensor.add",
+        class_tree="torch.Tensor"
+        init_tree="tensor.tensor",
+        method_name="add",
         dtype_and_x=helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float"),
             num_arrays=2,
@@ -741,9 +746,8 @@ to tell the decorator that we should generate native array flags for :code:`init
         method_num_positional_args: pf.NumPositionalArgMethod,
         as_variable: pf.AsVariableFlags,
         native_array: pf.NativeArrayFlags,
-        method_name,
-        init_name,
         frontend,
+        frontend_method_data,
     ):
         input_dtype, x = dtype_and_x
         helpers.test_frontend_method(
@@ -763,8 +767,7 @@ to tell the decorator that we should generate native array flags for :code:`init
                 "alpha": alpha,
             },
             frontend=frontend,
-            init_name=init_name,
-            method_name=method_name,
+            frontend_method_data=frontend_method_data,
         )
 
 * We specify the function that is used to initialize the array, for PyTorch, we use :code:`torch.tensor` to create a :code:`torch.Tensor`.
