@@ -99,7 +99,7 @@ diagflat.support_native_out = False
 
 
 def kron(
-        a: torch.Tensor,
+    a: torch.Tensor,
         b: torch.Tensor,
         /,
         *,
