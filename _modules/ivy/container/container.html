@@ -279,7 +279,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            input container. Should have a numeric data type.</span>
-<span class="sd">        other</span>
+<span class="sd">        power</span>
 <span class="sd">            input array or container of powers. Must be compatible</span>
 <span class="sd">            with ``self`` (see :ref:`broadcasting`). Should have a numeric</span>
 <span class="sd">            data type.</span>
@@ -290,6 +290,8 @@
 <span class="sd">            a container containing the element-wise sums. The returned array must have a</span>
 <span class="sd">            data type determined by :ref:`type-promotion`.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
 <span class="sd">        With :class:`ivy.Container` input:</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))</span>
