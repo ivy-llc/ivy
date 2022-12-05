@@ -14,7 +14,7 @@ from .. import backend_version
 def diagflat(
     x: torch.Tensor,
     /,
-        *,
+    *,
         offset: Optional[int] = 0,
         padding_value: Optional[float] = 0,
         align: Optional[str] = "RIGHT_LEFT",
