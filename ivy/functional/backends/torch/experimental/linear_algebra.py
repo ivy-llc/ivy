@@ -19,7 +19,7 @@ def diagflat(
     padding_value: Optional[float] = 0,
     align: Optional[str] = "RIGHT_LEFT",
     num_rows: Optional[int] = -1,
-        num_cols: Optional[int] = -1,
+    num_cols: Optional[int] = -1,
         out: Optional[torch.Tensor] = None,
 ):
     if len(x.shape) > 1:
