@@ -439,6 +439,7 @@ def test_tensorflow_gelu(
 def test_tensorflow_avg_pool2d(
     *,
     x_k_s_p,
+    data_format,
     as_variable,
     num_positional_args,
     native_array,
