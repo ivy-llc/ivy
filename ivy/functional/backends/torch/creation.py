@@ -487,6 +487,23 @@ def ones_like_v_0p3p0_to_0p3p1(
     return torch.ones_like(x, out=out)
 
 
+def ones_like_v_0p1p12_to_0p2p0(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+):
+    if len(x.shape) == 1:
+        for i in range(x.shape[0]):
+            x[i] = 1
+        return x
+    for i in range(x.shape[0]):
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :])
+    return x
+
+
 def tril(
     x: torch.Tensor, /, *, k: int = 0, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
