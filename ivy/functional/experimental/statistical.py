@@ -159,7 +159,8 @@ def quantile(
     interpolation: str = 'linear',
     out: Optional[ivy.Array] = None
 ) -> ivy.Array:
-    """ Compute the q-th quantile of the data along the specified axis.
+    """Compute the q-th quantile of the data along the specified axis.
+
     Parameters
     ----------
     a
@@ -187,28 +188,35 @@ def quantile(
         integer dtypes.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis
         is None, a rank(q) array. The first rank(q) dimensions index quantiles for 
         different values of q.
-    Functional Examples
-    -------------------
+
+    Examples
+    --------
     >>> a = ivy.array([[10., 7., 4.], [3., 2., 1.]])
     >>> q = ivy.array(0.5)
     >>> ivy.quantile(a, q)
     ivy.array(3.5)
+
     >>> a = ivy.array([[10., 7., 4.], [3., 2., 1.]])
     >>> q = 0.5
     >>> ivy.quantile(a, q)
     ivy.array(3.5)
+
     >>> ivy.quantile(a, q, axis=0)
     ivy.array([6.5, 4.5, 2.5])
+
     >>> ivy.quantile(a, q, axis=1)
     ivy.array([7.,  2.])
+
     >>> ivy.quantile(a, q, axis=1, keepdims=True)
     ivy.array([[7.],[2.]])
+    
     >>> a = ivy.array([1., 2., 3., 4.])
     >>> q = ivy.array([0.3, 0.7])
     >>> ivy.quantile(a, q, interpolation='lower')

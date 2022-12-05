@@ -345,6 +345,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring
         for ivy.quantile also applies to this method with minimal
         changes.
+
         Parameters
         ----------
         a
@@ -373,14 +374,16 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             integer dtypes.
         out
             optional output array, for writing the result to.
+
         Returns
         -------
         ret
             Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
             as input arrays in the container, or, if axis is None, rank(q) arrays. The
             first rank(q) dimensions index quantiles for different values of q.
+
         Examples
-        -------------------
+        --------
         With one :class:`ivy.Container` input:
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
@@ -393,6 +396,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             x: 3.5,
             y: 2.5
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -404,6 +408,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             x: ivy.array([3.5, 6.25]),
             y: ivy.array([2.5, 3.25])
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -416,6 +421,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
                         [8.25, 5.75, 3.25]]),
             y: ivy.array([2.5, 3.25])
         }
+
         >>> a = ivy.Container(
                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]])
                 )
@@ -427,6 +433,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
                     [[8.5], 
                     [2.5]]])
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -440,7 +447,6 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             y: ivy.array([1., 3.])
         }   
         """
-
         return ContainerBase.multi_map_in_static_method(
             "quantile",
             a,
@@ -473,6 +479,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         This method simply wraps the function, and so the docstring
         for ivy.quantile also applies to this method with minimal
         changes.
+
         Parameters
         ----------
         a
@@ -501,15 +508,18 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             integer dtypes.
         out
             optional output array, for writing the result to.
+
         Returns
         -------
         ret
             Container with (rank(q) + N - len(axis)) dimensional arrays of same dtype
             as input arrays in the container, or, if axis is None, rank(q) arrays. The 
             first rank(q) dimensions index quantiles for different values of q.
+
         Examples
-        -------------------
+        --------
         With one :class:`ivy.Container` input:
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -521,6 +531,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             x: 3.5,
             y: 2.5
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -532,6 +543,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             x: ivy.array([3.5, 6.25]),
             y: ivy.array([2.5, 3.25])
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
@@ -544,6 +556,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
                         [8.25, 5.75, 3.25]]),
             y: ivy.array([2.5, 3.25])
         }
+
         >>> a = ivy.Container(
                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]])
                 )
@@ -555,6 +568,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
                     [[8.5], 
                     [2.5]]])
         }
+
         >>> a = ivy.Container(
                                 x=ivy.array([[10., 7., 4.], [3., 2., 1.]]),
                                 y=ivy.array([1., 2., 3., 4.])
