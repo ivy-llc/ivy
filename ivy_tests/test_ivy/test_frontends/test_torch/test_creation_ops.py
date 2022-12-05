@@ -25,17 +25,9 @@ def _start_stop_step(draw):
     start = draw(helpers.ints(min_value=0, max_value=50))
     stop = draw(helpers.ints(min_value=0, max_value=50))
     if start < stop:
-        step = draw(
-            helpers.ints(min_value=0, max_value=50).filter(
-                lambda x: True if x != 0 else False
-            )
-        )
+        step = draw(helpers.ints(min_value=1, max_value=50))
     else:
-        step = draw(
-            helpers.ints(min_value=-50, max_value=0).filter(
-                lambda x: True if x != 0 else False
-            )
-        )
+        step = draw(helpers.ints(min_value=-50, max_value=-1))
     return start, stop, step
 
 
@@ -278,7 +270,6 @@ def test_torch_arange(
     dtype,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     on_device,
     fn_tree,
@@ -289,13 +280,13 @@ def test_torch_arange(
         input_dtypes=[],
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=3,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        end=stop,
         start=start,
+        end=stop,
         step=step,
         dtype=dtype[0],
         device=on_device,
@@ -314,7 +305,6 @@ def test_torch_range(
     dtype,
     as_variable,
     with_out,
-    num_positional_args,
     native_array,
     on_device,
     fn_tree,
@@ -325,13 +315,13 @@ def test_torch_range(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
-        num_positional_args=num_positional_args,
+        num_positional_args=3,
         native_array_flags=native_array,
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        end=stop,
         start=start,
+        end=stop,
         step=step,
         dtype=dtype[0],
         device=on_device,
