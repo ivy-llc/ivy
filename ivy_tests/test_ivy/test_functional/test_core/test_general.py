@@ -475,8 +475,9 @@ def _vector_norm_helper(draw):
         helpers.dtype_and_values(
             available_dtypes=helpers.get_dtypes("float", key="clip_vector_norm"),
             min_num_dims=1,
-            large_abs_safety_factor=4,
-            small_abs_safety_factor=4,
+            min_value=-100,
+            max_value=100,
+            abs_smallest_val=1e-2,
             safety_factor_scale="log",
         )
     )
@@ -489,17 +490,13 @@ def _vector_norm_helper(draw):
         max_p = math.log(max_val) / math.log(max_x)
     else:
         max_p = math.log(max_val)
-    p = draw(
-        helpers.floats(
-            small_abs_safety_factor=2, safety_factor_scale="log", max_value=max_p
-        )
-    )
+    p = draw(helpers.floats(abs_smallest_val=1e-2, min_value=-max_p, max_value=max_p))
     max_norm_val = math.log(max_val / max_x)
     max_norm = draw(
         helpers.floats(
-            small_abs_safety_factor=2,
+            large_abs_safety_factor=4,
             safety_factor_scale="log",
-            min_value=0,
+            min_value=1e-2,
             max_value=max_norm_val,
         )
     )
