@@ -57,6 +57,34 @@ def test_numpy_ndarray_property_shape(
     ivy.assertions.check_equal(x.ivy_array.shape, ivy.Shape(shape))
 
 
+# __abs__
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__abs__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_tensorflow_instance_abs(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[],
+        as_variable_flags_method=[],
+        num_positional_args_method=0,
+        native_array_flags_method=[],
+        all_as_kwargs_np_method={},
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__abs__",
+    )
+
+
 # __add__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -103,7 +131,7 @@ def test_tensorflow_instance_add(
     init_tree="tensorflow.constant",
     method_name="__div__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         shared_dtype=True,
     ),
@@ -622,6 +650,38 @@ def test_tensorflow_instance_radd(
     )
 
 
+# __rdiv__
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__rdiv__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_rdiv(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "x": x[1],
+        },
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__rdiv__",
+    )
+
+
 # __rfloordiv__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
@@ -660,6 +720,38 @@ def test_tensorflow_instance_rfloordiv(
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
+    )
+
+
+# __rmod__
+@handle_frontend_method(
+    method_tree="tensorflow.EagerTensor.__rmod__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_tensorflow_instance_rmod(dtype_and_x, as_variable, native_array):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        input_dtypes_init=input_dtype,
+        as_variable_flags_init=as_variable,
+        num_positional_args_init=1,
+        native_array_flags_init=native_array,
+        all_as_kwargs_np_init={
+            "data": x[0],
+        },
+        input_dtypes_method=[input_dtype[1]],
+        as_variable_flags_method=as_variable,
+        num_positional_args_method=1,
+        native_array_flags_method=native_array,
+        all_as_kwargs_np_method={
+            "x": x[1],
+        },
+        frontend="tensorflow",
+        class_name="EagerTensor",
+        method_name="__rmod__",
     )
 
 
