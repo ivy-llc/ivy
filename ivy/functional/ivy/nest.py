@@ -972,7 +972,7 @@ def nested_map(
         return class_instance(ret_list)
     elif dict_check_fn(x, dict):
         class_instance = type(x)
-        ret = **{
+        ret = {
             k: nested_map(
                 v,
                 fn,
@@ -989,8 +989,8 @@ def nested_map(
             for k, v in x.items()
         }
         if inplace:
-            x.update(ret)
-        return class_instance(ret)
+            x.update(**ret)
+        return class_instance(**ret)
     return fn(x)
 
 
