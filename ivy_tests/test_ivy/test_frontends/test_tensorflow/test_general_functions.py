@@ -685,3 +685,84 @@ def test_tensorflow_searchsorted(
         side=side,
         out_type=out_type,
     )
+
+
+# gather
+@handle_frontend_test(
+    fn_tree="tensorflow.gather",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_tensorflow_gather(
+    *,
+    params_indices_axis_batch_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+        axis=axis,
+        batch_dims=batch_dims,
+    )
+
+
+# gather_nd
+@handle_frontend_test(
+    fn_tree="tensorflow.gather_nd",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=2,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=False,
+    ),
+)
+def test_tensorflow_gather_nd(
+    *,
+    params_indices_axis_batch_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+        batch_dims=batch_dims,
+    )
