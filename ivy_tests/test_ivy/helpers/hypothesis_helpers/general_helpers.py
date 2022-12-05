@@ -383,8 +383,12 @@ def get_axis(
 
     axis = draw(st.one_of(*valid_strategies))
     if unique and allow_neg and not isinstance(axis, int):
+        _prev_axis = []
         while not all([ax_i != axes + ax_j for ax_i in axis for ax_j in axis]):
-            axis = draw(st.one_of(*valid_strategies))
+            _prev_axis.append(axis)
+            axis = draw(
+                st.one_of(*valid_strategies).filter(lambda x: x not in _prev_axis)
+            )
 
     if type(axis) == list:
         if sorted:
