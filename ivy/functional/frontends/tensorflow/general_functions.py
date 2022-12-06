@@ -35,6 +35,11 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
+@to_ivy_arrays_and_back
+def fill(dims, value, name=None):
+    return ivy.full(dims, value)
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -118,3 +123,10 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
             message="Argument `direction` should be one of 'ASCENDING' or 'DESCENDING'",
         )
     return ivy.sort(values, axis=axis, descending=descending)
+
+
+@to_ivy_arrays_and_back
+def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
+    if out_type not in ["int32", "int64"]:
+        out_type = "int64"
+    return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)

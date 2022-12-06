@@ -4,6 +4,9 @@ import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+from ivy_tests.test_ivy.test_frontends.test_numpy.test_creation_routines.test_from_shape_or_value import (  # noqa : E501
+    _input_fill_and_dtype,
+)
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import _matrix_rank_helper
 
@@ -176,6 +179,40 @@ def test_tensorflow_ones(
         on_device=on_device,
         shape=shape,
         dtype=dtype[0],
+    )
+
+
+# full
+@handle_frontend_test(
+    fn_tree="tensorflow.fill",
+    shape=helpers.get_shape(),
+    input_fill_dtype=_input_fill_and_dtype(),
+)
+def test_tensorflow_fill(
+    shape,
+    input_fill_dtype,
+    as_variable,
+    native_array,
+    with_out,
+    frontend,
+    fn_tree,
+    on_device,
+    num_positional_args,
+):
+    input_dtype, _, fill, dtype_to_cast = input_fill_dtype
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        with_inplace=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-05,
+        dims=shape,
+        value=fill,
     )
 
 
@@ -643,4 +680,45 @@ def test_tensorflow_sort(
         values=input[0],
         axis=axis,
         direction=descending,
+    )
+
+
+# searchsorted
+@handle_frontend_test(
+    fn_tree="tensorflow.searchsorted",
+    dtype_x_v=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shared_dtype=True,
+        min_num_dims=1,
+        max_num_dims=1,
+        num_arrays=2,
+    ),
+    side=st.sampled_from(["left", "right"]),
+    out_type=st.sampled_from(["int32", "int64"]),
+)
+def test_tensorflow_searchsorted(
+    dtype_x_v,
+    side,
+    out_type,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtypes, xs = dtype_x_v
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        sorted_sequence=np.sort(xs[0]),
+        values=xs[1],
+        side=side,
+        out_type=out_type,
     )

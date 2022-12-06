@@ -78,7 +78,7 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return tf.experimental.numpy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -612,7 +612,7 @@ def vecdot(
     return tf.cast(tf.tensordot(x1, x2, axes=(axis, axis)), dtype)
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def vector_norm(
     x: Union[tf.Tensor, tf.Variable],
     /,

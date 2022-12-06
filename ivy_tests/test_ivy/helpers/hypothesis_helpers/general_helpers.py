@@ -382,7 +382,7 @@ def get_axis(
             )
 
     axis = draw(st.one_of(*valid_strategies))
-    if unique and allow_neg and isinstance(axis, list):
+    if unique and allow_neg and not isinstance(axis, int):
         while not all([ax_i != axes + ax_j for ax_i in axis for ax_j in axis]):
             axis = draw(st.one_of(*valid_strategies))
 
