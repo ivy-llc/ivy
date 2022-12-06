@@ -32,8 +32,18 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-    def reshape(self, shape):
-        return torch_frontend.reshape(self._ivy_array, shape)
+    def reshape(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            return torch_frontend.reshape(self._ivy_array, shape)
+        if args:
+            if isinstance(args[0], tuple):
+                shape = args[0]
+                return torch_frontend.reshape(self._ivy_array, shape)
+            else:
+                return torch_frontend.reshape(self._ivy_array, args)
+        return torch_frontend.reshape(self._ivy_array)
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
