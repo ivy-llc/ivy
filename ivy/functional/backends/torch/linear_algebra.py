@@ -380,6 +380,17 @@ def tensordot(
     return ret
 
 
+def tensorsolve(
+    x1: torch.Tensor,
+    x2: torch.Tensor,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.linalg.tensorsolve(x1, x2, dims=axes)
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: torch.Tensor,
