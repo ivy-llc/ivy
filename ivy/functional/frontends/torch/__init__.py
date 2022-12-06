@@ -42,20 +42,19 @@ from ivy import (
     bfloat16,
     bool,
 )
-from ivy import (
-    int16 as short,
-    int32 as int,
-    int64 as long,
-    float16 as half,
-    float32 as float,
-    float64 as double,
-)
 from ivy.exceptions import handle_exceptions
 
 # global
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
+# type aliases
+short = int16
+int = int32
+long = int64
+half = float16
+float = float32
+double = float64
 
 # data type promotion
 torch_promotion_table = {
