@@ -1953,6 +1953,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    def tensorsolve(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = None,
+    ) -> ivy.Container:
+        return self.tensorsolve(
+            self,
+            x2,
+            axes=axes,
+        )
+
     @staticmethod
     def static_trace(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
