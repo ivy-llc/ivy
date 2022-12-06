@@ -1112,6 +1112,28 @@ def linspace(
                 
                [[1., 1., 1.]
                 [1., 1., 1.]]])
+                
+     With :class:`ivy.Container` input:
+    
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
+    >>> op = ivy.linspace(x.a,x.b,num=3)
+    >>> print(op)
+    ivy.array([[3., 2.5, 2.]
+               [8., 5., 2.]])
+               
+    >>> x = ivy.Container(a=ivy.array([3., 8.]), b=ivy.array([2., 2.]))
+    >>> y = ivy.Container(a=ivy.array([3., 2.]), b=ivy.array([7., 9.]))
+    >>> op1 = ivy.linspace(x.a,y.b,num=3)
+    >>> op2 = ivy.linspace(x.b,y.a,num=3)
+    >>> op = ivy.linspace(op1,op2,num=5)
+    >>> print(op)
+    ivy.array([[[3., 2.75, 2.5, 2.25, 2.]
+                [5., 4.375, 3.75, 3.125, 2.5]
+                [7., 6., 5., 4., 3.]]
+                
+               [[8., 6.5, 5., 3.5, 2.]
+                [8.5, 6.875, 5.25, 3.625, 2.]
+                [9., 7.25, 5.5, 3.75, 2.]]]) 
 
     """
     return current_backend(start).linspace(
