@@ -3,7 +3,7 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-# asanyarraya
+# asanyarray
 
 @handle_frontend_test(
     fn_tree="numpy.asanyarray",
@@ -12,12 +12,12 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def test_numpy_asanyarray(
     *,
     dtype_and_x,
-    as_variable,
+    order,
     like,
+    as_variable,
     num_positional_args,
     native_array,
     on_device,
-    order,
     fn_tree,
     frontend,
 ):
