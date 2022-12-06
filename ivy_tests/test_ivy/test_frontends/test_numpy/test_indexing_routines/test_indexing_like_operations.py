@@ -6,16 +6,18 @@ from hypothesis import strategies as st
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.test_frontends.test_numpy.helpers as np_frontend_helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
-import ivy
+
+# import ivy
 
 
 @handle_frontend_test(
     fn_tree="numpy.diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        # min_num_dims=2,
+        min_num_dims=2,
         # min_axis=-2,
         # max_axis=1,
+        # shared_dtype = True,
         min_axes_size=2,
         max_axes_size=2,
         valid_axis=True,
@@ -50,7 +52,7 @@ def test_numpy_diagonal(
         with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        a=ivy.native_array(x, dtype=ivy.int32),
+        a=x[0],  # ivy.native_array(x, dtype=ivy.int32),
         offset=offset,
         axis1=axis[0],
         axis2=axis[1],
