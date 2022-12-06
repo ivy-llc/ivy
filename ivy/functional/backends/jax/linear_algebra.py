@@ -346,6 +346,17 @@ def tensordot(
     return jnp.tensordot(x1, x2, axes)
 
 
+def tensorsolve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.tensorsolve(x1, x2, axes)
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: JaxArray,
