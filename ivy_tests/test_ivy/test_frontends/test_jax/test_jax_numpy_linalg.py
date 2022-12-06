@@ -705,27 +705,24 @@ def _get_solve_matrices(draw):
     )
     input_dtype = draw(input_dtype_strategy)
 
-    first_size = draw(helpers.ints(min_value=2, max_value=3))
-
-    random_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=3), key="random_size")
-    )
+    dim = draw(helpers.ints(min_value=2, max_value=5))
 
     first_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(random_size, first_size, first_size, random_size),
+            shape=(dim, dim, dim, dim),
             min_value=1.2,
             max_value=5,
-        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+        ).filter(lambda x: np.linalg.det(x.reshape((dim**2, dim**2))) != 0)
     )
+
     second_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(random_size, first_size),
+            shape=(dim, dim),
             min_value=1.2,
             max_value=3,
-        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+        )
     )
 
     return input_dtype, first_matrix, second_matrix
@@ -757,6 +754,8 @@ def test_jax_numpy_tensorsolve(
         on_device=on_device,
         a=x,
         b=y,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
