@@ -1076,7 +1076,7 @@ def linspace(
     >>> y = ivy.array([4,5])
 
     >>> ivy.linspace(x, y, 4)
-    ivy.array([[1, 2, 3, 4],[2, 3, 4, 5]])
+    ivy.array([[1, 2, 3, 4], [2, 3, 4, 5]])
 
     >>> ivy.linspace(x, y, 4, axis = 0)
     ivy.array([[1, 2],
@@ -1084,6 +1084,16 @@ def linspace(
                [3, 4],
                [4, 5]])
 
+    Using array instance method
+
+    >>> x.linspace(y, 4)
+    ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])
+
+    >>> x.linspace(y, 4, axis = 0)
+    ivy.array([[4, 5],
+               [3, 4],
+               [2, 3],
+               [1, 2]])
     """
     return current_backend(start).linspace(
         start,
