@@ -1,3 +1,6 @@
+import warnings
+
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -54,6 +57,19 @@ def argwhere(a, /, *, size=None, fill_value=None):
         return result[:0].reshape(result.shape[0], 0)
 
     return result.reshape(result.shape[0], num_of_dimensions)
+
+
+@to_ivy_arrays_and_back
+def argsort(a, axis=-1, kind="stable", order=None):
+    if kind != "stable":
+        warnings.warn(
+            "'kind' argument to argsort is ignored; only 'stable' sorts "
+            "are supported."
+        )
+    if order is not None:
+        raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
+
+    return ivy.argsort(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -560,3 +576,8 @@ def log10(x):
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
     return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
