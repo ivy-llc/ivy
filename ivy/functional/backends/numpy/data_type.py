@@ -18,7 +18,7 @@ ivy_dtype_dict = {
     np.dtype("uint16"): "uint16",
     np.dtype("uint32"): "uint32",
     np.dtype("uint64"): "uint64",
-    np.dtype("bfloat16"): "bfloat16",
+    # np.dtype("bfloat16"): "bfloat16",
     np.dtype("float16"): "float16",
     np.dtype("float32"): "float32",
     np.dtype("float64"): "float64",
@@ -156,14 +156,26 @@ def result_type(*arrays_and_dtypes: Union[np.ndarray, np.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[np.dtype, str]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[np.dtype, str]) -> np.dtype:
+def as_native_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> np.dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is bool:
+        return np.dtype("bool")
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.values():

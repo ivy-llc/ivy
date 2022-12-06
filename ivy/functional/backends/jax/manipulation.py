@@ -74,8 +74,8 @@ def reshape(
     shape: Union[ivy.NativeShape, Sequence[int]],
     *,
     copy: Optional[bool] = None,
-    out: Optional[JaxArray] = None,
     order: Optional[str] = "C",
+    out: Optional[JaxArray] = None,
 ) -> JaxArray:
     ivy.assertions.check_elem_in_list(order, ["C", "F"])
     if copy:

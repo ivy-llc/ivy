@@ -1,6 +1,7 @@
 # global
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 # local
@@ -173,11 +174,12 @@ def not_equal(input, other, *, out=None):
 ne = not_equal
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def isin(elements, test_elements, *, assume_unique=False, invert=False):
 
-    input_elements_copy = ivy.reshape(ivy.to_ivy(elements), -1)
-    test_elements_copy = ivy.reshape(ivy.to_ivy(test_elements), -1)
+    input_elements_copy = ivy.reshape(ivy.to_ivy(elements), (-1,))
+    test_elements_copy = ivy.reshape(ivy.to_ivy(test_elements), (-1,))
 
     if (
         ivy.shape(test_elements_copy)[0]
@@ -194,9 +196,7 @@ def isin(elements, test_elements, *, assume_unique=False, invert=False):
         return ivy.reshape(mask, ivy.shape(elements))
 
     if not assume_unique:
-        input_elements_copy, rev_idx = ivy.unique_inverse(
-            input_elements_copy, return_inverse=True
-        )
+        input_elements_copy, rev_idx = ivy.unique_inverse(input_elements_copy)
         test_elements_copy = ivy.sort(ivy.unique_values(test_elements_copy))
 
     ar = ivy.concat((input_elements_copy, test_elements_copy))
@@ -258,27 +258,40 @@ def maximum(input, other, *, out=None):
     return ivy.maximum(input, other, out=out)
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def kthvalue(input, k, dim=-1, keepdim=False, *, out=None):
 
     sorted_input = ivy.sort(input, axis=dim)
     sort_indices = ivy.argsort(input, axis=dim)
 
-    values = ivy.asarray(ivy.gather(sorted_input, k - 1, axis=dim), dtype=input.dtype)
-    indices = ivy.asarray(ivy.gather(sort_indices, k - 1, axis=dim), dtype="int64")
+    values = ivy.asarray(
+        ivy.gather(sorted_input, ivy.array(k - 1), axis=dim), dtype=input.dtype
+    )
+    indices = ivy.asarray(
+        ivy.gather(sort_indices, ivy.array(k - 1), axis=dim), dtype="int64"
+    )
 
     if keepdim:
         values = ivy.expand_dims(values, axis=dim)
         indices = ivy.expand_dims(indices, axis=dim)
 
-    ret = (values, indices)
+    ret = namedtuple("sort", ["values", "indices"])(values, indices)
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 @to_ivy_arrays_and_back
 def topk(input, k, dim=None, largest=True, sorted=True, *, out=None):
     if dim is None:
         dim = -1
+    if sorted:
+        return namedtuple("topk", ["values", "indices"])(
+            ivy.sort(ivy.top_k(input, k, axis=dim, largest=largest, out=out).values),
+            ivy.argsort(
+                ivy.top_k(input, k, axis=dim, largest=largest, out=out).indices
+            ),
+        )
     return ivy.top_k(input, k, axis=dim, largest=largest, out=out)

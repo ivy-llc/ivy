@@ -181,8 +181,12 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def eigh(
         self: ivy.Array,
+        /,
+        *,
+        UPLO: Optional[str] = "L",
+        out: Optional[ivy.Array] = None,
     ) -> Tuple[ivy.Array]:
-        return ivy.eigh(self._data)
+        return ivy.eigh(self._data, UPLO=UPLO, out=out)
 
     def eigvalsh(
         self: ivy.Array,
@@ -452,6 +456,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def qr(
         self: ivy.Array,
+        /,
         *,
         mode: str = "reduced",
     ) -> Tuple[ivy.Array, ivy.Array]:
@@ -490,6 +495,13 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> y = x.slogdet()
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
+
+        >>> x = ivy.array([[1.2, 2.0, 3.1],
+        ...                [6.0, 5.2, 4.0],
+        ...                [9.0, 8.0, 7.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
 
         """
         return ivy.slogdet(self._data)

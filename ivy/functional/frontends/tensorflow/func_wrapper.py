@@ -11,13 +11,13 @@ import ivy.functional.frontends.tensorflow as frontend
 
 def _tf_frontend_array_to_ivy(x):
     if isinstance(x, frontend.EagerTensor):
-        return x.data
+        return x.ivy_array
     return x
 
 
 def ivy_array_to_tensorflow(x):
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
-        return frontend.EagerTensor(x.data)
+        return frontend.EagerTensor(x)
     return x
 
 

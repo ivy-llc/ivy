@@ -61,14 +61,17 @@ def diagonal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
         ret_edited = jnp.diagonal(
-            x.at[1 / x == -jnp.inf].set(-jnp.inf), offset, axis1, axis2
+            x.at[1 / x == -jnp.inf].set(-jnp.inf),
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
         )
         ret_edited = ret_edited.at[ret_edited == -jnp.inf].set(-0.0)
         ret = ret.at[ret == ret_edited].set(ret_edited[ret == ret_edited])
     else:
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
 
 
@@ -257,7 +260,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
+def qr(
+    x: JaxArray, /, *, mode: str = "reduced", out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -390,6 +395,7 @@ def diag(
     return jnp.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: JaxArray,
     /,

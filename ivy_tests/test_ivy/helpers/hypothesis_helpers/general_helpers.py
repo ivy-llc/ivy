@@ -338,8 +338,7 @@ def get_axis(
     """
     assert not (force_int and force_tuple), (
         "Cannot return an int and a tuple. If "
-        "both are valid then set 'force_int' "
-        "and 'force_tuple' to False."
+        "both are valid then set both to False."
     )
 
     # Draw values from any strategies given
@@ -361,6 +360,9 @@ def get_axis(
     if allow_none:
         valid_strategies.append(st.none())
 
+    if min_size > 1:
+        force_tuple = True
+
     if not force_tuple:
         if axes == 0:
             valid_strategies.append(st.just(0))
@@ -381,14 +383,21 @@ def get_axis(
                 )
             )
 
-    axis = draw(st.one_of(*valid_strategies))
+    axis = draw(
+        st.one_of(*valid_strategies)
+        .filter(lambda x:
+                all([i != axes + j for i in x for j in x])
+                if (isinstance(x, list) and unique and allow_neg)
+                else True
+                )
+    )
 
     if type(axis) == list:
         if sorted:
 
             def sort_key(ele, max_len):
                 if ele < 0:
-                    return ele + max_len - 1
+                    return ele + max_len
                 return ele
 
             axis.sort(key=(lambda ele: sort_key(ele, axes)))

@@ -9,6 +9,21 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.ivy.data_type import _handle_nestable_dtype_info
 from . import backend_version
 
+ivy_dtype_dict = {
+    torch.int8: "int8",
+    torch.int16: "int16",
+    torch.int32: "int32",
+    torch.int64: "int64",
+    torch.uint8: "uint8",
+    torch.bfloat16: "bfloat16",
+    torch.float16: "float16",
+    torch.float32: "float32",
+    torch.float64: "float64",
+    torch.complex64: "complex64",
+    torch.complex128: "complex128",
+    torch.bool: "bool",
+}
+
 native_dtype_dict = {
     "int8": torch.int8,
     "int16": torch.int16,
@@ -142,29 +157,26 @@ def result_type(*arrays_and_dtypes: Union[torch.tensor, torch.dtype]) -> ivy.Dty
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[torch.dtype, str]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> ivy.Dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
         return ivy.Dtype(dtype_in)
-    return ivy.Dtype(
-        {
-            torch.int8: "int8",
-            torch.int16: "int16",
-            torch.int32: "int32",
-            torch.int64: "int64",
-            torch.uint8: "uint8",
-            torch.bfloat16: "bfloat16",
-            torch.float16: "float16",
-            torch.float32: "float32",
-            torch.float64: "float64",
-            torch.complex64: "complex64",
-            torch.complex128: "complex128",
-            torch.bool: "bool",
-        }[dtype_in]
-    )
+    return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("uint16",)}, backend_version)
-def as_native_dtype(dtype_in: Union[torch.dtype, str]) -> torch.dtype:
+def as_native_dtype(dtype_in: Union[torch.dtype, str, bool, int, float]) -> torch.dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is bool:
+        return torch.bool
     if not isinstance(dtype_in, str):
         return dtype_in
     if dtype_in in native_dtype_dict.keys():

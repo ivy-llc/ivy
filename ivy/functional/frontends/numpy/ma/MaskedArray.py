@@ -76,7 +76,7 @@ class MaskedArray(np_frontend.ndarray):
                 message="shapes of data and mask must match",
             )
             self._mask = ivy.array(mask)
-        elif mask:
+        elif mask.all():
             self._mask = ivy.ones_like(self._data)
         else:
             self._mask = ivy.zeros_like(self._data)
@@ -140,12 +140,28 @@ class MaskedArray(np_frontend.ndarray):
     # --------- #
 
     def __getitem__(self, query):
-        return self._data[query]
+        if self._mask.shape != self._data.shape:
+            self._mask = ivy.ones_like(self._data, dtype=ivy.bool) * self._mask
+        if self._fill_value.shape != self._data.shape:
+            self._fill_value = ivy.ones_like(self._data) * self._fill_value
+        if hasattr(self._mask[query], "shape"):
+            return MaskedArray(
+                data=self._data[query],
+                mask=self._mask[query],
+                fill_value=self._fill_value[query],
+                hard_mask=self._hard_mask,
+            )
 
     def __setitem__(self, query, val):
         self._data[query] = val
-        if not self._hard_mask and ivy.any(self._mask):
-            self._mask[query] = False
+        if self._mask.shape != self._data.shape:
+            self._mask = ivy.ones_like(self._data, dtype=ivy.bool) * self._mask
+        val_mask = ivy.ones_like(self._mask[query]) * getattr(val, "_mask", False)
+        if self._hard_mask:
+            self._mask[query] |= val_mask
+        else:
+            self._mask[query] = val_mask
+        return self
 
     def __repr__(self):
         dec_vals = ivy.array_decimal_values()
