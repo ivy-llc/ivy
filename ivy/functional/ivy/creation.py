@@ -215,6 +215,28 @@ def arange(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+    
+    Functional Examples
+    -------------------
+    With General input:
+    
+    >>> x = ivy.arange(12,step=2)
+    >>> print(x)
+    ivy.array([0, 2, 4, 6, 8, 10])
+    
+    >>> x = ivy.arange(start=1,stop=8,step=2).reshape(2,2)
+    >>> print(x)
+    ivy.array([[1, 3],
+               [5, 7]])
+               
+    >>> x = ivy.arange(1,2,step=0.1)
+    >>> print(x)
+    ivy.array([1., 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9])
+    
+    >>> a = ivy.arange(6).reshape((2, 3))
+    >>> print(a)
+    ivy.array([[0, 1, 2],
+               [3, 4, 5]])
 
     """
     return current_backend().arange(
