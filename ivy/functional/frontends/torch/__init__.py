@@ -10,6 +10,8 @@ from . import comparison_ops
 from .comparison_ops import *
 from . import creation_ops
 from .creation_ops import *
+from . import dtype
+from .dtype import *
 from . import indexing_slicing_joining_mutating_ops
 from .indexing_slicing_joining_mutating_ops import *
 from . import locally_disabling_gradient_computation
@@ -28,6 +30,7 @@ from . import tensor_functions
 from .tensor_functions import *
 from . import utilities
 from .utilities import *
+from . import linalg
 import ivy
 from ivy import (
     uint8,
@@ -47,6 +50,13 @@ from ivy.exceptions import handle_exceptions
 from numbers import Number
 from typing import Union, Tuple, Iterable
 
+# type aliases
+short = int16
+int = int32
+long = int64
+half = float16
+float = float32
+double = float64
 
 # data type promotion
 torch_promotion_table = {

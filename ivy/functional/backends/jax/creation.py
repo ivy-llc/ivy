@@ -145,7 +145,7 @@ def full(
 def full_like(
     x: JaxArray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,
