@@ -457,3 +457,26 @@ class ArrayWithCreation(abc.ABC):
             device=device,
             out=out,
         )
+
+    def linspace(
+        self: ivy.Array,
+        stop: Union[ivy.Array, ivy.NativeArray, float],
+        /,
+        num: int,
+        axis: int = None,
+        endpoint: bool = True,
+        *,
+        out: Optional[ivy.Container] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
+    ) -> ivy.Array:
+        return ivy.linspace(
+            self,
+            stop,
+            num,
+            axis=axis,
+            endpoint=endpoint,
+            out=out,
+            dtype=dtype,
+            device=device,
+        )
