@@ -564,5 +564,10 @@ def logaddexp(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def degrees(x):
+    return ivy.rad2deg(x)
+
+
+@to_ivy_arrays_and_back
 def expand_dims(a, axis):
     return ivy.expand_dims(a, axis=axis)
