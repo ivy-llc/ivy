@@ -12,11 +12,7 @@ class Tensor:
         )
 
     def __repr__(self):
-        return (
-            "ivy.functional.frontends.torch.Tensor("
-            + str(ivy.to_list(self._ivy_array))
-            + ")"
-        )
+        return "ivy.frontends.torch.Tensor(" + str(ivy.to_list(self._ivy_array)) + ")"
 
     # Properties #
     # ---------- #
@@ -36,11 +32,24 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-    def reshape(self, shape):
-        return torch_frontend.reshape(self._ivy_array, shape)
+    def reshape(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            return torch_frontend.reshape(self._ivy_array, shape)
+        if args:
+            if isinstance(args[0], tuple):
+                shape = args[0]
+                return torch_frontend.reshape(self._ivy_array, shape)
+            else:
+                return torch_frontend.reshape(self._ivy_array, args)
+        return torch_frontend.reshape(self._ivy_array)
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
@@ -52,6 +61,9 @@ class Tensor:
     def asin_(self):
         self._ivy_array = self.asin().ivy_array
         return self
+
+    def sum(self):
+        return torch_frontend.sum(self._ivyArray)
 
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
@@ -324,6 +336,28 @@ class Tensor:
     def min(self, dim=None, keepdim=False):
         return torch_frontend.min(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def permute(self, dims):
+        return torch_frontend.permute(self, dims)
+
+    def mean(self, dim=None, keepdim=False):
+        return torch_frontend.mean(self._ivy_array, dim=dim, keepdim=keepdim)
+
+    def transpose(self, dim0, dim1):
+        return torch_frontend.transpose(self._ivy_array, dim0=dim0, dim1=dim1)
+
+    def transpose_(self, dim0, dim1):
+        self._ivy_array = self.transpose(dim0, dim1).ivy_array
+        return self
+
+    def flatten(self, start_dim, end_dim):
+        return torch_frontend.flatten(self._ivy_array, start_dim, end_dim)
+
+    def cumsum(self, dim, dtype):
+        return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
@@ -376,6 +410,9 @@ class Tensor:
     def __itruediv__(self, other, *, rounding_mode=None):
         self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
         return self
+
+    def __eq__(self, other):
+        return ivy.equal(self._ivy_array, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
