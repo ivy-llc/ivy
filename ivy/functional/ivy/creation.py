@@ -1628,27 +1628,25 @@ def logspace(
                
     # Array ``op`` is now stored on the CPU.
     
-    With :class:`ivy.Container` input:
+    >>> y1 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> y2 = ivy.zeros(3)
+    >>> op = ivy.logspace(y1, y2, 3, axis=1,base=1)
+    >>> print(op)
+    ivy.array([[[1., 1., 1.]
+                [1., 1., 1.]
+                [1., 1., 1.]]
+               [[1., 1., 1.]
+                [1., 1., 1.]
+                [1., 1., 1.]]])
     
-    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
-    >>> op = ivy.logspace(x.a,x.b,num=3)
+    >>> x1 = ivy.array([[5, 13, 9], [15, 6, 7]])
+    >>> x2 = ivy.ones(3)
+    >>> op = ivy.logspace(x1, x2, 2, axis=0, base=2)
     >>> print(op)
-    ivy.array([[1.e+05, 1.e+13, 1.e+21]
-               [1.e+06, 1.e+09, 1.e+12]])
-               
-    >>> x = ivy.Container(a=ivy.array([.3, .8]), b=ivy.array([.2, .2]))
-    >>> y = ivy.Container(a=ivy.array([.3, .2]), b=ivy.array([.7, .9]))
-    >>> op1 = ivy.logspace(x.a,y.b,num=3)
-    >>> op2 = ivy.logspace(x.b,y.a,num=3)
-    >>> op = ivy.logspace(op1,op2,num=5,base=2)
-    >>> print(op)
-    ivy.array([[[3.98688589, 3.71321804, 3.45833531, 3.22094823, 2.99985588]
-                [8.95241962, 7.04342969, 5.54150764, 4.35985143, 3.43016841]
-                [32.26442336, 19.12940149, 11.34171831, 6.72444323, 3.98688589]]
-
-               [[79.31783778, 34.97866642, 15.42537138, 6.80249153, 2.99985588]
-                [135.24747445, 52.19416699, 20.14256517, 7.77333857, 2.99985588]
-                [246.1309628, 81.78050455, 27.17273296, 9.02852606, 2.99985588]]])
+    ivy.array([[[3.2000e+01, 8.1920e+03, 5.1200e+02]
+                [3.2768e+04, 6.4000e+01, 1.2800e+02]]
+               [[2.0000e+00 2.0000e+00 2.0000e+00]
+                [2.0000e+00 2.0000e+00 2.0000e+00]]])
 
     """
     return current_backend(start).logspace(
