@@ -266,4 +266,5 @@ from . import sets
 from . import signal
 from . import sparse
 from . import general_functions
+from . import dtypes
 from .general_functions import *
