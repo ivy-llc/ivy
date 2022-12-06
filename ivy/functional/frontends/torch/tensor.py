@@ -342,6 +342,9 @@ class Tensor:
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
