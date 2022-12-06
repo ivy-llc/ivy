@@ -355,6 +355,9 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)
 
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim)
+
     # Special Methods #
     # -------------------#
 
