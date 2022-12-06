@@ -643,6 +643,7 @@ def test_jax_numpy_norm(
         axis=axis,
         keepdims=keepdims,
         atol=1e-1,
+        rtol=1e-1,
     )
 
 
@@ -786,6 +787,8 @@ def test_jax_numpy_pinv(
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
+        atol=1e-4,
+        rtol=1e-4,
     )
 
 
