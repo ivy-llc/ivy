@@ -1,6 +1,7 @@
 # global
 import warnings
 from ivy._version import __version__ as __version__
+import builtins
 
 warnings.filterwarnings("ignore", module="^(?!.*ivy).*$")
 
@@ -63,6 +64,12 @@ class Device(str):
 
 class Dtype(str):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
+        if dtype_str is builtins.bool:
+            dtype_str = "bool"
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
         if not (
@@ -173,6 +180,8 @@ class Shape(tuple):
 
 class IntDtype(Dtype):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.int:
+            dtype_str = default_int_dtype()
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
         if "int" not in dtype_str:
@@ -188,6 +197,8 @@ class IntDtype(Dtype):
 
 class FloatDtype(Dtype):
     def __new__(cls, dtype_str):
+        if dtype_str is builtins.float:
+            dtype_str = default_float_dtype()
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype_str must be type str")
         if "float" not in dtype_str:
