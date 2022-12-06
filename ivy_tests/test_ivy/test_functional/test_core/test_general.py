@@ -1555,6 +1555,9 @@ def test_is_ivy_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1596,6 +1599,9 @@ def test_is_native_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1636,6 +1642,9 @@ def test_is_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,

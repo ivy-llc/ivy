@@ -136,7 +136,8 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if x.shape == ():
+        x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
