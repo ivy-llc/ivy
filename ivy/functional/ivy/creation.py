@@ -1595,8 +1595,8 @@ def logspace(
     
     With :class:`ivy.Array` input:
     
-    >>> y1 = ivy.array([[1, 2, 3],[7, 4, 5]])
-    >>> y2 = ivy.array([[1, 3, 9],[5, 7, 11]])
+    >>> y1 = ivy.array([[1, 2, 3], [7, 4, 5]])
+    >>> y2 = ivy.array([[1, 3, 9], [5, 7, 11]])
     >>> op = ivy.logspace(y1, y2, 2, axis=2,base=2)
     >>> print(op)
     ivy.array([[[2.000e+00, 2.000e+00]
@@ -1628,10 +1628,10 @@ def logspace(
                
     # Array ``op`` is now stored on the CPU.
     
-    >>> y1 = ivy.array([[1, 3, 9],[5, 7, 11]])
+    >>> y1 = ivy.array([[1, 3, 9], [5, 7, 11]])
     >>> y2 = ivy.zeros(3)
-    >>> op1 = ivy.logspace(y1, y2, 3, axis=1,base=1)
-    >>> print(op1)
+    >>> op = ivy.logspace(y1, y2, 3, axis=1,base=1)
+    >>> print(op)
     ivy.array([[[1., 1., 1.]
                 [1., 1., 1.]
                 [1., 1., 1.]]
@@ -1640,9 +1640,9 @@ def logspace(
                 [1., 1., 1.]
                 [1., 1., 1.]]])
     
-    >>> x1 = ivy.array([[5, 13, 9],[15, 6, 7]])
+    >>> x1 = ivy.array([[5, 13, 9], [15, 6, 7]])
     >>> x2 = ivy.ones(3)
-    >>> op = ivy.logspace(x1, x2, 2, axis=0,base=2)
+    >>> op = ivy.logspace(x1, x2, 2, axis=0, base=2)
     >>> print(op)
     ivy.array([[[3.2000e+01, 8.1920e+03, 5.1200e+02]
                 [3.2768e+04, 6.4000e+01, 1.2800e+02]]
