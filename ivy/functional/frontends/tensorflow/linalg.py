@@ -77,6 +77,28 @@ def tensordot(a, b, axes, name=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+def tensorsolve(a, b, axes):
+    return ivy.tensorsolve(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
