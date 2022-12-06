@@ -130,12 +130,7 @@
   <h1>Source code for ivy.functional.ivy.experimental</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Optional</span><span class="p">,</span>
-    <span class="n">Union</span><span class="p">,</span>
-    <span class="n">Tuple</span><span class="p">,</span>
-    <span class="n">Sequence</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -288,15 +283,15 @@
     <span class="o">*</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Compute the q-th quantile of the data along the specified axis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    a</span>
-<span class="sd">        Input array. </span>
+<span class="sd">        Input array.</span>
 <span class="sd">    q</span>
 <span class="sd">        Quantile or sequence of quantiles to compute, which must be</span>
 <span class="sd">        between 0 and 1 inclusive.</span>
@@ -311,12 +306,12 @@
 <span class="sd">        {&#39;nearest&#39;, &#39;linear&#39;, &#39;lower&#39;, &#39;higher&#39;, &#39;midpoint&#39;}. Default value: &#39;linear&#39;.</span>
 <span class="sd">        This specifies the interpolation method to use when the desired quantile lies</span>
 <span class="sd">        between two data points i &lt; j:</span>
-<span class="sd">        - linear: i + (j - i) * fraction, where fraction is the fractional part of the </span>
+<span class="sd">        - linear: i + (j - i) * fraction, where fraction is the fractional part of the</span>
 <span class="sd">        index surrounded by i and j.</span>
 <span class="sd">        - lower: i.</span>
 <span class="sd">        - higher: j.</span>
 <span class="sd">        - nearest: i or j, whichever is nearest.</span>
-<span class="sd">        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with </span>
+<span class="sd">        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with</span>
 <span class="sd">        integer dtypes.</span>
 <span class="sd">    out</span>
 <span class="sd">        optional output array, for writing the result to.</span>
@@ -325,7 +320,7 @@
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
 <span class="sd">        A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis</span>
-<span class="sd">        is None, a rank(q) array. The first rank(q) dimensions index quantiles for </span>
+<span class="sd">        is None, a rank(q) array. The first rank(q) dimensions index quantiles for</span>
 <span class="sd">        different values of q.</span>
 
 <span class="sd">    Examples</span>
@@ -348,19 +343,14 @@
 
 <span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=1, keepdims=True)</span>
 <span class="sd">    ivy.array([[7.],[2.]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; a = ivy.array([1., 2., 3., 4.])</span>
 <span class="sd">    &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
 <span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, interpolation=&#39;lower&#39;)</span>
 <span class="sd">    ivy.array([1., 3.])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span>
-        <span class="n">a</span><span class="p">,</span>
-        <span class="n">q</span><span class="p">,</span>
-        <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
-        <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span>
-        <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
-        <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Literal</span>
