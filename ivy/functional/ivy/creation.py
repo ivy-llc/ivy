@@ -1109,13 +1109,13 @@ def linspace(
     >>> print(op1)
     ivy.array([[[5., 13., 9.]
                 [15., 6., 7.]]
-                
+                 
                [[1., 1., 1.]
                 [1., 1., 1.]]])
                 
     With :class:`ivy.Container` input:
     
-    >>> y = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
     >>> op = ivy.linspace(x.a,x.b,num=3)
     >>> print(op)
     ivy.array([[3., 2.5, 2.]
