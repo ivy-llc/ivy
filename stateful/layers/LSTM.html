@@ -146,61 +146,6 @@
              
   <section id="lstm">
 <h1>LSTM<a class="headerlink" href="#lstm" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ivy.stateful.layers.</span></span><span class="sig-name descname"><span class="pre">LSTM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></a></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform</span> <span class="pre">object&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state=True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.__init__" title="Permalink to this definition"></a></dt>
-<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> – Number of input channels for the layer</p></li>
-<li><p><strong>output_channels</strong> – Number of output channels for the layer</p></li>
-<li><p><strong>weight_initializer</strong> – Initializer for the weights. Default is GlorotUniform.</p></li>
-<li><p><strong>num_layers</strong> – Number of lstm cells in the lstm layer, default is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
-<li><p><strong>return_sequence</strong> – Whether or not to return the entire output sequence, or
-just the latest timestep.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>return_state</strong> – Whether or not to return the latest hidden and cell states.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>device</strong> – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’
-etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> – the variables for each of the lstm cells, as a container,
-constructed internally by default.</p></li>
-<li><p><strong>dtype</strong> – <dl class="simple">
-<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.stateful.layers.LSTM.get_initial_state">
-<span class="sig-name descname"><span class="pre">get_initial_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.get_initial_state" title="Permalink to this definition"></a></dt>
-<dd><p>Get the initial state of the hidden and cell states, if not provided
-explicitly</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>batch_shape</strong> – </p></li>
-<li><p><strong>dtype</strong> – <dl class="simple">
-<dt>the desired data type of the internal variables to be created if not</dt><dd><p>provided. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
-</dd>
-</dl>
-</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
