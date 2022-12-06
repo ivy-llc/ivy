@@ -248,5 +248,6 @@ def conv_transpose(
         dilations=dilations,
     )
 
+
 def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
