@@ -1593,7 +1593,38 @@ def logspace(
     >>> print(x)
     ivy.array([9., 12.98024613, 18.72075441, 27.])
     
+    With :class:`ivy.Array` input:
     
+    >>> y1 = ivy.array([[1, 2, 3], [7, 4, 5]])
+    >>> y2 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> op = ivy.logspace(y1, y2, 2, axis=2,base=2)
+    >>> print(op)
+    ivy.array([[[2.000e+00, 2.000e+00]
+                [4.000e+00, 8.000e+00]
+                [8.000e+00, 5.120e+02]]
+
+               [[1.280e+02, 3.200e+01]
+                [1.600e+01, 1.280e+02]
+                [3.200e+01, 2.048e+03]]])
+                
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> x2 = ivy.array([7, 11, 2, 9, 7, 6])
+    >>> op = ivy.logspace(x1,x2,2,axis=1)
+    >>> print(op)
+    ivy.array([[1.e+01, 1.e+07]
+               [1.e+02, 1.e+11]
+               [1.e+03, 1.e+02]
+               [1.e+04, 1.e+09]
+               [1.e+05, 1.e+07]
+               [1.e+06, 1.e+06]])
+               
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.array([13., 72., 11.])
+    >>> op = ivy.logspace(x, y, 3, axis=1,dev_str=ivy.Device('cpu'))
+    >>> print(op)
+    ivy.array([[1.e+03, 1.e+08, 1.e+13]
+               [1.e+02, 1.e+37, 1.e+72]
+               [1.e+01, 1.e+06, 1.e+11]])
                
     # Array ``op`` is now stored on the CPU.
     
