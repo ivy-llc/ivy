@@ -3122,3 +3122,41 @@ def test_jax_numpy_diagonal(
         axis1=axis1,
         axis2=axis2,
     )
+
+
+# expand_dims
+@handle_frontend_test(
+    fn_tree="jax.numpy.expand_dims",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
+    ),
+    axis=helpers.get_axis(
+        shape=st.shared(helpers.get_shape(), key="expand_dims_axis"),
+    ),
+)
+def test_jax_expand_dims(
+    *,
+    dtype_and_x,
+    axis,
+    with_out,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        a=x[0],
+        axis=axis,
+    )
