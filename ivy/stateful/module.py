@@ -26,12 +26,15 @@ try:
 except ImportError:
     import types
     torch = types.SimpleNamespace()
-
+    torch.nn = types.SimpleNamespace()
+    torch.nn.Module = types.SimpleNamespace
+    
 try:
     import tensorflow as tf
 except ImportError:
     import types
     tf = types.SimpleNamespace()
+    tf.keras.Model = types.SimpleNamespace
 
 try:
     import haiku as hk
