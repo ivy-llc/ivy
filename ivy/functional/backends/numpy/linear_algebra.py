@@ -345,6 +345,17 @@ def tensordot(
     return np.tensordot(x1, x2, axes=axes)
 
 
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
+
+
 @_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
