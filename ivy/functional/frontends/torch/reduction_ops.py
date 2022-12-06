@@ -68,7 +68,15 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def prod(input, dim, keepdim=False, *, dtype=None):
     return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 

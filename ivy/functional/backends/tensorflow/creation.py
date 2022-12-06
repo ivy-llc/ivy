@@ -236,8 +236,8 @@ def full(
 
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
-    fill_value: Number,
     /,
+    fill_value: Number,
     *,
     dtype: tf.DType,
     device: str,

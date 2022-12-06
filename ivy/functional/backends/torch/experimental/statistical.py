@@ -49,8 +49,9 @@ def nanmean(
 nanmean_support_native_out = True
 
 
-@with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "bfloat32", "float16")},
-                         backend_version)
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("bfloat16", "bfloat32", "float16")}, backend_version
+)
 def quantile(
     a: torch.tensor,
     q: Union[torch.tensor, float],
@@ -58,8 +59,8 @@ def quantile(
     *,
     axis: Optional[Union[Sequence[int], int]] = None,
     keepdims: bool = False,
-    interpolation: str = 'linear',
-    out: Optional[torch.tensor] = None
+    interpolation: str = "linear",
+    out: Optional[torch.tensor] = None,
 ) -> torch.tensor:
 
     # a,_ = torch.sort(a)
@@ -72,41 +73,30 @@ def quantile(
     #     axis = n_axis - 1 - axis
 
     if axis is None:
-        return torch.quantile(a,
-                              q,
-                              keepdim=keepdims,
-                              interpolation=interpolation)
+        return torch.quantile(a, q, keepdim=keepdims, interpolation=interpolation)
 
     if isinstance(axis, list) or isinstance(axis, tuple):
-        '''
+        """
         In Tensorflow, Jax, and Numpy backends when multiple axes are provided, first
-        the tensor/array gets flatten along those axes such that it preserves the size 
+        the tensor/array gets flatten along those axes such that it preserves the size
         of the remaining axes. Afterwards, it compute the quantile(s) along axis = 0.
 
         In Torch backend, it is not possible to provide multiple axes. Therefore it is
-        needed to mimic same procedure to reach desired shape of tensor/array and 
+        needed to mimic same procedure to reach desired shape of tensor/array and
         compute quantile(s) along axis=0.
-        '''
-        
+        """
+
         desired_shape = []
         current_shape = a.size()
-        
+
         for i in range(len(current_shape)):
             if i not in axis:
                 desired_shape += [current_shape[i]]
-        
+
         a = a.reshape((-1,) + tuple(desired_shape))
-        
-        a = torch.quantile(a,
-                           q,
-                           dim=0,
-                           keepdim=keepdims, 
-                           interpolation=interpolation)
+
+        a = torch.quantile(a, q, dim=0, keepdim=keepdims, interpolation=interpolation)
 
         return a
 
-    return torch.quantile(a,
-                          q, 
-                          dim=axis,
-                          keepdim=keepdims,
-                          interpolation=interpolation)
+    return torch.quantile(a, q, dim=axis, keepdim=keepdims, interpolation=interpolation)

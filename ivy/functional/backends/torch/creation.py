@@ -68,9 +68,9 @@ def arange(
             stop = start
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return torch.arange(
-                start, stop, step, dtype=torch.int64, device=device
-            ).to(torch.int32)
+            return torch.arange(start, stop, step, dtype=torch.int64, device=device).to(
+                torch.int32
+            )
         else:
             return torch.arange(start, stop, step, device=device)
     else:
@@ -297,8 +297,8 @@ full.support_native_out = True
 
 def full_like(
     x: torch.Tensor,
-    fill_value: Number,
     /,
+    fill_value: Number,
     *,
     dtype: torch.dtype,
     device: torch.device,
