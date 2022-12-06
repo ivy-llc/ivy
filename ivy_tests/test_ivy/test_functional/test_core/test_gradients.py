@@ -474,7 +474,7 @@ def test_lars_update(
         large_abs_safety_factor=2.0,
         small_abs_safety_factor=2.0,
     ),
-    step=st.integers(min_value=1, max_value=100),
+    step=st.integers(min_value=1, max_value=10),
     beta1_n_beta2_n_epsilon=helpers.lists(
         arg=helpers.floats(min_value=1e-2, max_value=1),
         min_size=3,

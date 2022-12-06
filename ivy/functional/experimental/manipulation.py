@@ -21,7 +21,6 @@ from ivy.backend_handler import current_backend
 from ivy.exceptions import handle_exceptions
 
 
-@to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
@@ -137,7 +136,8 @@ def flatten(
           [ 4, 19, 16, 17],
           [ 2, 12,  8, 14]]]))
     """
-    x = ivy.reshape(x, (1, -1))[0, :]  # if it's 0-d convert to 1-d
+    if x.shape == ():
+        x = ivy.reshape(x, (1, -1))[0, :]
     if start_dim == end_dim:
         return x
     if start_dim not in range(-len(x.shape), len(x.shape)):
@@ -164,6 +164,9 @@ def flatten(
     for i in range(end_dim + 1, len(x.shape)):
         lst.insert(i, x.shape[i])
     return ivy.reshape(x, tuple(lst), order=order)
+
+
+flatten.mixed_function = True
 
 
 @to_native_arrays_and_back
