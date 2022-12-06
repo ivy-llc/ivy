@@ -13,11 +13,12 @@ import ivy
     fn_tree="numpy.diagonal",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=1,
-        shared_dtype=True,
-        min_num_dims=2,
-        min_axis=-2,
-        max_axis=1,
+        # min_num_dims=2,
+        # min_axis=-2,
+        # max_axis=1,
+        min_axes_size=2,
+        max_axes_size=2,
+        valid_axis=True,
     ),
     offset=st.integers(min_value=-1, max_value=1),
 )
@@ -35,12 +36,9 @@ def test_numpy_diagonal(
     frontend,
 ):
     input_dtype, x, axis = dtype_x_axis
-    if axis < 0:
-        new_axis = axis + 1
-    else:
-        new_axis = axis - 1
+    # axis = dtype_and_axis
 
-    print("axis", axis)
+    # print("axis", axis)
     as_variable = as_variable
 
     np_frontend_helpers.test_frontend_function(
@@ -54,6 +52,6 @@ def test_numpy_diagonal(
         native_array_flags=native_array,
         a=ivy.native_array(x, dtype=ivy.int32),
         offset=offset,
-        axis1=axis,
-        axis2=new_axis,
+        axis1=axis[0],
+        axis2=axis[1],
     )
