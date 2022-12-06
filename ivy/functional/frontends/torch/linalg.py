@@ -31,7 +31,8 @@ def matrix_power(input, n, *, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
-    # ToDO: if input is complex valued, it computes the norm of input.abs()
+    if "complex" in ivy.as_ivy_dtype(input.dtype):
+        input = ivy.abs(input)
     if dtype:
         input = ivy.astype(input, dtype)
     return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
@@ -40,4 +41,6 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
 matrix_norm.supported_dtypes = (
     "float32",
     "float64",
+    "complex64",
+    "complex128",
 )

@@ -192,12 +192,14 @@ def st_dtype_arr_and_axes(draw):
     dtype_values_axis=st_dtype_arr_and_axes(),
     ord=st.sampled_from(["fro", "nuc", np.inf, -np.inf, 1, -1, 2, -2]),
     keepdim=st.booleans(),
+    dtype=helpers.get_dtypes("valid", none=True, full=False),
 )
 def test_torch_matrix_norm(
     *,
     dtype_values_axis,
     ord,
     keepdim,
+    dtype,
     num_positional_args,
     as_variable,
     with_out,
@@ -221,5 +223,5 @@ def test_torch_matrix_norm(
         ord=ord,
         dim=axis,
         keepdim=keepdim,
-        dtype=input_dtype,
+        dtype=dtype[0],
     )
