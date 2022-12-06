@@ -33,7 +33,7 @@ def arange(
 ) -> np.ndarray:
     if dtype:
         dtype = as_native_dtype(dtype)
-    res = _to_device(np.arange(start, stop, step=step, dtype=dtype), device=device)
+    res = _to_device(np.arange(start, stop, step, dtype=dtype), device=device)
     if not dtype:
         if res.dtype == np.float64:
             return res.astype(np.float32)
@@ -134,8 +134,8 @@ def full(
 
 def full_like(
     x: np.ndarray,
+    fill_value: Number,
     /,
-    fill_value: float,
     *,
     dtype: np.dtype,
     device: str,

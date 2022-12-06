@@ -14,6 +14,7 @@ import jax.numpy as jnp
 from numbers import Number
 
 # local
+import ivy
 from ivy.functional.backends.jax import JaxArray
 
 
@@ -89,10 +90,10 @@ def top_k(
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
     else:
-        x *= -1
+        x = -x
         indices = jnp.argsort(x, axis=axis)
         indices = jnp.take(indices, jnp.arange(k), axis=axis)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", JaxArray), ("indices", JaxArray)])
     val = jnp.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -235,6 +236,10 @@ def dsplit(
     return jnp.dsplit(ary, indices_or_sections)
 
 
+def atleast_1d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_1d(*arys)
+
+
 def dstack(
     arrays: Sequence[JaxArray],
     /,
@@ -246,3 +251,34 @@ def dstack(
 
 def atleast_2d(*arys: JaxArray) -> List[JaxArray]:
     return jnp.atleast_2d(*arys)
+
+
+def atleast_3d(*arys: Union[JaxArray, bool, Number]) -> List[JaxArray]:
+    return jnp.atleast_3d(*arys)
+
+
+def take_along_axis(
+    arr: JaxArray,
+    indices: JaxArray,
+    axis: int,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if arr.shape != indices.shape:
+        raise ivy.exceptions.IvyException(
+            "arr and indices must have the same shape;"
+            + f" got {arr.shape} vs {indices.shape}"
+        )
+
+    return jnp.take_along_axis(arr, indices, axis)
+
+
+def hsplit(
+    ary: JaxArray,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.hsplit(ary, indices_or_sections)

@@ -65,6 +65,7 @@ def _ivy_to_native(x):
     # converts it to a native array if it is an ivy array
     if isinstance(x, (list, tuple)) and len(x) != 0 and isinstance(x[0], (list, tuple)):
         for i, item in enumerate(x):
+            x = list(x) if isinstance(x, tuple) else x
             x[i] = _ivy_to_native(item)
     else:
         if (isinstance(x, (list, tuple)) and len(x) > 0) and ivy.is_ivy_array(x[0]):
@@ -157,9 +158,9 @@ class NestedSequence(Protocol[_T_co]):
 @handle_exceptions
 def arange(
     start: Number,
-    /,
     stop: Optional[Number] = None,
-    step: Number = 1,
+    step: Optional[Number] = 1,
+    /,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -399,8 +400,8 @@ def ones(
 @handle_array_like
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
+    fill_value: Number,
     /,
-    fill_value: float,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

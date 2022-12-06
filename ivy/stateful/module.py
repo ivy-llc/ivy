@@ -3,14 +3,8 @@
 # global
 import os
 import abc
-import ivy.functional.backends.numpy
 import termcolor
 import numpy as np
-import haiku as hk
-from haiku._src.data_structures import FlatMapping
-import jax
-import torch
-import tensorflow as tf
 import re
 import inspect
 from collections import OrderedDict
@@ -20,10 +14,35 @@ import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.functional.ivy.gradients import _is_variable
+
+try:
+    import jax
+except ImportError:
+    import types
+    jax = types.SimpleNamespace()
+
+try:
+    import torch
+except ImportError:
+    import types
+    torch = types.SimpleNamespace()
+
+try:
+    import tensorflow as tf
+except ImportError:
+    import types
+    tf = types.SimpleNamespace()
+
+try:
+    import haiku as hk
+    from haiku._src.data_structures import FlatMapping
+except ImportError:
+    import types
+    hk = types.SimpleNamespace()
+    hk.Module = types.SimpleNamespace
+
 # Base #
 # -----#
-
-
 class Module(abc.ABC):
     """Module is a base class for deriving trainable modules."""
 

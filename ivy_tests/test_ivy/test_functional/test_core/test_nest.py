@@ -193,6 +193,16 @@ def test_nested_argwhere_w_nest_checks(nest):
     assert indices[13] == ["b", "c"]
 
 
+# nested_argwhere_w_extra_nest_types
+def test_nested_argwhere_w_extra_nest_types():
+    nest = {"a": ivy.array([[0], [1]]), "b": {"c": ivy.array([[[2], [4]], [[6], [8]]])}}
+    indices = ivy.nested_argwhere(nest, lambda x: x < 5, extra_nest_types=ivy.Array)
+    assert indices[0] == ["a", 0, 0]
+    assert indices[1] == ["a", 1, 0]
+    assert indices[2] == ["b", "c", 0, 0, 0]
+    assert indices[3] == ["b", "c", 0, 1, 0]
+
+
 # all_nested_indices
 @pytest.mark.parametrize(
     "nest", [{"a": [[0], [1]], "b": {"c": [[[2], [4]], [[6], [8]]]}}]
@@ -232,6 +242,18 @@ def test_all_nested_indices_w_nest_checks(nest):
     assert indices[16] == ["b"]
 
 
+# all_nested_indices_w_extra_nest_types
+def test_all_nested_indices_w_extra_nest_types():
+    nest = {"a": ivy.array([[0], [1]]), "b": {"c": ivy.array([[[2], [4]], [[6], [8]]])}}
+    indices = ivy.all_nested_indices(nest, extra_nest_types=ivy.Array)
+    assert indices[0] == ["a", 0, 0]
+    assert indices[1] == ["a", 1, 0]
+    assert indices[2] == ["b", "c", 0, 0, 0]
+    assert indices[3] == ["b", "c", 0, 1, 0]
+    assert indices[4] == ["b", "c", 1, 0, 0]
+    assert indices[5] == ["b", "c", 1, 1, 0]
+
+
 # copy_nest
 def test_copy_nest():
 
@@ -251,6 +273,32 @@ def test_copy_nest():
     assert nest["a"][1] is nest_copy["a"][1]
     assert nest["b"]["c"][0] is nest_copy["b"]["c"][0]
     assert nest["b"]["c"][1] is nest_copy["b"]["c"][1]
+
+
+# copy_nest_w_extra_nest_types
+def test_copy_nest_w_extra_nest_types():
+
+    nest = {
+        "a": [ivy.array([0]), ivy.array([1])],
+        "b": {"c": [ivy.array([2, 4]), ivy.array([6, 8])]},
+    }
+    nest_copy = ivy.copy_nest(nest, extra_nest_types=ivy.Array)
+
+    # copied nests
+    assert nest["a"] is not nest_copy["a"]
+    assert nest["b"] is not nest_copy["b"]
+    assert nest["a"][0] is not nest_copy["a"][0]
+    assert nest["a"][1] is not nest_copy["a"][1]
+    assert nest["b"]["c"] is not nest_copy["b"]["c"]
+    assert nest["b"]["c"][0] is not nest_copy["b"]["c"][0]
+    assert nest["b"]["c"][1] is not nest_copy["b"]["c"][1]
+
+    assert nest["a"][0][0] is not nest_copy["a"][0][0]
+    assert nest["a"][1][0] is not nest_copy["a"][1][0]
+    assert nest["b"]["c"][0][0] is not nest_copy["b"]["c"][0][0]
+    assert nest["b"]["c"][0][0] is not nest_copy["b"]["c"][0][1]
+    assert nest["b"]["c"][1][1] is not nest_copy["b"]["c"][1][1]
+    assert nest["b"]["c"][1][1] is not nest_copy["b"]["c"][1][0]
 
 
 # nested_multi_map
@@ -362,6 +410,18 @@ def test_nested_map(x, fn):
     assert x_copy == x
 
 
+# nested_map_w_extra_nest_types
+@pytest.mark.parametrize("fn", [lambda x: x**2])
+def test_nested_map_w_extra_nest_types(fn):
+    x = {"a": ivy.array([[0, 1], [2, 3]]), "b": {"c": ivy.array([[0], [1]])}}
+    x_copy = copy.deepcopy(x)
+    x = ivy.nested_map(x, fn, extra_nest_types=ivy.Array)
+    map_nested_dicts(x_copy, fn)
+
+    assert ivy.all(x_copy["a"] == x["a"])
+    assert ivy.all(x_copy["b"]["c"] == x["b"]["c"])
+
+
 # nested_any
 @pytest.mark.parametrize("x", [{"a": [[0, 1], [2, 3]], "b": {"c": [[0], [1]]}}])
 @pytest.mark.parametrize("fn", [lambda x: True if x % 2 == 0 else False])
@@ -381,3 +441,34 @@ def test_nested_any(x, fn):
     x_copy_bool = is_true_any(x_copy)
 
     assert x_copy_bool == x_bool
+
+
+# nested_any_w_extra_nest_types
+@pytest.mark.parametrize("fn", [lambda x: x % 2 == 0])
+def test_nested_any_w_extra_nest_types(fn):
+    x = {"a": ivy.array([[0, 1], [2, 3]]), "b": {"c": ivy.array([[0], [1]])}}
+    x_copy = copy.deepcopy(x)
+    x_bool = ivy.nested_any(x, fn, extra_nest_types=ivy.Array)
+
+    def is_true_any(ob):
+        for k, v in ob.items():
+            if isinstance(v, dict):
+                is_true_any(v)
+            if isinstance(v, ivy.Array):
+                return ivy.any(fn(v))
+
+    x_copy_bool = is_true_any(x_copy)
+
+    assert x_copy_bool == x_bool
+
+
+# duplicate_array_index_chains
+x = ivy.array([-1.0])
+y = ivy.array([1.0])
+
+
+@pytest.mark.parametrize("nest", [[{"a": x, "b": {"c": y, "d": x}}, (x, y)]])
+def test_duplicate_array_index_chains(nest):
+    duplicate_index_chains = ivy.duplicate_array_index_chains(nest)
+    assert duplicate_index_chains[0] == [[0, "a"], [0, "b", "d"], [1, 0]]
+    assert duplicate_index_chains[1] == [[0, "b", "c"], [1, 1]]

@@ -242,10 +242,12 @@ def test_torch_permute(
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_swapdims(
     *,
@@ -376,10 +378,12 @@ def test_torch_stack(
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_transpose(
     *,
@@ -458,10 +462,12 @@ def test_torch_squeeze(
     ),
     axis0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_swapaxes(
     *,
@@ -751,4 +757,81 @@ def test_torch_dstack(
         fn_tree=fn_tree,
         on_device=on_device,
         tensors=value,
+    )
+
+
+# index_select
+@handle_frontend_test(
+    fn_tree="torch.index_select",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        max_num_dims=1,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_index_select(
+    *,
+    params_indices_others,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, input, indices, axis, batch_dims = params_indices_others
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input,
+        dim=axis,
+        index=indices,
+    )
+
+
+# take_along_dim
+@handle_frontend_test(
+    fn_tree="torch.take_along_dim",
+    dtype_indices_axis=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("numeric"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_take_along_dim(
+    *,
+    dtype_indices_axis,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, value, indices, axis, _ = dtype_indices_axis
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value,
+        indices=indices,
+        dim=axis,
     )

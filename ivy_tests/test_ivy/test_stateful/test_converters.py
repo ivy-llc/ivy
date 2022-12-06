@@ -2,13 +2,36 @@
 
 # global
 import pytest
-import torch
-import torch.nn as nn
-import jax
-from jax import value_and_grad
-import haiku as hk
-import jax.numpy as jnp
-import tensorflow as tf
+
+try:
+    import jax
+    import jax.numpy as jnp
+except ImportError:
+    import types
+    jax = types.SimpleNamespace()
+    jnp = types.SimpleNamespace()
+
+try:
+    import torch
+    import torch.nn as nn
+except ImportError:
+    import types
+    torch = types.SimpleNamespace()
+    torch.nn = types.SimpleNamespace()
+
+try:
+    import tensorflow as tf
+except ImportError:
+    import types
+    tf = types.SimpleNamespace()
+
+try:
+    import haiku as hk
+except ImportError:
+    import types
+    hk = types.SimpleNamespace()
+    hk.Module = types.SimpleNamespace
+
 # local
 import ivy
 
@@ -290,7 +313,7 @@ def test_to_haiku_module(bs_ic_oc):
         return weights - lr * gradients
 
     for epoch in range(10):
-        loss, param_grads = value_and_grad(MAELoss)(params, x_in, target)
+        loss, param_grads = jax.value_and_grad(MAELoss)(params, x_in, target)
         params = jax.tree_map(UpdateWeights, params, param_grads)
 
         assert loss < loss_tm1

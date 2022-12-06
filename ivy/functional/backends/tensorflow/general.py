@@ -73,7 +73,7 @@ def current_backend_str() -> str:
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
 def get_item(x: tf.Tensor, query: tf.Tensor) -> tf.Tensor:
-    if not ivy.is_array(query):
+    if not ivy.is_array(query) and not isinstance(query, np.ndarray):
         return x.__getitem__(query)
     dtype = ivy.dtype(query, as_native=True)
     if dtype is tf.bool:
@@ -197,7 +197,6 @@ def inplace_update(
 ) -> ivy.Array:
     if ivy.is_array(x) and ivy.is_array(val):
         (x_native, val_native), _ = ivy.args_to_native(x, val)
-        x_native.data = val_native
         if _is_variable(x_native):
             x_native.assign(val_native)
             if ivy.is_ivy_array(x):
