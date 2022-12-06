@@ -3,6 +3,10 @@ linspace
 
 .. autofunction:: ivy.functional.ivy.creation.linspace
 
+.. autofunction:: ivy.array.array_methods.linspace
+
+.. autofunction:: ivy.container.container_methods.linspace
+
 .. autofunction:: ivy.container.container_methods.static_linspace
 |
 | **Supported Frameworks:**
@@ -31,5 +35,7 @@ linspace
    :caption: linspace
 
    linspace/linspace_functional.rst
+   linspace/linspace_array.rst
+   linspace/linspace_container.rst
    linspace/static_linspace_container.rst
 
