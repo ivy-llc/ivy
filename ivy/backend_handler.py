@@ -8,7 +8,6 @@ from typing import Optional
 # local
 from ivy.func_wrapper import _wrap_function
 
-
 backend_stack = []
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
@@ -259,12 +258,15 @@ def set_backend(backend: str):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
+        compositional = k not in backend.__dict__
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+        ivy.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

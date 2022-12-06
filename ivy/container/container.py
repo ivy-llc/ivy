@@ -140,6 +140,45 @@ class Container(
         return self.map(lambda x, kc: -x, map_sequences=True)
 
     def __pow__(self, power):
+        """
+        ivy.Container special method for the power operator, calling
+        :code:`operator.pow` for each of the corresponding leaves of
+        the two containers.
+
+        Parameters
+        ----------
+        self
+            input container. Should have a numeric data type.
+        power
+            input array or container of powers. Must be compatible
+            with ``self`` (see :ref:`broadcasting`). Should have a numeric
+            data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise sums. The returned array must have a
+            data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))
+        >>> y = x ** 2
+        >>> print(y)
+        {
+            a: ivy.array([0, 1]),
+            b: ivy.array([4, 9])
+        }
+        >>> x = ivy.Container(a=ivy.array([0, 1.2]), b=ivy.array([2.2, 3.]))
+        >>> y = x ** 3.1
+        >>> print(y)
+        {
+            a: ivy.array([0., 1.75979435]),
+            b: ivy.array([11.52153397, 30.13532257])
+        }
+        """
         if isinstance(power, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.pow(xs[0], xs[1]), [self, power], map_nests=True
@@ -358,6 +397,52 @@ class Container(
         )
 
     def __truediv__(self, other):
+        """
+        ivy.Container special method for the divide operator, calling
+        :code:`operator.truediv` for each of the corresponding leaves of
+        the two containers.
+
+        Parameters
+        ----------
+        self
+            first input container. Should have a numeric data type.
+        other
+            second input array or container. Must be compatible with ``self``
+            (see :ref:`broadcasting`). Should have a numeric data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise differences. The returned array must
+            have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :code:`Number` instances at the leaves:
+
+        >>> x = ivy.Container(a=1, b=2)
+        >>> y = ivy.Container(a=5, b=4)
+        >>> z = x / y
+        >>> print(z)
+        {
+            a: 0.2,
+            b: 0.5
+        }
+
+        With :class:`ivy.Array` instances at the leaves:
+
+        >>> x = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                   b=ivy.array([4, 3, 2]))
+        >>> y = ivy.Container(a=ivy.array([4, 5, 6]),
+        ...                   b=ivy.array([6, 5, 4]))
+        >>> z = x / y
+        >>> print(z)
+        {
+            a: ivy.array([0.25, 0.40000001, 0.5]),
+            b: ivy.array([0.66666669, 0.60000002, 0.5])
+        }
+
+        """
         return ivy.Container.multi_map(
             lambda xs, _: operator.truediv(xs[0], xs[1]), [self, other], map_nests=True
         )
@@ -380,9 +465,69 @@ class Container(
         return self.map(lambda x, kc: other // x, map_sequences=True)
 
     def __abs__(self):
+        """
+        ivy.Container special method for the abs operator, calling
+        :code:`operator.abs` for each of the corresponding leaves of the
+        two containers.
+
+        Parameters
+        ----------
+        self
+            input Container. Should have leaves with numeric data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([1, -2, 3]),
+        ...                    b=ivy.array([-1, 0, 5]))
+        >>> y = abs(x)
+        >>> print(y)
+        {
+            a: ivy.array([1, 2, 3]),
+            b: ivy.array([1, 0, 5])
+        }
+
+        """
         return self.map(lambda x, kc: operator.abs(x), map_sequences=True)
 
     def __lt__(self, other):
+        """
+        ivy.Container special method for the less operator, calling
+        :code:`operator.lt` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 3]),b=ivy.array([5, 3, 7]))
+        >>> z = x < y
+        >>> print(z)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([True, False, True])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.lt(xs[0], xs[1]), [self, other], map_nests=True
@@ -390,6 +535,37 @@ class Container(
         return self.map(lambda x, kc: x < other, map_sequences=True)
 
     def __le__(self, other):
+        """
+        ivy.Container special method for the less_equal operator, calling
+        :code:`operator.le` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 3]),b=ivy.array([5, 3, 7]))
+        >>> z = x <= y
+        >>> print(z)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([True, True, True])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.le(xs[0], xs[1]), [self, other], map_nests=True
@@ -397,6 +573,61 @@ class Container(
         return self.map(lambda x, kc: x <= other, map_sequences=True)
 
     def __eq__(self, other):
+        """
+        ivy.Container special method for the equal operator, calling
+        :code:`operator.eq` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 3, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> y = x1 == x2
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([True, False, True])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 == x2
+        >>> print(y)
+        {
+            a: ivy.array([True, False, True]),
+            b: ivy.array([True, True, True])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 == x2
+        >>> print(y)
+        {
+            a: ivy.array([True, True, True]),
+            b: ivy.array([True, True, True])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.eq(xs[0], xs[1]), [self, other], map_nests=True
@@ -404,6 +635,61 @@ class Container(
         return self.map(lambda x, kc: x == other, map_sequences=True)
 
     def __ne__(self, other):
+        """
+        ivy.Container special method for the not_equal operator, calling
+        :code:`operator.ne` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x1 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 3, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([False, True, False])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 3, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, True, False]),
+            b: ivy.array([False, False, False])
+        }
+
+        >>> x1 = ivy.Container(a=ivy.array([1.0, 2.0, 3.0]),
+        ...                    b=ivy.array([1, 4, 5]))
+        >>> x2 = ivy.Container(a=ivy.array([1, 2, 3.0]),
+        ...                    b=ivy.array([1.0, 4.0, 5.0]))
+        >>> y = x1 != x2
+        >>> print(y)
+        {
+            a: ivy.array([False, False, False]),
+            b: ivy.array([False, False, False])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.ne(xs[0], xs[1]), [self, other], map_nests=True
@@ -411,6 +697,37 @@ class Container(
         return self.map(lambda x, kc: x != other, map_sequences=True)
 
     def __gt__(self, other):
+        """
+        ivy.Container special method for the greater operator, calling
+        :code:`operator.gt` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 3]),b=ivy.array([5, 3, 7]))
+        >>> z = x > y
+        >>> print(z)
+        {
+            a:ivy.array([True,False,True]),
+            b:ivy.array([False,False,False])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.gt(xs[0], xs[1]), [self, other], map_nests=True
@@ -418,6 +735,37 @@ class Container(
         return self.map(lambda x, kc: x > other, map_sequences=True)
 
     def __ge__(self, other):
+        """
+        ivy.Container special method for the greater_equal operator, calling
+        :code:`operator.ge` for each of the corresponding leaves of the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container. May have any data type.
+        other
+            second input Container. Must be compatible with x1 (with Broadcasting).
+            May have any data type.
+
+        Returns
+        -------
+        ret
+            A container containing the element-wise results. Any returned array inside
+            must have a data type of bool.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([4, 5, 6]),b=ivy.array([2, 3, 4]))
+        >>> y = ivy.Container(a=ivy.array([1, 5, 3]),b=ivy.array([5, 3, 7]))
+        >>> z = x >= y
+        >>> print(z)
+        {
+            a:ivy.array([True,True,True]),
+            b:ivy.array([False,True,False])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.ge(xs[0], xs[1]), [self, other], map_nests=True
@@ -448,6 +796,38 @@ class Container(
         return self.map(lambda x, kc: operator.not_(x), map_sequences=True)
 
     def __xor__(self, other):
+        """
+        ivy.Container special method for the ge operator, calling
+        :code:`operator.ge` for each of the corresponding leaves of
+        the two containers.
+
+        Parameters
+        ----------
+        self
+            first input Container.
+        other
+            second input Container. Arrays inside must be compatible with ``x1``
+            (see :ref:`broadcasting`). Should have an integer or boolean data type.
+
+        Returns
+        -------
+        ret
+            a container containing the element-wise results. Any returned arrays inside
+            must have a data type determined by :ref:`type-promotion`.
+
+        Examples
+        --------
+        With :class:`ivy.Container` instances:
+
+        >>> x = ivy.Container(a=ivy.array([89]), b=ivy.array([2]))
+        >>> y = ivy.Container(a=ivy.array([12]), b=ivy.array([3]))
+        >>> z = x ^ y
+        >>> print(z)
+        {
+            a: ivy.array([85]),
+            b: ivy.array([1])
+        }
+        """
         if isinstance(other, ivy.Container):
             return ivy.Container.multi_map(
                 lambda xs, _: operator.xor(xs[0], xs[1]), [self, other], map_nests=True

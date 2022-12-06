@@ -17,4 +17,3 @@ Because 3+ of the native frameworks have it, and it's a complex function.
 - [PyTorch](<FUNC_URL_DOCS>)
 - [TensorFlow](<FUNC_URL_DOCS>)
 - [NumPy](<FUNC_URL_DOCS>)
-- [MXNet](<FUNC_URL_DOCS>)
