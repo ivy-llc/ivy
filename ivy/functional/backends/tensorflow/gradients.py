@@ -83,7 +83,9 @@ def execute_with_gradients(
         return grads
 
     if isinstance(y, ivy.NativeArray):
-        grads = ivy.to_ivy(grad_func(y))
+        grads = _set_duplicates(
+            ivy.to_ivy(grad_func(y)), required_duplicate_index_chains
+        )
     else:
         array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
         if (

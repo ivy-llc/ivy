@@ -1366,8 +1366,6 @@ def test_frontend_method(
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
 
-    ret_np_flat = flatten_and_to_np(ret=ret)
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
@@ -1581,10 +1579,11 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
-    if _is_frontend_array(ret):
-        ret = ret.ivy_array
-    if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
-        ret = ret.ivy_array
+    for i, val in enumerate(ret):
+        if _is_frontend_array(val):
+            ret[i] = val.ivy_array
+        if isinstance(val, ivy.functional.frontends.numpy.ndarray):
+            ret[i] = val.ivy_array
     return ret, flatten_and_to_np(ret=ret)
 
 

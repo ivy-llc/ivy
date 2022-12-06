@@ -149,7 +149,7 @@ class Container(
         ----------
         self
             input container. Should have a numeric data type.
-        other
+        power
             input array or container of powers. Must be compatible
             with ``self`` (see :ref:`broadcasting`). Should have a numeric
             data type.
@@ -160,6 +160,8 @@ class Container(
             a container containing the element-wise sums. The returned array must have a
             data type determined by :ref:`type-promotion`.
 
+        Examples
+        --------
         With :class:`ivy.Container` input:
 
         >>> x = ivy.Container(a=ivy.array([0, 1]), b=ivy.array([2, 3]))

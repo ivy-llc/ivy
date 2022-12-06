@@ -401,7 +401,7 @@ def ones(
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,

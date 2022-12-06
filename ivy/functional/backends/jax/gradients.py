@@ -98,7 +98,7 @@ def execute_with_gradients(
                 ret_grad_idxs=ret_grad_idxs,
             )
         )
-        grads = grad_fn(xs_required)
+        grads = _set_duplicates(grad_fn(xs_required), required_duplicate_index_chains)
     else:
         grad_fn = jax.jacrev(
             lambda x: _forward_fn(

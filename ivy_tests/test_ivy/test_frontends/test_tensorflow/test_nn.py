@@ -895,6 +895,23 @@ def test_tensorflow_local_response_normalization(
 def test_tensorflow_conv_transpose(
     *,
     x_f_d_df,
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
+# max_pool1d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool1d",
+    data_format=df(data_format=st.sampled_from(["NWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_tensorflow_max_pool1d(
+    *,
+    x_k_s_p,
+    data_format,
     as_variable,
     num_positional_args,
     native_array,
@@ -912,6 +929,9 @@ def test_tensorflow_conv_transpose(
         pad,
         output_shape,
     ) = x_f_d_df
+
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -928,4 +948,10 @@ def test_tensorflow_conv_transpose(
         padding=pad,
         data_format=data_format,
         dilations=dilations,
+
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )
