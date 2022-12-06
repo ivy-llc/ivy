@@ -28,7 +28,8 @@ except ImportError:
     torch = types.SimpleNamespace()
     torch.nn = types.SimpleNamespace()
     torch.nn.Module = types.SimpleNamespace
-    
+    torch.nn.Parameter = types.SimpleNamespace
+
 try:
     import tensorflow as tf
 except ImportError:
