@@ -76,7 +76,7 @@ def test_torch_inv(
 # pinv
 @handle_frontend_test(
     fn_tree="torch.linalg.pinv",
-    dtype_and_input=_get_dtype_and_square_matrix(),
+    dtype_and_input=_get_dtype_and_matrix(),
 )
 def test_torch_pinv(
     *,
