@@ -91,7 +91,15 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def gelu(
     input,
 ):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
@@ -109,7 +117,15 @@ def tanh(input):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16", )}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def logsigmoid(input):
     return ivy.negative(ivy.softplus(ivy.negative(input)))
 
@@ -334,13 +350,29 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def softplus(input, beta=1, threshold=20):
     return ivy.softplus(input, beta=beta, threshold=threshold)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     assert shape[1] % num_groups == 0

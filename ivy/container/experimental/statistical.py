@@ -1,12 +1,5 @@
 # global
-from typing import (
-    Optional,
-    Union,
-    List,
-    Dict,
-    Tuple,
-    Sequence
-)
+from typing import Optional, Union, List, Dict, Tuple, Sequence
 
 # local
 import ivy
@@ -334,12 +327,12 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Sequence[int], int]] = None,
         keepdims: bool = False,
-        interpolation: str = 'linear',
+        interpolation: str = "linear",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container static method variant of ivy.quantile.
         This method simply wraps the function, and so the docstring
@@ -412,7 +405,7 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         >>> b = ivy.Container.static_quantile(a, q, axis = 0)
         >>> print(b)
         {
-            x: ivy.array([[6.5, 4.5, 2.5], 
+            x: ivy.array([[6.5, 4.5, 2.5],
                         [8.25, 5.75, 3.25]]),
             y: ivy.array([2.5, 3.25])
         }
@@ -421,9 +414,9 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         >>> b = ivy.Container.static_quantile(a, q, axis = 1, keepdims=True)
         >>> print(b)
         {
-            x: ivy.array([[[7.], 
-                    [2.]], 
-                    [[8.5], 
+            x: ivy.array([[[7.],
+                    [2.]],
+                    [[8.5],
                     [2.5]]])
         }
 
@@ -433,10 +426,10 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         >>> b = ivy.Container.static_quantile(a, q, axis = 0, interpolation="lower")
         >>> print(b)
         {
-            x: ivy.array([[3., 2., 1.], 
+            x: ivy.array([[3., 2., 1.],
                         [3., 2., 1.]]),
             y: ivy.array([1., 3.])
-        }   
+        }
         """
         return ContainerBase.multi_map_in_static_method(
             "quantile",
@@ -459,12 +452,12 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         *,
         axis: Optional[Union[Sequence[int], int]] = None,
         keepdims: bool = False,
-        interpolation: str = 'linear',
+        interpolation: str = "linear",
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None
+        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """ivy.Container instance method variant of ivy.quantile.
         This method simply wraps the function, and so the docstring
@@ -573,5 +566,5 @@ class ContainerWithStatisticalExperimental(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out
+            out=out,
         )
