@@ -200,6 +200,111 @@ inputs broadcast to.</p></li>
 </p>
 </dd>
 </dl>
+<p class="rubric">Functional Examples</p>
+<p>With General input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span><span class="mf">3.0</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([100., 215.443469, 464.15888336, 1000.])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">ivy.array([9., 12.98024613, 18.72075441, 27.])</span>
+</pre></div>
+</div>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[[2.000e+00, 2.000e+00]</span>
+<span class="go">            [4.000e+00, 8.000e+00]</span>
+<span class="go">            [8.000e+00, 5.120e+02]],</span>
+</pre></div>
+</div>
+<blockquote>
+<div><dl class="simple">
+<dt>[[1.280e+02, 3.200e+01]</dt><dd><p>[1.600e+01, 1.280e+02]
+[3.200e+01, 2.048e+03]]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[1.e+01, 1.e+07]</span>
+<span class="go">           [1.e+02, 1.e+11]</span>
+<span class="go">           [1.e+03, 1.e+02]</span>
+<span class="go">           [1.e+04, 1.e+09]</span>
+<span class="go">           [1.e+05, 1.e+07]</span>
+<span class="go">           [1.e+06, 1.e+06]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">13.</span><span class="p">,</span> <span class="mf">72.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">dev_str</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[1.e+03, 1.e+08, 1.e+13]</span>
+<span class="go">           [1.e+02, 1.e+37, 1.e+72]</span>
+<span class="go">           [1.e+01, 1.e+06, 1.e+11]])</span>
+</pre></div>
+</div>
+<p># Array <code class="docutils literal notranslate"><span class="pre">op</span></code> is now stored on the CPU.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[[1., 1., 1.]</span>
+<span class="go">            [1., 1., 1.]</span>
+<span class="go">            [1., 1., 1.]],</span>
+</pre></div>
+</div>
+<blockquote>
+<div><dl class="simple">
+<dt>[[1., 1., 1.]</dt><dd><p>[1., 1., 1.]
+[1., 1., 1.]]])</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[[3.2000e+01, 8.1920e+03, 5.1200e+02]</span>
+<span class="go">            [3.2768e+04, 6.4000e+01, 1.2800e+02]],</span>
+<span class="go">           [[2.0000e+00 2.0000e+00 2.0000e+00]</span>
+<span class="go">            [2.0000e+00 2.0000e+00 2.0000e+00]]])</span>
+</pre></div>
+</div>
+<blockquote>
+<div><p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:</p>
+</div></blockquote>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">21.</span><span class="p">,</span> <span class="mf">12.</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[1.e+05, 1.e+13, 1.e+21]</span>
+<span class="go">           [1.e+06, 1.e+09, 1.e+12]])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">.3</span><span class="p">,</span> <span class="mf">.8</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">.2</span><span class="p">,</span> <span class="mf">.2</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">.3</span><span class="p">,</span> <span class="mf">.2</span><span class="p">]),</span> <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">.7</span><span class="p">,</span> <span class="mf">.9</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">b</span><span class="p">,</span><span class="n">y</span><span class="o">.</span><span class="n">a</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">op</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">op1</span><span class="p">,</span><span class="n">op2</span><span class="p">,</span><span class="n">num</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
+<span class="go">ivy.array([[[3.98688589, 3.71321804, 3.45833531, 3.22094823, 2.99985588]</span>
+<span class="go">            [8.95241962, 7.04342969, 5.54150764, 4.35985143, 3.43016841]</span>
+<span class="go">            [32.26442336, 19.12940149, 11.34171831, 6.72444323, 3.98688589]],</span>
+</pre></div>
+</div>
+<blockquote>
+<div><dl class="simple">
+<dt>[[79.31783778, 34.97866642, 15.42537138, 6.80249153, 2.99985588]</dt><dd><p>[135.24747445, 52.19416699, 20.14256517, 7.77333857, 2.99985588]
+[246.1309628, 81.78050455, 27.17273296, 9.02852606, 2.99985588]]])</p>
+</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="py function">
