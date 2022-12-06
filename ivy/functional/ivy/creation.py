@@ -1048,6 +1048,73 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With General input:
+
+    >>> x = ivy.linspace(3,17,num=9)
+    >>> print(x)
+    ivy.array([3., 4.75, 6.5, 8.25, 10., 11.75, 13.5, 15.25, 17.])
+
+    >>> y = ivy.linspace(6,12,num=3,axis=0)
+    >>> print(y)
+    ivy.array([6., 7.5, 9., 10.5, 12.])
+
+    With :class:`ivy.Array` input:
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> x2 = ivy.array([7, 11, 2, 9, 7, 6])
+    >>> op = ivy.linspace(x1,x2,3,axis=0)
+    >>> print(op)
+    ivy.array([[1., 2., 3., 4., 5., 6.]
+               [4., 6.5, 2.5, 6.5, 6., 6.]
+               [7., 11., 2., 9., 7., 6.]])
+
+    >>> y1 = ivy.array([[10, 20, 30], [70, 40, 50]])
+    >>> y2 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> op = ivy.linspace(y1, y2, 2, axis=2)
+    >>> print(op)
+    ivy.array([[[10., 1.]
+                [20., 3.]
+                [30., 9.]]
+
+               [[70., 5.]
+                [40., 7.]
+                [50., 11.]]])
+
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.array([13., 72., 11.])
+    >>> op = ivy.linspace(x, y, 3, axis=1,dev_str=ivy.Device('cpu'))
+    >>> print(op)
+    ivy.array([[3., 8., 13.]
+               [2., 37., 72.]
+               [1., 6., 11.]])
+
+    # Array ``op`` is now stored on the CPU.
+
+    >>> x1 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> x2 = ivy.zeros(3)
+    >>> op = ivy.linspace(x1, x2, 3, axis=1)
+    >>> print(op)
+    ivy.array([[[1., 3., 9.]
+                [0.5, 1.5, 4.5]
+                [0., 0., 0.]]
+
+               [[5., 7., 11.]
+                [2.5, 3.5, 5.5]
+                [0., 0., 0.]]])
+
+    >>> y1 = ivy.array([[5, 13, 9], [15, 6, 7]])
+    >>> y2 = ivy.ones(3)
+    >>> op1 = ivy.linspace(y1, y2, 2, axis=0)
+    >>> print(op1)
+    ivy.array([[[5., 13., 9.]
+                [15., 6., 7.]]
+
+               [[1., 1., 1.]
+                [1., 1., 1.]]])
+
     """
     return current_backend(start).linspace(
         start,
