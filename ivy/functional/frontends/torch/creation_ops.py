@@ -101,7 +101,7 @@ def arange(
     else:
         ivy.assertions.check_true(
             len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported"
+            "only 1 or 3 positional arguments are supported",
         )
     return ivy.arange(start, end, step, dtype=dtype, device=device)
 
@@ -124,7 +124,7 @@ def range(
     else:
         ivy.assertions.check_true(
             len(args) == 1 or len(args) == 3,
-            "only 1 or 3 positional arguments are supported"
+            "only 1 or 3 positional arguments are supported",
         )
     return ivy.arange(start, end, step, dtype=dtype, device=device)
 
