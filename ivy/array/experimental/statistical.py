@@ -136,8 +136,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         *,
         axis: Optional[Union[Sequence[int], int]] = None,
         keepdims: bool = False,
-        interpolation: str = 'linear',
-        out: Optional[ivy.Array] = None
+        interpolation: str = "linear",
+        out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         """ivy.Array instance method variant of ivy.quantile.
         This method simply wraps the function, and so the docstring
@@ -147,7 +147,7 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         Parameters
         ----------
         a
-            Input array. 
+            Input array.
         q
             Quantile or sequence of quantiles to compute, which must be
             between 0 and 1 inclusive.
@@ -176,8 +176,8 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         Returns
         -------
         ret
-            A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, 
-            if axis is None, a rank(q) array. The first rank(q) dimensions index 
+            A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or,
+            if axis is None, a rank(q) array. The first rank(q) dimensions index
             quantiles for different values of q.
 
         Examples
@@ -212,5 +212,5 @@ class ArrayWithStatisticalExperimental(abc.ABC):
             axis=axis,
             keepdims=keepdims,
             interpolation=interpolation,
-            out=out
+            out=out,
         )
