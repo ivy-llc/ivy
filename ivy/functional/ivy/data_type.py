@@ -944,7 +944,7 @@ def default_float_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = None,
+    as_native: Optional[bool] = False,
 ) -> Union[ivy.Dtype, str, ivy.NativeDtype]:
     """
     Parameters
@@ -984,9 +984,7 @@ def default_float_dtype(
     if ivy.exists(float_dtype):
         if as_native is True:
             return ivy.as_native_dtype(float_dtype)
-        elif as_native is False:
-            return ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
-        return float_dtype
+        return ivy.FloatDtype(ivy.as_ivy_dtype(float_dtype))
     as_native = ivy.default(as_native, False)
     if ivy.exists(input):
         if ivy.is_array(input):
@@ -1075,7 +1073,7 @@ def default_dtype(
     *,
     dtype: Optional[Union[ivy.Dtype, str]] = None,
     item: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
-    as_native: Optional[bool] = None,
+    as_native: Optional[bool] = False,
 ) -> Union[ivy.Dtype, ivy.NativeDtype, str]:
     """
     Parameters
@@ -1096,9 +1094,7 @@ def default_dtype(
     if ivy.exists(dtype):
         if as_native is True:
             return ivy.as_native_dtype(dtype)
-        elif as_native is False:
-            return ivy.as_ivy_dtype(dtype)
-        return dtype
+        return ivy.as_ivy_dtype(dtype)
     as_native = ivy.default(as_native, False)
     if ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
@@ -1131,7 +1127,7 @@ def default_int_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     int_dtype: Optional[Union[ivy.IntDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = None,
+    as_native: Optional[bool] = False,
 ) -> Union[ivy.IntDtype, ivy.NativeDtype]:
     """
     Parameters
@@ -1168,9 +1164,7 @@ def default_int_dtype(
     if ivy.exists(int_dtype):
         if as_native is True:
             return ivy.as_native_dtype(int_dtype)
-        elif as_native is False:
-            return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
-        return int_dtype
+        return ivy.IntDtype(ivy.as_ivy_dtype(int_dtype))
     as_native = ivy.default(as_native, False)
     if ivy.exists(input):
         if ivy.is_array(input):
@@ -1237,7 +1231,7 @@ def default_uint_dtype(
     *,
     input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
     uint_dtype: Optional[Union[ivy.UintDtype, ivy.NativeDtype]] = None,
-    as_native: Optional[bool] = None,
+    as_native: Optional[bool] = False,
 ) -> Union[ivy.UintDtype, ivy.NativeDtype]:
     """
     Parameters

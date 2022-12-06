@@ -342,6 +342,9 @@ class Tensor:
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
@@ -394,6 +397,9 @@ class Tensor:
     def __itruediv__(self, other, *, rounding_mode=None):
         self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
         return self
+
+    def __eq__(self, other):
+        return ivy.equal(self._ivy_array, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
