@@ -173,7 +173,9 @@ def GreaterEqual(*, x, y, name="GreaterEqual"):
     return ivy.greater_equal(x, y)
 
 
-Identity = to_ivy_arrays_and_back(map_raw_ops_alias(tf_frontend.general_functions.identity))
+Identity = to_ivy_arrays_and_back(
+    map_raw_ops_alias(tf_frontend.general_functions.identity)
+)
 
 
 @to_ivy_arrays_and_back
