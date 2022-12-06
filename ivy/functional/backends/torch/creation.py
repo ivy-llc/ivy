@@ -297,8 +297,8 @@ full.support_native_out = True
 
 def full_like(
     x: torch.Tensor,
-    fill_value: Number,
     /,
+    fill_value: Number,
     *,
     dtype: torch.dtype,
     device: torch.device,
