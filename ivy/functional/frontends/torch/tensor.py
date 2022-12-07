@@ -429,6 +429,9 @@ class Tensor:
     def __eq__(self, other):
         return ivy.equal(self._ivy_array, other)
 
+    def __gt__(self, other):
+        return torch_frontend.greater(self._ivy_array, other)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
