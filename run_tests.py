@@ -88,13 +88,13 @@ if __name__ == "__main__":
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, (res, 0)
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
                 )
                 failed = True
             else:
                 res = make_clickable(run_id, result_config["success"])
                 update_individual_test_results(
-                    db[coll[0]], coll[1], submod, backend, test_fn, (res, 1)
+                    db[coll[0]], coll[1], submod, backend, test_fn, res
                 )
 
     if failed:
