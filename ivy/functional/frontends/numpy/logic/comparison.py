@@ -20,7 +20,7 @@ def equal(
     out=None,
     *,
     where=True,
-    casting="samekind",
+    casting="same_kind",
     order="K",
     dtype=None,
     subok=True,

@@ -136,6 +136,11 @@ def hstack(tensors, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def index_select(input, dim, index, *, out=None):
+    return ivy.gather(input, index, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
 def dstack(tensors, *, out=None):
     return ivy.dstack(tensors, out=out)
 

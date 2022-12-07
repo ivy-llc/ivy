@@ -213,6 +213,8 @@ def promote_types_of_numpy_inputs(
 
 from . import creation_routines
 from .creation_routines import *
+from . import data_type_routines
+from .data_type_routines import *
 from . import indexing_routines
 from .indexing_routines import *
 from . import logic

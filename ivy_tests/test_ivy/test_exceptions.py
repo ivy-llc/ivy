@@ -2,11 +2,12 @@ import sys
 import os
 import contextlib
 import pytest
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 
 import ivy
 
 
-@pytest.mark.parametrize("backend", ["numpy", "torch", "jax", "tensorflow"])
+@pytest.mark.parametrize("backend", available_frameworks)
 @pytest.mark.parametrize("trace_mode", ["full", "ivy", "frontend"])
 @pytest.mark.parametrize("show_func_wrapper", [True, False])
 def test_trace_modes(backend, trace_mode, show_func_wrapper):

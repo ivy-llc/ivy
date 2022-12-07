@@ -75,8 +75,8 @@ class ContainerWithStatistical(ContainerBase):
         >>> z = x.min(axis=1)
         >>> print(z)
         {
-            a: ivy.array([1, 0]),
-            b: ivy.array([2, 0])
+            a:ivy.array([1,-1]),
+            b:ivy.array([2,0])
         }
         """
         return self.handle_inplace(
@@ -497,6 +497,146 @@ class ContainerWithStatistical(ContainerBase):
             out=out,
         )
 
+    @staticmethod
+    def static_prod(
+        x: ivy.Container,
+        /,
+        *,
+        axis: Union[int, Sequence[int]] = None,
+        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        keepdims: bool = False,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ):
+        """ivy.Container static method variant of ivy.prod.
+        This method simply wraps the function, and so
+        the docstring for ivy.prod also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container. Should have a floating-point data type.
+        axis
+            axis or axes along which products must be computed. By
+            default, the product must be computed over the entire
+            array. If a tuple of integers, products must be
+            computed over multiple axes. Default: ``None``.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included
+            in the result. Default: ``False``.
+        dtype
+            data type of the returned array.
+        out
+            optional output array, for writing the result to.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was
+            not applied. Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            container, if the product was computed over the entire
+            array, a zero-dimensional array containing the product;
+            otherwise, a non-zero-dimensional array containing the
+            products. The returned array must have the same data type
+            as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = ivy.Container.static_prod(x)
+        >>> print(y)
+        {
+            a: ivy.array(0.),
+            b: ivy.array(60.)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))
+        >>> y = ivy.Container.static_prod(x, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([0.11000001]),
+            b: ivy.array([0.23100001])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, 3]]))
+        >>> y = ivy.Container.static_prod(x, axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[2]]),
+            b: ivy.array([[6]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1, 0, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> ivy.Container.static_prod(x, out=x)
+        >>> print(x)
+        {
+            a: ivy.array(0),
+            b: ivy.array(0.30800003)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 1.]), b=ivy.array([1., 1., 1.]))
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
+        >>> ivy.Container.static_prod(x, out=y)
+        >>> print(y)
+        {
+            a: ivy.array(-0.),
+            b: ivy.array(1.)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.], [3., 4., 5.]]),
+        ...                   b=ivy.array([[3., 4., 5.], [6., 7., 8.]]))
+        >>> ivy.Container.static_prod(x, axis=0, out=x)
+        >>> print(x)
+        {
+            a: ivy.array([0., 4., 10.]),
+            b: ivy.array([18., 28., 40.])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
+        ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
+        >>> y = ivy.Container.static_prod(x, axis=1)
+        >>> print(y)
+        {
+            a: ivy.array([1., 8.]),
+            b: ivy.array([27., 64.])
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "prod",
+            x,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def prod(
         self: ivy.Container,
         /,
@@ -616,23 +756,22 @@ class ContainerWithStatistical(ContainerBase):
 
         >>> x = ivy.Container(a=ivy.array([[1., 1., 1.], [2., 2., 2.]]),
         ...                   b=ivy.array([[3., 3., 3.], [4., 4., 4.]]))
-        >>> y = ivy.prod(x, axis=1)
+        >>> y = x.prod(axis=1)
         >>> print(y)
         {
-        a: ivy.array([1., 8.]),
-        b: ivy.array([27., 64.])
+            a: ivy.array([1., 8.]),
+            b: ivy.array([27., 64.])
         }
         """
-        return self.handle_inplace(
-            self.map(
-                lambda x_, _: ivy.prod(x_, axis=axis, keepdims=keepdims)
-                if ivy.is_array(x_)
-                else x_,
-                key_chains=key_chains,
-                to_apply=to_apply,
-                prune_unapplied=prune_unapplied,
-                map_sequences=map_sequences,
-            ),
+        return self.static_prod(
+            self,
+            axis=axis,
+            dtype=dtype,
+            keepdims=keepdims,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
             out=out,
         )
 
@@ -701,6 +840,126 @@ class ContainerWithStatistical(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.std.
+        This method simply wraps the function, and so
+        the docstring for ivy.std also applies to this method
+        with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            axis or axes along which standard deviation must be computed.
+            By default, the product must be computed over the entire
+            array. If a tuple of integers, products must be
+            computed over multiple axes. Default: ``None``.
+        correction
+            degrees of freedom adjustment. Setting this parameter to a
+            value other than ``0`` has the effect of adjusting the
+            divisor during the calculation of the standard deviation
+            according to ``N-c`` where ``N`` corresponds to the total
+            number of elements over which the standard deviation is
+            computed and ``c`` corresponds to the provided degrees of
+            freedom adjustment. When computing the standard deviation
+            of a population, setting this parameter to ``0`` is the
+            standard choice (i.e., the provided array contains data
+            constituting an entire population). When computing
+            the corrected sample standard deviation, setting this
+            parameter to ``1`` is the standard choice (i.e., the
+            provided array contains data sampled from a larger
+            population; this is commonly referred to as Bessel's
+            correction). Default: ``0``.
+        keepdims
+            bool, if True, the reduced axes (dimensions) must be
+            included in the result as singleton dimensions, and,
+            accordingly, the result must be compatible with the
+            input array (see Broadcasting). Otherwise, if False,
+            the reduced axes (dimensions) must not be included
+            in the result. Default: ``False``.
+        out
+            optional output array, for writing the result to.
+        key_chains
+            The key-chains to apply or not apply the method to.
+            Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was
+            not applied. Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output, for writing the result to.
+            It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            container, if the standard deviation was computed over the
+            entire array, a zero-dimensional array containing the
+            standard deviation; otherwise, a non-zero-dimensional array
+            containing the respectve standard deviations. The returned
+            array must have the same data type as ``self``.
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> x = ivy.Container(a=ivy.array([0., 2.]), b=ivy.array([-4., 5.]))
+        >>> y = x.std()
+        >>> print(y)
+        {
+            a: ivy.array(1.),
+            b: ivy.array(4.5)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0.1, 1.1]), b=ivy.array([0.1, 1.1, 2.1]))
+        >>> y = x.std(keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([0.5]),
+            b: ivy.array([0.81649649])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[2, 1]]), b=ivy.array([[2, -2]]))
+        >>> y = x.std(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[0.5]]),
+            b: ivy.array([[2.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([-1, 1, 1]), b=ivy.array([1.1, 0.2, 1.4]))
+        >>> x.std(out=x)
+        >>> print(x)
+        {
+            a: ivy.array(0.94280904),
+            b: ivy.array(0.509902)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([0., -2., 1.]), b=ivy.array([1., 1., 1.]))
+        >>> y = ivy.Container(a=ivy.array(0.), b=ivy.array(0.))
+        >>> x.std(out=y)
+        >>> print(y)
+        {
+            a: ivy.array(1.2472192),
+            b: ivy.array(0.)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[-1., 1., 2.], [2., 2., 2.]]),
+        ...                   b=ivy.array([[3., 0., -3.], [4., 1., 4.]]))
+        >>> y = ivy.std(x, axis=1)
+        >>> print(y)
+        {
+        a: ivy.array([1.2472192, 0.]),
+        b: ivy.array([2.44948983, 1.41421354])
+        }
+
+
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.std(
@@ -1020,10 +1279,11 @@ class ContainerWithStatistical(ContainerBase):
     @staticmethod
     def static_cumprod(
         x: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1111,10 +1371,11 @@ class ContainerWithStatistical(ContainerBase):
 
     def cumprod(
         self: ivy.Container,
+        /,
+        *,
         axis: int = 0,
         exclusive: bool = False,
         reverse: bool = False,
-        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1205,6 +1466,17 @@ class ContainerWithStatistical(ContainerBase):
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        >>> x = ivy.Container(a=ivy.array([[0, 1, 0],[1, 1, 0],[1, 1, 1]]),
+        ...                   b=ivy.array([[0, 1, 2],[4, 5, 6],[8, 9, 10]]))
+        >>> y = x.einsum('ii')
+        >>> print(y)
+        {
+            a: ivy.array(2),
+            b: ivy.array(15)
+        }
+
+        """
         return self.handle_inplace(
             self.map(
                 lambda x_, _: ivy.einsum(equation, x_) if ivy.is_array(x_) else x_,

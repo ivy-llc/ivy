@@ -6,8 +6,9 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_method
+from ivy_tests.test_ivy.helpers import handle_method, handle_test
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy.array import Array
 
 _zero = np.asarray(0, dtype="uint8")
 _one = np.asarray(1, dtype="uint8")
@@ -137,6 +138,151 @@ def _getitem_setitem(draw, available_dtypes=None):
     )
     index = draw(helpers.ints(min_value=0, max_value=arr_size - 1))
     return index, x
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_data(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.data)
+    ret_gt = helpers.flatten_and_to_np(ret=data)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_dtype(
+    dtype_x,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.dtype, ivy.dtype(data))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_array_property_device(
+    dtype_x,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.device, ivy.dev(data))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_array_property_ndim(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.ndim, len(input_shape))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+    ),
+)
+def test_array_property_shape(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ivy.assertions.check_equal(x.shape, ivy.Shape(input_shape))
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        ret_shape=True,
+        min_num_dims=1,
+    ),
+)
+def test_array_property_size(
+    dtype_x,
+):
+    _, data, input_shape = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    size_gt = 1
+    for dim in input_shape:
+        size_gt *= dim
+    ivy.assertions.check_equal(x.size, size_gt)
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+    ),
+)
+def test_array_property_mT(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.mT)
+    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
+@handle_test(
+    fn_tree="functional.ivy.native_array",  # dummy fn_tree
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        min_num_dims=2,
+        max_num_dims=2,
+    ),
+)
+def test_array_property_T(
+    dtype_x,
+    ground_truth_backend,
+):
+    _, data = dtype_x
+    data = ivy.native_array(data[0])
+    x = Array(data)
+    ret = helpers.flatten_and_to_np(ret=x.T)
+    ret_gt = helpers.flatten_and_to_np(ret=ivy.matrix_transpose(data))
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend=ground_truth_backend,
+    )
 
 
 @handle_method(method_tree="Array.__getitem__", query_dtype_and_x=_getitem_setitem())

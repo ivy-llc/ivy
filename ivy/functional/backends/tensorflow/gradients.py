@@ -14,6 +14,7 @@ from ivy.functional.ivy.gradients import (
     _get_required_native_variables,
     _get_native_variables_and_indices,
     _remove_zeros_and_nones,
+    _set_duplicates,
     _stop_grad_and_index,
 )
 
@@ -34,8 +35,19 @@ def variable_data(x, /):
 def execute_with_gradients(
     func, xs, /, *, retain_grads=False, xs_grad_idxs=None, ret_grad_idxs=None
 ):
+    duplicate_index_chains = ()
+    if isinstance(xs, ivy.Container):
+        duplicate_index_chains = xs.duplicate_array_keychains()
+    elif isinstance(xs, (list, tuple, dict)):
+        duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
+    xs = _set_duplicates(xs, duplicate_index_chains)
     xs_required = _get_required_native_variables(xs, xs_grad_idxs)
+    required_duplicate_index_chains = ()
+    if isinstance(xs_required, ivy.Container):
+        required_duplicate_index_chains = xs_required.duplicate_array_keychains()
+    elif isinstance(xs_required, (list, tuple, dict)):
+        required_duplicate_index_chains = ivy.duplicate_array_index_chains(xs_required)
     with tf.GradientTape(persistent=True, watch_accessed_variables=False) as tape:
         tape.watch(xs_required)
         func_ret = func(xs)
@@ -71,7 +83,9 @@ def execute_with_gradients(
         return grads
 
     if isinstance(y, ivy.NativeArray):
-        grads = ivy.to_ivy(grad_func(y))
+        grads = _set_duplicates(
+            ivy.to_ivy(grad_func(y)), required_duplicate_index_chains
+        )
     else:
         array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
         if (
@@ -84,7 +98,10 @@ def execute_with_gradients(
         grads_ = ivy.nested_map(y, grad_func, include_derived=True)
         grads = grads_
         if isinstance(ret_idxs, list) and len(ret_idxs):
-            grads = {ret_idxs[i]: grad for i, grad in enumerate(grads_)}
+            grads = {
+                ret_idxs[i]: _set_duplicates(grad, required_duplicate_index_chains)
+                for i, grad in enumerate(grads_)
+            }
     grads = ivy.nested_map(
         grads,
         lambda x: ivy.where(ivy.isfinite(x), x, 0) if ivy.is_array(x) else x,

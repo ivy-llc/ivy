@@ -1215,14 +1215,14 @@ def depthwise_conv2d(
 @handle_exceptions
 @handle_array_like
 def conv3d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    filters: Union[ivy.Array, ivy.NativeArray],
-    strides: int,
+    x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Computes a 3-D convolution given 5-D input x and filters arrays.
@@ -1251,22 +1251,62 @@ def conv3d(
     ret
         The result of the convolution operation.
 
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
     Examples
     --------
-    >>> x1 = [[[1.],[2.]],[[1.],[2.]],[[1.],[2.]]]
-    >>> x2 = [[[3.],[4.]],[[3.],[4.]],[[3.],[4.]]]
-    >>> x = ivy.array([[x1,x2]]) #NDHWC
-    >>> filters = ivy.array([[[[[1]],[[0.]]]]]) #DHWIO
-    >>> result = ivy.conv3d( x, filters, 1, 'VALID',data_format="NDHWC", dilations= 1)
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array\
+               ([[[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
+                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]],\
+                [[1., 2. ,1.], [1., 2. ,1.], [1., 2. ,1.]]]).reshape((1, 3, 3, 3, 1))
+
+    >>> filters = ivy.array([[[0.,1.,0.],\
+                              [0.,1.,0.],\
+                              [0.,1.,0.]]]).reshape((1,3,3,1,1))
+
+
+    >>> result = ivy.conv3d(x, filters, (1,1,1), 'SAME', data_format = 'NDHWC',\
+                            dilations = (1,1,1))
+
     >>> print(result)
-    ivy.array([[
-        [
-            [[1.]],[[1.]],[[1.]]
-        ],
-        [
-            [[3.]],[[3.]],[[3.]]
-        ]
-            ]])
+    ivy.array([[[[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
+                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]],
+                [[[2.],[4.],[2.]],[[3.],[6.],[3.]],[[2.],[4.],[2.]]]]])
+
+    With one :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32) )
+
+    >>> filters = ivy.ones((3, 3, 3, 1, 1)).astype(ivy.float32)
+
+    >>> result = ivy.conv3d(x, filters, 2, 'SAME')
+    >>> print(result)
+    {
+        a: ivy.array([[[[[8.],[8.]],[[8.],[8.]]],[[[8.],[8.]],[[8.],[8.]]]]])
+    }
+
+    With multiple :class:`ivy.Container` input:
+
+    >>> x = ivy.Container( a = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 3, 5, 5, 1]),\
+                           b = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 5, 32 ,32, 3]),\
+                           c = ivy.random_normal(mean = 0, std = 1,\
+                               shape = [1, 32, 32, 32, 1]))
+
+    >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO
+
+    >>> result = ivy.conv3d(x, filters, 1, 'SAME')
+    >>> print(result.shapes)
+    {
+        a: [1,3,5,5,3],
+        b: [1,5,32,32,3],
+        c: [1,32,32,32,3]
+    }
 
     """
     return current_backend(x).conv3d(

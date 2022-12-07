@@ -1,3 +1,6 @@
+import warnings
+
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -39,6 +42,19 @@ def arctan2(x1, x2):
 @to_ivy_arrays_and_back
 def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
+
+
+@to_ivy_arrays_and_back
+def argsort(a, axis=-1, kind="stable", order=None):
+    if kind != "stable":
+        warnings.warn(
+            "'kind' argument to argsort is ignored; only 'stable' sorts "
+            "are supported."
+        )
+    if order is not None:
+        raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
+
+    return ivy.argsort(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -131,7 +147,7 @@ def mod(x1, x2):
 
 @to_ivy_arrays_and_back
 def reshape(a, newshape, order="C"):
-    return ivy.reshape(a, newshape)
+    return ivy.reshape(a, shape=newshape, order=order)
 
 
 @to_ivy_arrays_and_back
@@ -422,10 +438,12 @@ def trapz(y, x=None, dx=1.0, axis=-1, out=None):
 
 
 @to_ivy_arrays_and_back
-def any(a, axis=None, keepdims=False, *, where=True):
+def any(a, axis=None, out=None, keepdims=False, *, where=None):
+    # TODO: Out not supported
     ret = ivy.any(a, axis=axis, keepdims=keepdims)
     if ivy.is_array(where):
-        ret = ivy.where(where, ret, ivy.default(ivy.zeros_like(ret)))
+        where = ivy.array(where, dtype=ivy.bool)
+        ret = ivy.where(where, ret, ivy.default(None, ivy.zeros_like(ret)))
     return ret
 
 
@@ -543,3 +561,8 @@ def log10(x):
 @to_ivy_arrays_and_back
 def logaddexp(x1, x2):
     return ivy.logaddexp(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
