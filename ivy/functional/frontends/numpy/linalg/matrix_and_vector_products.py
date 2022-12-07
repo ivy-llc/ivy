@@ -38,3 +38,8 @@ def matrix_power(a, n):
 @to_ivy_arrays_and_back
 def tensordot(a, b, axes=2):
     return ivy.tensordot(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def tensorsolve(a, b, axes=2):
+    return ivy.tensorsolve(a, b, axes=axes)
