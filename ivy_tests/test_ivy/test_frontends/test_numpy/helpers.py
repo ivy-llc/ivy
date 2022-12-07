@@ -64,8 +64,8 @@ def _array_and_axes_permute_helper(
             max_dim_size=max_dim_size,
         )
     )
-    dtype = draw(helpers.array_dtypes(num_arrays=1))[0]
-    array = draw(helpers.array_values(dtype=dtype, shape=shape))
+    dtype = draw(helpers.array_dtypes(num_arrays=1))
+    array = draw(helpers.array_values(dtype=dtype[0], shape=shape))
     axes = draw(
         st.one_of(
             st.none(),
@@ -208,6 +208,63 @@ def handle_dtype_and_casting(
                 key=get_dtypes_key,
             )
     return dtype, dtypes, casting
+
+
+@st.composite
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if ivy.can_cast(target_dtype, dtype):
+            target_dtype = dtype
+    if ivy.is_float_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["float64", None]))
+    elif ivy.is_uint_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["uint64", None]))
+    elif ivy.is_int_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["int64", None]))
+    else:
+        dtype = draw(st.sampled_from(["bool", None]))
+    return dtype
+
+
+@st.composite
+def dtypes_values_casting_dtype(
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    special=False,
+):
+    dtypes, values = [], []
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for func in arr_func:
+        typ, val = draw(func())
+        dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
+
+    if special:
+        dtype = draw(st.sampled_from(["bool", None]))
+    elif casting in ["no", "equiv"]:
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else:
+        dtype = draw(
+            helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+        )[0]
+    return dtypes, values, casting, dtype
 
 
 @st.composite

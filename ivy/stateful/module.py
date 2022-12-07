@@ -12,7 +12,16 @@ import numpy as np
 import ivy
 from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
-import torch
+
+try:
+    import torch
+except ImportError:
+    from types import SimpleNamespace
+
+    torch = SimpleNamespace()
+    torch.nn = SimpleNamespace()
+    torch.nn.Module = SimpleNamespace
+    torch.nn.Parameter = SimpleNamespace
 
 
 # Base #

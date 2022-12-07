@@ -1062,7 +1062,7 @@ def fourier_encode(
     return sin_x, cos_x
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 @handle_array_like
@@ -2317,6 +2317,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 
 
 @to_native_arrays_and_back
+@handle_nestable
 @handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],

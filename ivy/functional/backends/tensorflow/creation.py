@@ -237,7 +237,7 @@ def full(
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    fill_value: Union[int, float],
+    fill_value: Number,
     *,
     dtype: tf.DType,
     device: str,
@@ -396,7 +396,7 @@ def logspace(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 def one_hot(
