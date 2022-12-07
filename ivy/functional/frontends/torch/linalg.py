@@ -40,6 +40,10 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
+def qr(input, mode='reduced', *, out=None):
+    return ivy.qr(input, mode=mode)
+
+@to_ivy_arrays_and_back
 def slogdet(input, *, out=None):
     return ivy.slogdet(input, out=out)
 
