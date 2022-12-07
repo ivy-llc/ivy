@@ -2425,7 +2425,6 @@ def multiply(
     >>> print(y)
     ivy.array([12., 30., 56.])
 
-
     With :code:`ivy.NativeArray` inputs:
 
     >>> x1 = ivy.native_array([1., 3., 9.])
@@ -2435,9 +2434,6 @@ def multiply(
     ivy.array([ 4. , 21.6,  9. ])
 
     With mixed :code:`ivy.Array` and :code:`ivy.NativeArray` inputs:
-
-
-
 
     >>> x1 = ivy.array([8., 6., 7.])
     >>> x2 = ivy.native_array([1., 2., 3.])
