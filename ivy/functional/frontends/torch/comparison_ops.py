@@ -136,7 +136,8 @@ def isneginf(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def sort(input, dim=-1, descending=False, stable=False, out=None):
+# TODO: the original torch.sort places * right before `out`
+def sort(input, *, dim=-1, descending=False, stable=False, out=None):
     values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
     indices = ivy.argsort(input, axis=dim, descending=descending)
     return namedtuple("sort", ["values", "indices"])(values, indices)
