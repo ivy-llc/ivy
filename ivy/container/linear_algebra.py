@@ -630,6 +630,25 @@ class ContainerWithLinearAlgebra(ContainerBase):
             out=out,
         )
 
+    def eig(
+        self: ivy.Container,
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_eig(
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
     def eigh(
         self: ivy.Container,
         /,
@@ -1961,6 +1980,19 @@ class ContainerWithLinearAlgebra(ContainerBase):
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
             out=out,
+        )
+
+    def tensorsolve(
+        self: ivy.Container,
+        x2: Union[ivy.Container, ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = None,
+    ) -> ivy.Container:
+        return self.tensorsolve(
+            self,
+            x2,
+            axes=axes,
         )
 
     @staticmethod

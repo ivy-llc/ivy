@@ -82,6 +82,25 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+
+    result_tuple = NamedTuple(
+        "eig",
+        [
+            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
+            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
+        ],
+    )
+    eigenvalues, eigenvectors = tf.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: Union[tf.Tensor, tf.Variable],
     /,
