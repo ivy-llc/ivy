@@ -954,7 +954,7 @@ def test_gather_nd(
         fw=backend_fw,
         fn_name=fn_name,
         test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
