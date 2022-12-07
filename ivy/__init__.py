@@ -155,6 +155,15 @@ class Dtype(str):
     def as_native_dtype(self):
         return as_native_dtype(self)
 
+    @property
+    def info(self):
+        if self.is_int_dtype or self.is_uint_dtype:
+            return iinfo(self)
+        elif self.is_float_dtype:
+            return finfo(self)
+        else:
+            raise ivy.exceptions.IvyError(f"{self} is not supported by info")
+
     def can_cast(self, to):
         return can_cast(self, to)
 
