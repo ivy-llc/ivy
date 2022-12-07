@@ -42,7 +42,6 @@ The dashboard script is triggered every 20 mins and  is deployed on cloud. The `
 
 Status
 --------
-These are Higher level Submodule specific dashboards, for more fine grained individual test dashboards click on the badges inside these dashboards.
 
 👉To view the status of the tests at any given time, head on to -:
 
@@ -57,8 +56,7 @@ These are Higher level Submodule specific dashboards, for more fine grained indi
 * `Tensorflow Frontend Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/tf_frontend_dashboard.md>`_
 * `Numpy Frontend Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/numpy_frontend_dashboard.md>`_
 
-
-The status badges✅ are clickable, and will take you to lower level test specific dashboards for the particular submodule.
+These are Higher level Submodule specific dashboards, for more fine grained individual test dashboards click on the badges✅ inside these submodules.
 
 Citation
 --------
