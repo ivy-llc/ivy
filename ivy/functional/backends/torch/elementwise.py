@@ -407,6 +407,11 @@ def floor_divide(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
+    if ivy.exists(out):
+        if not ivy.is_float_dtype(out):
+            return ivy.inplace_update(
+                out, torch.floor(torch.div(x1, x2)).type(x1.dtype)
+            )
     return torch.floor(torch.div(x1, x2), out=out).type(x1.dtype)
 
 

@@ -40,6 +40,9 @@ def execute_with_gradients(
         duplicate_index_chains = xs.duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
+    xs = ivy.nested_map(
+        xs, lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x, include_derived=True
+    )
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
     xs = _set_duplicates(xs, duplicate_index_chains)
     xs_required = _get_required_native_variables(xs, xs_grad_idxs)

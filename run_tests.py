@@ -66,7 +66,7 @@ if __name__ == "__main__":
         redis_url = sys.argv[1]
         redis_pass = sys.argv[2]
         mongo_key = sys.argv[3]
-        run_id = sys.argv[4]
+        run_id = sys.argv[4] if sys.argv[4] else None
     failed = False
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa

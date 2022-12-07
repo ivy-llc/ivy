@@ -48,6 +48,9 @@ class Tensor:
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
 
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
+
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
         return self
@@ -354,6 +357,15 @@ class Tensor:
 
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)
+
+    def neg(self):
+        return torch_frontend.negative(self._ivy_array)
+
+    def int(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.int32)
+
+    def ne(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
 
     # Special Methods #
     # -------------------#
