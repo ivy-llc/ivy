@@ -485,8 +485,8 @@ def tril_indices(
 
     """
     n_cols = n_rows if n_cols is None else n_cols
-    
+
     if n_rows <= 0 or n_cols <= 0:
         n_rows, n_cols = 0, 0
-    
+
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)

@@ -122,7 +122,7 @@ def tril_indices(
     *,
     device: torch.device,
 ) -> Tuple[torch.Tensor, ...]:
-    
+
     return tuple(
         torch.tril_indices(
             row=n_rows, col=n_cols, offset=k, dtype=torch.int64, device=device
