@@ -44,7 +44,14 @@ def _forward_fn(
     x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
     x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
-        ivy.set_nest_at_indices(xs, xs_grad_idxs, x_arr_values)
+        xs_grad_arr_idxs = []
+        for grad_idx in xs_grad_idxs:
+            xs_grad_arr_idx = ivy.nested_argwhere(
+                ivy.index_nest(xs, grad_idx), ivy.is_array
+            )
+            for idx in xs_grad_arr_idx:
+                xs_grad_arr_idxs.append(grad_idx + idx)
+        ivy.set_nest_at_indices(xs, xs_grad_arr_idxs, x_arr_values)
     elif ivy.is_array(xs):
         xs = x
     else:
@@ -67,9 +74,11 @@ def execute_with_gradients(
         duplicate_index_chains = xs.duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
+    xs = ivy.nested_map(
+        xs, lambda x: ivy.to_ivy(x) if ivy.is_array(x) else x, include_derived=True
+    )
     xs = _arrays_to_float_variables(xs, xs_grad_idxs=xs_grad_idxs)
-    if not ivy.is_array(xs):
-        xs = _set_duplicates(xs, duplicate_index_chains)
+    xs = _set_duplicates(xs, duplicate_index_chains)
     func_ret = func(xs)
     xs_required = _get_required_native_variables(xs, xs_grad_idxs)
     required_duplicate_index_chains = ()
