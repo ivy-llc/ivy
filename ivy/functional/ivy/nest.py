@@ -282,7 +282,6 @@ def map_nest_at_index(
             _result = type(nest)(nest)
         else:
             _result = copy_nest(nest)
-        # turning outer nest to list so it can be updated
         if isinstance(nest, tuple):
             outer_tupled = True
             _result = list(_result)
@@ -487,15 +486,26 @@ def map_nest_at_indices(
     >>> print(nest)
     ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
-    result = None
+    if shallow:
+        result = type(nest)(nest)
+    else:
+        result = copy_nest(nest)
+    outer_tupled = False
+    if isinstance(nest, tuple):
+        outer_tupled = True
+        result = list(result)
     for i, index in enumerate(indices):
         if i == 0:
-            result = map_nest_at_index(nest, index, fn, shallow=shallow)
+            result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
             continue
         if shallow:
-            result = map_nest_at_index(nest, index, fn, shallow=shallow)
+            result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
         else:
-            result = map_nest_at_index(result, index, fn, shallow=shallow)
+            result = map_nest_at_index(
+                result, index, fn, _result=result, shallow=shallow
+            )
+    if outer_tupled:
+        result = tuple(result)
     return result
 
 
