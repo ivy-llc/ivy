@@ -392,17 +392,32 @@ def set_nest_at_indices(
     >>> print(nest)
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
+    if shallow:
+        result = type(nest)(nest)
+    else:
+        result = copy_nest(nest)
+    outer_tupled = False
+    if isinstance(nest, tuple):
+        outer_tupled = True
+        result = list(result)
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
-    result = None
     for i, (index, value) in enumerate(zip(indices, values)):
         if i == 0:
-            result = set_nest_at_index(nest, index, value, shallow)
+            result = set_nest_at_index(
+                nest, index, value, _result=result, shallow=shallow
+            )
             continue
         if shallow:
-            result = set_nest_at_index(nest, index, value, shallow)
+            result = set_nest_at_index(
+                nest, index, value, _result=result, shallow=shallow
+            )
         else:
-            result = set_nest_at_index(result, index, value, shallow)
+            result = set_nest_at_index(
+                result, index, value, _result=result, shallow=shallow
+            )
+    if outer_tupled:
+        result = tuple(result)
     return result
 
 
