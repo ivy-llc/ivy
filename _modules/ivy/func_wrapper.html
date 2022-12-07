@@ -133,7 +133,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">FunctionType</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span>
-
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="c1"># import typing</span>
 
 
@@ -183,30 +183,30 @@
 <div class="viewcode-block" id="handle_array_like"><a class="viewcode-back" href="../../func_wrapper/handle_array_like.html#ivy.func_wrapper.handle_array_like">[docs]</a><span class="k">def</span> <span class="nf">handle_array_like</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># args = list(args)</span>
-        <span class="c1"># num_args = len(args)</span>
-        <span class="c1"># try:</span>
-        <span class="c1">#     type_hints = typing.get_type_hints(fn)</span>
-        <span class="c1"># except TypeError:</span>
-        <span class="c1">#     return fn(*args, **kwargs)</span>
-        <span class="c1"># parameters = type_hints</span>
-        <span class="c1"># annotations = type_hints.values()</span>
-        <span class="c1">#</span>
-        <span class="c1"># for i, (annotation, parameter, arg) in enumerate(</span>
-        <span class="c1">#     zip(annotations, parameters, args)</span>
-        <span class="c1"># ):</span>
-        <span class="c1">#     annotation_str = str(annotation)</span>
-        <span class="c1">#     if &quot;Array&quot; in annotation_str and all(</span>
-        <span class="c1">#         sq not in annotation_str for sq in [&quot;Sequence&quot;, &quot;List&quot;, &quot;Tuple&quot;]</span>
-        <span class="c1">#     ):</span>
-        <span class="c1">#</span>
-        <span class="c1">#         if i &lt; num_args:</span>
-        <span class="c1">#             if isinstance(arg, (list, tuple)):</span>
-        <span class="c1">#                 args[i] = ivy.array(arg)</span>
-        <span class="c1">#         elif parameters in kwargs:</span>
-        <span class="c1">#             kwarg = kwargs[parameter]</span>
-        <span class="c1">#             if isinstance(kwarg, (list, tuple)):</span>
-        <span class="c1">#                 kwargs[parameter] = ivy.array(kwarg)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">num_args</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">type_hints</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">type_hints</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">type_hints</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">annotation</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+            <span class="nb">zip</span><span class="p">(</span><span class="n">annotations</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">annotation_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">annotation</span><span class="p">)</span>
+            <span class="k">if</span> <span class="s2">&quot;Array&quot;</span> <span class="ow">in</span> <span class="n">annotation_str</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+                <span class="n">sq</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">annotation_str</span> <span class="k">for</span> <span class="n">sq</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Sequence&quot;</span><span class="p">,</span> <span class="s2">&quot;List&quot;</span><span class="p">,</span> <span class="s2">&quot;Tuple&quot;</span><span class="p">]</span>
+            <span class="p">):</span>
+
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num_args</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                        <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">parameters</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">kwarg</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwarg</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="n">parameter</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kwarg</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
