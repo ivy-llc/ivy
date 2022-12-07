@@ -361,6 +361,9 @@ class Tensor:
     def neg(self):
         return torch_frontend.negative(self._ivy_array)
 
+    def int(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.int32)
+
     # Special Methods #
     # -------------------#
 
