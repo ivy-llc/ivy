@@ -27,3 +27,8 @@ def slogdet(input, *, out=None):
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
+
+
+@to_ivy_arrays_and_back
+def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
+    return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
