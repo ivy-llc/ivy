@@ -47,7 +47,7 @@ Status
 
 * `Array API Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/array_api_dashboard.md>`_
 * `Functional Core Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_core_dashboard.md>`_
-* `Functional NN Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md>
+* `Functional NN Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/functional_nn_dashboard.md>`_
 * `Stateful Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/stateful_dashboard.md>`_
 * `Experimental Core Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/experimental_core_dashboard.md>`_
 * `Experimental NN Tests <https://github.com/unifyai/ivy/blob/dashboard/test_dashboards/experimental_nn_dashboard.md>`_
