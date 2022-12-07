@@ -3138,8 +3138,8 @@ def test_jax_expand_dims(
         axis=axis,
     )
 
-    
-#eye
+
+# eye
 @handle_frontend_test(
     fn_tree="jax.numpy.eye",
     n=helpers.ints(min_value=3, max_value=10),
