@@ -2,38 +2,62 @@
 
 # global
 import pytest
-
-try:
-    import jax
-    import jax.numpy as jnp
-except ImportError:
-    import types
-    jax = types.SimpleNamespace()
-    jnp = types.SimpleNamespace()
+from types import SimpleNamespace
 
 try:
     import torch
     import torch.nn as nn
 except ImportError:
-    import types
-    torch = types.SimpleNamespace()
-    nn = types.SimpleNamespace()
-    nn.Module = types.SimpleNamespace
+    torch = SimpleNamespace()
+    torch.tanh = SimpleNamespace
+    nn = SimpleNamespace()
+    nn.Module = SimpleNamespace
+    nn.Linear = SimpleNamespace
+    torch.optim = SimpleNamespace()
+    torch.optim.SGD = SimpleNamespace
+    nn.L1Loss = SimpleNamespace
     
+try:
+    import jax
+    from jax import value_and_grad
+    import haiku as hk
+    import jax.numpy as jnp
+except ImportError:
+    jax = SimpleNamespace()
+    value_and_grad = SimpleNamespace
+    hk = SimpleNamespace()
+    hk.Module = SimpleNamespace
+    hk.Linear = SimpleNamespace
+    hk.transform = SimpleNamespace()
+    hk.transform.init = SimpleNamespace
+    jnp = SimpleNamespace()
+    jnp.expand_dims = SimpleNamespace
+    jnp.tanh = SimpleNamespace
+    jnp.mean = SimpleNamespace
+    jax.random = SimpleNamespace()
+    jax.random.PRNGKey = SimpleNamespace
+    jax.tree_map = SimpleNamespace
 
 try:
     import tensorflow as tf
 except ImportError:
-    import types
-    tf = types.SimpleNamespace()
-    tf.keras.Model = types.SimpleNamespace
+    tf = SimpleNamespace()
+    tf.expand_dims = SimpleNamespace
+    tf.tanh = SimpleNamespace
+    tf.keras = SimpleNamespace()
+    tf.keras.Model = SimpleNamespace
+    tf.keras.layers = SimpleNamespace()
+    tf.keras.layers.Dense = SimpleNamespace
+    tf.keras.optimizers = SimpleNamespace()
+    tf.keras.optimizers.SGD = SimpleNamespace()
+    tf.keras.optimizers.SGD.apply_gradients = SimpleNamespace
+    tf.keras.losses = SimpleNamespace()
+    tf.keras.losses.MeanAbsoluteError = SimpleNamespace
+    tf.GradientTape = SimpleNamespace()
+    tf.GradientTape.tape = SimpleNamespace
+    tf.GradientTape.watch = SimpleNamespace
 
-try:
-    import haiku as hk
-except ImportError:
-    import types
-    hk = types.SimpleNamespace()
-    hk.Module = types.SimpleNamespace
+
 
 # local
 import ivy
