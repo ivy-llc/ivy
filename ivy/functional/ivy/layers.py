@@ -520,7 +520,7 @@ def scaled_dot_product_attention(
 @handle_exceptions
 @handle_array_like
 def multi_head_attention(
-    x: Union[ivy.Array, ivy.NativeArray], 
+    x: Union[ivy.Array, ivy.NativeArray],
     scale: float,
     num_heads: int,
     /,
@@ -743,7 +743,6 @@ def multi_head_attention(
     ret = to_out_fn(sdpa, v=to_out_v) if ivy.exists(to_out_fn) else sdpa
     if ivy.exists(out):
         return ivy.inplace_update(out, ret)
-    
     return ret
 
 
