@@ -166,6 +166,44 @@ numpy_promotion_table = {
     (complex256, complex256): complex256,
 }
 
+numpy_str_to_type_table = {
+    "b": int8,
+    "h": int16,
+    "i": int32,
+    "l": int64,
+    "B": uint8,
+    "H": uint16,
+    "I": uint32,
+    "L": uint64,
+    "e": float16,
+    "f": float32,
+    "d": float64,
+    "?": bool,
+    "E": bfloat16,
+    "F": complex64,
+    "D": complex128,
+    "G": complex256,
+}
+
+numpy_type_to_str_and_num_table = {
+    int8: ("b", 1),
+    int16: ("h", 3),
+    int32: ("i", 5),
+    int64: ("l", 7),
+    uint8: ("B", 2),
+    uint16: ("H", 4),
+    uint32: ("I", 6),
+    uint64: ("L", 8),
+    float16: ("e", 23),
+    float32: ("f", 11),
+    float64: ("d", 12),
+    bool: ("?", 0),
+    bfloat16: ("E", 256),
+    complex64: ("F", 14),
+    complex128: ("D", 15),
+    complex256: ("G", 16),
+}
+
 
 @handle_exceptions
 def promote_numpy_dtypes(
@@ -213,6 +251,8 @@ def promote_types_of_numpy_inputs(
 
 from . import creation_routines
 from .creation_routines import *
+from . import data_type_routines
+from .data_type_routines import *
 from . import indexing_routines
 from .indexing_routines import *
 from . import logic

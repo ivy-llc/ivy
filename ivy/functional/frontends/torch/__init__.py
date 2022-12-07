@@ -10,6 +10,8 @@ from . import comparison_ops
 from .comparison_ops import *
 from . import creation_ops
 from .creation_ops import *
+from . import dtype
+from .dtype import *
 from . import indexing_slicing_joining_mutating_ops
 from .indexing_slicing_joining_mutating_ops import *
 from . import locally_disabling_gradient_computation

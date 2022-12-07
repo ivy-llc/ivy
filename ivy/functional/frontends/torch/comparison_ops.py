@@ -136,7 +136,8 @@ def isneginf(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def sort(input, dim=-1, descending=False, stable=False, out=None):
+# TODO: the original torch.sort places * right before `out`
+def sort(input, *, dim=-1, descending=False, stable=False, out=None):
     values = ivy.sort(input, axis=dim, descending=descending, stable=stable, out=out)
     indices = ivy.argsort(input, axis=dim, descending=descending)
     return namedtuple("sort", ["values", "indices"])(values, indices)
@@ -165,6 +166,7 @@ def less(input, other, *, out=None):
 lt = less
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def not_equal(input, other, *, out=None):
     input, other = torch_frontend.promote_types_of_torch_inputs(input, other)
