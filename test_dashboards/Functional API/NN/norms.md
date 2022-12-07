@@ -1,3 +1,3 @@
 |                 | jax                                                                                                                                                                                |
 |:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_layer_norm | <a href="https://github.com/unifyai/ivy/actions/runs/3617251089/jobs/6095946143" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+| test_layer_norm | <a href="https://github.com/unifyai/ivy/actions/runs/3637132198/jobs/6137873725" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
