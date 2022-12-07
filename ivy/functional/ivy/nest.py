@@ -16,7 +16,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_exceptions
 def index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
     /,
 ) -> Any:
@@ -52,6 +52,19 @@ def index_nest(
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
     ivy.array([3., 4.])
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1.,2.], [3.,4.]]),
+    ...                   b = (50,60))
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    >>> z
+    {
+        a: ivy.array([3., 4.]),
+        b: 60
+    }
 
     With :code:`Dict` input:
 
@@ -260,7 +273,7 @@ def map_nest_at_index(
 
 @handle_exceptions
 def multi_index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
     indices: Iterable[Iterable[int]],
     /,
 ) -> Iterable[Any]:
@@ -297,6 +310,15 @@ def multi_index_nest(
     >>> z = ivy.multi_index_nest(x, y)
     >>> print(z)
     [ivy.array([1., 2.], ivy.array([3., 4.])]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1,2]), 
+    ...                   b=[30,40])
+    >>> y = ('a', ('b', 0))
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1, 2]), 30]
 
     With :code:`Dict` input:
 
