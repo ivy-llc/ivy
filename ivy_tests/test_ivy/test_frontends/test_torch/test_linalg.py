@@ -135,6 +135,35 @@ def test_torch_det(
     )
 
 
+#qr
+@handle_frontend_test(
+    fn_tree="torch.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_torch_qr(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x =dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0]
+    )
+
+
 # slogdet
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
