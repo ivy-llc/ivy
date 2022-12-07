@@ -6,17 +6,18 @@ import inspect
 # local
 import ivy
 from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+import ivy.functional.frontends.numpy as np_frontend
 
 
 def _is_same_kind_or_safe(t1, t2):
     if ivy.is_float_dtype(t1):
-        return ivy.is_float_dtype(t2) or ivy.can_cast(t1, t2)
+        return ivy.is_float_dtype(t2) or np_frontend.can_cast(t1, t2)
     elif ivy.is_uint_dtype(t1):
-        return ivy.is_uint_dtype(t2) or ivy.can_cast(t1, t2)
+        return ivy.is_uint_dtype(t2) or np_frontend.can_cast(t1, t2)
     elif ivy.is_int_dtype(t1):
-        return ivy.is_int_dtype(t2) or ivy.can_cast(t1, t2)
+        return ivy.is_int_dtype(t2) or np_frontend.can_cast(t1, t2)
     elif ivy.is_bool_dtype(t1):
-        return ivy.is_bool_dtype(t2) or ivy.can_cast(t1, t2)
+        return ivy.is_bool_dtype(t2) or np_frontend.can_cast(t1, t2)
     raise ivy.exceptions.IvyException(
         "dtypes of input must be float, int, uint, or bool"
     )
@@ -81,7 +82,7 @@ def handle_numpy_casting(fn: Callable) -> Callable:
         elif ivy.exists(dtype):
             assert_fn = None
             if casting == "safe":
-                assert_fn = lambda x: ivy.can_cast(x, ivy.as_ivy_dtype(dtype))
+                assert_fn = lambda x: np_frontend.can_cast(x, ivy.as_ivy_dtype(dtype))
             elif casting == "same_kind":
                 assert_fn = lambda x: _is_same_kind_or_safe(
                     ivy.dtype(x), ivy.as_ivy_dtype(dtype)
