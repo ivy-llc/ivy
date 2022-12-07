@@ -1499,10 +1499,13 @@ def test_cov(
     fn_name,
     container_flags,
     instance_method,
-    fw,
+    backend_fw,
+    on_device,
+    ground_truth_backend,
 ):
     dtype, x1, x2, _ = dtype_x1_x2
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -1510,8 +1513,10 @@ def test_cov(
         native_array_flags=native_array,
         container_flags=container_flags,
         instance_method=instance_method,
-        fw=fw,
+        fw=backend_fw,
         fn_name=fn_name,
+        on_device=on_device,
+        test_gradients=True,
         x1=x1,
         x2=x2,
     )
