@@ -102,9 +102,15 @@ def copysign(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    signs = tf.math.sign(tf.convert_to_tensor(x2))
-    # All unsigned zeroes should be considered positive
-    signs = tf.where(tf.equal(signs, 0), tf.ones_like(signs), signs)
+    tensor_x2 = tf.convert_to_tensor(x2)
+    # Replace any zero values with 1/the value, since tf.math.sign always
+    # returns 0 for positive or negative zero
+    signable_x2 = tf.where(
+        tf.equal(tensor_x2, 0),
+        tf.math.divide(1, x2),
+        tensor_x2
+    )
+    signs = tf.math.sign(signable_x2)
     return tf.math.multiply(tf.math.abs(tf.convert_to_tensor(x1)), signs)
 
 
