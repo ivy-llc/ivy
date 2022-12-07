@@ -107,10 +107,10 @@ def copysign(
     tensor_x2 = tf.convert_to_tensor(x2)
     # Cast our inputs to float64 if needed to match numpy behaviour
     if not tensor_x2.dtype.is_floating:
-        tensor_x2 = tf.cast(tensor_x2, 'float64')
+        tensor_x2 = tf.cast(tensor_x2, tf.float64)
     tensor_x1 = tf.convert_to_tensor(x1)
     if not tensor_x1.dtype.is_floating:
-        tensor_x1 = tf.cast(tensor_x1, 'float64')
+        tensor_x1 = tf.cast(tensor_x1, tf.float64)
     # Replace any zero values with 1/the value, since tf.math.sign always
     # returns 0 for positive or negative zero
     signable_x2 = tf.where(
