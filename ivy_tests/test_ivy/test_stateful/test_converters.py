@@ -58,7 +58,6 @@ except ImportError:
     tf.GradientTape.watch = SimpleNamespace
 
 
-
 # local
 import ivy
 
