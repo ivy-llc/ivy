@@ -1652,4 +1652,3 @@ class MyTFModule(tf.keras.Model):
             return ivy.args_to_native(*ret)
 
         return ivy.to_native(ret)
-
