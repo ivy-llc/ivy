@@ -35,13 +35,16 @@ def can_cast(from_, to, casting="safe"):
     if casting == "same_kind":
         if from_ == to or "bool" in from_:
             return True
-        if "int" in from_ and "int" in to:
-            return True
-        if "float" in from_ and "float" in to:
-            return True
         if "int" in from_ and "float" in to:
             return True
-
+        elif "float" in from_ and "float" in to:
+            return True
+        elif "uint" in from_ and ("int" in to or "float" in to):
+            return True
+        elif "int" in from_ and "int" in to and "uint" not in to:
+            return True
+        else:
+            return to in numpy_casting_rules[from_]
     if casting == "unsafe":
         return True
     return False
