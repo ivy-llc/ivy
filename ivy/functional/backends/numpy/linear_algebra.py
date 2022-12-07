@@ -84,7 +84,7 @@ def eigvalsh(
 
 @_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
@@ -235,12 +235,17 @@ def matrix_rank(
     return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matrix_transpose(
+    x: np.ndarray, 
+    /, 
+    *, 
+    out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
 
 def outer(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
@@ -289,7 +294,7 @@ def slogdet(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -414,7 +419,7 @@ def vander(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: np.ndarray, *, out: Optional[np.ndarray] = None
+    vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
