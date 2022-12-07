@@ -42,6 +42,7 @@ The dashboard script is triggered every 20 mins and  is deployed on cloud. The `
 
 Status
 --------
+These are Higher level Submodule specific dashboards, for more fine grained individual test dashboards click on the badges inside these dashboards.
 
 👉To view the status of the tests at any given time, head on to -:
 
