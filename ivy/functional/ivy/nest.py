@@ -165,26 +165,30 @@ def set_nest_at_index(
         b: ivy.array([3., 4.])
     }
     """
-    tupled = [False, False]  # for turning tuple back into tuple from list
+    outer_tupled = False
     if _result is None:
-        _result = copy.deepcopy(nest)
+        if inplace:
+            _result = type(nest)(nest)
+        else:
+            _result = copy_nest(nest)
         # turning outer nest to list so it can be updated
         if isinstance(nest, tuple):
-            tupled[0] = True
+            outer_tupled = True
             _result = list(_result)
     if len(index) == 1:
         if inplace:
             nest[index[0]] = value
         _result[index[0]] = value
     else:
+        inner_tupled = False
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
-            tupled[1] = True
+            inner_tupled = True
         set_nest_at_index(nest[index[0]], index[1:], value, inplace, _result[index[0]])
         # turning back to tuple if outer nest was tuple
-        if tupled[1]:
+        if inner_tupled:
             _result[index[0]] = tuple(_result[index[0]])
-    if tupled[0]:
+    if outer_tupled:
         _result = tuple(_result)
     return _result
 
@@ -272,12 +276,15 @@ def map_nest_at_index(
     }
 
     """
-    tupled = [False, False]  # for turning tuple back into tuple from list
+    outer_tupled = False
     if _result is None:
-        _result = copy.deepcopy(nest)
+        if inplace:
+            _result = type(nest)(nest)
+        else:
+            _result = copy_nest(nest)
         # turning outer nest to list so it can be updated
         if isinstance(nest, tuple):
-            tupled[0] = True
+            outer_tupled = True
             _result = list(_result)
     if len(index) == 1:
         ret = fn(nest[index[0]])
@@ -285,14 +292,15 @@ def map_nest_at_index(
             nest[index[0]] = ret
         _result[index[0]] = ret
     else:
+        inner_tuppled = False
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
-            tupled[1] = True
+            inner_tuppled = True
         map_nest_at_index(nest[index[0]], index[1:], fn, inplace, _result[index[0]])
         # turning back to tuple if outer nest was tuple
-        if tupled[1]:
+        if inner_tuppled:
             _result[index[0]] = tuple(_result[index[0]])
-    if tupled[0]:
+    if outer_tupled:
         _result = tuple(_result)
     return _result
 
