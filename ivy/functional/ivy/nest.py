@@ -101,7 +101,7 @@ def set_nest_at_index(
     index: Sequence[Union[str, int]],
     value: Any,
     /,
-    shallow: bool = False,
+    shallow: bool = True,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple] = None,
 ):
     """Set the value of a nested item at a specified index.
@@ -114,6 +114,11 @@ def set_nest_at_index(
         A tuple of indices for the index at which to update.
     value
         The new value for updating.
+    shallow
+        Whether to inplace update the input nest or not
+        Only works if nest is a mutable type. Default is ``True``.
+    _result
+        Placeholder for the result of the update. do not set this paramter.
 
     Examples
     --------
@@ -171,7 +176,6 @@ def set_nest_at_index(
             _result = type(nest)(nest)
         else:
             _result = copy_nest(nest)
-        # turning outer nest to list so it can be updated
         if isinstance(nest, tuple):
             outer_tupled = True
             _result = list(_result)
@@ -185,7 +189,6 @@ def set_nest_at_index(
             _result[index[0]] = list(_result[index[0]])
             inner_tupled = True
         set_nest_at_index(nest[index[0]], index[1:], value, shallow, _result[index[0]])
-        # turning back to tuple if outer nest was tuple
         if inner_tupled:
             _result[index[0]] = tuple(_result[index[0]])
     if outer_tupled:
@@ -211,7 +214,7 @@ def map_nest_at_index(
     index: Sequence[Union[str, int]],
     fn: Callable[[Any], Any],
     /,
-    shallow: bool = False,
+    shallow: bool = True,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List] = None,
 ) -> None:
     """Map a function to the value of a nested item at a specified index.
@@ -224,6 +227,11 @@ def map_nest_at_index(
         A linear sequence of indices for the index at which to update.
     fn
         The function to perform on the nested value at the given index.
+    shallow
+        Whether to inplace update the input nest or not
+        Only works if nest is a mutable type. Default is ``True``.
+    _result
+        Placeholder for the result of the update. do not set this paramter.
 
     Examples
     --------
@@ -296,7 +304,6 @@ def map_nest_at_index(
             _result[index[0]] = list(_result[index[0]])
             inner_tuppled = True
         map_nest_at_index(nest[index[0]], index[1:], fn, shallow, _result[index[0]])
-        # turning back to tuple if outer nest was tuple
         if inner_tuppled:
             _result[index[0]] = tuple(_result[index[0]])
     if outer_tupled:
@@ -341,7 +348,7 @@ def set_nest_at_indices(
     indices: Union[List[int], Tuple[int], Iterable[int]],
     values: Union[List[int], Tuple[int], Iterable[int]],
     /,
-    shallow: bool = False,
+    shallow: bool = True,
 ) -> Any:
     """Set the value of a nested item at specified indices with specified values.
 
@@ -353,6 +360,9 @@ def set_nest_at_indices(
         A tuple of tuples of indices for the indices at which to update.
     values
         The new values for updating.
+    shallow
+        Whether to inplace update the input nest or not
+        Only works if nest is a mutable type. Default is ``True``.
 
     Examples
     --------
@@ -450,7 +460,7 @@ def map_nest_at_indices(
     indices: Tuple,
     fn: Callable,
     /,
-    shallow: bool = False,
+    shallow: bool = True,
 ):
     """Map a function to the values of a nested item at the specified indices.
 
@@ -462,6 +472,9 @@ def map_nest_at_indices(
         A tuple of tuples of indices for the indices at which to update.
     fn
         The function to perform on the nest at the given index.
+    shallow
+        Whether to inplace update the input nest or not
+        Only works if nest is a mutable type. Default is ``True``.
 
     Examples
     --------
@@ -885,7 +898,7 @@ def nested_map(
     _list_check_fn: Optional[Callable] = None,
     _dict_check_fn: Optional[Callable] = None,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
-    shallow: bool = False,
+    shallow: bool = True,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -917,6 +930,9 @@ def nested_map(
     extra_nest_types
         Types to recursively check when deciding whether to go deeper into the
         nest or not
+    shallow
+        Whether to inplace update the input nest or not
+        Only works if nest is a mutable type. Default is ``True``.
 
     Returns
     -------
