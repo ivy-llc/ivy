@@ -1579,11 +1579,15 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
-    for i, val in enumerate(ret):
-        if _is_frontend_array(val):
-            ret[i] = val.ivy_array
-        if isinstance(val, ivy.functional.frontends.numpy.ndarray):
-            ret[i] = val.ivy_array
+
+    def map_fn(x):
+        if _is_frontend_array(x):
+            return x.ivy_array
+        if isinstance(x, ivy.functional.frontends.numpy.ndarray):
+            return x.ivy_array
+        return x
+
+    ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
     return ret, flatten_and_to_np(ret=ret)
 
 
