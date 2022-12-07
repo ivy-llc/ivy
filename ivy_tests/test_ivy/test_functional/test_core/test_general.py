@@ -827,7 +827,7 @@ def test_gather(
         fw=backend_fw,
         fn_name=fn_name,
         test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=indices,
         axis=axis,
