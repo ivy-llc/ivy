@@ -630,6 +630,66 @@
     <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="eig"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/eig/eig_functional.html#ivy.functional.ivy.linear_algebra.eig">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_like</span>
+<span class="k">def</span> <span class="nf">eig</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of</span>
+<span class="sd">    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of</span>
+<span class="sd">    matrices) and ``L`` is a vector (or a stack of vectors).</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       The function ``eig`` currently behaves like ``eigh``, as</span>
+<span class="sd">       it requires complex number support, once complex numbers are supported,</span>
+<span class="sd">       x does not need to be a complex Hermitian or real symmetric matrix.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        input array having shape ``(..., M, M)`` and whose innermost two dimensions form</span>
+<span class="sd">        square matrices. Must have a floating-point data type.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        a namedtuple (``eigenvalues``, ``eigenvectors``) whose</span>
+
+<span class="sd">        -   first element must have the field name ``eigenvalues`` (corresponding to</span>
+<span class="sd">            ``L`` above) and must be an array consisting of computed eigenvalues. The</span>
+<span class="sd">            array containing the eigenvalues must have shape ``(..., M)``.</span>
+<span class="sd">        -   second element have have the field name ``eigenvectors`` (corresponding to</span>
+<span class="sd">            ``Q`` above) and must be an array where the columns of the inner most</span>
+<span class="sd">            matrices contain the computed eigenvectors. These matrices must be</span>
+<span class="sd">            orthogonal. The array containing the eigenvectors must have shape</span>
+<span class="sd">            ``(..., M, M)``.</span>
+
+<span class="sd">        -   Each returned array must have the same floating-point data type as ``x``.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       Eigenvalue sort order is left unspecified and is thus implementation-dependent.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="eigh"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/eigh/eigh_functional.html#ivy.functional.ivy.linear_algebra.eigh">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
@@ -2134,6 +2194,51 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span><span class="o">.</span><span class="n">tensordot</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="n">axes</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tensorsolve"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/tensorsolve/tensorsolve_functional.html#ivy.functional.ivy.linear_algebra.tensorsolve">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="nd">@handle_array_like</span>
+<span class="k">def</span> <span class="nf">tensorsolve</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+
+    <span class="n">ndim1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_num_dims</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span>
+    <span class="n">ndim2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_num_dims</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">axes</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">allaxes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ndim1</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+            <span class="n">allaxes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="n">allaxes</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ndim1</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+        <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matrix_transpose</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">allaxes</span><span class="p">)</span>
+
+    <span class="n">old_shape</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">ndim1</span> <span class="o">-</span> <span class="n">ndim2</span><span class="p">)</span> <span class="p">:]</span>
+
+    <span class="n">prod</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">old_shape</span><span class="p">:</span>
+        <span class="n">prod</span> <span class="o">*=</span> <span class="n">k</span>
+
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">prod</span><span class="o">**</span><span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
+            <span class="s2">&quot;Input arrays must satisfy the requirement </span><span class="se">\</span>
+<span class="s2">            prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">x1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="p">(</span><span class="n">prod</span><span class="p">,</span> <span class="n">prod</span><span class="p">))</span>
+    <span class="n">x2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x2</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">old_shape</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+    <span class="c1"># return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)</span>
 
 
 <div class="viewcode-block" id="trace"><a class="viewcode-back" href="../../../../functional/ivy/linear_algebra/trace/trace_functional.html#ivy.functional.ivy.linear_algebra.trace">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
