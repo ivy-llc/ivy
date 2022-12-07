@@ -22,6 +22,7 @@ from ivy.exceptions import handle_exceptions
 # Linear #
 
 
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def linear(
