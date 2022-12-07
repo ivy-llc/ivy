@@ -3,8 +3,40 @@
 # global
 import os
 import abc
+import ivy.functional.backends.numpy
 import termcolor
 import numpy as np
+from types import SimpleNamespace
+
+try:
+    import haiku as hk
+    from haiku._src.data_structures import FlatMapping
+    import jax
+except ImportError:
+    hk = SimpleNamespace()
+    hk.Module = SimpleNamespace
+    hk.transform = SimpleNamespace
+    hk.get_parameter = SimpleNamespace
+    FlatMapping = SimpleNamespace
+    jax = SimpleNamespace()
+    jax.random = SimpleNamespace()
+    jax.random.PRNGKey = SimpleNamespace
+
+try:        
+    import torch
+except ImportError:
+    torch = SimpleNamespace()
+    torch.nn = SimpleNamespace()
+    torch.nn.Parameter = SimpleNamespace
+    torch.nn.Module = SimpleNamespace
+
+try:
+    import tensorflow as tf
+except ImportError:
+    tf = SimpleNamespace()
+    tf.keras = SimpleNamespace()
+    tf.keras.Model = SimpleNamespace
+
 import re
 import inspect
 from collections import OrderedDict
@@ -15,35 +47,6 @@ from ivy.container import Container
 from ivy.func_wrapper import _get_first_array
 from ivy.functional.ivy.gradients import _is_variable
 
-try:
-    import jax
-except ImportError:
-    import types
-    jax = types.SimpleNamespace()
-
-try:
-    import torch
-except ImportError:
-    import types
-    torch = types.SimpleNamespace()
-    torch.nn = types.SimpleNamespace()
-    torch.nn.Module = types.SimpleNamespace
-    torch.nn.Parameter = types.SimpleNamespace
-
-try:
-    import tensorflow as tf
-except ImportError:
-    import types
-    tf = types.SimpleNamespace()
-    tf.keras.Model = types.SimpleNamespace
-
-try:
-    import haiku as hk
-    from haiku._src.data_structures import FlatMapping
-except ImportError:
-    import types
-    hk = types.SimpleNamespace()
-    hk.Module = types.SimpleNamespace
 
 # Base #
 # -----#
