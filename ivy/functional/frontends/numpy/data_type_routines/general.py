@@ -1,5 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy import numpy_casting_rules
 
 
 @to_ivy_arrays_and_back
@@ -9,25 +10,38 @@ def can_cast(from_, to, casting="safe"):
         ["no", "equiv", "safe", "same_kind", "unsafe"],
         message="casting must be one of [no, equiv, safe, same_kind, unsafe]",
     )
-    if casting == "no":
-        return False
+    if casting == "no" or casting == "equiv":
+        return from_ == to
 
     if ivy.is_array(from_):
         from_ = ivy.as_ivy_dtype(ivy.dtype(from_))
-    else:
+    elif isinstance(from_, str) or isinstance(from_, type):
         from_ = ivy.as_ivy_dtype(from_)
+    elif isinstance(from_, (int, float, bool)):
+        from_ = ivy.as_ivy_dtype(type(from_))
+    else:
+        raise ivy.exceptions.IvyException(
+            "from_ must be one of dtype, dtype specifier, scalar, or array"
+        )
 
-    to = ivy.as_ivy_dtype(to)
-    if casting == "equiv":
-        return from_ == to
+    if isinstance(to, (str, type)):
+        to = ivy.as_ivy_dtype(to)
+    else:
+        raise ivy.exceptions.IvyException("to must be dtype or dtype specifier")
 
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
+    if casting == "safe" and to in numpy_casting_rules[from_]:
+        return True
 
-    if casting == "safe":
-        pass
-    elif casting == "same_kind":
-        pass
-    return True
+    if casting == "same_kind":
+        if from_ == to or "bool" in from_:
+            return True
+        if "int" in from_ and "int" in to:
+            return True
+        if "float" in from_ and "float" in to:
+            return True
+        if "int" in from_ and "float" in to:
+            return True
+
+    if casting == "unsafe":
+        return True
+    return False
