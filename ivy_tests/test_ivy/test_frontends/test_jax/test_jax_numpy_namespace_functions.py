@@ -3196,3 +3196,40 @@ def test_jax_expand_dims(
         a=x[0],
         axis=axis,
     )
+
+
+# eye
+@handle_frontend_test(
+    fn_tree="jax.numpy.eye",
+    n=helpers.ints(min_value=3, max_value=10),
+    m=st.none() | helpers.ints(min_value=3, max_value=10),
+    k=helpers.ints(min_value=-2, max_value=2),
+    dtypes=helpers.get_dtypes("valid", full=False),
+)
+def test_jax_numpy_eye(
+    *,
+    n,
+    m,
+    k,
+    dtypes,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        N=n,
+        M=m,
+        k=k,
+        dtype=dtypes[0],
+    )
