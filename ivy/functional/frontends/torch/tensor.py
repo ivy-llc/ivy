@@ -364,6 +364,9 @@ class Tensor:
     def int(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.int32)
 
+    def ne(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
     # Special Methods #
     # -------------------#
 
