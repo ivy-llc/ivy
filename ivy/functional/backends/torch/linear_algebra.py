@@ -113,7 +113,7 @@ eigvalsh.support_native_out = True
 
 
 def inner(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     ret_dtype = x1.dtype
@@ -225,7 +225,7 @@ def matrix_transpose(
 
 
 def outer(
-    x1: torch.Tensor, x2: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    x1: torch.Tensor, x2: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return torch.outer(x1, x2, out=out)
@@ -287,6 +287,7 @@ slogdet.support_native_out = True
 def solve(
     x1: torch.Tensor,
     x2: torch.Tensor,
+    /,
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
@@ -334,7 +335,7 @@ def svd(
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
-def svdvals(x: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
+def svdvals(x: torch.Tensor, /, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     return torch.linalg.svdvals(x, out=out)
 
 
@@ -457,7 +458,7 @@ def vander(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: torch.Tensor, *, out: Optional[torch.Tensor] = None
+    vector: torch.Tensor, /, *, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
