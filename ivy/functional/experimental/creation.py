@@ -398,21 +398,21 @@ def tril_indices(
     *,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
 ) -> Tuple[ivy.Array, ...]:
-    """Returns the indices of the upper triangular part of a row by col matrix in a
+    """Returns the indices of the lower triangular part of a row by col matrix in a
     2-by-N shape (tuple of two N dimensional arrays), where the first row contains
     row coordinates of all indices and the second row contains column coordinates.
-    Indices are ordered based on rows and then columns.  The upper triangular part
-    of the matrix is defined as the elements on and above the diagonal.  The argument
-    k controls which diagonal to consider. If k = 0, all elements on and above the main
-    diagonal are retained. A positive value excludes just as many diagonals above the
+    Indices are ordered based on rows and then columns.  The lower triangular part
+    of the matrix is defined as the elements on and below the diagonal.  The argument
+    k controls which diagonal to consider. If k = 0, all elements on and below the main
+    diagonal are retained. A positive value excludes just as many diagonals below the
     main diagonal, and similarly a negative value includes just as many diagonals
-    below the main diagonal. The main diagonal are the set of indices
+    above the main diagonal. The main diagonal are the set of indices
     {(i,i)} for i∈[0,min{n_rows, n_cols}−1].
 
     Notes
     -----
     Primary purpose of this function is to slice an array of shape (n,m). See
-    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html
+    https://numpy.org/doc/stable/reference/generated/numpy.tril_indices.html
     for examples
 
     Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices
@@ -425,7 +425,7 @@ def tril_indices(
        number of columns in the 2-d matrix. If None n_cols will be the same as n_rows
     k
        number of shifts from the main diagonal. k = 0 includes main diagonal,
-       k > 0 moves upwards and k < 0 moves downwards
+       k > 0 moves downward and k < 0 moves upward
     device
        device on which to place the created array. Default: ``None``.
 
@@ -484,4 +484,9 @@ def tril_indices(
     (ivy.array([]), ivy.array([]))
 
     """
+    n_cols = n_rows if n_cols is None else n_cols
+    
+    if n_rows <= 0 or n_cols <= 0:
+        n_rows, n_cols = 0, 0
+    
     return current_backend().tril_indices(n_rows, n_cols, k, device=device)
