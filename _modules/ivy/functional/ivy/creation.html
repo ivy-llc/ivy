@@ -1710,21 +1710,21 @@
 <span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
 <span class="sd">    With General input:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.logspace(2.0,3.0,num=4)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([100., 215.443469, 464.15888336, 1000.])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.logspace(2.0, 3.0, num=4,axis=0,base=3)</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    ivy.array([9., 12.98024613, 18.72075441, 27.])</span>
-<span class="sd">    </span>
+
 <span class="sd">    With :class:`ivy.Array` input:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; y1 = ivy.array([[1, 2, 3], [7, 4, 5]])</span>
 <span class="sd">    &gt;&gt;&gt; y2 = ivy.array([[1, 3, 9], [5, 7, 11]])</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(y1, y2, 2, axis=2,base=2)</span>
@@ -1736,7 +1736,7 @@
 <span class="sd">               [[1.280e+02, 3.200e+01]</span>
 <span class="sd">                [1.600e+01, 1.280e+02]</span>
 <span class="sd">                [3.200e+01, 2.048e+03]]])</span>
-<span class="sd">                </span>
+
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1, 2, 3, 4, 5, 6])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([7, 11, 2, 9, 7, 6])</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(x1,x2,2,axis=1)</span>
@@ -1747,7 +1747,7 @@
 <span class="sd">               [1.e+04, 1.e+09]</span>
 <span class="sd">               [1.e+05, 1.e+07]</span>
 <span class="sd">               [1.e+06, 1.e+06]])</span>
-<span class="sd">               </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3., 2., 1.])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([13., 72., 11.])</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(x, y, 3, axis=1,dev_str=ivy.Device(&#39;cpu&#39;))</span>
@@ -1755,9 +1755,9 @@
 <span class="sd">    ivy.array([[1.e+03, 1.e+08, 1.e+13]</span>
 <span class="sd">               [1.e+02, 1.e+37, 1.e+72]</span>
 <span class="sd">               [1.e+01, 1.e+06, 1.e+11]])</span>
-<span class="sd">               </span>
+
 <span class="sd">    # Array ``op`` is now stored on the CPU.</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; y1 = ivy.array([[1, 3, 9], [5, 7, 11]])</span>
 <span class="sd">    &gt;&gt;&gt; y2 = ivy.zeros(3)</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(y1, y2, 3, axis=1,base=1)</span>
@@ -1765,11 +1765,11 @@
 <span class="sd">    ivy.array([[[1., 1., 1.]</span>
 <span class="sd">                [1., 1., 1.]</span>
 <span class="sd">                [1., 1., 1.]],</span>
-<span class="sd">                </span>
+
 <span class="sd">               [[1., 1., 1.]</span>
 <span class="sd">                [1., 1., 1.]</span>
 <span class="sd">                [1., 1., 1.]]])</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[5, 13, 9], [15, 6, 7]])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.ones(3)</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(x1, x2, 2, axis=0, base=2)</span>
@@ -1778,15 +1778,15 @@
 <span class="sd">                [3.2768e+04, 6.4000e+01, 1.2800e+02]],</span>
 <span class="sd">               [[2.0000e+00 2.0000e+00 2.0000e+00]</span>
 <span class="sd">                [2.0000e+00 2.0000e+00 2.0000e+00]]])</span>
-<span class="sd">                </span>
+
 <span class="sd">     With :class:`ivy.Container` input:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))</span>
 <span class="sd">    &gt;&gt;&gt; op = ivy.logspace(x.a,x.b,num=3)</span>
 <span class="sd">    &gt;&gt;&gt; print(op)</span>
 <span class="sd">    ivy.array([[1.e+05, 1.e+13, 1.e+21]</span>
 <span class="sd">               [1.e+06, 1.e+09, 1.e+12]])</span>
-<span class="sd">               </span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([.3, .8]), b=ivy.array([.2, .2]))</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([.3, .2]), b=ivy.array([.7, .9]))</span>
 <span class="sd">    &gt;&gt;&gt; op1 = ivy.logspace(x.a,y.b,num=3)</span>
