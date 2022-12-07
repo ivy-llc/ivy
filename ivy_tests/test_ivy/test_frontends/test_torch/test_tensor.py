@@ -70,9 +70,7 @@ def test_torch_tensor_property_ivy_array(
         force_int_axis=True,
         valid_axis=True,
     ),
-    chunks=st.integers(
-        min_value=1,
-    ),
+    chunks=st.integers(min_value=1, max_value=50,),
 )
 def test_torch_instance_chunk(
     dtype_x_dim,
@@ -88,15 +86,14 @@ def test_torch_instance_chunk(
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
-        # TODO: figure out what's wrong with the num_positional_args computation
-        init_num_positional_args=1,
+        init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
-        method_num_positional_args=1,
+        method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
             "chunks": chunks,
