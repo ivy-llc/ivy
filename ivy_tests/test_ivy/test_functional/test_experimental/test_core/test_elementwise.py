@@ -363,10 +363,7 @@ def test_exp2(
     dtype_x1_x2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-        min_num_dims=1,  # TODO: Revert this.
-        # This is a temporary workaround due to what I believe is an error in
-        # the testing helpers, which causes get_ret_and_flattened_np_array to
-        # attempt to call enumerate() on 0-d tensors
+        min_num_dims=0,
         allow_nan=False,
         shared_dtype=True,
     ),
