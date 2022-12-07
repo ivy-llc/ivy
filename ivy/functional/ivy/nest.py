@@ -101,7 +101,7 @@ def set_nest_at_index(
     index: Sequence[Union[str, int]],
     value: Any,
     /,
-    inplace: bool = False,
+    shallow: bool = False,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple] = None,
 ):
     """Set the value of a nested item at a specified index.
@@ -167,7 +167,7 @@ def set_nest_at_index(
     """
     outer_tupled = False
     if _result is None:
-        if inplace:
+        if shallow:
             _result = type(nest)(nest)
         else:
             _result = copy_nest(nest)
@@ -176,7 +176,7 @@ def set_nest_at_index(
             outer_tupled = True
             _result = list(_result)
     if len(index) == 1:
-        if inplace:
+        if shallow:
             nest[index[0]] = value
         _result[index[0]] = value
     else:
@@ -184,7 +184,7 @@ def set_nest_at_index(
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
             inner_tupled = True
-        set_nest_at_index(nest[index[0]], index[1:], value, inplace, _result[index[0]])
+        set_nest_at_index(nest[index[0]], index[1:], value, shallow, _result[index[0]])
         # turning back to tuple if outer nest was tuple
         if inner_tupled:
             _result[index[0]] = tuple(_result[index[0]])
@@ -211,7 +211,7 @@ def map_nest_at_index(
     index: Sequence[Union[str, int]],
     fn: Callable[[Any], Any],
     /,
-    inplace: bool = False,
+    shallow: bool = False,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List] = None,
 ) -> None:
     """Map a function to the value of a nested item at a specified index.
@@ -278,7 +278,7 @@ def map_nest_at_index(
     """
     outer_tupled = False
     if _result is None:
-        if inplace:
+        if shallow:
             _result = type(nest)(nest)
         else:
             _result = copy_nest(nest)
@@ -288,7 +288,7 @@ def map_nest_at_index(
             _result = list(_result)
     if len(index) == 1:
         ret = fn(nest[index[0]])
-        if inplace:
+        if shallow:
             nest[index[0]] = ret
         _result[index[0]] = ret
     else:
@@ -296,7 +296,7 @@ def map_nest_at_index(
         if isinstance(_result[index[0]], tuple):
             _result[index[0]] = list(_result[index[0]])
             inner_tuppled = True
-        map_nest_at_index(nest[index[0]], index[1:], fn, inplace, _result[index[0]])
+        map_nest_at_index(nest[index[0]], index[1:], fn, shallow, _result[index[0]])
         # turning back to tuple if outer nest was tuple
         if inner_tuppled:
             _result[index[0]] = tuple(_result[index[0]])
@@ -342,7 +342,7 @@ def set_nest_at_indices(
     indices: Union[List[int], Tuple[int], Iterable[int]],
     values: Union[List[int], Tuple[int], Iterable[int]],
     /,
-    inplace: bool = False,
+    shallow: bool = False,
 ) -> Any:
     """Set the value of a nested item at specified indices with specified values.
 
@@ -398,12 +398,12 @@ def set_nest_at_indices(
     result = None
     for i, (index, value) in enumerate(zip(indices, values)):
         if i == 0:
-            result = set_nest_at_index(nest, index, value, inplace)
+            result = set_nest_at_index(nest, index, value, shallow)
             continue
-        if inplace:
-            result = set_nest_at_index(nest, index, value, inplace)
+        if shallow:
+            result = set_nest_at_index(nest, index, value, shallow)
         else:
-            result = set_nest_at_index(result, index, value, inplace)
+            result = set_nest_at_index(result, index, value, shallow)
     return result
 
 
@@ -436,7 +436,7 @@ def map_nest_at_indices(
     indices: Tuple,
     fn: Callable,
     /,
-    inplace: bool = False,
+    shallow: bool = False,
 ):
     """Map a function to the values of a nested item at the specified indices.
 
@@ -490,12 +490,12 @@ def map_nest_at_indices(
     result = None
     for i, index in enumerate(indices):
         if i == 0:
-            result = map_nest_at_index(nest, index, fn, inplace=inplace)
+            result = map_nest_at_index(nest, index, fn, shallow=shallow)
             continue
-        if inplace:
-            result = map_nest_at_index(nest, index, fn, inplace=inplace)
+        if shallow:
+            result = map_nest_at_index(nest, index, fn, shallow=shallow)
         else:
-            result = map_nest_at_index(result, index, fn, inplace=inplace)
+            result = map_nest_at_index(result, index, fn, shallow=shallow)
     return result
 
 
@@ -860,7 +860,7 @@ def nested_map(
     _list_check_fn: Optional[Callable] = None,
     _dict_check_fn: Optional[Callable] = None,
     extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
-    inplace: bool = False,
+    shallow: bool = False,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -942,7 +942,7 @@ def nested_map(
                 list_check_fn,
                 dict_check_fn,
                 extra_nest_types,
-                inplace,
+                shallow,
             )
             for i in x
         ]
@@ -956,7 +956,7 @@ def nested_map(
     elif list_check_fn(x, list) or isinstance(x, extra_nest_types):
         if isinstance(x, (ivy.Array, ivy.NativeArray)):
             ret = fn(x)
-            if inplace:
+            if shallow:
                 return ivy.inplace_update(x, ret)
             return ret
         ret_list = [
@@ -971,11 +971,11 @@ def nested_map(
                 list_check_fn,
                 dict_check_fn,
                 extra_nest_types,
-                inplace,
+                shallow,
             )
             for i in x
         ]
-        if inplace:
+        if shallow:
             x[:] = ret_list[:]
         return class_instance(ret_list)
     elif dict_check_fn(x, dict):
@@ -992,11 +992,11 @@ def nested_map(
                 list_check_fn,
                 dict_check_fn,
                 extra_nest_types,
-                inplace,
+                shallow,
             )
             for k, v in x.items()
         }
-        if inplace:
+        if shallow:
             x.update(**ret)
         return class_instance(**ret)
     return fn(x)

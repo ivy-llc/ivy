@@ -80,7 +80,7 @@ def test_index_nest(nest, index):
 @pytest.mark.parametrize("inplace", [True, False])
 def test_set_nest_at_index(nest, index, value, inplace):
     nest_copy = copy.deepcopy(nest)
-    result = ivy.set_nest_at_index(nest, index, value, inplace=inplace)
+    result = ivy.set_nest_at_index(nest, index, value, shallow=inplace)
     _snai(nest_copy, index, value)
 
     assert result == nest_copy
@@ -101,7 +101,7 @@ def test_set_nest_at_index(nest, index, value, inplace):
 @pytest.mark.parametrize("inplace", [True, False])
 def test_map_nest_at_index(nest, index, fn, inplace):
     nest_copy = copy.deepcopy(nest)
-    result = ivy.map_nest_at_index(nest, index, fn, inplace=inplace)
+    result = ivy.map_nest_at_index(nest, index, fn, shallow=inplace)
     _mnai(nest_copy, index, fn)
 
     assert result == nest_copy
@@ -140,7 +140,7 @@ def test_multi_index_nest(nest, multi_indices):
 @pytest.mark.parametrize("inplace", [False, True])
 def test_set_nest_at_indices(nest, indices, values, inplace):
     nest_copy = copy.deepcopy(nest)
-    result = ivy.set_nest_at_indices(nest, indices, values, inplace=inplace)
+    result = ivy.set_nest_at_indices(nest, indices, values, shallow=inplace)
 
     def snais(n, idxs, vs):
         [_snai(n, index, value) for index, value in zip(idxs, vs)]
@@ -427,7 +427,7 @@ def test_insert_into_nest_at_indices(nest, indices, values):
 @pytest.mark.parametrize("inplace", [True, False])
 def test_nested_map(x, fn, inplace):
     x_copy = copy.deepcopy(x)
-    result = ivy.nested_map(x, fn, inplace=inplace)
+    result = ivy.nested_map(x, fn, shallow=inplace)
     map_nested_dicts(x_copy, fn)
 
     assert result == x_copy
