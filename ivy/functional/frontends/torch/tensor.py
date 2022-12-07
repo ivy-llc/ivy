@@ -367,6 +367,9 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
 
+    def squeeze(self, dim):
+        return torch_frontend.squeeze(self._ivy_array, dim)
+
     # Special Methods #
     # -------------------#
 
