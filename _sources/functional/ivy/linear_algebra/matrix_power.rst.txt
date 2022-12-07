@@ -3,6 +3,8 @@ matrix_power
 
 .. autofunction:: ivy.functional.ivy.linear_algebra.matrix_power
 
+.. autofunction:: ivy.array.array_methods.matrix_power
+
 .. autofunction:: ivy.container.container_methods.static_matrix_power
 
 .. autofunction:: ivy.container.container_methods.matrix_power
@@ -33,6 +35,7 @@ matrix_power
    :caption: matrix_power
 
    matrix_power/matrix_power_functional.rst
+   matrix_power/matrix_power_array.rst
    matrix_power/matrix_power_container.rst
    matrix_power/static_matrix_power_container.rst
 
