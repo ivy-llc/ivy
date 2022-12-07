@@ -102,7 +102,8 @@ def copysign(
     *,
     out: Optional[tf.Tensor] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    tensor_x2 = tf.convert_to_tensor(x2)
+    # Cast our inputs to float64 to match numpy behaviour
+    tensor_x2 = tf.cast(tf.convert_to_tensor(x2), 'float64')
     # Replace any zero values with 1/the value, since tf.math.sign always
     # returns 0 for positive or negative zero
     signable_x2 = tf.where(
@@ -111,7 +112,12 @@ def copysign(
         tensor_x2
     )
     signs = tf.math.sign(signable_x2)
-    return tf.math.multiply(tf.math.abs(tf.convert_to_tensor(x1)), signs)
+    return tf.math.multiply(
+        tf.math.abs(
+            tf.cast(tf.convert_to_tensor(x1), 'float64')
+        ),
+        signs
+    )
 
 
 def count_nonzero(
