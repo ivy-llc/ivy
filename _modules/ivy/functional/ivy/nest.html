@@ -146,7 +146,7 @@
 
 <div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/index_nest.html#ivy.functional.ivy.nest.index_nest">[docs]</a><span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span>
-    <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
     <span class="n">index</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
     <span class="o">/</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
@@ -182,6 +182,19 @@
 <span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([3., 4.])</span>
+
+<span class="sd">    With :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([[1.,2.], [3.,4.]]),</span>
+<span class="sd">    ...                   b = (50,60))</span>
+<span class="sd">    &gt;&gt;&gt; y = [1]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    &gt;&gt;&gt; z</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([3., 4.]),</span>
+<span class="sd">        b: 60</span>
+<span class="sd">    }</span>
 
 <span class="sd">    With :code:`Dict` input:</span>
 
@@ -389,7 +402,11 @@
 
 
 <div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../../functional/ivy/nest/multi_index_nest.html#ivy.functional.ivy.nest.multi_index_nest">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">,</span> <span class="o">/</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span>
+    <span class="n">nest</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">],</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span>
+    <span class="o">/</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Repeatedly index a nested object, using a tuple of tuples of indices or keys in</span>
 <span class="sd">    the case of dicts.</span>
 
@@ -400,6 +417,56 @@
 <span class="sd">    indices</span>
 <span class="sd">        A tuple of tuples of indices to apply.</span>
 
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The result elements through indexing the nested object.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    With :code:`Tuple` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = (1, 2)</span>
+<span class="sd">    &gt;&gt;&gt; y = [[0]]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.multi_index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [1]</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1., 2.],</span>
+<span class="sd">    ...                [3., 4.]])</span>
+<span class="sd">    &gt;&gt;&gt; y = [[0],[1]]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.multi_index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [ivy.array([1., 2.], ivy.array([3., 4.])]</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1,2]), </span>
+<span class="sd">    ...                   b=[30,40])</span>
+<span class="sd">    &gt;&gt;&gt; y = (&#39;a&#39;, (&#39;b&#39;, 0))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.multi_index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [ivy.array([1, 2]), 30]</span>
+
+<span class="sd">    With :code:`Dict` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = {&#39;a&#39;: 0, &#39;b&#39;: [1, [2, 3]], &#39;c&#39;: (4, 5)}</span>
+<span class="sd">    &gt;&gt;&gt; y = ((&#39;b&#39;, 1), &#39;a&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.multi_index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [[2, 3], 0]</span>
+
+<span class="sd">    With :code:`List` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = [[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;],</span>
+<span class="sd">    ...      [&#39;d&#39;, &#39;e&#39;, &#39;f&#39;],</span>
+<span class="sd">    ...      [&#39;g&#39;, [&#39;h&#39;, &#39;i&#39;]]]</span>
+<span class="sd">    &gt;&gt;&gt; y = [[2, 1, 0], [0, 1]]</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.multi_index_nest(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    [&#39;h&#39;, &#39;b&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
 
