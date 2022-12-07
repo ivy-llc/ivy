@@ -123,7 +123,7 @@ def binary_cross_entropy_with_logits(
 
     if weight is not None:
         result = ivy.multiply(weight, result)
-    result = reduction(result)
+    result = reduction(result).astype(target.dtype)
     return result
 
 
