@@ -24,6 +24,7 @@ Experimental
    experimental/avg_pool2d.rst
    experimental/avg_pool3d.rst
    experimental/dct.rst
+   experimental/fft.rst
    experimental/triu_indices.rst
    experimental/vorbis_window.rst
    experimental/hann_window.rst
