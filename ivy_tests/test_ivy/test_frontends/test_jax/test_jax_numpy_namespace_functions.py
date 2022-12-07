@@ -2931,14 +2931,12 @@ def test_jax_numpy_equal(
 @handle_frontend_test(
     fn_tree="jax.numpy.min",
     dtype_x_axis=statistical_dtype_values(function="min"),
-    where=np_helpers.where(),
     keepdims=st.booleans(),
 )
 def test_jax_numpy_min(
     *,
     dtype_x_axis,
     keepdims,
-    where,
     num_positional_args,
     with_out,
     as_variable,
@@ -2950,12 +2948,6 @@ def test_jax_numpy_min(
     x_dtype, x, axis = dtype_x_axis
     if isinstance(axis, tuple):
         axis = axis[0]
-    where, as_variable, native_array = np_helpers.handle_where_and_array_bools(
-        where=where,
-        input_dtype=x_dtype,
-        as_variable=as_variable,
-        native_array=native_array,
-    )
 
     np_helpers.test_frontend_function(
         input_dtypes=x_dtype,
@@ -2971,7 +2963,6 @@ def test_jax_numpy_min(
         axis=axis,
         out=None,
         keepdims=keepdims,
-        where=where,
     )
 
 
