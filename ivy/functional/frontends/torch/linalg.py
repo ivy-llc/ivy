@@ -41,7 +41,7 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 @to_ivy_arrays_and_back
 def qr(input, mode='reduced', *, out=None):
-    return ivy.qr(input, mode=mode)
+    return ivy.qr(input, mode=mode, out=out)
 
 
 @to_ivy_arrays_and_back
