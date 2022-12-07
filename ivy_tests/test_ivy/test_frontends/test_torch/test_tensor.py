@@ -3848,11 +3848,7 @@ def test_torch_instance_ne(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
     ),
-    dim=helpers.get_axis(
-        shape=st.shared(helpers.get_shape(), key="shape"),
-        allow_neg=True,
-        force_int=True,
-    ),
+    dim=helpers.get_shape(min_num_dims=1),
 )
 def test_torch_instance_squeeze(
     dtype_value,
