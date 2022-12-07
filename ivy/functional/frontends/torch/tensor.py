@@ -432,6 +432,12 @@ class Tensor:
     def __gt__(self, other):
         return torch_frontend.greater(self._ivy_array, other)
 
+    def __ne__(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def __lt__(self, other):
+        return torch_frontend.less(self._ivy_array, other)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
