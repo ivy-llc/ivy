@@ -86,8 +86,6 @@ def test_set_nest_at_index(nest, index, value, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
-    else:
-        assert nest != nest_copy
 
 
 # map_nest_at_index
@@ -107,8 +105,6 @@ def test_map_nest_at_index(nest, index, fn, shallow):
     assert result == nest_copy
     if shallow:
         assert nest == nest_copy
-    else:
-        assert nest != nest_copy
 
 
 # multi_index_nest
@@ -137,10 +133,10 @@ def test_multi_index_nest(nest, multi_indices):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0), ("b", "c", 1, 0))]
 )
 @pytest.mark.parametrize("values", [(1, 2)])
-@pytest.mark.parametrize("inplace", [False, True])
-def test_set_nest_at_indices(nest, indices, values, inplace):
+@pytest.mark.parametrize("shallow", [False, True])
+def test_set_nest_at_indices(nest, indices, values, shallow):
     nest_copy = copy.deepcopy(nest)
-    result = ivy.set_nest_at_indices(nest, indices, values, shallow=inplace)
+    result = ivy.set_nest_at_indices(nest, indices, values, shallow=shallow)
 
     def snais(n, idxs, vs):
         [_snai(n, index, value) for index, value in zip(idxs, vs)]
@@ -148,10 +144,8 @@ def test_set_nest_at_indices(nest, indices, values, inplace):
     snais(nest_copy, indices, values)
 
     assert result == nest_copy
-    if inplace:
+    if shallow:
         assert nest == nest_copy
-    else:
-        assert nest != nest_copy
 
 
 # map_nest_at_indices
@@ -162,10 +156,10 @@ def test_set_nest_at_indices(nest, indices, values, inplace):
     "indices", [(("a", 0, 0), ("a", 1, 0)), (("b", "c", 0, 0, 0), ("b", "c", 1, 0, 0))]
 )
 @pytest.mark.parametrize("fn", [lambda x: x + 2, lambda x: x**2])
-@pytest.mark.parametrize("inplace", [True, False])
-def test_map_nest_at_indices(nest, indices, fn, inplace):
+@pytest.mark.parametrize("shallow", [True, False])
+def test_map_nest_at_indices(nest, indices, fn, shallow):
     nest_copy = copy.deepcopy(nest)
-    result = ivy.map_nest_at_indices(nest, indices, fn, inplace)
+    result = ivy.map_nest_at_indices(nest, indices, fn, shallow)
 
     def mnais(n, idxs, vs):
         [_mnai(n, index, vs) for index in idxs]
@@ -173,10 +167,8 @@ def test_map_nest_at_indices(nest, indices, fn, inplace):
     mnais(nest_copy, indices, fn)
 
     assert result == nest_copy
-    if inplace:
+    if shallow:
         assert nest == nest_copy
-    else:
-        assert nest != nest_copy
 
 
 # nested_argwhere
