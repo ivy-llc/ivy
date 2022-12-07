@@ -370,6 +370,9 @@ class Tensor:
     def squeeze(self, dim):
         return torch_frontend.squeeze(self._ivy_array, dim)
 
+    def flip(self, dims):
+        return torch_frontend.flip(self._ivy_array, dims)
+
     # Special Methods #
     # -------------------#
 

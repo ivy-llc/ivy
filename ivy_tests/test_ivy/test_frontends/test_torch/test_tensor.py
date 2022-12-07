@@ -3876,3 +3876,42 @@ def test_torch_instance_squeeze(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
+
+
+# flip
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="flip",
+    dtype_values_axis=_array_idxes_n_dtype(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_flip(
+    dtype_values_axis,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    frontend_method_data,
+    frontend,
+):
+    x, idxes, dtype = dtype_values_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtype,
+        method_num_positional_args=method_num_positional_args,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dims": idxes,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
