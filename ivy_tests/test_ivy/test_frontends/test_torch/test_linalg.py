@@ -135,7 +135,7 @@ def test_torch_det(
     )
 
 
-#qr
+# qr
 @handle_frontend_test(
     fn_tree="torch.linalg.qr",
     dtype_and_input=_get_dtype_and_matrix(),
@@ -150,7 +150,7 @@ def test_torch_qr(
     fn_tree,
     on_device,
 ):
-    input_dtype, x =dtype_and_input
+    input_dtype, x = dtype_and_input
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         native_array_flags=native_array,
