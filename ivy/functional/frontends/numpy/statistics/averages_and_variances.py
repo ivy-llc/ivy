@@ -118,3 +118,40 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
         return avg.astype(dtype), weights_sum
     else:
         return avg.astype(dtype)
+
+@to_ivy_arrays_and_back
+def nanvar(
+        a,
+        axis=None,
+        dtype=None,
+        out=None,
+        ddof=0.0,
+        keepdims=False,
+        *,
+        where=True
+):
+    is_nan = ivy.isnan(a)
+    axis = tuple(axis) if isinstance(axis, list) else axis
+
+    if not ivy.any(is_nan):
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    else:
+        a = [i for i in a if ivy.isnan(i) is False]
+
+        if dtype:
+            a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
+        ret = ivy.var(a, axis=axis, correction=ddof ,keepdims=keepdims, out=out)
+
+        if ivy.is_array(where):
+            where = ivy.array(where, dtype=ivy.bool)
+            ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
+
+    return ret
