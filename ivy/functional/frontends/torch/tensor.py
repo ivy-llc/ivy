@@ -358,6 +358,9 @@ class Tensor:
     def inverse(self):
         return torch_frontend.inverse(self._ivy_array)
 
+    def neg(self):
+        return torch_frontend.negative(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 
