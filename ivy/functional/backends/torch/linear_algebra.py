@@ -134,6 +134,9 @@ def inner(
     if ivy.is_int_dtype(x1):
         x1 = x1.long()
         x2 = x2.long()
+    if ivy.exists(out):
+        if out.dtype != x1.dtype:
+            return ivy.inplace_update(out, torch.inner(x1, x2).type(ret_dtype))
     return torch.inner(x1, x2, out=out).type(ret_dtype)
 
 
