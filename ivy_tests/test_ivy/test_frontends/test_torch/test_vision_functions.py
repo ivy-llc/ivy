@@ -6,6 +6,22 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# interpolation
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.interpolate",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        min_num_dims=2,
+        max_num_dims=4,
+        min_dim_size=1,
+    ),
+    size=st.integers(min_value=1, max_value=10),
+    mode=st.sampled_from(["nearest", "linear", "bilinear", "bicubic", "trilinear"]),
+    align_corners=st.booleans(),
+    recompute_scale_factor=st.booleans(),
+    scale_factor=st.floats(min_value=0.1, max_value=10.0),
+)
 # pixel_shuffle
 @handle_frontend_test(
     fn_tree="torch.nn.functional.pixel_shuffle",
