@@ -142,7 +142,7 @@ def einsum(
         optimize="optimal",
         precision=None,
         _use_xeinsum=False
-    
+
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -597,10 +597,9 @@ def expand_dims(a, axis):
 
 
 @to_ivy_arrays_and_back
-<<<<<<< master
 def degrees(x):
     return ivy.rad2deg(x)
-=======
+
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
 
@@ -641,4 +640,4 @@ def negative(
     /,
 ):
     return ivy.negative(x)
->>>>>>> master
+
