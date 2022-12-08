@@ -136,21 +136,13 @@ def dot(a, b, *, precision=None):
 
 @to_ivy_arrays_and_back
 def einsum(
-<<<<<<< master
         subscripts,
         *operands,
         out=None,
         optimize="optimal",
         precision=None,
         _use_xeinsum=False
-=======
-    subscripts,
-    *operands,
-    out=None,
-    optimize="optimal",
-    precision=None,
-    _use_xeinsum=False,
->>>>>>> master
+    
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
