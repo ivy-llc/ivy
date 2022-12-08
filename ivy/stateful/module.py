@@ -22,7 +22,7 @@ except ImportError:
     jax.random = SimpleNamespace()
     jax.random.PRNGKey = SimpleNamespace
 
-try:        
+try:
     import torch
 except ImportError:
     torch = SimpleNamespace()
@@ -41,6 +41,7 @@ import re
 import inspect
 from collections import OrderedDict
 from typing import Optional, Dict, List
+
 # local
 import ivy
 from ivy.container import Container
@@ -54,7 +55,6 @@ class Module(abc.ABC):
     """Module is a base class for deriving trainable modules."""
 
     def __init__(
-
         self,
         /,
         *args,
@@ -1034,7 +1034,7 @@ class Module(abc.ABC):
         )
 
         # convert variables to native arrays so that they can be tracked
-        v = ivy.to_native(v)  
+        v = ivy.to_native(v)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -1198,7 +1198,7 @@ class Module(abc.ABC):
         """
 
         ivy_module = self
-        
+
         class MyHaikuModel(hk.Module):
             def __init__(self):
                 super(MyHaikuModel, self).__init__()
@@ -1357,12 +1357,12 @@ class Module(abc.ABC):
 
         if inspect.isclass(native_module):
 
-            if (len(i_args) == 0 and len(i_kwargs) == 0):
+            if len(i_args) == 0 and len(i_kwargs) == 0:
                 raise ivy.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
-            
+
             def forward_fn(*a, **kw):
                 model = native_module(*c_args, **c_kwargs)
                 return model(*i_args, **i_kwargs)
@@ -1456,7 +1456,7 @@ class Module(abc.ABC):
 
         if inspect.isclass(native_module):
 
-            if (len(i_args) == 0 and len(i_kwargs) == 0):
+            if len(i_args) == 0 and len(i_kwargs) == 0:
                 raise ivy.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
@@ -1470,7 +1470,7 @@ class Module(abc.ABC):
             native_module=native_module,
             device=device,
             devices=devices,
-            **i_kwargs
+            **i_kwargs,
         )
 
     @staticmethod
