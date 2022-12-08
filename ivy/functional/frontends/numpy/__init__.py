@@ -220,6 +220,7 @@ numpy_casting_rules = {
         float64,
         complex64,
         complex128,
+        complex256,
     ],
     int8: [
         int8,
@@ -273,7 +274,7 @@ numpy_casting_rules = {
         complex256,
     ],
     uint32: [uint32, uint64, int64, float64, complex128, complex256],
-    uint64: [uint64, float64, complex128],
+    uint64: [uint64, float64, complex128, complex256],
     float16: [float16, float32, float64, complex64, complex128, complex256],
     float32: [float32, float64, complex64, complex128, complex256],
     float64: [float64, complex128, complex256],
