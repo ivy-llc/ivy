@@ -438,6 +438,9 @@ class Tensor:
     def __lt__(self, other):
         return torch_frontend.less(self._ivy_array, other)
 
+    def __or__(self, other):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
