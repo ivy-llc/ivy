@@ -76,6 +76,15 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def eigh(
     x: JaxArray, /, *, UPLO: Optional[str] = "L", out: Optional[JaxArray] = None
 ) -> Tuple[JaxArray]:
@@ -338,6 +347,17 @@ def tensordot(
 ) -> JaxArray:
     x1, x2 = promote_types_of_inputs(x1, x2)
     return jnp.tensordot(x1, x2, axes)
+
+
+def tensorsolve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.tensorsolve(x1, x2, axes)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
