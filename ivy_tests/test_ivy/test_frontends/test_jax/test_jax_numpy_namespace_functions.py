@@ -3230,7 +3230,6 @@ def test_jax_expand_dims(
     )
 
 
-<<<<<<< master
 # degrees
 @handle_frontend_test(
     fn_tree="jax.numpy.degrees",
@@ -3238,7 +3237,7 @@ def test_jax_expand_dims(
         available_dtypes=helpers.get_dtypes("float"),
     ),
 )
-def test_jax_numpy_degree(
+def test_jax_numpy_degrees(
         *,
         dtype_and_x,
         num_positional_args,
@@ -3247,7 +3246,20 @@ def test_jax_numpy_degree(
         on_device,
         fn_tree,
         frontend,
-=======
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
 # eye
 @handle_frontend_test(
     fn_tree="jax.numpy.eye",
