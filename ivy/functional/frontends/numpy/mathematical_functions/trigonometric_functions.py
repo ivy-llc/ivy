@@ -6,12 +6,14 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def cos(
     x,
     /,
@@ -29,9 +31,10 @@ def cos(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def sin(
     x,
     /,
@@ -49,9 +52,10 @@ def sin(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def tan(
     x,
     /,
@@ -69,9 +73,10 @@ def tan(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def arcsin(
     x,
     /,
@@ -89,9 +94,10 @@ def arcsin(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def arccos(
     x,
     /,
@@ -109,9 +115,10 @@ def arccos(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def arctan(
     x,
     /,
@@ -129,9 +136,10 @@ def arctan(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def deg2rad(
     x,
     /,
@@ -151,9 +159,10 @@ def deg2rad(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def rad2deg(
     x,
     /,

@@ -3,14 +3,17 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     outputs_to_numpy_arrays,
     to_ivy_arrays_and_back,
+    handle_numpy_dtype,
 )
 
 
+@handle_numpy_dtype
 @outputs_to_numpy_arrays
 def arange(start, stop=None, step=1, dtype=None, *, like=None):
     return ivy.arange(start, stop, step, dtype=dtype)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis=0):
     ret = ivy.linspace(start, stop, num, axis=axis, endpoint=endpoint, dtype=dtype)
@@ -22,6 +25,7 @@ def linspace(start, stop, num=50, endpoint=True, retstep=False, dtype=None, axis
     return ret
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def logspace(start, stop, num=50, endpoint=True, base=10.0, dtype=None, axis=0):
     if not endpoint:

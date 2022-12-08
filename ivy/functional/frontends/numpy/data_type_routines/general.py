@@ -1,6 +1,6 @@
 import ivy
 from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
-from ivy.functional.frontends.numpy import numpy_casting_rules
+import ivy.functional.frontends.numpy as np_frontend
 
 
 @to_ivy_arrays_and_back
@@ -29,7 +29,7 @@ def can_cast(from_, to, casting="safe"):
     else:
         raise ivy.exceptions.IvyException("to must be dtype or dtype specifier")
 
-    if casting == "safe" and to in numpy_casting_rules[from_]:
+    if casting == "safe" and to in np_frontend.numpy_casting_rules[from_]:
         return True
 
     if casting == "same_kind":
@@ -44,7 +44,11 @@ def can_cast(from_, to, casting="safe"):
         elif "int" in from_ and "int" in to and "uint" not in to:
             return True
         else:
-            return to in numpy_casting_rules[from_]
+            return to in np_frontend.numpy_casting_rules[from_]
     if casting == "unsafe":
         return True
     return False
+
+
+def promote_types(type1, type2, /):
+    return np_frontend.dtype(np_frontend.promote_numpy_dtypes(type1, type2))
