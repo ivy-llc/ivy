@@ -977,7 +977,7 @@ def eye(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place instead of the arguments.
+    instances as a replacement to any of the arguments.
 
     Functional Examples
     -------------------
@@ -1039,9 +1039,10 @@ def eye(
     With :'out' input:
 
     >>> a1 = ivy.ones(3)
-    >>> x1 = ivy.eye(3, out=a1)
-    >>> print(x1)
-    ivy.array([1., 0., 0.])
+    >>> ivy.eye(3, out=a1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
 
 
     With :'device' input:
