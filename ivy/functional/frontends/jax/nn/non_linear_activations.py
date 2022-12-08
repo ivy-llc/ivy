@@ -279,7 +279,7 @@ def sigmoid(x):
 @to_ivy_arrays_and_back
 def silu(x):
     x = _type_conversion(x)
-    return x * sigmoid(x)
+    return ivy.multiply(x, ivy.sigmoid(x))
 
 
 @to_ivy_arrays_and_back
