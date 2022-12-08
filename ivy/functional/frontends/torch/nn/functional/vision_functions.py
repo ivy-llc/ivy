@@ -1,7 +1,6 @@
 from typing import List, Optional
 import ivy
 from ivy.exceptions import IvyNotImplementedException
-from ivy.functional.backends.torch.experimental.layers import avg_pool1d, avg_pool2d, avg_pool3d
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -10,9 +9,11 @@ from ivy.functional.frontends.torch.tensor import Tensor
 
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
-def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optional[List[float]] = None, 
+def interpolate(input: Tensor, size: Optional[int] = None, 
+                scale_factor: Optional[List[float]] = None, 
                 mode: str = 'nearest', align_corners: Optional[bool] = None, 
-                recompute_scale_factor: Optional[bool] = None, antialias: bool = False) -> Tensor:
+                recompute_scale_factor: Optional[bool] = None, 
+                antialias: bool = False) -> Tensor:
 
     if mode in ("nearest", "area", "nearest-exact"):
         if align_corners is not None:
@@ -37,8 +38,9 @@ def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optiona
         if isinstance(size, (list, tuple)):
             if len(size) != dim:
                 raise ValueError(
-                    "Input and output must have the same number of spatial dimensions, but got "
-                    f"input with spatial dimensions of {list(input.shape[2:])} and output size of {size}. "
+                    "Input and output must have the same number of spatial dimensions,"
+                    " but got input with spatial dimensions of " 
+                    f" {list(input.shape[2:])} and output size of {size}. "
                     "Please provide input tensor in (N, C, d1, d2, ...,dK) format and "
                     "output size in (o1, o2, ...,oK) format."
 
@@ -48,8 +50,9 @@ def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optiona
         if isinstance(scale_factor, (list, tuple)):
             if len(scale_factor) != dim:
                 raise ValueError(
-                    "Input and scale_factor must have the same number of spatial dimensions, but "
-                    f"got input with spatial dimensions of {list(input.shape[2:])} and "
+                    "Input and scale_factor must have the same number of spatial "
+                    "dimensions, but got input with spatial dimensions of"
+                    f" {list(input.shape[2:])} and "
                     f"scale_factor of shape {scale_factor}. "
                     "Please provide input tensor in (N, C, d1, d2, ...,dK) format and "
                     "scale_factor in (s1, s2, ...,sK) format."
@@ -58,7 +61,8 @@ def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optiona
     else:
         raise ValueError("either size or scale_factor should be defined")
 
-    if recompute_scale_factor is not None and recompute_scale_factor and size is not None:
+    condition = recompute_scale_factor is not None and recompute_scale_factor
+    if condition and size is not None:
         raise ValueError(
             "recompute_scale_factor is not meaningful with an explicit size.")
 
@@ -69,18 +73,22 @@ def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optiona
         raise IvyNotImplementedException(
             "Got 3D input, but trilinear mode needs 5D input")
     if input.dim() == 4 and mode == "linear":
-        raise IvyNotImplementedException("Got 4D input, but linear mode needs 3D input")
+        raise IvyNotImplementedException(
+            "Got 4D input, but linear mode needs 3D input")
     if input.dim() == 4 and mode == "trilinear":
         raise IvyNotImplementedException(
             "Got 4D input, but trilinear mode needs 5D input")
     if input.dim() == 5 and mode == "linear":
-        raise IvyNotImplementedException("Got 5D input, but linear mode needs 3D input")
+        raise IvyNotImplementedException(
+            "Got 5D input, but linear mode needs 3D input")
     if input.dim() == 5 and mode == "bilinear":
         raise IvyNotImplementedException(
             "Got 5D input, but bilinear mode needs 4D input")
 
-    return ivy.interpolate(input, size=size, scale_factor=scale_factor, mode=mode, align_corners=align_corners,
-                           recompute_scale_factor=recompute_scale_factor, antialias=antialias)
+    return ivy.interpolate(input, size=size, scale_factor=scale_factor, mode=mode, 
+                           align_corners=align_corners,
+                           recompute_scale_factor=recompute_scale_factor, 
+                           antialias=antialias)
 
 
 @to_ivy_arrays_and_back
