@@ -1,0 +1,3 @@
+|                       | numpy                                                                                                                                                                                  |
+|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_view_tensor_size | <a href="https://github.com/unifyai/ivy/actions/runs/3647011738/jobs/6158732273" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
