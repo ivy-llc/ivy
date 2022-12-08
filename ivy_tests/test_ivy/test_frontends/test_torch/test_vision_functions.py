@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         min_num_dims=2,
-        max_num_dims=4,
+        max_num_dims=5,
         min_dim_size=1,
     ),
     size=st.integers(min_value=1, max_value=10),
