@@ -1,5 +1,140 @@
+from typing import List, Optional
 import ivy
+from ivy.functional.backends.torch.experimental.layers import avg_pool1d, avg_pool2d, avg_pool3d
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.torch.tensor import Tensor
+
+
+@to_ivy_arrays_and_back
+def interpolate(input: Tensor, size: Optional[int] = None, scale_factor: Optional[List[float]] = None, 
+                mode: str = 'nearest', align_corners: Optional[bool] = None, 
+                recompute_scale_factor: Optional[bool] = None, antialias: bool = False) -> Tensor:
+
+    if mode in ("nearest", "area", "nearest-exact"):
+        if align_corners is not None:
+            raise ValueError(
+                "align_corners option can only be set with the "
+                "interpolating modes: linear | bilinear | bicubic | trilinear"
+            )
+    else:
+        if align_corners is None:
+            align_corners = False
+
+    dim = input.dim() - 2  # Number of spatial dimensions.
+
+    # Process size and scale_factor.  Validate that exactly one is set.
+    # Validate its length if it is a list, or expand it if it is a scalar.
+    # After this block, exactly one of output_size and scale_factors will
+    # be non-None, and it will be a list (or tuple).
+    if size is not None and scale_factor is not None:
+        raise ValueError("only one of size or scale_factor should be defined")
+    elif size is not None:
+        assert scale_factor is None
+        scale_factors = None
+        if isinstance(size, (list, tuple)):
+            if len(size) != dim:
+                raise ValueError(
+                    "Input and output must have the same number of spatial dimensions, but got "
+                    f"input with spatial dimensions of {list(input.shape[2:])} and output size of {size}. "
+                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format and "
+                    "output size in (o1, o2, ...,oK) format."
+
+                )
+            output_size = size
+        else:
+            output_size = [size for _ in range(dim)]
+    elif scale_factor is not None:
+        assert size is None
+        output_size = None
+        if isinstance(scale_factor, (list, tuple)):
+            if len(scale_factor) != dim:
+                raise ValueError(
+                    "Input and scale_factor must have the same number of spatial dimensions, but "
+                    f"got input with spatial dimensions of {list(input.shape[2:])} and "
+                    f"scale_factor of shape {scale_factor}. "
+                    "Please provide input tensor in (N, C, d1, d2, ...,dK) format and "
+                    "scale_factor in (s1, s2, ...,sK) format."
+                )
+            scale_factors = scale_factor
+        else:
+            scale_factors = [scale_factor for _ in range(dim)]
+    else:
+        raise ValueError("either size or scale_factor should be defined")
+
+    if recompute_scale_factor is not None and recompute_scale_factor and size is not None:
+        raise ValueError(
+            "recompute_scale_factor is not meaningful with an explicit size.")
+
+    # "area" mode always requires an explicit size rather than scale factor.
+    # Re-use the recompute_scale_factor code path.
+    if mode == "area" and output_size is None:
+        recompute_scale_factor = True
+
+    # if input.dim() == 3 and mode == "nearest":
+        # return torch._C._nn.upsample_nearest1d(input, output_size, scale_factors)
+    # if input.dim() == 4 and mode == "nearest":
+    #     return torch._C._nn.upsample_nearest2d(input, output_size, scale_factors)
+    # if input.dim() == 5 and mode == "nearest":
+    #     return torch._C._nn.upsample_nearest3d(input, output_size, scale_factors)
+
+    # if input.dim() == 3 and mode == "nearest-exact":
+    #     return torch._C._nn._upsample_nearest_exact1d(input, output_size, scale_factors)
+    # if input.dim() == 4 and mode == "nearest-exact":
+    #     return torch._C._nn._upsample_nearest_exact2d(input, output_size, scale_factors)
+    # if input.dim() == 5 and mode == "nearest-exact":
+    #     return torch._C._nn._upsample_nearest_exact3d(input, output_size, scale_factors)
+
+    input_size = input.shape[2:]
+    stride = (input_size // output_size)  
+    kernel_size = input_size - (output_size - 1) * stride  
+    padding = 0
+    if input.dim() == 3 and mode == "area":
+        assert output_size is not None
+        return avg_pool1d(input, kernel=kernel_size, stride=stride, padding=padding)
+    if input.dim() == 4 and mode == "area":
+        assert output_size is not None
+        return avg_pool2d(input, kernel=kernel_size, stride=stride, padding=padding)
+    if input.dim() == 5 and mode == "area":
+        assert output_size is not None
+        return avg_pool3d(input, kernel=kernel_size, stride=stride, padding=padding)
+
+    # if input.dim() == 3 and mode == "linear":
+    #     assert align_corners is not None
+    #     return torch._C._nn.upsample_linear1d(input, output_size, align_corners, scale_factors)
+    # if input.dim() == 4 and mode == "bilinear":
+    #     assert align_corners is not None
+    #     if antialias:
+    #         return torch._C._nn._upsample_bilinear2d_aa(input, output_size, align_corners, scale_factors)
+    #     return torch._C._nn.upsample_bilinear2d(input, output_size, align_corners, scale_factors)
+    # if input.dim() == 5 and mode == "trilinear":
+    #     assert align_corners is not None
+    #     return torch._C._nn.upsample_trilinear3d(input, output_size, align_corners, scale_factors)
+    # if input.dim() == 4 and mode == "bicubic":
+    #     assert align_corners is not None
+    #     if antialias:
+    #         return torch._C._nn._upsample_bicubic2d_aa(input, output_size, align_corners, scale_factors)
+    #     return torch._C._nn.upsample_bicubic2d(input, output_size, align_corners, scale_factors)
+
+    if input.dim() == 3 and mode == "bilinear":
+        raise NotImplementedError("Got 3D input, but bilinear mode needs 4D input")
+    if input.dim() == 3 and mode == "trilinear":
+        raise NotImplementedError("Got 3D input, but trilinear mode needs 5D input")
+    if input.dim() == 4 and mode == "linear":
+        raise NotImplementedError("Got 4D input, but linear mode needs 3D input")
+    if input.dim() == 4 and mode == "trilinear":
+        raise NotImplementedError("Got 4D input, but trilinear mode needs 5D input")
+    if input.dim() == 5 and mode == "linear":
+        raise NotImplementedError("Got 5D input, but linear mode needs 3D input")
+    if input.dim() == 5 and mode == "bilinear":
+        raise NotImplementedError("Got 5D input, but bilinear mode needs 4D input")
+
+    # return ivy.resize(input, size=size, scale_factor=scale_factor, mode=mode, antialias=antialias)
+    raise NotImplementedError(
+        # "Input Error: Only 3D, 4D and 5D input Tensors supported"
+        "Input Error: Only area mode supported"
+        " (got {}D) for the modes: nearest | linear | bilinear | bicubic | trilinear | area | nearest-exact"
+        " (got {})".format(input.dim(), mode)
+    )
 
 
 @to_ivy_arrays_and_back
