@@ -505,6 +505,66 @@ def diagonal(
 @handle_nestable
 @handle_exceptions
 @handle_array_like
+def eig(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> Tuple[Union[ivy.Array, ivy.NativeArray]]:
+    """Returns an eigendecomposition x = QLQᵀ of a symmetric matrix (or a stack of
+    symmetric matrices) ``x``, where ``Q`` is an orthogonal matrix (or a stack of
+    matrices) and ``L`` is a vector (or a stack of vectors).
+
+    .. note::
+       The function ``eig`` currently behaves like ``eigh``, as
+       it requires complex number support, once complex numbers are supported,
+       x does not need to be a complex Hermitian or real symmetric matrix.
+
+
+    Parameters
+    ----------
+    x
+        input array having shape ``(..., M, M)`` and whose innermost two dimensions form
+        square matrices. Must have a floating-point data type.
+
+    Returns
+    -------
+    ret
+        a namedtuple (``eigenvalues``, ``eigenvectors``) whose
+
+        -   first element must have the field name ``eigenvalues`` (corresponding to
+            ``L`` above) and must be an array consisting of computed eigenvalues. The
+            array containing the eigenvalues must have shape ``(..., M)``.
+        -   second element have have the field name ``eigenvectors`` (corresponding to
+            ``Q`` above) and must be an array where the columns of the inner most
+            matrices contain the computed eigenvectors. These matrices must be
+            orthogonal. The array containing the eigenvectors must have shape
+            ``(..., M, M)``.
+
+        -   Each returned array must have the same floating-point data type as ``x``.
+
+    .. note::
+       Eigenvalue sort order is left unspecified and is thus implementation-dependent.
+
+
+    This function conforms to the `Array API Standard
+    <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
+    `docstring <https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.eigh.html>`_ # noqa
+    in the standard.
+
+    Both the description and the type hints above assumes an array input for simplicity,
+    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
+    instances in place of any of the arguments.
+
+    """
+    return current_backend(x).eig(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
 def eigh(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
@@ -2004,6 +2064,51 @@ def tensordot(
 
     """
     return current_backend(x1, x2).tensordot(x1, x2, axes=axes, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+@handle_array_like
+def tensorsolve(
+    x1: Union[ivy.Array, ivy.NativeArray],
+    x2: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+
+    ndim1 = ivy.get_num_dims(x1)
+    ndim2 = ivy.get_num_dims(x2)
+
+    if axes is not None:
+        allaxes = list(range(0, ndim1))
+        for k in axes:
+            allaxes.remove(k)
+            allaxes.insert(ndim1, k)
+
+        x1 = ivy.matrix_transpose(x1, allaxes)
+
+    old_shape = x1.shape[-(ndim1 - ndim2) :]
+
+    prod = 1
+    for k in old_shape:
+        prod *= k
+
+    if ivy.shape(ivy.flatten(x1))[0] != prod**2:
+        raise ivy.exceptions.IvyException(
+            "Input arrays must satisfy the requirement \
+            prod(x1.shape[x2.ndim:]) == prod(x1.shape[:x2.ndim])"
+        )
+
+    x1 = ivy.reshape(x1, (prod, prod))
+    x2 = ivy.flatten(x2)
+    res = ivy.solve(x1, x2)
+    res = ivy.reshape(res, old_shape)
+    return res
+    # return current_backend(x1, x2).tensorsolve(x1, x2, axes=axes, out=out)
 
 
 @to_native_arrays_and_back

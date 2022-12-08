@@ -367,6 +367,12 @@ class Tensor:
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
 
+    def squeeze(self, dim):
+        return torch_frontend.squeeze(self._ivy_array, dim)
+
+    def flip(self, dims):
+        return torch_frontend.flip(self._ivy_array, dims)
+
     # Special Methods #
     # -------------------#
 
@@ -422,6 +428,15 @@ class Tensor:
 
     def __eq__(self, other):
         return ivy.equal(self._ivy_array, other)
+
+    def __gt__(self, other):
+        return torch_frontend.greater(self._ivy_array, other)
+
+    def __ne__(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def __lt__(self, other):
+        return torch_frontend.less(self._ivy_array, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
