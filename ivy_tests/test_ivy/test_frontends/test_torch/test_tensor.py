@@ -70,7 +70,10 @@ def test_torch_tensor_property_ivy_array(
         force_int_axis=True,
         valid_axis=True,
     ),
-    chunks=st.integers(min_value=1, max_value=50,),
+    chunks=st.integers(
+        min_value=1,
+        max_value=50,
+    ),
 )
 def test_torch_instance_chunk(
     dtype_x_dim,
