@@ -327,7 +327,6 @@ def gradient(
     otype = f.dtype
     if jnp.issubdtype(otype, jnp.integer):
         f = f.astype(jnp.float64)
-    otype = jnp.float64
 
     for axis, ax_dx in zip(axes, dx):
         if f.shape[axis] < edge_order + 1:

@@ -1555,6 +1555,7 @@ def one_hot(
     on_value: Optional[Number] = None,
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1597,6 +1598,7 @@ def one_hot(
         on_value=on_value,
         off_value=off_value,
         axis=axis,
+        dtype=dtype,
         device=device,
         out=out,
     )
