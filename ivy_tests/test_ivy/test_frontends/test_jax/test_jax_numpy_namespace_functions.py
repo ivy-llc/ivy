@@ -3470,7 +3470,6 @@ def test_jax_numpy_negative(
     frontend,
     fn_tree,
     on_device,
->>>>>>> master
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_function(
