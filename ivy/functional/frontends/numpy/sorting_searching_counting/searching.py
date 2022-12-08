@@ -75,4 +75,4 @@ def nanargmin(a, axis=None, keepdims=False):
 
 @to_ivy_arrays_and_back
 def extract(a, condition):
-    return ivy.take(ivy.ravel(a), ivy.nonzero(ivy.ravel(condition))[0])
+    return (ivy.take(ivy.ravel(a), ivy.nonzero(ivy.ravel(condition))[0]))
