@@ -959,7 +959,7 @@ def eye(
         output array data type. If dtype is None, the output array data type must be the
         default floating-point data type. Default: ``None``.
     device
-         the device on which to place the created array.
+        the device on which to place the created array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -984,7 +984,7 @@ def eye(
 
     With :'n_rows' input:
 
-    >>> x1 = ivy.eye(n_rows=3)
+    >>> x1 = ivy.eye(3)
     >>> print(x1)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
@@ -993,7 +993,7 @@ def eye(
 
     With :'n_cols' input:
 
-    >>> x1 = ivy.eye(n_rows=3, n_cols=4)
+    >>> x1 = ivy.eye(3,4)
     >>> print(x1)
     ivy.array([[1., 0., 0., 0.],
                [0., 1., 0., 0.],
@@ -1002,7 +1002,7 @@ def eye(
 
     With :'k' input:
 
-    >>> x1 = ivy.eye(n_rows=3, k=1)
+    >>> x1 = ivy.eye(3, k=1)
     >>> print(x1)
     ivy.array([[0., 1., 0.],
                [0., 0., 1.],
@@ -1011,7 +1011,7 @@ def eye(
 
     With :'dtype' input:
 
-    >>> x1 = ivy.eye(n_rows=4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
     >>> print(x1)
     ivy.array([[0, 0, 1, 0],
                [0, 0, 0, 1],
@@ -1021,31 +1021,32 @@ def eye(
 
     With :'batch_shape' input:
 
-    >>> x1 = ivy.eye(n_rows=2, n_cols=3, batch_shape=[3])
+    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
     >>> print(x1)
     ivy.array([[[1., 0., 0.],
                 [0., 1., 0.]],
 
                 [[1., 0., 0.],
-                 [0., 1., 0.]],
+                [0., 1., 0.]],
 
                 [[1., 0., 0.],
-                 [0., 1., 0.]]])
-
-    # Shape of the returned array is [3,2,3].
+                [0., 1., 0.]]])
+    >>> x1.shape
+    (3, 2, 3)
     # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
 
     With :'out' input:
 
     >>> a1 = ivy.ones(3)
-    >>> x1 = ivy.eye(n_rows=3, out=a1)
+    >>> x1 = ivy.eye(3, out=a1)
     >>> print(x1)
     ivy.array([1., 0., 0.])
 
 
     With :'device' input:
 
-    >>> x1 = ivy.eye(n_rows=3, device=ivy.Device('cpu'))
+    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
     >>> print(x1)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
