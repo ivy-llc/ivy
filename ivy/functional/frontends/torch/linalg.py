@@ -41,7 +41,13 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 @to_ivy_arrays_and_back
 def qr(input, mode='reduced', *, out=None):
-    return ivy.qr(input, mode=mode, out=out)
+    if mode:
+        ret = ivy.qr(input, mode="reduced")
+    else:
+        ret = ivy.qr(input, mode="complete")
+    if ivy.exists(out):
+        return ivy.inplace_update(out, ret)
+    return ret
 
 
 @to_ivy_arrays_and_back
