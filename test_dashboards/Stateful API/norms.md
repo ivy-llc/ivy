@@ -1,3 +1,3 @@
 |                       | torch                                                                                                                                                                              |
 |:----------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| test_layer_norm_layer | <a href="https://github.com/unifyai/ivy/actions/runs/3640551668/jobs/6145428367" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
+| test_layer_norm_layer | <a href="https://github.com/unifyai/ivy/actions/runs/3646385398/jobs/6157446591" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
