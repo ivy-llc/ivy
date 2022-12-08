@@ -312,9 +312,12 @@ def swish(x):
 
 @to_ivy_arrays_and_back
 def hard_silu(x):
-    return ivy.multiply(x, hard_sigmoid(x))
+    dtype = _batch_promotion(x, default_dtype="float64")
+    sig = ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6)
+    return ivy.multiply(x, sig).astype(dtype)
 
 
 @to_ivy_arrays_and_back
 def hard_sigmoid(x):
-    return ivy.divide(relu6(x + 3), 6)
+    dtype = _batch_promotion(x, default_dtype="float64")
+    return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
