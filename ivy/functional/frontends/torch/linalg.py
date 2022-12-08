@@ -52,3 +52,6 @@ def matrix_power(input, n, *, out=None):
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
     return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+
+def cholesky(input, *, upper=False,  out=None):
+    return ivy.cholesky(input, upper=upper, out=out)
