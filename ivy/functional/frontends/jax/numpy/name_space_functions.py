@@ -1,6 +1,5 @@
 import warnings
 
-
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -70,6 +69,15 @@ def argsort(a, axis=-1, kind="stable", order=None):
         raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
 
     return ivy.argsort(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def asarray(
+    a,
+    dtype=None,
+    order=None,
+):
+    return ivy.asarray(a, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -510,7 +518,6 @@ def multiply(x1, x2):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -591,3 +598,41 @@ def expand_dims(a, axis):
 @to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def stack(arrays, axis=0, out=None, dtype=None):
+    if dtype:
+        return ivy.astype(
+            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def take(
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
+):
+    return ivy.take_along_axis(a, indices, axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def zeros_like(a, dtype=None, shape=None):
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def negative(
+    x,
+    /,
+):
+    return ivy.negative(x)
