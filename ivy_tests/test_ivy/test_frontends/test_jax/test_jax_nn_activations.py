@@ -304,10 +304,8 @@ def test_jax_nn_one_hot(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
+        min_num_dims=2,
+        max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
     ),
@@ -333,6 +331,8 @@ def test_jax_nn_softmax(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
         axis=axis,
     )
