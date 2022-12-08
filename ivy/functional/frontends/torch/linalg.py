@@ -2,6 +2,7 @@
 import ivy
 import ivy.functional.frontends.torch as torch_frontend
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
+from ivy.func_wrapper import with_supported_dtypes
 
 
 @to_ivy_arrays_and_back
@@ -29,6 +30,7 @@ def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
 
 
+@with_supported_dtypes({"1.11.0 and below": ("float32", "float64")}, "torch")
 @to_ivy_arrays_and_back
 def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, out=None):
     if "complex" in ivy.as_ivy_dtype(input.dtype):
@@ -36,11 +38,3 @@ def matrix_norm(input, ord="fro", dim=(-2, -1), keepdim=False, *, dtype=None, ou
     if dtype:
         input = ivy.astype(input, dtype)
     return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim, out=out)
-
-
-matrix_norm.supported_dtypes = (
-    "float32",
-    "float64",
-    "complex64",
-    "complex128",
-)
