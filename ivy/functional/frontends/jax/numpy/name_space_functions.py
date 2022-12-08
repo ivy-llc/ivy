@@ -44,6 +44,21 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
+def argwhere(a, /, *, size=None, fill_value=None):
+    if size is None and fill_value is None:
+        return ivy.argwhere(a)
+
+    result = ivy.matrix_transpose(
+        ivy.vstack(ivy.nonzero(a, size=size, fill_value=fill_value))
+    )
+    num_of_dimensions = a.ndim
+
+    if num_of_dimensions == 0:
+        return result[:0].reshape(result.shape[0], 0)
+
+    return result.reshape(result.shape[0], num_of_dimensions)
+
+
 @to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
@@ -118,7 +133,7 @@ def einsum(
     out=None,
     optimize="optimal",
     precision=None,
-    _use_xeinsum=False
+    _use_xeinsum=False,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
