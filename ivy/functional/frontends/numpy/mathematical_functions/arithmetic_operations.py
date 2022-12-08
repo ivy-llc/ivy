@@ -6,11 +6,13 @@ from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def add(
     x1,
     x2,
@@ -30,8 +32,9 @@ def add(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def subtract(
     x1,
     x2,
@@ -51,8 +54,9 @@ def subtract(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def divide(
     x1,
     x2,
@@ -75,8 +79,9 @@ def divide(
 true_divide = divide
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def multiply(
     x1,
     x2,
@@ -96,8 +101,9 @@ def multiply(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def power(
     x1,
     x2,
@@ -117,8 +123,9 @@ def power(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def float_power(
     x1,
     x2,
@@ -149,8 +156,9 @@ def vdot(
     return ivy.multiply(a, b).sum()
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def positive(
     x,
     /,
@@ -168,8 +176,9 @@ def positive(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def negative(
     x,
     /,
@@ -187,8 +196,9 @@ def negative(
     return ret
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def floor_divide(
     x1,
     x2,
@@ -210,7 +220,9 @@ def floor_divide(
     return ret
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def reciprocal(
     x,
     /,
@@ -230,7 +242,9 @@ def reciprocal(
     return ret
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def mod(
     x1,
     x2,
