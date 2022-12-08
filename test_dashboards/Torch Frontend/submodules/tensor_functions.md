@@ -1,0 +1,3 @@
+|                              | tensorflow                                                                                                                                                                             |
+|:-----------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_torch_is_floating_point | <a href="https://github.com/unifyai/ivy/actions/runs/3651091388/jobs/6167889886" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
