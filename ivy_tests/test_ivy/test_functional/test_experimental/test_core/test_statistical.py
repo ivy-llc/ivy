@@ -74,41 +74,45 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
-#TODO: helpers.get_dtypes(kind="float") not working.
+# TODO: numpy does not support bfloat16
+# TODO: put this function inside statistical_dtype_values if needed
 @st.composite
 def _statistical_dtype_xs_bins_range_axis_castable(draw, n:int=2):
     available_dtypes = draw(helpers.get_dtypes(kind="float"))
-    shape = draw(helpers.get_shape(min_num_dims=1))
+    if 'bfloat16' in available_dtypes:
+        available_dtypes.remove('bfloat16')
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=2))
     dtype, values = draw(
         helpers.dtype_and_values(
             available_dtypes=available_dtypes,
             num_arrays=n,
-            shared_dtype=True,
+            large_abs_safety_factor=2,
+            small_abs_safety_factor=2,
+            safety_factor_scale="log",
             shape=shape,
+            shared_dtype=True,
         )
     )
     axis = draw(helpers.get_axis(shape=shape, force_int=True))
-    dtype1, values, dtype2 = draw(
-        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[:n])
+    dtype1, dtype2 = draw(
+        helpers.get_castable_dtype(available_dtypes, dtype[0])
     )
-    bins = draw(
-        helpers.array_values(
-            dtype=dtype1,
-            shape=(helpers.ints(),),
-        )
-        |
-        helpers.ints()
-    )
-    range = ()
-    if isinstance(bins, int):
-        range = (draw(helpers.floats()), draw(helpers.floats()))
+    bins = draw(helpers.array_values(dtype=dtype1, min_value=0, shape=draw(helpers.get_shape(max_num_dims=1))))
+    range = (0, 0)
+    if bins.size == 1:
+        while range[0] == range[1]:
+            range = (
+                draw(st.floats(allow_nan=False, allow_infinity=False, allow_subnormal=False)),
+                draw(st.floats(allow_nan=False, allow_infinity=False, allow_subnormal=False))
+            )
+        range = sorted(range)
+        return dtype1, values, int(bins), range, axis, dtype2
     else:
         bins = sorted(bins)
         range = None
-    return dtype1, values, bins, range, axis, dtype2
+        return dtype1, values, bins, range, axis, dtype2
 
 
-#TODO: check after solving _statistical_dtype_xs_bins_range_axis_castable.
 @handle_test(
     fn_tree="functional.experimental.histogram",
     statistical_dtype_xs_bins_range_axis_castable=_statistical_dtype_xs_bins_range_axis_castable(),
