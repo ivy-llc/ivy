@@ -262,7 +262,7 @@ def test_tensorflow_einsum(
 
 
 @st.composite
-def _constant_helper(draw):
+def _x_cast_dtype_shape(draw):
     x_dtype = draw(helpers.get_dtypes("valid", full=False))
     x_dtype, x = draw(
         helpers.dtype_and_values(
@@ -273,7 +273,10 @@ def _constant_helper(draw):
     to_shape = draw(
         helpers.reshape_shapes(shape=st.shared(helpers.get_shape(), key="value_shape")),
     )
-    cast_dtype = x_dtype[0]  # draw(
+    cast_dtype = x_dtype[0]
+    # known tensorflow bug when trying to cast to a different type
+    # https://github.com/tensorflow/tensorflow/issues/39554
+    # cast_dtype = draw(
     #     helpers.get_dtypes("valid", full=False)
     #     .map(lambda t: t[0])
     #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
@@ -284,7 +287,7 @@ def _constant_helper(draw):
 # constant
 @handle_frontend_test(
     fn_tree="tensorflow.constant",
-    all_args=_constant_helper(),
+    all_args=_x_cast_dtype_shape(),
 )
 def test_tensorflow_constant(
     *,
@@ -312,26 +315,10 @@ def test_tensorflow_constant(
     )
 
 
-@st.composite
-def _convert_to_tensor_helper(draw):
-    x_dtype = draw(helpers.get_dtypes("valid", full=False))
-    x_dtype, x = draw(
-        helpers.dtype_and_values(
-            dtype=x_dtype,
-        )
-    )
-    cast_dtype = x_dtype[0]  # draw(
-    #     helpers.get_dtypes("valid", full=False)
-    #     .map(lambda t: t[0])
-    #     .filter(lambda t: ivy.can_cast(x_dtype[0], t))
-    # )
-    return x_dtype, x, cast_dtype
-
-
 # convert_to_tensor
 @handle_frontend_test(
     fn_tree="tensorflow.convert_to_tensor",
-    dtype_x_cast=_convert_to_tensor_helper(),
+    dtype_x_cast=_x_cast_dtype_shape(),
     dtype_hint=helpers.get_dtypes("valid", full=False),
 )
 def test_tensorflow_convert_to_tensor(
@@ -345,7 +332,7 @@ def test_tensorflow_convert_to_tensor(
     fn_tree,
     frontend,
 ):
-    x_dtype, x, cast_dtype = dtype_x_cast
+    x_dtype, x, cast_dtype, _ = dtype_x_cast
     helpers.test_frontend_function(
         input_dtypes=x_dtype,
         as_variable_flags=as_variable,
