@@ -279,7 +279,7 @@ def test_matrix_rank(
     )
 
 
-#cholesky
+# cholesky
 @handle_frontend_test(
     fn_tree="torch.linalg.cholesky",
     dtype_and_x=_get_dtype_and_square_matrix(),
