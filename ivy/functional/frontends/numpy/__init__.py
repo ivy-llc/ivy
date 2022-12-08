@@ -204,6 +204,85 @@ numpy_type_to_str_and_num_table = {
     complex256: ("G", 16),
 }
 
+numpy_casting_rules = {
+    bool: [
+        bool,
+        uint8,
+        uint16,
+        uint32,
+        uint64,
+        int8,
+        int16,
+        int32,
+        int64,
+        float16,
+        float32,
+        float64,
+        complex64,
+        complex128,
+        complex256,
+    ],
+    int8: [
+        int8,
+        int16,
+        int32,
+        int64,
+        float16,
+        float32,
+        float64,
+        complex64,
+        complex128,
+        complex256,
+    ],
+    int16: [
+        int16,
+        int32,
+        int64,
+        float32,
+        float64,
+        complex64,
+        complex128,
+        complex256,
+    ],
+    int32: [int32, int64, float64, complex128, complex256],
+    int64: [int64, float64, complex128, complex256],
+    uint8: [
+        uint8,
+        uint16,
+        uint32,
+        uint64,
+        int16,
+        int32,
+        int64,
+        float16,
+        float32,
+        float64,
+        complex64,
+        complex128,
+        complex256,
+    ],
+    uint16: [
+        uint16,
+        uint32,
+        uint64,
+        int32,
+        int64,
+        float32,
+        float64,
+        complex64,
+        complex128,
+        complex256,
+    ],
+    uint32: [uint32, uint64, int64, float64, complex128, complex256],
+    uint64: [uint64, float64, complex128, complex256],
+    float16: [float16, float32, float64, complex64, complex128, complex256],
+    float32: [float32, float64, complex64, complex128, complex256],
+    float64: [float64, complex128, complex256],
+    complex64: [complex64, complex128, complex256],
+    complex128: [complex128, complex256],
+    complex256: [complex256],
+}
+
 
 @handle_exceptions
 def promote_numpy_dtypes(
@@ -293,7 +372,6 @@ from .linalg.matrix_and_vector_products import (
 )
 
 from .linalg.decompositions import cholesky, qr, svd
-
 
 from .linalg.norms_and_other_numbers import det, slogdet, matrix_rank, norm, trace
 
