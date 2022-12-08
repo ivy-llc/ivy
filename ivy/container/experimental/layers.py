@@ -942,3 +942,89 @@ class ContainerWithLayersExperimental(ContainerBase):
             norm=norm,
             out=out,
         )
+
+    @staticmethod
+    def static_interpolate(
+        x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
+        size: List[int],
+        /,
+        *,
+        mode: Optional[Literal["linear", "bilinear"]] = "bilinear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Down/up samples the input to the given size.
+
+        Parameters
+        ----------
+        x
+            The input to down/up sample.
+            shape should be [batch_size, channel, (height), width]
+        size
+            output spatial size
+        mode
+            algorithm to use for upsampling:
+            can be 'linear', 'bilinear'
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+            shape of ret will be [batch_size, channel, (height), width]
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "interpolate",
+            x,
+            size,
+            mode=mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def interpolate(
+        self: ivy.Container,
+        size: List[int],
+        /,
+        *,
+        mode: Optional[Literal["linear", "bilinear"]] = "bilinear",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """Down/up samples the input to the given size.
+
+        Parameters
+        ----------
+        x
+            The input to down/up sample.
+            shape should be [batch_size, channel, (height), width]
+        size
+            output spatial size
+        mode
+            algorithm to use for upsampling:
+            can be 'linear', 'bilinear'
+
+        Returns
+        -------
+        ret
+            Array containing the transformed input.
+            shape of ret will be [batch_size, channel, (height), width]
+        """
+        return self.static_interpolate(
+            self,
+            size,
+            mode=mode,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )

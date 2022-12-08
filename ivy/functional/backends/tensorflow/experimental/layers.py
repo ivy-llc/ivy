@@ -239,3 +239,20 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def interpolate(
+    x: Union[tf.Tensor, tf.Variable],
+    size: Sequence[int],
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear"]] = "linear",
+):
+    if mode == "bilinear":
+        x = tf.transpose(x, (0, 2, 3, 1))
+        return tf.transpose(tf.image.resize(x, size=size, mode=mode), (0, 3, 1, 2))
+    elif mode == "linear":
+        x = tf.transpose(x, (0, 2, 1))
+        return tf.transpose(
+            tf.image.resize(x, size=[x.shape[0], size], mode="bilinear"), (0, 2, 1)
+        )

@@ -232,6 +232,71 @@ def test_dct(
 
 
 @st.composite
+def _interp_args(draw):
+    mode = draw(st.sampled_from(["linear", "bilinear"]))
+    # b = helpers.ints(min_value=1, max_value=2)
+    # c = helpers.ints(min_value=1, max_value=2)
+    # w = helpers.ints(min_value=1, max_value=3)
+    if mode == "linear":
+        # shape = (b, c, w)
+        size = helpers.ints(min_value=4, max_value=6)
+        num_dims = 3
+    else:
+        # h = helpers.ints(min_value=1, max_value=3)
+        # shape = (b, c, h, w)
+        size = helpers.list_of_length(x=[4, 5, 6], length=2)
+        num_dims = 4
+
+    dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=num_dims,
+            max_num_dims=num_dims,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
+
+    return dtype, mode, x, size
+
+
+@handle_test(
+    fn_tree="interpolate",
+    dtype_x_mode=_interp_args(),
+)
+def test_interpolate(
+    dtype_x_mode,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    input_dtype, x, mode, size = dtype_x_mode
+    helpers.test_function(
+        ground_truth_backend="tensorflow",
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=backend_fw,
+        fn_name=fn_name,
+        x=x[0],
+        size=size,
+        mode=mode,
+        rtol_=1e-3,
+        atol_=1e-3,
+    )
+
+
+@st.composite
 def x_and_fft(draw, dtypes):
     min_fft_points = 2
     dtype = draw(dtypes)

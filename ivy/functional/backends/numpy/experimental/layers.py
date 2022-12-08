@@ -60,7 +60,7 @@ def max_pool1d(
     res = sub_matrices.max(axis=(2))
 
     if data_format == "NCW":
-        return res.swapaxes(1, 2)
+        return res.permute(0, 2, 1)
     return res
 
 
@@ -216,7 +216,7 @@ def avg_pool1d(
         strides = [strides[0]]
 
     if data_format == "NCW":
-        x = np.swapaxes(x, 1, 2)
+        x = x.permute(0, 2, 1)
 
     pad_w = ivy.handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
@@ -246,7 +246,7 @@ def avg_pool1d(
     res = np.mean(sub_matrices, axis=2)
 
     if data_format == "NCW":
-        return res.swapaxes(1, 2)
+        return res.permute(0, 2, 1)
     return res
 
 
@@ -523,3 +523,47 @@ def dropout1d(
         return res
     else:
         return x
+
+
+def interpolate(
+    x: np.ndarray,
+    size: int,
+    /,
+    *,
+    mode: Union[Literal["linear", "bilinear"]] = "linear",
+    align_corners: Optional[bool] = True,
+    antialias: Optional[bool] = False,
+):
+    if mode == "linear":
+        if not align_corners:
+            x_up = np.arange(0, x.shape[-1])
+            missing = (np.arange(0, size) + 0.5) * (x.shape[-1] / size) - 0.5
+        else:
+            x_up = np.linspace(0, 1, x.shape[-1])
+            missing = np.linspace(0, 1, size)
+        ret = np.zeros(x.shape[:-1] + (size,))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                ret[i][j] = np.interp(missing, x_up, ch)
+    elif mode == "bilinear":
+        if not align_corners:
+            x_up_h = np.arange(0, x.shape[-2])
+            x_up_w = np.arange(0, x.shape[-1])
+            missing_h = (np.arange(0, size[0]) + 0.5) * (x.shape[-2] / size[0]) - 0.5
+            missing_w = (np.arange(0, size[1]) + 0.5) * (x.shape[-1] / size[1]) - 0.5
+        else:
+            x_up_h = np.linspace(0, 1, x.shape[-2])
+            x_up_w = np.linspace(0, 1, x.shape[-1])
+            missing_h = np.linspace(0, 1, size[0])
+            missing_w = np.linspace(0, 1, size[1])
+        ret = np.zeros(x.shape[:-2] + (size[0], size[1]))
+        for i, ba in enumerate(x):
+            for j, ch in enumerate(ba):
+                row_ret = np.zeros((x.shape[-2], size[1]))
+                for k, row in enumerate(ch):
+                    row_ret[k] = np.interp(missing_w, x_up_w, row)
+                row_ret = row_ret.T
+                for k, col in enumerate(row_ret):
+                    ret[i][j][k] = np.interp(missing_h, x_up_h, col)
+                ret[i][j] = ret[i][j].T
+    return ret

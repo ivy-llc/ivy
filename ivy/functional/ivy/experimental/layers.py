@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import ivy
 from ivy.func_wrapper import (
     handle_array_like,
@@ -510,6 +510,42 @@ def dct(
     }
     """
     return ivy.current_backend(x).dct(x, type=type, n=n, axis=axis, norm=norm, out=out)
+
+
+@to_native_arrays_and_back
+@integer_arrays_to_float
+@handle_nestable
+def interpolate(
+    x: Union[ivy.Array, ivy.NativeArray],
+    size: Sequence[int],
+    /,
+    *,
+    mode: Optional[Literal["linear", "bilinear"]] = "bilinear",
+    align_corners: Optional[bool] = True,
+    antialias: Optional[bool] = False,
+):
+    """Down/up samples the input to the given size.
+
+    Parameters
+    ----------
+    x
+        The input to down/up sample.
+        shape should be [batch_size, channel, (height), width]
+    size
+        output spatial size
+    mode
+        algorithm to use for upsampling:
+        can be 'linear', 'bilinear'
+
+    Returns
+    -------
+    ret
+        Array containing the transformed input.
+        shape of ret will be [batch_size, channel, (height), width]
+    """
+    ivy.current_backend(x).interpolate(
+        x, size=size, mode=mode, align_corners=align_corners
+    )
 
 
 @to_native_arrays_and_back
