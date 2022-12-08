@@ -7,6 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+#TODO: avoid error when inputs are out of range and extend_lower_interval or extend_upper_interval are false.
 def histogram(
     a: tf.Tensor,
     /,

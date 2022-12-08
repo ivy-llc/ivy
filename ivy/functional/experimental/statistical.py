@@ -13,6 +13,9 @@ from ivy.func_wrapper import (
 from ivy.exceptions import handle_exceptions
 
 
+#TODO: Only works with one 1D bins array, make it work with 1 bins per input array.
+#      Make bins optional.
+#      Correct density argument (got wrong wen introducing axis argument).
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable

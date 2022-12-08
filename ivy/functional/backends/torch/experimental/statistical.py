@@ -8,6 +8,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
+#TODO: solve problem with bins error: only int and not also 1D torch.tensor.
 def histogram(
     a: torch.tensor,
     /,

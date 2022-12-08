@@ -53,6 +53,90 @@ def statistical_dtype_values(draw, *, function):
     return dtype, values, axis
 
 
+#TODO: helpers.get_dtypes(kind="float") not working.
+@st.composite
+def _statistical_dtype_xs_bins_range_axis_castable(draw, n:int=2):
+    available_dtypes = draw(helpers.get_dtypes(kind="float"))
+    shape = draw(helpers.get_shape(min_num_dims=1))
+    dtype, values = draw(
+        helpers.dtype_and_values(
+            available_dtypes=available_dtypes,
+            num_arrays=n,
+            shared_dtype=True,
+            shape=shape,
+        )
+    )
+    axis = draw(helpers.get_axis(shape=shape, force_int=True))
+    dtype1, values, dtype2 = draw(
+        helpers.get_castable_dtype(draw(available_dtypes), dtype[0], values[:n])
+    )
+    bins = draw(
+        helpers.array_values(
+            dtype=dtype1,
+            shape=(helpers.ints(),),
+        )
+        |
+        helpers.ints()
+    )
+    range = ()
+    if isinstance(bins, int):
+        range = (draw(helpers.floats()), draw(helpers.floats()))
+    else:
+        bins = sorted(bins)
+        range = None
+    return dtype1, values, bins, range, axis, dtype2
+
+
+#TODO: check after solving _statistical_dtype_xs_bins_range_axis_castable.
+@handle_test(
+    fn_tree="functional.experimental.histogram",
+    statistical_dtype_xs_bins_range_axis_castable=_statistical_dtype_xs_bins_range_axis_castable(),
+    extend_lower_interval=st.booleans(),
+    extend_upper_interval=st.booleans(),
+    density=st.booleans(),
+)
+def test_histogram(
+    *,
+    statistical_dtype_xs_bins_range_axis_castable,
+    extend_lower_interval,
+    extend_upper_interval,
+    density,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, values, bins, range, axis, castable = statistical_dtype_xs_bins_range_axis_castable
+    helpers.test_function(
+        a=values[0],
+        bins=bins,
+        axis=axis,
+        extend_lower_interval=extend_lower_interval,
+        extend_upper_interval=extend_upper_interval,
+        dtype=castable,
+        range=range,
+        weights=values[1],
+        density=density,
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        with_out=with_out,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        ground_truth_backend=ground_truth_backend,
+    )
+
+
 @handle_test(
     fn_tree="functional.experimental.median",
     dtype_x_axis=statistical_dtype_values(function="median"),

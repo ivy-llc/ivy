@@ -17,7 +17,8 @@ def histogram(
     density: Optional[bool] = False,
 ) -> Tuple[jnp.ndarray]:
     if range:
-        bin_edges = jnp.linspace(start=range[0], stop=range[1], num=bins + 1)
+        bins = jnp.linspace(start=range[0], stop=range[1], num=bins + 1)
+        bin_edges = bins
         range = None
     if extend_lower_interval:
         bin_edges = bin_edges.at[0].set(-jnp.inf)
