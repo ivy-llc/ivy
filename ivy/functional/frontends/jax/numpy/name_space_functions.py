@@ -1,6 +1,5 @@
 import warnings
 
-
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -113,12 +112,12 @@ def dot(a, b, *, precision=None):
 
 @to_ivy_arrays_and_back
 def einsum(
-    subscripts,
-    *operands,
-    out=None,
-    optimize="optimal",
-    precision=None,
-    _use_xeinsum=False
+        subscripts,
+        *operands,
+        out=None,
+        optimize="optimal",
+        precision=None,
+        _use_xeinsum=False
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -384,14 +383,14 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def sum(
-    a,
-    axis=None,
-    dtype=None,
-    out=None,
-    keepdims=False,
-    initial=None,
-    where=None,
-    promote_integers=True,
+        a,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
 ):
     if initial:
         s = ivy.shape(a)
@@ -495,7 +494,6 @@ def multiply(x1, x2):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -564,10 +562,10 @@ def logaddexp(x1, x2):
 
 
 @to_ivy_arrays_and_back
-def degrees(x):
-    return ivy.rad2deg(x)
+def expand_dims(a, axis):
+    return ivy.expand_dims(a, axis=axis)
 
 
 @to_ivy_arrays_and_back
-def expand_dims(a, axis):
-    return ivy.expand_dims(a, axis=axis)
+def degrees(x):
+    return ivy.rad2deg(x)
