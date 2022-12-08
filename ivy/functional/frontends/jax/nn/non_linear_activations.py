@@ -253,9 +253,13 @@ def normalize(x, axis=-1, mean=None, variance=None, epsilon=1e-5, where=None):
 
 
 @to_ivy_arrays_and_back
-def one_hot(x, num_classes, *, device=None, out=None):
-    ret = ivy.one_hot(x, num_classes, device=device, out=out)
-    return ret.astype("float64")
+def one_hot(x, num_classes, *, dtype=None, axis=-1):
+    if dtype is None:
+        dtype = "float64"
+    else:
+        dtype = ivy.as_ivy_dtype(dtype)
+    ret = ivy.one_hot(x, num_classes, axis=axis)
+    return ret.astype(dtype)
 
 
 @to_ivy_arrays_and_back
