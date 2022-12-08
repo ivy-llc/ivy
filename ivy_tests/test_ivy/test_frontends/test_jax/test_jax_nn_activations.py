@@ -581,13 +581,13 @@ def test_jax_nn_hard_tanh(
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
-        num_arrays=2,
-        shared_dtype=True,
     ),
+    alpha=helpers.floats(min_value=0.01, max_value=1),
 )
 def test_jax_nn_celu(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     num_positional_args,
     native_array,
@@ -606,7 +606,7 @@ def test_jax_nn_celu(
         fn_tree=fn_tree,
         on_device=on_device,
         x=xs[0],
-        alpha=xs[1],
+        alpha=alpha,
     )
 
 
