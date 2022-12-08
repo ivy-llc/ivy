@@ -32,11 +32,24 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-    def reshape(self, shape):
-        return torch_frontend.reshape(self._ivy_array, shape)
+    def reshape(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            return torch_frontend.reshape(self._ivy_array, shape)
+        if args:
+            if isinstance(args[0], tuple):
+                shape = args[0]
+                return torch_frontend.reshape(self._ivy_array, shape)
+            else:
+                return torch_frontend.reshape(self._ivy_array, args)
+        return torch_frontend.reshape(self._ivy_array)
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
@@ -342,6 +355,24 @@ class Tensor:
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
 
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
+    def neg(self):
+        return torch_frontend.negative(self._ivy_array)
+
+    def int(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.int32)
+
+    def ne(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def squeeze(self, dim):
+        return torch_frontend.squeeze(self._ivy_array, dim)
+
+    def flip(self, dims):
+        return torch_frontend.flip(self._ivy_array, dims)
+
     # Special Methods #
     # -------------------#
 
@@ -394,6 +425,21 @@ class Tensor:
     def __itruediv__(self, other, *, rounding_mode=None):
         self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
         return self
+
+    def __eq__(self, other):
+        return ivy.equal(self._ivy_array, other)
+
+    def __gt__(self, other):
+        return torch_frontend.greater(self._ivy_array, other)
+
+    def __ne__(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def __lt__(self, other):
+        return torch_frontend.less(self._ivy_array, other)
+
+    def __or__(self, other):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

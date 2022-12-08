@@ -8,9 +8,6 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
-from tensorflow.python.ops.numpy_ops import np_config
-
-np_config.enable_numpy_behavior()
 
 
 def sinc(

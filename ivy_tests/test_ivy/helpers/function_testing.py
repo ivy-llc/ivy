@@ -3,22 +3,29 @@ import copy
 from typing import Union, List
 import numpy as np
 import types
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
-
+import importlib
+import inspect
 try:
     import tensorflow as tf
 except ImportError:
     tf = types.SimpleNamespace()
     tf.TensorShape = None
 
-
-import importlib
-import inspect
-
 # local
 import ivy
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
+from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
+from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
+from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+from .assertions import (
+    value_test,
+    check_unsupported_dtype,
+)
 
 
 def empty_func(*args, **kwargs):
@@ -32,20 +39,12 @@ try:
 except ImportError:
     is_jax_native_array = empty_func
 
-
-from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
-from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
-
-
 try:
     from ivy.functional.backends.numpy.general import (
         is_native_array as is_numpy_native_array,
     )
 except ImportError:
     is_numpy_native_array = empty_func
-
 
 try:
     from ivy.functional.backends.tensorflow.general import (
@@ -54,19 +53,12 @@ try:
 except ImportError:
     is_tensorflow_native_array = empty_func
 
-
 try:
     from ivy.functional.backends.torch.general import (
         is_native_array as is_torch_native_array,
     )
 except ImportError:
     is_torch_native_array = empty_func
-
-
-from .assertions import (
-    value_test,
-    check_unsupported_dtype,
-)
 
 
 # ToDo, this is temporary until unsupported_dtype is embedded
@@ -817,15 +809,15 @@ def gradient_test(
 def test_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: int = 0,
-    init_native_array_flags: List[bool] = None,
+    init_as_variable_flags: Union[List[bool], pf.AsVariableFlags] = None,
+    init_num_positional_args: Union[int, pf.NumPositionalArg] = 0,
+    init_native_array_flags: Union[List[bool], pf.NativeArrayFlags] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_as_variable_flags: List[bool],
-    method_num_positional_args: int,
-    method_native_array_flags: List[bool],
-    method_container_flags: List[bool],
+    method_as_variable_flags: Union[List[bool], pf.AsVariableFlags],
+    method_num_positional_args: Union[int, pf.NumPositionalArg],
+    method_native_array_flags: Union[List[bool], pf.NativeArrayFlags],
+    method_container_flags: Union[List[bool], pf.ContainerFlags],
     method_all_as_kwargs_np: dict,
     class_name: str,
     method_name: str = "__call__",
@@ -1096,18 +1088,17 @@ def test_method(
 def test_frontend_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: int = 0,
-    init_native_array_flags: List[bool] = None,
+    init_as_variable_flags: Union[List[bool], pf.AsVariableFlags] = None,
+    init_num_positional_args: Union[int, pf.NumPositionalArgFn] = 0,
+    init_native_array_flags: Union[List[bool], pf.NativeArrayFlags] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_as_variable_flags: List[bool],
-    method_num_positional_args: int,
-    method_native_array_flags: List[bool],
+    method_as_variable_flags: Union[List[bool], pf.AsVariableFlags],
+    method_num_positional_args: Union[int, pf.NumPositionalArgMethod],
+    method_native_array_flags: Union[List[bool], pf.NativeArrayFlags],
     method_all_as_kwargs_np: dict,
     frontend: str,
-    init_name: str,
-    method_name: str,
+    frontend_method_data: FrontendMethodData,
     rtol_: float = None,
     atol_: float = 1e-06,
     test_values: Union[bool, str] = True,
@@ -1145,10 +1136,6 @@ def test_frontend_method(
         input arguments to the method as keyword arguments.
     frontend
         current frontend (framework).
-    class_
-        name of the class to test.
-    method_name
-        name of the method to test.
     rtol_
         relative tolerance value.
     atol_
@@ -1301,13 +1288,15 @@ def test_frontend_method(
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
     )
 
-    ivy_frontend_creation_fn = ivy.functional.frontends.__dict__[frontend].__dict__[
-        init_name
-    ]
+    ivy_frontend_creation_fn = getattr(
+        frontend_method_data.ivy_init_module, frontend_method_data.init_name
+    )
     # Run testing
     ins = ivy_frontend_creation_fn(*args_constructor, **kwargs_constructor)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
-        ins.__getattribute__(method_name), *args_method, **kwargs_method
+        ins.__getattribute__(frontend_method_data.method_name),
+        *args_method,
+        **kwargs_method,
     )
 
     # Compute the return with the native frontend framework
@@ -1346,11 +1335,13 @@ def test_frontend_method(
         kwargs_method_frontend["device"] = ivy.as_native_dev(
             kwargs_method_frontend["device"]
         )
-    frontend_creation_fn = importlib.import_module(frontend).__getattribute__(init_name)
+    frontend_creation_fn = getattr(
+        frontend_method_data.framework_init_module, frontend_method_data.init_name
+    )
     ins_gt = frontend_creation_fn(
         *args_constructor_frontend, **kwargs_constructor_frontend
     )
-    frontend_ret = ins_gt.__getattribute__(method_name)(
+    frontend_ret = ins_gt.__getattribute__(frontend_method_data.method_name)(
         *args_method_frontend, **kwargs_method_frontend
     )
     if frontend == "tensorflow" and isinstance(frontend_ret, tf.TensorShape):
@@ -1365,8 +1356,6 @@ def test_frontend_method(
         frontend_ret_flat = ivy.multi_index_nest(frontend_ret, frontend_ret_idxs)
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
-
-    ret_np_flat = flatten_and_to_np(ret=ret)
 
     # assuming value test will be handled manually in the test function
     if not test_values:
@@ -1581,10 +1570,15 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
-    if _is_frontend_array(ret):
-        ret = ret.ivy_array
-    if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
-        ret = ret.ivy_array
+
+    def map_fn(x):
+        if _is_frontend_array(x):
+            return x.ivy_array
+        if isinstance(x, ivy.functional.frontends.numpy.ndarray):
+            return x.ivy_array
+        return x
+
+    ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
     return ret, flatten_and_to_np(ret=ret)
 
 

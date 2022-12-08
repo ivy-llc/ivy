@@ -242,10 +242,12 @@ def test_torch_permute(
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_swapdims(
     *,
@@ -376,10 +378,12 @@ def test_torch_stack(
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     dim1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_transpose(
     *,
@@ -458,10 +462,12 @@ def test_torch_squeeze(
     ),
     axis0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
     axis1=helpers.get_axis(
         shape=st.shared(helpers.get_shape(min_num_dims=2), key="shape"),
-    ).filter(lambda axis: isinstance(axis, int)),
+        force_int=True,
+    ),
 )
 def test_torch_swapaxes(
     *,

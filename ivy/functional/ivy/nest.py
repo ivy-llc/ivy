@@ -16,7 +16,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_exceptions
 def index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
     /,
 ) -> Any:
@@ -52,6 +52,19 @@ def index_nest(
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
     ivy.array([3., 4.])
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1.,2.], [3.,4.]]),
+    ...                   b = (50,60))
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    >>> z
+    {
+        a: ivy.array([3., 4.]),
+        b: 60
+    }
 
     With :code:`Dict` input:
 
@@ -259,7 +272,11 @@ def map_nest_at_index(
 
 
 @handle_exceptions
-def multi_index_nest(nest: Iterable, indices: Tuple, /):
+def multi_index_nest(
+    nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
+    indices: Iterable[Iterable[int]],
+    /,
+) -> Iterable[Any]:
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -270,6 +287,56 @@ def multi_index_nest(nest: Iterable, indices: Tuple, /):
     indices
         A tuple of tuples of indices to apply.
 
+    Returns
+    -------
+    ret
+        The result elements through indexing the nested object.
+
+    Examples
+    --------
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2)
+    >>> y = [[0]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [1]
+
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
+    >>> y = [[0],[1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1., 2.], ivy.array([3., 4.])]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1,2]),
+    ...                   b=[30,40])
+    >>> y = ('a', ('b', 0))
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1, 2]), 30]
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = (('b', 1), 'a')
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [[2, 3], 0]
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> y = [[2, 1, 0], [0, 1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    ['h', 'b']
     """
     return [index_nest(nest, index) for index in indices]
 
@@ -1231,3 +1298,34 @@ def nested_multi_map(
         if ivy.is_ivy_container(nest0)
         else return_nest
     )
+
+
+@handle_exceptions
+def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterable]):
+    """Group all unique index chains in a nest. This function is useful for finding
+    all unique index chains in a nest, and then duplicating the values at those
+    index chains for functional frameworks.
+
+    Parameters
+    ----------
+    nest
+        nest to get duplicate index chains for.
+
+    Returns
+    -------
+        list of index chains to duplicate.
+    """
+    all_index_chains = ivy.nested_argwhere(nest, lambda _: True)
+    duplicates = []
+    duplicate_index_chains = {}
+    for index_chain in all_index_chains:
+        val = ivy.index_nest(nest, index_chain)
+        if ivy.is_array(val):
+            for i in range(len(duplicates)):
+                if val is duplicates[i]:
+                    duplicate_index_chains[i].append(index_chain)
+                    break
+            else:
+                duplicates.append(val)
+                duplicate_index_chains[len(duplicates) - 1] = [index_chain]
+    return list(duplicate_index_chains.values())
