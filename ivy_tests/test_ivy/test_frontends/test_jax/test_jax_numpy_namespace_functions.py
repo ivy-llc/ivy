@@ -35,7 +35,7 @@ def test_jax_numpy_absolute(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        all_aliases=["jax.numpy.abs"],
+        all_aliases=["numpy.abs"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
