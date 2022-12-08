@@ -73,9 +73,9 @@ def argsort(a, axis=-1, kind="stable", order=None):
 
 @to_ivy_arrays_and_back
 def asarray(
-    a,
-    dtype=None,
-    order=None,
+        a,
+        dtype=None,
+        order=None,
 ):
     return ivy.asarray(a, dtype=dtype)
 
@@ -600,6 +600,7 @@ def expand_dims(a, axis):
 def degrees(x):
     return ivy.rad2deg(x)
 
+
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
 
@@ -615,14 +616,14 @@ def stack(arrays, axis=0, out=None, dtype=None):
 
 @to_ivy_arrays_and_back
 def take(
-    a,
-    indices,
-    axis=None,
-    out=None,
-    mode=None,
-    unique_indices=False,
-    indices_are_sorted=False,
-    fill_value=None,
+        a,
+        indices,
+        axis=None,
+        out=None,
+        mode=None,
+        unique_indices=False,
+        indices_are_sorted=False,
+        fill_value=None,
 ):
     return ivy.take_along_axis(a, indices, axis, out=out)
 
@@ -636,8 +637,7 @@ def zeros_like(a, dtype=None, shape=None):
 
 @to_ivy_arrays_and_back
 def negative(
-    x,
-    /,
+        x,
+        /,
 ):
     return ivy.negative(x)
-
