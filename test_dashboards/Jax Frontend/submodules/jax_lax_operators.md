@@ -1,0 +1,3 @@
+|                          | jax                                                                                                                                                                                    |
+|:-------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_jax_lax_bitwise_xor | <a href="https://github.com/unifyai/ivy/actions/runs/3646148408/jobs/6156962681" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
