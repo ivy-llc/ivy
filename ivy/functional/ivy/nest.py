@@ -313,7 +313,7 @@ def multi_index_nest(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([1,2]), 
+    >>> x = ivy.Container(a=ivy.array([1,2]),
     ...                   b=[30,40])
     >>> y = ('a', ('b', 0))
     >>> z = ivy.multi_index_nest(x, y)
