@@ -5,9 +5,9 @@ asinh
 
 .. autofunction:: ivy.array.array_methods.asinh
 
-.. autofunction:: ivy.container.container_methods.static_asinh
-
 .. autofunction:: ivy.container.container_methods.asinh
+
+.. autofunction:: ivy.container.container_methods.static_asinh
 |
 | **Supported Frameworks:**
 

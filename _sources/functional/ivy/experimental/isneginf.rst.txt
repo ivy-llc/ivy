@@ -5,9 +5,9 @@ isneginf
 
 .. autofunction:: ivy.array.array_methods.isneginf
 
-.. autofunction:: ivy.container.container_methods.static_isneginf
-
 .. autofunction:: ivy.container.container_methods.isneginf
+
+.. autofunction:: ivy.container.container_methods.static_isneginf
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ log10
 
 .. autofunction:: ivy.array.array_methods.log10
 
-.. autofunction:: ivy.container.container_methods.log10
-
 .. autofunction:: ivy.container.container_methods.static_log10
+
+.. autofunction:: ivy.container.container_methods.log10
 |
 | **Supported Frameworks:**
 

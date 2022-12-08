@@ -22,7 +22,7 @@
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="ivy.flatten" href="flatten/flatten_functional.html" />
-    <link rel="prev" title="ivy.Container.static_msort" href="msort/static_msort_container.html" /> 
+    <link rel="prev" title="gamma" href="gamma.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -61,10 +61,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../elementwise.html">Elementwise</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../experimental.html">Experimental</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool1d.html">max_pool1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool2d.html">max_pool2d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="max_pool3d.html">max_pool3d</a></li>
@@ -73,6 +69,8 @@
 <li class="toctree-l2"><a class="reference internal" href="avg_pool3d.html">avg_pool3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -83,29 +81,9 @@
 <li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fmax.html">fmax</a></li>
-<li class="toctree-l2"><a class="reference internal" href="trapz.html">trapz</a></li>
-<li class="toctree-l2"><a class="reference internal" href="float_power.html">float_power</a></li>
-<li class="toctree-l2"><a class="reference internal" href="exp2.html">exp2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="count_nonzero.html">count_nonzero</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nansum.html">nansum</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gcd.html">gcd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isclose.html">isclose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isposinf.html">isposinf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isneginf.html">isneginf</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nan_to_num.html">nan_to_num</a></li>
-<li class="toctree-l2"><a class="reference internal" href="logaddexp2.html">logaddexp2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="signbit.html">signbit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diff.html">diff</a></li>
-<li class="toctree-l2"><a class="reference internal" href="allclose.html">allclose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fix.html">fix</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nextafter.html">nextafter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="zeta.html">zeta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">flatten</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="flatten/flatten_functional.html">ivy.flatten</a></li>
 <li class="toctree-l3"><a class="reference internal" href="flatten/flatten_array.html">ivy.Array.flatten</a></li>
@@ -133,12 +111,34 @@
 <li class="toctree-l2"><a class="reference internal" href="atleast_3d.html">atleast_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="take_along_axis.html">take_along_axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fmax.html">fmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trapz.html">trapz</a></li>
+<li class="toctree-l2"><a class="reference internal" href="float_power.html">float_power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exp2.html">exp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="count_nonzero.html">count_nonzero</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nansum.html">nansum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gcd.html">gcd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isclose.html">isclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isposinf.html">isposinf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isneginf.html">isneginf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nan_to_num.html">nan_to_num</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logaddexp2.html">logaddexp2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="signbit.html">signbit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diff.html">diff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="allclose.html">allclose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fix.html">fix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nextafter.html">nextafter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeta.html">zeta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradient.html">gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="SparseArray.html">SparseArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="NativeSparseArray.html">NativeSparseArray</a></li>
 </ul>
@@ -166,14 +166,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -427,59 +427,6 @@ Default order is ‘C’</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.flatten">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.flatten" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of ivy.flatten. This method simply
-wraps the function, and so the docstring for ivy.flatten also applies to this
-method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container to flatten at leaves.</p></li>
-<li><p><strong>start_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – first dim to flatten. If not set, defaults to 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
-<li><p><strong>end_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – last dim to flatten. If not set, defaults to -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
-<li><p><strong>order</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Read the elements of the input container using this index order, (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
-and place the elements into the reshaped array using this index order.
-‘C’ means to read / write the elements using C-like index order,
-with the last axis index changing fastest, back to the first axis index
-changing slowest.
-‘F’ means to read / write the elements using Fortran-like index order, with
-the first index changing fastest, and the last index changing slowest.
-Note that the ‘C’ and ‘F’ options take no account of the memory layout
-of the underlying array, and only refer to the order of indexing.
-Default order is ‘C’</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Container with arrays flattened at leaves.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
-&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
-…                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
-&gt;&gt;&gt; x.flatten()
-[{</p>
-<blockquote>
-<div><p>a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
-b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</p>
-</div></blockquote>
-<p>}]</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
-<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
-<span class="go">[{</span>
-<span class="go">    a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])</span>
-<span class="go">    b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])</span>
-<span class="go">}]</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.static_flatten">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_flatten" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container static method variant of ivy.flatten. This method simply wraps the
@@ -532,6 +479,59 @@ b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</p>
 </div>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.flatten">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'C'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.flatten" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.flatten. This method simply
+wraps the function, and so the docstring for ivy.flatten also applies to this
+method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container to flatten at leaves.</p></li>
+<li><p><strong>start_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – first dim to flatten. If not set, defaults to 0. (default: <code class="docutils literal notranslate"><span class="pre">0</span></code>)</p></li>
+<li><p><strong>end_dim</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]) – last dim to flatten. If not set, defaults to -1. (default: <code class="docutils literal notranslate"><span class="pre">-1</span></code>)</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Read the elements of the input container using this index order, (default: <code class="docutils literal notranslate"><span class="pre">'C'</span></code>)
+and place the elements into the reshaped array using this index order.
+‘C’ means to read / write the elements using C-like index order,
+with the last axis index changing fastest, back to the first axis index
+changing slowest.
+‘F’ means to read / write the elements using Fortran-like index order, with
+the first index changing fastest, and the last index changing slowest.
+Note that the ‘C’ and ‘F’ options take no account of the memory layout
+of the underlying array, and only refer to the order of indexing.
+Default order is ‘C’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Container with arrays flattened at leaves.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>With one <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code> input:
+&gt;&gt;&gt; x = ivy.Container(a=ivy.array([[[1, 2], [3, 4]], [[5, 6], [7, 8]]]),
+…                   b=ivy.array([[[9, 10], [11, 12]], [[13, 14], [15, 16]]]))
+&gt;&gt;&gt; x.flatten()
+[{</p>
+<blockquote>
+<div><p>a: ivy.array([1, 2, 3, 4, 5, 6, 7, 8])
+b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</p>
+</div></blockquote>
+<p>}]</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]]),</span>
+<span class="gp">... </span>                  <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span> <span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;F&quot;</span><span class="p">)</span>
+<span class="go">[{</span>
+<span class="go">    a: ivy.array([1, 5, 3, 7, 2, 6, 4, 8])</span>
+<span class="go">    b: ivy.array([9, 13, 11, 15, 10, 14, 12, 16])</span>
+<span class="go">}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -545,7 +545,7 @@ b: ivy.array([9, 10, 11, 12, 13, 14, 15, 16])</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="msort/static_msort_container.html" class="btn btn-neutral float-left" title="ivy.Container.static_msort" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="gamma.html" class="btn btn-neutral float-left" title="gamma" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="flatten/flatten_functional.html" class="btn btn-neutral float-right" title="ivy.flatten" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

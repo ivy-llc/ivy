@@ -5,9 +5,9 @@ isin
 
 .. autofunction:: ivy.array.array_methods.isin
 
-.. autofunction:: ivy.container.container_methods.isin
-
 .. autofunction:: ivy.container.container_methods.static_isin
+
+.. autofunction:: ivy.container.container_methods.isin
 |
 | **Supported Frameworks:**
 
