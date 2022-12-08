@@ -289,9 +289,9 @@ def test_matrix_rank(
         available_dtypes=helpers.get_dtypes("float"),
         min_value=0,
         max_value=10,
-        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x]))
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
     ),
-    full_matrices=st.booleans()
+    full_matrices=st.booleans(),
 )
 def test_torch_svd(
     *,
@@ -307,7 +307,7 @@ def test_torch_svd(
 ):
     dtype, x = dtype_and_x
     x = np.asarray(x[0], dtype=dtype[0])
-    # make symmetric positive-definite beforehand
+    # make symmetric positive definite beforehand
     x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
     ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -322,7 +322,7 @@ def test_torch_svd(
         atol=1e-03,
         rtol=1e-05,
         input=x,
-        full_matrices=full_matrices
+        full_matrices=full_matrices,
     )
     ret = [ivy.to_numpy(x) for x in ret]
     frontend_ret = [np.asarray(x) for x in frontend_ret]
@@ -337,4 +337,3 @@ def test_torch_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
-
