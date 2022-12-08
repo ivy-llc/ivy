@@ -611,8 +611,12 @@ def multi_head_attention(
 
     With :class:`ivy.Container` input:
 
-    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1], [2.2, 3.4], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.4, 0.3], [1.2, 3.9], [0.4, 3.7]]]))
+    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1],
+    ...                                 [2.2, 3.4],
+    ...                                 [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.4, 0.3],
+    ...                                 [1.2, 3.9],
+    ...                                 [0.4, 3.7]]]))
     >>> context = ivy.Container(a=ivy.array([[[0.2, 1.8, 1.1, 4.2],
     ...                                       [2.2, 3.3, 0.9, 3.6],
     ...                                       [4.4, 5.6, 2.2, 0.4]]]),
@@ -632,8 +636,12 @@ def multi_head_attention(
 
     With a mix of :class:`ivy.Container` and :class:`ivy.Array` inputs:
 
-    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1], [2.2, 3.4], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.4, 0.3], [1.2, 3.9], [0.4, 3.7]]]))
+    >>> x = ivy.Container(a=ivy.array([[[0.2, 1.1],
+    ...                                 [2.2, 3.4],
+    ...                                 [4.4, 5.6]]]),
+    ...                   b=ivy.array([[[1.4, 0.3],
+    ...                                 [1.2, 3.9],
+    ...                                 [0.4, 3.7]]]))
     >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
     ...                       [2.2, 3., 0.9, 3.6],
     ...                       [4.4, 5.6, 2.2, 0.4]]])
@@ -678,7 +686,9 @@ def multi_head_attention(
     >>> context = ivy.array([[[0.2, 1., 1.1, 4.2],
     ...                       [2.2, 3., 0.9, 3.6],
     ...                       [4.4, 5.6, 2.2, 0.4]]])
-    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
+    >>> mask = ivy.array([[[0.0, 0.0, 0.0],
+    ...                    [0.0, 0.0, 0.0],
+    ...                    [0.0, 0.0, 0.0]]])
     >>> result = ivy.multi_head_attention(x, 1, 2, context=context, mask=mask)
     >>> print(result)
     ivy.array([[[1.40000009, 2.73333335],
