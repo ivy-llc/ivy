@@ -6,6 +6,7 @@ from ivy.functional.frontends.numpy import promote_types_of_numpy_inputs
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
@@ -21,8 +22,9 @@ def inner(a, b, /):
     return ivy.inner(a, b)
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def matmul(
     x1, x2, /, out=None, *, casting="same_kind", order="K", dtype=None, subok=True
 ):
