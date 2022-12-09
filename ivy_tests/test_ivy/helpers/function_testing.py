@@ -5,6 +5,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+
 try:
     import tensorflow as tf
 except ImportError:

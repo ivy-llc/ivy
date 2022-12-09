@@ -60,9 +60,7 @@ def test_torch_tensor_property_ivy_array(
 
 
 @given(
-    dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid")
-    ),
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_torch_tensor_property_device(
     dtype_x,
@@ -3304,9 +3302,7 @@ def test_torch_instance_matmul(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "other": tensor2
-        },
+        method_all_as_kwargs_np={"other": tensor2},
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
