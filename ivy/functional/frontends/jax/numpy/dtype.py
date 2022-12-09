@@ -45,7 +45,9 @@ def can_cast(from_, to, casting="safe"):
             return True
         if "int" in from_ and "float" in to:
             return True
-        elif ("float" in from_ and not ("bfloat" in from_)) and "float" in to:
+        elif ("float" in from_ and not ("bfloat" in from_)) and (
+            "float" in to and not ("bfloat" in to)
+        ):
             return True
         elif "bfloat" in from_ and "bfloat" in to:
             return True
