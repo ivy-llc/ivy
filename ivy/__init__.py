@@ -460,6 +460,18 @@ array_api_promotion_table = {
 }
 locks = {"backend_setter": threading.Lock()}
 extra_promotion_table = {
+    (bool, uint16): uint16,
+    (bool, int32): int32,
+    (bool, float16): float16,
+    (bool, uint64): uint64,
+    (bool, float64): float64,
+    (bool, int8): int8,
+    (bool, int64): int64,
+    (bool, int16): int16,
+    (bool, bfloat16): bfloat16,
+    (bool, uint32): uint32,
+    (bool, uint8): uint8,
+    (bool, float32): float32,
     (uint64, int8): float64,
     (int8, uint64): float64,
     (uint64, int16): float64,
