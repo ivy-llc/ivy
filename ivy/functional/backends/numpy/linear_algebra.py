@@ -408,6 +408,7 @@ def vector_norm(
         ret = np_normalized_vector
     return ret
 
+
 # Extra #
 # ----- #
 
