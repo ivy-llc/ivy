@@ -674,31 +674,3 @@ def conv_general_transpose(
     if data_format == "channel_last":
         res = res.permute(0, *range(2, dims + 2), 1)
     return res
-
-
-conv_general_transpose.unsupported_dtypes = ("float16", "bfloat16")
-
-
-def dropout1d(
-    x: torch.Tensor,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[torch.Tensor] = None,
-) -> torch.Tensor:
-    if training:
-        if data_format == "NWC":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = torch.permute(x, perm)
-        # ToDo: switch to native dropout1d once torch version is updated.
-        noise_shape = list(x.shape)
-        noise_shape[-1] = 1
-        mask = torch.rand(noise_shape) > prob
-        res = torch.where(mask, x / (1 - prob), torch.zeros_like(x))
-        if data_format == "NWC":
-            res = torch.permute(res, perm)
-        return res
-    else:
-        return x

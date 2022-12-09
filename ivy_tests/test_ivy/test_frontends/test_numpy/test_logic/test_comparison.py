@@ -10,15 +10,19 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # equal
 @handle_frontend_test(
     fn_tree="numpy.equal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_equal(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -28,19 +32,15 @@ def test_numpy_equal(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="valid",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -50,6 +50,7 @@ def test_numpy_equal(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
+        out=None,
         where=where,
         casting=casting,
         order="K",
@@ -95,15 +96,19 @@ def test_numpy_array_equal(
 
 @handle_frontend_test(
     fn_tree="numpy.greater",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_greater(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -113,19 +118,15 @@ def test_numpy_greater(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -146,15 +147,19 @@ def test_numpy_greater(
 
 @handle_frontend_test(
     fn_tree="numpy.greater_equal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_greater_equal(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -164,19 +169,15 @@ def test_numpy_greater_equal(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -197,15 +198,19 @@ def test_numpy_greater_equal(
 
 @handle_frontend_test(
     fn_tree="numpy.less",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_less(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -215,19 +220,15 @@ def test_numpy_less(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -248,15 +249,19 @@ def test_numpy_less(
 
 @handle_frontend_test(
     fn_tree="numpy.less_equal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_less_equal(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -266,19 +271,15 @@ def test_numpy_less_equal(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -299,15 +300,19 @@ def test_numpy_less_equal(
 
 @handle_frontend_test(
     fn_tree="numpy.not_equal",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        num_arrays=2,
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[
+            lambda: helpers.dtype_and_values(
+                available_dtypes=helpers.get_dtypes("valid"),
+                num_arrays=2,
+            )
+        ],
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
 def test_numpy_not_equal(
-    *,
-    dtype_and_x,
+    dtypes_values_casting,
     where,
     with_out,
     as_variable,
@@ -317,19 +322,15 @@ def test_numpy_not_equal(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
-    dtype, input_dtype, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=input_dtype,
-        get_dtypes_kind="float",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     where, as_variable, native_array = np_frontend_helpers.handle_where_and_array_bools(
         where=where,
-        input_dtype=input_dtype,
+        input_dtype=dtypes,
         as_variable=as_variable,
         native_array=native_array,
     )
     np_frontend_helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=dtypes,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,

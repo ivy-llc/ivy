@@ -103,7 +103,8 @@ class DeviceArray:
         return jax_frontend.lax.pow(self, other)
 
     def __rpow__(self, other):
-        return jax_frontend.lax.pow(other, self)
+        other = ivy.asarray(other)
+        return jax_frontend.lax.pow(other, self._ivy_array)
 
     def __and__(self, other):
         return jax_frontend.numpy.bitwise_and(self, other)

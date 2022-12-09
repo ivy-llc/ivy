@@ -1,5 +1,6 @@
 # global
 
+from numbers import Number
 from typing import Union, List, Optional, Sequence
 
 import numpy as np
@@ -67,14 +68,14 @@ def arange(
             stop = start
     if dtype is None:
         if isinstance(start, int) and isinstance(stop, int) and isinstance(step, int):
-            return torch.arange(
-                start, stop, step, dtype=torch.int64, device=device, out=out
-            ).to(torch.int32)
+            return torch.arange(start, stop, step, dtype=torch.int64, device=device).to(
+                torch.int32
+            )
         else:
-            return torch.arange(start, stop, step, device=device, out=out)
+            return torch.arange(start, stop, step, device=device)
     else:
         dtype = ivy.as_native_dtype(ivy.default_dtype(dtype=dtype))
-        return torch.arange(start, stop, step, dtype=dtype, device=device, out=out)
+        return torch.arange(start, stop, step, dtype=dtype, device=device)
 
 
 arange.support_native_out = True
@@ -297,7 +298,7 @@ full.support_native_out = True
 def full_like(
     x: torch.Tensor,
     /,
-    fill_value: Union[int, float],
+    fill_value: Number,
     *,
     dtype: torch.dtype,
     device: torch.device,
@@ -485,6 +486,23 @@ def ones_like_v_0p3p0_to_0p3p1(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     return torch.ones_like(x, out=out)
+
+
+def ones_like_v_0p1p12_to_0p2p0(
+    x: torch.Tensor,
+    /,
+    *,
+    dtype: torch.dtype,
+    device: torch.device,
+    out: Optional[torch.Tensor] = None,
+):
+    if len(x.shape) == 1:
+        for i in range(x.shape[0]):
+            x[i] = 1
+        return x
+    for i in range(x.shape[0]):
+        x[i, :] = ones_like_v_0p1p12_to_0p2p0(x[i, :])
+    return x
 
 
 def tril(

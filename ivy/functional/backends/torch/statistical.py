@@ -164,7 +164,7 @@ def sum(
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     dtype = ivy.as_native_dtype(dtype)
-    if dtype is None:
+    if dtype is None and not ivy.is_bool_dtype(x):
         dtype = x.dtype
     if axis == ():
         return x.type(dtype)

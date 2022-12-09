@@ -1,11 +1,15 @@
 # global
 import ivy
 from ivy.func_wrapper import from_zero_dim_arrays_to_float
-from ivy.functional.frontends.numpy.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.numpy.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_numpy_dtype,
+)
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_float
 def mean(
     x,
     /,
@@ -27,8 +31,9 @@ def mean(
     return ret
 
 
-@from_zero_dim_arrays_to_float
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@from_zero_dim_arrays_to_float
 def nanmean(
     a,
     /,

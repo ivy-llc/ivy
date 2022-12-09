@@ -78,7 +78,26 @@ def diagonal(
     axis2: int = -1,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diagonal(x, offset, axis1=axis1, axis2=axis2)
+    return tf.experimental.numpy.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
+
+
+@with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
+def eig(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Tuple[Union[tf.Tensor, tf.Variable]]:
+
+    result_tuple = NamedTuple(
+        "eig",
+        [
+            ("eigenvalues", Union[tf.Tensor, tf.Variable]),
+            ("eigenvectors", Union[tf.Tensor, tf.Variable]),
+        ],
+    )
+    eigenvalues, eigenvectors = tf.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
@@ -145,6 +164,7 @@ def eigvalsh(
 def inner(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -418,6 +438,7 @@ def matrix_rank(
 )
 def matrix_transpose(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -428,6 +449,7 @@ def matrix_transpose(
 def outer(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -488,6 +510,7 @@ def slogdet(
 def solve(
     x1: Union[tf.Tensor, tf.Variable],
     x2: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -554,6 +577,7 @@ def svd(
 @with_unsupported_dtypes({"2.9.1 and below": ("float16", "bfloat16")}, backend_version)
 def svdvals(
     x: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
@@ -688,6 +712,7 @@ def vander(
 )
 def vector_to_skew_symmetric_matrix(
     vector: Union[tf.Tensor, tf.Variable],
+    /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:

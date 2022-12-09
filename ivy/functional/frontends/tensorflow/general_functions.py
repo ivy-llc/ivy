@@ -35,6 +35,11 @@ def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=No
     return ivy.eye(num_rows, num_columns, batch_shape=batch_shape, dtype=dtype)
 
 
+@to_ivy_arrays_and_back
+def fill(dims, value, name=None):
+    return ivy.full(dims, value)
+
+
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def ones(shape, dtype=ivy.float32, name=None):
@@ -88,6 +93,11 @@ def expand_dims(input, axis, name=None):
 
 
 @to_ivy_arrays_and_back
+def squeeze(input, axis=None, name=None):
+    return ivy.squeeze(input, axis=axis)
+
+
+@to_ivy_arrays_and_back
 def concat(values, axis, name=None):
     return ivy.concat(values, axis=axis)
 
@@ -135,3 +145,8 @@ def gather(params, indices, axis=None, batch_dims=0, name=None):
 @to_ivy_arrays_and_back
 def gather_nd(params, indices, batch_dims=0, name=None):
     return ivy.gather_nd(params, indices, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def stack(values, axis=0, name="stack"):
+    return ivy.stack(values, axis=axis)

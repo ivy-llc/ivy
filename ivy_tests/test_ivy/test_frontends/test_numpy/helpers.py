@@ -87,8 +87,12 @@ def _array_and_axes_permute_helper(
 
 # noinspection PyShadowingNames
 def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
+    # TODO: this is a hack to get around, but not sure if it is efficient way to do it.
     where = kwargs["where"]
-    kwargs["where"] = None
+    if kwargs["frontend"] == "numpy":
+        kwargs["where"] = True
+    else:
+        kwargs["where"] = None
     kwargs["test_values"] = False
     values = helpers.test_frontend_function(*args, **kwargs)
     if values is None:
@@ -112,24 +116,38 @@ def _test_frontend_function_ignoring_unitialized(*args, **kwargs):
     # set backend back to original
     ivy.unset_backend()
 
-    # handling where size
-    where = np.broadcast_to(where, ret.shape)
+    # get flattened arrays from returned value
+    ret_np_flat = helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
 
-    ret_flat = [
-        np.where(where, x, np.zeros_like(x))
-        for x in helpers.flatten_fw_and_to_np(ret=ret, fw=kwargs["frontend"])
-    ]
+    # handling where size
+    where = np.asarray(where)
+    if where.ndim == 0:
+        where = np.array([where])
+    elif where.ndim > 1:
+        where = where.flatten()
+    # handling ret size
+
+    first_el = ret_np_flat[0]
+    # change where to match the shape of the first element of ret_np_flat
+    if first_el.size == 1:
+        where = where[:1]
+    else:
+        where = np.repeat(where, first_el.size)
+        where = where[: first_el.size]
+        where = where.reshape(first_el.shape)
+
+    ret_flat = [np.where(where, x, np.zeros_like(x)) for x in ret_np_flat]
     frontend_ret_flat = [
         np.where(where, x, np.zeros_like(x)) for x in frontend_ret_np_flat
     ]
-    rtol = 1e-4
-    atol = 1e-6
-    if "rtol" in kwargs:
-        if kwargs["rtol"] is not None:
-            rtol = kwargs["rtol"]
-    if "atol" in kwargs:
-        if kwargs["atol"] is not None:
-            atol = kwargs["atol"]
+    if "rtol" in kwargs.keys():
+        rtol = kwargs["rtol"]
+    else:
+        rtol = 1e-4
+    if "atol" in kwargs.keys():
+        atol = kwargs["atol"]
+    else:
+        atol = 1e-6
     helpers.value_test(
         ret_np_flat=ret_flat,
         ret_np_from_gt_flat=frontend_ret_flat,
@@ -190,6 +208,63 @@ def handle_dtype_and_casting(
                 key=get_dtypes_key,
             )
     return dtype, dtypes, casting
+
+
+@st.composite
+def _get_safe_casting_dtype(draw, *, dtypes):
+    target_dtype = dtypes[0]
+    for dtype in dtypes[1:]:
+        if ivy.can_cast(target_dtype, dtype):
+            target_dtype = dtype
+    if ivy.is_float_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["float64", None]))
+    elif ivy.is_uint_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["uint64", None]))
+    elif ivy.is_int_dtype(target_dtype):
+        dtype = draw(st.sampled_from(["int64", None]))
+    else:
+        dtype = draw(st.sampled_from(["bool", None]))
+    return dtype
+
+
+@st.composite
+def dtypes_values_casting_dtype(
+    draw,
+    *,
+    arr_func,
+    get_dtypes_kind="valid",
+    get_dtypes_index=0,
+    get_dtypes_none=True,
+    get_dtypes_key=None,
+    special=False,
+):
+    dtypes, values = [], []
+    casting = draw(st.sampled_from(["no", "equiv", "safe", "same_kind", "unsafe"]))
+    for func in arr_func:
+        typ, val = draw(func())
+        dtypes += typ if isinstance(typ, list) else [typ]
+        values += val if isinstance(val, list) else [val]
+
+    if casting in ["no", "equiv"] and len(dtypes) > 0:
+        dtypes = [dtypes[0]] * len(dtypes)
+
+    if special:
+        dtype = draw(st.sampled_from(["bool", None]))
+    elif casting in ["no", "equiv"]:
+        dtype = draw(st.just(None))
+    elif casting in ["safe", "same_kind"]:
+        dtype = draw(_get_safe_casting_dtype(dtypes=dtypes))
+    else:
+        dtype = draw(
+            helpers.get_dtypes(
+                get_dtypes_kind,
+                index=get_dtypes_index,
+                full=False,
+                none=get_dtypes_none,
+                key=get_dtypes_key,
+            )
+        )[0]
+    return dtypes, values, casting, dtype
 
 
 @st.composite
