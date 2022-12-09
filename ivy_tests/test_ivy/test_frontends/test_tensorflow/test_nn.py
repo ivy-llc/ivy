@@ -956,4 +956,3 @@ def test_tensorflow_avg_pool1d(
         padding=padding,
         data_format=data_format,
     )
-    
