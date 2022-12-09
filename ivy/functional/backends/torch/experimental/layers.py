@@ -1,5 +1,5 @@
 # global
-from typing import Optional, Union, Tuple, Literal
+from typing import Optional, Union, Tuple, Literal, Sequence
 import torch
 import math
 
@@ -409,3 +409,13 @@ def fft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return torch.fft.fft(x, n, dim, norm, out=out)
+
+
+def interpolate(
+    x: torch.Tensor,
+    size: Sequence[int],
+    /,
+    *,
+    mode: Optional[Literal["linear", "bilinear"]] = "linear",
+):
+    return torch.nn.functional.interpolate(x, size=size, mode=mode)

@@ -544,7 +544,7 @@ def interpolate(
         shape of ret will be [batch_size, channel, (height), width]
     """
     ivy.current_backend(x).interpolate(
-        x, size=size, mode=mode, align_corners=align_corners
+        x, size=size, mode=mode, align_corners=align_corners, antialias=antialias
     )
 
 

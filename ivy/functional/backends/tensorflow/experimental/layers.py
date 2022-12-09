@@ -247,12 +247,19 @@ def interpolate(
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",
+    align_corners: Optional[bool] = True,
+    antialias: Optional[bool] = False,
 ):
     if mode == "bilinear":
         x = tf.transpose(x, (0, 2, 3, 1))
-        return tf.transpose(tf.image.resize(x, size=size, mode=mode), (0, 3, 1, 2))
+        return tf.transpose(
+            tf.image.resize(x, size=size, mode=mode, antialias=antialias), (0, 3, 1, 2)
+        )
     elif mode == "linear":
         x = tf.transpose(x, (0, 2, 1))
         return tf.transpose(
-            tf.image.resize(x, size=[x.shape[0], size], mode="bilinear"), (0, 2, 1)
+            tf.image.resize(
+                x, size=[x.shape[0], size], mode="bilinear", antialias=antialias
+            ),
+            (0, 2, 1),
         )

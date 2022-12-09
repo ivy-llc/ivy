@@ -355,6 +355,7 @@ def interpolate(
     /,
     *,
     mode: Union[Literal["linear", "bilinear"]] = "linear",
-    # align_corners: Optional[bool] = True
+    align_corners: Optional[bool] = True.real,
+    antialias: Optional[bool] = False,
 ):
-    return jax.image.resize(x, size, method=mode, antialias=False)
+    return jax.image.resize(x, size, method=mode, antialias=antialias)
