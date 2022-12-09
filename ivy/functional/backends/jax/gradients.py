@@ -42,6 +42,7 @@ def _forward_fn(
 ):
     """Forward function for gradient calculation."""
     # Setting x(relevant variables) into xs(all variables)
+    x = ivy.nested_map(x, ivy.to_ivy, include_derived=True)
     x_arr_idxs = ivy.nested_argwhere(x, ivy.is_array)
     x_arr_values = ivy.multi_index_nest(x, x_arr_idxs)
     if xs_grad_idxs is not None:
