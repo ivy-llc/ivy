@@ -448,8 +448,9 @@ def test_jax_devicearray__rpow_(
     init_tree="jax.numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__and_(
@@ -485,8 +486,9 @@ def test_jax_devicearray__and_(
     init_tree="jax.numpy.array",
     method_name="__rand__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rand_(
@@ -522,8 +524,9 @@ def test_jax_devicearray__rand_(
     init_tree="jax.numpy.array",
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__or_(
@@ -559,8 +562,9 @@ def test_jax_devicearray__or_(
     init_tree="jax.numpy.array",
     method_name="__ror__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__ror_(
@@ -596,8 +600,9 @@ def test_jax_devicearray__ror_(
     init_tree="jax.numpy.array",
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__xor_(
@@ -633,8 +638,9 @@ def test_jax_devicearray__xor_(
     init_tree="jax.numpy.array",
     method_name="__rxor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rxor_(
@@ -670,7 +676,7 @@ def test_jax_devicearray__rxor_(
     init_tree="jax.numpy.array",
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
 def test_jax_devicearray__invert_(
