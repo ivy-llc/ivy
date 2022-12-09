@@ -21,6 +21,7 @@ Experimental
    experimental/avg_pool3d.rst
    experimental/dct.rst
    experimental/fft.rst
+   experimental/dropout1d.rst
    experimental/isin.rst
    experimental/msort.rst
    experimental/triu_indices.rst
