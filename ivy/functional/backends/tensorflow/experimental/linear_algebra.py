@@ -50,7 +50,7 @@ def kron(
 
 
 def matrix_exp(
-    x: Union[tf.Tensor, tf.Variable],,
+    x: Union[tf.Tensor, tf.Variable],
     /,
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
