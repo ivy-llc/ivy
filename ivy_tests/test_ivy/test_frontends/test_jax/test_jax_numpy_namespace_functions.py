@@ -774,12 +774,12 @@ def test_jax_numpy_dot(
     eq_n_op=st.sampled_from(
         [
             (
-                    "ii",
-                    np.arange(25).reshape(5, 5),
+                "ii",
+                np.arange(25).reshape(5, 5),
             ),
             (
-                    "ii->i",
-                    np.arange(25).reshape(5, 5),
+                "ii->i",
+                np.arange(25).reshape(5, 5),
             ),
             ("ij,j", np.arange(25).reshape(5, 5), np.arange(5)),
         ]
