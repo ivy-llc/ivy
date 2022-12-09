@@ -337,8 +337,7 @@ def get_axis(
     A strategy that can be used in the @given hypothesis decorator.
     """
     assert not (force_int and force_tuple), (
-        "Cannot return an int and a tuple. If "
-        "both are valid then set both to False."
+        "Cannot return an int and a tuple. If " "both are valid then set both to False."
     )
 
     # Draw values from any strategies given
@@ -384,12 +383,11 @@ def get_axis(
             )
 
     axis = draw(
-        st.one_of(*valid_strategies)
-        .filter(lambda x:
-                all([i != axes + j for i in x for j in x])
-                if (isinstance(x, list) and unique and allow_neg)
-                else True
-                )
+        st.one_of(*valid_strategies).filter(
+            lambda x: all([i != axes + j for i in x for j in x])
+            if (isinstance(x, list) and unique and allow_neg)
+            else True
+        )
     )
 
     if type(axis) == list:

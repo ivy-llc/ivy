@@ -22,6 +22,11 @@ def cholesky(x, /, *, symmetrize_input=True):
 
 
 @to_ivy_arrays_and_back
+def eig(x, /, *, compute_left_eigenvectors=True, compute_right_eigenvectors=True):
+    return ivy.eig(x)
+
+
+@to_ivy_arrays_and_back
 def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
     UPLO = "L" if lower else "U"
 

@@ -1,6 +1,5 @@
 import warnings
 
-
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -44,6 +43,21 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
+def argwhere(a, /, *, size=None, fill_value=None):
+    if size is None and fill_value is None:
+        return ivy.argwhere(a)
+
+    result = ivy.matrix_transpose(
+        ivy.vstack(ivy.nonzero(a, size=size, fill_value=fill_value))
+    )
+    num_of_dimensions = a.ndim
+
+    if num_of_dimensions == 0:
+        return result[:0].reshape(result.shape[0], 0)
+
+    return result.reshape(result.shape[0], num_of_dimensions)
+
+
 @to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
@@ -55,6 +69,15 @@ def argsort(a, axis=-1, kind="stable", order=None):
         raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
 
     return ivy.argsort(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def asarray(
+        a,
+        dtype=None,
+        order=None,
+):
+    return ivy.asarray(a, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -113,12 +136,13 @@ def dot(a, b, *, precision=None):
 
 @to_ivy_arrays_and_back
 def einsum(
-    subscripts,
-    *operands,
-    out=None,
-    optimize="optimal",
-    precision=None,
-    _use_xeinsum=False
+        subscripts,
+        *operands,
+        out=None,
+        optimize="optimal",
+        precision=None,
+        _use_xeinsum=False
+
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -384,14 +408,14 @@ def kron(a, b):
 
 @to_ivy_arrays_and_back
 def sum(
-    a,
-    axis=None,
-    dtype=None,
-    out=None,
-    keepdims=False,
-    initial=None,
-    where=None,
-    promote_integers=True,
+        a,
+        axis=None,
+        dtype=None,
+        out=None,
+        keepdims=False,
+        initial=None,
+        where=None,
+        promote_integers=True,
 ):
     if initial:
         s = ivy.shape(a)
@@ -495,7 +519,6 @@ def multiply(x1, x2):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -564,5 +587,57 @@ def logaddexp(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def diagonal(a, offset=0, axis1=0, axis2=1):
+    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
+
+
+@to_ivy_arrays_and_back
 def expand_dims(a, axis):
     return ivy.expand_dims(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def degrees(x):
+    return ivy.rad2deg(x)
+
+
+def eye(N, M=None, k=0, dtype=None):
+    return ivy.eye(N, M, k=k, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def stack(arrays, axis=0, out=None, dtype=None):
+    if dtype:
+        return ivy.astype(
+            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def take(
+        a,
+        indices,
+        axis=None,
+        out=None,
+        mode=None,
+        unique_indices=False,
+        indices_are_sorted=False,
+        fill_value=None,
+):
+    return ivy.take_along_axis(a, indices, axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def zeros_like(a, dtype=None, shape=None):
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def negative(
+        x,
+        /,
+):
+    return ivy.negative(x)

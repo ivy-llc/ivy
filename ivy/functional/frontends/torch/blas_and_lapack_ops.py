@@ -101,7 +101,7 @@ def ger(input, vec2, *, out=None):
 
 @to_ivy_arrays_and_back
 def inverse(input, *, out=None):
-    return torch_frontend.inv(input, out=out)
+    return torch_frontend.linalg.inv(input, out=out)
 
 
 @to_ivy_arrays_and_back
