@@ -70,6 +70,7 @@ Experimental
    experimental/trapz.rst
    experimental/float_power.rst
    experimental/exp2.rst
+   experimental/copysign.rst
    experimental/count_nonzero.rst
    experimental/nansum.rst
    experimental/gcd.rst

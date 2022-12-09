@@ -3847,6 +3847,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -3855,6 +3856,7 @@
     <span class="n">integer_arrays_to_float</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.layers</span> <span class="kn">import</span> <span class="n">handle_padding</span>
 
 
 <div class="viewcode-block" id="sinc"><a class="viewcode-back" href="../../../../functional/ivy/experimental/sinc/sinc_functional.html#ivy.functional.ivy.experimental.sinc">[docs]</a><span class="nd">@integer_arrays_to_float</span>
@@ -4188,6 +4190,50 @@
 <span class="sd">    ivy.array([32.,   64.,  128.])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">exp2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="copysign"><a class="viewcode-back" href="../../../../functional/ivy/experimental/copysign/copysign_functional.html#ivy.functional.ivy.experimental.copysign">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">copysign</span><span class="p">(</span>
+    <span class="n">x1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
+    <span class="n">x2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="n">Number</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Change the signs of x1 to match x2</span>
+<span class="sd">    x1 and x2 must be broadcastable to a common shape</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x1</span>
+<span class="sd">        Array or scalar to change the sign of</span>
+<span class="sd">    x2</span>
+<span class="sd">        Array or scalar from which the new signs are applied</span>
+<span class="sd">        Unsigned zeroes are considered positive.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        x1 with the signs of x2.</span>
+<span class="sd">        This is a scalar if both x1 and x2 are scalars.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([-1, 0, 23, 2])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1, -1, -10, 44])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.copysign(x1, x2)</span>
+<span class="sd">    ivy.array([  1.,  -0., -23.,   2.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.copysign(x1, -1)</span>
+<span class="sd">    ivy.array([ -1.,  -0., -23.,  -2.])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.copysign(-10, 1)</span>
+<span class="sd">    ivy.array(10.)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">copysign</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="count_nonzero"><a class="viewcode-back" href="../../../../functional/ivy/experimental/count_nonzero/count_nonzero_functional.html#ivy.functional.ivy.experimental.count_nonzero">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
