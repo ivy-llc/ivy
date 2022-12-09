@@ -1681,7 +1681,7 @@ def lstm_update(
 
     """
     # get shapes
-    x_shape = x.shape
+    x_shape = list(x.shape)
     batch_shape = x_shape[:-2]
     timesteps = x_shape[-2]
     input_channels = x_shape[-1]
