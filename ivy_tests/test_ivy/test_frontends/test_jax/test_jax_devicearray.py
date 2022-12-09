@@ -52,7 +52,7 @@ def test_jax_devicearray__pos_(
     init_tree="jax.numpy.array",
     method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__neg_(
@@ -88,7 +88,7 @@ def test_jax_devicearray__neg_(
     init_tree="jax.numpy.array",
     method_name="__eq__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -127,7 +127,7 @@ def test_jax_devicearray__eq_(
     init_tree="jax.numpy.array",
     method_name="__ne__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -166,7 +166,7 @@ def test_jax_devicearray__ne_(
     init_tree="jax.numpy.array",
     method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -205,7 +205,7 @@ def test_jax_devicearray__lt_(
     init_tree="jax.numpy.array",
     method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -244,7 +244,7 @@ def test_jax_devicearray__le_(
     init_tree="jax.numpy.array",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -283,7 +283,7 @@ def test_jax_devicearray__gt_(
     init_tree="jax.numpy.array",
     method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -322,7 +322,7 @@ def test_jax_devicearray__ge_(
     init_tree="jax.numpy.array",
     method_name="__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__abs_(
