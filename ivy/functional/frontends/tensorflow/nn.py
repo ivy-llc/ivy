@@ -230,3 +230,9 @@ def local_response_normalization(
 @to_ivy_arrays_and_back
 def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
     return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
+
+
+@to_ivy_arrays_and_back
+def avg_pool1d(input, ksize, strides, padding, data_format='NWC', name=None):
+        return ivy.avg_pool1d(input, ksize, strides, padding, data_format='NWC', name=None)
+  
