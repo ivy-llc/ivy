@@ -1081,13 +1081,14 @@ def test_function_dtype_versioning_frontend(
 # invalid_dtype
 @handle_test(
     fn_tree="functional.ivy.invalid_dtype",
-    dtype_in=st.sampled_from(ivy.valid_dtypes),
+    dtype_in=helpers.get_dtypes("valid", full=False),
 )
 def test_invalid_dtype(
     *,
     dtype_in,
     backend_fw,
 ):
+    dtype_in = dtype_in[0]
     res = ivy.invalid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()
     fw_invalid_dtypes = {
@@ -1110,12 +1111,13 @@ def test_invalid_dtype(
 # unset_default_dtype
 @handle_test(
     fn_tree="functional.ivy.unset_default_dtype",
-    dtype=st.sampled_from(ivy.valid_dtypes),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_unset_default_dtype(
     *,
     dtype,
 ):
+    dtype = dtype[0]
     stack_size_before = len(ivy.default_dtype_stack)
     ivy.set_default_dtype(dtype)
     ivy.unset_default_dtype()
@@ -1128,7 +1130,7 @@ def test_unset_default_dtype(
 # unset_default_float_dtype
 @handle_test(
     fn_tree="functional.ivy.unset_default_float_dtype",
-    dtype=st.sampled_from(ivy.valid_float_dtypes),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_unset_default_float_dtype(
     *,
@@ -1138,6 +1140,7 @@ def test_unset_default_float_dtype(
     fn_name,
     on_device,
 ):
+    dtype = dtype[0]
     stack_size_before = len(ivy.default_float_dtype_stack)
     ivy.set_default_float_dtype(dtype)
     ivy.unset_default_float_dtype()
@@ -1150,12 +1153,13 @@ def test_unset_default_float_dtype(
 # unset_default_int_dtype
 @handle_test(
     fn_tree="functional.ivy.unset_default_int_dtype",
-    dtype=st.sampled_from(ivy.valid_int_dtypes),
+    dtype=helpers.get_dtypes("integer", full=False),
 )
 def test_unset_default_int_dtype(
     *,
     dtype,
 ):
+    dtype = dtype[0]
     stack_size_before = len(ivy.default_int_dtype_stack)
     ivy.set_default_int_dtype(dtype)
     ivy.unset_default_int_dtype()
@@ -1168,13 +1172,14 @@ def test_unset_default_int_dtype(
 # valid_dtype
 @handle_test(
     fn_tree="functional.ivy.valid_dtype",
-    dtype_in=st.sampled_from(ivy.valid_dtypes),
+    dtype_in=helpers.get_dtypes("valid", full=False),
 )
 def test_valid_dtype(
     *,
     dtype_in,
     backend_fw,
 ):
+    dtype_in = dtype_in[0]
     res = ivy.valid_dtype(dtype_in)
     fw = backend_fw.current_backend_str()
     fw_valid_dtypes = {
