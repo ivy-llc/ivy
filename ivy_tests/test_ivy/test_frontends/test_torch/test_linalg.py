@@ -165,9 +165,9 @@ def st_dtype_arr_and_axes(draw):
                 helpers.get_shape(
                     allow_none=False,
                     min_num_dims=2,
-                    max_num_dims=5,
+                    max_num_dims=4,
                     min_dim_size=2,
-                    max_dim_size=10,
+                    max_dim_size=4,
                 )
             ),
             ret_shape=True,
