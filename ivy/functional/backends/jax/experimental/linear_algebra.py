@@ -98,5 +98,5 @@ def matrix_exp(
     /,
     *,
     out: Optional[JaxArray] = None,
-) -> numpy.ndarray:
+) -> JaxArray:
     return jslp.expm(x)

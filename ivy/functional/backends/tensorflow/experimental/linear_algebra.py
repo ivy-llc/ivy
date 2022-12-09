@@ -50,9 +50,9 @@ def kron(
 
 
 def matrix_exp(
-    x: np.ndarray,
+    x: Union[tf.Tensor, tf.Variable],,
     /,
     *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
     return tf.linalg.expm(x)

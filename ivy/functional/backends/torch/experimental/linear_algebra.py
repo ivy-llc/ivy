@@ -111,9 +111,9 @@ kron.support_native_out = True
 
 
 def matrix_exp(
-    x: np.ndarray,
+    x: torch.Tensor,
     /,
     *,
-    out: Optional[np.ndarray] = None,
-) -> np.ndarray:
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
     return torch.linalg.matrix_exp(x)

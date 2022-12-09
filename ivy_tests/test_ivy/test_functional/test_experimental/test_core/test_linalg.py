@@ -219,7 +219,6 @@ def test_kron(
     )
 
 
-
 # matrix_exp
 @handle_test(
     fn_tree="functional.experimental.matrix_exp",

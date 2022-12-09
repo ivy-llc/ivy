@@ -61,7 +61,6 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         """
         return ivy.kron(self._data, b, out=out)
 
-
     def matrix_exp(
         self: ivy.Array,
         /,
@@ -85,4 +84,4 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
                     [[7.3891, 1.0000],
                     [1.0000, 7.3891]]])
         """
-        return ivy.matrix_exp(self._data, b, out=out)
+        return ivy.matrix_exp(self._data, out=out)
