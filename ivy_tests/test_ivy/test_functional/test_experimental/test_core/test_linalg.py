@@ -240,9 +240,11 @@ def test_matrix_exp(
     instance_method,
     backend_fw,
     fn_name,
+    ground_truth_backend,
 ):
     dtype, x = dtype_x
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
