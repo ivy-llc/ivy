@@ -1,5 +1,6 @@
 from typing import Optional, Union, Tuple, List
 import numpy as np
+import numpy.typing as npt
 from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
@@ -111,6 +112,20 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+@_scalar_output_to_0d_array
+def copysign(
+    x1: npt.ArrayLike,
+    x2: npt.ArrayLike,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.copysign(x1, x2, out=out)
+
+
+copysign.support_native_out = True
 
 
 @_scalar_output_to_0d_array
