@@ -1039,14 +1039,7 @@ def eye(
     With :'out' input:
 
     >>> a1 = ivy.ones(3)
-    >>> print(a1)
-    ivy.array([1., 1., 1.])
-
     >>> ivy.eye(3, out=a1)
-    ivy.array([[1., 0., 0.],
-               [0., 1., 0.],
-               [0., 0., 1.]])
-
     >>> print(a1)
     ivy.array([[1., 0., 0.],
                [0., 1., 0.],
