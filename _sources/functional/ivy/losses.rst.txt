@@ -15,7 +15,6 @@ Losses
 
    losses/cross_entropy.rst
    losses/binary_cross_entropy.rst
-   losses/binary_cross_entropy_with_logits.rst
    losses/sparse_cross_entropy.rst
 
 .. _`discord`: https://discord.gg/ZVQdvbzNQJ 

@@ -36,6 +36,7 @@ Experimental
    experimental/dirichlet.rst
    experimental/beta.rst
    experimental/gamma.rst
+   experimental/binary_cross_entropy_with_logits.rst
    experimental/flatten.rst
    experimental/moveaxis.rst
    experimental/ndenumerate.rst
