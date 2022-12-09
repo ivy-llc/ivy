@@ -358,7 +358,16 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     x_dtype, x = draw(
         helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(dtype))
     )
-    x_int = draw(helpers.ints(min_value=0, max_value=10))
+    pow_dtype, x_int = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=10,
+            max_num_dims=0,
+            max_dim_size=1,
+        )
+    )
+    x_dtype = x_dtype + pow_dtype
     return x_dtype, x, x_int
 
 
@@ -368,7 +377,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     method_name="__pow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_pow(
+def test_jax_devicearray__pow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -391,7 +400,7 @@ def test_jax_special_pow(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": pow[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -404,7 +413,7 @@ def test_jax_special_pow(
     method_name="__rpow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_rpow(
+def test_jax_devicearray__rpow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -420,14 +429,14 @@ def test_jax_special_rpow(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": pow[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": x[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
