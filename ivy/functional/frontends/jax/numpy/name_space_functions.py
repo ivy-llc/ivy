@@ -641,3 +641,11 @@ def negative(
     /,
 ):
     return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
+def rad2deg(
+    x, 
+    /,
+):
+    return ivy.rad2deg(x)
