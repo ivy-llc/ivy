@@ -15,6 +15,10 @@ def argsort(values, axis=-1, direction="ASCENDING", stable=False, name=None):
         "int32"
     )
 
+@to_ivy_arrays_and_back
+def unique(x, name=None):
+    return ivy.unique_values(x)
+
 
 @to_ivy_arrays_and_back
 def clip_by_value(t, clip_value_min, clip_value_max):
