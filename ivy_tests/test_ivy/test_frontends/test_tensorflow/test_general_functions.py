@@ -33,7 +33,7 @@ def _get_clip_inputs(draw):
     return x_dtype, x, min, max
 
 
-#unique
+# unique
 @handle_frontend_test(
     fn_tree="tensorflow.unique",
     dtype_and_x=helpers.dtype_and_values(
