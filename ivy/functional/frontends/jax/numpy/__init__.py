@@ -149,7 +149,13 @@ jax_numpy_promotion_table = {
     ivy.complex64: [ivy.complex64, ivy.complex128, ivy.complex256, ivy.bfloat16],
     ivy.complex128: [ivy.complex128, ivy.complex256, ivy.bfloat16],
     ivy.complex256: [ivy.complex256, ivy.bfloat16],
-    ivy.bfloat16: [ivy.float32, ivy.float64],
+    ivy.bfloat16: [
+        ivy.float32,
+        ivy.float64,
+        ivy.complex64,
+        ivy.complex128,
+        ivy.complex256,
+    ],
 }
 
 
