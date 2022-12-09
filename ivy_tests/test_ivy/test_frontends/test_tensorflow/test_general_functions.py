@@ -32,6 +32,7 @@ def _get_clip_inputs(draw):
     )
     return x_dtype, x, min, max
 
+
 #unique
 @handle_frontend_test(
     fn_tree="tensorflow.unique",
@@ -42,7 +43,6 @@ def _get_clip_inputs(draw):
         max_value=10,
     ),
 )
-
 def test_tensorflow_unique(
     *,
     dtype_and_x,
@@ -65,6 +65,7 @@ def test_tensorflow_unique(
         on_device=on_device,
         x=x[0],
     )
+
 
 # argsort
 @handle_frontend_test(
