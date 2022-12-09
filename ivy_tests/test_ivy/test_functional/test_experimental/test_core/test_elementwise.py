@@ -359,7 +359,7 @@ def test_exp2(
 
 # copysign
 @handle_test(
-    fn_tree='functional.experimental.copysign',
+    fn_tree="functional.experimental.copysign",
     dtype_x1_x2=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
