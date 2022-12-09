@@ -19,7 +19,7 @@ from ivy import (
 )
 
 
-jax_numpy_promotion_table = {
+jax_numpy_casting_table = {
     bool: [
         bool,
         int8,
