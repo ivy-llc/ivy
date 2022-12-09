@@ -154,8 +154,8 @@
 
 
 <span class="k">def</span> <span class="nf">_get_duplicate_index_chains</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Used to generate a list of duplicate index chains for a given nested structure.</span>
+    <span class="sd">&quot;&quot;&quot;Used to generate a list of duplicate index chains for a</span>
+<span class="sd">    given nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
@@ -166,8 +166,8 @@
 
 
 <span class="k">def</span> <span class="nf">_arrays_to_float_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Used to convert all required arrays to float variables for gradient calculation.</span>
+    <span class="sd">&quot;&quot;&quot;Used to convert all required arrays to float variables for</span>
+<span class="sd">    gradient calculation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">inner_fn</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -188,8 +188,8 @@
 
 
 <span class="k">def</span> <span class="nf">_get_required_native_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Used to extract all required native variables from a nested structure.</span>
+    <span class="sd">&quot;&quot;&quot;Used to extract all required native variables from a</span>
+<span class="sd">    nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># To make sure that only the required arrays are converted to native arrays</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">,</span> <span class="n">include_derived</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -226,9 +226,9 @@
 
 
 <span class="k">def</span> <span class="nf">_get_required_float_variables</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_grad_idxs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts all required arrays to float variables for gradient calculation. Also</span>
-<span class="sd">    returns a list of duplicate index chains for the nested structure.</span>
+    <span class="sd">&quot;&quot;&quot;Converts all required arrays to float variables for gradient</span>
+<span class="sd">    calculation. Also, returns a list of duplicate index chains</span>
+<span class="sd">    for the nested structure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="n">_get_duplicate_index_chains</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="n">_to_ivy</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
@@ -240,8 +240,8 @@
 
 
 <span class="k">def</span> <span class="nf">_get_native_variables_and_indices</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Used to extract all relevant results from the output nested structure of a function.</span>
+    <span class="sd">&quot;&quot;&quot;Used to extract all relevant results from the output</span>
+<span class="sd">    nested structure of a function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">x_</span><span class="p">):</span>
@@ -282,8 +282,8 @@
 
 
 <span class="k">def</span> <span class="nf">_set_duplicates</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">duplicate_index_chains</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Setting the duplicates in the nested structure to have the same reference</span>
+    <span class="sd">&quot;&quot;&quot;Setting the duplicates in the nested structure to</span>
+<span class="sd">    have the same reference</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">originals</span> <span class="o">=</span> <span class="p">[</span>
         <span class="p">[</span><span class="n">key_chains</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">key_chains</span> <span class="ow">in</span> <span class="n">duplicate_index_chains</span>
@@ -300,9 +300,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_y_and_ret_idxs</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">ret_grad_idxs</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Getting the relevant outputs from the function return value.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Getting the relevant outputs from the function return value.&quot;&quot;&quot;</span>
     <span class="n">ret_idxs</span><span class="p">,</span> <span class="n">ret_values</span> <span class="o">=</span> <span class="n">_get_native_variables_and_indices</span><span class="p">(</span>
         <span class="n">func_ret</span><span class="p">,</span> <span class="n">idxs</span><span class="o">=</span><span class="n">ret_grad_idxs</span><span class="p">,</span> <span class="n">create_var</span><span class="o">=</span><span class="n">create_var</span><span class="p">,</span> <span class="n">reshape</span><span class="o">=</span><span class="n">reshape</span>
     <span class="p">)</span>
@@ -316,9 +314,7 @@
 
 
 <span class="k">def</span> <span class="nf">_get_native_y</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converting all outputs to native arrays.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Converting all outputs to native arrays.&quot;&quot;&quot;</span>
     <span class="n">array_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_argwhere</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="n">y_final</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">array_idxs</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">array_idxs</span><span class="p">,</span> <span class="s2">&quot;object&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
@@ -327,9 +323,7 @@
 
 
 <span class="k">def</span> <span class="nf">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Stop gradient propagation of the function results</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Stop gradient propagation of the function results&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">retain_grads</span><span class="p">:</span>
         <span class="n">func_ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span>
             <span class="n">func_ret</span><span class="p">,</span>
@@ -342,9 +336,8 @@
 
 
 <span class="k">def</span> <span class="nf">_process_func_ret_and_grads</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Setting the gradients of non-finite values to zero, and stopping gradient</span>
-<span class="sd">    propagation of the function results.</span>
+    <span class="sd">&quot;&quot;&quot;Setting the gradients of non-finite values to zero, and</span>
+<span class="sd">    stopping gradient propagation of the function results.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">grads</span> <span class="o">=</span> <span class="n">_non_finite_to_zero</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
     <span class="n">func_ret</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">_stop_grad_and_index</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>

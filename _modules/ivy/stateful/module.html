@@ -1317,16 +1317,17 @@
 <div class="viewcode-block" id="Module.to_haiku_module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.to_haiku_module">[docs]</a>    <span class="k">def</span> <span class="nf">to_haiku_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts an ivy Module instance to a Haiku Module instance.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        ivy_module</span>
 <span class="sd">            The ivy module instance to convert</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            The new trainable hk.Module instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">ivy_module</span> <span class="o">=</span> <span class="bp">self</span>
 
         <span class="k">class</span> <span class="nc">MyHaikuModel</span><span class="p">(</span><span class="n">hk</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -1354,31 +1355,33 @@
 <div class="viewcode-block" id="Module.to_keras_module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.to_keras_module">[docs]</a>    <span class="k">def</span> <span class="nf">to_keras_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts an ivy Module instance to a Keras Module instance.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            The ivy module instance to convert</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            The new trainable tf.keras.Module instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="n">MyTFModule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.to_torch_module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.to_torch_module">[docs]</a>    <span class="k">def</span> <span class="nf">to_torch_module</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts an ivy Module instance to a Torch Module instance.</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        self</span>
 <span class="sd">            The ivy module instance to convert</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            The new trainable torch.nn.Module instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="k">return</span> <span class="n">MyTorchModule</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Module.from_haiku_module"><a class="viewcode-back" href="../../../stateful/module/Module.html#ivy.stateful.module.Module.from_haiku_module">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1640,6 +1643,7 @@
 <span class="sd">        inplace_update</span>
 <span class="sd">            For backends with dedicated variable classes, whether to update these</span>
 <span class="sd">            inplace. Default is ``False``.</span>
+
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
