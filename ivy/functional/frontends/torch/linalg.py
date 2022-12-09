@@ -47,3 +47,7 @@ def slogdet(input, *, out=None):
 @to_ivy_arrays_and_back
 def matrix_power(input, n, *, out=None):
     return ivy.matrix_power(input, n, out=out)
+
+@to_ivy_arrays_and_back
+def svdvals(input, *, out=None):
+    return ivy.svdvals(input, out=out)
