@@ -87,6 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_multi_map.html">nested_multi_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/duplicate_array_index_chains.html">duplicate_array_index_chains</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/prune_empty.html">prune_empty</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
@@ -774,6 +775,20 @@ otherwise the leftmost nest value is used. Default is <code class="docutils lite
 <li><p><em>prune_unapplied is False else unapplied leaves are pruned.</em></p></li>
 </ul>
 </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_empty">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">prune_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/nest.html#prune_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Prune empty nests from a nest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nest</strong> – nest to prune.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>pruned nest with all empty nests removed</em></p>
 </dd>
 </dl>
 </dd></dl>

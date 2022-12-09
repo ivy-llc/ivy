@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>prune_nest_at_indices &mdash; Ivy 1.0 documentation</title>
+  <title>prune_empty &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="set_nest_at_indices" href="set_nest_at_indices.html" />
-    <link rel="prev" title="multi_index_nest" href="multi_index_nest.html" /> 
+    <link rel="next" title="Norms" href="../norms.html" />
+    <link rel="prev" title="duplicate_array_index_chains" href="duplicate_array_index_chains.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,7 +75,7 @@
 <li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_index.html">insert_into_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">prune_nest_at_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="prune_nest_at_indices.html">prune_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="insert_into_nest_at_indices.html">insert_into_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_indices.html">map_nest_at_indices</a></li>
@@ -87,7 +87,7 @@
 <li class="toctree-l2"><a class="reference internal" href="copy_nest.html">copy_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_multi_map.html">nested_multi_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="duplicate_array_index_chains.html">duplicate_array_index_chains</a></li>
-<li class="toctree-l2"><a class="reference internal" href="prune_empty.html">prune_empty</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">prune_empty</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
@@ -142,9 +142,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../nest.html">Nest</a> &raquo;</li>
-      <li>prune_nest_at_indices</li>
+      <li>prune_empty</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../_sources/functional/ivy/nest/prune_nest_at_indices.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/functional/ivy/nest/prune_empty.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -152,18 +152,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="prune-nest-at-indices">
-<h1>prune_nest_at_indices<a class="headerlink" href="#prune-nest-at-indices" title="Permalink to this heading"></a></h1>
+  <section id="prune-empty">
+<h1>prune_empty<a class="headerlink" href="#prune-empty" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_nest_at_indices">
-<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">prune_nest_at_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#prune_nest_at_indices"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_nest_at_indices" title="Permalink to this definition"></a></dt>
-<dd><p>Prune a nested object at specified indices.</p>
+<dt class="sig sig-object py" id="ivy.functional.ivy.nest.prune_empty">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">prune_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nest</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/nest.html#prune_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.nest.prune_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Prune empty nests from a nest.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code>) – The nested object to prune.</p></li>
-<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>) – A tuple of tuples of indices for the indices at which to prune.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>nest</strong> – nest to prune.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>pruned nest with all empty nests removed</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -179,8 +179,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="multi_index_nest.html" class="btn btn-neutral float-left" title="multi_index_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="set_nest_at_indices.html" class="btn btn-neutral float-right" title="set_nest_at_indices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="duplicate_array_index_chains.html" class="btn btn-neutral float-left" title="duplicate_array_index_chains" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../norms.html" class="btn btn-neutral float-right" title="Norms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
