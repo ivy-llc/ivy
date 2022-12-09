@@ -90,7 +90,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     )
 
     # return a single array instead of a list if possible, otherwise return the nest
-    if len(xs) == 1 and isinstance(xs, list):
+    if isinstance(xs, list) and len(xs) == 1:
         return xs[0]
     return xs
 
@@ -190,10 +190,10 @@ def _get_native_y(y):
     Converting all outputs to native arrays.
     """
     array_idxs = ivy.nested_argwhere(y, lambda x: ivy.is_native_array(x))
-    y = []
+    y_final = []
     if isinstance(array_idxs, list) and np.asarray(array_idxs, "object").size > 0:
-        y = ivy.multi_index_nest(y, array_idxs)
-    return y
+        y_final = ivy.multi_index_nest(y, array_idxs)
+    return y_final
 
 
 def _stop_grad_and_index(func_ret, retain_grads, grads):

@@ -15,7 +15,6 @@ from ivy.functional.ivy.gradients import (
     _get_required_float_variables,
     _get_y_and_ret_idxs,
     _get_native_variables_and_indices,
-    _remove_zeros_and_nones,
     _set_duplicates,
     _process_func_ret_and_grads,
 )
@@ -130,7 +129,6 @@ def value_and_grad(func):
     def callback_fn(xs):
         xs = ivy.nested_map(xs, lambda x: ivy.to_native(x), include_derived=True)
         value, grad = jax.value_and_grad(grad_fn)(xs)
-        grad = _remove_zeros_and_nones(grad, grad)
         return ivy.to_ivy(value), ivy.to_ivy(grad)
 
     return callback_fn
