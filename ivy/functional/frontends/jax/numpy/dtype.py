@@ -43,17 +43,24 @@ def can_cast(from_, to, casting="safe"):
     if casting == "same_kind":
         if from_ == to or "bool" in from_:
             return True
-        if "int" in from_ and "float" in to:
+        elif ivy.is_int_dtype(from_) and ivy.is_float_dtype(to):
             return True
-        elif ("float" in from_ and not ("bfloat" in from_)) and (
-            "float" in to and not ("bfloat" in to)
+        elif ivy.is_float_dtype(from_) and ivy.is_float_dtype(to):
+            if "bfloat" in from_ and "bfloat" in to:
+                return True
+            elif "bfloat" in from_ and "float16" in to:
+                return False
+            return True
+
+        elif ivy.is_uint_dtype(from_) and (
+            ivy.is_int_dtype(to) or ivy.is_float_dtype(to)
         ):
             return True
-        elif "bfloat" in from_ and "bfloat" in to:
-            return True
-        elif "uint" in from_ and ("int" in to or "float" in to):
-            return True
-        elif "int" in from_ and "int" in to and "uint" not in to:
+        elif (
+            ivy.is_int_dtype(from_)
+            and ivy.is_int_dtype(to)
+            and not ivy.is_uint_dtype(to)
+        ):
             return True
         else:
             return to in jax_numpy_casting_table[from_]
