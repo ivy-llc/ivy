@@ -7,6 +7,7 @@ from typing import Optional, Tuple, Union, List, Callable
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -1638,7 +1639,8 @@ def conv(
 # LSTM #
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def lstm_update(
