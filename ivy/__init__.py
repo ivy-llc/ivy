@@ -72,7 +72,7 @@ class Dtype(str):
             dtype_str = "bool"
         if not isinstance(dtype_str, str):
             raise ivy.exceptions.IvyException("dtype must be type str")
-        if dtype_str not in all_ivy_dtypes_str:
+        if dtype_str not in _all_ivy_dtypes_str:
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
@@ -190,7 +190,7 @@ class IntDtype(Dtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with int"
             )
-        if dtype_str not in all_ivy_dtypes_str:
+        if dtype_str not in _all_ivy_dtypes_str:
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
@@ -209,7 +209,7 @@ class FloatDtype(Dtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with float"
             )
-        if dtype_str not in all_ivy_dtypes_str:
+        if dtype_str not in _all_ivy_dtypes_str:
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
@@ -226,7 +226,7 @@ class UintDtype(IntDtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with uint"
             )
-        if dtype_str not in all_ivy_dtypes_str:
+        if dtype_str not in _all_ivy_dtypes_str:
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
@@ -243,7 +243,7 @@ class ComplexDtype(Dtype):
             raise ivy.exceptions.IvyException(
                 "dtype must be string and starts with complex"
             )
-        if dtype_str not in all_ivy_dtypes_str:
+        if dtype_str not in _all_ivy_dtypes_str:
             raise ivy.exceptions.IvyException(f"{dtype_str} is not supported by ivy")
         return str.__new__(cls, dtype_str)
 
@@ -277,8 +277,9 @@ valid_devices = ("cpu",)
 
 invalid_devices = ("gpu", "tpu")
 
-# supported ivy data types
-all_ivy_dtypes_str = (
+# data types as string (to be used by Dtype classes)
+# any changes here should also be reflected in the data type initialisation underneath
+_all_ivy_dtypes_str = (
     "int8",
     "int16",
     "int32",
@@ -298,6 +299,7 @@ all_ivy_dtypes_str = (
 )
 
 # data types
+# any changes here should also be reflected in the data type string tuple above
 int8 = IntDtype("int8")
 int16 = IntDtype("int16")
 int32 = IntDtype("int32")
