@@ -15,6 +15,15 @@ def inv(input, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def norm(input, ord=None, dim=None, keepdim=False, *, out=None, dtype=None):
+    # Check if it's a matrix norm
+    if (type(dim) == tuple and len(dim) == 2):
+        return ivy.matrix_norm(input, ord=ord, axis=dim, keepdims=keepdim)
+    # Else resort to a vector norm
+    return ivy.vector_norm(input, ord=ord, axis=dim, keepdims=keepdim)
+
+
+@to_ivy_arrays_and_back
 def pinv(input, *, atol=None, rtol=None, hermitian=False, out=None):
     if atol is None:
         return ivy.pinv(input, rtol=rtol, out=out)
