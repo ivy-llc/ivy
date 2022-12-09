@@ -150,16 +150,39 @@ def result_type(*arrays_and_dtypes: Union[JaxArray, jnp.dtype]) -> ivy.Dtype:
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[jnp.dtype, str]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> ivy.Dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by Jax backend."
+            )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in: Union[jnp.dtype, str]) -> jnp.dtype:
+def as_native_dtype(dtype_in: Union[jnp.dtype, str, bool, int, float]) -> jnp.dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is bool:
+        return jnp.dtype("bool")
     if not isinstance(dtype_in, str):
         return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]
+    if dtype_in in native_dtype_dict.values():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.exceptions.IvyException(
+            f"Cannot convert to Jax dtype. {dtype_in} is not supported by Jax."
+        )
 
 
 def dtype(x: JaxArray, as_native: bool = False) -> ivy.Dtype:

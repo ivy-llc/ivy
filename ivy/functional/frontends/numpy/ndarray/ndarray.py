@@ -6,8 +6,11 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, shape, dtype=np_frontend.float32, order=None):
+    def __init__(self, shape, dtype="float32", order=None):
+        if isinstance(dtype, np_frontend.dtype):
+            dtype = dtype._ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
+        self._dtype = dtype
 
         ivy.assertions.check_elem_in_list(
             order,
@@ -39,7 +42,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return self._dtype
 
     # Setters #
     # --------#
@@ -49,6 +52,10 @@ class ndarray:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._dtype = np_frontend.dtype(dtype)
 
     # Instance Methods #
     # ---------------- #
