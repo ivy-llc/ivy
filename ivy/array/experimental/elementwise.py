@@ -1,6 +1,7 @@
 # global
 import abc
 from typing import Optional, Union, Tuple, List
+from numbers import Number
 
 # local
 import ivy
@@ -273,6 +274,44 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         ivy.array([32.,   64.,  128.])
         """
         return ivy.exp2(self._data, out=out)
+
+    def copysign(
+        self: Union[ivy.Array, ivy.NativeArray, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, Number],
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        """ivy.Array instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Array or scalar to change the sign of
+        x2
+            Array or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output array, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.array([0, 1, 2, 3])
+        >>> x2 = ivy.array([-1, 1, -2, 2])
+        >>> x1.copysign(x2)
+        ivy.array([-0.,  1., -2.,  3.])
+        >>> x2.copysign(-1)
+        ivy.array([-1., -1., -2., -2.])
+        """
+        return ivy.copysign(self._data, x2, out=out)
 
     def count_nonzero(
         self: ivy.Array,
