@@ -921,7 +921,7 @@ def test_tensorflow_max_pool1d(
         data_format=data_format,
     )
 
-    
+
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
@@ -956,4 +956,4 @@ def test_tensorflow_avg_pool1d(
         padding=padding,
         data_format=data_format,
     )
-
+    
