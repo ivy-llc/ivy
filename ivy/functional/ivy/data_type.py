@@ -2023,11 +2023,11 @@ def promote_types_of_inputs(
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
-        if x1.dtype == bool and not isinstance(x2,bool):
+        if x1.dtype == bool and not isinstance(x2, bool):
             x2 = (
-            ivy.asarray(x2)
-            if not _special_case(x2, x1)
-            else ivy.asarray(x2, dtype="float64")
+                ivy.asarray(x2)
+                if not _special_case(x2, x1)
+                else ivy.asarray(x2, dtype="float64")
             )
         else:
             x2 = (
