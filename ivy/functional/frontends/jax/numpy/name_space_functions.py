@@ -649,3 +649,8 @@ def rad2deg(
     /,
 ):
     return ivy.rad2deg(x)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, axes=2):
+    return ivy.tensordot(a, b, axes=axes)
