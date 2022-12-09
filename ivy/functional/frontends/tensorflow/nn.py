@@ -238,7 +238,7 @@ def conv_transpose(
     dilations=None,
     name=None,
 ):
-    return ivy.conv_transpose(
+    return ivy.conv_general_transpose(
         input,
         filters,
         strides,
