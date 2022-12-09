@@ -1062,7 +1062,7 @@ def linspace(
     >>> ivy.linspace(1, 10, 4, dtype = int)
     ivy.array([ 1,  4,  7, 10])
 
-    >>> ivy.linspace(1, 2, 4, device = "cuda:0")
+    >>> ivy.linspace(1, 2, 4, device = "gpu")
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
     >>> out = ivy.array([0,0,0,0])
@@ -1084,7 +1084,9 @@ def linspace(
                [3, 4],
                [4, 5]])
 
-    Using array instance method
+    Instance Method Examples
+    -------------------
+    With :class:`ivy.Array` input:
 
     >>> x.linspace(y, 4)
     ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])
