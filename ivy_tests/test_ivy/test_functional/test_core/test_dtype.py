@@ -450,13 +450,14 @@ def test_result_type(
 # as_ivy_dtype
 @handle_test(
     fn_tree="functional.ivy.as_ivy_dtype",
-    input_dtype=st.sampled_from(ivy.valid_dtypes),
+    input_dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_as_ivy_dtype(
     *,
     input_dtype,
     ground_truth_backend,
 ):
+    input_dtype = input_dtype[0]
     res = ivy.as_ivy_dtype(input_dtype)
     if isinstance(input_dtype, str):
         assert isinstance(res, str)
@@ -468,23 +469,10 @@ def test_as_ivy_dtype(
     assert isinstance(res, str), f"result={res!r}, but should be str"
 
 
-_valid_dtype_in_all_frameworks = [
-    "int8",
-    "int16",
-    "int32",
-    "int64",
-    "uint8",
-    "float16",
-    "float32",
-    "float64",
-    "bool",
-]
-
-
 # as_native_dtype
 @handle_test(
     fn_tree="functional.ivy.as_native_dtype",
-    input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks),
+    input_dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_as_native_dtype(
     *,
@@ -495,6 +483,7 @@ def test_as_native_dtype(
     on_device,
     ground_truth_backend,
 ):
+    input_dtype = input_dtype[0]
     res = ivy.as_native_dtype(input_dtype)
     if isinstance(input_dtype, ivy.NativeDtype):
         assert isinstance(res, ivy.NativeDtype)
@@ -511,9 +500,10 @@ def test_as_native_dtype(
 # closest_valid_dtypes
 @handle_test(
     fn_tree="functional.ivy.closest_valid_dtype",
-    input_dtype=st.sampled_from(_valid_dtype_in_all_frameworks),
+    input_dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_closest_valid_dtype(*, input_dtype, with_out, backend_fw, fn_name, on_device):
+    input_dtype = input_dtype[0]
     res = ivy.closest_valid_dtype(input_dtype)
     assert isinstance(input_dtype, ivy.Dtype) or isinstance(input_dtype, str)
     assert isinstance(res, ivy.Dtype) or isinstance(
