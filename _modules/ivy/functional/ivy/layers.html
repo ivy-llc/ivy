@@ -137,6 +137,7 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">inputs_to_ivy_arrays</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
@@ -1768,7 +1769,8 @@
 <span class="c1"># LSTM #</span>
 
 
-<div class="viewcode-block" id="lstm_update"><a class="viewcode-back" href="../../../../functional/ivy/layers/lstm_update/lstm_update_functional.html#ivy.functional.ivy.layers.lstm_update">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="lstm_update"><a class="viewcode-back" href="../../../../functional/ivy/layers/lstm_update/lstm_update_functional.html#ivy.functional.ivy.layers.lstm_update">[docs]</a><span class="nd">@inputs_to_ivy_arrays</span>
+<span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like</span>
 <span class="k">def</span> <span class="nf">lstm_update</span><span class="p">(</span>
