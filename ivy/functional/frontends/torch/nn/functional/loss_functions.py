@@ -2,6 +2,7 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.functional.frontends.torch.nn.functional import distance_functions
 
 
 def _get_reduction_func(reduction):
@@ -214,3 +215,24 @@ def nll_loss(
     ret = reduct(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+def cosine_embedding_loss(
+    input1,
+    input2,
+    target,
+    margin=0.0,
+    size_average=None,
+    reduce=None,
+    reduction="mean",
+):
+    similarity = distance_functions.cosine_similarity(input1, input2)
+    if target == 1:
+        loss = 1 - similarity[0]
+    elif target == -1:
+        loss = ivy.max(0, similarity - margin)
+    reduction = _get_reduction(reduction, size_average, reduce)
+    ret = reduction(loss)
+    return ret 
+    
