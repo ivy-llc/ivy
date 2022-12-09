@@ -212,7 +212,10 @@ def test_numpy_meshgrid(
 
 # mgrid
 @handle_frontend_method(
-    method_tree="numpy.mgrid.__getitem__", range=_get_range_for_grid()
+    class_tree="ivy.functional.frontends.numpy.mgrid",
+    init_tree="numpy.mgrid",
+    method_name="__getitem__",
+    range=_get_range_for_grid(),
 )
 def test_numpy_mgrid(
     range,
@@ -245,7 +248,10 @@ def test_numpy_mgrid(
 
 # ogrid
 @handle_frontend_method(
-    method_tree="numpy.ogrid.__getitem__", range=_get_range_for_grid()
+    class_tree="ivy.functional.frontends.numpy.ogrid",
+    init_tree="numpy.ogrid",
+    method_name="__getitem__",
+    range=_get_range_for_grid(),
 )
 def test_numpy_ogrid(range, class_, method_name):
     start, stop, step = range

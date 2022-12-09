@@ -9,6 +9,39 @@ from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
 import ivy.functional.frontends.numpy as np_frontend
 
 
+def handle_numpy_dtype(fn: Callable) -> Callable:
+    @functools.wraps(fn)
+    def new_fn(*args, dtype=None, **kwargs):
+        if len(args) > (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            kwargs = {
+                **dict(
+                    zip(
+                        list(inspect.signature(fn).parameters.keys())[
+                            dtype_pos + 1 : len(args)
+                        ],
+                        args[dtype_pos + 1 :],
+                    )
+                ),
+                **kwargs,
+            }
+            args = args[:dtype_pos]
+        elif len(args) == (dtype_pos + 1):
+            dtype = args[dtype_pos]
+            args = args[:-1]
+        if not dtype:
+            return fn(*args, dtype=dtype, **kwargs)
+        if isinstance(dtype, np_frontend.dtype):
+            return fn(*args, dtype=dtype._ivy_dtype, **kwargs)
+        if dtype in np_frontend.numpy_str_to_type_table:
+            dtype = np_frontend.numpy_str_to_type_table[dtype]._ivy_dtype
+        return fn(*args, dtype=ivy.as_ivy_dtype(dtype), **kwargs)
+
+    dtype_pos = list(inspect.signature(fn).parameters).index("dtype")
+    new_fn.handle_dtype = True
+    return new_fn
+
+
 def _assert_args_and_fn(args, kwargs, dtype, fn):
     ivy.assertions.check_all_or_any_fn(
         *args,
@@ -140,6 +173,7 @@ def _ivy_to_numpy(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = ndarray(0)  # TODO Find better initialisation workaround
         a.ivy_array = x
+        a.dtype = ivy.dtype(x)
         return a
     else:
         return x
@@ -149,6 +183,7 @@ def _ivy_to_numpy_order_F(x: Any) -> Any:
     if isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = ndarray(0, order="F")  # TODO Find better initialisation workaround
         a.ivy_array = x
+        a.dtype = ivy.dtype(x)
         return a
     else:
         return x

@@ -3619,7 +3619,7 @@ def negative(
     *,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
-    """Returns a new array with the positive value of each element in ``x``.
+    """Returns a new array with the negative value of each element in ``x``.
 
     Parameters
     ----------

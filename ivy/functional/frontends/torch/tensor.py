@@ -21,6 +21,10 @@ class Tensor:
     def ivy_array(self):
         return self._ivy_array
 
+    @property
+    def device(self):
+        return ivy.dev(self._ivy_array)
+
     # Setters #
     # --------#
 
@@ -63,7 +67,7 @@ class Tensor:
         return self
 
     def sum(self):
-        return torch_frontend.sum(self._ivyArray)
+        return torch_frontend.sum(self._ivy_array)
 
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
@@ -298,17 +302,14 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self._ivy_array, dim=dim, keepdim=keepdim)
 
-    def device(self):
-        return ivy.dev(self._ivy_array)
-
     def is_cuda(self):
         return "gpu" in ivy.dev(self._ivy_array)
 
-    def pow(self, other):
-        return ivy.pow(self._ivy_array, other)
+    def pow(self, exponent):
+        return ivy.pow(self._ivy_array, exponent)
 
-    def pow_(self, other):
-        self._ivy_array = self.pow(other).ivy_array
+    def pow_(self, exponent):
+        self._ivy_array = self.pow(exponent).data
         return self
 
     def size(self, dim=None):
@@ -324,8 +325,8 @@ class Tensor:
                     "but got {}".format(len(shape), len(shape) - 1, dim)
                 )
 
-    def matmul(self, tensor2):
-        return torch_frontend.matmul(self._ivy_array, tensor2)
+    def matmul(self, other):
+        return torch_frontend.matmul(self._ivy_array, other)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)

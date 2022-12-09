@@ -50,7 +50,8 @@ def test_numpy_equal(
         on_device=on_device,
         x1=x[0],
         x2=x[1],
-        where=False,
+        out=None,
+        where=where,
         casting=casting,
         order="K",
         dtype=dtype,
@@ -98,11 +99,11 @@ def test_numpy_array_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -149,11 +150,11 @@ def test_numpy_greater(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -200,11 +201,11 @@ def test_numpy_greater_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -251,11 +252,11 @@ def test_numpy_less(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
@@ -302,11 +303,11 @@ def test_numpy_less_equal(
     dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
         arr_func=[
             lambda: helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("float"),
+                available_dtypes=helpers.get_dtypes("valid"),
                 num_arrays=2,
             )
         ],
-        get_dtypes_kind="float",
+        get_dtypes_kind="valid",
     ),
     where=np_frontend_helpers.where(),
 )
