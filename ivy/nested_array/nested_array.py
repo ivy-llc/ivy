@@ -53,17 +53,23 @@ class NestedArray(abc.ABC):
     @classmethod
     def nested_array(cls, data, dtype=None, device=None):
         dtype = ivy.default_dtype(dtype=dtype, item=data)
+        device = ivy.default_device(device, item=data)
         if ivy.is_ivy_array(data):
             data = [data]
-        elif isinstance(data, (list, tuple)) or ivy.is_native_array(data):
+        elif isinstance(data, (list, tuple)):
             data = ivy.to_ivy(data)
-        # TODo: add support for nested arrays
-        # ToDo: adjust dtype and device with nested_map
+        elif ivy.is_native_array(data):
+            data = [ivy.to_ivy(data)]
+        elif isinstance(data, cls):
+            data = data._data
         else:
             raise TypeError(
                 "Input data must be ivy.Array, ivy.NativeArray"
                 " or a list of either, got: {}".format(type(data))
             )
+        for i in range(len(data)):
+            data[i] = ivy.astype(data[i], dtype)
+            data[i] = ivy.to_device(data[i], device)
         return cls(data, dtype, device, internal=True)
 
     # Properties #
@@ -103,3 +109,6 @@ class NestedArray(abc.ABC):
             arrays_repr += repr(self._data[i]) + "\n\t"
         arrays_repr += repr(self._data[-1])
         return self._pre_repr + self.__class__.__name__ + "([\n" + arrays_repr + "\n])"
+
+    def __getitem__(self, query):
+        return self._data[query]
