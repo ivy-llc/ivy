@@ -8,7 +8,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 import ivy
-from ivy.func_wrapper import with_unsupported_dtypes, with_unsupported_devices
+from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
@@ -170,8 +170,7 @@ def depthwise_conv2d(
     return res
 
 
-@with_unsupported_devices({"2.9.1 and below": ("cpu",)}, backend_version)
-# noinspection PyDefaultArgument
+@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16",)}, backend_version)
 def conv3d(
     x: Union[tf.Tensor, tf.Variable],
     filters: Union[tf.Tensor, tf.Variable],
