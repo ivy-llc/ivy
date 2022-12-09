@@ -164,7 +164,13 @@ def as_ivy_dtype(dtype_in: Union[np.dtype, str, bool, int, float]) -> ivy.Dtype:
     if dtype_in is bool:
         return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by NumPy backend."
+            )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
