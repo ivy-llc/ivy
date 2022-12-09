@@ -386,3 +386,8 @@ def exp2(input, out=None):
 @to_ivy_arrays_and_back
 def rsqrt(input, *, out=None):
     return ivy.reciprocal(ivy.sqrt(input), out=out)
+
+
+@to_ivy_arrays_and_back
+def frac(input, *, out=None):
+    return input - ivy.sign(input) * ivy.floor(ivy.abs(input))
