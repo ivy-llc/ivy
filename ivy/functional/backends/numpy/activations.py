@@ -25,10 +25,14 @@ def leaky_relu(
 
 @_scalar_output_to_0d_array
 def gelu(
-    x, /, *, approximate: bool = False, out: Optional[np.ndarray] = None
+    x : np.ndarray,
+    /,
+    *,
+    approximate: bool = False,
+    out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     if approximate:
-        ret = 0.5 * x * (1 + np.tanh(x * 0.7978845608 * (1 + 0.044715 * x * x)))
+        ret = 0.5 * x * (1 + np.tanh(0.7978845608 * (x + 0.044715 * x * x* x)))
     else:
         ret = 0.5 * x * (1 + ivy.erf(x / np.sqrt(2)))
     return ivy.astype(ret, x.dtype, copy=False)
