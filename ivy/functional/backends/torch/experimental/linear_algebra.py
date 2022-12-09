@@ -108,3 +108,12 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def matrix_exp(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return torch.linalg.matrix_exp(x)

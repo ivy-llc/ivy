@@ -408,6 +408,14 @@ def vector_norm(
         ret = np_normalized_vector
     return ret
 
+def matrix_exp(
+    x: np.ndarray,
+    /,
+    *,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.exp(x)
+
 
 # Extra #
 # ----- #

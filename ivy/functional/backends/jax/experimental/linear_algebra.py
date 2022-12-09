@@ -1,6 +1,7 @@
 import math
 from typing import Optional
 import jax.numpy as jnp
+import jax.scipy.linalg as jslp
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -90,3 +91,12 @@ def kron(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.kron(a, b)
+
+
+def matrix_exp(
+    x: JaxArray,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> numpy.ndarray:
+    return jslp.expm(x)

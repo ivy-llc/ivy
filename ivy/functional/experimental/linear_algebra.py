@@ -123,3 +123,43 @@ def kron(
     ivy.array([3, 4, 6, 8])
     """
     return current_backend(a, b).kron(a, b, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def matrix_exp(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    out: Optional[ivy.Array] = None,
+) -> ivy.Array:
+    """Computes the matrix exponential of a square matrix.
+
+    Parameters
+    ----------
+    a
+        Square matrix.
+    out
+        optional output array, for writing the result to. It must have a shape that the
+        inputs broadcast to.
+
+    Returns
+    -------
+    ret
+        the matrix exponential of the input.
+
+    Examples
+    --------
+        >>> x = ivy.array([[[1., 0.],
+                            [0., 1.]],
+                            [[2., 0.],
+                            [0., 2.]]])
+        >>> ivy.matrix_exp(x)
+        ivy.array([[[2.7183, 1.0000],
+                    [1.0000, 2.7183]],
+                    [[7.3891, 1.0000],
+                    [1.0000, 7.3891]]])
+    """
+    return current_backend(x).matrix_exp(x, out=out)
