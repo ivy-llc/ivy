@@ -5,6 +5,11 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 
 
 @to_ivy_arrays_and_back
+def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
+    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+
+
+@to_ivy_arrays_and_back
 def add(x, y, name=None):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
@@ -342,6 +347,14 @@ def zero_fraction(value, name="zero_fraction"):
     count_zero = ivy.sum(ivy.equal(x, zero))
     count_nonzero = ivy.sum(ivy.not_equal(x, zero))
     return ivy.divide(count_zero, ivy.add(count_zero, count_nonzero))
+
+
+@to_ivy_arrays_and_back
+def argmin(input, axis=None, output_type="int64", name=None):
+    if output_type in ["int32", "int64"]:
+        return ivy.astype(ivy.argmin(input, axis=axis), output_type)
+    else:
+        return ivy.astype(ivy.argmin(input, axis=axis), "int64")
 
 
 @to_ivy_arrays_and_back

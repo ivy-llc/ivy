@@ -339,3 +339,13 @@ def transpose(operand, permutation):
 @to_ivy_arrays_and_back
 def shift_right_logical(x, y):
     return ivy.bitwise_right_shift(x, y)
+
+
+@to_ivy_arrays_and_back
+def asinh(x):
+    return ivy.asinh(x)
+
+
+@to_ivy_arrays_and_back
+def atanh(x):
+    return ivy.atanh(x)

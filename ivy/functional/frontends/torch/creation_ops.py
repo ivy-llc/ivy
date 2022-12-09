@@ -1,5 +1,6 @@
 # local
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -16,8 +17,6 @@ def empty(
     memory_format=None,
 ):
     ret = ivy.empty(shape=size, dtype=dtype, device=device, out=out)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -35,16 +34,12 @@ def full(
     ret = ivy.full(
         shape=size, fill_value=fill_value, dtype=dtype, device=device, out=out
     )
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
 @to_ivy_arrays_and_back
 def ones(size, *, out=None, dtype=None, device=None, requires_grad=False):
     ret = ivy.ones(shape=size, dtype=dtype, device=device, out=out)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -64,16 +59,12 @@ def ones_like_v_0p4p0_and_above(
     memory_format=None,
 ):
     ret = ivy.ones_like(input, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
 @to_ivy_arrays_and_back
 def zeros(size, *, out=None, dtype=None, device=None, requires_grad=False):
     ret = ivy.zeros(shape=size, dtype=dtype, device=device, out=out)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -88,44 +79,54 @@ def zeros_like(
     memory_format=None,
 ):
     ret = ivy.zeros_like(input, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def arange(
-    end,  # torch doesn't have a default for this.
-    start=0,
-    step=1,
-    *,
+    *args,
     out=None,
     dtype=None,
     layout=None,
     device=None,
     requires_grad=False,
 ):
-    ret = ivy.arange(start, stop=end, step=step, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
-    return ret
+    if len(args) == 1:
+        end = args[0]
+        start = 0
+        step = 1
+    elif len(args) == 3:
+        start, end, step = args
+    else:
+        ivy.assertions.check_true(
+            len(args) == 1 or len(args) == 3,
+            "only 1 or 3 positional arguments are supported",
+        )
+    return ivy.arange(start, end, step, dtype=dtype, device=device)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def range(
-    end,  # torch doesn't have a default for this.
-    start=0,
-    step=1,
-    *,
+    *args,
     dtype=None,
     layout=None,
     device=None,
     requires_grad=False,
 ):
-    ret = arange(end, start=start, step=step, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
-    return ret
+    if len(args) == 1:
+        end = args[0]
+        start = 0
+        step = 1
+    elif len(args) == 3:
+        start, end, step = args
+    else:
+        ivy.assertions.check_true(
+            len(args) == 1 or len(args) == 3,
+            "only 1 or 3 positional arguments are supported",
+        )
+    return ivy.arange(start, end, step, dtype=dtype, device=device)
 
 
 @to_ivy_arrays_and_back
@@ -141,8 +142,6 @@ def linspace(
     requires_grad=False,
 ):
     ret = ivy.linspace(start, end, num=steps, dtype=dtype, device=device, out=out)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -162,8 +161,6 @@ def logspace(
     ret = ivy.logspace(
         start, end, num=steps, base=base, dtype=dtype, device=device, out=out
     )
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -172,8 +169,6 @@ def eye(
     n, m=None, *, out=None, dtype=None, layout=None, device=None, requires_grad=False
 ):
     ret = ivy.eye(n_rows=n, n_columns=m, dtype=dtype, device=device, out=out)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -188,8 +183,6 @@ def empty_like(
     memory_format=None,
 ):
     ret = ivy.empty_like(input, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
     return ret
 
 
@@ -204,10 +197,7 @@ def full_like(
     requires_grad=False,
     memory_format=None,
 ):
-    ret = ivy.full_like(input, fill_value=fill_value, dtype=dtype, device=device)
-    if requires_grad:
-        return ivy.variable(ret)
-    return ret
+    return ivy.full_like(input, fill_value, dtype=dtype, device=device)
 
 
 @to_ivy_arrays_and_back
@@ -222,7 +212,19 @@ def as_tensor(
 
 @to_ivy_arrays_and_back
 def from_numpy(data, /):
-    return ivy.asarray(data, dtype=ivy.dtype(data), device=ivy.default_device())
+    return ivy.asarray(data, dtype=ivy.dtype(data))
 
 
 from_numpy.supported_dtypes = ("ndarray",)
+
+
+@to_ivy_arrays_and_back
+def tensor(
+    data,
+    *,
+    dtype=None,
+    device=None,
+    requires_grad=False,
+    pin_memory=False,
+):
+    return ivy.array(data, dtype=dtype, device=device)

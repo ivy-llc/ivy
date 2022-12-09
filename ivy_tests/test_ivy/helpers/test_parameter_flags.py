@@ -2,7 +2,15 @@ class ContainerFlags:
     pass
 
 
-class NumPositionalArg:
+class NumPositionalArg:  # TODO for backward compatibility only
+    pass
+
+
+class NumPositionalArgMethod:
+    pass
+
+
+class NumPositionalArgFn:
     pass
 
 

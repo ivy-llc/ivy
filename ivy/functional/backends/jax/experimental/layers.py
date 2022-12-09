@@ -1,10 +1,14 @@
+# global
 from typing import Optional, Union, Tuple, Literal
-import ivy
-from ivy.functional.backends.jax import JaxArray
 import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 import math
+
+# local
+import ivy
+from ivy.functional.backends.jax import JaxArray
+from ivy.functional.backends.jax.random import RNG
 
 
 def general_pool(inputs, init, reduce_fn, window_shape, strides, padding):
@@ -205,28 +209,12 @@ def avg_pool3d(
     if data_format == "NCDHW":
         x = jnp.transpose(x, (0, 2, 3, 4, 1))
 
-    x_shape = list(x.shape[1:4])
-    pad_d = ivy.handle_padding(x_shape[0], strides[0], kernel[0], padding)
-    pad_h = ivy.handle_padding(x_shape[1], strides[1], kernel[1], padding)
-    pad_w = ivy.handle_padding(x_shape[2], strides[2], kernel[2], padding)
-
-    x = jnp.pad(
-        x,
-        [
-            (0, 0),
-            (pad_d // 2, pad_d - pad_d // 2),
-            (pad_h // 2, pad_h - pad_h // 2),
-            (pad_w // 2, pad_w - pad_w // 2),
-            (0, 0),
-        ],
-        "edge",
-    )
     res = general_pool(x, 0.0, jlax.add, kernel, strides, padding)
     div_shape = res.shape[:-1] + (1,)
     if len(div_shape) - 2 == len(kernel):
         div_shape = (1,) + div_shape[1:]
     res = res / general_pool(
-        jnp.ones(div_shape), 0.0, jlax.add, kernel, strides, padding
+        jnp.ones(div_shape, dtype=res.dtype), 0.0, jlax.add, kernel, strides, padding
     )
 
     if data_format == "NCDHW":
@@ -334,3 +322,28 @@ def fft(
     if norm != "backward" and norm != "ortho" and norm != "forward":
         raise ivy.exceptions.IvyError(f"Unrecognized normalization mode {norm}")
     return jnp.fft(x, n, dim, norm)
+
+
+def dropout1d(
+    x: JaxArray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    if training:
+        if data_format == "NWC":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = jnp.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-1] = 1
+        _, rng_input = jax.random.split(RNG.key)
+        mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
+        res = jnp.where(mask, x / (1 - prob), 0)
+        if data_format == "NWC":
+            res = jnp.transpose(res, perm)
+        return res
+    else:
+        return x

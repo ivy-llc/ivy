@@ -1,7 +1,5 @@
 name: test-stateful-ivy-cron
 on:
-  schedule:
-    - cron: '35 * * * *'
   workflow_dispatch:
 
 permissions:

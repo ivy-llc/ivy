@@ -48,13 +48,17 @@ The answer is **no**.
 When determining the superset, we are only concerned with the pure **mathematics** of the function, and nothing else.
 For example, the :code:`name` argument is common to many TensorFlow functions, such as `tf.concat <https://www.tensorflow.org/api_docs/python/tf/concat>`_, and is used for uniquely identifying parts of the compiled computation graph during logging and debugging.
 This has nothing to do with the mathematics of the function, and so is *not* included in the superset considerations when implementing Ivy functions.
-Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the :class:`numpy.ndarray` class should be permitted, and :code:`order` controls the low-level memory layout of the array, both of which are included for many functions, such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
+Similarly, in NumPy the argument :code:`subok` controls whether subclasses of the :class:`numpy.ndarray` class should be permitted, which is included in many functions, such as `numpy.ndarray.astype <https://numpy.org/doc/stable/reference/generated/numpy.ndarray.astype.html>`_.
 Finally, in JAX the argument :code:`precision` is quite common, which controls the precision of the return values, as used in `jax.lax.conv <https://jax.readthedocs.io/en/latest/_autosummary/jax.lax.conv.html>`_ for example.
 Similarly, the functions :func:`jacfwd` and :func:`jacrev` in JAX are actually mathematically identical, and these functions differ *only* in their underlying algorithm, either forward mode or reverse mode.
 
 None of the above arguments or function variants are included in our superset considerations, as again they are not relating to the pure mathematics, and instead relate to framework, hardware or algorithmic specifics.
 Given the abstraction layer that Ivy operates at, Ivy is fundamentally unable to control under-the-hood specifics such as those mentioned above.
 However, this is by design, and the central benefit of Ivy is the ability to abstract many different runtimes and algorithms under the same banner, unified by their shared fundamental mathematics.
+
+A special case is the NumPy :code:`order` argument which controls the low-level memory layout of the array.
+Although it normally has no effect on the mathematics of a function, in certain manipulation routines like :code:`reshape`, :code:`flatten` and :code:`ravel`, order determines the way the elements are read and placed into the reshaped array.
+Therefore, ivy supports :code:`order` for these functions and any remaining logic surrounding order is handled in the NumPy frontend.
 
 Regarding the **only mathematics** rule regarding the superset considerations, there are two exceptions to this, which are the handling of data type and device arguments.
 Neither of these relate to the pure mathematics of the function.

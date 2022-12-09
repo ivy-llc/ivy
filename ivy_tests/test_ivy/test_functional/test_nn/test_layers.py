@@ -49,6 +49,7 @@ def x_and_linear(draw, dtypes):
     dtype_x_weight_bias=x_and_linear(
         dtypes=helpers.get_dtypes("float"),
     ),
+    ground_truth_backend="jax",
 )
 def test_linear(
     *,
@@ -63,9 +64,11 @@ def test_linear(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, weight, bias = dtype_x_weight_bias
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -76,7 +79,6 @@ def test_linear(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=test_gradients,
@@ -118,9 +120,11 @@ def test_dropout(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
     ret = helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -141,64 +145,6 @@ def test_dropout(
     for u in ret:
         # cardinality test
         assert u.shape == x[0].shape
-
-
-# dropout1d
-@handle_test(
-    fn_tree="functional.ivy.dropout1d",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    prob=helpers.floats(min_value=0, max_value=0.9),
-    training=st.booleans(),
-    data_format=st.sampled_from(["NWC", "NCW"]),
-)
-def test_dropout1d(
-    *,
-    dtype_and_x,
-    prob,
-    training,
-    data_format,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    backend_fw,
-    on_device,
-    fn_name,
-):
-    dtype, x = dtype_and_x
-    ret, gt_ret = helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        test_values=False,
-        x=x[0],
-        prob=prob,
-        training=training,
-        data_format=data_format,
-        return_flat_np_arrays=True,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
-    for u, v, w in zip(ret, gt_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
 
 
 # Attention #
@@ -246,6 +192,7 @@ def x_and_scaled_attention(draw, dtypes):
     dtype_q_k_v_mask_scale=x_and_scaled_attention(
         dtypes=helpers.get_dtypes("float"),
     ),
+    ground_truth_backend="jax",
 )
 def test_scaled_dot_product_attention(
     *,
@@ -260,9 +207,11 @@ def test_scaled_dot_product_attention(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, q, k, v, mask, scale = dtype_q_k_v_mask_scale
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -273,7 +222,6 @@ def test_scaled_dot_product_attention(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        ground_truth_backend="jax",
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=test_gradients,
@@ -330,6 +278,7 @@ def x_and_mha(draw, dtypes):
     dtype_mha=x_and_mha(
         dtypes=helpers.get_dtypes("float"),
     ),
+    ground_truth_backend="jax",
 )
 def test_multi_head_attention(
     *,
@@ -344,10 +293,12 @@ def test_multi_head_attention(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x_mha, scale, num_heads, context, mask = dtype_mha
     to_q_fn = lambda x_, v: x_
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -358,7 +309,6 @@ def test_multi_head_attention(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        ground_truth_backend="jax",
         atol_=1e-02,
         rtol_=1e-02,
         test_gradients=test_gradients,
@@ -498,6 +448,7 @@ def x_and_filters(
 @handle_test(
     fn_tree="functional.ivy.conv1d",
     x_f_d_df=x_and_filters(dim=1),
+    ground_truth_backend="jax",
 )
 def test_conv1d(
     *,
@@ -512,9 +463,11 @@ def test_conv1d(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -528,7 +481,6 @@ def test_conv1d(
         rtol_=1e-02,
         atol_=1e-02,
         test_gradients=test_gradients,
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -542,6 +494,7 @@ def test_conv1d(
 @handle_test(
     fn_tree="functional.ivy.conv1d_transpose",
     x_f_d_df=x_and_filters(dim=1, transpose=True),
+    ground_truth_backend="jax",
 )
 def test_conv1d_transpose(
     *,
@@ -556,11 +509,13 @@ def test_conv1d_transpose(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -575,7 +530,6 @@ def test_conv1d_transpose(
         atol_=1e-2,
         test_gradients=test_gradients,
         # tensorflow does not work with dilations > 1 on cpu
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -590,6 +544,7 @@ def test_conv1d_transpose(
 @handle_test(
     fn_tree="functional.ivy.conv2d",
     x_f_d_df=x_and_filters(dim=2),
+    ground_truth_backend="jax",
 )
 def test_conv2d(
     *,
@@ -604,9 +559,11 @@ def test_conv2d(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -620,7 +577,6 @@ def test_conv2d(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -637,6 +593,8 @@ def test_conv2d(
         dim=2,
         transpose=True,
     ),
+    # tensorflow does not work with dilations > 1 on cpu
+    ground_truth_backend="jax",
 )
 def test_conv2d_transpose(
     *,
@@ -651,11 +609,13 @@ def test_conv2d_transpose(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -669,8 +629,6 @@ def test_conv2d_transpose(
         atol_=1e-2,
         on_device=on_device,
         test_gradients=test_gradients,
-        # tensorflow does not work with dilations > 1 on cpu
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -688,6 +646,8 @@ def test_conv2d_transpose(
         dim=2,
         depthwise=True,
     ),
+    # tensorflow does not support dilations > 1 and stride > 1
+    ground_truth_backend="jax",
 )
 def test_depthwise_conv2d(
     *,
@@ -702,11 +662,13 @@ def test_depthwise_conv2d(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and dilations > 1 and stride > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -720,8 +682,6 @@ def test_depthwise_conv2d(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        # tensorflow does not support dilations > 1 and stride > 1
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -735,6 +695,7 @@ def test_depthwise_conv2d(
 @handle_test(
     fn_tree="functional.ivy.conv3d",
     x_f_d_df=x_and_filters(dim=3),
+    ground_truth_backend="jax",
 )
 def test_conv3d(
     *,
@@ -749,9 +710,11 @@ def test_conv3d(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -765,7 +728,6 @@ def test_conv3d(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -780,6 +742,8 @@ def test_conv3d(
     dims=st.shared(st.integers(1, 3), key="dims"),
     x_f_d_df=x_and_filters(dim=st.shared(st.integers(1, 3), key="dims"), general=True),
     x_dilations=st.integers(1, 3),
+    # tensorflow does not work with dilations > 1 on cpu
+    ground_truth_backend="jax",
 )
 def test_conv_general_dilated(
     *,
@@ -796,11 +760,13 @@ def test_conv_general_dilated(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -814,8 +780,6 @@ def test_conv_general_dilated(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        # tensorflow does not work with dilations > 1 on cpu
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -834,6 +798,8 @@ def test_conv_general_dilated(
     x_f_d_df=x_and_filters(
         dim=st.shared(st.integers(1, 3), key="dims"), general=True, transpose=True
     ),
+    # tensorflow does not work with dilations > 1 on cpu
+    ground_truth_backend="jax",
 )
 def test_conv_general_transpose(
     *,
@@ -849,11 +815,13 @@ def test_conv_general_transpose(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -867,8 +835,6 @@ def test_conv_general_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        # tensorflow does not work with dilations > 1 on cpu
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -888,6 +854,7 @@ def test_conv_general_transpose(
         dim=3,
         transpose=True,
     ),
+    ground_truth_backend="jax",
 )
 def test_conv3d_transpose(
     *,
@@ -902,11 +869,13 @@ def test_conv3d_transpose(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     dtype, x, filters, dilations, data_format, stride, pad, output_shape, fc = x_f_d_df
     fw = backend_fw.current_backend_str()
     assume(not (fw == "tensorflow" and on_device == "cpu" and dilations > 1))
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -920,7 +889,6 @@ def test_conv3d_transpose(
         rtol_=1e-2,
         atol_=1e-2,
         test_gradients=test_gradients,
-        ground_truth_backend="jax",
         x=x,
         filters=filters,
         strides=stride,
@@ -1017,6 +985,7 @@ def test_lstm_update(
     fn_name,
     on_device,
     test_gradients,
+    ground_truth_backend,
 ):
     (
         dtype,
@@ -1029,6 +998,7 @@ def test_lstm_update(
         recurrent_bias,
     ) = dtype_lstm
     helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
@@ -1049,65 +1019,4 @@ def test_lstm_update(
         recurrent_kernel=recurrent_kernel,
         bias=bias,
         recurrent_bias=recurrent_bias,
-    )
-
-
-@st.composite
-def x_and_fft(draw, dtypes):
-    min_fft_points = 2
-    dtype = draw(dtypes)
-    x_dim = draw(
-        helpers.get_shape(
-            min_dim_size=2, max_dim_size=100, min_num_dims=1, max_num_dims=4
-        )
-    )
-    x = draw(
-        helpers.array_values(
-            dtype=dtype[0],
-            shape=tuple(x_dim),
-        )
-    )
-    dim = draw(
-        helpers.get_axis(shape=x_dim, allow_neg=True, allow_none=False, max_size=1)
-    )
-    norm = draw(st.sampled_from(["backward", "forward", "ortho"]))
-    n = draw(st.integers(min_fft_points, 256))
-    return dtype, x, dim, norm, n
-
-
-@handle_test(
-    fn_tree="functional.ivy.fft",
-    d_x_d_n_n=x_and_fft(helpers.get_dtypes("complex")),
-)
-def test_fft(
-    *,
-    d_x_d_n_n,
-    with_out,
-    as_variable,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    backend_fw,
-    fn_name,
-):
-    dtype, x, dim, norm, n = d_x_d_n_n
-    helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
-        test_gradients=False,
-        ground_truth_backend="numpy",
-        x=x,
-        dim=dim,
-        norm=norm,
-        n=n,
     )

@@ -9,86 +9,6 @@ import ivy
 
 
 class ArrayWithGradients(abc.ABC):
-    def variable(self: ivy.Array) -> ivy.Array:
-        """
-        ivy.Array instance method variant of ivy.variable. This method simply wraps
-        the function, and so the docstring for ivy.variable also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy array.
-
-        Returns
-        -------
-        ret
-            An ivy array that supports gradient computation.
-
-        Examples
-        --------
-        With :class:`ivy.Array` input:
-
-        >>> x = ivy.array([2., 4., -1.])
-        >>> y = x.variable()
-        >>> y
-        ivy.array([ 2.,  4., -1.])
-
-        """
-        return ivy.variable(self)
-
-    def is_variable(self: ivy.Array, /, *, exclusive: bool = False) -> bool:
-        """
-        ivy.Array instance method variant of ivy.is_variable. This method simply wraps
-        the function, and so the docstring for ivy.is_variable also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy array.
-        exclusive
-            Whether to check if the data type is exclusively a variable, rather than an
-            array. For frameworks like JAX that do not have exclusive variable types,
-            the function will always return False if this flag is set, otherwise the
-            check is the same for general arrays. Default is ``False``.
-
-        Returns
-        -------
-        ret
-            Boolean, true if ``self`` is a trainable variable, false otherwise.
-
-        Examples
-        --------
-        With :class:`ivy.Array` input:
-
-        >>> x = ivy.array([[2], [3], [5]])
-        >>> is_var = x.is_variable(exclusive=True)
-        >>> print(is_var)
-        False
-
-        """
-        return ivy.is_variable(self, exclusive=exclusive)
-
-    def variable_data(self: ivy.Array) -> bool:
-        """
-        ivy.Array instance method variant of ivy.variable_data. This method simply wraps
-        the function, and so the docstring for ivy.variable_data also applies to this
-        method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            An ivy variable.
-
-        Returns
-        -------
-        ret
-            The internal data stored by the variable
-
-        """
-        return ivy.variable_data(self)
-
     def stop_gradient(
         self: ivy.Array,
         /,
@@ -180,9 +100,9 @@ class ArrayWithGradients(abc.ABC):
         >>> step = ivy.array(3)
         >>> adam_step_delta = dcdw.adam_step(mw, vw, step)
         >>> print(adam_step_delta)
-        (ivy.array([0.182, 0.182, 0.182]),
-         ivy.array([0.9, 0.9, 0.9]),
-         ivy.array([0.999, 0.999, 0.999]))
+        (ivy.array([0.2020105,0.22187898,0.24144873]),
+            ivy.array([1.,1.10000002,1.20000005]),
+            ivy.array([1.,1.00300002,1.00800002]))
 
         """
         return ivy.adam_step(

@@ -8,7 +8,6 @@ from typing import Optional
 # local
 from ivy.func_wrapper import _wrap_function
 
-
 backend_stack = []
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
@@ -47,7 +46,7 @@ _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
 
 
 # Backend Getting/Setting #
-# ------------------------#
+# ----------------------- #
 
 
 def _determine_backend_from_args(args):
@@ -110,7 +109,7 @@ def fn_name_from_version_specific_fn_name(name, version):
         specific function
 
     """
-    # TODO: add docstring and tests
+    # TODO: add tests
     version = str(version)
     if version.find("+") != -1:
         version = tuple(map(int, version[: version.index("+")].split(".")))
@@ -143,18 +142,15 @@ def fn_name_from_version_specific_fn_name(name, version):
 
 def set_backend_to_specific_version(backend):
     """
+    Updates the backend dict to make the original function
+    name point to the version specific one.
 
     Parameters
     ----------
     backend
         the backend module for which we provide the version support
-
-    Returns
-    -------
-        The function doesn't return anything and updates the backend __dict__
-        to make the original function name to point to the version specific one.
     """
-    # TODO: add docstring, functionality and tests
+    # TODO: add functionality and tests
     f = str(backend.__name__)
     f = f[f.index("backends") + 9 :]
 
@@ -262,12 +258,15 @@ def set_backend(backend: str):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
+        compositional = k not in backend.__dict__
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+        ivy.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))

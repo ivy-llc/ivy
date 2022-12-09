@@ -19,15 +19,20 @@ def max_pool1d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
-    if isinstance(strides, tuple):
-        strides = strides[0]
-    if isinstance(kernel, tuple):
-        kernel = kernel[0]
+    if isinstance(kernel, int):
+        kernel = [kernel]
+    elif len(kernel) == 1:
+        kernel = [kernel[0]]
+
+    if isinstance(strides, int):
+        strides = [strides]
+    elif len(strides) == 1:
+        strides = [strides[0]]
 
     if data_format == "NCW":
         x = x.permute(0, 2, 1)
 
-    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    pad_w = ivy.handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
@@ -39,11 +44,11 @@ def max_pool1d(
     )
 
     x_shape = x.shape
-    new_w = (x_shape[1] - kernel) // strides + 1
-    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_w = (x_shape[1] - kernel[0]) // strides[0] + 1
+    new_shape = [x_shape[0], new_w, kernel[0]] + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides,
+        x.strides[1] * strides[0],
         x.strides[1],
         x.strides[2],
     )
@@ -200,15 +205,20 @@ def avg_pool1d(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
-    if isinstance(strides, tuple):
-        strides = strides[0]
-    if isinstance(kernel, tuple):
-        kernel = kernel[0]
+    if isinstance(kernel, int):
+        kernel = [kernel]
+    elif len(kernel) == 1:
+        kernel = [kernel[0]]
+
+    if isinstance(strides, int):
+        strides = [strides]
+    elif len(strides) == 1:
+        strides = [strides[0]]
 
     if data_format == "NCW":
         x = x.permute(0, 2, 1)
 
-    pad_w = ivy.handle_padding(x.shape[1], strides, kernel, padding)
+    pad_w = ivy.handle_padding(x.shape[1], strides[0], kernel[0], padding)
     x = np.pad(
         x,
         [
@@ -220,11 +230,11 @@ def avg_pool1d(
     )
 
     x_shape = x.shape
-    new_w = (x_shape[1] - kernel) // strides + 1
-    new_shape = [x_shape[0], new_w, kernel] + [x_shape[-1]]
+    new_w = (x_shape[1] - kernel[0]) // strides[0] + 1
+    new_shape = [x_shape[0], new_w, kernel[0]] + [x_shape[-1]]
     new_strides = (
         x.strides[0],
-        x.strides[1] * strides,
+        x.strides[1] * strides[0],
         x.strides[1],
         x.strides[2],
     )
@@ -250,15 +260,15 @@ def avg_pool2d(
     data_format: str = "NHWC",
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if isinstance(kernel, int):
-        kernel = (kernel,) * 2
-    elif len(kernel) == 1:
-        kernel = (kernel,) * 2
+    if isinstance(strides, int):
+        strides = [strides] * 2
+    elif len(strides) == 1:
+        strides = [strides[0]] * 2
 
     if isinstance(strides, int):
-        strides = (strides,) * 2
+        strides = [strides] * 2
     elif len(strides) == 1:
-        strides = (strides[0],) * 2
+        strides = [strides[0]] * 2
 
     if data_format == "NCHW":
         x = np.transpose(x, (0, 2, 3, 1))
@@ -489,3 +499,27 @@ def dct(
             dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
 
     return dct_out.astype(np.float32) if cast_final else dct_out
+
+
+def dropout1d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCW":
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x

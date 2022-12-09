@@ -22,6 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -243,15 +244,15 @@ def dev(
     Parameters
     ----------
     x
-          array for which to get the device handle.
+        array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is ``False``.
+        Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
     ret
-          Device handle for the array, in native framework format.
+        Device handle for the array, in native framework format.
 
     Functional Examples
     --------------------
@@ -278,7 +279,7 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert native data type to string representation.
+    """Convert device to string representation.
 
     Parameters
     ----------
@@ -302,6 +303,30 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     ----------
     device
         The device string to convert to native device handle.
+        A native device handle can be passed in instead - in this case
+        the unmodified parameter is returned.
+
+    Examples
+    --------
+    With :class:`ivy.Device` input:
+
+    >>> ivy.set_backend("numpy")
+    >>> ivy.as_native_dev("cpu")
+    'cpu'
+
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.as_native_dev("tpu:3")
+    '/TPU:3'
+
+    With :class:`ivy.NativeDevice` input:
+
+    >>> import torch
+    >>> device = torch.device("cuda")
+    >>> device
+    device(type='cuda')
+    >>> ivy.as_native_dev(device)
+    device(type='cuda')
+
 
     Returns
     -------
@@ -594,6 +619,8 @@ def num_gpus() -> int:
     Examples
     --------
     >>> print(ivy.num_gpus())
+    0
+    >>> print(ivy.num_gpus())
     1
 
     """
@@ -748,6 +775,7 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -829,9 +857,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 @handle_exceptions
 def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
+    factor: float, /, *, device: Union[ivy.Device, ivy.NativeDevice] = None
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.

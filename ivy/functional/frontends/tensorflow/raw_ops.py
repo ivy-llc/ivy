@@ -327,6 +327,12 @@ Relu = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
+def RealDiv(*, x, y, name="RealDiv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
 
@@ -354,6 +360,32 @@ def Sin(*, x, name="Sin"):
 @to_ivy_arrays_and_back
 def Sinh(*, x, name="Sinh"):
     return ivy.sinh(x)
+
+
+@with_unsupported_dtypes(
+    {
+        "2.10.0 and below": (
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+@to_ivy_arrays_and_back
+def Sign(*, x, name="Sign"):
+    return ivy.sign(x)
+
+
+@to_ivy_arrays_and_back
+def Split(*, axis, value, num_split, name="Split"):
+    return ivy.split(value, num_or_size_splits=num_split, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def SplitV(*, value, size_splits, axis, num_split, name="SplitV"):
+    return ivy.split(value, num_or_size_splits=size_splits, axis=axis)
 
 
 @to_ivy_arrays_and_back
@@ -450,6 +482,7 @@ def Xdivy(*, x, y, name="Xdivy"):
     return ivy.divide(x, y)
 
 
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 @to_ivy_arrays_and_back
 def Xlog1py(*, x, y, name="Xlog1py"):
     if (x == 0).all():
@@ -458,6 +491,7 @@ def Xlog1py(*, x, y, name="Xlog1py"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"2.10.0 and below": ("bfloat16")}, "tensorflow")
 def Xlogy(*, x, y, name="Xlogy"):
     if (x == 0).all():
         return 0.0

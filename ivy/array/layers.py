@@ -361,14 +361,54 @@ class ArrayWithLayers(abc.ABC):
     def conv3d(
         self: ivy.Array,
         filters: Union[ivy.Array, ivy.NativeArray],
-        strides: int,
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: int = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
+        """
+        ivy.Array instance method variant of `ivy.conv3d`. This method simply
+        wraps the function, and so the docstring for `ivy.conv3d` also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input volume *[batch_size,d,h,w,d_in]*.
+        filters
+            Convolution filters *[fd,fh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape that
+            the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.ones((1, 3, 3, 3, 1)).astype(ivy.float32)
+
+        >>> filters = ivy.ones((1, 3, 3, 1, 1)).astype(ivy.float32)
+
+        >>> result = x.conv3d(filters, 2, 'SAME')
+        >>> print(result)
+        ivy.array([[[[[4.],[4.]],[[4.],[4.]]],[[[4.],[4.]],[[4.],[4.]]]]])
+
+        """
         return ivy.conv3d(
             self._data,
             filters,

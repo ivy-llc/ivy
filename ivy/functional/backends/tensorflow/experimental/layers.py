@@ -106,7 +106,9 @@ def avg_pool2d(
     return res
 
 
-@with_unsupported_dtypes({"2.9.1 and below": ("bfloat16", "float64")}, backend_version)
+@with_unsupported_dtypes(
+    {"2.9.1 and below": ("bfloat16", "float64", "float16")}, backend_version
+)
 def avg_pool3d(
     x: Union[tf.Tensor, tf.Variable],
     kernel: Union[int, Tuple[int], Tuple[int, int, int]],
@@ -214,3 +216,26 @@ def fft(
         ret = tf.signal.fft(x, operation_name)
     ret = _fft_norm(ret, dim, norm)
     return ret
+
+
+def dropout1d(
+    x: Union[tf.Tensor, tf.Variable],
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = tf.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        res = tf.nn.dropout(x, prob, noise_shape=noise_shape)
+        if data_format == "NCW":
+            res = tf.transpose(res, perm)
+        return res
+    else:
+        return x

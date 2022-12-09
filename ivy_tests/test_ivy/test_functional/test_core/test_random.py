@@ -46,12 +46,14 @@ def test_random_uniform(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     low_dtype, low = dtype_and_low
     high_dtype, high = dtype_and_high
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=low_dtype + high_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -117,12 +119,14 @@ def test_random_normal(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     mean_dtype, mean = dtype_and_mean
     std_dtype, std = dtype_and_std
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=mean_dtype + std_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -180,8 +184,10 @@ def _pop_size_num_samples_replace_n_probs(draw):
     fn_tree="functional.ivy.multinomial",
     everything=_pop_size_num_samples_replace_n_probs(),
     seed=helpers.ints(min_value=0, max_value=100),
+    ground_truth_backend="numpy",
 )
 def test_multinomial(
+    *,
     everything,
     seed,
     num_positional_args,
@@ -193,14 +199,16 @@ def test_multinomial(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     prob_dtype, batch_size, population_size, num_samples, replace, probs = everything
     # tensorflow does not support multinomial without replacement
-    if backend_fw == "tensorflow":
-        assume(replace is True)
+    if backend_fw == ivy.functional.backends.tensorflow:
+        assume(replace)
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=prob_dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -212,7 +220,6 @@ def test_multinomial(
             fw=backend_fw,
             fn_name=fn_name,
             test_values=False,
-            ground_truth_backend="numpy",
             population_size=population_size,
             num_samples=num_samples,
             batch_size=batch_size,
@@ -281,11 +288,13 @@ def test_randint(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, low, high = dtype_low_high
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -349,11 +358,13 @@ def test_shuffle(
     backend_fw,
     fn_name,
     on_device,
+    ground_truth_backend,
 ):
     dtype, x = dtype_and_x
 
     def call():
         return helpers.test_function(
+            ground_truth_backend=ground_truth_backend,
             input_dtypes=dtype,
             num_positional_args=num_positional_args,
             as_variable_flags=as_variable,
@@ -377,114 +388,3 @@ def test_shuffle(
     ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
     for (u, v) in zip(ret, ret_gt):
         assert ivy.all(ivy.sort(u, axis=0) == ivy.sort(v, axis=0))
-
-
-# beta
-@handle_test(
-    fn_tree="functional.ivy.beta",
-    dtype_and_alpha_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=2,
-        num_arrays=2,
-        exclude_min=True,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-)
-def test_beta(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-
-    dtype, alpha_beta = dtype_and_alpha_beta
-    if "float16" in dtype:
-        return
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        test_values=False,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        alpha=alpha_beta[0],
-        beta=alpha_beta[1],
-        shape=None,
-        dtype=dtype[0],
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= 0) and ivy.all(u <= 1)
-        assert ivy.all(v >= 0) and ivy.all(v <= 1)
-
-
-# gamma
-@handle_test(
-    fn_tree="functional.ivy.gamma",
-    dtype_and_alpha_beta=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        min_num_dims=1,
-        max_num_dims=2,
-        num_arrays=2,
-        exclude_min=True,
-    ),
-    seed=helpers.ints(min_value=0, max_value=100),
-)
-def test_gamma(
-    *,
-    dtype_and_alpha_beta,
-    seed,
-    num_positional_args,
-    as_variable,
-    with_out,
-    native_array,
-    container_flags,
-    instance_method,
-    backend_fw,
-    fn_name,
-    on_device,
-):
-    dtype, alpha_beta = dtype_and_alpha_beta
-    if "float16" in dtype:
-        return
-    ret, ret_gt = helpers.test_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container_flags,
-        instance_method=instance_method,
-        test_values=False,
-        fw=backend_fw,
-        fn_name=fn_name,
-        on_device=on_device,
-        alpha=alpha_beta[0],
-        beta=alpha_beta[1],
-        shape=None,
-        dtype=dtype[0],
-        seed=seed,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    ret_gt = helpers.flatten_and_to_np(ret=ret_gt)
-    for (u, v) in zip(ret, ret_gt):
-        assert ivy.all(u >= 0)
-        assert ivy.all(v >= 0)

@@ -4,6 +4,7 @@ from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
+
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
@@ -823,4 +824,99 @@ def test_tensorflow_weighted_cross_entropy_with_logits(
         labels=labels,
         logits=logits,
         pos_weight=pos_weight,
+    )
+
+
+# local_response_normalization
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.local_response_normalization",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-20,
+        max_value=20,
+        min_num_dims=4,
+        max_num_dims=4,
+        min_dim_size=1,
+        large_abs_safety_factor=1.5,
+        small_abs_safety_factor=1.5,
+    ),
+    depth_radius=st.integers(min_value=1, max_value=7),
+    bias=st.floats(min_value=0.1, max_value=30),
+    alpha=st.floats(min_value=0.1, max_value=20),
+    beta=st.floats(min_value=0.1, max_value=5),
+)
+def test_tensorflow_local_response_normalization(
+    *,
+    dtype_and_x,
+    depth_radius,
+    bias,
+    alpha,
+    beta,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    input = x[0]
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-3,
+        atol=1e-3,
+        input=input,
+        depth_radius=depth_radius,
+        bias=bias,
+        alpha=alpha,
+        beta=beta,
+    )
+
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
+
+
+# max_pool1d
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.max_pool1d",
+    data_format=df(data_format=st.sampled_from(["NWC"])),
+    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+)
+def test_tensorflow_max_pool1d(
+    *,
+    x_k_s_p,
+    data_format,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, ksize, strides, padding = x_k_s_p
+    data_format = data_format
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        ksize=ksize,
+        strides=strides,
+        padding=padding,
+        data_format=data_format,
     )

@@ -674,11 +674,19 @@ class ContainerBase(dict, abc.ABC):
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
+
+            def _found_in_key_chains(this_key_chain, key_chains):
+                if key_chains is None:
+                    return False
+                for key_chain in key_chains:
+                    if this_key_chain.startswith(key_chain):
+                        return True
+                return False
+
             if not assert_identical and not all(is_container) and any(is_container):
+                found = _found_in_key_chains(this_key_chain, key_chains)
                 if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                        this_key_chain not in key_chains and to_apply
-                    ):
+                    if (found and not to_apply) or (not found and to_apply):
                         if prune_unapplied:
                             continue
                         return_dict[key] = value0
@@ -707,10 +715,9 @@ class ContainerBase(dict, abc.ABC):
                         continue
                     return_dict[key] = ret
                 else:
+                    found = _found_in_key_chains(this_key_chain, key_chains)
                     if key_chains is not None:
-                        if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply
-                        ):
+                        if (found and not to_apply) or (not found and to_apply):
                             if prune_unapplied:
                                 continue
                             return_dict[key] = value0

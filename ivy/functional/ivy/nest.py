@@ -3,6 +3,7 @@
 # global
 from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Optional, Dict, Iterable, Sequence
+import copy
 
 # local
 import ivy
@@ -15,7 +16,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_exceptions
 def index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
     /,
 ) -> Any:
@@ -51,6 +52,19 @@ def index_nest(
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
     ivy.array([3., 4.])
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1.,2.], [3.,4.]]),
+    ...                   b = (50,60))
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    >>> z
+    {
+        a: ivy.array([3., 4.]),
+        b: 60
+    }
 
     With :code:`Dict` input:
 
@@ -258,7 +272,11 @@ def map_nest_at_index(
 
 
 @handle_exceptions
-def multi_index_nest(nest: Iterable, indices: Tuple, /):
+def multi_index_nest(
+    nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
+    indices: Iterable[Iterable[int]],
+    /,
+) -> Iterable[Any]:
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -269,6 +287,56 @@ def multi_index_nest(nest: Iterable, indices: Tuple, /):
     indices
         A tuple of tuples of indices to apply.
 
+    Returns
+    -------
+    ret
+        The result elements through indexing the nested object.
+
+    Examples
+    --------
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2)
+    >>> y = [[0]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [1]
+
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
+    >>> y = [[0],[1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1., 2.], ivy.array([3., 4.])]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1,2]),
+    ...                   b=[30,40])
+    >>> y = ('a', ('b', 0))
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1, 2]), 30]
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = (('b', 1), 'a')
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [[2, 3], 0]
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> y = [[2, 1, 0], [0, 1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    ['h', 'b']
     """
     return [index_nest(nest, index) for index in indices]
 
@@ -435,6 +503,7 @@ def nested_argwhere(
     _index: List = None,
     _base: bool = True,
     stop_after_n_found: Optional[int] = None,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
     """Checks the leaf nodes of nested x via function fn, and returns all nest indices
     where the method evaluates as True.
@@ -458,6 +527,9 @@ def nested_argwhere(
         stack. Used internally, do not set manually.
     stop_after_n_found
         to stop after some needed indices are found.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -502,8 +574,18 @@ def nested_argwhere(
     ]
     """
     to_ignore = ivy.default(to_ignore, ())
+    extra_nest_types = ivy.default(extra_nest_types, ())
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)) and not isinstance(nest, to_ignore):
+    if (
+        isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types)
+    ) and not isinstance(nest, to_ignore):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            cond_met = fn(nest)
+            ind = ivy.argwhere(cond_met)
+            _indices = list()
+            for i in range(len(ind)):
+                _indices.append(_index + ind.to_list()[i])
+            return _indices
         n = 0
         _indices = []
         for i, item in enumerate(nest):
@@ -516,10 +598,18 @@ def nested_argwhere(
                     _index + [i],
                     False,
                     stop_after_n_found - n,
+                    extra_nest_types,
                 )
                 if stop_after_n_found is not None
                 else nested_argwhere(
-                    item, fn, check_nests, to_ignore, _index + [i], False
+                    item,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [i],
+                    False,
+                    None,
+                    extra_nest_types,
                 )
             )
             if stop_after_n_found is not None and ind:
@@ -548,9 +638,19 @@ def nested_argwhere(
                     _index + [k],
                     False,
                     stop_after_n_found - n,
+                    extra_nest_types,
                 )
                 if stop_after_n_found is not None
-                else nested_argwhere(v, fn, check_nests, to_ignore, _index + [k], False)
+                else nested_argwhere(
+                    v,
+                    fn,
+                    check_nests,
+                    to_ignore,
+                    _index + [k],
+                    False,
+                    None,
+                    extra_nest_types,
+                )
             )
             if stop_after_n_found is not None and ind:
                 if n < stop_after_n_found:
@@ -573,10 +673,13 @@ def nested_argwhere(
 
 @handle_exceptions
 def all_nested_indices(
-    nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True
+    nest: Iterable,
+    include_nests: bool = False,
+    _index: List = None,
+    _base: bool = True,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[Iterable, bool]:
-    """Checks the leaf nodes of nested x via function fn, and returns all nest indices
-    where the method evaluates as True.
+    """Returns indices of all the elements in nest
 
     Parameters
     ----------
@@ -591,17 +694,29 @@ def all_nested_indices(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
     ret
-        A set of indices for the nest where the function evaluated as True.
+        A set of indices of all elements in nest
 
     """
     _index = list() if _index is None else _index
-    if isinstance(nest, (tuple, list)):
+    extra_nest_types = ivy.default(extra_nest_types, ())
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            ind = ivy.argwhere(ivy.ones_like(nest))
+            indices = list()
+            for i in range(len(ind)):
+                indices.append(_index + ind.to_list()[i])
+            return indices
         _indices = [
-            all_nested_indices(item, include_nests, _index + [i], False)
+            all_nested_indices(
+                item, include_nests, _index + [i], False, extra_nest_types
+            )
             for i, item in enumerate(nest)
         ]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
@@ -609,7 +724,7 @@ def all_nested_indices(
             _indices.append(_index)
     elif isinstance(nest, dict):
         _indices = [
-            all_nested_indices(v, include_nests, _index + [k], False)
+            all_nested_indices(v, include_nests, _index + [k], False, extra_nest_types)
             for k, v in nest.items()
         ]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
@@ -739,6 +854,7 @@ def nested_map(
     _tuple_check_fn: Optional[Callable] = None,
     _list_check_fn: Optional[Callable] = None,
     _dict_check_fn: Optional[Callable] = None,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable, Dict]:
     """Applies a function on x in a nested manner, whereby all dicts, lists and tuples
     are traversed to their lowest leaves before applying the method and returning x. If
@@ -767,6 +883,9 @@ def nested_map(
         Placeholder for the list check function, do not set this parameter.
     _dict_check_fn
         Placeholder for the dict check function, do not set this parameter.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -775,6 +894,7 @@ def nested_map(
         nested.
 
     """
+    extra_nest_types = ivy.default(extra_nest_types, ())
     if include_derived is True:
         include_derived = {tuple: True, list: True, dict: True}
     elif not include_derived:
@@ -815,6 +935,7 @@ def nested_map(
                 tuple_check_fn,
                 list_check_fn,
                 dict_check_fn,
+                extra_nest_types,
             )
             for i in x
         ]
@@ -825,7 +946,9 @@ def nested_map(
             return class_instance(**dict(zip(x._fields, ret_list)))
         else:
             return class_instance(ret_list)
-    elif list_check_fn(x, list):
+    elif list_check_fn(x, list) or isinstance(x, extra_nest_types):
+        if isinstance(x, (ivy.Array, ivy.NativeArray)):
+            return fn(x)
         return class_instance(
             [
                 nested_map(
@@ -838,6 +961,7 @@ def nested_map(
                     tuple_check_fn,
                     list_check_fn,
                     dict_check_fn,
+                    extra_nest_types,
                 )
                 for i in x
             ]
@@ -845,7 +969,7 @@ def nested_map(
     elif dict_check_fn(x, dict):
         class_instance = type(x)
         return class_instance(
-            {
+            **{
                 k: nested_map(
                     v,
                     fn,
@@ -856,6 +980,7 @@ def nested_map(
                     tuple_check_fn,
                     list_check_fn,
                     dict_check_fn,
+                    extra_nest_types,
                 )
                 for k, v in x.items()
             }
@@ -865,7 +990,11 @@ def nested_map(
 
 @handle_exceptions
 def nested_any(
-    nest: Iterable, fn: Callable, check_nests: bool = False, _base: bool = True
+    nest: Iterable,
+    fn: Callable,
+    check_nests: bool = False,
+    _base: bool = True,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> bool:
     """Checks the leaf nodes of nest x via function fn, and returns True if any evaluate
     to True, else False.
@@ -882,6 +1011,9 @@ def nested_any(
     _base
         Whether the current function call is the first function call in the recursive
         stack. Used internally, do not set manually.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -889,15 +1021,19 @@ def nested_any(
         A boolean, whether the function evaluates to true for any leaf node.
 
     """
-    if isinstance(nest, (tuple, list)):
+    extra_nest_types = ivy.default(extra_nest_types, ())
+    if isinstance(nest, (tuple, list)) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            if ivy.any(fn(nest)):
+                return True
         for i, item in enumerate(nest):
-            if nested_any(item, fn, check_nests, False):
+            if nested_any(item, fn, check_nests, False, extra_nest_types):
                 return True
         if check_nests and fn(nest):
             return True
     elif isinstance(nest, dict):
         for k, v in nest.items():
-            if nested_any(v, fn, check_nests, False):
+            if nested_any(v, fn, check_nests, False, extra_nest_types):
                 return True
         if check_nests and fn(nest):
             return True
@@ -912,6 +1048,7 @@ def copy_nest(
     /,
     include_derived: bool = False,
     to_mutable: bool = False,
+    extra_nest_types: Optional[Union[type, Tuple[type]]] = None,
 ) -> Union[ivy.Array, ivy.NativeArray, Iterable]:
     """Copies a nest deeply, but without copying leaves of the nest, only the nest
     lists, tuples and dicts are copied.
@@ -926,6 +1063,9 @@ def copy_nest(
     to_mutable
         Whether to convert the nest to a mutable form, changing all tuples to lists.
         Default is ``False``.
+    extra_nest_types
+        Types to recursively check when deciding whether to go deeper into the
+        nest or not
 
     Returns
     -------
@@ -960,6 +1100,7 @@ def copy_nest(
     {'first': [23.0, 24.0, 25], 'second': [46.0, 48.0, 50]}
 
     """
+    extra_nest_types = ivy.default(extra_nest_types, ())
     class_instance = type(nest)
     check_fn = (
         (lambda x_, t: isinstance(nest, t))
@@ -968,16 +1109,28 @@ def copy_nest(
     )
     if check_fn(nest, tuple):
         ret_list = [
-            copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+            copy_nest(
+                i,
+                include_derived=include_derived,
+                to_mutable=to_mutable,
+                extra_nest_types=extra_nest_types,
+            )
             for i in nest
         ]
         if to_mutable:
             return ret_list
         return class_instance(tuple(ret_list))
-    elif check_fn(nest, list):
+    elif check_fn(nest, list) or isinstance(nest, extra_nest_types):
+        if isinstance(nest, (ivy.Array, ivy.NativeArray)):
+            return copy.deepcopy(nest)
         return class_instance(
             [
-                copy_nest(i, include_derived=include_derived, to_mutable=to_mutable)
+                copy_nest(
+                    i,
+                    include_derived=include_derived,
+                    to_mutable=to_mutable,
+                    extra_nest_types=extra_nest_types,
+                )
                 for i in nest
             ]
         )
@@ -985,7 +1138,12 @@ def copy_nest(
         class_instance = type(nest)
         return class_instance(
             {
-                k: copy_nest(v, include_derived=include_derived, to_mutable=to_mutable)
+                k: copy_nest(
+                    v,
+                    include_derived=include_derived,
+                    to_mutable=to_mutable,
+                    extra_nest_types=extra_nest_types,
+                )
                 for k, v in nest.items()
             }
         )
@@ -1028,7 +1186,10 @@ def nested_multi_map(
         convert the output to ivy_arrays. Default is ``True``
     Returns
     -------
-        nest containing the result of the funciton.
+        nest containing the result of the function. The structure of the output is the
+        same as the input with the result of the function applied to each applicable
+        leaf and the value at that leaf in the first nest for a non-applicable leaf if
+        prune_unapplied is False else unapplied leaves are pruned.
 
     """
     nest0 = None
@@ -1036,7 +1197,12 @@ def nested_multi_map(
         if isinstance(nest, (tuple, list, dict)):
             nest0 = nest
             break
-    return_list = list()
+    if isinstance(nest0, (list, tuple)):
+        return_nest = []
+    elif isinstance(nest0, dict):
+        return_nest = {}
+    else:
+        return_nest = None
     if nest0 is not None:
         is_dict = isinstance(nest0, dict)
         for index, val in enumerate(nest0):
@@ -1059,9 +1225,13 @@ def nested_multi_map(
                     for nest in nests
                 ]
             value0 = values[0]
-            this_key_chain = (
-                str(index) if key_chain == "" else (key_chain + "/" + str(index))
-            )
+            if is_dict:
+                key = str(index) if isinstance(nest, (tuple, list)) else val
+            else:
+                key = (
+                    str(index) if isinstance(nest, (tuple, list)) else list(nest)[index]
+                )
+            this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             ret = ivy.nested_multi_map(
                 func,
                 values,
@@ -1072,30 +1242,45 @@ def nested_multi_map(
                 config,
                 to_ivy,
             )
-            if to_ivy:
-                if isinstance(nest, (ivy.Array, ivy.NativeArray)):
-                    return_list.insert(index, ivy.array(ivy.to_list(ret)))
-                else:
-                    return_list.insert(index, ret)
-            else:
-                return_list.insert(index, ret)
+            if ret is not None:
+                if to_ivy and isinstance(nest, (ivy.Array, ivy.NativeArray)):
+                    ret = ivy.array(ivy.to_list(ret))
+                return_nest.append(ret) if isinstance(
+                    return_nest, (list)
+                ) else return_nest.update({val if is_dict else list(nest)[index]: ret})
     else:
         values = nests
+        value0 = values[0]
         this_key_chain = key_chain
+
+        def _found_in_key_chains(this_key_chain, key_chains):
+            if key_chains is None:
+                return False
+            for key_chain in key_chains:
+                if this_key_chain.startswith(key_chain):
+                    return True
+            return False
+
         if key_chains is not None:
-            if (this_key_chain in key_chains and not to_apply) or (
-                this_key_chain not in key_chains and to_apply
-            ):
+            found = _found_in_key_chains(this_key_chain, key_chains)
+            if (found and not to_apply) or (not found and to_apply):
                 if prune_unapplied:
-                    return return_list
+                    return return_nest
                 if ivy.is_array(value0):
-                    if to_ivy:
-                        return_list.append(value0)
-                    else:
-                        return_list.append(ivy.array(value0))
-                else:
-                    return_list.append(value0)
-                return return_list
+                    if not to_ivy:
+                        value0 = ivy.array(value0)
+                return_nest.append(value0) if isinstance(
+                    return_nest, list
+                ) else return_nest.update({this_key_chain: value0}) if isinstance(
+                    return_nest, dict
+                ) else return_nest
+                return (
+                    tuple(return_nest)
+                    if isinstance(nest, tuple)
+                    else ivy.Container(return_nest)
+                    if ivy.is_ivy_container(nest)
+                    else return_nest
+                )
         ret = func(values, this_key_chain)
         if to_ivy:
             if isinstance(nest, (ivy.Array, ivy.NativeArray)):
@@ -1104,4 +1289,79 @@ def nested_multi_map(
                 return ivy.array(ret)
         else:
             return ret
-    return return_list
+    if prune_unapplied and len(return_nest) == 0:
+        return None
+    return (
+        tuple(return_nest)
+        if isinstance(nest0, tuple)
+        else ivy.Container(return_nest)
+        if ivy.is_ivy_container(nest0)
+        else return_nest
+    )
+
+
+@handle_exceptions
+def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterable]):
+    """Group all unique index chains in a nest. This function is useful for finding
+    all unique index chains in a nest, and then duplicating the values at those
+    index chains for functional frameworks.
+
+    Parameters
+    ----------
+    nest
+        nest to get duplicate index chains for.
+
+    Returns
+    -------
+        list of index chains to duplicate.
+    """
+    all_index_chains = ivy.nested_argwhere(nest, lambda _: True)
+    duplicates = []
+    duplicate_index_chains = {}
+    for index_chain in all_index_chains:
+        val = ivy.index_nest(nest, index_chain)
+        if ivy.is_array(val):
+            for i in range(len(duplicates)):
+                if val is duplicates[i]:
+                    duplicate_index_chains[i].append(index_chain)
+                    break
+            else:
+                duplicates.append(val)
+                duplicate_index_chains[len(duplicates) - 1] = [index_chain]
+    return list(duplicate_index_chains.values())
+
+
+def prune_empty(nest):
+    """Prune empty nests from a nest.
+
+    Parameters
+    ----------
+    nest
+        nest to prune.
+
+    Returns
+    -------
+        pruned nest with all empty nests removed
+    """
+    valid = False
+    if isinstance(nest, dict):
+        keys = [k for k in nest]
+        for k in keys:
+            nest[k] = prune_empty(nest[k])
+            if nest[k] is not None:
+                valid = True
+        for k in keys:
+            if nest[k] is None:
+                del nest[k]
+    elif isinstance(nest, (list, tuple)):
+        nest = list(nest)
+        for i in range(len(nest)):
+            nest[i] = prune_empty(nest[i])
+            if nest[i] is not None:
+                valid = True
+        for i in range(len(nest) - 1, -1, -1):
+            if nest[i] is None:
+                del nest[i]
+    if not valid and not (ivy.is_array(nest) or isinstance(nest, (int, float, str))):
+        return None
+    return nest

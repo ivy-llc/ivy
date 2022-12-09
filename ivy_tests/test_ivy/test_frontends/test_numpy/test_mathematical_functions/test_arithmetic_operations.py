@@ -290,7 +290,7 @@ def test_numpy_power(
 
 # float_power
 @handle_frontend_test(
-    fn_tree="frontends.numpy.float_power",
+    fn_tree="numpy.float_power",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"), num_arrays=2
     ),

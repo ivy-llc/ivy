@@ -18,6 +18,7 @@ Array API Tests
 .. _`hypothesis`: https://hypothesis.readthedocs.io/en/latest/
 .. _`ivy tests`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html
 .. _`final section`: https://lets-unify.ai/ivy/deep_dive/ivy_tests.html#re-running-failed-ivy-tests
+.. _`CI Pipeline`: https://lets-unify.ai/ivy/deep_dive/continuous_integration.html#ci-pipeline
 
 In conjunction with our own ivy unit tests, we import the array-api `test suite`_.
 These tests check that all ivy backend libraries behave according to the `Array API Standard`_ which was established in May 2020 by a group of maintainers.
@@ -48,7 +49,7 @@ The entire test suite is run independently `for each backend`_ on every push to 
 Therefore, every function which exists in the standard is thoroughly tested for adherence to the standard on a continuous basis.
 
 You will need to make sure the Array API tests are passing for each backend framework if/when making any changes to Ivy functions which are part of the standard.
-If a test fails on the CI, you can see details about the failure under `Details -> Run [backend] Tests`.
+If a test fails on the CI, you can see details about the failure under `Details -> Run [backend] Tests` as shown in `CI Pipeline`_.
 
 You can also run the tests locally before making a PR.
 There are two ways to do this: using the terminal or using your IDE.
