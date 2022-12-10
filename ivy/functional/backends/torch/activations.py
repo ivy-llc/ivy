@@ -34,7 +34,7 @@ def leaky_relu(
 def gelu(
     x: torch.Tensor , /, * , approximate: bool = False, out: Optional[torch.Tensor] = None
 ) -> torch.Tensor:
-    if approximate:‘tanh’
+    if approximate:
         return torch.nn.functional.gelu(x,approximate=‘tanh’)
     return torch.nn.functional.gelu(x)
 
