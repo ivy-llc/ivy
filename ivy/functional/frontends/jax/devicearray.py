@@ -139,5 +139,5 @@ class DeviceArray:
     def __rrshift__(self, other):
         return jax_frontend.lax.shift_right_logical(other, self)
 
-    def __getitem__(self, index):
-        return self.at[index].get()
+    def __getitem__(self, idx):
+        return self.at[idx].get()

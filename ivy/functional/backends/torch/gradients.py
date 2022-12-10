@@ -32,7 +32,6 @@ def variable_data(x, /):
 
 def _grad_func(y, xs, retain_grads):
     """Gradient calculation function."""
-
     # Creating a zero gradient nest for the case where no gradients are computed
     grads_ = ivy.nested_map(
         xs, lambda x: ivy.to_native(ivy.zeros_like(x)), include_derived=True
