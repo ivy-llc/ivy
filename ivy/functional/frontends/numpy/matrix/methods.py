@@ -33,7 +33,7 @@ class matrix:
             row = row.strip().split(" ")
             data[i] = row
             for j, elem in enumerate(row):
-                data[i][j] = float(elem) if is_float else int(elem)
+                data[i][j] = np.float64(elem) if is_float else np.int64(elem)
         if dtype is None:
             dtype = ivy.float64 if is_float else ivy.int64
         self._data = ivy.array(data, dtype=dtype)
@@ -52,6 +52,8 @@ class matrix:
     # flake8: noqa: E743, E741
     @property
     def I(self):
+        if ivy.is_int_dtype(self._data):
+            return ivy.inv(self._data.astype(ivy.float64))
         return ivy.inv(self._data)
 
     @property
@@ -60,7 +62,7 @@ class matrix:
 
     @property
     def data(self):
-        return hex(id(self._data))
+        return memoryview(ivy.to_numpy(self._data).tobytes())
 
     @property
     def dtype(self):

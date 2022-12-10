@@ -1,5 +1,6 @@
 # global
 from typing import Optional, Union, List, Dict, Tuple
+from numbers import Number
 
 # local
 import ivy
@@ -605,6 +606,109 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         return self.static_exp2(self, out=out)
 
     @staticmethod
+    def static_copysign(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.copysign. This method simply wraps
+        the function, and so the docstring for ivy.copysign also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Container, Array, or scalar to change the sign of
+        x2
+            Container, Array, or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> ivy.Container.static_copysign(x1, x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> ivy.Container.static_copysign(23, x1)
+        {
+            a: ivy.array([23., 23., 23.]),
+            b: ivy.array(-23.)
+        }
+        """
+        return ContainerBase.multi_map_in_static_method(
+            "copysign",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def copysign(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container to change the sign of
+        x2
+            Container from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> x1.copysign(x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> x1.copysign(-1)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(-1.)
+        }
+        """
+        return self.static_copysign(self, x2, out=out)
+
+    @staticmethod
     def static_count_nonzero(
         a: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         /,
@@ -803,7 +907,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.nansum. This method simply wraps
         the function, and so the docstring for ivy.nansum also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -820,13 +924,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -874,7 +978,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -891,13 +995,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:

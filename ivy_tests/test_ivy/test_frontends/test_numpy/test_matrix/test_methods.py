@@ -1,24 +1,28 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import given, assume, strategies as st
+import numpy as np
+import sys
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+import ivy.functional.frontends.numpy as ivy_np
 
 
 CLASS_TREE = "ivy.functional.frontends.numpy.matrix"
 
 
 def _to_string_matrix(num_matrix):
-    str_matrix = ''
+    str_matrix = ""
     for i, row in enumerate(num_matrix):
         for j, elem in enumerate(row):
             str_matrix += str(elem)
             if j < num_matrix.shape[1] - 1:
-                str_matrix += ' '
+                str_matrix += " "
             elif i < num_matrix.shape[0] - 1:
-                str_matrix += '; '
+                str_matrix += "; "
     return str_matrix
 
 
@@ -28,6 +32,105 @@ def _get_x_matrix(x, to_str):
     else:
         x = x[0]
     return x
+
+
+@st.composite
+def _property_helper(draw):
+    _, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=-1e04,
+            max_value=1e04,
+            min_num_dims=2,
+            max_num_dims=2,
+        )
+    )
+    to_str = (st.booleans(),)
+    x = _get_x_matrix(x, to_str)
+    data = ivy_np.matrix(x)
+    data_gt = np.matrix(x)
+    return data, data_gt
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_A(matrices):
+    data, data_gt = matrices
+    ret = np.ravel(data.A)
+    ret_gt = np.ravel(data_gt.A)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="numpy",
+    )
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_A1(matrices):
+    data, data_gt = matrices
+    helpers.value_test(
+        ret_np_flat=data.A1,
+        ret_np_from_gt_flat=data_gt.A1,
+        ground_truth_backend="numpy",
+    )
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_I(matrices):
+    data, data_gt = matrices
+    assume(
+        np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
+        and data.shape[0] == data.shape[1]
+    )
+    ret = np.ravel(data.I)
+    ret_gt = np.ravel(data_gt.I)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="numpy",
+    )
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_T(matrices):
+    data, data_gt = matrices
+    ret = np.ravel(data.T)
+    ret_gt = np.ravel(data_gt.T)
+    helpers.value_test(
+        ret_np_flat=ret,
+        ret_np_from_gt_flat=ret_gt,
+        ground_truth_backend="numpy",
+    )
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_data(matrices):
+    data, data_gt = matrices
+    # sanity test
+    ivy.assertions.check_equal(type(data.data), type(data_gt.data))
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_dtype(matrices):
+    data, data_gt = matrices
+    ivy.assertions.check_equal(str(data.dtype), str(data_gt.dtype))
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_ndim(matrices):
+    data, data_gt = matrices
+    ivy.assertions.check_equal(data.ndim, data_gt.ndim)
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_shape(matrices):
+    data, data_gt = matrices
+    ivy.assertions.check_equal(data.shape, data_gt.shape)
+
+
+@given(matrices=_property_helper())
+def test_numpy_matrix_property_size(matrices):
+    data, data_gt = matrices
+    ivy.assertions.check_equal(data.size, data_gt.size)
 
 
 # argmax

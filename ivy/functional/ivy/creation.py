@@ -952,11 +952,14 @@ def eye(
     k
         index of the diagonal. A positive value refers to an upper diagonal, a negative
         value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.
+    batch_shape
+        optional input that determines returning identity array shape.
+        Default: ``None``.
     dtype
         output array data type. If dtype is None, the output array data type must be the
         default floating-point data type. Default: ``None``.
     device
-         device on which to place the created array.
+        the device on which to place the created array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -974,7 +977,84 @@ def eye(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances as a replacement to any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :'n_rows' input:
+
+    >>> x1 = ivy.eye(3)
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'n_cols' input:
+
+    >>> x1 = ivy.eye(3,4)
+    >>> print(x1)
+    ivy.array([[1., 0., 0., 0.],
+               [0., 1., 0., 0.],
+               [0., 0., 1., 0.]])
+
+
+    With :'k' input:
+
+    >>> x1 = ivy.eye(3, k=1)
+    >>> print(x1)
+    ivy.array([[0., 1., 0.],
+               [0., 0., 1.],
+               [0., 0., 0.]])
+
+
+    With :'dtype' input:
+
+    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> print(x1)
+    ivy.array([[0, 0, 1, 0],
+               [0, 0, 0, 1],
+               [0, 0, 0, 0],
+               [0, 0, 0, 0]])
+
+
+    With :'batch_shape' input:
+
+    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
+    >>> print(x1)
+    ivy.array([[[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]]])
+    >>> x1.shape
+    (3, 2, 3)
+    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
+
+    With :'out' input:
+
+    >>> a1 = ivy.ones(3)
+    >>> ivy.eye(3, out=a1)
+    >>> print(a1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'device' input:
+
+    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+    # Array ``x1`` is now stored on the CPU.
 
     """
     return current_backend().eye(
@@ -1478,6 +1558,7 @@ def one_hot(
     on_value: Optional[Number] = None,
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1520,6 +1601,7 @@ def one_hot(
         on_value=on_value,
         off_value=off_value,
         axis=axis,
+        dtype=dtype,
         device=device,
         out=out,
     )
