@@ -228,6 +228,10 @@ def test_kron(
         max_num_dims=2,
         min_dim_size=2,
         max_dim_size=50,
+        min_value=-100,
+        max_value=100,
+        allow_nan=False,
+        shared_dtype=True
     ),
 )
 def test_matrix_exp(
