@@ -3584,6 +3584,7 @@ def test_jax_numpy_divide(
         b=x[1],
     )
 
+
 # square
 @handle_frontend_test(
     fn_tree="jax.numpy.square",
