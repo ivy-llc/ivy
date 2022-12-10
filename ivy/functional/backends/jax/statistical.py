@@ -96,8 +96,8 @@ def sum(
 ) -> JaxArray:
     dtype = ivy.as_native_dtype(dtype)
     if dtype is None:
-        dtype = _infer_dtype(x.dtype)
-    if dtype != x.dtype:
+        dtype = x.dtype
+    if dtype != x.dtype and not ivy.is_bool_dtype(x):
         x = x.astype(dtype)
     axis = tuple(axis) if isinstance(axis, list) else axis
     return jnp.sum(a=x, axis=axis, dtype=dtype, keepdims=keepdims)

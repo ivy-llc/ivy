@@ -112,8 +112,8 @@ def sum(
     keepdims: bool = False,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if dtype is None:
-        dtype = _infer_dtype(x.dtype)
+    if dtype is None and not ivy.is_bool_dtype(x):
+        dtype = x.dtype
     axis = tuple(axis) if isinstance(axis, list) else axis
     return np.asarray(
         np.sum(

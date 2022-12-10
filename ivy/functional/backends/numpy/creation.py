@@ -135,7 +135,7 @@ def full(
 def full_like(
     x: np.ndarray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: np.dtype,
     device: str,

@@ -75,8 +75,8 @@ class ContainerWithStatistical(ContainerBase):
         >>> z = x.min(axis=1)
         >>> print(z)
         {
-            a: ivy.array([1, 0]),
-            b: ivy.array([2, 0])
+            a:ivy.array([1,-1]),
+            b:ivy.array([2,0])
         }
         """
         return self.handle_inplace(
