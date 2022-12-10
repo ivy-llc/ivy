@@ -2887,7 +2887,7 @@ def test_torch_instance_min(
                                     ),
 )
 def test_torch_instance_sqrt(
-    dtype_x,
+    dtype_,
     as_variable,
     native_array
 ):
