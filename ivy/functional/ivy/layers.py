@@ -1031,10 +1031,9 @@ def conv2d_transpose(
     ...       [[2.],[4.],[6.]],
     ...       [[3.],[6.],[9.]],
     ...       [[2.],[4.],[6.]]]])
-    >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]],
-    ...                      [[[0.]],[[1.]], [[0.]]],
-    ...                      [[[0.]],[[1.]], [[0.]]]])
-    >>> result = ivy.conv2d_transpose(x, filters, (1,), 'SAME', data_format='NHWC',
+    >>> filters = ivy.array([[[[0.]],[[1.]],
+    ...                      [[[0.]],[[1.]]])
+    >>> result = ivy.conv2d_transpose(x, filters, (2,), 'SAME', data_format='NHWC',
     ... dilations= (1,))
     >>> print(result)
     [[[[1.], [2.0],[3.]],
@@ -1046,7 +1045,7 @@ def conv2d_transpose(
     With :class:`ivy.Container` inputs:
 
     >>> x = ivy.Container(a = ivy.array([[[[3.], [3.]], [[1.], [5.]]]])
-    >>> filters = ivy.eye(3, 3).reshape((3, 3, 1, 1)).astype(ivy.float32)
+    >>> filters = ivy.eye(2, 2).reshape((3, 3, 1, 1)).astype(ivy.float32)
     >>> result = ivy.conv2d_transpose(x, filters, (2,), 'SAME', data_format='NHWC',
     ...   dilations= (1,))
     >>> print(result)
@@ -1059,9 +1058,9 @@ def conv2d_transpose(
 
     With multiple :class:`ivy.Container` inputs:
  
-    >>> x = ivy.Container([[[[2.], [0.]], [[1.], [2.]]]]),
-        b:ivy.array([[[[3.], [0.]], [[1.], [2.]]]]),
-        c:ivy.array([[[[2.], [0.], [0.]],
+    >>> x = ivy.Container(a=[[[[2.], [0.]], [[1.], [2.]]]]),
+        b=ivy.array([[[[3.], [0.]], [[1.], [2.]]]]),
+        c=ivy.array([[[[2.], [0.], [0.]],
                       [[1.], [3.], [0.]],
                       [[0.], [1.], [2.]]
                     ]])
