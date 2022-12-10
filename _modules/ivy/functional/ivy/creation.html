@@ -1258,6 +1258,54 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+
+<span class="sd">    With float input:</span>
+<span class="sd"> </span>
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(1, 2, 4)</span>
+<span class="sd">    ivy.array([1., 1.33333337, 1.66666663, 2.])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(1, 2, 4, endpoint=False)</span>
+<span class="sd">    ivy.array([1., 1.25, 1.5 , 1.75])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(1, 10, 4, dtype = int)</span>
+<span class="sd">    ivy.array([ 1,  4,  7, 10])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(1, 2, 4, device = &quot;gpu&quot;)</span>
+<span class="sd">    ivy.array([1., 1.33333337, 1.66666663, 2.])</span>
+
+<span class="sd">    &gt;&gt;&gt; out = ivy.array([0,0,0,0])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(1, 2, 4, out = out)</span>
+<span class="sd">    &gt;&gt;&gt; print(out)</span>
+<span class="sd">    ivy.array([1., 1.33333337, 1.66666663, 2.])</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([4,5])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(x, y, 4)</span>
+<span class="sd">    ivy.array([[1, 2, 3, 4], [2, 3, 4, 5]])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.linspace(x, y, 4, axis = 0)</span>
+<span class="sd">    ivy.array([[1, 2],</span>
+<span class="sd">               [2, 3],</span>
+<span class="sd">               [3, 4],</span>
+<span class="sd">               [4, 5]])</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x.linspace(y, 4)</span>
+<span class="sd">    ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x.linspace(y, 4, axis = 0)</span>
+<span class="sd">    ivy.array([[4, 5],</span>
+<span class="sd">               [3, 4],</span>
+<span class="sd">               [2, 3],</span>
+<span class="sd">               [1, 2]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">start</span><span class="p">)</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
         <span class="n">start</span><span class="p">,</span>
