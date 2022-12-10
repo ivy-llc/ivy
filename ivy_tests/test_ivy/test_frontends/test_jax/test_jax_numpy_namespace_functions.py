@@ -11,6 +11,9 @@ from ivy_tests.test_ivy.test_functional.test_core.test_statistical import (
     statistical_dtype_values,
     _get_castable_dtype,
 )
+from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
+    _get_dtype_value1_value2_axis_for_tensordot,
+)
 
 
 # absolute
@@ -3230,6 +3233,37 @@ def test_jax_expand_dims(
     )
 
 
+# degrees
+@handle_frontend_test(
+    fn_tree="jax.numpy.degrees",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_jax_numpy_degrees(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
 # eye
 @handle_frontend_test(
     fn_tree="jax.numpy.eye",
@@ -3452,4 +3486,64 @@ def test_jax_numpy_negative(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+    )
+
+
+@handle_frontend_test(
+    fn_tree="jax.numpy.rad2deg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"), min_num_dims=1
+    ),
+)
+def test_jax_numpy_rad2deg(
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        x=x[0],
+    )
+
+
+# tensordot
+@handle_frontend_test(
+    fn_tree="jax.numpy.tensordot",
+    dtype_values_and_axes=_get_dtype_value1_value2_axis_for_tensordot(
+        helpers.get_dtypes(kind="numeric")
+    ),
+)
+def test_jax_numpy_tensordot(
+    dtype_values_and_axes,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+):
+    dtype, a, b, axes = dtype_values_and_axes
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        a=a,
+        b=b,
+        axes=axes,
     )

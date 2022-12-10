@@ -1,5 +1,6 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -52,7 +53,7 @@ def test_jax_devicearray__pos_(
     init_tree="jax.numpy.array",
     method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__neg_(
@@ -88,7 +89,7 @@ def test_jax_devicearray__neg_(
     init_tree="jax.numpy.array",
     method_name="__eq__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -127,7 +128,7 @@ def test_jax_devicearray__eq_(
     init_tree="jax.numpy.array",
     method_name="__ne__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -166,7 +167,7 @@ def test_jax_devicearray__ne_(
     init_tree="jax.numpy.array",
     method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -205,7 +206,7 @@ def test_jax_devicearray__lt_(
     init_tree="jax.numpy.array",
     method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -219,6 +220,7 @@ def test_jax_devicearray__le_(
     frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -244,7 +246,7 @@ def test_jax_devicearray__le_(
     init_tree="jax.numpy.array",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -283,7 +285,7 @@ def test_jax_devicearray__gt_(
     init_tree="jax.numpy.array",
     method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -297,6 +299,7 @@ def test_jax_devicearray__ge_(
     frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -322,7 +325,7 @@ def test_jax_devicearray__ge_(
     init_tree="jax.numpy.array",
     method_name="__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__abs_(
@@ -358,7 +361,16 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     x_dtype, x = draw(
         helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(dtype))
     )
-    x_int = draw(helpers.ints(min_value=0, max_value=10))
+    pow_dtype, x_int = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=10,
+            max_num_dims=0,
+            max_dim_size=1,
+        )
+    )
+    x_dtype = x_dtype + pow_dtype
     return x_dtype, x, x_int
 
 
@@ -368,7 +380,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     method_name="__pow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_pow(
+def test_jax_devicearray__pow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -391,7 +403,7 @@ def test_jax_special_pow(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": pow[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -404,7 +416,7 @@ def test_jax_special_pow(
     method_name="__rpow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_rpow(
+def test_jax_devicearray__rpow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -420,14 +432,14 @@ def test_jax_special_rpow(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": pow[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": x[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -439,8 +451,9 @@ def test_jax_special_rpow(
     init_tree="jax.numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__and_(
@@ -476,8 +489,9 @@ def test_jax_devicearray__and_(
     init_tree="jax.numpy.array",
     method_name="__rand__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rand_(
@@ -513,8 +527,9 @@ def test_jax_devicearray__rand_(
     init_tree="jax.numpy.array",
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__or_(
@@ -550,8 +565,9 @@ def test_jax_devicearray__or_(
     init_tree="jax.numpy.array",
     method_name="__ror__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__ror_(
@@ -587,8 +603,9 @@ def test_jax_devicearray__ror_(
     init_tree="jax.numpy.array",
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__xor_(
@@ -624,8 +641,9 @@ def test_jax_devicearray__xor_(
     init_tree="jax.numpy.array",
     method_name="__rxor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rxor_(
@@ -661,7 +679,7 @@ def test_jax_devicearray__rxor_(
     init_tree="jax.numpy.array",
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
 def test_jax_devicearray__invert_(
@@ -692,11 +710,26 @@ def test_jax_devicearray__invert_(
     )
 
 
+# shifting helper
+@st.composite
+def _get_dtype_x_and_int_shift(draw, dtype):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(dtype),
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    )
+    x_dtype = x_dtype
+    x[1] = np.asarray(np.clip(x[0], 0, np.iinfo(x_dtype[0]).bits - 1), dtype=x_dtype[0])
+    return x_dtype, x[0], x[1]
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__lshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
 def test_jax_special_lshift(
     dtype_x_shift,
@@ -714,7 +747,7 @@ def test_jax_special_lshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -730,7 +763,7 @@ def test_jax_special_lshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rlshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
 def test_jax_special_rlshift(
     dtype_x_shift,
@@ -748,13 +781,13 @@ def test_jax_special_rlshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": shift,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"other": shift},
+        method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
@@ -764,7 +797,7 @@ def test_jax_special_rlshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
 def test_jax_special_rshift(
     dtype_x_shift,
@@ -782,7 +815,7 @@ def test_jax_special_rshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -798,7 +831,7 @@ def test_jax_special_rshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rrshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
 def test_jax_special_rrshift(
     dtype_x_shift,
@@ -816,13 +849,13 @@ def test_jax_special_rrshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": shift,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"other": shift},
+        method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
@@ -1228,6 +1261,7 @@ def test_jax_special_mod(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1266,6 +1300,7 @@ def test_jax_special_rmod(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1400,7 +1435,7 @@ def test_jax_special_getitem(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"index": index},
+        method_all_as_kwargs_np={"idx": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )

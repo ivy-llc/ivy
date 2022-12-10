@@ -113,18 +113,9 @@ def copysign(
         tensor_x1 = tf.cast(tensor_x1, tf.float64)
     # Replace any zero values with 1/the value, since tf.math.sign always
     # returns 0 for positive or negative zero
-    signable_x2 = tf.where(
-        tf.equal(tensor_x2, 0),
-        tf.math.divide(1, x2),
-        tensor_x2
-    )
+    signable_x2 = tf.where(tf.equal(tensor_x2, 0), tf.math.divide(1, x2), tensor_x2)
     signs = tf.math.sign(signable_x2)
-    return tf.math.multiply(
-        tf.math.abs(
-            tensor_x1
-        ),
-        signs
-    )
+    return tf.math.multiply(tf.math.abs(tensor_x1), signs)
 
 
 def count_nonzero(
