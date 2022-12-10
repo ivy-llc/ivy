@@ -925,13 +925,19 @@ def test_tensorflow_max_pool1d(
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
-    data_format=df(data_format=st.sampled_from(["NWC"])),
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=1, max_dims=2, min_side=1, max_side=2),
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        stride_min=1,
+        stride_max=3,
+        type="1d",
+       
+    ),
 )
-def test_tensorflow_avg_pool1d(
+def test_tensorflow_conv1d(
     *,
-    x_k_s_p,
-    data_format,
+    x_f_d_df,
     as_variable,
     num_positional_args,
     native_array,
@@ -939,8 +945,7 @@ def test_tensorflow_avg_pool1d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, pool_size, strides, padding = x_k_s_p
-    data_format = data_format
+    input_dtype, x, pool_size, dilations, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -952,7 +957,8 @@ def test_tensorflow_avg_pool1d(
         on_device=on_device,
         input=x,
         pool_size=pool_size,
-        strides=strides,
-        padding=padding,
+        stride=stride,
+        padding=pad,
         data_format=data_format,
+        dilations=dilations,
     )
