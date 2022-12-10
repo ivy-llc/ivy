@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
     handle_array_like,
+    inputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -442,7 +443,7 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def can_cast(
