@@ -240,4 +240,6 @@ def avg_pool1d(
     data_format='channels_last',
     **kwargs
 ):
-    return ivy.avg_pool1d(strides,padding,data_format,**kwargs,pool_size=2)
+    return ivy.avg_pool1d(strides, padding, data_format, **kwargs, pool_size=2
+    )
+    

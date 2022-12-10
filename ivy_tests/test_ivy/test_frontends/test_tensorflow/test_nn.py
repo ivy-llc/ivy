@@ -8,12 +8,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
-
-
-@st.composite
-def df(draw, data_format):
-    data_format = draw(data_format)
-    return data_format
 @st.composite
 def _x_and_filters(
     draw,
@@ -219,6 +213,7 @@ def _x_and_filters(
     if not transpose:
         return dtype, x, filters, dilations, data_format, stride, padding
     return dtype, x, filters, dilations, data_format, stride, padding, output_shape
+
 
 @st.composite
 def df(draw, data_format):
@@ -891,8 +886,6 @@ def test_tensorflow_local_response_normalization(
     )
 
 
-
-
 # max_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.max_pool1d",
@@ -971,9 +964,4 @@ def test_tensorflow_avg_pool1d(
         pool_size=pool_size,
         data_format=data_format, 
     )
-
-
-@st.composite
-def df(draw, data_format):
-    data_format = draw(data_format)
-    return data_format
+    
