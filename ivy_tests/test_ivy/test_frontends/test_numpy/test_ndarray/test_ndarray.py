@@ -1272,6 +1272,7 @@ def test_numpy_instance_truediv__(
         frontend=frontend,
     )
 
+
 @handle_frontend_method(
     method_tree="numpy.ndarray.__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
