@@ -477,8 +477,12 @@ def test_tensorflow_gelu(
 
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool2d",
-    data_format=st.sampled_from(["NHWC"]),
-    x_k_s_p=_x_and_ksize(min_dims=1, max_dims=3, min_side=1, max_side=4),
+    x_k_s_p=_x_and_ksize(
+        min_dims=1, 
+        max_dims=3, 
+        min_side=1, 
+        max_side=4,
+        data_format=st.sampled_from(["NHWC"])),
 )
 def test_tensorflow_avg_pool2d(
     *,
