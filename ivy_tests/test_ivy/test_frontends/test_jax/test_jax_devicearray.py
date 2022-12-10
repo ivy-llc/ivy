@@ -169,6 +169,7 @@ def test_jax_devicearray__ne_(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__lt_(
@@ -1094,7 +1095,7 @@ def test_jax_special_rmul(
     init_tree="jax.numpy.array",
     method_name="__div__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=True),
+        available_dtypes=helpers.get_dtypes("numeric", full=False),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1109,6 +1110,7 @@ def test_jax_special_div(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1147,6 +1149,7 @@ def test_jax_special_rdiv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1185,6 +1188,7 @@ def test_jax_special_truediv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1223,6 +1227,7 @@ def test_jax_special_rtruediv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,

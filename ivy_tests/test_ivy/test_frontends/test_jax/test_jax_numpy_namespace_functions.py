@@ -3552,7 +3552,7 @@ def test_jax_numpy_tensordot(
 @handle_frontend_test(
     fn_tree="jax.numpy.divide",
     dtype_values=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
         allow_inf=False,
         large_abs_safety_factor=4,

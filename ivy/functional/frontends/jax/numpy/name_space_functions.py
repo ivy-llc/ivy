@@ -658,6 +658,8 @@ def tensordot(a, b, axes=2):
 
 @to_ivy_arrays_and_back
 def divide(x1, x2, /):
+    if ivy.dtype(x1) == "int64" or ivy.dtype(x1) == "uint64":
+        x1 = ivy.astype(x1, ivy.float64)
     x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.divide(x1, x2)
 
