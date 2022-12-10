@@ -24,6 +24,40 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         density: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.<func_name>. This method simply wraps the function, and so the docstring for ivy.histogram also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the given range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths.
+        axis
+            dimension along which maximum values must be computed. By default, the maximum value must be computed over the entire array. Default: ``None``.
+        extend_lower_interval
+            if True, extend the lowest interval I0 to (-inf, c1].
+        extend_upper_interval
+            ff True, extend the upper interval I_{K-1} to [c_{K-1}, +inf).
+        dtype
+            the output type.
+        range
+            the lower and upper range of the bins. The first element of the range must be less than or equal to the second.
+        weights
+            each value in ``a`` only contributes its associated weight towards the bin count (instead of 1). Must be of the same shape as a.
+        density
+             if True, the result is the value of the probability density function at the bin, normalized such that the integral over the range of bins is 1.
+        out
+            optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogram and the bin edges.
+
+            Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*, and therefore also accepts :class:`ivy.Container` instances in place of any of the arguments.
+        """
         return ContainerBase.multi_map_in_static_method(
             "histogram",
             a,
@@ -54,6 +88,40 @@ class ContainerWithStatisticalExperimental(ContainerBase):
         density: Optional[bool] = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.<func_name>. This method simply wraps the function, and so the docstring for ivy.histogram also applies to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input array.
+        bins
+            if ``bins`` is an int, it defines the number of equal-width bins in the given range.
+            if ``bins`` is an array, it defines a monotonically increasing array of bin edges, including the rightmost edge, allowing for non-uniform bin widths.
+        axis
+            dimension along which maximum values must be computed. By default, the maximum value must be computed over the entire array. Default: ``None``.
+        extend_lower_interval
+            if True, extend the lowest interval I0 to (-inf, c1].
+        extend_upper_interval
+            ff True, extend the upper interval I_{K-1} to [c_{K-1}, +inf).
+        dtype
+            the output type.
+        range
+            the lower and upper range of the bins. The first element of the range must be less than or equal to the second.
+        weights
+            each value in ``a`` only contributes its associated weight towards the bin count (instead of 1). Must be of the same shape as a.
+        density
+             if True, the result is the value of the probability density function at the bin, normalized such that the integral over the range of bins is 1.
+        out
+            optional output array, for writing the result to. It must have a shape that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            a tuple containing the values of the histogram and the bin edges.
+
+            Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*, and therefore also accepts :class:`ivy.Container` instances in place of any of the arguments.
+        """
         return self.static_histogram(
             self,
             bins=bins,

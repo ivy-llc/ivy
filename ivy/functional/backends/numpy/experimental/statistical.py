@@ -2,6 +2,8 @@ from typing import Optional, Union, Tuple, Sequence
 import numpy as np
 
 
+#TODO: Implement bins as str
+#      Out does not work.
 def histogram(
     a: np.ndarray,
     /,
@@ -17,8 +19,10 @@ def histogram(
 ) -> Tuple[np.ndarray]:
     if range:
         bins = np.linspace(start=range[0], stop=range[1], num=bins + 1)
-        bin_edges = bins
+        bin_edges = bins.copy()
         range = None
+    else:
+        bin_edges = bins.copy()
     if extend_lower_interval:
         bin_edges[0] = -np.inf
     if extend_upper_interval:
@@ -31,14 +35,13 @@ def histogram(
                     bins=bin_edges,
                     range=range,
                     weights=weights,
-                    density=density
                 )[0],
             axis,
             a
         )
         if dtype:
             histogram_values = histogram_values.astype(dtype)
-        return (histogram_values, bins)
+        return histogram_values, bins
     else:
         ret = np.histogram(
             a=a,
@@ -50,7 +53,7 @@ def histogram(
         histogram_values = ret[0]
         if dtype:
             histogram_values = histogram_values.astype(dtype)
-        return (histogram_values, bins)
+        return histogram_values, bins
 
 
 def median(

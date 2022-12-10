@@ -36,7 +36,7 @@ def histogram(
     if dtype:
         histogram_values.type(dtype)
         bin_edges.type(dtype)
-    return (histogram_values, bin_edges)
+    return histogram_values, bin_edges
 
 
 histogram.support_native_out = True

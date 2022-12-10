@@ -7,7 +7,7 @@ from ivy.func_wrapper import with_unsupported_dtypes
 from . import backend_version
 
 
-#TODO: avoid error when inputs are out of range and extend_lower_interval or extend_upper_interval are false.
+#TODO: Avoid error when inputs are out of range and extend_lower_interval or extend_upper_interval are false.
 def histogram(
     a: tf.Tensor,
     /,
@@ -37,7 +37,7 @@ def histogram(
     if density:
         diff_bins = tf.experimental.numpy.diff(bins)
         ret = tf.divide(tf.divide(ret, diff_bins), tf.math.reduce_sum(ret))
-    return (ret, bins)
+    return ret, bins
 
 
 def median(
