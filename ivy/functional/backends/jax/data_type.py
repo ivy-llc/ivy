@@ -1,7 +1,7 @@
 # global
 import numpy as np
-import jax
-import jaxlib
+# import jax
+# import jaxlib
 import jax.numpy as jnp
 from typing import Union, Sequence, List
 
