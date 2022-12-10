@@ -654,3 +654,12 @@ def rad2deg(
 @to_ivy_arrays_and_back
 def tensordot(a, b, axes=2):
     return ivy.tensordot(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def divide(x1, x2, /):
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.divide(x1, x2)
+
+
+true_divide = divide
