@@ -238,3 +238,10 @@ def avg_pool1d(
 ):
     return ivy.avg_pool1d(input, ksize, strides, padding, data_format=data_format
     )
+avg_pool1d.unsupported_dtypes = (
+    "int8",
+    "int16",
+    "int32",
+    "int64",
+    "bool",
+)
