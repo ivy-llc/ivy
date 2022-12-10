@@ -53,7 +53,17 @@ class ArrayWithStatisticalExperimental(abc.ABC):
         ret
             a tuple containing the values of the histogram and the bin edges.
 
-            Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*, and therefore also accepts :class:`ivy.Container` instances in place of any of the arguments.
+        Both the description and the type hints above assumes an array input for simplicity, but this function is *nestable*, and therefore also accepts :class:`ivy.Container` instances in place of any of the arguments.
+
+        Examples
+        --------
+        With :class:`ivy.Array` input:
+
+        >>> x = ivy.array([0, 1, 2])
+        >>> y = ivy.array([0., 0.5, 1., 1.5, 2.])
+        >>> z = ivy.histogram(x, bins=y)
+        >>> print(z)
+        (ivy.array([1, 0, 1, 1]), ivy.array([0. , 0.5, 1. , 1.5, 2. ]))
         """
         return ivy.histogram(
             self._data,
