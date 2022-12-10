@@ -43,8 +43,8 @@ def test_numpy_can_cast(
 # promote_types
 @handle_frontend_test(
     fn_tree="numpy.promote_types",
-    type1=helpers.get_dtypes("numeric", full=False),
-    type2=helpers.get_dtypes("numeric", full=False),
+    type1=helpers.get_dtypes("valid", full=False),
+    type2=helpers.get_dtypes("valid", full=False),
 )
 # there are 100 combinations of dtypes, so run 200 examples to make sure all are tested
 @settings(max_examples=200)
