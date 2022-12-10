@@ -925,8 +925,17 @@ def test_tensorflow_max_pool1d(
 # avg_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
-    data_format=df(data_format=st.sampled_from(["NWC"])),
-    x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        stride_min=1,
+        stride_max=1,
+        dilation_max=1,
+        type="2d",
+        transpose=True,
+        atrous=True,
+    ),
 )
 def test_tensorflow_avg_pool1d(
     *,
