@@ -111,19 +111,22 @@ def broadcast_to(x: JaxArray, shape: Union[ivy.NativeShape, Sequence[int]]) -> J
     return jnp.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
-    if type(from_) in [
-        jax.interpreters.xla._DeviceArray,
-        jaxlib.xla_extension.DeviceArray,
-    ]:
-        from_ = str(from_.dtype)
-    from_ = str(from_)
-    to = str(to)
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
-    return jnp.can_cast(from_, to)
+# def can_cast(from_: Union[jnp.dtype, JaxArray], to: jnp.dtype, /) -> bool:
+#
+#     if type(from_) in [
+#         jax.interpreters.xla._DeviceArray,
+#         jaxlib.xla_extension.DeviceArray,
+#     ]:
+#         from_ = str(from_.dtype)
+#     print(jnp.can_cast(str(from_), str(to)), (ivy.Dtype(from_),ivy.Dtype(to)) in ivy.promotion_table)
+#     return (ivy.Dtype(from_),ivy.Dtype(to)) in ivy.promotion_table
+#     from_ = str(from_)
+#     to = str(to)
+#     if "bool" in from_ and (("int" in to) or ("float" in to)):
+#         return False
+#     if "int" in from_ and "float" in to:
+#         return False
+#     return jnp.can_cast(from_, to)
 
 
 @_handle_nestable_dtype_info
