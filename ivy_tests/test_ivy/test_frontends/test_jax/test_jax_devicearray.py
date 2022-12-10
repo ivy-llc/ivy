@@ -1261,6 +1261,7 @@ def test_jax_special_mod(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1299,6 +1300,7 @@ def test_jax_special_rmod(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
+    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1433,7 +1435,7 @@ def test_jax_special_getitem(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"index": index},
+        method_all_as_kwargs_np={"idx": index},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
