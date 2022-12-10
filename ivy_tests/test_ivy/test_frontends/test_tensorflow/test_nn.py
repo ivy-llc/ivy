@@ -927,6 +927,8 @@ def test_tensorflow_max_pool1d(
     fn_tree="tensorflow.nn.avg_pool1d",
     x_f_d_df=_x_and_filters(
         dtypes=helpers.get_dtypes("float", full=False),
+        input=input,
+        pool_size=2,
         data_format=st.sampled_from(["NWC"]),
         padding=st.sampled_from(["VALID", "SAME"]),
         stride_min=1,
@@ -937,6 +939,10 @@ def test_tensorflow_max_pool1d(
 )
 def test_tensorflow_pool1d(
     *,
+    pool_size,
+    stride,
+    padding,
+    data_format,
     x_f_d_df,
     as_variable,
     num_positional_args,
@@ -944,8 +950,9 @@ def test_tensorflow_pool1d(
     frontend,
     fn_tree,
     on_device,
+   
 ):
-    input_dtype, x, pool_size, dilations, data_format, stride, pad = x_f_d_df
+    input_dtype, input, pool_size, data_format, stride, pad = x_f_d_df
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -955,10 +962,11 @@ def test_tensorflow_pool1d(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x,
+        input=input,
+        data_format=data_format,
         pool_size=pool_size,
         stride=stride,
         padding=pad,
         data_format=data_format,
-        dilations=dilations,
+        
     )
