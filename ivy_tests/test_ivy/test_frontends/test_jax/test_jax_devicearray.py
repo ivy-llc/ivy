@@ -1094,7 +1094,7 @@ def test_jax_special_rmul(
     init_tree="jax.numpy.array",
     method_name="__div__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
     ),
