@@ -1,5 +1,5 @@
 # global
-from hypothesis import strategies as st
+from hypothesis import strategies as st, assume
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -52,7 +52,7 @@ def test_jax_devicearray__pos_(
     init_tree="jax.numpy.array",
     method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__neg_(
@@ -88,7 +88,7 @@ def test_jax_devicearray__neg_(
     init_tree="jax.numpy.array",
     method_name="__eq__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -127,7 +127,7 @@ def test_jax_devicearray__eq_(
     init_tree="jax.numpy.array",
     method_name="__ne__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -166,7 +166,7 @@ def test_jax_devicearray__ne_(
     init_tree="jax.numpy.array",
     method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -205,7 +205,7 @@ def test_jax_devicearray__lt_(
     init_tree="jax.numpy.array",
     method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -219,6 +219,7 @@ def test_jax_devicearray__le_(
     frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -244,7 +245,7 @@ def test_jax_devicearray__le_(
     init_tree="jax.numpy.array",
     method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -283,7 +284,7 @@ def test_jax_devicearray__gt_(
     init_tree="jax.numpy.array",
     method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -297,6 +298,7 @@ def test_jax_devicearray__ge_(
     frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -322,7 +324,7 @@ def test_jax_devicearray__ge_(
     init_tree="jax.numpy.array",
     method_name="__abs__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=helpers.get_dtypes("numeric"),
     ),
 )
 def test_jax_devicearray__abs_(
@@ -358,7 +360,16 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     x_dtype, x = draw(
         helpers.dtype_and_values(available_dtypes=helpers.get_dtypes(dtype))
     )
-    x_int = draw(helpers.ints(min_value=0, max_value=10))
+    pow_dtype, x_int = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("integer"),
+            min_value=0,
+            max_value=10,
+            max_num_dims=0,
+            max_dim_size=1,
+        )
+    )
+    x_dtype = x_dtype + pow_dtype
     return x_dtype, x, x_int
 
 
@@ -368,7 +379,7 @@ def _get_dtype_x_and_int(draw, *, dtype="numeric"):
     method_name="__pow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_pow(
+def test_jax_devicearray__pow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -391,7 +402,7 @@ def test_jax_special_pow(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": pow[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -404,7 +415,7 @@ def test_jax_special_pow(
     method_name="__rpow__",
     dtype_x_pow=_get_dtype_x_and_int(),
 )
-def test_jax_special_rpow(
+def test_jax_devicearray__rpow_(
     dtype_x_pow,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -420,14 +431,14 @@ def test_jax_special_rpow(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": pow[0],
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": pow,
+            "other": x[0],
         },
         frontend=frontend,
         frontend_method_data=frontend_method_data,
@@ -439,8 +450,9 @@ def test_jax_special_rpow(
     init_tree="jax.numpy.array",
     method_name="__and__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__and_(
@@ -476,8 +488,9 @@ def test_jax_devicearray__and_(
     init_tree="jax.numpy.array",
     method_name="__rand__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rand_(
@@ -513,8 +526,9 @@ def test_jax_devicearray__rand_(
     init_tree="jax.numpy.array",
     method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__or_(
@@ -550,8 +564,9 @@ def test_jax_devicearray__or_(
     init_tree="jax.numpy.array",
     method_name="__ror__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__ror_(
@@ -587,8 +602,9 @@ def test_jax_devicearray__ror_(
     init_tree="jax.numpy.array",
     method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__xor_(
@@ -624,8 +640,9 @@ def test_jax_devicearray__xor_(
     init_tree="jax.numpy.array",
     method_name="__rxor__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
         num_arrays=2,
+        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__rxor_(
@@ -661,7 +678,7 @@ def test_jax_devicearray__rxor_(
     init_tree="jax.numpy.array",
     method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("valid"),
+        available_dtypes=st.one_of(st.just(("bool",)), helpers.get_dtypes("integer")),
     ),
 )
 def test_jax_devicearray__invert_(

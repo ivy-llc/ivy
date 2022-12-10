@@ -1,7 +1,6 @@
 """Collection of Jax network layers, wrapped to fit Ivy syntax and signature."""
 
 # global
-import jax
 import jax.lax as jlax
 import jax.numpy as jnp
 
@@ -9,7 +8,6 @@ import jax.numpy as jnp
 import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
-from ivy.functional.backends.jax.random import RNG
 
 # Extra #
 # ------#
@@ -397,28 +395,3 @@ def conv_general_transpose(
     if data_format == "channel_first":
         return jnp.transpose(res, (0, dims + 1, *range(1, dims + 1)))
     return res
-
-
-def dropout1d(
-    x: JaxArray,
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[JaxArray] = None,
-) -> JaxArray:
-    if training:
-        if data_format == "NWC":
-            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
-            x = jnp.transpose(x, perm)
-        noise_shape = list(x.shape)
-        noise_shape[-1] = 1
-        _, rng_input = jax.random.split(RNG.key)
-        mask = jax.random.bernoulli(rng_input, 1 - prob, noise_shape)
-        res = jnp.where(mask, x / (1 - prob), 0)
-        if data_format == "NWC":
-            res = jnp.transpose(res, perm)
-        return res
-    else:
-        return x

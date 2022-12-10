@@ -15,14 +15,14 @@ CLASS_TREE = "ivy.functional.frontends.numpy.matrix"
 
 
 def _to_string_matrix(num_matrix):
-    str_matrix = ''
+    str_matrix = ""
     for i, row in enumerate(num_matrix):
         for j, elem in enumerate(row):
             str_matrix += str(elem)
             if j < num_matrix.shape[1] - 1:
-                str_matrix += ' '
+                str_matrix += " "
             elif i < num_matrix.shape[0] - 1:
-                str_matrix += '; '
+                str_matrix += "; "
     return str_matrix
 
 
@@ -45,7 +45,7 @@ def _property_helper(draw):
             max_num_dims=2,
         )
     )
-    to_str = st.booleans(),
+    to_str = (st.booleans(),)
     x = _get_x_matrix(x, to_str)
     data = ivy_np.matrix(x)
     data_gt = np.matrix(x)
@@ -78,8 +78,8 @@ def test_numpy_matrix_property_A1(matrices):
 def test_numpy_matrix_property_I(matrices):
     data, data_gt = matrices
     assume(
-        np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon and
-        data.shape[0] == data.shape[1]
+        np.linalg.cond(data.A.data) < 1 / sys.float_info.epsilon
+        and data.shape[0] == data.shape[1]
     )
     ret = np.ravel(data.I)
     ret_gt = np.ravel(data_gt.I)

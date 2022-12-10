@@ -6,6 +6,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
 )
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
@@ -18,7 +19,7 @@ abs = absolute
 
 @to_ivy_arrays_and_back
 def add(x1, x2):
-    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
@@ -102,10 +103,10 @@ def clip(a, a_min=None, a_max=None, out=None):
     )
     a = ivy.array(a)
     if a_min is None:
-        a, a_max = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_max)
+        a, a_max = promote_types_of_jax_inputs(a, a_max)
         return ivy.minimum(a, a_max, out=out)
     if a_max is None:
-        a, a_min = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_min)
+        a, a_min = promote_types_of_jax_inputs(a, a_min)
         return ivy.maximum(a, a_min, out=out)
     return ivy.clip(a, a_min, a_max, out=out)
 
@@ -130,7 +131,7 @@ def cosh(x):
 
 @to_ivy_arrays_and_back
 def dot(a, b, *, precision=None):
-    a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
@@ -312,7 +313,7 @@ def flipud(m):
 
 @to_ivy_arrays_and_back
 def power(x1, x2):
-    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
 
 
@@ -596,6 +597,10 @@ def expand_dims(a, axis):
 
 
 @to_ivy_arrays_and_back
+def degrees(x):
+    return ivy.rad2deg(x)
+
+
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
 
@@ -636,3 +641,16 @@ def negative(
     /,
 ):
     return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
+def rad2deg(
+    x, 
+    /,
+):
+    return ivy.rad2deg(x)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, axes=2):
+    return ivy.tensordot(a, b, axes=axes)
