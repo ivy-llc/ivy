@@ -151,8 +151,8 @@ def test_numpy_flipud(
         on_device=on_device,
         m=m[0],
     )
-    
-    
+
+
 @st.composite
 def _get_dtype_values_k_axes_for_rot90(
     draw,
@@ -238,5 +238,5 @@ def test_numpy_rot90(
         on_device=on_device,
         m=m[0],
         k=k,
-        axes=axes
+        axes=axes,
     )

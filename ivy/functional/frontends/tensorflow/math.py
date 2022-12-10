@@ -5,6 +5,11 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 
 
 @to_ivy_arrays_and_back
+def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
+    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+
+
+@to_ivy_arrays_and_back
 def add(x, y, name=None):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)

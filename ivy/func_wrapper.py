@@ -3,6 +3,7 @@ import functools
 import logging
 from types import FunctionType
 from typing import Callable
+import inspect
 
 # import typing
 
@@ -53,30 +54,30 @@ def _get_first_array(*args, **kwargs):
 def handle_array_like(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        # args = list(args)
-        # num_args = len(args)
-        # try:
-        #     type_hints = typing.get_type_hints(fn)
-        # except TypeError:
-        #     return fn(*args, **kwargs)
-        # parameters = type_hints
-        # annotations = type_hints.values()
-        #
-        # for i, (annotation, parameter, arg) in enumerate(
-        #     zip(annotations, parameters, args)
-        # ):
-        #     annotation_str = str(annotation)
-        #     if "Array" in annotation_str and all(
-        #         sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
-        #     ):
-        #
-        #         if i < num_args:
-        #             if isinstance(arg, (list, tuple)):
-        #                 args[i] = ivy.array(arg)
-        #         elif parameters in kwargs:
-        #             kwarg = kwargs[parameter]
-        #             if isinstance(kwarg, (list, tuple)):
-        #                 kwargs[parameter] = ivy.array(kwarg)
+        args = list(args)
+        num_args = len(args)
+        try:
+            type_hints = dict(inspect.signature(fn).parameters)
+        except TypeError:
+            return fn(*args, **kwargs)
+        parameters = [param.name for param in type_hints.values()]
+        annotations = [param.annotation for param in type_hints.values()]
+
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if "Array" in annotation_str and all(
+                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            ):
+
+                if i < num_args:
+                    if isinstance(arg, (list, tuple)):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if isinstance(kwarg, (list, tuple)):
+                        kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 
@@ -519,25 +520,21 @@ def _wrap_function(
         for attr in docstring_attr:
             setattr(to_wrap, attr, getattr(original, attr))
         # wrap decorators
-        to_replace, additional_wrappers = {}, {}
-        if not compositional:
+        mixed = hasattr(original, "mixed_function")
+        if mixed:
             to_replace = {
-                "inputs_to_ivy_arrays": [
+                True: ["inputs_to_ivy_arrays"],
+                False: [
                     "outputs_to_ivy_arrays",
                     "inputs_to_native_arrays",
-                ]
+                ],
             }
-            additional_wrappers = {"handle_nestable", "handle_out_argument"}
+            for attr in to_replace[compositional]:
+                setattr(original, attr, True)
+
         for attr in FN_DECORATORS:
             if hasattr(original, attr) and not hasattr(to_wrap, attr):
-                if compositional and attr in additional_wrappers:
-                    continue
-                if attr in to_replace:
-                    attrs = to_replace[attr]
-                    for attr in attrs:
-                        to_wrap = getattr(ivy, attr)(to_wrap)
-                else:
-                    to_wrap = getattr(ivy, attr)(to_wrap)
+                to_wrap = getattr(ivy, attr)(to_wrap)
     return to_wrap
 
 

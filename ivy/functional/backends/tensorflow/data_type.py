@@ -199,16 +199,40 @@ def result_type(
 # ------#
 
 
-def as_ivy_dtype(dtype_in: Union[tf.DType, str]) -> ivy.Dtype:
+def as_ivy_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> ivy.Dtype:
+    if dtype_in is int:
+        return ivy.default_int_dtype()
+    if dtype_in is float:
+        return ivy.default_float_dtype()
+    if dtype_in is bool:
+        return ivy.Dtype("bool")
     if isinstance(dtype_in, str):
-        return ivy.Dtype(dtype_in)
+        if dtype_in in native_dtype_dict:
+            return ivy.Dtype(dtype_in)
+        else:
+            raise ivy.exceptions.IvyException(
+                "Cannot convert to ivy dtype."
+                f" {dtype_in} is not supported by TensorFlow backend."
+            )
     return ivy.Dtype(ivy_dtype_dict[dtype_in])
 
 
-def as_native_dtype(dtype_in: Union[tf.DType, str]) -> tf.DType:
+def as_native_dtype(dtype_in: Union[tf.DType, str, bool, int, float]) -> tf.DType:
+    if dtype_in is int:
+        return ivy.default_int_dtype(as_native=True)
+    if dtype_in is float:
+        return ivy.default_float_dtype(as_native=True)
+    if dtype_in is bool:
+        return tf.bool
     if not isinstance(dtype_in, str):
         return dtype_in
-    return native_dtype_dict[ivy.Dtype(dtype_in)]
+    if dtype_in in native_dtype_dict.keys():
+        return native_dtype_dict[ivy.Dtype(dtype_in)]
+    else:
+        raise ivy.exceptions.IvyException(
+            "Cannot convert to TensorFlow dtype."
+            f" {dtype_in} is not supported by TensorFlow."
+        )
 
 
 def dtype(x: Union[tf.Tensor, tf.Variable], as_native: bool = False) -> ivy.Dtype:

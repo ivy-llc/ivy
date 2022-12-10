@@ -290,6 +290,7 @@ The functions :func:`ivy.clip`, :func:`ivy.log`, :func:`ivy.sum` and :func:`ivy.
 Therefore, our approach is to **not** wrap any compositional functions which are already *implicitly nestable* as a result of the *nestable* functions called internally.
 
 There may be some compositional functions which are not implicitly nestable for some reason, and in such cases adding the explicit `handle_nestable <https://github.com/unifyai/ivy/blob/5f58c087906a797b5cb5603714d5e5a532fc4cd4/ivy/func_wrapper.py#L407>`_ wrapping may be necessary.
+One such example is the :func:`ivy.linear` function which is not implicitly nestable despite being compositional. This is because of the use of special functions like :func:`__len__` which is not nestable and shouldn't be made nestable.
 But we should try to avoid this, in order to make the flow of computation as intuitive to the user as possible.
 
 When compiling the code, the computation graph is **identical** in either case, and there will be no implications on performance whatsoever.

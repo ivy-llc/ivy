@@ -67,11 +67,13 @@ def _rrelu(input, lower=1.0 / 8, upper=1.0 / 3, training=False, inplace=False):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def sigmoid(input):
     return ivy.sigmoid(input)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu(input, negative_slope=0.01, inplace=False):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
     if inplace:
@@ -81,6 +83,7 @@ def leaky_relu(input, negative_slope=0.01, inplace=False):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -88,6 +91,15 @@ def softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def gelu(
     input,
 ):  # , *, approximate="none"): ToDo: approximate is added in in PyTorch 1.12.1
@@ -99,16 +111,27 @@ def gelu(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def tanh(input):
     return ivy.tanh(input)
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def logsigmoid(input):
     return ivy.negative(ivy.softplus(ivy.negative(input)))
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def softmin(input, dim=None, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -230,6 +253,7 @@ def softshrink(input, lambd=0.5):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def silu(input, inplace=False):
     ret = ivy.multiply(input, ivy.sigmoid(input))
     if inplace:
@@ -245,6 +269,7 @@ def glu(input, dim=-1):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
     if dtype:
         input = ivy.astype(ivy.array(input), ivy.as_ivy_dtype(dtype))
@@ -254,11 +279,13 @@ def log_softmax(input, dim=None, _stacklevel=3, dtype=None):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def tanhshrink(input):
     return ivy.subtract(input, ivy.tanh(input))
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def leaky_relu_(input, negative_slope=0.01):
     ret = ivy.leaky_relu(input, alpha=negative_slope)
     ivy.inplace_update(input, ret)
@@ -323,12 +350,29 @@ def layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def softplus(input, beta=1, threshold=20):
     return ivy.softplus(input, beta=beta, threshold=threshold)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
 def group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     shape = ivy.shape(input)
     assert shape[1] % num_groups == 0

@@ -65,6 +65,15 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
@@ -84,7 +93,7 @@ def eigvalsh(
 
 @_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
@@ -235,12 +244,14 @@ def matrix_rank(
     return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matrix_transpose(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
 
 def outer(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
@@ -289,7 +300,7 @@ def slogdet(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -334,6 +345,17 @@ def tensordot(
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
+
+
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
 
 
 @_scalar_output_to_0d_array
@@ -401,6 +423,7 @@ def diag(
     return np.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -413,7 +436,7 @@ def vander(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: np.ndarray, *, out: Optional[np.ndarray] = None
+    vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
