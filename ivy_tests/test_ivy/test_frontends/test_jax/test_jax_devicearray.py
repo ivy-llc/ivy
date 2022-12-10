@@ -731,7 +731,7 @@ def _get_dtype_x_and_int_shift(draw, dtype):
     method_name="__lshift__",
     dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_devicearray__lshift_(
+def test_jax_special_lshift(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -765,7 +765,7 @@ def test_jax_devicearray__lshift_(
     method_name="__rlshift__",
     dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_devicearray__rlshift_(
+def test_jax_special_rlshift(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -799,7 +799,7 @@ def test_jax_devicearray__rlshift_(
     method_name="__rshift__",
     dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_devicearray__rshift_(
+def test_jax_special_rshift(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -833,7 +833,7 @@ def test_jax_devicearray__rshift_(
     method_name="__rrshift__",
     dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_devicearray__rrshift_(
+def test_jax_special_rrshift(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
