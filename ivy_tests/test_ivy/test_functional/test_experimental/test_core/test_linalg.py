@@ -223,7 +223,7 @@ def test_kron(
 @handle_test(
     fn_tree="functional.experimental.matrix_exp",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("int"),
+        available_dtypes=helpers.get_dtypes("integer"),
         min_num_dims=2,
         max_num_dims=2,
         min_dim_size=2,
