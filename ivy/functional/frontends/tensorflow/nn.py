@@ -233,13 +233,5 @@ def max_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
 
 
 @to_ivy_arrays_and_back
-def avg_pool1d(
-    pool_size=2,
-    strides=None,
-    padding='valid',
-    data_format='channels_last',
-    **kwargs
-):
-    return ivy.avg_pool1d(strides, padding, data_format, **kwargs, pool_size=2
-    )
-    
+def avg_pool1d(input, ksize, strides, padding, data_format="NWC", name=None):
+    return ivy.max_pool1d(input, ksize, strides, padding, data_format=data_format)
