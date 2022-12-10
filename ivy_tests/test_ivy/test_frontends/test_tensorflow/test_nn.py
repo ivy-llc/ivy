@@ -935,7 +935,7 @@ def test_tensorflow_max_pool1d(
        
     ),
 )
-def test_tensorflow_conv1d(
+def test_tensorflow_pool1d(
     *,
     x_f_d_df,
     as_variable,
