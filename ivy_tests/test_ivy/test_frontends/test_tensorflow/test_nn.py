@@ -932,7 +932,7 @@ def test_tensorflow_max_pool1d(
         stride_min=1,
         stride_max=1,
         dilation_max=1,
-        type="2d",
+        type="1d",
         transpose=True,
         atrous=True,
     ),
