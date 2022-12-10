@@ -1,10 +1,11 @@
 # global
+import numpy as np
 from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
-import numpy as np
+
 
 # Helpers #
 # ------- #
@@ -356,6 +357,48 @@ def test_exp2(
     )
 
 
+# copysign
+@handle_test(
+    fn_tree="functional.experimental.copysign",
+    dtype_x1_x2=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_num_dims=0,
+        allow_nan=False,
+        shared_dtype=True,
+    ),
+)
+def test_copysign(
+    dtype_x1_x2,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+):
+    (x1_dtype, x2_dtype), (x1, x2) = dtype_x1_x2
+    helpers.test_function(
+        input_dtypes=[x1_dtype, x2_dtype],
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        on_device=on_device,
+        ground_truth_backend="torch",
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=True,
+        x1=x1,
+        x2=x2,
+    )
+
+
 @st.composite
 def _get_dtype_values_axis_for_count_nonzero(
     draw,
@@ -440,6 +483,7 @@ def test_count_nonzero(
         valid_axis=True,
         allow_neg_axes=False,
         min_axes_size=1,
+        allow_nan=True,
     ),
     keep_dims=st.booleans(),
 )
@@ -970,4 +1014,52 @@ def test_zeta(
         atol_=1e-03,
         x=x[0],
         q=x[1],
+    )
+
+
+# gradient
+@handle_test(
+    fn_tree="functional.experimental.gradient",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=("float32", "float16", "float64"),
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=4,
+    ),
+    spacing=helpers.ints(
+        min_value=-3,
+        max_value=3,
+    ),
+)
+def test_gradient(
+    *,
+    dtype_and_x,
+    spacing,
+    num_positional_args,
+    as_variable,
+    with_out,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=input_dtype,
+        as_variable_flags=[False],
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=[False],
+        instance_method=False,
+        fw=backend_fw,
+        on_device=on_device,
+        fn_name=fn_name,
+        x=x[0],
+        spacing=spacing,
     )

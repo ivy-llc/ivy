@@ -5,7 +5,6 @@ from hypothesis import strategies as st
 import numpy as np
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
-import ivy_tests.test_array_api.array_api_tests.hypothesis_helpers as hypothesis_helpers
 from ivy_tests.test_ivy.helpers import handle_test
 
 
@@ -588,9 +587,19 @@ def test_flatten(
     )
 
 
+def st_tuples(elements, *, min_size=0, max_size=None, unique_by=None, unique=False):
+    return st.lists(
+        elements,
+        min_size=min_size,
+        max_size=max_size,
+        unique_by=unique_by,
+        unique=unique,
+    ).map(tuple)
+
+
 def _st_tuples_or_int(n_pairs, min_val=0):
     return st.one_of(
-        hypothesis_helpers.tuples(
+        st_tuples(
             st.tuples(
                 st.integers(min_value=min_val, max_value=4),
                 st.integers(min_value=min_val, max_value=4),

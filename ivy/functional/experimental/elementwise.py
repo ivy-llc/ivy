@@ -1,5 +1,6 @@
 # local
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
+from numbers import Number
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -341,6 +342,50 @@ def exp2(
     ivy.array([32.,   64.,  128.])
     """
     return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def copysign(
+    x1: Union[ivy.Array, ivy.NativeArray, Number],
+    x2: Union[ivy.Array, ivy.NativeArray, Number],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Change the signs of x1 to match x2
+    x1 and x2 must be broadcastable to a common shape
+
+    Parameters
+    ----------
+    x1
+        Array or scalar to change the sign of
+    x2
+        Array or scalar from which the new signs are applied
+        Unsigned zeroes are considered positive.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        x1 with the signs of x2.
+        This is a scalar if both x1 and x2 are scalars.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([-1, 0, 23, 2])
+    >>> x2 = ivy.array([1, -1, -10, 44])
+    >>> ivy.copysign(x1, x2)
+    ivy.array([  1.,  -0., -23.,   2.])
+    >>> ivy.copysign(x1, -1)
+    ivy.array([ -1.,  -0., -23.,  -2.])
+    >>> ivy.copysign(-10, 1)
+    ivy.array(10.)
+    """
+    return ivy.current_backend().copysign(x1, x2, out=out)
 
 
 @to_native_arrays_and_back
@@ -777,10 +822,12 @@ def diff(
         array-like input.
     out
         optional output array, for writing the result to.
+
     Returns
     -------
     ret
         Rreturns the n-th discrete difference along the given axis.
+
     Examples
     --------
     >>> x = ivy.array([1, 2, 4, 7, 0])
@@ -971,3 +1018,80 @@ def zeta(
     ivy.array([0.0369, 0.2021])
     """
     return ivy.current_backend(x, q).zeta(x, q, out=out)
+
+
+@to_native_arrays_and_back
+@handle_nestable
+@handle_exceptions
+def gradient(
+    x: Union[ivy.Array, ivy.NativeArray],
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    edge_order: Optional[int] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+) -> Union[ivy.Array, List[ivy.Array]]:
+    """Calculates gradient of x with respect to (w.r.t.) spacing
+
+    Parameters
+    ----------
+    x
+        input array representing outcomes of the function
+    spacing
+        if not given, indices of x will be used
+        if scalar indices of x will be scaled with this value
+        if array gradient of x w.r.t. spacing
+    edge_order
+        1 or 2, for 'frist order' and 'second order' estimation
+        of boundary values of gradient respectively.
+        Note: jax supports edge_order=1 case only
+    axis
+        dimension(s) to approximate the gradient over
+        by default partial gradient is computed in every dimention
+
+    Returns
+    -------
+    ret
+        Array with values computed from gradient function from
+        inputs
+
+    Examples
+    --------
+    >>> spacing = (ivy.array([-2., -1., 1., 4.]),)
+    >>> x = ivy.array([4., 1., 1., 16.], )
+    >>> ivy.gradient(x, spacing=spacing)
+    ivy.array([-3., -2.,  2.,  5.])
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x)
+    [ivy.array([[ 9., 18., 36., 72.],
+       [ 9., 18., 36., 72.]]), ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+       [10. , 15. , 30. , 40. ]])]
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, spacing=2.0)
+    [ivy.array([[ 4.5,  9. , 18. , 36. ],
+       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, axis=1)
+    ivy.array([[ 1. ,  1.5,  3. ,  4. ],
+       [10. , 15. , 30. , 40. ]])
+
+    >>> x = ivy.array([[1, 2, 4, 8], [10, 20, 40, 80]])
+    >>> ivy.gradient(x, spacing=[3., 2.])
+    [ivy.array([[ 3.,  6., 12., 24.],
+       [ 3.,  6., 12., 24.]]), ivy.array([[ 0.5 ,  0.75,  1.5 ,  2.  ],
+       [ 5.  ,  7.5 , 15.  , 20.  ]])]
+
+    >>> spacing = (ivy.array([0, 2]), ivy.array([0, 3, 6, 9]))
+    >>> ivy.gradient(x, spacing=spacing)
+    [ivy.array([[ 4.5,  9. , 18. , 36. ],
+       [ 4.5,  9. , 18. , 36. ]]), ivy.array([[ 0.33333333, 0.5,  1., 1.33333333],
+       [ 3.33333333,  5.        , 10.        , 13.33333333]])]
+
+    """
+    return ivy.current_backend(x).gradient(
+        x, spacing=spacing, edge_order=edge_order, axis=axis
+    )

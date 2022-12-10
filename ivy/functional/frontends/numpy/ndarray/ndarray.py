@@ -6,8 +6,11 @@ import ivy.functional.frontends.numpy as np_frontend
 
 
 class ndarray:
-    def __init__(self, shape, dtype=np_frontend.float32, order=None):
+    def __init__(self, shape, dtype="float32", order=None):
+        if isinstance(dtype, np_frontend.dtype):
+            dtype = dtype._ivy_dtype
         self._ivy_array = ivy.empty(shape, dtype=dtype)
+        self._dtype = dtype
 
         ivy.assertions.check_elem_in_list(
             order,
@@ -18,6 +21,9 @@ class ndarray:
             self._f_contiguous = True
         else:
             self._f_contiguous = False
+
+    def __repr__(self):
+        return "ivy.frontends.numpy.ndarray(" + str(ivy.to_list(self._ivy_array)) + ")"
 
     # Properties #
     # ---------- #
@@ -36,7 +42,7 @@ class ndarray:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return self._dtype
 
     # Setters #
     # --------#
@@ -46,6 +52,10 @@ class ndarray:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+
+    @dtype.setter
+    def dtype(self, dtype):
+        self._dtype = np_frontend.dtype(dtype)
 
     # Instance Methods #
     # ---------------- #
@@ -65,16 +75,16 @@ class ndarray:
             keepdims=keepdims,
         )
 
-    def reshape(self, shape, order="C"):
+    def reshape(self, newshape, /, *, order="C"):
         ivy.assertions.check_elem_in_list(
             order,
-            ["C", "F", "A", "K"],
-            message="order must be one of 'C', 'F', 'A', or 'K'",
+            ["C", "F", "A"],
+            message="order must be one of 'C', 'F', or 'A'",
         )
-        if (order in ["K", "A"] and self._f_contiguous) or order == "F":
-            return np_frontend.reshape(self._ivy_array, shape, order="F")
+        if (order == "A" and self._f_contiguous) or order == "F":
+            return np_frontend.reshape(self._ivy_array, newshape, order="F")
         else:
-            return np_frontend.reshape(self._ivy_array, shape, order="C")
+            return np_frontend.reshape(self._ivy_array, newshape, order="C")
 
     def transpose(self, *axes):
         if axes and isinstance(axes[0], tuple):

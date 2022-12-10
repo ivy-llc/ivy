@@ -1,5 +1,6 @@
 # global
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, List
+from numbers import Number
 import torch
 
 # local
@@ -107,6 +108,19 @@ def exp2(
 
 
 exp2.support_native_out = True
+
+
+def copysign(
+    x1: Union[torch.Tensor, Number],
+    x2: Union[torch.Tensor, Number],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.copysign(torch.as_tensor(x1), x2, out=out)
+
+
+copysign.support_native_out = True
 
 
 def count_nonzero(
@@ -319,3 +333,24 @@ def zeta(
 
 
 zeta.support_native_out = False
+
+
+def gradient(
+    x: torch.Tensor,
+    /,
+    *,
+    spacing: Optional[Union[int, list, tuple]] = 1,
+    axis: Optional[Union[int, list, tuple]] = None,
+    edge_order: Optional[int] = 1,
+) -> Union[torch.Tensor, List[torch.Tensor]]:
+    if axis is None:
+        axis = tuple(range(len(x.shape)))
+    if type(axis) == int:
+        axis = (axis,)
+    if type(spacing) == int:
+        spacing = [spacing] * len(axis)
+
+    grad = torch.gradient(x, spacing=spacing, dim=axis, edge_order=edge_order)
+    if len(grad) == 1:
+        return grad[0]
+    return grad

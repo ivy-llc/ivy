@@ -117,6 +117,7 @@ def mse_loss(input, target, size_average=None, reduce=None, reduction="mean"):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def smooth_l1_loss(
     input,
     target,
@@ -151,6 +152,28 @@ def smooth_l1_loss(
 
 
 @to_ivy_arrays_and_back
+def huber_loss(
+    input,
+    target,
+    reduction="mean",
+    delta=1.0,
+):
+    delta = ivy.array(delta)
+    _diff_abs = ivy.abs(ivy.subtract(input, target))
+
+    loss = ivy.where(
+        _diff_abs < delta,  # If |xᵢ - yᵢ| < δ
+        0.5 * _diff_abs**2,  # lᵢ = 0.5(xᵢ - yᵢ)²
+        delta * (_diff_abs - 0.5 * delta),
+    )  # lᵢ = δ(|xᵢ - yᵢ| - 0.5 * δ)
+
+    reduction = _get_reduction(reduction)
+    ret = reduction(loss)
+
+    return ivy.astype(ret, input.dtype)
+
+
+@to_ivy_arrays_and_back
 def l1_loss(
     input,
     target,
@@ -172,7 +195,7 @@ def nll_loss(
     size_average=None,
     ignore_index=-100,
     reduce=None,
-    reduction='mean'
+    reduction="mean",
 ):
 
     out = ivy.zeros_like(target)

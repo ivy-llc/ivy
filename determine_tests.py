@@ -42,62 +42,9 @@ MAX_TESTS = 10
 if __name__ == "__main__":
     tests = bz2.BZ2File("tests.pbz2", "rb")
     tests = cPickle.load(tests)
-    tests_to_run = set()
-    if len(sys.argv) >= 2 and sys.argv[1] == "extra":
-        new_tests = get_all_tests()
-        # Check for any new tests present
-        old_tests = tests["index_mapping"]
-        added_tests = set(new_tests) - set(old_tests)
-        added_tests = list(added_tests)
-        # Add these new_tests in the Mapping
-        old_num_tests = len(old_tests)
-        tests["index_mapping"] += added_tests
-        new_tests = tests["index_mapping"]
-        num_tests = len(new_tests)
-        for i in range(old_num_tests, num_tests):
-            tests["tests_mapping"][new_tests[i]] = i
-        directories = (
-            [x[0] for x in os.walk("ivy")]
-            + [x[0] for x in os.walk("ivy_tests/test_ivy")]
-            + ["ivy_tests"]
-        )
-        directories_filtered = [
-            x
-            for x in directories
-            if not (x.endswith("__pycache__") or "hypothesis" in x)
-        ]
-        directories = set(directories_filtered)
-        for test_backend in new_tests[old_num_tests:num_tests]:
-            test_name, backend = test_backend.split(",")
-            command = (
-                f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
-                f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
-                f'annotate > coverage_output" '
-            )
-            os.system(command)
-            for directory in directories:
-                for file_name in os.listdir(directory):
-                    if file_name.endswith("cover"):
-                        file_name = directory + "/" + file_name
-                        if file_name not in tests:
-                            tests[file_name] = []
-                            with open(file_name) as f:
-                                for line in f:
-                                    tests[file_name].append(set())
-                        with open(file_name) as f:
-                            i = 0
-                            for line in f:
-                                if i >= len(tests[file_name]):
-                                    tests[file_name].append(set())
-                                if line[0] == ">":
-                                    tests[file_name][i].add(
-                                        tests["tests_mapping"][test_backend]
-                                    )
-                                i += 1
-            os.system("find . -name \\*cover -type f -delete")
-
     ref_commit_hash = tests["commit"]
     print("Reference Commit: ", ref_commit_hash)
+    tests_to_run = set()
     for commit in Repository(".", single=ref_commit_hash).traverse_commits():
         ref_commit = commit._c_object
         break
@@ -157,6 +104,63 @@ if __name__ == "__main__":
                     continue
                 tests_to_run.update(tests_file_line)
         break
+
+    if len(sys.argv) >= 2 and sys.argv[1] == "extra":
+        print("Checking for any new tests added!")
+        new_tests = get_all_tests()
+        print("Done!")
+        # Check for any new tests present
+        old_tests = tests["index_mapping"]
+        added_tests = set(new_tests) - set(old_tests)
+        added_tests = list(added_tests)
+        # Add these new_tests in the Mapping
+        old_num_tests = len(old_tests)
+        tests["index_mapping"] += added_tests
+        new_tests = tests["index_mapping"]
+        num_tests = len(new_tests)
+        for i in range(old_num_tests, num_tests):
+            tests["tests_mapping"][new_tests[i]] = i
+        directories = (
+            [x[0] for x in os.walk("ivy")]
+            + [x[0] for x in os.walk("ivy_tests/test_ivy")]
+            + ["ivy_tests"]
+        )
+        directories_filtered = [
+            x
+            for x in directories
+            if not (x.endswith("__pycache__") or "hypothesis" in x)
+        ]
+        directories = set(directories_filtered)
+        for test_backend in new_tests[old_num_tests:num_tests]:
+            print("Computing Coverage:", test_backend)
+            tests_to_run.add(tests["tests_mapping"][test_backend])
+            test_name, backend = test_backend.split(",")
+            command = (
+                f'docker run -v "$(pwd)":/ivy unifyai/ivy:latest /bin/bash -c "coverage run --source=ivy,'  # noqa
+                f"ivy_tests -m pytest {test_name} --backend {backend} --disable-warnings > coverage_output;coverage "  # noqa
+                f'annotate > coverage_output" '
+            )
+            os.system(command)
+            for directory in directories:
+                for file_name in os.listdir(directory):
+                    if file_name.endswith("cover"):
+                        file_name = directory + "/" + file_name
+                        if file_name not in tests:
+                            tests[file_name] = []
+                            with open(file_name) as f:
+                                for line in f:
+                                    tests[file_name].append(set())
+                        with open(file_name) as f:
+                            i = 0
+                            for line in f:
+                                if i >= len(tests[file_name]):
+                                    tests[file_name].append(set())
+                                if line[0] == ">":
+                                    tests[file_name][i].add(
+                                        tests["tests_mapping"][test_backend]
+                                    )
+                                i += 1
+            os.system("find . -name \\*cover -type f -delete")
 
     with bz2.BZ2File("tests.pbz2", "w") as f:
         cPickle.dump(tests, f)
