@@ -843,10 +843,10 @@ def test_tensorflow_gather(
     params_indices_axis_batch_dims=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("valid"),
         indices_dtypes=["int64"],
-        min_num_dims=2,
-        max_num_dims=5,
+        min_num_dims=5,
+        max_num_dims=10,
         min_dim_size=1,
-        max_dim_size=10,
+        max_dim_size=5,
         indices_same_dims=False,
     ),
 )
