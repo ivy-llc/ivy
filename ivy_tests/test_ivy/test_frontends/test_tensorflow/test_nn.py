@@ -258,7 +258,7 @@ def _x_and_ksize(
         kernel = draw(st.tuples(st.integers(1, in_shape[1])))
     padding = draw(st.sampled_from(["VALID", "SAME"]))
     strides = draw(helpers.ints(min_value=stride_min, max_value=stride_max))
-    return dtype, x, kernel, strides, padding
+    return dtype, x, kernel, strides, padding, data_format
 
 
 @handle_frontend_test(
@@ -487,7 +487,6 @@ def test_tensorflow_gelu(
 def test_tensorflow_avg_pool2d(
     *,
     x_k_s_p,
-    data_format,
     as_variable,
     num_positional_args,
     native_array,
@@ -495,8 +494,7 @@ def test_tensorflow_avg_pool2d(
     fn_tree,
     on_device
 ):
-    input_dtype, x, ksize, strides, padding = x_k_s_p
-    data_format = data_format
+    input_dtype, x, ksize, strides, padding, data_format = x_k_s_p
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
