@@ -880,10 +880,6 @@ def test_tensorflow_local_response_normalization(
     )
 
 
-@st.composite
-def df(draw, data_format):
-    data_format = draw(data_format)
-    return data_format
 
 
 # max_pool1d
@@ -950,10 +946,15 @@ def test_tensorflow_avg_pool1d(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
+        input=x,
         ksize=ksize,
         strides=strides,
         padding=padding,
         data_format=data_format,
     )
-    
+
+
+@st.composite
+def df(draw, data_format):
+    data_format = draw(data_format)
+    return data_format
