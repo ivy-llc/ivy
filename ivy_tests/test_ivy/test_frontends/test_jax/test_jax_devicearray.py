@@ -1,5 +1,6 @@
 # global
 from hypothesis import strategies as st, assume
+import numpy as np
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
@@ -709,13 +710,28 @@ def test_jax_devicearray__invert_(
     )
 
 
+# shifting helper
+@st.composite
+def _get_dtype_x_and_int_shift(draw, dtype):
+    x_dtype, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes(dtype),
+            num_arrays=2,
+            shared_dtype=True,
+        )
+    )
+    x_dtype = x_dtype
+    x[1] = np.asarray(np.clip(x[0], 0, np.iinfo(x_dtype[0]).bits - 1), dtype=x_dtype[0])
+    return x_dtype, x[0], x[1]
+
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__lshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_special_lshift(
+def test_jax_devicearray__lshift_(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -731,7 +747,7 @@ def test_jax_special_lshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -747,9 +763,9 @@ def test_jax_special_lshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rlshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_special_rlshift(
+def test_jax_devicearray__rlshift_(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -765,13 +781,13 @@ def test_jax_special_rlshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": shift,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"other": shift},
+        method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
@@ -781,9 +797,9 @@ def test_jax_special_rlshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_special_rshift(
+def test_jax_devicearray__rshift_(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -799,7 +815,7 @@ def test_jax_special_rshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": x,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
@@ -815,9 +831,9 @@ def test_jax_special_rshift(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__rrshift__",
-    dtype_x_shift=_get_dtype_x_and_int(dtype="signed_integer"),
+    dtype_x_shift=_get_dtype_x_and_int_shift(dtype="signed_integer"),
 )
-def test_jax_special_rrshift(
+def test_jax_devicearray__rrshift_(
     dtype_x_shift,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
@@ -833,13 +849,13 @@ def test_jax_special_rrshift(
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x[0],
+            "object": shift,
         },
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"other": shift},
+        method_all_as_kwargs_np={"other": x},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
