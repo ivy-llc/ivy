@@ -3612,4 +3612,4 @@ def test_jax_numpy_square(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-  )
+    )
