@@ -302,13 +302,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
+
         >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
         >>> y = ivy.Container.static_gelu(x)
         >>> print(y)
         {
-            a: ivy.array([0.185, -0.046])
+             a: ivy.array([0.185, -0.046])
         }
-
         """
         return ContainerBase.multi_map_in_static_method(
             "gelu",
@@ -365,12 +365,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.3, -0.1]))
-        >>> y = x.gelu()
-        >>> print(y)
-        {
-            a: ivy.array([0.185, -0.046])
-        }
+        >>> x = ivy.Container(a=ivy.array([1., 2.]), b=ivy.array([-0.9, -1.]))
+        >>> y = ivy.gelu(x)
+            print(y)
+            {
+                 a: ivy.array([0.841, 1.95]),
+                 b: ivy.array([-0.166, -0.159])
+            }
 
         """
         return self.static_gelu(
