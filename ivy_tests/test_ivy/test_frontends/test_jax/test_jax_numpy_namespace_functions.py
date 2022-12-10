@@ -3498,7 +3498,6 @@ def test_jax_numpy_negative(
 def test_jax_numpy_rad2deg(
     dtype_and_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     frontend,
@@ -3546,4 +3545,41 @@ def test_jax_numpy_tensordot(
         a=a,
         b=b,
         axes=axes,
+    )
+
+
+# divide
+@handle_frontend_test(
+    fn_tree="jax.numpy.divide",
+    dtype_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        num_arrays=2,
+        allow_inf=False,
+        large_abs_safety_factor=4,
+        safety_factor_scale="linear",
+        shared_dtype=True,
+    ),
+)
+def test_jax_numpy_divide(
+    *,
+    dtype_values,
+    as_variable,
+    native_array,
+    num_positional_args,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_values
+    assume(not np.any(np.isclose(x[1], 0)))
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        all_aliases=["jax.numpy.true_divide"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        a=x[0],
+        b=x[1],
     )
