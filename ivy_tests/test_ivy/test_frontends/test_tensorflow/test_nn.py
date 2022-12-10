@@ -922,7 +922,7 @@ def test_tensorflow_max_pool1d(
     )
 
 
-# max_pool1d
+# avg_pool1d
 @handle_frontend_test(
     fn_tree="tensorflow.nn.avg_pool1d",
     data_format=df(data_format=st.sampled_from(["NWC"])),
@@ -939,7 +939,7 @@ def test_tensorflow_avg_pool1d(
     fn_tree,
     on_device,
 ):
-    input_dtype, x, ksize, strides, padding = x_k_s_p
+    input_dtype, x, pool_size, strides, padding = x_k_s_p
     data_format = data_format
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
@@ -950,8 +950,8 @@ def test_tensorflow_avg_pool1d(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        input=x[0],
-        ksize=ksize,
+        input=x,
+        pool_size=pool_size,
         strides=strides,
         padding=padding,
         data_format=data_format,
