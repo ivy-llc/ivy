@@ -83,13 +83,13 @@ def top_k(
         )
         indices = tf.dtypes.cast(indices, tf.int32)
     else:
-        x *= -1
+        x = -x
         indices = tf.experimental.numpy.argsort(x, axis=axis)
         indices = tf.experimental.numpy.take(
             indices, tf.experimental.numpy.arange(k), axis=axis
         )
         indices = tf.dtypes.cast(indices, tf.int32)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", tf.Tensor), ("indices", tf.Tensor)])
     val = tf.experimental.numpy.take_along_axis(x, indices, axis=axis)
     indices = tf.dtypes.cast(indices, tf.int64)
@@ -154,6 +154,12 @@ def atleast_2d(
     *arys: Union[tf.Tensor, tf.Variable],
 ) -> List[Union[tf.Tensor, tf.Variable]]:
     return tf.experimental.numpy.atleast_2d(*arys)
+
+
+def atleast_3d(
+    *arys: Union[tf.Tensor, tf.Variable, bool, Number],
+) -> List[Union[tf.Tensor, tf.Variable]]:
+    return tf.experimental.numpy.atleast_3d(*arys)
 
 
 def take_along_axis(

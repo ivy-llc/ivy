@@ -103,10 +103,10 @@ def top_k(
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
     else:
-        x *= -1
+        x = -x
         indices = np.argsort(x, axis=axis)
         indices = np.take(indices, np.arange(k), axis=axis)
-        x *= -1
+        x = -x
     topk_res = NamedTuple("top_k", [("values", np.ndarray), ("indices", np.ndarray)])
     val = np.take_along_axis(x, indices, axis=axis)
     return topk_res(val, indices)
@@ -247,6 +247,10 @@ def dstack(
 
 def atleast_2d(*arys: np.ndarray) -> List[np.ndarray]:
     return np.atleast_2d(*arys)
+
+
+def atleast_3d(*arys: Union[np.ndarray, bool, Number]) -> List[np.ndarray]:
+    return np.atleast_3d(*arys)
 
 
 @_scalar_output_to_0d_array

@@ -589,7 +589,8 @@ class ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def static_default_float_dtype(
-        input=None,
+        *,
+        input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
         as_native: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -599,9 +600,9 @@ class ContainerWithDataTypes(ContainerBase):
     ) -> ivy.Container:
         return ContainerBase.multi_map_in_static_method(
             "default_float_dtype",
-            input,
-            float_dtype,
-            as_native,
+            input=input,
+            float_dtype=float_dtype,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,

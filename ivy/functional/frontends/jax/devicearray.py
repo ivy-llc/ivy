@@ -6,20 +6,26 @@ import ivy.functional.frontends.jax as jax_frontend
 
 
 class DeviceArray:
-    def __init__(self, data, f_contiguous=False):
-        self.data = ivy.array(data) if not isinstance(data, ivy.Array) else data
-        self.f_contiguous = f_contiguous
+    def __init__(self, array):
+        self._ivy_array = (
+            ivy.array(array) if not isinstance(array, ivy.Array) else array
+        )
 
     def __repr__(self):
         return (
-            "ivy.functional.frontends.jax.DeviceArray("
-            + str(ivy.to_list(self.data))
-            + ")"
+            "ivy.frontends.jax.DeviceArray(" + str(ivy.to_list(self._ivy_array)) + ")"
         )
+
+    # Properties #
+    # ---------- #
+
+    @property
+    def ivy_array(self):
+        return self._ivy_array
 
     @property
     def at(self):
-        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self.data)
+        return jax_frontend._src.numpy.lax_numpy._IndexUpdateHelper(self._ivy_array)
 
     # Instance Methods #
     # ---------------- #
@@ -97,7 +103,8 @@ class DeviceArray:
         return jax_frontend.lax.pow(self, other)
 
     def __rpow__(self, other):
-        return jax_frontend.lax.pow(other, self)
+        other = ivy.asarray(other)
+        return jax_frontend.lax.pow(other, self._ivy_array)
 
     def __and__(self, other):
         return jax_frontend.numpy.bitwise_and(self, other)
@@ -132,5 +139,5 @@ class DeviceArray:
     def __rrshift__(self, other):
         return jax_frontend.lax.shift_right_logical(other, self)
 
-    def __getitem__(self, index):
-        return self.at[index].get()
+    def __getitem__(self, idx):
+        return self.at[idx].get()
