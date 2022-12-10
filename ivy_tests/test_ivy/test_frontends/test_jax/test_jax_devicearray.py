@@ -5,7 +5,6 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
-import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 
 
@@ -1415,7 +1414,7 @@ def test_jax_special_rmatmul(
     method_name="__getitem__",
     dtype_x_index=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=ivy_torch.valid_int_dtypes,
+        indices_dtypes=["int32", "int64"],
     ),
 )
 def test_jax_special_getitem(
