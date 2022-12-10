@@ -5,6 +5,7 @@ import numpy as np
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
+import ivy.functional.backends.torch as ivy_torch
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 
 
@@ -168,7 +169,6 @@ def test_jax_devicearray__ne_(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-        shared_dtype=True,
     ),
 )
 def test_jax_devicearray__lt_(
@@ -1094,7 +1094,7 @@ def test_jax_special_rmul(
     init_tree="jax.numpy.array",
     method_name="__div__",
     dtype_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False),
+        available_dtypes=helpers.get_dtypes("numeric", full=True),
         shared_dtype=True,
         num_arrays=2,
     ),
@@ -1109,7 +1109,6 @@ def test_jax_special_div(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
-    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1148,7 +1147,6 @@ def test_jax_special_rdiv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
-    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1187,7 +1185,6 @@ def test_jax_special_truediv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
-    assume(not np.any(np.isclose(x[1], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1226,7 +1223,6 @@ def test_jax_special_rtruediv(
     frontend_method_data,
 ):
     input_dtype, x = dtype_x
-    assume(not np.any(np.isclose(x[0], 0)))
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -1414,7 +1410,7 @@ def test_jax_special_rmatmul(
     method_name="__getitem__",
     dtype_x_index=helpers.array_indices_axis(
         array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
+        indices_dtypes=ivy_torch.valid_int_dtypes,
     ),
 )
 def test_jax_special_getitem(
