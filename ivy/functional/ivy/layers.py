@@ -1023,90 +1023,75 @@ def conv2d_transpose(
 
     
     
-     Functional Examples
+    Functional Examples
     --------
     With :class:`ivy.Array` input:
 
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
-    >>> print(y.shape)
-    (1, 6, 56, 56, 6)
+    >>> x = ivy.array([[
+    ...       [[2.],[4.],[6.]],
+    ...       [[3.],[6.],[9.]],
+    ...       [[2.],[4.],[6.]]]])
+    >>> filters = ivy.array([[[[0.]],[[1.]],[[0.]]],
+    ...                      [[[0.]],[[1.]], [[0.]]],
+    ...                      [[[0.]],[[1.]], [[0.]]]])
+    >>> result = ivy.conv2d_transpose(x, filters, (1,), 'SAME', data_format='NHWC',
+    ... dilations= (1,))
+    >>> print(result)
+    [[[[1.], [2.0],[3.]],
+    [[1.], [2.0],[3.]],
+    [[1.], [2.0],[3.]]]]
+  
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[1, 7, 256, 256, 64])
-    ... )
-    >>> filters = ivy.native_array(
-    ...    ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 64, 32])
-    ... )
-    >>> y = ivy.conv2d_transpose(x, filters, [1, 1, 1], 'VALID')
-    >>> print(y.shape)
-    (1, 9, 258, 258, 32)
 
     With :class:`ivy.Container` inputs:
 
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                       mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                       ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                             mean=0, std=1, shape=[3, 3, 3, 3, 6]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6]))
-    >>> y = ivy.conv2d_transpose(x, filters, 2, 'SAME')
-    >>> print(y.shape)
-    [1, 6, 56, 56, 6]
+    >>> x = ivy.Container(a = ivy.array([[[[3.], [3.]], [[1.], [5.]]]])
+    >>> filters = ivy.eye(3, 3).reshape((3, 3, 1, 1)).astype(ivy.float32)
+    >>> result = ivy.conv2d_transpose(x, filters, (2,), 'SAME', data_format='NHWC',
+    ...   dilations= (1,))
+    >>> print(result)
+    { 
+        a:ivy.array([[[[1.], [2.0],[3.]],
+                    [[1.], [2.0],[3.]],
+                    [[1.], [2.0],[3.]]]])
+    }
+
+
+    With multiple :class:`ivy.Container` inputs:
+ 
+    >>> x = ivy.Container([[[[2.], [0.]], [[1.], [2.]]]]),
+        b:ivy.array([[[[3.], [0.]], [[1.], [2.]]]]),
+        c:ivy.array([[[[2.], [0.], [0.]],
+                      [[1.], [3.], [0.]],
+                      [[0.], [1.], [2.]]
+                    ]])
+    >>> filters = ivy.array([[1, 1, 1],
+    ...                      [0, 1, 1],
+    ...                      [0, 0, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
+    >>> result = ivy.conv2d_transpose(x, filters, (2,), 'SAME')
+    >>> print(result)
+    {
+        a:ivy.eye(3, 3).reshape((1, 3, 3, 1)),
+        b:ivy.eye(4, 4).reshape((1, 4, 4, 1)),
+        c:ivy.eye(5, 5).reshape((1, 5, 5, 1))
+    }
 
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
-    >>> x = ivy.full((1, 6, 6, 6, 1), 2.7)
-    >>> a =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> b =  ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1])
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=1)
-    >>> print(y.shape)
-    [1, 8, 8, 8, 1]
+ 
+    >>> x = ivy.Container(a=ivy.array([[[[4.],[0.]],[[1.],[5.]]]]),
+    ...   b=ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]]))
+    >>> filters = ivy.array([[2, 0, 1],
+    ...                      [1, 3, 1],
+    ...                      [0, 1, 1]], dtype = ivy.float32).reshape((3, 3, 1, 1))
+    >>> result = ivy.conv2d_transpose(x, filters, (2,), 'SAME')
+    >>> print(result)
+    {
+        a:ivy.eye(3, 3).reshape((1, 3, 3, 1)),
+        b:ivy.eye(5, 5).reshape((1, 5, 5, 1))
+    }
+ 
 
-
-    With a mix of :class:`ivy.Array`, :class:`ivy.NativeArray`
-    and :class:`ivy.Container` inputs:
-
-    >>> x = ivy.full((1, 6, 6, 6, 1), 1.23)
-    >>> a =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> b =  ivy.native_array(ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 1, 1]))
-    >>> filters = ivy.Container(a = a, b = b)
-    >>> y = ivy.conv2d_transpose(x, filters, 1, 'VALID', dilations=1)
-    >>> print(y.shape)
-    [1, 8, 8, 8, 1]
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3])
-    >>> filters = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 6])
-    >>> y = x.conv2d_transpose(filters, 2, 'SAME')
-    >>> print(y.shape)
-    (1, 6, 56, 56, 6)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a = ivy.random_normal(
-    ...                            mean=0, std=1, shape=[1, 3, 28, 28, 3]
-    ...                          ),
-    b = ivy.random_normal(mean=0, std=1, shape=[1, 3, 28, 28, 3]))
-
-    >>> filters = ivy.Container(c = ivy.random_normal(
-    ...                                 mean=0, std=1, shape=[3, 3, 3, 3, 3]
-    ...                             ),
-    d = ivy.random_normal(mean=0, std=1, shape=[3, 3, 3, 3, 3]))
-
-    >>> y = x.conv2d_transpose(filters, 2, "SAME")
-    >>> print(y.shape)
-    (1, 6, 56, 56, 3)
   
     """
     return current_backend(x).conv2d_transpose(
