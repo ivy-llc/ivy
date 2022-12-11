@@ -374,6 +374,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def sort(self, dim=-1, descending=False):
+        return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
+
     # Special Methods #
     # -------------------#
 
