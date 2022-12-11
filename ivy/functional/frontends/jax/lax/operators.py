@@ -131,17 +131,16 @@ def cosh(x):
 
 
 @to_ivy_arrays_and_back
-def cumprod(operand, axis=0, reverse=False):
-    if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumprod(operand, axis, dtype=operand.dtype)
+def cumprod(operand, axis=None, reverse=False):
+    dtype = ivy.dtype(operand)
+    return ivy.cumprod(operand, axis=axis, reverse=reverse).astype(dtype)
 
 
 @to_ivy_arrays_and_back
 def cumsum(operand, axis=0, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumsum(operand, axis, dtype=operand.dtype)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis=axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
 
 
 @to_ivy_arrays_and_back

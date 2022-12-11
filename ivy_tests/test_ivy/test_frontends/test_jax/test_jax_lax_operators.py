@@ -983,11 +983,13 @@ def test_jax_lax_convert_element_type(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.convert_element_type",
+    fn_tree="jax.lax.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-5,
+        max_value=5,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
@@ -1016,6 +1018,8 @@ def test_jax_lax_cumprod(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         operand=x[0],
         axis=axis,
         reverse=reverse,
