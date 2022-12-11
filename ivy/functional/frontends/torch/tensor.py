@@ -281,6 +281,9 @@ class Tensor:
     def sqrt(self):
         return torch_frontend.sqrt(self.data)
 
+    def square(self):
+        return torch_frontend.square(self.data)
+
     # Special Methods #
     # -------------------#
 
