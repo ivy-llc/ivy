@@ -137,7 +137,7 @@ def cumprod(operand, axis=None, reverse=False):
 
 
 @to_ivy_arrays_and_back
-def cumsum(operand, axis=0, reverse=False):
+def cumsum(operand, axis=None, reverse=False):
     if reverse:
         return ivy.flip(ivy.cumsum(ivy.flip(operand), axis=axis, dtype=operand.dtype))
     return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
