@@ -1,9 +1,9 @@
 # global
-import ivy
 import numpy as np
 from hypothesis import assume, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -874,12 +874,14 @@ def test_jax_lax_bitwise_xor(
     ),
     fill_val=_fill_value(),
     shape=st.one_of(helpers.get_shape() | st.none()),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
 )
 def test_jax_lax_full_like(
     *,
     dtype_and_x,
     fill_val,
     shape,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -887,10 +889,10 @@ def test_jax_lax_full_like(
     fn_tree,
     frontend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     fill_val = fill_val
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -981,11 +983,13 @@ def test_jax_lax_convert_element_type(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.convert_element_type",
+    fn_tree="jax.lax.cumprod",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         max_num_dims=5,
+        min_value=-5,
+        max_value=5,
         valid_axis=True,
         allow_neg_axes=False,
         max_axes_size=1,
@@ -1014,6 +1018,8 @@ def test_jax_lax_cumprod(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         operand=x[0],
         axis=axis,
         reverse=reverse,
@@ -1374,10 +1380,12 @@ def test_jax_lax_lt(
 @handle_frontend_test(
     fn_tree="jax.lax.round",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    rounding_method=st.sampled_from([0, 1]),
 )
 def test_jax_lax_round(
     *,
     dtype_and_x,
+    rounding_method,
     as_variable,
     num_positional_args,
     native_array,
@@ -1396,6 +1404,7 @@ def test_jax_lax_round(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        rounding_method=rounding_method,
     )
 
 
@@ -1622,8 +1631,7 @@ def _div_dtypes_and_xs(draw):
         )
     )
     divisor = draw(
-        helpers.array_values(dtype=dtype[0], min_value=1, max_value=20, shape=shape)
-        | helpers.array_values(dtype=dtype[0], min_value=-20, max_value=-1, shape=shape)
+        helpers.array_values(dtype=dtype[0], min_value=-20, max_value=20, shape=shape)
     )
     return dtype, [dividend[0], divisor]
 
@@ -1643,6 +1651,7 @@ def test_jax_lax_div(
     frontend,
 ):
     input_dtypes, xs = dtypes_and_xs
+    assume(not np.any(np.isclose(xs[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,

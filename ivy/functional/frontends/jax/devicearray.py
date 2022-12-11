@@ -49,10 +49,10 @@ class DeviceArray:
         return jax_frontend.lax.mul(other, self)
 
     def __div__(self, other):
-        return jax_frontend.lax.div(self, other)
+        return jax_frontend.numpy.divide(self, other)
 
     def __rdiv__(self, other):
-        return jax_frontend.lax.div(other, self)
+        return jax_frontend.numpy.divide(other, self)
 
     def __mod__(self, other):
         return jax_frontend.numpy.mod(self, other)
@@ -61,10 +61,10 @@ class DeviceArray:
         return jax_frontend.numpy.mod(other, self)
 
     def __truediv__(self, other):
-        return jax_frontend.lax.div(self, other)
+        return jax_frontend.numpy.divide(self, other)
 
     def __rtruediv__(self, other):
-        return jax_frontend.lax.div(other, self)
+        return jax_frontend.numpy.divide(other, self)
 
     def __matmul__(self, other):
         return jax_frontend.numpy.dot(self, other)
