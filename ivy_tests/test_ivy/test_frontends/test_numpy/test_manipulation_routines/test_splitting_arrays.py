@@ -10,6 +10,7 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
     indices_or_sections_ary_axis=array_indices_axis
 )
 def test_numpy_split(
+    fn_tree,
     indices_or_sections_ary_axis,
     as_variable,
     native_array,
