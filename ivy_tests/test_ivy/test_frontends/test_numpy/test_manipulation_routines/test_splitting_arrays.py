@@ -1,11 +1,11 @@
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers.hypothesis_helpers.array_helpers import array_indices_axis
-from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 
 
 # split
-@handle_frontend_test(
+@handle_frontend_method(
     class_tree="numpy.ndarray"
     init_tree="numpy.array",
     method_name="__split__",
