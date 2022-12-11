@@ -951,7 +951,7 @@ def test_tensorflow_avg_pool1d(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x[0],
-        ksize=ksize,
+      
         strides=strides,
         padding=padding,
         data_format=data_format,
