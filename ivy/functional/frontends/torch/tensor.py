@@ -374,6 +374,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def neg(self):
+        return ivy.negative(self._ivy_array)
+
     # Special Methods #
     # -------------------#
 

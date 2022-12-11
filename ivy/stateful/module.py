@@ -1187,16 +1187,17 @@ class Module(abc.ABC):
     def to_haiku_module(self):
         """
         Converts an ivy Module instance to a Haiku Module instance.
+
         Parameters
         ----------
         ivy_module
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable hk.Module instance.
         """
-
         ivy_module = self
 
         class MyHaikuModel(hk.Module):
@@ -1224,31 +1225,33 @@ class Module(abc.ABC):
     def to_keras_module(self):
         """
         Converts an ivy Module instance to a Keras Module instance.
+
         Parameters
         ----------
         self
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable tf.keras.Module instance.
         """
-
         return MyTFModule(self)
 
     def to_torch_module(self):
         """
         Converts an ivy Module instance to a Torch Module instance.
+
         Parameters
         ----------
         self
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable torch.nn.Module instance.
         """
-
         return MyTorchModule(self)
 
     @staticmethod
@@ -1510,6 +1513,7 @@ class Module(abc.ABC):
         inplace_update
             For backends with dedicated variable classes, whether to update these
             inplace. Default is ``False``.
+
         Returns
         -------
         ret
