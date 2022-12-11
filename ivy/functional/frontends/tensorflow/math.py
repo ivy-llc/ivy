@@ -366,10 +366,3 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
-
-
-@to_ivy_arrays_and_back
-def accumulate_n(inputs, shape=None, tensor_dtype=None, name="accumulate_n"):
-    tensor_dtype = ivy.dtype(inputs[0])
-    inputs = inputs = ivy.array(inputs, dtype=tensor_dtype)
-    return ivy.astype(ivy.sum(inputs, axis=0, keepdims=False), tensor_dtype)
