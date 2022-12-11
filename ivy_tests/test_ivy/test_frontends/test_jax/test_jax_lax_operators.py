@@ -1380,10 +1380,12 @@ def test_jax_lax_lt(
 @handle_frontend_test(
     fn_tree="jax.lax.round",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    rounding_method=st.sampled_from([0, 1]),
 )
 def test_jax_lax_round(
     *,
     dtype_and_x,
+    rounding_method,
     as_variable,
     num_positional_args,
     native_array,
@@ -1402,6 +1404,7 @@ def test_jax_lax_round(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
+        rounding_method=rounding_method,
     )
 
 
