@@ -306,13 +306,13 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     ----------
     arrays
         an arbitrary number of arrays to-be broadcasted.
-        Each array must have the same shape. Each array must have the same dtype as its
-        corresponding input array.
 
     Returns
     -------
     ret
         A list containing broadcasted arrays of type `ivy.Array`
+        Each array must have the same shape, and each array must have the same
+        dtype as its corresponding input array.
 
     Examples
     --------
