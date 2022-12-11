@@ -1,9 +1,9 @@
 # global
-import ivy
 import numpy as np
 from hypothesis import assume, strategies as st
 
 # local
+import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
@@ -874,12 +874,14 @@ def test_jax_lax_bitwise_xor(
     ),
     fill_val=_fill_value(),
     shape=st.one_of(helpers.get_shape() | st.none()),
+    dtype=st.shared(helpers.get_dtypes("numeric", full=False), key="dtype"),
 )
 def test_jax_lax_full_like(
     *,
     dtype_and_x,
     fill_val,
     shape,
+    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -887,10 +889,10 @@ def test_jax_lax_full_like(
     fn_tree,
     frontend,
 ):
-    dtype, x = dtype_and_x
+    input_dtype, x = dtype_and_x
     fill_val = fill_val
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
