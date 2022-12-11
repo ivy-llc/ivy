@@ -667,3 +667,11 @@ def divide(x1, x2, /):
 
 
 true_divide = divide
+
+
+@to_ivy_arrays_and_back
+def exp(
+    x,
+    /,
+):
+    return ivy.exp(x)
