@@ -216,6 +216,7 @@ def zeros(
 
 zeros.support_native_out = True
 
+
 def zeros_like(
     x: np.ndarray, /, *, dtype: np.dtype, device: str, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
