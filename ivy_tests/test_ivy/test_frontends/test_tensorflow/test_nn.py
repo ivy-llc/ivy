@@ -928,7 +928,7 @@ def test_tensorflow_max_pool1d(
     data_format=df(data_format=st.sampled_from(["NWC"])),
     x_k_s_p=helpers.arrays_for_pooling(min_dims=3, max_dims=3, min_side=1, max_side=4),
 )
-def test_tensorflow_max_pool1d(
+def test_tensorflow_avg_pool1d(
     *,
     x_k_s_p,
     data_format,
