@@ -62,6 +62,7 @@ def _array_idxes_n_dtype(draw, **kwargs):
     )
     return x, idxes, dtype
 
+
 @st.composite
 def _broadcastable_trio(draw):
     shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
@@ -851,6 +852,7 @@ def test_torch_take_along_dim(
         indices=indices,
         dim=axis,
     )
+
 
 # where
 @handle_frontend_test(
