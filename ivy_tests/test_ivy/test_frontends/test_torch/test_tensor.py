@@ -2881,7 +2881,9 @@ def test_torch_instance_min(
 
 # sqrt
 @handle_frontend_method(
-    method_tree="torch.tensor.sqrt",
+    class_tree="ivy.functional.frontends.torch.tensor",
+    init_tree="torch.tensor",
+    method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric", full=True),
                                     ),
