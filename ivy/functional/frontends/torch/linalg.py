@@ -40,7 +40,7 @@ def eigvalsh(input, UPLO="L", *, out=None):
 
 
 @to_ivy_arrays_and_back
-def qr(input, mode='reduced', *, out=None):
+def qr(input, mode="reduced", *, out=None):
     if mode == "reduced":
         ret = ivy.qr(input, mode="reduced")
     elif mode == "r":

@@ -140,3 +140,13 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
 @to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def gather(params, indices, axis=None, batch_dims=0, name=None):
+    return ivy.gather(params, indices, axis=axis, batch_dims=batch_dims)
+
+
+@to_ivy_arrays_and_back
+def gather_nd(params, indices, batch_dims=0, name=None):
+    return ivy.gather_nd(params, indices, batch_dims=batch_dims)
