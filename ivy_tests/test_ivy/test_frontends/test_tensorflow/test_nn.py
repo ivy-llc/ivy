@@ -607,6 +607,44 @@ def test_tensorflow_conv3d_transpose(
     )
 
 
+@handle_frontend_test(
+    fn_tree="tensorflow.nn.depthwise_conv2d",
+    x_f_d_df=_x_and_filters(
+        dtypes=helpers.get_dtypes("float", full=False),
+        data_format=st.sampled_from(["NHWC"]),
+        padding=st.sampled_from(["VALID", "SAME"]),
+        type="depthwise",
+    ),
+)
+def test_tensorflow_depthwise_conv2d(
+    *,
+    x_f_d_df,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x, filters, dilation, data_format, stride, padding = x_f_d_df
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+        filter=filters,
+        strides=stride,
+        padding=padding,
+        data_format=data_format,
+        dilations=dilation,
+    )
+
+
 # TODO: test with other dtypes
 @handle_frontend_test(
     fn_tree="tensorflow.nn.batch_normalization",

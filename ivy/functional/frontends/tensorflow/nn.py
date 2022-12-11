@@ -116,6 +116,26 @@ def conv3d_transpose(
 
 
 @to_ivy_arrays_and_back
+def depthwise_conv2d(
+    input,
+    filter,
+    strides,
+    padding="SAME",
+    data_format="NHWC",
+    dilations=1,
+    name=None,
+):
+    return ivy.depthwise_conv2d(
+        input,
+        filter,
+        strides,
+        padding,
+        data_format=data_format,
+        dilations=dilations,
+    )
+
+
+@to_ivy_arrays_and_back
 def batch_normalization(x, mean, variance, offset, scale, variance_epsilon, name=None):
     inv = 1.0 / ivy.sqrt(variance + variance_epsilon)
     if scale is not None:
