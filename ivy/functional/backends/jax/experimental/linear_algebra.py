@@ -1,7 +1,6 @@
 import math
 from typing import Optional
 import jax.numpy as jnp
-import jax.scipy.linalg as jslp
 from ivy.functional.backends.jax import JaxArray
 
 import ivy
@@ -99,4 +98,4 @@ def matrix_exp(
     *,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jslp.expm(x)
+    return jnp.exp(x)
