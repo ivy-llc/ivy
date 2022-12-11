@@ -1274,9 +1274,11 @@ def test_numpy_instance_truediv__(
 
 
 @handle_frontend_method(
-    method_tree="numpy.ndarray.__floordiv__",
+    class_tree=CLASS_TREE,
+    init_tree="numpy.array",
+    method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("bool"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
     ),
 )
@@ -1285,10 +1287,11 @@ def test_numpy_instance_floordiv__(
     as_variable,
     num_positional_args_method,
     native_array,
-    class_,
-    method_name,
+    frontend_method_data,
+    frontend,
 ):
     input_dtype, xs = dtype_and_x
+    assume(not np.any(np.isclose(xs[1], 0)))
 
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
@@ -1305,9 +1308,8 @@ def test_numpy_instance_floordiv__(
         method_all_as_kwargs_np={
             "value": xs[1],
         },
-        frontend="numpy",
-        class_="ndarray",
-        method_name="__floordiv__",
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
     )
 
 
