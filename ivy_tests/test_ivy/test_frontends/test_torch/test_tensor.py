@@ -4064,8 +4064,9 @@ def test_torch_special_or(
 
 # neg
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.neg",
+    class_tree="torch.Tensor",
+    init_tree="torch.Tensor",
+    method_name="neg",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -4076,9 +4077,8 @@ def test_torch_instance_neg(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -4095,6 +4095,5 @@ def test_torch_instance_neg(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
