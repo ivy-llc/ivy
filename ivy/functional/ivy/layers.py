@@ -1020,7 +1020,6 @@ def conv2d_transpose(
     -------
     ret
         The result of the transpose convolution operation.
-
     """
     return current_backend(x).conv2d_transpose(
         x,
