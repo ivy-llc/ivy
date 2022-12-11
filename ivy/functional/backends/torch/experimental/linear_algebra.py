@@ -116,4 +116,4 @@ def matrix_exp(
     *,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    return torch.linalg.matrix_exp(x)
+    return torch.exp(x)
