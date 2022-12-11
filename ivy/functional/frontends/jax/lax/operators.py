@@ -276,8 +276,17 @@ def rev(operand, dimensions):
 
 
 @to_ivy_arrays_and_back
-def round(x):
-    return ivy.round(x)
+def round(x, rounding_method=1):
+    if rounding_method == 0:
+        ret = ivy.where(
+            ivy.less(x, 0),
+            ivy.ceil(x) - (ivy.ceil(x) - ivy.floor(x)),
+            ivy.ceil(x),
+        )
+    elif rounding_method == 1:
+        ret = ivy.ceil(x)
+        ret = ivy.where(ivy.remainder(ret, 2) == 0, ret, ret - 1)
+    return ivy.where(ivy.abs(x - ivy.floor(x) - 0.5) < 1e-7, ret, ivy.round(x))
 
 
 @to_ivy_arrays_and_back
