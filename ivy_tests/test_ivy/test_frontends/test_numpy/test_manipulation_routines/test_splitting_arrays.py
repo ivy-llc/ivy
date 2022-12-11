@@ -7,9 +7,6 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 # split
 @handle_frontend_test(
     fn_tree = "numpy.split",
-    class_tree="numpy.split",
-    init_tree="numpy.array",
-    method_name="__split__",
     indices_or_sections_ary_axis=array_indices_axis
 )
 def test_numpy_split(
