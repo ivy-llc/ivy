@@ -3463,7 +3463,6 @@ def test_torch_instance_mean(
     method_tree="torch.Tensor.neg",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
-        num_arrays=2,
     ),
 )
 def test_torch_instance_neg(
