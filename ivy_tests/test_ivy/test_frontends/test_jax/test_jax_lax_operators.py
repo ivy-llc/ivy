@@ -1628,8 +1628,7 @@ def _div_dtypes_and_xs(draw):
         )
     )
     divisor = draw(
-        helpers.array_values(dtype=dtype[0], min_value=1, max_value=20, shape=shape)
-        | helpers.array_values(dtype=dtype[0], min_value=-20, max_value=-1, shape=shape)
+        helpers.array_values(dtype=dtype[0], min_value=-20, max_value=20, shape=shape)
     )
     return dtype, [dividend[0], divisor]
 
@@ -1649,6 +1648,7 @@ def test_jax_lax_div(
     frontend,
 ):
     input_dtypes, xs = dtypes_and_xs
+    assume(not np.any(np.isclose(xs[1], 0)))
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
