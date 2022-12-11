@@ -1,13 +1,13 @@
 # global
 import pytest
-from hypothesis import strategies as st
+from hypothesis import strategies as st, given
 
 # local
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 import ivy.functional.backends.numpy as ivy_np
 import ivy.functional.backends.tensorflow as ivy_tf
-from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_method
 from ivy_tests.test_ivy.test_frontends.test_tensorflow.test_raw_ops import (
     _pow_helper_shared_dtype,
 )
@@ -15,8 +15,10 @@ import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy.functional.frontends.tensorflow import EagerTensor
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.math.add",  # dummy fn_tree
+CLASS_TREE = "ivy.functional.frontends.tensorflow.EagerTensor"
+
+
+@given(
     dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
 )
 def test_array_property_device(
@@ -28,8 +30,7 @@ def test_array_property_device(
     ivy.assertions.check_equal(x.device, ivy.dev(data))
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.math.add",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
     ),
@@ -42,8 +43,7 @@ def test_numpy_ndarray_property_dtype(
     ivy.assertions.check_equal(x.dtype, ivy.Dtype(dtype[0]))
 
 
-@handle_frontend_test(
-    fn_tree="tensorflow.math.add",  # dummy fn_tree
+@given(
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         ret_shape=True,
@@ -59,8 +59,9 @@ def test_numpy_ndarray_property_shape(
 
 # __add__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__add__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -73,9 +74,8 @@ def test_tensorflow_instance_add(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -94,14 +94,14 @@ def test_tensorflow_instance_add(
             "y": x[1],
         },
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__div__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__div__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -114,9 +114,8 @@ def test_tensorflow_instance_div(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -135,14 +134,14 @@ def test_tensorflow_instance_div(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.get_shape",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="get_shape",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         min_num_dims=1,
@@ -155,9 +154,8 @@ def test_tensorflow_instance_get_shape(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -174,14 +172,14 @@ def test_tensorflow_instance_get_shape(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__eq__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__eq__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -193,9 +191,8 @@ def test_tensorflow_instance_eq(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -214,15 +211,15 @@ def test_tensorflow_instance_eq(
             "other": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @pytest.mark.skip("Gets stuck.")  # TODO fix
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__floordiv__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__floordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -235,9 +232,8 @@ def test_tensorflow_instance_floordiv(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -256,14 +252,14 @@ def test_tensorflow_instance_floordiv(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__ge__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__ge__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -276,9 +272,8 @@ def test_tensorflow_instance_ge(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -297,14 +292,14 @@ def test_tensorflow_instance_ge(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__gt__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__gt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -317,9 +312,8 @@ def test_tensorflow_instance_gt(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -338,14 +332,14 @@ def test_tensorflow_instance_gt(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__le__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__le__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -358,9 +352,8 @@ def test_tensorflow_instance_le(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -379,14 +372,14 @@ def test_tensorflow_instance_le(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__lt__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__lt__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -399,9 +392,8 @@ def test_tensorflow_instance_lt(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -420,14 +412,14 @@ def test_tensorflow_instance_lt(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__mul__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -440,9 +432,8 @@ def test_tensorflow_instance_mul(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -461,15 +452,15 @@ def test_tensorflow_instance_mul(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __mod__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__mod__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__mod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -478,13 +469,12 @@ def test_tensorflow_instance_mul(
 )
 def test_tensorflow_instance_mod(
     dtype_and_x,
-    as_variable,
-    native_array,
-    frontend,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -503,15 +493,15 @@ def test_tensorflow_instance_mod(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __sub__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__sub__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=tuple(
             set(ivy_np.valid_float_dtypes).intersection(set(ivy_tf.valid_float_dtypes))
@@ -526,9 +516,8 @@ def test_tensorflow_instance_sub(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -547,15 +536,15 @@ def test_tensorflow_instance_sub(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __ne__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__ne__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__ne__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -568,9 +557,8 @@ def test_tensorflow_instance_ne(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -589,15 +577,15 @@ def test_tensorflow_instance_ne(
             "other": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __radd__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__radd__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -610,9 +598,8 @@ def test_tensorflow_instance_radd(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -631,15 +618,15 @@ def test_tensorflow_instance_radd(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rfloordiv__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rfloordiv__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rfloordiv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -652,9 +639,8 @@ def test_tensorflow_instance_rfloordiv(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -673,15 +659,15 @@ def test_tensorflow_instance_rfloordiv(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rsub__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rsub__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rsub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -694,9 +680,8 @@ def test_tensorflow_instance_rsub(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -715,15 +700,15 @@ def test_tensorflow_instance_rsub(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __and__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__add__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -736,9 +721,8 @@ def test_tensorflow_instance_and(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -757,15 +741,15 @@ def test_tensorflow_instance_and(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rand__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rand__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rand__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -778,9 +762,8 @@ def test_tensorflow_instance_rand(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -799,15 +782,15 @@ def test_tensorflow_instance_rand(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __or__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__or__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__or__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -820,9 +803,8 @@ def test_tensorflow_instance_or(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -841,15 +823,15 @@ def test_tensorflow_instance_or(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __ror__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__ror__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__ror__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -862,9 +844,8 @@ def test_tensorflow_instance_ror(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -883,15 +864,15 @@ def test_tensorflow_instance_ror(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __truediv__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__truediv__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -904,9 +885,8 @@ def test_tensorflow_instance_truediv(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -925,15 +905,15 @@ def test_tensorflow_instance_truediv(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rtruediv__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rtruediv__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rtruediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -946,9 +926,8 @@ def test_tensorflow_instance_rtruediv(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -967,15 +946,15 @@ def test_tensorflow_instance_rtruediv(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __bool__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__bool__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__bool__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
@@ -987,9 +966,8 @@ def test_tensorflow_instance_bool(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1006,15 +984,15 @@ def test_tensorflow_instance_bool(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __nonzero__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__nonzero__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__nonzero__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         max_dim_size=1,
@@ -1026,9 +1004,8 @@ def test_tensorflow_instance_nonzero(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1045,15 +1022,15 @@ def test_tensorflow_instance_nonzero(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __neg__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__neg__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float32",
@@ -1071,9 +1048,8 @@ def test_tensorflow_instance_neg(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1090,15 +1066,15 @@ def test_tensorflow_instance_neg(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rxor__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rxor__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rxor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -1111,9 +1087,8 @@ def test_tensorflow_instance_rxor(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1132,15 +1107,15 @@ def test_tensorflow_instance_rxor(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __xor__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__xor__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__xor__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -1153,9 +1128,8 @@ def test_tensorflow_instance_xor(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1174,15 +1148,15 @@ def test_tensorflow_instance_xor(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __matmul__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__matmul__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__matmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -1202,9 +1176,8 @@ def test_tensorflow_instance_matmul(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1223,15 +1196,15 @@ def test_tensorflow_instance_matmul(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rmatmul__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rmatmul__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rmatmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -1251,9 +1224,8 @@ def test_tensorflow_instance_rmatmul(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1272,15 +1244,15 @@ def test_tensorflow_instance_rmatmul(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __array__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__array__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__array__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric")
     ),
@@ -1291,9 +1263,8 @@ def test_tensorflow_instance_array(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1310,15 +1281,15 @@ def test_tensorflow_instance_array(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __invert__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__invert__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__invert__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer")
     ),
@@ -1329,9 +1300,8 @@ def test_tensorflow_instance_invert(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1348,15 +1318,15 @@ def test_tensorflow_instance_invert(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rmul__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rmul__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1371,9 +1341,8 @@ def test_tensorflow_instance_rmul(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1392,15 +1361,15 @@ def test_tensorflow_instance_rmul(
             "x": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __rpow__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__rpow__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__rpow__",
     dtype_and_x=_pow_helper_shared_dtype(),
 )
 def test_tensorflow_instance_rpow(
@@ -1409,9 +1378,8 @@ def test_tensorflow_instance_rpow(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1430,15 +1398,15 @@ def test_tensorflow_instance_rpow(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __pow__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__pow__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__pow__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=[
             "float16",
@@ -1457,9 +1425,8 @@ def test_tensorflow_instance_pow(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     if x[1].dtype == "int32" or x[1].dtype == "int64":
@@ -1485,8 +1452,7 @@ def test_tensorflow_instance_pow(
             "y": x[1],
         },
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -1547,8 +1513,9 @@ def _array_and_index(
 
 # __getitem__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__getitem__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_tensorflow_instance_getitem(
@@ -1557,9 +1524,8 @@ def test_tensorflow_instance_getitem(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     data = x[0]
@@ -1576,8 +1542,7 @@ def test_tensorflow_instance_getitem(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"slice_spec": index},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
@@ -1626,8 +1591,9 @@ def _array_and_shape(
 
 
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.set_shape",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="set_shape",
     dtype_and_x=_array_and_shape(
         min_num_dims=0,
         max_num_dims=5,
@@ -1639,9 +1605,8 @@ def test_tensorflow_instance_set_shape(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1656,15 +1621,15 @@ def test_tensorflow_instance_set_shape(
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"shape": x[1]},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )
 
 
 # __len__
 @handle_frontend_method(
-    init_name="constant",
-    method_tree="tensorflow.EagerTensor.__len__",
+    class_tree=CLASS_TREE,
+    init_tree="tensorflow.constant",
+    method_name="__len__",
     dtype_and_x=_array_and_shape(
         min_num_dims=1,
         max_num_dims=5,
@@ -1676,9 +1641,8 @@ def test_tensorflow_instance_len(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1695,6 +1659,5 @@ def test_tensorflow_instance_len(
         method_native_array_flags=[],
         method_all_as_kwargs_np={},
         frontend=frontend,
-        method_name=method_name,
-        init_name=init_name,
+        frontend_method_data=frontend_method_data,
     )

@@ -1,7 +1,7 @@
 # global
 import ivy
 import torch
-from hypothesis import assume, strategies as st
+from hypothesis import strategies as st, given
 import hypothesis.extra.numpy as hnp
 
 # local
@@ -12,7 +12,10 @@ from ivy_tests.test_ivy.test_frontends.test_torch.test_blas_and_lapack_ops impor
 )
 from ivy.functional.frontends.torch import Tensor
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
-from ivy_tests.test_ivy.helpers import handle_frontend_method, handle_frontend_test
+from ivy_tests.test_ivy.helpers import handle_frontend_method
+
+
+CLASS_TREE = "ivy.functional.frontends.torch.Tensor"
 
 
 # Helper functions
@@ -36,9 +39,10 @@ def _requires_grad(draw):
     return draw(st.booleans())
 
 
-@handle_frontend_test(
-    fn_tree="torch.argmax",  # dummy fn_tree
-    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+@given(
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid")
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_tensor_property_ivy_array(
     dtype_x,
@@ -55,17 +59,80 @@ def test_torch_tensor_property_ivy_array(
     )
 
 
+@given(
+    dtype_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+)
+def test_torch_tensor_property_device(
+    dtype_x,
+):
+    _, data = dtype_x
+    x = Tensor(data[0])
+    x.ivy_array = data[0]
+    ivy.assertions.check_equal(x.device, ivy.dev(ivy.array(data[0])))
+
+
+# chunk
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="chunk",
+    dtype_x_dim=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=1,
+        min_value=-1e04,
+        max_value=1e04,
+        force_int_axis=True,
+        valid_axis=True,
+    ),
+    chunks=st.integers(
+        min_value=1,
+        max_value=50,
+    ),
+)
+def test_torch_instance_chunk(
+    dtype_x_dim,
+    chunks,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
+):
+    input_dtype, x, dim = dtype_x_dim
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "chunks": chunks,
+            "dim": dim,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
 # add
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.add",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="add",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
     alpha=st.floats(min_value=-1e04, max_value=1e04, allow_infinity=False),
 )
 def test_torch_instance_add(
@@ -75,9 +142,8 @@ def test_torch_instance_add(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    method_name,
-    init_name,
     frontend,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -96,16 +162,16 @@ def test_torch_instance_add(
             "other": x[1],
             "alpha": alpha,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # new_ones
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.new_ones",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="new_ones",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
     size=helpers.get_shape(
         allow_none=False,
@@ -127,8 +193,7 @@ def test_torch_instance_new_ones(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -150,15 +215,15 @@ def test_torch_instance_new_ones(
             "requires_grad": requires_grad,
             "device": on_device,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.reshape",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="reshape",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -174,8 +239,7 @@ def test_torch_instance_reshape(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -194,16 +258,16 @@ def test_torch_instance_reshape(
         method_all_as_kwargs_np={
             "shape": shape,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # sin
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.sin",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -215,8 +279,7 @@ def test_torch_instance_sin(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -233,16 +296,16 @@ def test_torch_instance_sin(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arcsin
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arcsin",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arcsin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -254,8 +317,7 @@ def test_torch_instance_arcsin(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -272,16 +334,16 @@ def test_torch_instance_arcsin(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # sum
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.sum",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sum",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -289,36 +351,37 @@ def test_torch_instance_arcsin(
 )
 def test_torch_instance_sum(
     dtype_and_x,
-    as_variable,
-    native_array,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
     frontend,
-    init_name,
-    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
         init_input_dtypes=["float64"] + input_dtype,
         init_as_variable_flags=as_variable,
-        init_num_positional_args=1,
+        init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
             "data": x[0],
         },
         method_input_dtypes=["float64"] + input_dtype,
         method_as_variable_flags=as_variable,
-        method_num_positional_args=0,
+        method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # atan
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.atan",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="atan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -330,8 +393,7 @@ def test_torch_instance_atan(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -348,16 +410,16 @@ def test_torch_instance_atan(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # sin_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.sin_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sin_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -369,8 +431,7 @@ def test_torch_instance_sin_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -387,16 +448,16 @@ def test_torch_instance_sin_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # cos
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.cos",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -408,8 +469,7 @@ def test_torch_instance_cos(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -426,20 +486,20 @@ def test_torch_instance_cos(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # cos_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.cos_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cos_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_instance_cos_(
     dtype_and_x,
@@ -447,12 +507,10 @@ def test_torch_instance_cos_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
-    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
@@ -466,16 +524,16 @@ def test_torch_instance_cos_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # sinh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.sinh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -487,8 +545,7 @@ def test_torch_instance_sinh(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -505,16 +562,16 @@ def test_torch_instance_sinh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # sinh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.sinh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="sinh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -526,8 +583,7 @@ def test_torch_instance_sinh_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -544,16 +600,16 @@ def test_torch_instance_sinh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # cosh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.cosh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cosh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -565,8 +621,7 @@ def test_torch_instance_cosh(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -583,16 +638,16 @@ def test_torch_instance_cosh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # cosh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.cosh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cosh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -604,8 +659,7 @@ def test_torch_instance_cosh_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -622,16 +676,16 @@ def test_torch_instance_cosh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # view
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.view",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="view",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -647,8 +701,7 @@ def test_torch_instance_view(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -667,15 +720,15 @@ def test_torch_instance_view(
         method_all_as_kwargs_np={
             "shape": shape,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.float",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="float",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -686,8 +739,7 @@ def test_torch_instance_float(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -703,19 +755,17 @@ def test_torch_instance_float(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "memory_format": torch.preserve_format,
-        },
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # asinh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.asinh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="asinh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -727,9 +777,8 @@ def test_torch_instance_asinh(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -745,9 +794,8 @@ def test_torch_instance_asinh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
         rtol_=1e-2,
         atol_=1e-2,
     )
@@ -755,8 +803,9 @@ def test_torch_instance_asinh(
 
 # asinh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.asinh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="asinh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -768,8 +817,7 @@ def test_torch_instance_asinh_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -786,9 +834,8 @@ def test_torch_instance_asinh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
         rtol_=1e-2,
         atol_=1e-2,
     )
@@ -796,8 +843,9 @@ def test_torch_instance_asinh_(
 
 # tan
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.tan",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -809,8 +857,7 @@ def test_torch_instance_tan(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -827,16 +874,16 @@ def test_torch_instance_tan(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # tanh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.tanh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tanh",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -848,8 +895,7 @@ def test_torch_instance_tanh(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -866,16 +912,16 @@ def test_torch_instance_tanh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # tanh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.tanh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tanh_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -887,8 +933,7 @@ def test_torch_instance_tanh_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -905,16 +950,16 @@ def test_torch_instance_tanh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # asin
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.asin",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="asin",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -926,8 +971,7 @@ def test_torch_instance_asin(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -944,16 +988,16 @@ def test_torch_instance_asin(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # amax
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.amax",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="amax",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -964,8 +1008,7 @@ def test_torch_instance_amax(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -982,16 +1025,16 @@ def test_torch_instance_amax(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # abs
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.abs",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="abs",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1002,8 +1045,7 @@ def test_torch_instance_abs(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1020,16 +1062,16 @@ def test_torch_instance_abs(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # abs_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.abs_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="abs_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -1040,8 +1082,7 @@ def test_torch_instance_abs_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1058,16 +1099,16 @@ def test_torch_instance_abs_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # amin
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.amin",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="amin",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1078,8 +1119,7 @@ def test_torch_instance_amin(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -1096,16 +1136,16 @@ def test_torch_instance_amin(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # contiguous
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.contiguous",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="contiguous",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1117,49 +1157,7 @@ def test_torch_instance_contiguous(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
-    frontend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
-        init_all_as_kwargs_np={
-            "data": x[0],
-        },
-        method_input_dtypes=input_dtype,
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
-        method_all_as_kwargs_np={
-            "memory_format": torch.contiguous_format,
-        },
-        frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
-    )
-
-
-# log
-@handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.log",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
-    ),
-)
-def test_torch_instance_log(
-    dtype_and_x,
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1176,23 +1174,61 @@ def test_torch_instance_log(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+    )
+
+
+# log
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="log",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_log(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
     )
 
 
 # __add__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__add__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__add__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
@@ -1205,9 +1241,8 @@ def test_torch_special_add(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
+    frontend_method_data,
     frontend,
-    method_name,
 ):
     input_dtype, x = dtype_and_x
     helpers.test_frontend_method(
@@ -1226,19 +1261,18 @@ def test_torch_special_add(
             "other": x[1],
             "alpha": alpha,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __long__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__long__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__long__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
@@ -1250,8 +1284,7 @@ def test_torch_special_long(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1268,16 +1301,16 @@ def test_torch_special_long(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __radd__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__radd__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__radd__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -1297,8 +1330,7 @@ def test_torch_special_radd(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1318,23 +1350,23 @@ def test_torch_special_radd(
             "other": x[1],
             "alpha": alpha,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __sub__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__sub__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__sub__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
     alpha=st.floats(
         min_value=-1e04,
         max_value=1e04,
@@ -1347,8 +1379,7 @@ def test_torch_special_sub(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1368,23 +1399,23 @@ def test_torch_special_sub(
             "other": x[1],
             "alpha": alpha,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __mul__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__mul__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__mul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_special_mul(
     dtype_and_x,
@@ -1392,8 +1423,7 @@ def test_torch_special_mul(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1412,23 +1442,23 @@ def test_torch_special_mul(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __rmul__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__rmul__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__rmul__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
         min_value=-1e04,
         max_value=1e04,
         allow_inf=False,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_special_rmul(
     dtype_and_x,
@@ -1436,8 +1466,7 @@ def test_torch_special_rmul(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1456,16 +1485,16 @@ def test_torch_special_rmul(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __truediv__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__truediv__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__truediv__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         shared_dtype=True,
@@ -1483,8 +1512,7 @@ def test_torch_special_truediv(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1504,16 +1532,16 @@ def test_torch_special_truediv(
             "other": x[1],
             "rounding_mode": rounding_mode,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # _to_with_device
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.to",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="to",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid", full=True),
     ),
@@ -1526,8 +1554,7 @@ def test_torch_instance_to_with_device(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -1550,9 +1577,8 @@ def test_torch_instance_to_with_device(
             "copy": copy,
             "memory_format": torch.preserve_format,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -1583,8 +1609,9 @@ def _to_helper(draw):
 
 # to
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.to",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="to",
     args_kwargs=_to_helper(),
 )
 def test_torch_instance_to(
@@ -1593,8 +1620,7 @@ def test_torch_instance_to(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, method_num_positional_args, method_all_as_kwargs_np = args_kwargs
@@ -1611,16 +1637,16 @@ def test_torch_instance_to(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np=method_all_as_kwargs_np,
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arctan
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arctan",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctan",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1632,8 +1658,7 @@ def test_torch_instance_arctan(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1650,16 +1675,16 @@ def test_torch_instance_arctan(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arctan_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arctan_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1671,8 +1696,7 @@ def test_torch_instance_arctan_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1689,16 +1713,16 @@ def test_torch_instance_arctan_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # acos
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.acos",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="acos",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -1710,8 +1734,7 @@ def test_torch_instance_acos(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1728,16 +1751,16 @@ def test_torch_instance_acos(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # new_tensor
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.new_tensor",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="new_tensor",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -1749,8 +1772,7 @@ def test_torch_instance_new_tensor(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1770,9 +1792,8 @@ def test_torch_instance_new_tensor(
             "data": x[1],
             "dtype": input_dtype[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -1833,8 +1854,9 @@ def _array_and_index(
 
 # __getitem__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__getitem__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__getitem__",
     dtype_and_x=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_torch_instance_getitem(
@@ -1843,8 +1865,7 @@ def test_torch_instance_getitem(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -1861,16 +1882,16 @@ def test_torch_instance_getitem(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"query": index},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # view_as
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.view_as",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="view_as",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         shape=st.shared(helpers.get_shape(), key="value_shape"),
@@ -1883,8 +1904,7 @@ def test_torch_instance_view_as(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -1903,16 +1923,16 @@ def test_torch_instance_view_as(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # unsqueeze
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.unsqueeze",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="unsqueeze",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -1930,8 +1950,7 @@ def test_torch_instance_unsqueeze(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -1950,16 +1969,16 @@ def test_torch_instance_unsqueeze(
         method_all_as_kwargs_np={
             "dim": dim,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # unsqueeze_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.unsqueeze_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="unsqueeze_",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -1977,8 +1996,7 @@ def test_torch_instance_unsqueeze_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -1997,19 +2015,18 @@ def test_torch_instance_unsqueeze_(
         method_all_as_kwargs_np={
             "dim": dim,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # detach
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.detach",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="detach",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        num_arrays=1,
     ),
 )
 def test_torch_instance_detach(
@@ -2018,8 +2035,7 @@ def test_torch_instance_detach(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2036,16 +2052,16 @@ def test_torch_instance_detach(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # dim
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.dim",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="dim",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2056,8 +2072,7 @@ def test_torch_instance_dim(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2074,16 +2089,16 @@ def test_torch_instance_dim(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # ndimension
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.ndimension",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ndimension",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2094,8 +2109,7 @@ def test_torch_instance_ndimension(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2112,9 +2126,8 @@ def test_torch_instance_ndimension(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -2164,8 +2177,9 @@ def _fill_value_and_size(
 
 # new_full
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.new_full",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="new_full",
     dtype_and_x=_fill_value_and_size(max_num_dims=3),
 )
 def test_torch_instance_new_full(
@@ -2174,8 +2188,7 @@ def test_torch_instance_new_full(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2195,16 +2208,16 @@ def test_torch_instance_new_full(
             "size": x[1],
             "fill_value": x[2],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # new_empty (not actually intuitive for testing)
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.new_empty",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="new_empty",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2220,8 +2233,7 @@ def test_torch_instance_new_empty(
     size,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2240,9 +2252,8 @@ def test_torch_instance_new_empty(
         method_all_as_kwargs_np={
             "size": size,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -2260,8 +2271,9 @@ def _expand_helper(draw):
 
 
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.expand",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="expand",
     dtype_x_shape=_expand_helper(),
 )
 def test_torch_instance_expand(
@@ -2270,8 +2282,7 @@ def test_torch_instance_expand(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
 
@@ -2289,9 +2300,8 @@ def test_torch_instance_expand(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={str(i): s for i, s in enumerate(shape)},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -2328,20 +2338,20 @@ def _unfold_args(draw):
 
 # unfold
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.unfold",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="unfold",
     dtype_values_args=_unfold_args(),
 )
 def test_torch_instance_unfold(
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
     dtype_values_args,
     size,
     step,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis, size, step = dtype_values_args
@@ -2363,20 +2373,20 @@ def test_torch_instance_unfold(
             "size": size,
             "step": step,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # __mod__
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.__mod__",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__mod__",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_special_mod(
     dtype_and_x,
@@ -2384,8 +2394,7 @@ def test_torch_special_mod(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2404,19 +2413,18 @@ def test_torch_special_mod(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # long
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.long",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="long",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
-        num_arrays=1,
     ),
 )
 def test_torch_instance_long(
@@ -2425,8 +2433,7 @@ def test_torch_instance_long(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2443,16 +2450,16 @@ def test_torch_instance_long(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # max
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.max",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="max",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
@@ -2463,8 +2470,7 @@ def test_torch_instance_max(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_x
@@ -2481,54 +2487,16 @@ def test_torch_instance_max(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
-    )
-
-
-# device
-@handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.device",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-    ),
-)
-def test_torch_instance_device(
-    init_num_positional_args: pf.NumPositionalArgFn,
-    method_num_positional_args: pf.NumPositionalArgMethod,
-    dtype_and_x,
-    as_variable: pf.AsVariableFlags,
-    native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
-    frontend,
-):
-    input_dtype, x = dtype_and_x
-    helpers.test_frontend_method(
-        init_input_dtypes=input_dtype,
-        init_as_variable_flags=as_variable,
-        init_num_positional_args=init_num_positional_args,
-        init_native_array_flags=native_array,
-        init_all_as_kwargs_np={
-            "data": x,
-        },
-        method_input_dtypes=[],
-        method_as_variable_flags=as_variable,
-        method_num_positional_args=method_num_positional_args,
-        method_native_array_flags=native_array,
-        method_all_as_kwargs_np={},
-        frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # is_cuda
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.is_cuda",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="is_cuda",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
     ),
@@ -2554,12 +2522,11 @@ def test_torch_instance_is_cuda(
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
-    init_name,
-    method_name,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
     device = "cpu" if device is False else "gpu:0"
-    x = Tensor(data=x[0]).new_ones(
+    x = Tensor(x[0]).new_ones(
         size=size, dtype=dtypes[0], device=device, requires_grad=requires_grad
     )
 
@@ -2576,16 +2543,16 @@ def test_torch_instance_is_cuda(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # bitwise_and
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.bitwise_and",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="bitwise_and",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
@@ -2597,8 +2564,7 @@ def test_torch_instance_bitwise_and(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2617,20 +2583,20 @@ def test_torch_instance_bitwise_and(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # add_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.add_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="add_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
-    ),
+    ).filter(lambda x: "bfloat16" not in x[0]),
 )
 def test_torch_instance_add_(
     init_num_positional_args: pf.NumPositionalArgFn,
@@ -2638,8 +2604,7 @@ def test_torch_instance_add_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2658,16 +2623,16 @@ def test_torch_instance_add_(
         method_all_as_kwargs_np={
             "other": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arccos_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arccos_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arccos_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2680,8 +2645,7 @@ def test_torch_instance_arccos_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2698,16 +2662,16 @@ def test_torch_instance_arccos_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arccos
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arccos",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arccos",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2720,8 +2684,7 @@ def test_torch_instance_arccos(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2738,16 +2701,16 @@ def test_torch_instance_arccos(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # acos_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.acos_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="acos_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2760,8 +2723,7 @@ def test_torch_instance_acos_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2778,16 +2740,16 @@ def test_torch_instance_acos_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # asin_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.asin_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="asin_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2800,8 +2762,7 @@ def test_torch_instance_asin_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2818,16 +2779,16 @@ def test_torch_instance_asin_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arcsin_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arcsin_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arcsin_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2840,8 +2801,7 @@ def test_torch_instance_arcsin_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2858,16 +2818,16 @@ def test_torch_instance_arcsin_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # atan_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.atan_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="atan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -2879,8 +2839,7 @@ def test_torch_instance_atan_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2897,16 +2856,16 @@ def test_torch_instance_atan_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # tan_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.tan_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="tan_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         allow_inf=False,
@@ -2918,8 +2877,7 @@ def test_torch_instance_tan_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2936,16 +2894,16 @@ def test_torch_instance_tan_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # atanh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.atanh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="atanh",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2958,8 +2916,7 @@ def test_torch_instance_atanh(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -2976,16 +2933,16 @@ def test_torch_instance_atanh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # atanh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.atanh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="atanh_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -2998,8 +2955,7 @@ def test_torch_instance_atanh_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3016,16 +2972,16 @@ def test_torch_instance_atanh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arctanh
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arctanh",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctanh",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -3038,8 +2994,7 @@ def test_torch_instance_arctanh(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3056,16 +3011,16 @@ def test_torch_instance_arctanh(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # arctanh_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.arctanh_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="arctanh_",
     dtype_and_x=helpers.dtype_and_values(
         min_value=-1.0,
         max_value=1.0,
@@ -3078,8 +3033,7 @@ def test_torch_instance_arctanh_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3096,16 +3050,16 @@ def test_torch_instance_arctanh_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # pow
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.pow",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="pow",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         num_arrays=2,
@@ -3120,8 +3074,7 @@ def test_torch_instance_pow(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3138,18 +3091,18 @@ def test_torch_instance_pow(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": x[1],
+            "exponent": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # pow_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.pow_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="pow_",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric"),
         num_arrays=2,
@@ -3161,8 +3114,7 @@ def test_torch_instance_pow_(
     dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3179,18 +3131,18 @@ def test_torch_instance_pow_(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={
-            "other": x[1],
+            "exponent": x[1],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # argmax
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.argmax",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="argmax",
     dtype_input_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         force_int_axis=True,
@@ -3212,8 +3164,7 @@ def test_torch_instance_argmax(
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     keepdim,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x, axis = dtype_input_axis
@@ -3233,15 +3184,16 @@ def test_torch_instance_argmax(
             "dim": axis,
             "keepdim": keepdim,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
+# ceil
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.ceil",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ceil",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -3252,8 +3204,7 @@ def test_torch_instance_ceil(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_and_x
@@ -3270,16 +3221,16 @@ def test_torch_instance_ceil(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # min
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.min",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="min",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("numeric", full=True),
     ),
@@ -3291,8 +3242,7 @@ def test_torch_instance_min(
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
-    init_name,
-    method_name,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -3308,9 +3258,8 @@ def test_torch_instance_min(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -3326,9 +3275,10 @@ def _get_dtype_and_multiplicative_matrices(draw):
 
 # matmul
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.matmul",
-    dtype_indtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="matmul",
+    dtype_tensor1_tensor2=_get_dtype_and_multiplicative_matrices(),
 )
 def test_torch_instance_matmul(
     dtype_tensor1_tensor2,
@@ -3336,8 +3286,7 @@ def test_torch_instance_matmul(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     dtype, tensor1, tensor2 = dtype_tensor1_tensor2
@@ -3353,10 +3302,9 @@ def test_torch_instance_matmul(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"tensor2": tensor2},
+        method_all_as_kwargs_np={"other": tensor2},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
@@ -3381,8 +3329,9 @@ def _array_idxes_n_dtype(draw, **kwargs):
 
 # permute
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.permute",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="permute",
     dtype_values_axis=_array_idxes_n_dtype(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -3393,8 +3342,7 @@ def test_torch_instance_permute(
     native_array: pf.NativeArrayFlags,
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     x, idxes, dtype = dtype_values_axis
@@ -3413,16 +3361,16 @@ def test_torch_instance_permute(
         method_all_as_kwargs_np={
             "dims": idxes,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # mean
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.mean",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="mean",
     dtype_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -3434,8 +3382,7 @@ def test_torch_instance_mean(
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend,
-    init_name,
-    method_name,
+    frontend_method_data,
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
@@ -3451,19 +3398,19 @@ def test_torch_instance_mean(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # transpose
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.transpose",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="transpose",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -3484,8 +3431,7 @@ def test_torch_instance_transpose(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -3502,19 +3448,19 @@ def test_torch_instance_transpose(
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={"dim0": dim0, "dim1": dim1},
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # transpose_
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.transpose_",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="transpose_",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim0=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -3535,8 +3481,7 @@ def test_torch_instance_transpose_(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -3556,16 +3501,16 @@ def test_torch_instance_transpose_(
             "dim0": dim0,
             "dim1": dim1,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # flatten
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.flatten",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="flatten",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -3589,8 +3534,7 @@ def test_torch_instance_flatten(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -3610,19 +3554,19 @@ def test_torch_instance_flatten(
             "start_dim": start_dim,
             "end_dim": end_dim,
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
     )
 
 
 # cumsum
 @handle_frontend_method(
-    init_name="tensor",
-    method_tree="torch.Tensor.cumsum",
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="cumsum",
     dtype_value=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("valid"),
-        shape=st.shared(helpers.get_shape(), key="shape"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
     ),
     dim=helpers.get_axis(
         shape=st.shared(helpers.get_shape(), key="shape"),
@@ -3639,8 +3583,7 @@ def test_torch_instance_cumsum(
     method_num_positional_args: pf.NumPositionalArgMethod,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
-    init_name,
-    method_name,
+    frontend_method_data,
     frontend,
 ):
     input_dtype, x = dtype_value
@@ -3660,7 +3603,460 @@ def test_torch_instance_cumsum(
             "dim": dim,
             "dtype": dtypes[0],
         },
+        frontend_method_data=frontend_method_data,
         frontend=frontend,
-        init_name=init_name,
-        method_name=method_name,
+    )
+
+
+# __eq__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__eq__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_special_eq(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# inverse
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="inverse",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+    ),
+)
+def test_torch_instance_inverse(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# neg
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="neg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_neg(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# int
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="int",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+    ),
+)
+def test_torch_instance_int(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x,
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# ne
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="ne",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ),
+)
+def test_torch_instance_ne(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# squeeze
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="squeeze",
+    dtype_value=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        shape=st.shared(helpers.get_shape(min_num_dims=1), key="shape"),
+    ),
+    dim=helpers.get_shape(min_num_dims=1),
+)
+def test_torch_instance_squeeze(
+    dtype_value,
+    dim,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_value
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": dim,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# flip
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="flip",
+    dtype_values_axis=_array_idxes_n_dtype(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+)
+def test_torch_instance_flip(
+    dtype_values_axis,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    frontend_method_data,
+    frontend,
+):
+    x, idxes, dtype = dtype_values_axis
+    helpers.test_frontend_method(
+        init_input_dtypes=dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=dtype,
+        method_num_positional_args=method_num_positional_args,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dims": idxes,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# __gt__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__gt__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_special_gt(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# __ne__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__ne__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_special_ne(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# __lt__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__lt__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_special_lt(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
+# __or__
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="__or__",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("valid"),
+        num_arrays=2,
+        min_value=-1e04,
+        max_value=1e04,
+        allow_inf=False,
+    ).filter(lambda x: "bfloat16" not in x[0]),
+)
+def test_torch_special_or(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend_method_data,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "other": x[1],
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
     )

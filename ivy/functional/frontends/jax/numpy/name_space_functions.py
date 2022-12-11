@@ -1,12 +1,12 @@
 import warnings
 
-
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
     to_ivy_arrays_and_back,
     outputs_to_frontend_arrays,
 )
+from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
 
 
 @to_ivy_arrays_and_back
@@ -19,7 +19,7 @@ abs = absolute
 
 @to_ivy_arrays_and_back
 def add(x1, x2):
-    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.add(x1, x2)
 
 
@@ -44,6 +44,21 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
+def argwhere(a, /, *, size=None, fill_value=None):
+    if size is None and fill_value is None:
+        return ivy.argwhere(a)
+
+    result = ivy.matrix_transpose(
+        ivy.vstack(ivy.nonzero(a, size=size, fill_value=fill_value))
+    )
+    num_of_dimensions = a.ndim
+
+    if num_of_dimensions == 0:
+        return result[:0].reshape(result.shape[0], 0)
+
+    return result.reshape(result.shape[0], num_of_dimensions)
+
+
 @to_ivy_arrays_and_back
 def argsort(a, axis=-1, kind="stable", order=None):
     if kind != "stable":
@@ -55,6 +70,15 @@ def argsort(a, axis=-1, kind="stable", order=None):
         raise ivy.exceptions.IvyError("'order' argument to argsort is not supported.")
 
     return ivy.argsort(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def asarray(
+    a,
+    dtype=None,
+    order=None,
+):
+    return ivy.asarray(a, dtype=dtype)
 
 
 @to_ivy_arrays_and_back
@@ -79,10 +103,10 @@ def clip(a, a_min=None, a_max=None, out=None):
     )
     a = ivy.array(a)
     if a_min is None:
-        a, a_max = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_max)
+        a, a_max = promote_types_of_jax_inputs(a, a_max)
         return ivy.minimum(a, a_max, out=out)
     if a_max is None:
-        a, a_min = ivy.frontends.jax.promote_types_of_jax_inputs(a, a_min)
+        a, a_min = promote_types_of_jax_inputs(a, a_min)
         return ivy.maximum(a, a_min, out=out)
     return ivy.clip(a, a_min, a_max, out=out)
 
@@ -107,7 +131,7 @@ def cosh(x):
 
 @to_ivy_arrays_and_back
 def dot(a, b, *, precision=None):
-    a, b = ivy.frontends.jax.promote_types_of_jax_inputs(a, b)
+    a, b = promote_types_of_jax_inputs(a, b)
     return ivy.matmul(a, b)
 
 
@@ -118,7 +142,7 @@ def einsum(
     out=None,
     optimize="optimal",
     precision=None,
-    _use_xeinsum=False
+    _use_xeinsum=False,
 ):
     return ivy.einsum(subscripts, *operands, out=out)
 
@@ -289,7 +313,7 @@ def flipud(m):
 
 @to_ivy_arrays_and_back
 def power(x1, x2):
-    x1, x2 = ivy.frontends.jax.promote_types_of_jax_inputs(x1, x2)
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
     return ivy.pow(x1, x2)
 
 
@@ -495,7 +519,6 @@ def multiply(x1, x2):
 
 alltrue = all
 
-
 sometrue = any
 
 
@@ -564,5 +587,81 @@ def logaddexp(x1, x2):
 
 
 @to_ivy_arrays_and_back
+def diagonal(a, offset=0, axis1=0, axis2=1):
+    return ivy.diagonal(a, offset=offset, axis1=axis1, axis2=axis2)
+
+
+@to_ivy_arrays_and_back
 def expand_dims(a, axis):
     return ivy.expand_dims(a, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def degrees(x):
+    return ivy.rad2deg(x)
+
+
+def eye(N, M=None, k=0, dtype=None):
+    return ivy.eye(N, M, k=k, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def stack(arrays, axis=0, out=None, dtype=None):
+    if dtype:
+        return ivy.astype(
+            ivy.stack(arrays, axis=axis, out=out), ivy.as_ivy_dtype(dtype)
+        )
+    return ivy.stack(arrays, axis=axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def take(
+    a,
+    indices,
+    axis=None,
+    out=None,
+    mode=None,
+    unique_indices=False,
+    indices_are_sorted=False,
+    fill_value=None,
+):
+    return ivy.take_along_axis(a, indices, axis, out=out)
+
+
+@to_ivy_arrays_and_back
+def zeros_like(a, dtype=None, shape=None):
+    if shape:
+        return ivy.zeros(shape, dtype=dtype)
+    return ivy.zeros_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def negative(
+    x,
+    /,
+):
+    return ivy.negative(x)
+
+
+@to_ivy_arrays_and_back
+def rad2deg(
+    x,
+    /,
+):
+    return ivy.rad2deg(x)
+
+
+@to_ivy_arrays_and_back
+def tensordot(a, b, axes=2):
+    return ivy.tensordot(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+def divide(x1, x2, /):
+    if ivy.dtype(x1) == "int64" or ivy.dtype(x1) == "uint64":
+        x1 = ivy.astype(x1, ivy.float64)
+    x1, x2 = promote_types_of_jax_inputs(x1, x2)
+    return ivy.divide(x1, x2)
+
+
+true_divide = divide

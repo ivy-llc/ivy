@@ -121,7 +121,17 @@ def test_jax_numpy_det(
 # eig
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.eig",
-    dtype_and_x=_get_dtype_and_matrix(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0,
+        max_value=10,
+        shape=helpers.ints(min_value=2, max_value=5).map(lambda x: tuple([x, x])),
+    ).filter(
+        lambda x: "float16" not in x[0]
+        and "bfloat16" not in x[0]
+        and np.linalg.cond(x[1][0]) < 1 / sys.float_info.epsilon
+        and np.linalg.det(np.asarray(x[1][0])) != 0
+    ),
 )
 def test_jax_numpy_eig(
     *,
@@ -134,7 +144,14 @@ def test_jax_numpy_eig(
     frontend,
 ):
     dtype, x = dtype_and_x
-    helpers.test_frontend_function(
+    x = np.array(x[0], dtype=dtype[0])
+    """
+    make symmetric positive-definite since ivy does not support complex
+    data dtypes currently.
+    """
+    x = np.matmul(x.T, x) + np.identity(x.shape[0]) * 1e-3
+
+    ret, frontend_ret = helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
         with_out=False,
@@ -143,9 +160,20 @@ def test_jax_numpy_eig(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-04,
-        atol=1e-04,
-        a=x[0],
+        test_values=False,
+        a=x,
+    )
+
+    ret = [ivy.to_numpy(x).astype(np.float64) for x in ret]
+    frontend_ret = [x.astype(np.float64) for x in frontend_ret[0]]
+
+    L, Q = ret
+    frontend_L, frontend_Q = frontend_ret
+
+    assert_all_close(
+        ret_np=Q @ np.diag(L) @ Q.T,
+        ret_from_gt_np=frontend_Q @ np.diag(frontend_L) @ frontend_Q.T,
+        atol=1e-02,
     )
 
 
@@ -573,19 +601,33 @@ def norm_helper(draw):
 # norm
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.norm",
-    params=norm_helper().filter(lambda s: "bfloat16" not in s[0] or "bool" not in s[0]),
+    dtype_values_axis=helpers.dtype_values_axis(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=2,
+        max_dim_size=5,
+        min_axis=-2,
+        max_axis=1,
+    ),
+    keepdims=st.booleans(),
+    ord=st.sampled_from([None, np.inf, -np.inf, 1, -1, 2, -2]),
 )
-def test_jax_norm(
-    *,
-    params,
+def test_jax_numpy_norm(
+    dtype_values_axis,
+    keepdims,
+    ord,
     as_variable,
     num_positional_args,
     native_array,
-    on_device,
-    fn_tree,
     frontend,
+    fn_tree,
+    on_device,
 ):
-    dtype, x, ord_param, axis, keepdims = params
+    dtype, x, axis = dtype_values_axis
+
+    if len(np.shape(x)) == 1:
+        axis = None
 
     helpers.test_frontend_function(
         input_dtypes=dtype,
@@ -597,9 +639,11 @@ def test_jax_norm(
         fn_tree=fn_tree,
         on_device=on_device,
         x=x[0],
-        ord=ord_param,
+        ord=ord,
         axis=axis,
         keepdims=keepdims,
+        atol=1e-1,
+        rtol=1e-1,
     )
 
 
@@ -662,27 +706,24 @@ def _get_solve_matrices(draw):
     )
     input_dtype = draw(input_dtype_strategy)
 
-    first_size = draw(helpers.ints(min_value=2, max_value=3))
-
-    random_size = draw(
-        st.shared(helpers.ints(min_value=2, max_value=3), key="random_size")
-    )
+    dim = draw(helpers.ints(min_value=2, max_value=5))
 
     first_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(random_size, first_size, first_size, random_size),
+            shape=(dim, dim, dim, dim),
             min_value=1.2,
             max_value=5,
-        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+        ).filter(lambda x: np.linalg.det(x.reshape((dim**2, dim**2))) != 0)
     )
+
     second_matrix = draw(
         helpers.array_values(
             dtype=input_dtype,
-            shape=(random_size, first_size),
+            shape=(dim, dim),
             min_value=1.2,
             max_value=3,
-        ).filter(lambda x: (np.linalg.cond(x) < 1 / sys.float_info.epsilon).all())
+        )
     )
 
     return input_dtype, first_matrix, second_matrix
@@ -714,6 +755,8 @@ def test_jax_numpy_tensorsolve(
         on_device=on_device,
         a=x,
         b=y,
+        atol=1e-2,
+        rtol=1e-2,
     )
 
 
@@ -744,6 +787,8 @@ def test_jax_numpy_pinv(
         frontend=frontend,
         fn_tree=fn_tree,
         a=x[0],
+        atol=1e-4,
+        rtol=1e-4,
     )
 
 

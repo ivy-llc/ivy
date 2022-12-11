@@ -327,6 +327,12 @@ Relu = to_ivy_arrays_and_back(
 
 
 @to_ivy_arrays_and_back
+def RealDiv(*, x, y, name="RealDiv"):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
 def Reshape(*, tensor, shape, name="Reshape"):
     return ivy.reshape(tensor, shape)
 

@@ -995,9 +995,7 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: Optional[
-            Union[int, Tuple[int, int, int]]
-        ] = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
@@ -1071,9 +1069,7 @@ class ContainerWithLayers(ContainerBase):
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: Optional[
-            Union[int, Tuple[int, int, int]]
-        ] = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,

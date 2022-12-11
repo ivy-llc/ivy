@@ -22,6 +22,21 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
+@st.composite
+def _get_dtype_and_matrix(draw):
+    arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
+    random_size = draw(st.integers(min_value=1, max_value=4))
+    shape = (*arbitrary_dims, random_size, random_size)
+    return draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=shape,
+            min_value=-10,
+            max_value=10,
+        )
+    )
+
+
 # inv
 @handle_frontend_test(
     fn_tree="torch.linalg.inv",
@@ -59,6 +74,37 @@ def test_torch_inv(
     )
 
 
+# pinv
+@handle_frontend_test(
+    fn_tree="torch.linalg.pinv",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_torch_pinv(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        atol=1e-15,
+        rtol=1e-15,
+    )
+
+
 # det
 @handle_frontend_test(
     fn_tree="torch.linalg.det",
@@ -90,6 +136,37 @@ def test_torch_det(
     )
 
 
+# qr
+@handle_frontend_test(
+    fn_tree="torch.linalg.qr",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_torch_qr(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        rtol=1e-02,
+        atol=1e-05,
+        input=x[0]
+    )
+
+
 # slogdet
 @handle_frontend_test(
     fn_tree="torch.linalg.slogdet",
@@ -118,6 +195,35 @@ def test_torch_slogdet(
         fn_tree=fn_tree,
         on_device=on_device,
         input=x,
+    )
+
+
+# eigvalsh
+@handle_frontend_test(
+    fn_tree="torch.linalg.eigvalsh",
+    dtype_and_input=_get_dtype_and_matrix(),
+)
+def test_torch_eigvalsh(
+    *,
+    dtype_and_input,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    input_dtype, x = dtype_and_input
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        native_array_flags=native_array,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
     )
 
 
@@ -195,3 +301,51 @@ def test_torch_vector_norm(
         dim=dim,
     )
     
+    
+@st.composite
+def _matrix_rank_helper(draw):
+    dtype_x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("float"),
+            min_num_dims=2,
+            min_value=-1e05,
+            max_value=1e05,
+        )
+    )
+    return dtype_x
+
+
+# matrix_rank
+@handle_frontend_test(
+    fn_tree="torch.linalg.matrix_rank",
+    dtype_and_x=_matrix_rank_helper(),
+    atol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
+    rtol=st.floats(min_value=1e-5, max_value=0.1, exclude_min=True, exclude_max=True),
+)
+def test_matrix_rank(
+    dtype_and_x,
+    rtol,
+    atol,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["matrix_rank"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        rtol=rtol,
+        atol=atol,
+    )
