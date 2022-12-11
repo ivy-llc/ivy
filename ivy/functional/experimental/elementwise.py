@@ -1,5 +1,6 @@
 # local
 from typing import Optional, Union, Tuple, List
+from numbers import Number
 import ivy
 from ivy.func_wrapper import (
     handle_out_argument,
@@ -341,6 +342,50 @@ def exp2(
     ivy.array([32.,   64.,  128.])
     """
     return ivy.current_backend().exp2(x, out=out)
+
+
+@to_native_arrays_and_back
+@handle_out_argument
+@handle_nestable
+@handle_exceptions
+def copysign(
+    x1: Union[ivy.Array, ivy.NativeArray, Number],
+    x2: Union[ivy.Array, ivy.NativeArray, Number],
+    /,
+    *,
+    out: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+) -> ivy.Array:
+    """Change the signs of x1 to match x2
+    x1 and x2 must be broadcastable to a common shape
+
+    Parameters
+    ----------
+    x1
+        Array or scalar to change the sign of
+    x2
+        Array or scalar from which the new signs are applied
+        Unsigned zeroes are considered positive.
+    out
+        optional output array, for writing the result to.
+
+    Returns
+    -------
+    ret
+        x1 with the signs of x2.
+        This is a scalar if both x1 and x2 are scalars.
+
+    Examples
+    --------
+    >>> x1 = ivy.array([-1, 0, 23, 2])
+    >>> x2 = ivy.array([1, -1, -10, 44])
+    >>> ivy.copysign(x1, x2)
+    ivy.array([  1.,  -0., -23.,   2.])
+    >>> ivy.copysign(x1, -1)
+    ivy.array([ -1.,  -0., -23.,  -2.])
+    >>> ivy.copysign(-10, 1)
+    ivy.array(10.)
+    """
+    return ivy.current_backend().copysign(x1, x2, out=out)
 
 
 @to_native_arrays_and_back

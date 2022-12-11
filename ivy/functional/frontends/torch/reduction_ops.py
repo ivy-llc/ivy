@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
@@ -67,8 +68,17 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
-    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+def prod(input, dim, keepdim=False, *, dtype=None):
+    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
 @to_ivy_arrays_and_back

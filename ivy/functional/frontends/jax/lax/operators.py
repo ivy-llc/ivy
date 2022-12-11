@@ -131,17 +131,16 @@ def cosh(x):
 
 
 @to_ivy_arrays_and_back
-def cumprod(operand, axis=0, reverse=False):
-    if reverse:
-        return ivy.flip(ivy.cumprod(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumprod(operand, axis, dtype=operand.dtype)
+def cumprod(operand, axis=None, reverse=False):
+    dtype = ivy.dtype(operand)
+    return ivy.cumprod(operand, axis=axis, reverse=reverse).astype(dtype)
 
 
 @to_ivy_arrays_and_back
-def cumsum(operand, axis=0, reverse=False):
+def cumsum(operand, axis=None, reverse=False):
     if reverse:
-        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis, dtype=operand.dtype))
-    return ivy.cumsum(operand, axis, dtype=operand.dtype)
+        return ivy.flip(ivy.cumsum(ivy.flip(operand), axis=axis, dtype=operand.dtype))
+    return ivy.cumsum(operand, axis=axis, dtype=operand.dtype)
 
 
 @to_ivy_arrays_and_back
@@ -277,8 +276,17 @@ def rev(operand, dimensions):
 
 
 @to_ivy_arrays_and_back
-def round(x):
-    return ivy.round(x)
+def round(x, rounding_method=1):
+    if rounding_method == 0:
+        ret = ivy.where(
+            ivy.less(x, 0),
+            ivy.ceil(x) - (ivy.ceil(x) - ivy.floor(x)),
+            ivy.ceil(x),
+        )
+    elif rounding_method == 1:
+        ret = ivy.ceil(x)
+        ret = ivy.where(ivy.remainder(ret, 2) == 0, ret, ret - 1)
+    return ivy.where(ivy.abs(x - ivy.floor(x) - 0.5) < 1e-7, ret, ivy.round(x))
 
 
 @to_ivy_arrays_and_back

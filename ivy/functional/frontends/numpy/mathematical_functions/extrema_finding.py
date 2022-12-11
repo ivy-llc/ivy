@@ -3,11 +3,13 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def minimum(
     x1,
     x2,
@@ -143,6 +145,8 @@ def nanmin(
     return res
 
 
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
 @handle_numpy_casting
 def maximum(
     x1,
