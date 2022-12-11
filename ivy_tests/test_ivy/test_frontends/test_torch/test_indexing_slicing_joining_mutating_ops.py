@@ -62,6 +62,22 @@ def _array_idxes_n_dtype(draw, **kwargs):
     )
     return x, idxes, dtype
 
+@st.composite
+def _broadcastable_trio(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    cond = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, xs = draw(
+        helpers.dtype_and_values(
+            available_dtypes=['float32'],
+            num_arrays=2,
+            shape=shape,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+        )
+    )
+    return cond, xs, dtypes
+
 
 # cat
 @handle_frontend_test(
@@ -834,4 +850,35 @@ def test_torch_take_along_dim(
         input=value,
         indices=indices,
         dim=axis,
+    )
+
+# where
+@handle_frontend_test(
+    fn_tree="torch.where",
+    broadcastables=_broadcastable_trio()
+)
+def test_torch_where(
+    *,
+    broadcastables,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    cond, xs, dtypes = broadcastables
+    helpers.test_frontend_function(
+        input_dtypes=['bool'] + dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        condition=cond,
+        input=xs[0],
+        other=xs[1],
     )

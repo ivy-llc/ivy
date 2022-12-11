@@ -148,3 +148,13 @@ def dstack(tensors, *, out=None):
 @to_ivy_arrays_and_back
 def take_along_dim(input, indices, dim, *, out=None):
     return ivy.take_along_axis(input, indices, dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def where(condition, input=None, other=None, *, out=None):
+    if input is None and other is None:
+        return ivy.nonzero(condition)
+    elif input is not None and other is not None:
+        return ivy.where(condition, input, other, out=out)
+    else:
+        raise ivy.exceptions.IvyException("where takes either 1 or 3 arguments")
