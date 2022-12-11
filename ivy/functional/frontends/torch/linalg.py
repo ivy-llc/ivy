@@ -66,7 +66,9 @@ def matrix_power(input, n, *, out=None):
 
 @to_ivy_arrays_and_back
 def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
-    return ivy.astype(ivy.matrix_rank(input, atol=atol, rtol=rtol, out=out), ivy.int64)
+    return ivy.matrix_rank(
+        input, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    ).astype("int64")
 
 
 @to_ivy_arrays_and_back

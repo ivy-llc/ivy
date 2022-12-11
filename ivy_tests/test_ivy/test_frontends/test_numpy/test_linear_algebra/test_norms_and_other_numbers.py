@@ -61,14 +61,15 @@ def test_numpy_norm(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
         min_num_dims=2,
+        max_num_dims=2,
         min_value=-1e05,
         max_value=1e05,
     ),
-    rtol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_numpy_matrix_rank(
     dtype_and_x,
-    rtol,
+    tol,
     as_variable,
     num_positional_args,
     native_array,
@@ -87,7 +88,7 @@ def test_numpy_matrix_rank(
         fn_tree=fn_tree,
         on_device=on_device,
         A=x[0],
-        tol=rtol,
+        tol=tol,
     )
 
 

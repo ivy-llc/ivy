@@ -19,7 +19,7 @@ def norm(x, ord=None, axis=None, keepdims=False):
 # TODO: add support for hermitian
 @to_ivy_arrays_and_back
 def matrix_rank(A, tol=None, hermitian=False):
-    ret = ivy.matrix_rank(A, rtol=tol)
+    ret = ivy.matrix_rank(A, atol=tol, hermitian=hermitian)
     return ivy.array(ret, dtype=ivy.int64)
 
 

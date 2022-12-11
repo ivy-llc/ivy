@@ -1257,6 +1257,7 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: bool = False,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the rank (i.e., number of non-zero singular values) of a matrix (or a
@@ -1282,6 +1283,8 @@ def matrix_rank(
         where ``eps`` must be the machine epsilon associated with the floating-point
         data type determined by :ref:`type-promotion` (as applied to ``x``).
         Default: ``None``.
+    hermitian
+        Indicates whether A is Hermitian if complex or symmetric if real. Default: False.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -1346,7 +1349,9 @@ def matrix_rank(
 
 
     """
-    return current_backend(x).matrix_rank(x, atol=atol, rtol=rtol, out=out)
+    return current_backend(x).matrix_rank(
+        x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+    )
 
 
 @to_native_arrays_and_back

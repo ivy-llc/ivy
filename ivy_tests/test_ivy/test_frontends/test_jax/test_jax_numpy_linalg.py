@@ -10,7 +10,6 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import assert_all_close, handle_frontend_test
 from ivy_tests.test_ivy.test_functional.test_core.test_linalg import (
     _get_dtype_and_matrix,
-    _matrix_rank_helper,
 )
 
 
@@ -497,11 +496,19 @@ def test_jax_slogdet(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="jax.numpy.linalg.matrix_rank",
-    dtype_and_x=_matrix_rank_helper(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_value=-1e05,
+        max_value=1e05,
+    ),
+    tol=st.floats(allow_nan=False, allow_infinity=False) | st.just(None),
 )
 def test_jax_numpy_matrix_rank(
     *,
     dtype_and_x,
+    tol,
     as_variable,
     num_positional_args,
     native_array,
@@ -520,6 +527,7 @@ def test_jax_numpy_matrix_rank(
         fn_tree=fn_tree,
         on_device=on_device,
         M=x[0],
+        tol=tol,
     )
 
 

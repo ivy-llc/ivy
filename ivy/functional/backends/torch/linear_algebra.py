@@ -223,13 +223,16 @@ def matrix_rank(
     *,
     atol: Optional[Union[float, Tuple[float]]] = None,
     rtol: Optional[Union[float, Tuple[float]]] = None,
+    hermitian: bool = False,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
     if len(x.shape) < 2:
-        ret = torch.tensor(0)
+        ret = torch.tensor(0, dtype=torch.int64)
     else:
-        ret = torch.linalg.matrix_rank(x, atol=atol, rtol=rtol, out=out)
-    return ret.to(dtype=x.dtype)
+        ret = torch.linalg.matrix_rank(
+            x, atol=atol, rtol=rtol, hermitian=hermitian, out=out
+        )
+    return ret
 
 
 matrix_rank.support_native_out = True

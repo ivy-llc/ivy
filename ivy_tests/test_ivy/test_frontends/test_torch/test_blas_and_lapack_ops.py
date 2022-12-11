@@ -578,15 +578,17 @@ def test_torch_matmul(
 # matrix_rank
 @handle_frontend_test(
     fn_tree="torch.matrix_rank",
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    rtol=st.floats(1e-05, 1e-03),
-    sym=st.booleans(),
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_num_dims=2,
+        max_num_dims=2,
+        min_value=-1e05,
+        max_value=1e05,
+    ),
 )
 def test_torch_matrix_rank(
     *,
     dtype_and_x,
-    rtol,
-    sym,
     as_variable,
     with_out,
     num_positional_args,
@@ -596,6 +598,12 @@ def test_torch_matrix_rank(
     frontend,
 ):
     dtype, x = dtype_and_x
+
+    if len(x[0].shape) == 3:
+        symmetric = True
+    else:
+        symmetric = False
+
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -605,10 +613,8 @@ def test_torch_matrix_rank(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        rtol=1e-01,
-        input=x,
-        tol=rtol,
-        symmetric=sym,
+        input=x[0],
+        symmetric=symmetric,
     )
 
 
