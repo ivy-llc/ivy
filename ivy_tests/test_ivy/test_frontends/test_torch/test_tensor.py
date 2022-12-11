@@ -4060,3 +4060,41 @@ def test_torch_special_or(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
+
+
+# neg
+@handle_frontend_method(
+    init_name="tensor",
+    method_tree="torch.Tensor.neg",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+    ),
+)
+def test_torch_instance_neg(
+    dtype_and_x,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_name,
+    method_name,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_method(
+        init_input_dtypes=input_dtype,
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": x[0],
+        },
+        method_input_dtypes=input_dtype,
+        method_as_variable_flags=as_variable,
+        method_num_positional_args=method_num_positional_args,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={},
+        frontend=frontend,
+        init_name=init_name,
+        method_name=method_name,
+    )
