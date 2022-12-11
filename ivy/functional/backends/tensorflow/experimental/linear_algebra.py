@@ -55,4 +55,4 @@ def matrix_exp(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.exp(x)
+    return tf.math.exp(x)
