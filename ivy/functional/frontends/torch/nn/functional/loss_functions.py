@@ -228,4 +228,3 @@ def soft_margin_loss(
     reduction = _get_reduction(reduction, size_average, reduce)
     ret = reduction(loss)
     return ret
-
