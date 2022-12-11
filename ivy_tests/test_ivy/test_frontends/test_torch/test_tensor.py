@@ -4064,7 +4064,7 @@ def test_torch_special_or(
 
 # neg
 @handle_frontend_method(
-    class_tree="torch.Tensor",
+    class_tree=CLASS_TREE,
     init_tree="torch.Tensor",
     method_name="neg",
     dtype_and_x=helpers.dtype_and_values(
