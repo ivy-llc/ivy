@@ -764,14 +764,14 @@ class ArrayWithElementWiseExperimental(abc.ABC):
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out
         )
 
-    def diff(
+    def diff_(
         self: Union[ivy.Array, int, float, list, tuple],
         /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
-        """ivy.Array instance method variant of ivy.diff. This method simply
-        wraps the function, and so the docstring for ivy.diff also applies to
+        """ivy.Array instance method variant of ivy.diff_. This method simply
+        wraps the function, and so the docstring for ivy.diff_ also applies to
         this method with minimal changes.
 
         Parameters
@@ -790,13 +790,13 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
                                b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
+        >>> ivy.Container.static_diff_(x)
         {
             a: ivy.array([ 1,  2,  3, -7])
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
-        return ivy.diff(self._data, out=out)
+        return ivy.diff_(self._data, out=out)
 
     def fix(
         self: ivy.Array,

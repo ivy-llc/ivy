@@ -258,7 +258,7 @@ def logaddexp2(
 logaddexp2.support_native_out = True
 
 
-def diff(
+def diff_(
     x: Union[torch.Tensor, int, float, list, tuple],
     /,
     *,
