@@ -1,0 +1,26 @@
+name: Issue Automation
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  issue_commented:
+    name: Issue comment
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+      - name: Issue Comment Check
+        run: |
+            echo Bot Offline
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_NUMBER: ${{ github.event.comment.id }}
+          COMMENT_AUTHOR: ${{ github.event.comment.user.login }}
