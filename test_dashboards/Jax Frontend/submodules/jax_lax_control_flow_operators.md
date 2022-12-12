@@ -1,0 +1,3 @@
+|              | jax                                                                                                                                                                                    |
+|:-------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_jax_map | <a href="https://github.com/unifyai/ivy/actions/runs/3662855687/jobs/6192240365" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
