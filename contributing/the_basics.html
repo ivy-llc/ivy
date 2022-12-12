@@ -193,17 +193,17 @@ src="https://www.youtube.com/embed/T5vQP1pCXS8" class="video" allowfullscreen="t
 <p>We make extensive use of <a class="reference external" href="https://github.com/unifyai/ivy/issues?q=is%3Aopen+is%3Aissue+label%3AToDo">ToDo list issues</a>, which act as placeholders for tracking many related sub-tasks in a ToDo list.</p>
 <p>We have a clear process for contributors to engage with such ToDo lists:</p>
 <ol class="loweralpha">
-<li><p>Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments.</p></li>
+<li><p>Find a task to work on which (i) is not marked as completed with a tick (ii) does not have an issue created and (iii) is not mentioned in the comments. Currently, there are three open tasks: <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#function-formatting">function reformatting</a>, <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#frontend-apis">frontend APIs</a> and <a class="reference external" href="https://lets-unify.ai/ivy/contributing/open_tasks.html#ivy-api-extensions">ivy API extensions</a>.</p></li>
 <li><p>Create a new issue with the title being just the name of the sub-task you would like to work on.</p></li>
 <li><p>comment on the ToDo list issue with a reference to this issue like so:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">-</span> <span class="pre">[</span> <span class="pre">]</span> <span class="pre">#Issue_number</span></code></p>
 <p>Your issue will then automatically be added to the ToDo list at some point, and the comment will be deleted.
-No need to wait for this to happen before progressing to the next stage.</p>
+No need to wait for this to happen before progressing to the next stage. Don’t comment anything else on these ToDo issues, which should    be kept clean with comments only as described above.</p>
 </li>
 <li><p>Start working on the task, and create a PR as soon as you have a full or partial solution, and then directly reference the issue in the pull request by adding the following comment in the PR:</p>
 <p><code class="code docutils literal notranslate"><span class="pre">Close</span> <span class="pre">#Issue_number</span></code></p>
-<p>This is important, so that the merging of your PR will automatically close the associated issue.
-If you have a partial solution, the Ivy team can help to guide you through the process of getting it working 🙂</p>
+<p>This is important, so that the merging of your PR will automatically close the associated issue. Make sure this is the
+first comment on the PR, otherwise it might not link correctly. If you have a partial solution, the Ivy team can help to guide you        through the process of getting it working 🙂</p>
 </li>
 <li><p>Wait for us to review your PR.
 Once we have reviewed your PR we will either merge or request changes.
