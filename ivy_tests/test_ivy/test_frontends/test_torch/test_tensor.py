@@ -225,7 +225,7 @@ def test_torch_instance_new_ones(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="new_zeros",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
     size=helpers.get_shape(
         allow_none=False,
         min_num_dims=1,
@@ -3248,7 +3248,7 @@ def test_torch_instance_argmax(
     init_tree="torch.tensor",
     method_name="argmin",
     dtype_input_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("valid"),
         force_int_axis=True,
         min_num_dims=1,
         max_num_dims=3,
