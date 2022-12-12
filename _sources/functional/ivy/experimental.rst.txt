@@ -65,6 +65,7 @@ Experimental
    experimental/quantile.rst
    experimental/diagflat.rst
    experimental/kron.rst
+   experimental/eig.rst
    experimental/sinc.rst
    experimental/lcm.rst
    experimental/fmod.rst

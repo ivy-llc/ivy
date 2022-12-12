@@ -113,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="experimental/quantile.html">quantile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental/diagflat.html">diagflat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental/kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="experimental/eig.html">eig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental/sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental/lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="experimental/fmod.html">fmod</a></li>
@@ -1128,6 +1129,62 @@ the indices in the tuple.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="ivy.functional.ivy.experimental.eig">
+<span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/experimental.html#eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.eig" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:</dt><dd><p>first is the set of eigenvalues, second is the set of eigenvectors.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>]) – An array of shape (…, N, N).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-data docutils literal notranslate"><span class="pre">...</span></code>]</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – A tuple with two elements: first is the set of eigenvalues,
+second is the set of eigenvectors</p>
+</dd>
+</dl>
+<p>This function conforms to the <a class="reference external" href="https://data-apis.org/array-api/latest/">Array API Standard</a>.</p>
+<p>Both the description and the type hints above assumes an array input for simplicity,
+but this function is <em>nestable</em>, and therefore also accepts <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Container</span></code>
+instances in place of any of the arguments.</p>
+<p class="rubric">Functional Examples</p>
+<p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> inputs:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">(</span>
+<span class="go">ivy.array([-0.37228132+0.j,  5.37228132+0.j]),</span>
+<span class="go">ivy.array([[-0.82456484+0.j, -0.41597356+0.j],</span>
+<span class="go">           [ 0.56576746+0.j, -0.90937671+0.j]])</span>
+<span class="go">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]],</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">]]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">(</span>
+<span class="go">ivy.array(</span>
+<span class="go">    [</span>
+<span class="go">        [-3.72281323e-01+0.j,  5.37228132e+00+0.j],</span>
+<span class="go">        [3.88578059e-16+0.j,  1.10000000e+01+0.j]</span>
+<span class="go">    ]</span>
+<span class="go">),</span>
+<span class="go">ivy.array([</span>
+<span class="go">        [</span>
+<span class="go">            [-0.82456484+0.j, -0.41597356+0.j], [0.56576746+0.j, -0.90937671+0.j]</span>
+<span class="go">        ],</span>
+<span class="go">        [</span>
+<span class="go">            [-0.76822128+0.j, -0.70710678+0.j], [0.6401844 +0.j, -0.70710678+0.j]</span>
+<span class="go">        ]</span>
+<span class="go">    ])</span>
+<span class="go">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.experimental.exp2">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">exp2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/experimental.html#exp2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.exp2" title="Permalink to this definition"></a></dt>
 <dd><p>Calculate 2**p for all p in the input array.</p>
@@ -1271,7 +1328,7 @@ Default order is ‘C’</p></li>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><ul class="simple">
 <li><p><em>ret</em> – the flattened array over the specified dimensions.</p></li>
-<li><p>This function conforms to the <a href="#id1"><span class="problematic" id="id2">`</span></a>Array API Standard</p></li>
+<li><p>This function conforms to the <a href="#id2"><span class="problematic" id="id3">`</span></a>Array API Standard</p></li>
 <li><p><strong>&lt;https</strong> (//data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the)</p></li>
 <li><p><strong>`docstring &lt;https</strong> (//data-apis.org/array-api/latest/API_specification/generated/signatures.manipulation_functions.concat.html&gt;`_ )</p></li>
 <li><p><em>in the standard.</em></p></li>
@@ -1561,7 +1618,7 @@ that the inputs broadcast to.</p></li>
 <dl class="py function">
 <dt class="sig sig-object py" id="ivy.functional.ivy.experimental.gcd">
 <span class="sig-prename descclassname">ivy.</span></span><span class="sig-name descname"><span class="pre">gcd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/functional/ivy/experimental.html#gcd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.functional.ivy.experimental.gcd" title="Permalink to this definition"></a></dt>
-<dd><p>Returns the greatest common divisor of <a href="#id3"><span class="problematic" id="id4">|x1|</span></a> and <a href="#id5"><span class="problematic" id="id6">|x2|</span></a>.</p>
+<dd><p>Returns the greatest common divisor of <a href="#id4"><span class="problematic" id="id5">|x1|</span></a> and <a href="#id6"><span class="problematic" id="id7">|x2|</span></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1574,7 +1631,7 @@ that the inputs broadcast to.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Element-wise gcd of <a href="#id7"><span class="problematic" id="id8">|x1|</span></a> and <a href="#id9"><span class="problematic" id="id10">|x2|</span></a>.</p>
+<dd class="field-odd"><p><em>ret</em> – Element-wise gcd of <a href="#id8"><span class="problematic" id="id9">|x1|</span></a> and <a href="#id10"><span class="problematic" id="id11">|x2|</span></a>.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>

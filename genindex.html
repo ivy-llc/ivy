@@ -1930,14 +1930,20 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/constants.html#ivy.functional.ivy.constants.e">e (in module ivy.functional.ivy.constants)</a>
 </li>
-      <li><a href="functional/ivy/linear_algebra/eig.html#ivy.array.array_methods.eig">eig() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/linear_algebra/eig/eig_array.html#ivy.array.array_methods.eig">[1]</a>
+      <li><a href="functional/ivy/experimental/eig.html#ivy.array.array_methods.eig">eig() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/experimental/eig/eig_array.html#ivy.array.array_methods.eig">[1]</a>
 
       <ul>
-        <li><a href="functional/ivy/linear_algebra/eig.html#ivy.container.container_methods.eig">(in module ivy.container.container_methods)</a>, <a href="functional/ivy/linear_algebra/eig/eig_container.html#ivy.container.container_methods.eig">[1]</a>
+        <li><a href="functional/ivy/experimental/eig.html#ivy.container.container_methods.eig">(in module ivy.container.container_methods)</a>, <a href="functional/ivy/experimental/eig/eig_container.html#ivy.container.container_methods.eig">[1]</a>
 </li>
-        <li><a href="functional/ivy/linear_algebra.html#ivy.functional.ivy.linear_algebra.eig">(in module ivy.functional.ivy.linear_algebra)</a>, <a href="functional/ivy/linear_algebra/eig.html#ivy.functional.ivy.linear_algebra.eig">[1]</a>, <a href="functional/ivy/linear_algebra/eig/eig_functional.html#ivy.functional.ivy.linear_algebra.eig">[2]</a>
+        <li><a href="functional/ivy/experimental.html#ivy.functional.ivy.experimental.eig">(in module ivy.functional.ivy.experimental)</a>, <a href="functional/ivy/experimental/eig.html#ivy.functional.ivy.experimental.eig">[1]</a>, <a href="functional/ivy/experimental/eig/eig_functional.html#ivy.functional.ivy.experimental.eig">[2]</a>
+</li>
+        <li><a href="functional/ivy/linear_algebra.html#ivy.functional.ivy.linear_algebra.eig">(in module ivy.functional.ivy.linear_algebra)</a>, <a href="functional/ivy/linear_algebra/eig.html#ivy.functional.ivy.linear_algebra.eig">[1]</a>
+</li>
+        <li><a href="data_classes/array/experimental.html#ivy.array.experimental.ArrayWithLinearAlgebraExperimental.eig">(ivy.array.experimental.ArrayWithLinearAlgebraExperimental method)</a>
 </li>
         <li><a href="data_classes/array/linear_algebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.eig">(ivy.array.linear_algebra.ArrayWithLinearAlgebra method)</a>, <a href="data_classes/array/linear_algebra/ArrayWithLinearAlgebra.html#ivy.array.linear_algebra.ArrayWithLinearAlgebra.eig">[1]</a>
+</li>
+        <li><a href="data_classes/container/experimental.html#ivy.container.experimental.ContainerWithLinearAlgebraExperimental.eig">(ivy.container.experimental.ContainerWithLinearAlgebraExperimental method)</a>
 </li>
         <li><a href="data_classes/container/linear_algebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.eig">(ivy.container.linear_algebra.ContainerWithLinearAlgebra method)</a>, <a href="data_classes/container/linear_algebra/ContainerWithLinearAlgebra.html#ivy.container.linear_algebra.ContainerWithLinearAlgebra.eig">[1]</a>
 </li>
@@ -6260,8 +6266,12 @@
       </ul></li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_dtype_bits">static_dtype_bits() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_dtype_bits">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_dtype_bits">[2]</a>
 </li>
-      <li><a href="data_classes/container.html#ivy.container.container.Container.static_eig">static_eig() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_eig">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_eig">[2]</a>
+      <li><a href="functional/ivy/experimental/eig.html#ivy.container.container_methods.static_eig">static_eig() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/experimental/eig/static_eig_container.html#ivy.container.container_methods.static_eig">[1]</a>
+
+      <ul>
+        <li><a href="data_classes/container/experimental.html#ivy.container.experimental.ContainerWithLinearAlgebraExperimental.static_eig">(ivy.container.experimental.ContainerWithLinearAlgebraExperimental static method)</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/linear_algebra/eigh.html#ivy.container.container_methods.static_eigh">static_eigh() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/linear_algebra/eigh/static_eigh_container.html#ivy.container.container_methods.static_eigh">[1]</a>
 
       <ul>
@@ -6486,10 +6496,10 @@
 </li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_array_mode">static_get_array_mode() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_array_mode">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_array_mode">[2]</a>
 </li>
-      <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_exception_trace_mode">static_get_exception_trace_mode() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_exception_trace_mode">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_exception_trace_mode">[2]</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_exception_trace_mode">static_get_exception_trace_mode() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_exception_trace_mode">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_exception_trace_mode">[2]</a>
+</li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_item">static_get_item() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_item">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_item">[2]</a>
 </li>
       <li><a href="data_classes/container.html#ivy.container.container.Container.static_get_min_base">static_get_min_base() (ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.static_get_min_base">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.static_get_min_base">[2]</a>

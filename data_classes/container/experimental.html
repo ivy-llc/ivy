@@ -3103,6 +3103,53 @@ ivy.diagflat also applies to this method with minimal changes.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.experimental.ContainerWithLinearAlgebraExperimental.eig">
+<span class="sig-name descname"><span class="pre">eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/experimental/linear_algebra.html#ContainerWithLinearAlgebraExperimental.eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.experimental.ContainerWithLinearAlgebraExperimental.eig" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.eig.
+This method simply wraps the function, and so the docstring for
+ivy.eig also applies to this method with minimal changes.
+:param x: container with input arrays.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – container including arrays corresponding
+eigenvealues and eigenvectors of input arrays</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;x = ivy.array([[1,2], [3,4]])
+&gt;&gt;&gt;c = ivy.Container({‘x’:{‘xx’:x}})
+&gt;&gt;&gt;c.eig()
+{</p>
+<blockquote>
+<div><dl>
+<dt>x:  {</dt><dd><blockquote>
+<div><p>xx: (tuple(2), &lt;class ivy.array.array.Array&gt;, shape=[2, 2])</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}
+&gt;&gt;&gt;c.eig()[‘x’][‘xx’]
+(</p>
+<blockquote>
+<div><p>ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
+ivy.array([</p>
+<blockquote>
+<div><blockquote>
+<div><p>[-0.8245648 +0.j, -0.41597357+0.j],
+[0.56576747+0.j, -0.9093767 +0.j]</p>
+</div></blockquote>
+<p>])</p>
+</div></blockquote>
+</div></blockquote>
+<p>)</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.experimental.ContainerWithLinearAlgebraExperimental.kron">
 <span class="sig-name descname"><span class="pre">kron</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/experimental/linear_algebra.html#ContainerWithLinearAlgebraExperimental.kron"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.experimental.ContainerWithLinearAlgebraExperimental.kron" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.kron.
@@ -3133,6 +3180,55 @@ ivy.kron also applies to this method with minimal changes.</p>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.experimental.ContainerWithLinearAlgebraExperimental.static_eig">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_eig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/experimental/linear_algebra.html#ContainerWithLinearAlgebraExperimental.static_eig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.experimental.ContainerWithLinearAlgebraExperimental.static_eig" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of ivy.eig.
+This method simply wraps the function, and so the docstring for
+ivy.eig also applies to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – container with input arrays.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – container including tuple of arrays corresponding to
+eigenvealues and eigenvectors of input array</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>&gt;&gt;&gt;x = ivy.array([[1,2], [3,4]])
+&gt;&gt;&gt;c = ivy.Container({‘x’:{‘xx’:x}})
+&gt;&gt;&gt;ivy.Container.eig(c)
+{</p>
+<blockquote>
+<div><dl>
+<dt>x:  {</dt><dd><blockquote>
+<div><p>xx: (tuple(2), &lt;class ivy.array.array.Array&gt;, shape=[2, 2])</p>
+</div></blockquote>
+<p>}</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}
+&gt;&gt;&gt;ivy.Container.eig(c)[‘x’][‘xx’]
+(</p>
+<blockquote>
+<div><p>ivy.array([-0.37228107+0.j,  5.3722816 +0.j]),
+ivy.array([</p>
+<blockquote>
+<div><blockquote>
+<div><p>[-0.8245648 +0.j, -0.41597357+0.j],
+[0.56576747+0.j, -0.9093767 +0.j]</p>
+</div></blockquote>
+<p>])</p>
+</div></blockquote>
+</div></blockquote>
+<p>)</p>
 </dd></dl>
 
 <dl class="py method">
