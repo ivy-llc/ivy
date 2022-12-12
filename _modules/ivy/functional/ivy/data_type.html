@@ -263,7 +263,7 @@
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
         <span class="c1"># skip if it&#39;s not a function</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
             <span class="k">continue</span>
 
         <span class="n">fl</span> <span class="o">=</span> <span class="n">_get_function_list</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
