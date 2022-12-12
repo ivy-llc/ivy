@@ -236,7 +236,6 @@ def test_kron(
 def test_eig(
     dtype_x,
     as_variable,
-    with_out,
     num_positional_args,
     native_array,
     container_flags,
@@ -250,7 +249,7 @@ def test_eig(
         ground_truth_backend=ground_truth_backend,
         input_dtypes=dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=container_flags,
