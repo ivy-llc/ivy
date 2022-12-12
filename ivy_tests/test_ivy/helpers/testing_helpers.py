@@ -301,7 +301,7 @@ def handle_method(
             method_tree
         )
         supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, method_mod.__name__, class_name
+            method_name, method_mod, class_name
         )
 
         if is_hypothesis_test:
