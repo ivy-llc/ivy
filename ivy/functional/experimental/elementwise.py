@@ -813,8 +813,8 @@ def diff_(
     *,
     n: Optional[int] = 1,
     axis: Optional[int] = -1,
-    prepend: Optional[ivy.Array] = None,
-    append: Optional[ivy.Array] = None,
+    prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+    append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
 ) -> ivy.Array:
     """Returns the n-th discrete difference along the given axis.
 
