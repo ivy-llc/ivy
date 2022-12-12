@@ -212,6 +212,7 @@ def nextafter(
 ) -> JaxArray:
     return jnp.nextafter(x1, x2)
 
+
 def angle(
     z: JaxArray,
     /,
@@ -220,6 +221,7 @@ def angle(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.angle(z, deg=deg)
+
 
 def zeta(
     x: JaxArray,
