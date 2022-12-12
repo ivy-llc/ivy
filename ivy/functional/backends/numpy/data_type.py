@@ -117,18 +117,6 @@ def broadcast_to(
     return np.broadcast_to(x, shape)
 
 
-def can_cast(from_: Union[np.dtype, np.ndarray], to: np.dtype, /) -> bool:
-    if isinstance(from_, np.ndarray):
-        from_ = str(from_.dtype)
-    from_ = str(from_)
-    to = str(to)
-    if "bool" in from_ and (("int" in to) or ("float" in to)):
-        return False
-    if "int" in from_ and "float" in to:
-        return False
-    return np.can_cast(from_, to)
-
-
 @_handle_nestable_dtype_info
 def finfo(type: Union[np.dtype, str, np.ndarray]) -> Finfo:
     if isinstance(type, np.ndarray):
