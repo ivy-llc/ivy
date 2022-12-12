@@ -521,7 +521,6 @@ def test_clip_vector_norm(
     test_gradients,
     ground_truth_backend,
 ):
-    # commit to trigger tests
     dtype, x, max_norm, p = dtype_x_max_norm_p
     helpers.test_function(
         input_dtypes=dtype,
