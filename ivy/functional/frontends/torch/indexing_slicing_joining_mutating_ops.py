@@ -75,9 +75,9 @@ def reshape(input, shape):
 
 @to_ivy_arrays_and_back
 def squeeze(input, dim):
-    if isinstance(dim, int):
+    if isinstance(dim, int) and input.ndim > 0:
         if input.shape[dim] > 1:
-            return input if ivy.is_ivy_array(input) else ivy.array(input)
+            return input
     return ivy.squeeze(input, dim)
 
 

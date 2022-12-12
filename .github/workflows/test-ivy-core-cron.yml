@@ -1,7 +1,5 @@
 name: test-core-ivy-cron
 on:
-  schedule:
-    - cron: '25 * * * *'
   workflow_dispatch:
 permissions:
   actions: read

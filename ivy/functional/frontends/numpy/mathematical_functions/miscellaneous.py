@@ -7,6 +7,7 @@ from ivy.func_wrapper import from_zero_dim_arrays_to_float
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
@@ -19,9 +20,10 @@ def convolve(a, v, mode="full"):
     return ivy.frontends.numpy.correlate(a, v[::-1], mode)
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def clip(
     a,
     a_min,
@@ -55,9 +57,10 @@ def clip(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def sqrt(
     x,
     /,
@@ -76,9 +79,10 @@ def sqrt(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def cbrt(
     x,
     /,
@@ -98,9 +102,10 @@ def cbrt(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def square(
     x,
     /,
@@ -118,9 +123,10 @@ def square(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def absolute(
     x,
     /,
@@ -138,9 +144,10 @@ def absolute(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def fabs(
     x,
     /,
@@ -158,9 +165,10 @@ def fabs(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def sign(
     x,
     /,
@@ -180,9 +188,10 @@ def sign(
     return ret
 
 
-@from_zero_dim_arrays_to_float
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
+@from_zero_dim_arrays_to_float
 def heaviside(
     x1,
     x2,

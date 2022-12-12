@@ -86,12 +86,13 @@ def test_numpy_inner(
 # matmul
 @handle_frontend_test(
     fn_tree="numpy.matmul",
-    x=_get_first_matrix_and_dtype(),
-    y=_get_second_matrix_and_dtype(),
+    dtypes_values_casting=np_frontend_helpers.dtypes_values_casting_dtype(
+        arr_func=[_get_first_matrix_and_dtype, _get_second_matrix_and_dtype],
+        get_dtypes_kind="numeric",
+    ),
 )
 def test_numpy_matmul(
-    x,
-    y,
+    dtypes_values_casting,
     as_variable,
     with_out,
     num_positional_args,
@@ -100,12 +101,7 @@ def test_numpy_matmul(
     fn_tree,
     on_device,
 ):
-    dtype1, x1 = x
-    dtype2, x2 = y
-    dtype, dtypes, casting = np_frontend_helpers.handle_dtype_and_casting(
-        dtypes=dtype1 + dtype2,
-        get_dtypes_kind="numeric",
-    )
+    dtypes, x, casting, dtype = dtypes_values_casting
     helpers.test_frontend_function(
         input_dtypes=dtypes,
         as_variable_flags=as_variable,
@@ -115,13 +111,13 @@ def test_numpy_matmul(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x1=x1,
-        x2=x2,
+        x1=x[0],
+        x2=x[1],
         out=None,
+        casting=casting,
+        order="K",
+        dtype=dtype,
         # The arguments below are currently unused.
-        # casting=casting,
-        # order="K",
-        # dtype=dtype,
         # subok=True,
     )
 

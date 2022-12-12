@@ -66,7 +66,7 @@ if __name__ == "__main__":
         redis_url = sys.argv[1]
         redis_pass = sys.argv[2]
         mongo_key = sys.argv[3]
-        run_id = sys.argv[4]
+        run_id = sys.argv[4] if sys.argv[4] else None
     failed = False
     cluster = MongoClient(
         f"mongodb+srv://deep-ivy:{mongo_key}@cluster0.qdvf8q3.mongodb.net/?retryWrites=true&w=majority"  # noqa
@@ -79,11 +79,11 @@ if __name__ == "__main__":
             print(coll, submod, test_fn)
             if len(sys.argv) > 2:
                 ret = os.system(
-                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend}'  # noqa
+                    f'docker run --rm --env REDIS_URL={redis_url} --env REDIS_PASSWD={redis_pass} -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend} --tb=short'  # noqa
                 )
             else:
                 ret = os.system(
-                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend}'  # noqa
+                    f'docker run --rm -v "$(pwd)":/ivy -v "$(pwd)"/.hypothesis:/.hypothesis unifyai/ivy:latest python3 -m pytest {test} --backend {backend} --tb=short'  # noqa
                 )
             if ret != 0:
                 res = make_clickable(run_id, result_config["failure"])

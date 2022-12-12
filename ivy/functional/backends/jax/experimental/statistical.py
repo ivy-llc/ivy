@@ -1,4 +1,4 @@
-from typing import Optional, Union, Tuple
+from typing import Optional, Union, Tuple, Sequence
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
 
@@ -39,3 +39,22 @@ def unravel_index(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.unravel_index(indices, shape)
+
+
+def quantile(
+    a: JaxArray,
+    q: Union[float, JaxArray],
+    /,
+    *,
+    axis: Optional[Union[int, Sequence[int]]] = None,
+    interpolation: str = "linear",
+    keepdims: bool = False,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+
+    if isinstance(axis, list):
+        axis = tuple(axis)
+
+    return jnp.quantile(
+        a, q, axis=axis, method=interpolation, keepdims=keepdims, out=out
+    )

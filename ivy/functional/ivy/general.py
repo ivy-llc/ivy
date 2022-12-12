@@ -120,7 +120,6 @@ def get_referrers_recursive(
     return ret_cont
 
 
-@handle_nestable
 @handle_exceptions
 def is_native_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: bool = False
@@ -157,7 +156,6 @@ def is_native_array(
         return False
 
 
-@handle_nestable
 @handle_exceptions
 def is_ivy_array(
     x: Union[ivy.Array, ivy.NativeArray], /, *, exclusive: Optional[bool] = False
@@ -191,7 +189,6 @@ def is_ivy_array(
     return isinstance(x, ivy.Array) and ivy.is_native_array(x.data, exclusive=exclusive)
 
 
-@handle_nestable
 @handle_exceptions
 def is_array(x: Any, /, *, exclusive: bool = False) -> bool:
     """Determines whether the input x is either an Ivy Array or a Native Array.
@@ -2324,7 +2321,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
-    query: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].

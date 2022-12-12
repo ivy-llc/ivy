@@ -20,6 +20,11 @@ def det(input, name=None):
 
 
 @to_ivy_arrays_and_back
+def eig(tensor, name=None):
+    return ivy.eig(tensor)
+
+
+@to_ivy_arrays_and_back
 def eigh(tensor, name=None):
     return ivy.eigh(tensor)
 
@@ -70,6 +75,28 @@ def pinv(a, rcond=None, validate_args=False, name=None):
 def tensordot(a, b, axes, name=None):
     a, b = promote_types_of_tensorflow_inputs(a, b)
     return ivy.tensordot(a, b, axes=axes)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+def tensorsolve(a, b, axes):
+    return ivy.tensorsolve(a, b, axes=axes)
 
 
 @to_ivy_arrays_and_back

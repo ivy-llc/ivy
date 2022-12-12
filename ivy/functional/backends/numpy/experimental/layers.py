@@ -499,3 +499,27 @@ def dct(
             dct_out *= math.sqrt(0.5) * np.reciprocal(np.sqrt(axis_dim_float))
 
     return dct_out.astype(np.float32) if cast_final else dct_out
+
+
+def dropout1d(
+    x: np.ndarray,
+    prob: float,
+    /,
+    *,
+    training: bool = True,
+    data_format: str = "NWC",
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    if training:
+        if data_format == "NCW":
+            perm = (0, 2, 1) if len(x.shape) == 3 else (1, 0)
+            x = np.transpose(x, perm)
+        noise_shape = list(x.shape)
+        noise_shape[-2] = 1
+        mask = np.random.binomial(1, 1 - prob, noise_shape)
+        res = np.where(mask, x / (1 - prob), 0)
+        if data_format == "NCW":
+            res = np.transpose(res, perm)
+        return res
+    else:
+        return x
