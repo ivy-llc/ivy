@@ -806,22 +806,31 @@ def signbit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def diff_(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
-    out: Optional[ivy.Array] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[ivy.Array] = None,
+    append: Optional[ivy.Array] = None,
 ) -> ivy.Array:
     """Returns the n-th discrete difference along the given axis.
 
     Parameters
     ----------
     x
-        array-like input.
-    out
-        optional output array, for writing the result to.
+        Array-like input.
+    n
+        The number of times values are differenced. If zero, the input is returned as-is.
+    axis
+        The axis along which the difference is taken, default is the last axis.
+    prepend,append
+        Values to prepend/append to x along given axis prior to performing the difference.
+        Scalar values are expanded to arrays with length 1 in the direction of axis and 
+        the shape of the input array in along all other axes. 
+        Otherwise the dimension and shape must match a except along axis.
 
     Returns
     -------
@@ -834,7 +843,9 @@ def diff_(
     >>> ivy.diff_(x)
     ivy.array([ 1,  2,  3, -7])
     """
-    return ivy.current_backend().diff_(x, out=out)
+    return ivy.current_backend().diff_(
+        x, n=n, axis=axis, prepend=prepend, append=append
+    )
 
 
 @handle_exceptions
