@@ -217,6 +217,7 @@ def nll_loss(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def soft_margin_loss(
     input,
     target,
