@@ -303,6 +303,7 @@ def test_torch_matrix_norm(
     )
 
 
+@st.composite
 def _matrix_rank_helper(draw):
     dtype_x = draw(
         helpers.dtype_and_values(
