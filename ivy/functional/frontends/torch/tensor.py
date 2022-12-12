@@ -25,6 +25,10 @@ class Tensor:
     def device(self):
         return ivy.dev(self._ivy_array)
 
+    @property
+    def dtype(self):
+        return self._ivy_array.dtype
+
     # Setters #
     # --------#
 
