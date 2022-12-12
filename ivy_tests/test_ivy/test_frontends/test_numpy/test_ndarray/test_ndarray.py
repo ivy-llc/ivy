@@ -810,7 +810,6 @@ def test_numpy_instance_diagonal(
 
 
 @handle_frontend_method(
-    method_tree="numpy.ndarray.sort",
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
     method_name="sort",
