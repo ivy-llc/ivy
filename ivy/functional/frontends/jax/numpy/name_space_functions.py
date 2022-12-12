@@ -87,6 +87,18 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 
 @to_ivy_arrays_and_back
+def ones(shape, dtype=None):
+    return ivy.ones(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def ones_like(a, dtype=None, shape=None):
+    if shape:
+        return ivy.ones(shape, dtype=dtype)
+    return ivy.ones_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
