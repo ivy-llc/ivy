@@ -196,7 +196,7 @@ def handle_test(
                 param_names, given_kwargs, fn_tree
             )
             possible_flags = {
-                "container": pf.BuiltContainerStrategy,
+                "container_flags": pf.BuiltContainerStrategy,
                 "instance_method": pf.BuiltInstanceStrategy,
                 "test_gradients": pf.BuiltGradientStrategy,
             }

@@ -27,7 +27,7 @@ class AsVariableFlags:
 
 BuiltNativeArrayStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltAsVariableStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
-BuiltContainerStrategy = st.booleans()
+BuiltContainerStrategy = st.lists(st.booleans(), min_size=1, max_size=1)
 BuiltInstanceStrategy = st.booleans()
 BuiltWithOutStrategy = st.booleans()
 BuiltGradientStrategy = st.booleans()
