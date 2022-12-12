@@ -3588,9 +3588,7 @@ def test_jax_numpy_divide(
 # exp
 @handle_frontend_test(
     fn_tree="jax.numpy.exp",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float")
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_numpy_exp(
     dtype_and_x,
