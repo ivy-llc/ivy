@@ -2103,6 +2103,7 @@ def test_jax_lax_shift_left(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
+        min_value=0,
         shared_dtype=True,
     ),
 )
