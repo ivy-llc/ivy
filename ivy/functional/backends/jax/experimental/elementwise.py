@@ -188,10 +188,16 @@ def allclose(
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def diff(
-    x: Union[JaxArray, int, float, list, tuple], /, *, out: Optional[JaxArray] = None
+def diff_(
+    x: Union[JaxArray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[Jaxarray, int, float, list, tuple]] = None,
+    append: Optional[Union[Jaxarray, int, float, list, tuple]] = None,
 ) -> JaxArray:
-    return jnp.diff(x)
+    return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 def fix(

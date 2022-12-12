@@ -291,13 +291,18 @@ def nextafter(
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def diff(
+def diff_(
     x: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
+    append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diff(x)
+    x = tf.experimental.numpy.append(prepend, x, axis=axis)
+    x = tf.experimental.numpy.append(x, append, axis=axis)
+    return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)

@@ -805,7 +805,7 @@ def test_numpy_instance_diagonal(
             "offset": offset,
         },
         frontend=frontend,
-        frontend_method_data=frontend_method_data
+        frontend_method_data=frontend_method_data,
     )
 
 

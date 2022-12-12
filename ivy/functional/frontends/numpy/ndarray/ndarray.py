@@ -189,7 +189,7 @@ class ndarray:
             dtype=dtype,
             out=out,
         )
-    
+
     def diagonal(self, *, offset=0, axis1=0, axis2=1):
         return np_frontend.diagonal(
             self._ivyArray,
