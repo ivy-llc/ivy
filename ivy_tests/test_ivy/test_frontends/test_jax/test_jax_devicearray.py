@@ -52,7 +52,7 @@ def test_jax_devicearray__pos_(
     init_tree="jax.numpy.array",
     method_name="__neg__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
+        available_dtypes=helpers.get_dtypes("signed_integer"),
     ),
 )
 def test_jax_devicearray__neg_(
