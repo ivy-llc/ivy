@@ -1588,7 +1588,7 @@ def test_jax_lax_log(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.log1p",
+    fn_tree="jax.lax.rev",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
@@ -1667,7 +1667,7 @@ def test_jax_lax_div(
 
 
 @handle_frontend_test(
-    fn_tree="jax.lax.div",
+    fn_tree="jax.lax.rsqrt",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
@@ -2103,6 +2103,7 @@ def test_jax_lax_shift_left(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("integer"),
         num_arrays=2,
+        min_value=0,
         shared_dtype=True,
     ),
 )
