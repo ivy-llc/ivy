@@ -827,7 +827,7 @@ def test_gather(
         fw=backend_fw,
         fn_name=fn_name,
         test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=indices,
         axis=axis,
@@ -954,7 +954,7 @@ def test_gather_nd(
         fw=backend_fw,
         fn_name=fn_name,
         test_gradients=test_gradients,
-        xs_grad_idxs=[["0", "0"]],
+        xs_grad_idxs=[[0, 0]],
         params=params,
         indices=ndindices,
         batch_dims=batch_dims,
@@ -1555,6 +1555,9 @@ def test_is_ivy_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1596,6 +1599,9 @@ def test_is_native_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -1636,6 +1642,9 @@ def test_is_array(
 ):
     dtype, x = x_val_and_dtypes
     # as_variable=False as the result can't be consistent across backends
+    if container_flags[0]:
+        # container instance methods should also not be tested
+        instance_method = False
     helpers.test_function(
         input_dtypes=dtype,
         num_positional_args=num_positional_args,
@@ -2134,8 +2143,8 @@ def test_stable_pow(
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
-        rtol_=1e-2,
-        atol_=1e-2,
+        rtol_=1e-1,
+        atol_=1e-1,
         test_gradients=test_gradients,
         base=xs[0][0],
         exponent=np.abs(xs[1]),

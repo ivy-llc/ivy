@@ -246,21 +246,34 @@ def test_jax_nn_sigmoid(
     )
 
 
+# one_hot
+@st.composite
+def _dtype_indices_classes_axis(draw):
+    classes = draw(helpers.ints(min_value=2, max_value=100))
+    dtype, indices, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            min_value=0,
+            max_value=classes - 1,
+            small_abs_safety_factor=4,
+            ret_shape=True,
+        )
+    )
+
+    axis = draw(st.integers(min_value=-1, max_value=len(shape) - 1))
+    return dtype, indices, classes, axis
+
+
 @handle_frontend_test(
     fn_tree="jax.nn.one_hot",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric"),
-        large_abs_safety_factor=2,
-        small_abs_safety_factor=2,
-        safety_factor_scale="linear",
-        min_value=1,
-        max_value=3,
-    ),
+    dtype_indices_classes_axis=_dtype_indices_classes_axis(),
     num_classes=st.integers(min_value=4, max_value=6),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_jax_nn_one_hot(
     *,
-    dtype_and_x,
+    dtype_indices_classes_axis,
+    dtype,
     num_classes,
     as_variable,
     num_positional_args,
@@ -269,7 +282,7 @@ def test_jax_nn_one_hot(
     fn_tree,
     frontend,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, indices, num_classes, axis = dtype_indices_classes_axis
     helpers.test_frontend_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -279,8 +292,11 @@ def test_jax_nn_one_hot(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        x=x[0],
+        rtol=1e-02,
+        x=indices[0],
         num_classes=num_classes,
+        dtype=dtype[0],
+        axis=axis,
     )
 
 
@@ -288,10 +304,8 @@ def test_jax_nn_one_hot(
     fn_tree="jax.nn.softmax",
     dtype_x_axis=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("float"),
-        min_num_dims=1,
-        max_num_dims=5,
-        min_dim_size=2,
-        max_dim_size=10,
+        min_num_dims=2,
+        max_axes_size=1,
         force_int_axis=True,
         valid_axis=True,
     ),
@@ -317,6 +331,8 @@ def test_jax_nn_softmax(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-02,
+        atol=1e-02,
         x=x[0],
         axis=axis,
     )
@@ -565,13 +581,13 @@ def test_jax_nn_hard_tanh(
         min_value=-5,
         max_value=5,
         safety_factor_scale="linear",
-        num_arrays=2,
-        shared_dtype=True,
     ),
+    alpha=helpers.floats(min_value=0.01, max_value=1),
 )
 def test_jax_nn_celu(
     *,
     dtype_and_x,
+    alpha,
     as_variable,
     num_positional_args,
     native_array,
@@ -590,7 +606,7 @@ def test_jax_nn_celu(
         fn_tree=fn_tree,
         on_device=on_device,
         x=xs[0],
-        alpha=xs[1],
+        alpha=alpha,
     )
 
 
