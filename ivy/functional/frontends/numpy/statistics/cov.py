@@ -28,7 +28,7 @@ def cov(
     ddof=None
 ):
     # check if inputs are valid
-    input_check = ivy.valid_dtype(dtype) and x.ndim in [0,1]
+    input_check = ivy.valid_dtype(dtype) and x.ndim in [0, 1]
 
     if input_check:
         x = ivy.array(x)
