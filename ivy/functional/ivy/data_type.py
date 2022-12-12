@@ -2023,17 +2023,31 @@ def promote_types_of_inputs(
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
-        x2 = (
-            ivy.asarray(x2, dtype=x1.dtype)
-            if not _special_case(x2, x1)
-            else ivy.asarray(x2, dtype="float64")
-        )
+        if x1.dtype == bool and not isinstance(x2, bool):
+            x2 = (
+                ivy.asarray(x2)
+                if not _special_case(x2, x1)
+                else ivy.asarray(x2, dtype="float64")
+            )
+        else:
+            x2 = (
+                ivy.asarray(x2, dtype=x1.dtype)
+                if not _special_case(x2, x1)
+                else ivy.asarray(x2, dtype="float64")
+            )
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
-        x1 = (
-            ivy.asarray(x1, dtype=x2.dtype)
-            if not _special_case(x1, x2)
-            else ivy.asarray(x1, dtype="float64")
-        )
+        if x2.dtype == bool and not isinstance(x1, bool):
+            x1 = (
+                ivy.asarray(x1)
+                if not _special_case(x1, x2)
+                else ivy.asarray(x1, dtype="float64")
+            )
+        else:
+            x1 = (
+                ivy.asarray(x1, dtype=x2.dtype)
+                if not _special_case(x1, x2)
+                else ivy.asarray(x1, dtype="float64")
+            )
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
