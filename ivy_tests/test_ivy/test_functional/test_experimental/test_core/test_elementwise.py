@@ -710,8 +710,8 @@ def test_isneginf(
     fn_tree="functional.experimental.angle",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("real_and_complex"),
-        min_value=-5,
-        max_value=5,
+        min_value=-10,
+        max_value=10,
         allow_inf=False,
         allow_nan=False,
     ),
