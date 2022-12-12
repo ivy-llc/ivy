@@ -486,6 +486,17 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 
 @to_ivy_arrays_and_back
+def transpose(a, axes=None):
+    if not axes:
+        axes = list(range(len(a.shape)))[::-1]
+    if type(axes) is int:
+        axes = [axes]
+    if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
+        return a
+    return ivy.permute_dims(a, axes, out=None)
+
+
+@to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
 
