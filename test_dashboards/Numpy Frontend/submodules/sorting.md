@@ -1,0 +1,3 @@
+|                    | jax                                                                                                                                                                                    |
+|:-------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_numpy_argsort | <a href="https://github.com/unifyai/ivy/actions/runs/3670912153/jobs/6205759520" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-success-success></a> |
