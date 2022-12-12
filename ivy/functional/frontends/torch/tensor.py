@@ -402,6 +402,9 @@ class Tensor:
     def tril(self, diagonal=0):
         return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
 
+    def index_select(self, dim, index):
+        return torch_frontend.index_select(self._ivy_array, dim, index)
+
     # Special Methods #
     # -------------------#
 
