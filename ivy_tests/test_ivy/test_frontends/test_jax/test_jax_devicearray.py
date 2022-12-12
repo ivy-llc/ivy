@@ -261,6 +261,7 @@ def test_jax_devicearray__gt_(
     frontend_method_data,
 ):
     input_dtype, x = dtype_and_x
+    assume("bfloat16" not in input_dtype)
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
