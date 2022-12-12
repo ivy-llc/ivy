@@ -133,7 +133,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             out = merge_fn(f_supported, out)
 
         # skip if it's not a function
-        if not inspect.isfunction(fn):
+        if not inspect.isfunction(fn) and not inspect.ismethod(fn):
             continue
 
         fl = _get_function_list(fn)
