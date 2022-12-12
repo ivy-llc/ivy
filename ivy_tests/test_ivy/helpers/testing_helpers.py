@@ -139,9 +139,9 @@ def _generate_shared_test_flags(
     """
     possible_flags = {
         "num_positional_args": num_positional_args(fn_name=fn_tree),
-        "as_variable": pf._BuiltNativeArray.strategy,
-        "native_array": pf._BuiltNativeArray.strategy,
-        "with_out": pf._BuiltWithOut.strategy,
+        "as_variable": pf.BuiltNativeArrayStrategy,
+        "native_array": pf.BuiltNativeArrayStrategy,
+        "with_out": pf.BuiltWithOutStrategy,
     }
     for k in set(param_names).intersection(possible_flags.keys()):
         _given_kwargs[k] = possible_flags[k]
@@ -196,9 +196,9 @@ def handle_test(
                 param_names, given_kwargs, fn_tree
             )
             possible_flags = {
-                "container": pf._BuiltContainer.strategy,
-                "instance_method": pf._BuiltInstance.strategy,
-                "test_gradients": pf._BuiltGradient.strategy,
+                "container": pf.BuiltContainerStrategy,
+                "instance_method": pf.BuiltInstanceStrategy,
+                "test_gradients": pf.BuiltGradientStrategy,
             }
             for k in set(param_names).intersection(possible_flags.keys()):
                 _given_kwargs[k] = possible_flags[k]
