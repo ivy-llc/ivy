@@ -311,6 +311,17 @@ def zeta(
     return tf.math.zeta(x, q)
 
 
+def angle(
+    input: Union[tf.Tensor, tf.Variable],
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+
+    return tf.math.angle(input, name = None)
+
+
 def _normalize_axis_index(ax: int, ndim: int) -> int:
     if ax >= ndim or ax < -ndim:
         raise ValueError("axis index is out of range")

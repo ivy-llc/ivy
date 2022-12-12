@@ -224,6 +224,18 @@ def isneginf(
 
 isneginf.support_native_out = True
 
+def angle(
+    input: torch.Tensor,
+    /,
+    *,
+    deg: Optional[bool] = None,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+
+    return torch.angle(input, out = out)
+
+angle.support_native_out = True
+
 
 def nan_to_num(
     x: torch.Tensor,
