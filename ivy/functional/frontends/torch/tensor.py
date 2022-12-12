@@ -370,6 +370,8 @@ class Tensor:
 
     def bool(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.bool)
+    def byte(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.uint8)
 
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
