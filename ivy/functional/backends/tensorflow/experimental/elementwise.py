@@ -319,7 +319,7 @@ def angle(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
 
-    return tf.math.angle(input, name = None)
+    return tf.math.angle(input, name=None)
 
 
 def _normalize_axis_index(ax: int, ndim: int) -> int:

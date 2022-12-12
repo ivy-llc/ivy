@@ -1609,7 +1609,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
 
-        return self.static_angle(self, deg = deg, out = out)
+        return self.static_angle(self, deg=deg, out=out)
 
     @staticmethod
     def static_nan_to_num(

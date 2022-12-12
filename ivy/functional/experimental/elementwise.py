@@ -677,6 +677,7 @@ def isneginf(
     """
     return ivy.current_backend().isneginf(x, out=out)
 
+
 @to_native_arrays_and_back
 @handle_out_argument
 def angle(
@@ -718,7 +719,8 @@ def angle(
     ivy.array([135., 135., -45.])
     """
 
-    return ivy.current_backend(z).angle(z, deg = deg, out = out)
+    return ivy.current_backend(z).angle(z, deg=deg, out=out)
+
 
 @to_native_arrays_and_back
 @handle_out_argument

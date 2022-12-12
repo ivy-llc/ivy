@@ -219,7 +219,7 @@ def angle(
     deg: Optional[bool] = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
-    return jnp.angle(z, deg = deg)
+    return jnp.angle(z, deg=deg)
 
 def zeta(
     x: JaxArray,

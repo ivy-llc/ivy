@@ -225,7 +225,8 @@ def angle(
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
 
-    return np.angle(z, deg = deg)
+    return np.angle(z, deg=deg)
+
 
 angle.support_native_out = False
 

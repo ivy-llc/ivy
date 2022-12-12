@@ -623,7 +623,7 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> ivy.angle(z,deg=True)
         ivy.array([135., 135., -45.])
         """
-        return ivy.angle(self._data, deg = deg, out = out)
+        return ivy.angle(self._data, deg=deg, out=out)
 
     def nan_to_num(
         self: ivy.Array,
