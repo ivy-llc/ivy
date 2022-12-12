@@ -507,6 +507,11 @@ def flip(m, axis=None):
 
 
 @to_ivy_arrays_and_back
+def sqrt(x, /):
+    return ivy.sqrt(x)
+
+
+@to_ivy_arrays_and_back
 def fliplr(m):
     return ivy.fliplr(m)
 
