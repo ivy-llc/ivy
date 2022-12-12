@@ -380,6 +380,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def tril(self, diagonal=0):
+        return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
+
     # Special Methods #
     # -------------------#
 
