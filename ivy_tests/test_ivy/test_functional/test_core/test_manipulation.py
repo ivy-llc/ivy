@@ -506,7 +506,6 @@ def test_clip(
     on_device,
     ground_truth_backend,
 ):
-    # commit to trigger tests
     dtypes, (x_list, min_val, max_val) = dtype_x_min_max
     helpers.test_function(
         ground_truth_backend=ground_truth_backend,
