@@ -189,9 +189,15 @@ def allclose(
 
 
 def diff_(
-    x: Union[JaxArray, int, float, list, tuple], /, *, out: Optional[JaxArray] = None
+    x: Union[JaxArray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[Jaxarray, int, float, list, tuple]] = None,
+    append: Optional[Union[Jaxarray, int, float, list, tuple]] = None,
 ) -> JaxArray:
-    return jnp.diff(x)
+    return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 def fix(
