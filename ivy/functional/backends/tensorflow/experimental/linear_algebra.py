@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
 import tensorflow as tf
 
 import ivy
@@ -47,3 +47,12 @@ def kron(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.kron(a, b)
+
+
+def eig(
+    x: Union[tf.Tensor, tf.Variable],
+    /,
+) -> Tuple[Union[tf.Tensor, tf.Variable], ...]:
+    if not ivy.dtype(x) in (ivy.float32, ivy.float64, ivy.complex64, ivy.complex128):
+        return tf.linalg.eig(tf.cast(x, tf.float64))
+    return tf.linalg.eig(x)

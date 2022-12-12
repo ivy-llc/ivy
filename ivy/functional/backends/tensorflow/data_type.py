@@ -136,34 +136,6 @@ def broadcast_to(
     return tf.broadcast_to(x, shape)
 
 
-@with_unsupported_dtypes(
-    {"2.9.1 and below": ("complex64", "complex128")}, backend_version
-)
-def can_cast(from_: Union[tf.DType, tf.Tensor, tf.Variable], to: tf.DType, /) -> bool:
-    if isinstance(from_, tf.Tensor) or isinstance(from_, tf.Variable):
-        from_ = ivy.as_ivy_dtype(from_.dtype)
-    from_str = str(from_)
-    to_str = str(to)
-    if ivy.dtype_bits(to) < ivy.dtype_bits(from_):
-        return False
-    if ("int" in from_str and "u" not in from_str) and "uint" in to_str:
-        return False
-    if "bool" in from_str and (("int" in to_str) or ("float" in to_str)):
-        return False
-    if "int" in from_str and (("float" in to_str) or ("bool" in to_str)):
-        return False
-    if "float" in from_str and "bool" in to_str:
-        return False
-    if "float" in from_str and "int" in to_str:
-        return False
-    if "uint" in from_str and ("int" in to_str and "u" not in to_str):
-        if ivy.dtype_bits(to) <= ivy.dtype_bits(from_):
-            return False
-    if "float16" in from_str and "float16" in to_str:
-        return from_str == to_str
-    return True
-
-
 @_handle_nestable_dtype_info
 def finfo(type: Union[DType, str, tf.Tensor, tf.Variable]) -> Finfo:
     if isinstance(type, tf.Tensor):

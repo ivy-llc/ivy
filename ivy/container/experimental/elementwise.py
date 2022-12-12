@@ -1971,7 +1971,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         )
 
     @staticmethod
-    def static_diff(
+    def static_diff_(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container, int, list, tuple],
         /,
         *,
@@ -1982,8 +1982,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
-        ivy.Container static method variant of ivy.diff. This method simply wraps
-        the function, and so the docstring for ivy.diff also applies to this
+        ivy.Container static method variant of ivy.diff_. This method simply wraps
+        the function, and so the docstring for ivy.diff_ also applies to this
         method with minimal changes.
 
         Parameters
@@ -2004,14 +2004,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
                                b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
+        >>> ivy.Container.static_diff_(x)
         {
             a: ivy.array([ 1,  2,  3, -7])
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
         return ContainerBase.multi_map_in_static_method(
-            "diff",
+            "diff_",
             x,
             key_chains=key_chains,
             to_apply=to_apply,
@@ -2020,14 +2020,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             out=out,
         )
 
-    def diff(
+    def diff_(
         self: ivy.Container,
         /,
         *,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        """ivy.Container instance method variant of ivy.diff. This method simply
-        wraps the function, and so the docstring for ivy.diff also applies to
+        """ivy.Container instance method variant of ivy.diff_. This method simply
+        wraps the function, and so the docstring for ivy.diff_ also applies to
         this method with minimal changes.
 
         Parameters
@@ -2048,13 +2048,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         --------
         >>> x = ivy.Container(a=ivy.array([1, 2, 4, 7, 0]),\
                                b=ivy.array([1, 2, 4, 7, 0]))
-        >>> ivy.Container.static_diff(x)
+        >>> ivy.Container.static_diff_(x)
         {
             a: ivy.array([ 1,  2,  3, -7])
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
-        return self.static_diff(self, out=out)
+        return self.static_diff_(self, out=out)
 
     @staticmethod
     def static_fix(

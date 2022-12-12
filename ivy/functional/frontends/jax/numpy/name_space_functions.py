@@ -335,10 +335,10 @@ def bincount(x, weights=None, minlength=0, *, length=None):
 
 
 @to_ivy_arrays_and_back
-def cumprod(a, axis=0, dtype=None, out=None):
+def cumprod(a, axis=None, dtype=None, out=None):
     if dtype is None:
         dtype = ivy.as_ivy_dtype(a.dtype)
-    return ivy.cumprod(a, axis, dtype=dtype, out=out)
+    return ivy.cumprod(a, axis=axis, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -417,12 +417,6 @@ def sum(
     where=None,
     promote_integers=True,
 ):
-    if initial:
-        s = ivy.shape(a)
-        axis = -1
-        header = ivy.full(s, initial)
-        a = ivy.concat([a, header], axis=axis)
-
     if dtype is None:
         dtype = "float32" if ivy.is_int_dtype(a.dtype) else ivy.as_ivy_dtype(a.dtype)
 
@@ -437,12 +431,20 @@ def sum(
             if ivy.dtype_bits(dtype) < ivy.dtype_bits(ivy.default_int_dtype()):
                 dtype = ivy.default_int_dtype()
 
+    if initial:
+        if axis is None:
+            a = ivy.reshape(a, (1, -1))
+            axis = 0
+        s = list(ivy.shape(a))
+        s[axis] = 1
+        header = ivy.full(s, initial)
+        a = ivy.concat([a, header], axis=axis)
+
     ret = ivy.sum(a, axis=axis, keepdims=keepdims, out=out)
 
     if ivy.is_array(where):
         where = ivy.array(where, dtype=ivy.bool)
         ret = ivy.where(where, ret, ivy.default(out, ivy.zeros_like(ret)), out=out)
-
     return ivy.astype(ret, ivy.as_ivy_dtype(dtype))
 
 
@@ -665,3 +667,11 @@ def divide(x1, x2, /):
 
 
 true_divide = divide
+
+
+@to_ivy_arrays_and_back
+def exp(
+    x,
+    /,
+):
+    return ivy.exp(x)

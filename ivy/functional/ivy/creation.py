@@ -1132,7 +1132,7 @@ def linspace(
     -------------------
 
     With float input:
- 
+
     >>> ivy.linspace(1, 2, 4)
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
