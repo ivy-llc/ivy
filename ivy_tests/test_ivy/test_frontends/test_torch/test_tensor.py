@@ -4203,6 +4203,49 @@ def test_torch_instance_tril(
     )
 
 
+# index_select
+@handle_frontend_method(
+    class_tree=CLASS_TREE,
+    init_tree="torch.tensor",
+    method_name="index_select",
+    params_indices_others=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        max_num_dims=1,
+        indices_same_dims=True,
+    ),
+)
+def test_torch_instance_index_select(
+    params_indices_others,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    frontend_method_data,
+    frontend,
+):
+    input_dtypes, input, indices, axis, batch_dims = params_indices_others
+    helpers.test_frontend_method(
+        init_input_dtypes=[input_dtypes[0]],
+        init_as_variable_flags=as_variable,
+        init_num_positional_args=init_num_positional_args,
+        init_native_array_flags=native_array,
+        init_all_as_kwargs_np={
+            "data": input,
+        },
+        method_input_dtypes=[input_dtypes[1]],
+        method_num_positional_args=method_num_positional_args,
+        method_as_variable_flags=as_variable,
+        method_native_array_flags=native_array,
+        method_all_as_kwargs_np={
+            "dim": axis,
+            "index": indices,
+        },
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
+    )
+
+
 # __gt__
 @handle_frontend_method(
     class_tree=CLASS_TREE,
