@@ -808,7 +808,7 @@ def signbit(
 @to_native_arrays_and_back
 @handle_out_argument
 @handle_nestable
-def diff(
+def diff_(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
@@ -831,10 +831,10 @@ def diff(
     Examples
     --------
     >>> x = ivy.array([1, 2, 4, 7, 0])
-    >>> ivy.diff(x)
+    >>> ivy.diff_(x)
     ivy.array([ 1,  2,  3, -7])
     """
-    return ivy.current_backend().diff(x, out=out)
+    return ivy.current_backend().diff_(x, out=out)
 
 
 @handle_exceptions
