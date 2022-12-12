@@ -220,6 +220,7 @@ def test_torch_instance_new_ones(
     )
 
 
+# new_zeros
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
