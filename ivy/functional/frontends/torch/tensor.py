@@ -374,6 +374,19 @@ class Tensor:
 
     def bool(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.bool)
+
+    def type(self, dtype=None, non_blocking=False, **kwargs):
+        if ivy.exists(dtype):
+            return ivy.astype(self._ivy_array, dtype)
+        else:
+            return str(self._ivy_array.dtype)
+
+    def type_as(self, other):
+        if self.dtype == other.dtype:
+            return self._ivy_array
+        else:
+            return ivy.astype(self._ivy_array, other.dtype)
+
     def byte(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.uint8)
 
