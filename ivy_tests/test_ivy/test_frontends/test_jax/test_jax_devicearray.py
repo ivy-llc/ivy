@@ -6,6 +6,7 @@ import numpy as np
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_method
 import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.test_frontends.test_torch.test_tensor import _array_and_index
 
 
 CLASS_TREE = "ivy.functional.frontends.jax.DeviceArray"
@@ -1414,10 +1415,7 @@ def test_jax_special_rmatmul(
     class_tree=CLASS_TREE,
     init_tree="jax.numpy.array",
     method_name="__getitem__",
-    dtype_x_index=helpers.array_indices_axis(
-        array_dtypes=helpers.get_dtypes("numeric"),
-        indices_dtypes=["int32", "int64"],
-    ),
+    dtype_x_index=_array_and_index(available_dtypes=helpers.get_dtypes("numeric")),
 )
 def test_jax_special_getitem(
     dtype_x_index,
@@ -1428,20 +1426,20 @@ def test_jax_special_getitem(
     frontend,
     frontend_method_data,
 ):
-    dtypes, x, index, _, _ = dtype_x_index
+    dtypes, x = dtype_x_index
     helpers.test_frontend_method(
         init_input_dtypes=[dtypes[0]],
         init_as_variable_flags=as_variable,
         init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={
-            "object": x,
+            "object": x[0],
         },
         method_input_dtypes=[dtypes[1]],
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"idx": index},
+        method_all_as_kwargs_np={"idx": x[1]},
         frontend=frontend,
         frontend_method_data=frontend_method_data,
     )
