@@ -406,7 +406,7 @@ class Tensor:
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
     def sqrt(self):
-        return torch_frontend.sqrt(self.data)
+        return torch_frontend.sqrt(self._ivy_array)
 
     # Special Methods #
     # -------------------#
