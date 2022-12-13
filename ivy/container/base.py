@@ -319,24 +319,24 @@ class ContainerBase(dict, abc.ABC):
             return containers
 
     @staticmethod
-    def _concat_unify(containers, device, axis=0):
+    def _cont_concat_unify(containers, device, axis=0):
         return ivy.concat(
             [cont.to_device(device) for cont in containers.values()], axis=axis
         )
 
     @staticmethod
-    def _sum_unify(containers, device, _=None, _1=None):
+    def _cont_sum_unify(containers, device, _=None, _1=None):
         return sum(
             [cont.to_device(device) for cont in containers.values()],
             start=ivy.zeros([]),
         )
 
     @staticmethod
-    def _mean_unify(containers, device, _=None, _1=None):
-        return ivy.Container._sum_unify(containers, device) / len(containers)
+    def _cont_mean_unify(containers, device, _=None, _1=None):
+        return ivy.Container._cont_sum_unify(containers, device) / len(containers)
 
     @staticmethod
-    def unify(containers, device, mode, axis=0):
+    def cont_unify(containers, device, mode, axis=0):
         """Unify a list of containers, on arbitrary devices, to a single container on
         the specified device.
 
@@ -358,9 +358,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return {
-            "concat": ivy.Container._concat_unify,
-            "sum": ivy.Container._sum_unify,
-            "mean": ivy.Container._mean_unify,
+            "concat": ivy.Container._cont_concat_unify,
+            "sum": ivy.Container._cont_sum_unify,
+            "mean": ivy.Container._cont_mean_unify,
         }[mode](containers, device, axis)
 
     @staticmethod
