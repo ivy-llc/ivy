@@ -449,24 +449,24 @@
             <span class="k">return</span> <span class="n">containers</span></div>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_concat_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_concat_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
             <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span>
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="o">.</span><span class="n">values</span><span class="p">()],</span>
             <span class="n">start</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([]),</span>
         <span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_mean_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_cont_mean_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_cont_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ContainerBase.unify"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.unify">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_unify"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_unify">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unify a list of containers, on arbitrary devices, to a single container on</span>
 <span class="sd">        the specified device.</span>
 
@@ -488,9 +488,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span>
-            <span class="s2">&quot;concat&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_concat_unify</span><span class="p">,</span>
-            <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_sum_unify</span><span class="p">,</span>
-            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_mean_unify</span><span class="p">,</span>
+            <span class="s2">&quot;concat&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_cont_concat_unify</span><span class="p">,</span>
+            <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_cont_sum_unify</span><span class="p">,</span>
+            <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">_cont_mean_unify</span><span class="p">,</span>
         <span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">containers</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.combine"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.combine">[docs]</a>    <span class="nd">@staticmethod</span>
