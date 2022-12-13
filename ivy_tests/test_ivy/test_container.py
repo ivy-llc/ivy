@@ -33,7 +33,7 @@ def test_container_list_join(device):
             },
         }
     )
-    container_list_joined = ivy.Container.list_join([container_0, container_1])
+    container_list_joined = ivy.Container.cont_list_join([container_0, container_1])
     assert np.allclose(ivy.to_numpy(container_list_joined["a"][0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_joined.a[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_joined["b"]["c"][0]), np.array([2]))
