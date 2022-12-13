@@ -3096,12 +3096,12 @@ def test_container_with_print_limit(device):
     )
     default_print_limit = cont._print_limit
     id_cont = id(cont)
-    cont1 = cont.with_print_limit(default_print_limit + 5)
+    cont1 = cont.cont_with_print_limit(default_print_limit + 5)
     assert cont1._print_limit == default_print_limit + 5
     assert id(cont1) != id(cont)
     assert cont._print_limit == default_print_limit
     assert cont._print_limit != cont1._print_limit
-    cont.with_print_limit(default_print_limit + 5, inplace=True)
+    cont.cont_with_print_limit(default_print_limit + 5, inplace=True)
     assert cont._print_limit == default_print_limit + 5
     assert cont.b._print_limit == default_print_limit + 5
     assert id(cont) == id_cont
@@ -3143,13 +3143,13 @@ def test_container_with_key_length_limit(device):
     )
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
-    cont1 = cont.with_key_length_limit(5)
+    cont1 = cont.cont_with_key_length_limit(5)
     assert cont1._key_length_limit == 5
     assert id(cont1) != id(cont)
     assert cont._key_length_limit == default_key_length_limit
     assert cont.b._key_length_limit == default_key_length_limit
     assert cont._key_length_limit != cont1._key_length_limit
-    cont.with_key_length_limit(5, inplace=True)
+    cont.cont_with_key_length_limit(5, inplace=True)
     assert cont._key_length_limit == 5
     assert cont.b._key_length_limit == 5
     assert id(cont) == id_cont
@@ -3165,7 +3165,7 @@ def test_container_remove_key_length_limit(device):
             },
         }
     )
-    cont.with_key_length_limit(5, inplace=True)
+    cont.cont_with_key_length_limit(5, inplace=True)
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
     cont1 = cont.remove_key_length_limit()
@@ -3192,13 +3192,13 @@ def test_container_with_print_indent(device):
     )
     default_print_indent = cont._print_indent
     id_cont = id(cont)
-    cont1 = cont.with_print_indent(default_print_indent + 5)
+    cont1 = cont.cont_with_print_indent(default_print_indent + 5)
     assert cont1._print_indent == default_print_indent + 5
     assert id(cont1) != id(cont)
     assert cont._print_indent == default_print_indent
     assert cont.b._print_indent == default_print_indent
     assert cont._print_indent != cont1._print_indent
-    cont.with_print_indent(default_print_indent + 5, inplace=True)
+    cont.cont_with_print_indent(default_print_indent + 5, inplace=True)
     assert cont._print_indent == default_print_indent + 5
     assert cont.b._print_indent == default_print_indent + 5
     assert id(cont) == id_cont
@@ -3216,13 +3216,13 @@ def test_container_with_print_line_spacing(device):
     )
     default_print_line_spacing = cont._print_line_spacing
     id_cont = id(cont)
-    cont1 = cont.with_print_line_spacing(default_print_line_spacing + 5)
+    cont1 = cont.cont_with_print_line_spacing(default_print_line_spacing + 5)
     assert cont1._print_line_spacing == default_print_line_spacing + 5
     assert id(cont1) != id(cont)
     assert cont._print_line_spacing == default_print_line_spacing
     assert cont.b._print_line_spacing == default_print_line_spacing
     assert cont._print_line_spacing != cont1._print_line_spacing
-    cont.with_print_line_spacing(default_print_line_spacing + 5, inplace=True)
+    cont.cont_with_print_line_spacing(default_print_line_spacing + 5, inplace=True)
     assert cont._print_line_spacing == default_print_line_spacing + 5
     assert cont.b._print_line_spacing == default_print_line_spacing + 5
     assert id(cont) == id_cont
@@ -3240,13 +3240,13 @@ def test_container_with_default_key_color(device):
     )
     default_default_key_color = cont._default_key_color
     id_cont = id(cont)
-    cont1 = cont.with_default_key_color("red")
+    cont1 = cont.cont_with_default_key_color("red")
     assert cont1._default_key_color == "red"
     assert id(cont1) != id(cont)
     assert cont._default_key_color == default_default_key_color
     assert cont.b._default_key_color == default_default_key_color
     assert cont._default_key_color != cont1._default_key_color
-    cont.with_default_key_color("red", inplace=True)
+    cont.cont_with_default_key_color("red", inplace=True)
     assert cont._default_key_color == "red"
     assert cont.b._default_key_color == "red"
     assert id(cont) == id_cont
