@@ -5,9 +5,9 @@ eigh
 
 .. autofunction:: ivy.array.array_methods.eigh
 
-.. autofunction:: ivy.container.container_methods.static_eigh
-
 .. autofunction:: ivy.container.container_methods.eigh
+
+.. autofunction:: ivy.container.container_methods.static_eigh
 |
 | **Supported Frameworks:**
 

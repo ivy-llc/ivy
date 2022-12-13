@@ -5,9 +5,9 @@ ones_like
 
 .. autofunction:: ivy.array.array_methods.ones_like
 
-.. autofunction:: ivy.container.container_methods.static_ones_like
-
 .. autofunction:: ivy.container.container_methods.ones_like
+
+.. autofunction:: ivy.container.container_methods.static_ones_like
 |
 | **Supported Frameworks:**
 
