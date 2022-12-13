@@ -5,9 +5,9 @@ is_int_dtype
 
 .. autofunction:: ivy.array.array_methods.is_int_dtype
 
-.. autofunction:: ivy.container.container_methods.static_is_int_dtype
-
 .. autofunction:: ivy.container.container_methods.is_int_dtype
+
+.. autofunction:: ivy.container.container_methods.static_is_int_dtype
 |
 | **Supported Frameworks:**
 

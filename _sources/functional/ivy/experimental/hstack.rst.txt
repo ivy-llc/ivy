@@ -5,9 +5,9 @@ hstack
 
 .. autofunction:: ivy.array.array_methods.hstack
 
-.. autofunction:: ivy.container.container_methods.static_hstack
-
 .. autofunction:: ivy.container.container_methods.hstack
+
+.. autofunction:: ivy.container.container_methods.static_hstack
 |
 | **Supported Frameworks:**
 

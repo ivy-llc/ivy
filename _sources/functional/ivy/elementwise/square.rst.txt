@@ -5,9 +5,9 @@ square
 
 .. autofunction:: ivy.array.array_methods.square
 
-.. autofunction:: ivy.container.container_methods.square
-
 .. autofunction:: ivy.container.container_methods.static_square
+
+.. autofunction:: ivy.container.container_methods.square
 |
 | **Supported Frameworks:**
 
