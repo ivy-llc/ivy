@@ -45,9 +45,9 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 def _handle_nestable_dtype_info(fn):
     def new_fn(type):
         if isinstance(type, ivy.Container):
-            type = type.map(lambda x, kc: fn(x))
-            type.__dict__["max"] = type.map(lambda x, kc: x.max)
-            type.__dict__["min"] = type.map(lambda x, kc: x.min)
+            type = type.cont_map(lambda x, kc: fn(x))
+            type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
+            type.__dict__["min"] = type.cont_map(lambda x, kc: x.min)
             return type
         return fn(type)
 

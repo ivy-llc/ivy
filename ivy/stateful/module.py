@@ -1206,7 +1206,7 @@ class Module(abc.ABC):
                 self._ivy_module = ivy_module
 
             def __call__(self, *args, **kwargs):
-                self._ivy_module.v = self._ivy_module.v.map(
+                self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: hk.get_parameter(
                         name=kc,
                         shape=x.shape,
@@ -1616,12 +1616,14 @@ class MyTorchModule(torch.nn.Module):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.register_parameter(
                 name=kc, param=torch.nn.Parameter(ivy.to_native(x))
             )
         )
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: self._parameters[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(
+            lambda x, kc: self._parameters[kc]
+        )
 
     def forward(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
@@ -1638,16 +1640,16 @@ class MyTFModule(tf.keras.Model):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.add_weight(
                 name=kc, shape=x.shape, dtype=x.dtype, trainable=True
             )
         )
         model_weights = list()
-        self._ivy_module.v.map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
+        self._ivy_module.v.cont_map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
         self.set_weights(model_weights)
         params = {re.sub(":\\d+", "", param.name): param for param in self.variables}
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: params[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(lambda x, kc: params[kc])
 
     def call(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
