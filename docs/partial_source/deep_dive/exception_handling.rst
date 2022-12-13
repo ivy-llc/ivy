@@ -63,11 +63,11 @@ Configurable Mode for Stack Trace
 
 Due to the transpilation nature of Ivy, user can code in the frontend framework
 which they are familiar with, then run their code with another backend
-framework. For instance, someone who is familiar with PyTorch can run their code
-with a JAX backend via Ivy's PyTorch frontend. Given their total lack of
-familiarity of certain backend frameworks (which is Jax in the above scenario),
+framework. For instance, someone who is familiar with NumPy can run their code
+with a PyTorch backend via Ivy's NumPy frontend. Given their total lack of
+familiarity of certain backend frameworks (which is PyTorch in the above scenario),
 they might not want to see stack traces which go right down through Ivy
-functions and through JAX functions.
+functions and through PyTorch functions.
 
 Therefore, options are made available for the stack traces to either truncate
 at the frontend or ivy level, or in other cases, no truncation at all.
