@@ -961,7 +961,7 @@ class ContainerWithStatistical(ContainerBase):
 
         """
         return self.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_, _: ivy.std(
                     x_, axis=axis, correction=correction, keepdims=keepdims
                 )
