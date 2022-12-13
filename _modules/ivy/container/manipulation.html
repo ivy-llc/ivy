@@ -167,7 +167,7 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.concat also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;concat&quot;</span><span class="p">,</span>
             <span class="n">xs</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -290,7 +290,7 @@
 <span class="sd">            c: ivy.array([[[6., 7., 8.]]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;expand_dims&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -408,7 +408,7 @@
 <span class="sd">            A container with list of sub-arrays.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;split&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">num_or_size_splits</span><span class="o">=</span><span class="n">num_or_size_splits</span><span class="p">,</span>
@@ -529,7 +529,7 @@
 <span class="sd">            b:ivy.array([[3.],[4.],[5.]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;permute_dims&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axes</span><span class="p">,</span>
@@ -660,7 +660,7 @@
 <span class="sd">            b: ivy.array([4, 3, 2])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;flip&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -847,7 +847,7 @@
 
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;reshape&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">shape</span><span class="p">,</span>
@@ -1042,7 +1042,7 @@
 <span class="sd">            b: ivy.array([4., 5., 3.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;roll&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">shift</span><span class="p">,</span>
@@ -1193,7 +1193,7 @@
 <span class="sd">            b: ivy.array([[11.], [12.]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;squeeze&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -1328,7 +1328,7 @@
 <span class="sd">                        [1, 0]]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;stack&quot;</span><span class="p">,</span>
             <span class="n">xs</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -1413,7 +1413,7 @@
 <span class="sd">            b: ivy.array([3., 3., 4., 4., 5., 5.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;repeat&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">repeats</span><span class="p">,</span>
@@ -1496,7 +1496,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;tile&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">reps</span><span class="p">,</span>
@@ -1573,7 +1573,7 @@
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;constant_pad&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">pad_width</span><span class="p">,</span>
@@ -1640,7 +1640,7 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.zero_pad also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;zero_pad&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">pad_width</span><span class="p">,</span>
@@ -1695,7 +1695,7 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.swapaxes also applies to</span>
 <span class="sd">        this method with minimal changes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;swapaxes&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axis0</span><span class="p">,</span>
@@ -1814,7 +1814,7 @@
 <span class="sd">                         [[15, 16]]])</span>
 <span class="sd">        }]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;unstack&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
@@ -1968,7 +1968,7 @@
 <span class="sd">            b: ivy.array([1., 1., 1.])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">multi_map_in_static_method</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;clip&quot;</span><span class="p">,</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">x_min</span><span class="p">,</span>
