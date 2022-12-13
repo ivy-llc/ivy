@@ -364,7 +364,7 @@ class ContainerBase(dict, abc.ABC):
         }[mode](containers, device, axis)
 
     @staticmethod
-    def combine(*containers, config=None):
+    def cont_combine(*containers, config=None):
         """Combine keys and values in a sequence of containers, with priority given to
         the right-most container in the case of duplicates.
 
@@ -410,7 +410,7 @@ class ContainerBase(dict, abc.ABC):
         )
         for key in all_keys:
             keys_present = [key in cont for cont in containers]
-            return_dict[key] = ivy.Container.combine(
+            return_dict[key] = ivy.Container.cont_combine(
                 *[cont[key] for cont, kp in zip(containers, keys_present) if kp],
                 config=config,
             )
@@ -2871,7 +2871,7 @@ class ContainerBase(dict, abc.ABC):
         for key, value in self.items():
             if (absolute and key == absolute) or (containing and containing in key):
                 if isinstance(value, ivy.Container):
-                    out_cont = ivy.Container.combine(out_cont, value)
+                    out_cont = ivy.Container.cont_combine(out_cont, value)
                 else:
                     out_cont = value
             elif isinstance(value, ivy.Container):
@@ -2912,7 +2912,7 @@ class ContainerBase(dict, abc.ABC):
                 containing and max([con in key for con in containing])
             ):
                 if isinstance(value, ivy.Container):
-                    out_cont = ivy.Container.combine(out_cont, value)
+                    out_cont = ivy.Container.cont_combine(out_cont, value)
                 else:
                     out_cont = value
             elif isinstance(value, ivy.Container):
@@ -2940,7 +2940,7 @@ class ContainerBase(dict, abc.ABC):
         for old_kc, new_kc in keychain_mapping.items():
             if replace and old_kc in new_cont:
                 new_cont = new_cont.prune_key_chain(old_kc)
-            new_cont = ivy.Container.combine(
+            new_cont = ivy.Container.cont_combine(
                 new_cont, ivy.Container({new_kc: self[old_kc]})
             )
         return new_cont
@@ -2977,7 +2977,9 @@ class ContainerBase(dict, abc.ABC):
                         val = ivy.einops_rearrange(val, pattern, **axes_lengths)
             else:
                 new_kc = new
-            new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: val}))
+            new_cont = ivy.Container.cont_combine(
+                new_cont, ivy.Container({new_kc: val})
+            )
         return new_cont
 
     def flatten_key_chains(
