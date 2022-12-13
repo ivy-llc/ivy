@@ -2255,7 +2255,7 @@ def test_container_with_entries_as_lists(device):
         "b": {"c": ivy.array([2.0], device=device), "d": "some string"},
     }
     container = Container(dict_in)
-    container_w_list_entries = container.with_entries_as_lists()
+    container_w_list_entries = container.cont_with_entries_as_lists()
     for (key, value), expected_value in zip(
         container_w_list_entries.to_iterator(), [[1], [2.0], "some string"]
     ):

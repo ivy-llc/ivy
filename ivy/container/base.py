@@ -3171,7 +3171,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_entries_as_lists(self):
+    def cont_with_entries_as_lists(self):
         def to_list(x, _=""):
             try:
                 return self._ivy.to_list(x)
