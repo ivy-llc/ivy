@@ -287,7 +287,7 @@ class ContainerBase(dict, abc.ABC):
             return [item for sublist in containers for item in sublist]
 
     @staticmethod
-    def list_stack(containers, dim, config=None):
+    def cont_list_stack(containers, dim, config=None):
         """List stack containers together along the specified dimension.
 
         Parameters
@@ -311,7 +311,7 @@ class ContainerBase(dict, abc.ABC):
         if isinstance(container0, ivy.Container):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = ivy.Container.list_stack(
+                return_dict[key] = ivy.Container.cont_list_stack(
                     [container[key] for container in containers], dim, config
                 )
             return ivy.Container(return_dict, **config)
