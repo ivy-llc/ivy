@@ -312,7 +312,7 @@ We can then very quickly find conflicting leaves.
 
     cnt0 = ivy.Container({'a': ivy.array([0.]),
                       'b': ivy.array([1.])})
-    cnt1 = cnt0.deep_copy()
+    cnt1 = cnt0.cont_deep_copy()
     cnt1.b = ivy.array([0.])
 
     print(ivy.Container.diff(cnt0, cnt1))
