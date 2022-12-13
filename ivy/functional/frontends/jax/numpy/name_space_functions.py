@@ -87,6 +87,18 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
 
 
 @to_ivy_arrays_and_back
+def ones(shape, dtype=None):
+    return ivy.ones(shape, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
+def ones_like(a, dtype=None, shape=None):
+    if shape:
+        return ivy.ones(shape, dtype=dtype)
+    return ivy.ones_like(a, dtype=dtype)
+
+
+@to_ivy_arrays_and_back
 def broadcast_to(arr, shape):
     return ivy.broadcast_to(arr, shape)
 
@@ -474,6 +486,17 @@ def any(a, axis=None, out=None, keepdims=False, *, where=None):
 
 
 @to_ivy_arrays_and_back
+def transpose(a, axes=None):
+    if not axes:
+        axes = list(range(len(a.shape)))[::-1]
+    if type(axes) is int:
+        axes = [axes]
+    if (len(a.shape) == 0 and not axes) or (len(a.shape) == 1 and axes[0] == 0):
+        return a
+    return ivy.permute_dims(a, axes, out=None)
+
+
+@to_ivy_arrays_and_back
 def diag(v, k=0):
     return ivy.diag(v, k=k)
 
@@ -481,6 +504,11 @@ def diag(v, k=0):
 @to_ivy_arrays_and_back
 def flip(m, axis=None):
     return ivy.flip(m, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def sqrt(x, /):
+    return ivy.sqrt(x)
 
 
 @to_ivy_arrays_and_back
