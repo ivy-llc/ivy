@@ -213,7 +213,7 @@
 <span class="sd">            Default is ``None``.</span>
 <span class="sd">        container_combine_method</span>
 <span class="sd">            The method to use for combining containers arriving from different queues.</span>
-<span class="sd">            Default is ivy.Container.list_join</span>
+<span class="sd">            Default is ivy.Container.cont_list_join</span>
 <span class="sd">        queue_timeout</span>
 <span class="sd">            The timeout when waiting for containers to arrive from the queues.</span>
 <span class="sd">            Default is global.</span>
@@ -254,7 +254,7 @@
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;list_join&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_join</span><span class="p">,</span>
+                    <span class="s2">&quot;list_join&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_list_join</span><span class="p">,</span>
                     <span class="s2">&quot;concat&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">conts</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                 <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_containers_from_queues</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -385,8 +385,8 @@
             <span class="n">ret</span> <span class="o">=</span> <span class="n">out</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.list_join"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.list_join">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_list_join"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_list_join">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Join containers of lists together along the specified dimension.</span>
 
 <span class="sd">        Parameters</span>
@@ -411,13 +411,13 @@
                 <span class="n">new_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">:</span>
                     <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">containers</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="ContainerBase.list_stack"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.list_stack">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_list_stack"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_list_stack">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;List stack containers together along the specified dimension.</span>
 
 <span class="sd">        Parameters</span>
@@ -441,7 +441,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">(</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_list_stack</span><span class="p">(</span>
                     <span class="p">[</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">config</span>
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span>

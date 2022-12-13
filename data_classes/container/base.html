@@ -194,7 +194,7 @@ waiting for data. Default is <code class="docutils literal notranslate"><span cl
 <li><p><strong>queue_load_sizes</strong> – Size of leading dimension of the containers returned by each queue.
 Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
 <li><p><strong>container_combine_method</strong> – The method to use for combining containers arriving from different queues.
-Default is ivy.Container.list_join</p></li>
+Default is ivy.Container.cont_list_join</p></li>
 <li><p><strong>queue_timeout</strong> – The timeout when waiting for containers to arrive from the queues.
 Default is global.</p></li>
 <li><p><strong>print_limit</strong> – The total array size limit when printing the container. Default is 10.</p></li>
@@ -532,6 +532,41 @@ container.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_list_join">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_list_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_list_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_list_join" title="Permalink to this definition"></a></dt>
+<dd><p>Join containers of lists together along the specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> – containers to list join</p></li>
+<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>List joined containers, with each entry being a list of arrays</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_list_stack">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_list_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_list_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_list_stack" title="Permalink to this definition"></a></dt>
+<dd><p>List stack containers together along the specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> – containers to list stack</p></li>
+<li><p><strong>dim</strong> – dimension along which to list stack</p></li>
+<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Stacked containers, with each entry being a list of arrays</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1000,41 +1035,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <li><p><strong>sub_str</strong> – param include_empty: (Default value = False)</p></li>
 <li><p><strong>include_empty</strong> – (Default value = False)</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.list_join">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.list_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.list_join" title="Permalink to this definition"></a></dt>
-<dd><p>Join containers of lists together along the specified dimension.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> – containers to list join</p></li>
-<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>List joined containers, with each entry being a list of arrays</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.list_stack">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">list_stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.list_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.list_stack" title="Permalink to this definition"></a></dt>
-<dd><p>List stack containers together along the specified dimension.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> – containers to list stack</p></li>
-<li><p><strong>dim</strong> – dimension along which to list stack</p></li>
-<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Stacked containers, with each entry being a list of arrays</em></p>
 </dd>
 </dl>
 </dd></dl>

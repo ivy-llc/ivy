@@ -671,7 +671,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
         <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cnt</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
         <span class="c1"># image filenames</span>
-        <span class="n">img_fnames</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">(</span>
+        <span class="n">img_fnames</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_list_stack</span><span class="p">(</span>
             <span class="p">[</span><span class="n">cnt</span><span class="o">.</span><span class="n">imgs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">fname</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">fname</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
             <span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_batch_size</span><span class="p">)],</span> <span class="mi">0</span>
