@@ -62,7 +62,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([-0.090, 0.070, -0.057])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sinc",
             x,
             key_chains=key_chains,
@@ -178,7 +178,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "lcm",
             x1,
             x2,
@@ -285,7 +285,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ nan,  nan,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fmod",
             x1,
             x2,
@@ -378,7 +378,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 0,  0,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fmax",
             x1,
             x2,
@@ -471,7 +471,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1, 1])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "float_power",
             x1,
             x2,
@@ -560,7 +560,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([32., 64., 128.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "exp2",
             x,
             key_chains=key_chains,
@@ -653,7 +653,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array(-23.)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "copysign",
             x1,
             x2,
@@ -786,7 +786,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([[[3, 4]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "count_nonzero",
             a,
             axis=axis,
@@ -952,7 +952,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([7., 0.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nansum",
             x,
             axis=axis,
@@ -1065,7 +1065,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gcd",
             x1,
             x2,
@@ -1201,7 +1201,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isclose",
             a,
             b,
@@ -1354,7 +1354,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([False, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isposinf",
             x,
             key_chains=key_chains,
@@ -1443,7 +1443,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([False, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isneginf",
             x,
             key_chains=key_chains,
@@ -1547,7 +1547,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.,  5e+100])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nan_to_num",
             x,
             key_chains=key_chains,
@@ -1658,7 +1658,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.08746284, 5.169925  , 5.32192809])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logaddexp2",
             x1,
             x2,
@@ -1746,7 +1746,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "signbit",
             x,
             key_chains=key_chains,
@@ -1868,7 +1868,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: true
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "allclose",
             x1,
             x2,
@@ -2010,7 +2010,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "diff",
             x,
             key_chains=key_chains,
@@ -2095,7 +2095,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 3.0 ])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fix",
             x,
             key_chains=key_chains,
@@ -2196,7 +2196,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.5e-30])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nextafter",
             x1,
             x2,
@@ -2327,7 +2327,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([0.0006, 0.0244])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zeta",
             x,
             q,
@@ -2415,7 +2415,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         edge_order: Optional[int] = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gradient",
             x,
             key_chains=key_chains,
