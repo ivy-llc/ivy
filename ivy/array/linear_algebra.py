@@ -179,6 +179,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         return ivy.diag(self._data, k=k, out=out)
 
+    def eig(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.eig(self._data, out=out)
+
     def eigh(
         self: ivy.Array,
         /,
@@ -548,6 +556,15 @@ class ArrayWithLinearAlgebra(abc.ABC):
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.tensordot(self._data, x2, axes=axes, out=out)
+
+    def tensorsolve(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.tensorsolve(self._data, x2, axes=axes)
 
     def trace(
         self: ivy.Array,

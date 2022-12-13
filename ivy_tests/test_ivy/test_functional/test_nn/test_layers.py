@@ -147,66 +147,6 @@ def test_dropout(
         assert u.shape == x[0].shape
 
 
-# dropout1d
-@handle_test(
-    fn_tree="functional.ivy.dropout1d",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
-        min_value=0,
-        max_value=50,
-        allow_inf=False,
-        min_num_dims=2,
-        max_num_dims=3,
-        min_dim_size=1,
-        max_dim_size=5,
-    ),
-    prob=helpers.floats(min_value=0, max_value=0.9),
-    training=st.booleans(),
-    data_format=st.sampled_from(["NWC", "NCW"]),
-)
-def test_dropout1d(
-    *,
-    dtype_and_x,
-    prob,
-    training,
-    data_format,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-    container,
-    instance_method,
-    backend_fw,
-    on_device,
-    fn_name,
-    ground_truth_backend,
-):
-    dtype, x = dtype_and_x
-    ret, gt_ret = helpers.test_function(
-        ground_truth_backend=ground_truth_backend,
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=container,
-        instance_method=instance_method,
-        fw=backend_fw,
-        fn_name=fn_name,
-        test_values=False,
-        x=x[0],
-        prob=prob,
-        training=training,
-        data_format=data_format,
-        return_flat_np_arrays=True,
-    )
-    ret = helpers.flatten_and_to_np(ret=ret)
-    gt_ret = helpers.flatten_and_to_np(ret=gt_ret)
-    for u, v, w in zip(ret, gt_ret, x):
-        # cardinality test
-        assert u.shape == v.shape == w.shape
-
-
 # Attention #
 # ----------#
 

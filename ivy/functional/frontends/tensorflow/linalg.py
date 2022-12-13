@@ -3,7 +3,10 @@ import ivy
 
 
 from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+)
 
 from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
 import ivy.functional.frontends.tensorflow as tf_frontend
@@ -17,6 +20,11 @@ def matrix_rank(a, tol=None, validate_args=False, name=None):
 @to_ivy_arrays_and_back
 def det(input, name=None):
     return ivy.det(input)
+
+
+@to_ivy_arrays_and_back
+def eig(tensor, name=None):
+    return ivy.eig(tensor)
 
 
 @to_ivy_arrays_and_back
@@ -72,6 +80,29 @@ def tensordot(a, b, axes, name=None):
     return ivy.tensordot(a, b, axes=axes)
 
 
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes(
+    {
+        "2.9.1 and below": (
+            "float16",
+            "bfloat16",
+            "int8",
+            "int16",
+            "int32",
+            "int64",
+            "uint8",
+            "uint16",
+            "uint32",
+            "uint64",
+        )
+    },
+    "tensorflow",
+)
+def tensorsolve(a, b, axes):
+    return ivy.tensorsolve(a, b, axes=axes)
+
+
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes({"2.9.0 and below": ("float16", "bfloat16")}, "tensorflow")
 def eye(num_rows, num_columns=None, batch_shape=None, dtype=ivy.float32, name=None):

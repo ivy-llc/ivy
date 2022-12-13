@@ -130,6 +130,7 @@ def range(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def linspace(
     start,
     end,
@@ -146,6 +147,7 @@ def linspace(
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def logspace(
     start,
     end,

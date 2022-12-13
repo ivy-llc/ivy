@@ -16,7 +16,7 @@ except ImportError:
     torch.optim = SimpleNamespace()
     torch.optim.SGD = SimpleNamespace
     nn.L1Loss = SimpleNamespace
-    
+
 try:
     import jax
     from jax import value_and_grad
@@ -150,13 +150,13 @@ class HaikuModule(hk.Module):
 NATIVE_MODULES = {
     "torch": TorchModule,
     "jax": HaikuModule,
-    "tensorflow": TensorflowModule
+    "tensorflow": TensorflowModule,
 }
 
 FROM_CONVERTERS = {
     "torch": ivy.Module.from_torch_module,
     "jax": ivy.Module.from_haiku_module,
-    "tensorflow": ivy.Module.from_keras_module
+    "tensorflow": ivy.Module.from_keras_module,
 }
 
 
@@ -179,8 +179,7 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
         ivy_module = module_converter(
             native_module_class,
             instance_args=[x],
-            constructor_kwargs={"in_size": input_channels, "out_size": output_channels}
-
+            constructor_kwargs={"in_size": input_channels, "out_size": output_channels},
         )
     else:
         if ivy.current_backend_str() == "jax":
@@ -192,14 +191,12 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
             native_module = hk.transform(forward_fn)
         elif ivy.current_backend_str() == "tensorflow":
             native_module = native_module_class(
-                in_size=input_channels,
-                out_size=output_channels
+                in_size=input_channels, out_size=output_channels
             )
             native_module.build((input_channels,))
         else:
             native_module = native_module_class(
-                in_size=input_channels,
-                out_size=output_channels
+                in_size=input_channels, out_size=output_channels
             )
 
         ivy_module = module_converter(native_module)
@@ -235,7 +232,7 @@ def test_from_backend_module(bs_ic_oc, from_class_and_args):
 
 @pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
 def test_to_torch_module(bs_ic_oc):
-    ivy.set_backend('torch')
+    ivy.set_backend("torch")
     batch_shape, input_channels, output_channels = bs_ic_oc
     ivy_model = IvyModel(input_channels, output_channels)
     torch_model = ivy_model.to_torch_module()
@@ -268,7 +265,7 @@ def test_to_torch_module(bs_ic_oc):
 
 @pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
 def test_to_keras_module(bs_ic_oc):
-    ivy.set_backend('tensorflow')
+    ivy.set_backend("tensorflow")
     batch_shape, input_channels, output_channels = bs_ic_oc
     ivy_model = IvyModel(input_channels, output_channels)
     tf_model = ivy_model.to_keras_module()
@@ -303,7 +300,7 @@ def test_to_keras_module(bs_ic_oc):
 
 @pytest.mark.parametrize("bs_ic_oc", [([2, 3], 10, 5)])
 def test_to_haiku_module(bs_ic_oc):
-    ivy.set_backend('jax')
+    ivy.set_backend("jax")
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.astype(
         ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),

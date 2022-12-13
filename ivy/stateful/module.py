@@ -22,7 +22,7 @@ except ImportError:
     jax.random = SimpleNamespace()
     jax.random.PRNGKey = SimpleNamespace
 
-try:        
+try:
     import torch
 except ImportError:
     torch = SimpleNamespace()
@@ -41,6 +41,7 @@ import re
 import inspect
 from collections import OrderedDict
 from typing import Optional, Dict, List
+
 # local
 import ivy
 from ivy.container import Container
@@ -54,7 +55,6 @@ class Module(abc.ABC):
     """Module is a base class for deriving trainable modules."""
 
     def __init__(
-
         self,
         /,
         *args,
@@ -201,7 +201,7 @@ class Module(abc.ABC):
         else:
             ret = self.v
         if flatten_key_chains:
-            return ret.flatten_key_chains()
+            return ret.cont_flatten_key_chains()
         return ret
 
     def _top_mod_fn(self, /, *, depth=None):
@@ -646,7 +646,7 @@ class Module(abc.ABC):
                 }
             )
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         if show_v:
             return self.v
@@ -693,7 +693,7 @@ class Module(abc.ABC):
             else:
                 ret = self.v
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         else:
             print(
@@ -761,8 +761,8 @@ class Module(abc.ABC):
             upper_sub_mods = self.top_mod(upper_depth).sub_mods(depth=mid_depth)
             lower_sub_mods = self.sub_mods(depth=lower_depth)
             if flatten_key_chains:
-                upper_sub_mods = upper_sub_mods.flatten_key_chains()
-                lower_sub_mods = lower_sub_mods.flatten_key_chains()
+                upper_sub_mods = upper_sub_mods.cont_flatten_key_chains()
+                lower_sub_mods = lower_sub_mods.cont_flatten_key_chains()
             upper_sub_mods.show_sub_container(lower_sub_mods)
         else:
             print(
@@ -1034,7 +1034,7 @@ class Module(abc.ABC):
         )
 
         # convert variables to native arrays so that they can be tracked
-        v = ivy.to_native(v)  
+        v = ivy.to_native(v)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_submod_flags()
         return ret
@@ -1187,25 +1187,26 @@ class Module(abc.ABC):
     def to_haiku_module(self):
         """
         Converts an ivy Module instance to a Haiku Module instance.
+
         Parameters
         ----------
         ivy_module
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable hk.Module instance.
         """
-
         ivy_module = self
-        
+
         class MyHaikuModel(hk.Module):
             def __init__(self):
                 super(MyHaikuModel, self).__init__()
                 self._ivy_module = ivy_module
 
             def __call__(self, *args, **kwargs):
-                self._ivy_module.v = self._ivy_module.v.map(
+                self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: hk.get_parameter(
                         name=kc,
                         shape=x.shape,
@@ -1224,31 +1225,33 @@ class Module(abc.ABC):
     def to_keras_module(self):
         """
         Converts an ivy Module instance to a Keras Module instance.
+
         Parameters
         ----------
         self
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable tf.keras.Module instance.
         """
-
         return MyTFModule(self)
 
     def to_torch_module(self):
         """
         Converts an ivy Module instance to a Torch Module instance.
+
         Parameters
         ----------
         self
             The ivy module instance to convert
+
         Returns
         -------
         ret
             The new trainable torch.nn.Module instance.
         """
-
         return MyTorchModule(self)
 
     @staticmethod
@@ -1357,12 +1360,12 @@ class Module(abc.ABC):
 
         if inspect.isclass(native_module):
 
-            if (len(i_args) == 0 and len(i_kwargs) == 0):
+            if len(i_args) == 0 and len(i_kwargs) == 0:
                 raise ivy.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
                 )
-            
+
             def forward_fn(*a, **kw):
                 model = native_module(*c_args, **c_kwargs)
                 return model(*i_args, **i_kwargs)
@@ -1456,7 +1459,7 @@ class Module(abc.ABC):
 
         if inspect.isclass(native_module):
 
-            if (len(i_args) == 0 and len(i_kwargs) == 0):
+            if len(i_args) == 0 and len(i_kwargs) == 0:
                 raise ivy.exceptions.IvyException(
                     "both instance_args and instance_kwargs cannot be none"
                     " when passing a native class"
@@ -1470,7 +1473,7 @@ class Module(abc.ABC):
             native_module=native_module,
             device=device,
             devices=devices,
-            **i_kwargs
+            **i_kwargs,
         )
 
     @staticmethod
@@ -1510,6 +1513,7 @@ class Module(abc.ABC):
         inplace_update
             For backends with dedicated variable classes, whether to update these
             inplace. Default is ``False``.
+
         Returns
         -------
         ret
@@ -1612,12 +1616,14 @@ class MyTorchModule(torch.nn.Module):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.register_parameter(
                 name=kc, param=torch.nn.Parameter(ivy.to_native(x))
             )
         )
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: self._parameters[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(
+            lambda x, kc: self._parameters[kc]
+        )
 
     def forward(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
@@ -1634,16 +1640,16 @@ class MyTFModule(tf.keras.Model):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.add_weight(
                 name=kc, shape=x.shape, dtype=x.dtype, trainable=True
             )
         )
         model_weights = list()
-        self._ivy_module.v.map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
+        self._ivy_module.v.cont_map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
         self.set_weights(model_weights)
         params = {re.sub(":\\d+", "", param.name): param for param in self.variables}
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: params[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(lambda x, kc: params[kc])
 
     def call(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
