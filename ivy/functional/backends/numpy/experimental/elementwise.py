@@ -258,7 +258,7 @@ def signbit(
 signbit.support_native_out = True
 
 
-def diff_(
+def diff(
     x: Union[np.ndarray, int, float, list, tuple],
     /,
     *,
@@ -270,7 +270,7 @@ def diff_(
     return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
-diff_.support_native_out = False
+diff.support_native_out = False
 
 
 def allclose(
