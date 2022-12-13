@@ -1634,7 +1634,7 @@ def test_container_flatten_key_chains(device):
     )
 
     # full
-    container_flat = container.flatten_key_chains()
+    container_flat = container.cont_flatten_key_chains()
     assert np.allclose(ivy.to_numpy(container_flat["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat["b__c__d"]), np.array([[2]]))
@@ -1643,7 +1643,7 @@ def test_container_flatten_key_chains(device):
     assert np.allclose(ivy.to_numpy(container_flat.b__e__f__g), np.array([[3]]))
 
     # above height 1
-    container_flat = container.flatten_key_chains(above_height=1)
+    container_flat = container.cont_flatten_key_chains(above_height=1)
     assert np.allclose(ivy.to_numpy(container_flat["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat["b__c"]["d"]), np.array([[2]]))
@@ -1652,7 +1652,7 @@ def test_container_flatten_key_chains(device):
     assert np.allclose(ivy.to_numpy(container_flat.b__e__f.g), np.array([[3]]))
 
     # below depth 1
-    container_flat = container.flatten_key_chains(below_depth=1)
+    container_flat = container.cont_flatten_key_chains(below_depth=1)
     assert np.allclose(ivy.to_numpy(container_flat["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat["b"]["c__d"]), np.array([[2]]))
@@ -1661,7 +1661,7 @@ def test_container_flatten_key_chains(device):
     assert np.allclose(ivy.to_numpy(container_flat.b.e__f__g), np.array([[3]]))
 
     # above height 1, below depth 1
-    container_flat = container.flatten_key_chains(above_height=1, below_depth=1)
+    container_flat = container.cont_flatten_key_chains(above_height=1, below_depth=1)
     assert np.allclose(ivy.to_numpy(container_flat["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat["b"]["c"]["d"]), np.array([[2]]))
