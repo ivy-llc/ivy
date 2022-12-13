@@ -51,7 +51,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is a native array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_native_array",
             x,
             exclusive=exclusive,
@@ -149,7 +149,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_ivy_array",
             x,
             exclusive=exclusive,
@@ -250,7 +250,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_array",
             x,
             exclusive=exclusive,
@@ -367,7 +367,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip_vector_norm",
             x,
             max_norm,
@@ -495,7 +495,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         # inplace update the leaves
         cont = x
-        cont = ContainerBase.multi_map_in_static_method(
+        cont = ContainerBase.cont_multi_map_in_static_method(
             "inplace_update",
             cont,
             val,
@@ -632,7 +632,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inplace_decrement",
             x,
             val,
@@ -774,7 +774,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inplace_increment",
             x,
             val,
@@ -882,7 +882,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             True if support, raises exception otherwise`
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "assert_supports_inplace",
             x,
             key_chains=key_chains,
@@ -1004,7 +1004,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "all_equal",
             x1,
             *xs,
@@ -1164,7 +1164,7 @@ class ContainerWithGeneral(ContainerBase):
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fourier_encode",
             x,
             max_freq,
@@ -1322,7 +1322,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gather",
             params,
             indices,
@@ -1438,7 +1438,7 @@ class ContainerWithGeneral(ContainerBase):
             entire container.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "has_nans",
             self,
             include_infs=include_infs,
@@ -1565,7 +1565,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "scatter_nd",
             indices,
             updates,
@@ -1723,7 +1723,7 @@ class ContainerWithGeneral(ContainerBase):
         ref
             New container of given shape, with the values updated at the indices.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "scatter_flat",
             indices,
             updates,
@@ -1847,7 +1847,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gather_nd",
             params,
             indices,
@@ -1988,7 +1988,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_reduce",
             x,
             pattern,
@@ -2142,7 +2142,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_repeat",
             x,
             pattern,
@@ -2296,7 +2296,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "value_is_nan",
             x,
             include_infs=include_infs,
@@ -2443,7 +2443,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_numpy",
             x,
             copy=copy,
@@ -2576,7 +2576,7 @@ class ContainerWithGeneral(ContainerBase):
             b: 3
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_scalar",
             x,
             key_chains=key_chains,
@@ -2691,7 +2691,7 @@ class ContainerWithGeneral(ContainerBase):
         {a:[0,1,2]}
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_list",
             x,
             key_chains=key_chains,
@@ -2848,7 +2848,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0.909, 2.5])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stable_divide",
             numerator,
             denominator,
@@ -2991,7 +2991,7 @@ class ContainerWithGeneral(ContainerBase):
             numerically stable power.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stable_pow",
             base,
             exponent,
@@ -3097,7 +3097,7 @@ class ContainerWithGeneral(ContainerBase):
             ivy.Container with each array having einops.rearrange applied.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_rearrange",
             x,
             pattern,
@@ -3222,7 +3222,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip_matrix_norm",
             x,
             max_norm,
@@ -3372,7 +3372,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "supports_inplace_updates",
             x,
             key_chains=key_chains,
@@ -3516,7 +3516,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "get_num_dims",
             x,
             as_array=as_array,
