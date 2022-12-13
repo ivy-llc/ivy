@@ -3017,7 +3017,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return ivy.Container(self.to_dict(), **self._config)
 
-    def deep_copy(self):
+    def cont_deep_copy(self):
         """Create a deep copy (copying all internal tensors) of this container.
 
         return: A deep copy of the container
@@ -3026,7 +3026,7 @@ class ContainerBase(dict, abc.ABC):
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
     def __deepcopy__(self, memo):
-        return self.deep_copy()
+        return self.cont_deep_copy()
 
     def map(
         self,
