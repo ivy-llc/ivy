@@ -159,7 +159,7 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
-    def multi_map_in_static_method(
+    def cont_multi_map_in_static_method(
         fn_name,
         *args,
         key_chains=None,
