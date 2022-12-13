@@ -592,7 +592,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 1
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(1, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(1, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -600,7 +600,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 2
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(2, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(2, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -608,7 +608,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 3
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(3, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(3, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -616,7 +616,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 4
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(4, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(4, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -632,7 +632,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 0
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(0, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(0, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a.c.d), ivy.to_numpy(d_val))
@@ -640,7 +640,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 1
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(1, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(1, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a.c
@@ -648,7 +648,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 2
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(2, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(2, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a
@@ -656,7 +656,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 3
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(3, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(3, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a
@@ -664,7 +664,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 4
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(4, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(4, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff
@@ -688,7 +688,7 @@ def test_container_slice_keys(str_slice, device):
 
     # without dict
     cont = Container({"a": a_val, "b": b_val, "c": c_val, "d": d_val, "e": e_val})
-    cont_sliced = cont.slice_keys(slc)
+    cont_sliced = cont.cont_slice_keys(slc)
     assert "a" not in cont_sliced
     assert np.allclose(ivy.to_numpy(cont_sliced.b), ivy.to_numpy(b_val))
     assert np.allclose(ivy.to_numpy(cont_sliced.c), ivy.to_numpy(c_val))
@@ -700,7 +700,7 @@ def test_container_slice_keys(str_slice, device):
     cont = Container(
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
-    cont_sliced = cont.slice_keys({0: slc})
+    cont_sliced = cont.cont_slice_keys({0: slc})
     assert "a" not in cont_sliced
     assert Container.identical([cont_sliced.b, sub_cont])
     assert Container.identical([cont_sliced.c, sub_cont])
@@ -713,7 +713,7 @@ def test_container_slice_keys(str_slice, device):
     cont = Container(
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
-    cont_sliced = cont.slice_keys({1: slc})
+    cont_sliced = cont.cont_slice_keys({1: slc})
     assert Container.identical([cont_sliced.a, sub_sub_cont])
     assert Container.identical([cont_sliced.b, sub_sub_cont])
     assert Container.identical([cont_sliced.c, sub_sub_cont])
@@ -726,7 +726,7 @@ def test_container_slice_keys(str_slice, device):
     cont = Container(
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
-    cont_sliced = cont.slice_keys({0: slc, 1: slc})
+    cont_sliced = cont.cont_slice_keys({0: slc, 1: slc})
     assert "a" not in cont_sliced
     assert Container.identical([cont_sliced.b, sub_sub_cont])
     assert Container.identical([cont_sliced.c, sub_sub_cont])
@@ -739,7 +739,7 @@ def test_container_slice_keys(str_slice, device):
     cont = Container(
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
-    cont_sliced = cont.slice_keys(slc, all_depths=True)
+    cont_sliced = cont.cont_slice_keys(slc, all_depths=True)
     assert "a" not in cont_sliced
     assert Container.identical([cont_sliced.b, sub_sub_cont])
     assert Container.identical([cont_sliced.c, sub_sub_cont])
@@ -2275,7 +2275,7 @@ def test_container_reshape_like(device):
     new_shapes = Container({"a": (1,), "b": {"c": (1, 2, 1), "d": (3, 1, 1)}})
 
     # without leading shape
-    container_reshaped = container.reshape_like(new_shapes)
+    container_reshaped = container.cont_reshape_like(new_shapes)
     assert list(container_reshaped["a"].shape) == [1]
     assert list(container_reshaped.a.shape) == [1]
     assert list(container_reshaped["b"]["c"].shape) == [1, 2, 1]
@@ -2302,7 +2302,7 @@ def test_container_reshape_like(device):
             },
         }
     )
-    container_reshaped = container.reshape_like(new_shapes, leading_shape=[3])
+    container_reshaped = container.cont_reshape_like(new_shapes, leading_shape=[3])
     assert list(container_reshaped["a"].shape) == [3, 1]
     assert list(container_reshaped.a.shape) == [3, 1]
     assert list(container_reshaped["b"]["c"].shape) == [3, 1, 2, 1]
@@ -2597,13 +2597,13 @@ def test_container_create_if_absent(device):
 
     # depth 1
     container = Container(dict_in)
-    container.create_if_absent("a", None, True)
+    container.cont_create_if_absent("a", None, True)
     assert np.allclose(ivy.to_numpy(container.a), np.array([[[1.0], [2.0], [3.0]]]))
-    container.create_if_absent("e", ivy.array([[[4.0], [8.0], [12.0]]]), True)
+    container.cont_create_if_absent("e", ivy.array([[[4.0], [8.0], [12.0]]]), True)
     assert np.allclose(ivy.to_numpy(container.e), np.array([[[4.0], [8.0], [12.0]]]))
 
     # depth 2
-    container.create_if_absent("f/g", np.array([[[5.0], [10.0], [15.0]]]), True)
+    container.cont_create_if_absent("f/g", np.array([[[5.0], [10.0], [15.0]]]), True)
     assert np.allclose(ivy.to_numpy(container.f.g), np.array([[[5.0], [10.0], [15.0]]]))
 
 
@@ -2617,18 +2617,18 @@ def test_container_if_exists(device):
     }
     container = Container(dict_in)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("a")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("a")), np.array([[[1.0], [2.0], [3.0]]])
     )
     assert "c" not in container
-    assert container.if_exists("c") is None
+    assert container.cont_if_exists("c") is None
     container["c"] = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("c")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("c")), np.array([[[1.0], [2.0], [3.0]]])
     )
-    assert container.if_exists("d") is None
+    assert container.cont_if_exists("d") is None
     container.d = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("d")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("d")), np.array([[[1.0], [2.0], [3.0]]])
     )
 
 
@@ -3078,10 +3078,10 @@ def test_container_try_kc(device):
             },
         }
     )
-    assert cont.try_kc("a") == cont.a
-    assert cont.try_kc("b/c") == cont.b.c
-    assert cont.try_kc("b/d") == cont.b.d
-    assert cont.try_kc("b/e") is cont
+    assert cont.cont_try_kc("a") == cont.a
+    assert cont.cont_try_kc("b/c") == cont.b.c
+    assert cont.cont_try_kc("b/d") == cont.b.d
+    assert cont.cont_try_kc("b/e") is cont
 
 
 def test_container_with_print_limit(device):
@@ -3096,12 +3096,12 @@ def test_container_with_print_limit(device):
     )
     default_print_limit = cont._print_limit
     id_cont = id(cont)
-    cont1 = cont.with_print_limit(default_print_limit + 5)
+    cont1 = cont.cont_with_print_limit(default_print_limit + 5)
     assert cont1._print_limit == default_print_limit + 5
     assert id(cont1) != id(cont)
     assert cont._print_limit == default_print_limit
     assert cont._print_limit != cont1._print_limit
-    cont.with_print_limit(default_print_limit + 5, inplace=True)
+    cont.cont_with_print_limit(default_print_limit + 5, inplace=True)
     assert cont._print_limit == default_print_limit + 5
     assert cont.b._print_limit == default_print_limit + 5
     assert id(cont) == id_cont
@@ -3143,13 +3143,13 @@ def test_container_with_key_length_limit(device):
     )
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
-    cont1 = cont.with_key_length_limit(5)
+    cont1 = cont.cont_with_key_length_limit(5)
     assert cont1._key_length_limit == 5
     assert id(cont1) != id(cont)
     assert cont._key_length_limit == default_key_length_limit
     assert cont.b._key_length_limit == default_key_length_limit
     assert cont._key_length_limit != cont1._key_length_limit
-    cont.with_key_length_limit(5, inplace=True)
+    cont.cont_with_key_length_limit(5, inplace=True)
     assert cont._key_length_limit == 5
     assert cont.b._key_length_limit == 5
     assert id(cont) == id_cont
@@ -3165,7 +3165,7 @@ def test_container_remove_key_length_limit(device):
             },
         }
     )
-    cont.with_key_length_limit(5, inplace=True)
+    cont.cont_with_key_length_limit(5, inplace=True)
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
     cont1 = cont.remove_key_length_limit()
@@ -3192,13 +3192,13 @@ def test_container_with_print_indent(device):
     )
     default_print_indent = cont._print_indent
     id_cont = id(cont)
-    cont1 = cont.with_print_indent(default_print_indent + 5)
+    cont1 = cont.cont_with_print_indent(default_print_indent + 5)
     assert cont1._print_indent == default_print_indent + 5
     assert id(cont1) != id(cont)
     assert cont._print_indent == default_print_indent
     assert cont.b._print_indent == default_print_indent
     assert cont._print_indent != cont1._print_indent
-    cont.with_print_indent(default_print_indent + 5, inplace=True)
+    cont.cont_with_print_indent(default_print_indent + 5, inplace=True)
     assert cont._print_indent == default_print_indent + 5
     assert cont.b._print_indent == default_print_indent + 5
     assert id(cont) == id_cont
@@ -3216,13 +3216,13 @@ def test_container_with_print_line_spacing(device):
     )
     default_print_line_spacing = cont._print_line_spacing
     id_cont = id(cont)
-    cont1 = cont.with_print_line_spacing(default_print_line_spacing + 5)
+    cont1 = cont.cont_with_print_line_spacing(default_print_line_spacing + 5)
     assert cont1._print_line_spacing == default_print_line_spacing + 5
     assert id(cont1) != id(cont)
     assert cont._print_line_spacing == default_print_line_spacing
     assert cont.b._print_line_spacing == default_print_line_spacing
     assert cont._print_line_spacing != cont1._print_line_spacing
-    cont.with_print_line_spacing(default_print_line_spacing + 5, inplace=True)
+    cont.cont_with_print_line_spacing(default_print_line_spacing + 5, inplace=True)
     assert cont._print_line_spacing == default_print_line_spacing + 5
     assert cont.b._print_line_spacing == default_print_line_spacing + 5
     assert id(cont) == id_cont
@@ -3240,13 +3240,13 @@ def test_container_with_default_key_color(device):
     )
     default_default_key_color = cont._default_key_color
     id_cont = id(cont)
-    cont1 = cont.with_default_key_color("red")
+    cont1 = cont.cont_with_default_key_color("red")
     assert cont1._default_key_color == "red"
     assert id(cont1) != id(cont)
     assert cont._default_key_color == default_default_key_color
     assert cont.b._default_key_color == default_default_key_color
     assert cont._default_key_color != cont1._default_key_color
-    cont.with_default_key_color("red", inplace=True)
+    cont.cont_with_default_key_color("red", inplace=True)
     assert cont._default_key_color == "red"
     assert cont.b._default_key_color == "red"
     assert id(cont) == id_cont

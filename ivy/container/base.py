@@ -3180,7 +3180,7 @@ class ContainerBase(dict, abc.ABC):
 
         return self.cont_map(to_list)
 
-    def reshape_like(self, target_dict, leading_shape=None, return_cont=None):
+    def cont_reshape_like(self, target_dict, leading_shape=None, return_cont=None):
         """Set shapes of container entries to shapes specified by new container with the
         same key structure.
 
@@ -3204,14 +3204,14 @@ class ContainerBase(dict, abc.ABC):
             return_cont = self.cont_copy()
         for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
             if isinstance(v_shape, dict):
-                return_cont[k] = self.reshape_like(
+                return_cont[k] = self.cont_reshape_like(
                     v_shape, leading_shape, return_cont[k]
                 )
             else:
                 return_cont[k] = self._ivy.reshape(v, leading_shape + list(v_shape))
         return ivy.Container(return_cont, **self._config)
 
-    def create_if_absent(self, key, value, inplace=True):
+    def cont_create_if_absent(self, key, value, inplace=True):
         """Add a key to the container with corresponding value, if it is not already
         present. otherwise, do nothing.
 
@@ -3228,7 +3228,7 @@ class ContainerBase(dict, abc.ABC):
             return
         self.set_at_key_chain(key, value, inplace)
 
-    def if_exists(self, key):
+    def cont_if_exists(self, key):
         """Returns the sub-container at the following key if it exists, otherwise None.
 
         Parameters
@@ -3241,7 +3241,7 @@ class ContainerBase(dict, abc.ABC):
         except KeyError:
             return
 
-    def try_kc(self, key):
+    def cont_try_kc(self, key):
         """Tries the following key or key chain, returning self if not present.
 
         Parameters
@@ -3254,7 +3254,7 @@ class ContainerBase(dict, abc.ABC):
         except IvyException:
             return self
 
-    def cutoff_at_depth(self, depth_cutoff, inplace=False):
+    def cont_cutoff_at_depth(self, depth_cutoff, inplace=False):
         """Summary.
 
         Parameters
@@ -3280,7 +3280,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def cutoff_at_height(self, height_cutoff, inplace=False):
+    def cont_cutoff_at_height(self, height_cutoff, inplace=False):
         """Summary.
 
         Parameters
@@ -3305,7 +3305,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def _slice_keys(self, key_slice):
+    def _cont_slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
             ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
@@ -3320,7 +3320,7 @@ class ContainerBase(dict, abc.ABC):
         # noinspection PyUnresolvedReferences
         return ret.at_key_chains(desired_keys)
 
-    def slice_keys(self, key_slice, all_depths=False):
+    def cont_slice_keys(self, key_slice, all_depths=False):
         """Summary.
 
         Parameters
@@ -3346,13 +3346,13 @@ class ContainerBase(dict, abc.ABC):
                 depth = 0 if kc == "" else len(kc.split("/"))
                 if depth in key_slice:
                     # noinspection PyProtectedMember
-                    return cont._slice_keys(key_slice[depth])
+                    return cont._cont_slice_keys(key_slice[depth])
                 return cont
 
             return self.cont_map_sub_conts(_fn)
-        return self._slice_keys(key_slice)
+        return self._cont_slice_keys(key_slice)
 
-    def with_print_limit(self, print_limit, inplace=False):
+    def cont_with_print_limit(self, print_limit, inplace=False):
         """Summary.
 
         Parameters
@@ -3383,9 +3383,9 @@ class ContainerBase(dict, abc.ABC):
             Default value = False)
 
         """
-        return self.with_print_limit(None, inplace)
+        return self.cont_with_print_limit(None, inplace)
 
-    def with_key_length_limit(self, key_length_limit, inplace=False):
+    def cont_with_key_length_limit(self, key_length_limit, inplace=False):
         """Summary.
 
         Parameters
@@ -3415,9 +3415,9 @@ class ContainerBase(dict, abc.ABC):
             Default value = False)
 
         """
-        return self.with_key_length_limit(None, inplace)
+        return self.cont_with_key_length_limit(None, inplace)
 
-    def with_print_indent(self, print_indent, inplace=False):
+    def cont_with_print_indent(self, print_indent, inplace=False):
         """Summary.
 
         Parameters
@@ -3438,7 +3438,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_print_line_spacing(self, print_line_spacing, inplace=False):
+    def cont_with_print_line_spacing(self, print_line_spacing, inplace=False):
         """Summary.
 
         Parameters
@@ -3459,7 +3459,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_default_key_color(self, default_key_color, inplace=False):
+    def cont_with_default_key_color(self, default_key_color, inplace=False):
         """Summary.
 
         Parameters
@@ -3533,10 +3533,10 @@ class ContainerBase(dict, abc.ABC):
         this_cont[sub_cont_kc] = ivy.Container({"SUB_CONT": None})
 
         # get the formatted reprs
-        this_repr = this_cont.with_default_key_color("green").__repr__()
-        this_repr_red = this_cont.with_default_key_color("red").__repr__()
+        this_repr = this_cont.cont_with_default_key_color("green").__repr__()
+        this_repr_red = this_cont.cont_with_default_key_color("red").__repr__()
         this_repr_stripped = ansi_escape.sub("", this_repr)
-        sub_repr = sub_cont.with_default_key_color("red").__repr__()
+        sub_repr = sub_cont.cont_with_default_key_color("red").__repr__()
 
         # remove the outer brackets from the sub repr
         sub_repr = "\n" + "\n".join(sub_repr.split("\n")[1:-1]) + "\n"
