@@ -368,3 +368,7 @@ def test_torch_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+    
+def test_torch_matmul():
+    # alias function
+    pass
