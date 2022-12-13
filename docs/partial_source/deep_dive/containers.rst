@@ -10,7 +10,7 @@ Containers
 .. _`ivy.Container.multi_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593
 .. _`ivy.Container.diff`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396
 .. _`ivy.Container.common_key_chains`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L663
-.. _`ivy.Container.multi_map_in_static_method`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167
+.. _`ivy.Container.cont_multi_map_in_static_method`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L167
 .. _`ivy.Container.static_add`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L71
 .. _`ivy.Container.static_tan`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/elementwise.py#L1240
 .. _`ivy.Container.static_roll`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/manipulation.py#L135
@@ -84,9 +84,9 @@ To recap, what this means is that every function can arbitrarily accept :class:`
 When multiple containers are passed, this mapping is only applied to their shared nested structure, with the mapping applied to each of these leaves.
 
 In such cases, the function in the functional API defers to this *static* :class:`ivy.Container` implementation.
-Under the hood, `ivy.Container.multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
-Internally, :meth:`ivy.Container.multi_map_in_static_method` calls `ivy.Container.multi_map`_.
-In cases where there are no containers passed, `ivy.Container.multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
+Under the hood, `ivy.Container.cont_multi_map_in_static_method`_ enables us to pass in arbitrary combinations of containers and non-containers, and perform the correct mapping across the leaves.
+Internally, :meth:`ivy.Container.cont_multi_map_in_static_method` calls `ivy.Container.multi_map`_.
+In cases where there are no containers passed, `ivy.Container.cont_multi_map_in_static_method`_ will simply call the function once on the non-container arguments provided.
 
 A few examples of :class:`ivy.Container` API static methods are `ivy.Container.static_add`_, `ivy.Container.static_tan`_ and `ivy.Container.static_roll`_.
 
