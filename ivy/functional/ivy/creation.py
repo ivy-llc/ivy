@@ -380,7 +380,6 @@ def ones(
 
     Examples
     --------
-
     With :class:`ivy.Shape` input:
 
     >>> shape = (2,2)
