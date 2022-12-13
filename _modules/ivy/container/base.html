@@ -3435,7 +3435,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-    <span class="k">def</span> <span class="nf">_slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_slice</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_slice</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">key_slice</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
@@ -3450,7 +3450,7 @@
         <span class="c1"># noinspection PyUnresolvedReferences</span>
         <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">desired_keys</span><span class="p">)</span>
 
-<div class="viewcode-block" id="ContainerBase.slice_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.slice_keys">[docs]</a>    <span class="k">def</span> <span class="nf">slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">,</span> <span class="n">all_depths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_slice_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_slice_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">,</span> <span class="n">all_depths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3476,13 +3476,13 @@
                 <span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">kc</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">depth</span> <span class="ow">in</span> <span class="n">key_slice</span><span class="p">:</span>
                     <span class="c1"># noinspection PyProtectedMember</span>
-                    <span class="k">return</span> <span class="n">cont</span><span class="o">.</span><span class="n">_slice_keys</span><span class="p">(</span><span class="n">key_slice</span><span class="p">[</span><span class="n">depth</span><span class="p">])</span>
+                    <span class="k">return</span> <span class="n">cont</span><span class="o">.</span><span class="n">_cont_slice_keys</span><span class="p">(</span><span class="n">key_slice</span><span class="p">[</span><span class="n">depth</span><span class="p">])</span>
                 <span class="k">return</span> <span class="n">cont</span>
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map_sub_conts</span><span class="p">(</span><span class="n">_fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice_keys</span><span class="p">(</span><span class="n">key_slice</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_slice_keys</span><span class="p">(</span><span class="n">key_slice</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_print_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_print_limit">[docs]</a>    <span class="k">def</span> <span class="nf">with_print_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_print_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_print_limit">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_print_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3513,9 +3513,9 @@
 <span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_print_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_with_print_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_key_length_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_key_length_limit">[docs]</a>    <span class="k">def</span> <span class="nf">with_key_length_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_key_length_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_key_length_limit">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_key_length_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_length_limit</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3545,9 +3545,9 @@
 <span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">with_key_length_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_with_key_length_limit</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_print_indent"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_print_indent">[docs]</a>    <span class="k">def</span> <span class="nf">with_print_indent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_indent</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_print_indent"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_print_indent">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_print_indent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_indent</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3568,7 +3568,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_print_line_spacing"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_print_line_spacing">[docs]</a>    <span class="k">def</span> <span class="nf">with_print_line_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_print_line_spacing"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_print_line_spacing">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_print_line_spacing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3589,7 +3589,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_default_key_color"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_default_key_color">[docs]</a>    <span class="k">def</span> <span class="nf">with_default_key_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_key_color</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_default_key_color"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_default_key_color">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_default_key_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_key_color</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3663,10 +3663,10 @@
         <span class="n">this_cont</span><span class="p">[</span><span class="n">sub_cont_kc</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s2">&quot;SUB_CONT&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
 
         <span class="c1"># get the formatted reprs</span>
-        <span class="n">this_repr</span> <span class="o">=</span> <span class="n">this_cont</span><span class="o">.</span><span class="n">with_default_key_color</span><span class="p">(</span><span class="s2">&quot;green&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
-        <span class="n">this_repr_red</span> <span class="o">=</span> <span class="n">this_cont</span><span class="o">.</span><span class="n">with_default_key_color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="n">this_repr</span> <span class="o">=</span> <span class="n">this_cont</span><span class="o">.</span><span class="n">cont_with_default_key_color</span><span class="p">(</span><span class="s2">&quot;green&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="n">this_repr_red</span> <span class="o">=</span> <span class="n">this_cont</span><span class="o">.</span><span class="n">cont_with_default_key_color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
         <span class="n">this_repr_stripped</span> <span class="o">=</span> <span class="n">ansi_escape</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">this_repr</span><span class="p">)</span>
-        <span class="n">sub_repr</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="o">.</span><span class="n">with_default_key_color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="n">sub_repr</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="o">.</span><span class="n">cont_with_default_key_color</span><span class="p">(</span><span class="s2">&quot;red&quot;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
         <span class="c1"># remove the outer brackets from the sub repr</span>
         <span class="n">sub_repr</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
