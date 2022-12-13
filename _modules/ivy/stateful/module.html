@@ -331,7 +331,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
         <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">_top_mod_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -776,7 +776,7 @@
                 <span class="p">}</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">ret</span>
         <span class="k">if</span> <span class="n">show_v</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
@@ -823,7 +823,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
             <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">ret</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
@@ -891,8 +891,8 @@
             <span class="n">upper_sub_mods</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">(</span><span class="n">upper_depth</span><span class="p">)</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="n">mid_depth</span><span class="p">)</span>
             <span class="n">lower_sub_mods</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">(</span><span class="n">depth</span><span class="o">=</span><span class="n">lower_depth</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
-                <span class="n">upper_sub_mods</span> <span class="o">=</span> <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
-                <span class="n">lower_sub_mods</span> <span class="o">=</span> <span class="n">lower_sub_mods</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">()</span>
+                <span class="n">upper_sub_mods</span> <span class="o">=</span> <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
+                <span class="n">lower_sub_mods</span> <span class="o">=</span> <span class="n">lower_sub_mods</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
             <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="n">lower_sub_mods</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>

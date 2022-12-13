@@ -510,7 +510,7 @@ Consider the following nested structure.</p>
 </div>
 <p>We can clip the depth of the printed container in order to make the structure of the root keys clearer.
 All nested structures below this depth are truncated into single keys with a “__” delimiter appending all keys below this depth.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">(</span><span class="n">above_height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">(</span><span class="n">above_height</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="p">{</span>
     <span class="n">decoder__l0</span><span class="p">:</span> <span class="p">{</span>
@@ -542,7 +542,7 @@ All nested structures below this depth are truncated into single keys with a “
 </div>
 <p>Likewise, we can clip the height of the printed container in order to make the structure of the leaf keys clearer.
 All nested structures above this height are truncated into single keys with a “__” delimiter appending all keys above this height.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">flatten_key_chains</span><span class="p">(</span><span class="n">below_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">weights</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">(</span><span class="n">below_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="p">{</span>
     <span class="n">decoder</span><span class="p">:</span> <span class="p">{</span>

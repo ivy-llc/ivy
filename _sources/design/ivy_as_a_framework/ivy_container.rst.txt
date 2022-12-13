@@ -395,7 +395,7 @@ All nested structures below this depth are truncated into single keys with a â€œ
 
 .. code-block:: python
 
-    weights.flatten_key_chains(above_height=1)
+    weights.cont_flatten_key_chains(above_height=1)
 
     {
         decoder__l0: {
@@ -430,7 +430,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 .. code-block:: python
 
-    weights.flatten_key_chains(below_depth=1)
+    weights.cont_flatten_key_chains(below_depth=1)
 
     {
         decoder: {
