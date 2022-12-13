@@ -3,6 +3,33 @@ import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# as_dtype
+@handle_frontend_test(
+    fn_tree="tensorflow.as_dtype", input_dtype=helpers.get_dtypes("valid", full=False)
+)
+def test_tensorflow_as_dtype(
+    *,
+    input_dtype,
+    num_positional_args,
+    as_variable,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        type_value=input_dtype[0],
+    )
+
+
 # cast
 @handle_frontend_test(
     fn_tree="tensorflow.cast",
