@@ -3241,7 +3241,7 @@ class ContainerBase(dict, abc.ABC):
         except KeyError:
             return
 
-    def try_kc(self, key):
+    def cont_try_kc(self, key):
         """Tries the following key or key chain, returning self if not present.
 
         Parameters
@@ -3254,7 +3254,7 @@ class ContainerBase(dict, abc.ABC):
         except IvyException:
             return self
 
-    def cutoff_at_depth(self, depth_cutoff, inplace=False):
+    def cont_cutoff_at_depth(self, depth_cutoff, inplace=False):
         """Summary.
 
         Parameters
@@ -3280,7 +3280,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def cutoff_at_height(self, height_cutoff, inplace=False):
+    def cont_cutoff_at_height(self, height_cutoff, inplace=False):
         """Summary.
 
         Parameters
