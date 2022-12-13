@@ -1,4 +1,5 @@
 from typing import Optional, Union, Sequence, Tuple, NamedTuple, List
+from numbers import Number
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
 import torch
@@ -90,13 +91,13 @@ def top_k(
         "top_k", [("values", torch.Tensor), ("indices", torch.Tensor)]
     )
     if not largest:
-        indices = torch.argsort(x, dim=axis, stable=True)
-        indices = torch.take(indices, torch.arange(k), dim=axis)
+        indices = torch.argsort(x, dim=axis)
+        indices = torch.gather(indices, axis, torch.arange(k).expand_as(indices))
     else:
-        x *= -1
-        indices = torch.argsort(x, dim=axis, stable=True)
-        indices = torch.take(indices, torch.arange(k), dim=axis)
-        x *= -1
+        x = -x
+        indices = torch.argsort(x, dim=axis)
+        indices = torch.gather(indices, axis, torch.arange(k).expand_as(indices))
+        x = -x
     val = torch.gather(x, axis, indices)
     return topk_res(val, indices)
 
@@ -186,6 +187,13 @@ def atleast_2d(*arys: torch.Tensor) -> List[torch.Tensor]:
     return transformed
 
 
+def atleast_3d(*arys: Union[torch.Tensor, bool, Number]) -> List[torch.Tensor]:
+    transformed = torch.atleast_3d(*arys)
+    if isinstance(transformed, tuple):
+        return list(transformed)
+    return transformed
+
+
 @with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, backend_version)
 def take_along_axis(
     arr: torch.Tensor,
@@ -202,6 +210,16 @@ def take_along_axis(
         )
     indices = indices.long()
     return torch.take_along_dim(arr, indices, axis, out=out)
+
+
+def hsplit(
+    ary: torch.Tensor,
+    indices_or_sections: Union[int, Tuple[int]],
+    /,
+    *,
+    out: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    return torch.hsplit(ary, indices_or_sections)
 
 
 take_along_axis.support_native_out = True

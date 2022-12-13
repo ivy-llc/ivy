@@ -360,31 +360,25 @@ def permute_dims(
     >>> y = ivy.permute_dims(x, axes=(1, 0))
     >>> print(y)
     {
-    a: ivy.array([[0.],
-                  [1.],
-                  [2.]]),
-    b: ivy.array([[3.],
-                  [4.],
-                  [5.]])
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
     }
 
     >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b = ivy.array([[3., 4., 5.]]))
     >>> y = ivy.permute_dims(x, axes=(1, 0), out=x)
     >>> print(y)
     {
-    a: ivy.array([[0.],
-                  [1.],
-                  [2.]]),
-    b: ivy.array([[3.],
-                  [4.],
-                  [5.]])
+        a: ivy.array([[0.],
+                      [1.],
+                      [2.]]),
+        b: ivy.array([[3.],
+                      [4.],
+                      [5.]])
     }
-
-    >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
-    >>> y = x.permute_dims( axes=(1, 0))
-    >>> print(y)
-    {a:ivy.array([[0.],[1.],[2.]]),b:ivy.array([[3.],[4.],[5.]])}
-
 
     This function conforms to the `Array API Standard
     <https://data-apis.org/array-api/latest/>`_. This docstring is an extension of the
@@ -796,25 +790,6 @@ def stack(
 
     With :code: `ivy.Array` input and different `axis` :
 
-    >>> ivy.stack((x,y),axis=1)
-    ivy.array([[ 0.,  6.],
-        [ 1.,  7.],
-        [ 2.,  8.],
-        [ 3.,  9.],
-        [ 4., 10.]])
-
-    With :code: `ivy.native_array` input:
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
-    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
-    >>> ivy.stack((x,y))
-    ivy.array([[ 0.,  1.,  2.,  3.,  4.],
-        [ 6.,  7.,  8.,  9., 10.]])
-
-    With :code: `ivy.native_array` input and different `axis` :
-
-    >>> x = ivy.native_array([0., 1., 2., 3., 4.])
-    >>> y = ivy.native_array([6.,7.,8.,9.,10.])
     >>> ivy.stack((x,y),axis=1)
     ivy.array([[ 0.,  6.],
         [ 1.,  7.],

@@ -1,6 +1,6 @@
 # global
 import abc
-from typing import Optional, Union
+from typing import Optional, Union, Tuple
 
 # local
 import ivy
@@ -60,3 +60,24 @@ class ArrayWithLinearAlgebraExperimental(abc.ABC):
         ivy.array([3, 4, 6, 8])
         """
         return ivy.kron(self._data, b, out=out)
+
+    def eig(
+        self: ivy.Array,
+        /,
+    ) -> Tuple[ivy.Array, ...]:
+        """
+        ivy.Array instance method variant of ivy.eig.
+        This method simply wraps the function, and so the docstring for
+        ivy.eig also applies to this method with minimal changes.
+
+        Examples
+        --------
+         >>> x = ivy.array([[1,2], [3,4]])
+        >>> x.eig()
+        (
+        ivy.array([-0.37228132+0.j,  5.37228132+0.j]),
+        ivy.array([[-0.82456484+0.j, -0.41597356+0.j],
+                   [ 0.56576746+0.j, -0.90937671+0.j]])
+        )
+        """
+        return ivy.eig(self._data)

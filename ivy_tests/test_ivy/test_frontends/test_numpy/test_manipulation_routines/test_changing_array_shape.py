@@ -11,13 +11,14 @@ from ivy_tests.test_ivy.helpers import handle_frontend_test
 def dtypes_x_reshape(draw):
     dtypes, x = draw(
         helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("valid"),
             shape=helpers.get_shape(
                 allow_none=False,
                 min_num_dims=1,
                 max_num_dims=5,
                 min_dim_size=1,
                 max_dim_size=10,
-            )
+            ),
         )
     )
     shape = draw(helpers.reshape_shapes(shape=np.array(x).shape))
@@ -28,10 +29,12 @@ def dtypes_x_reshape(draw):
 @handle_frontend_test(
     fn_tree="numpy.reshape",
     dtypes_x_shape=dtypes_x_reshape(),
+    order=st.sampled_from(["C", "F", "A"]),
 )
 def test_numpy_reshape(
     *,
     dtypes_x_shape,
+    order,
     as_variable,
     with_out,
     num_positional_args,
@@ -52,6 +55,7 @@ def test_numpy_reshape(
         on_device=on_device,
         x=x[0],
         newshape=shape,
+        order=order,
     )
 
 
@@ -91,11 +95,13 @@ def test_numpy_broadcast_to(
 
 @handle_frontend_test(
     fn_tree="numpy.ravel",
-    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    order=st.sampled_from(["C", "F", "A", "K"]),
 )
 def test_numpy_ravel(
     *,
     dtype_and_x,
+    order,
     as_variable,
     num_positional_args,
     native_array,
@@ -114,6 +120,7 @@ def test_numpy_ravel(
         fn_tree=fn_tree,
         on_device=on_device,
         a=x[0],
+        order=order,
     )
 
 

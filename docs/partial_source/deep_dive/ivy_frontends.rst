@@ -143,17 +143,10 @@ In NumPy, :func:`add` is categorised under :mod:`mathematical_functions` with a 
 The function arguments for this function are slightly more complex due to the extra optional arguments.
 Additional handling code is added to recover the behaviour according to the `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_ documentation.
 For example, if :code:`dtype` is specified, the arguments will be cast to the desired type through :func:`ivy.astype`.
+Additionally, :code:`casting` and :code:`order` are handled in the :code:`@handle_numpy_casting` and :code:`@to_ivy_arrays_and_back` decorators respectively.
 The returned result is then obtained through :func:`ivy.add` just like the other examples.
 
-However, the arguments :code:`casting`, :code:`order` and :code:`subok` are completely unhandled here.
-This is for two reasons.
-
-In the case of :code:`casting`, support will be added for this via the inclusion of a decorator at some point in future, and so this is simply being deferred for the time being.
-
-In the case of :code:`order` and :code:`subok`, this is because the aspects which these arguments seek to control are simply not controllable when using Ivy.
-:code:`order` controls the low-level memory layout of the stored array.
-Similarly, :code:`subok` controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
-Again, this is a very framework-specific argument.
+However, the argument :code:`subok` is completely unhandled here because it controls whether or not subclasses of the :class:`numpy.ndarray` should be permitted as inputs to the function.
 All ivy functions by default do enable subclasses of the :class:`ivy.Array` to be passed, and the frontend function will be operating with :class:`ivy.Array` instances rather than :class:`numpy.ndarray` instances, and so we omit this argument.
 Again, it has no bearing on input-output behaviour and so this is not a problem when transpiling between frameworks.
 
@@ -163,6 +156,7 @@ See the section "Unused Arguments" below for more details.
 
     # in ivy/functional/frontends/numpy/mathematical_functions/trigonometric_functions.py
     @from_zero_dim_arrays_to_float
+    @handle_numpy_casting
     @to_ivy_arrays_and_back
     def tan(
         x,
@@ -184,7 +178,7 @@ See the section "Unused Arguments" below for more details.
 
 For the second example, :func:`tan` has a sub-category of :mod:`trigonometric_functions` according to the `numpy mathematical functions`_ directory.
 By referring to the `numpy.tan`_ documentation, we can see it has the same additional arguments as the :func:`add` function.
-In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where` and :code:`dtype`, but we omit support for :code:`casting`, :code:`order` and :code:`subok`.
+In the same manner as :func:`add`, we handle the argument :code:`out`, :code:`where`, :code:`dtype`, :code:`casting`, and :code:`order`but we omit support for :code:`subok`.
 
 **TensorFlow**
 
@@ -200,7 +194,7 @@ There are three arguments according to the `tf.math.add <https://www.tensorflow.
 Just like the previous examples, the implementation wraps :func:`ivy.add`, which itself defers to backend-specific functions depending on which framework is set in Ivy's backend.
 
 The arguments :code:`x` and :code:`y` are both used in the implementation, but the argument :code:`name` is not used.
-Similar to the omitted arguments in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
+Similar to the omitted argument in the NumPy example above, the :code:`name` argument does not change the input-output behaviour of the function.
 Rather, this argument is added purely for the purpose of operation logging and retrieval, and also graph visualization in TensorFlow.
 Ivy does not support the unique naming of individual operations, and so we omit support for this particular argument.
 
@@ -277,8 +271,6 @@ As can be seen from the examples above, there are often cases where we do not ad
 Generally, we can omit support for a particular argument only if: the argument **does not** fundamentally affect the input-output behaviour of the function in a mathematical sense.
 The only two exceptions to this rule are arguments related to either the data type or the device on which the returned array(s) should reside.
 Examples of arguments which can be omitted, on account that they do not change the mathematics of the function are arguments which relate to:
-
-* the layout of the array in memory, such as :code:`order` in `numpy.add <https://numpy.org/doc/1.23/reference/generated/numpy.add.html>`_.
 
 * the algorithm or approximations used under the hood, such as :code:`precision` and :code:`preferred_element_type` in `jax.lax.conv_general_dilated <https://github.com/google/jax/blob/1338864c1fcb661cbe4084919d50fb160a03570e/jax/_src/lax/convolution.py#L57>`_.
 
@@ -437,6 +429,7 @@ Under the hood, this simply calls the frontend :func:`np_frontend.add` function,
 .. code-block:: python
 
     # ivy/functional/frontends/numpy/mathematical_functions/arithmetic_operations.py
+    @handle_numpy_casting
     @to_ivy_arrays_and_back
     def add(
     x1,

@@ -50,7 +50,7 @@ def trim(*, docstring):
 
 
 def check_docstring_examples_run(
-    *, fn, from_container=False, from_array=False, num_sig_fig=3
+    *, fn, from_container=False, from_array=False, num_sig_fig=2
 ):
     """Performs docstring tests for a given function.
 

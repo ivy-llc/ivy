@@ -50,6 +50,27 @@ def statistical_dtype_values(draw, *, function):
                 | helpers.floats(min_value=0, max_value=max_correction - 1)
             )
         return dtype, values, axis, correction
+
+    if function == "quantile":
+        q = draw(
+            helpers.array_values(
+                dtype=helpers.get_dtypes("float"),
+                shape=helpers.get_shape(min_dim_size=1, max_num_dims=1, min_num_dims=1),
+                min_value=0.0,
+                max_value=1.0,
+                exclude_max=False,
+                exclude_min=False,
+            )
+        )
+
+        interpolation_names = ["linear", "lower", "higher", "midpoint", "nearest"]
+        interpolation = draw(
+            helpers.lists(
+                arg=st.sampled_from(interpolation_names), min_size=1, max_size=1
+            )
+        )
+        return dtype, values, axis, interpolation, q
+
     return dtype, values, axis
 
 
@@ -97,7 +118,7 @@ def test_median(
     fn_tree="functional.experimental.nanmean",
     dtype_x_axis=statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float"),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_nanmean(
     *,
@@ -131,7 +152,7 @@ def test_nanmean(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -166,7 +187,7 @@ def test_unravel_index(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     backend_fw,
     fn_name,
@@ -181,10 +202,55 @@ def test_unravel_index(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,
         indices=np.asarray(x[0], dtype=input_dtype[0]),
         shape=shape,
+    )
+
+
+# quantile
+
+
+@handle_test(
+    fn_tree="functional.experimental.quantile",
+    dtype_and_x=statistical_dtype_values(function="quantile"),
+    keep_dims=st.booleans(),
+    num_positional_args=helpers.num_positional_args(fn_name="quantile"),
+)
+def test_quantile(
+    *,
+    dtype_and_x,
+    keep_dims,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    with_out,
+    instance_method,
+    backend_fw,
+    fn_name,
+    on_device,
+    ground_truth_backend,
+):
+    input_dtype, x, axis, interpolation, q = dtype_and_x
+    helpers.test_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        ground_truth_backend=ground_truth_backend,
+        fw=backend_fw,
+        fn_name=fn_name,
+        on_device=on_device,
+        a=x[0],
+        q=q,
+        axis=axis,
+        interpolation=interpolation[0],
+        keepdims=keep_dims,
     )

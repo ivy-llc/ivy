@@ -23,9 +23,9 @@ from .data_type import as_native_dtype
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
-    /,
     *,
     dtype: Optional[np.dtype] = None,
     device: str,
@@ -135,7 +135,7 @@ def full(
 def full_like(
     x: np.ndarray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: np.dtype,
     device: str,

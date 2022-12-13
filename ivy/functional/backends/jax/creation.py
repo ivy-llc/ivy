@@ -26,9 +26,9 @@ from ivy.functional.ivy.creation import (
 
 def arange(
     start: float,
+    /,
     stop: Optional[float] = None,
     step: float = 1,
-    /,
     *,
     dtype: Optional[jnp.dtype] = None,
     device: jaxlib.xla_extension.Device,
@@ -145,7 +145,7 @@ def full(
 def full_like(
     x: JaxArray,
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: jnp.dtype,
     device: jaxlib.xla_extension.Device,

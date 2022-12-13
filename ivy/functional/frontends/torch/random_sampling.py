@@ -1,6 +1,12 @@
 import ivy
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
-from torch import Generator
+
+try:
+    from torch import Generator
+except ImportError:
+    from types import SimpleNamespace
+
+    Generator = SimpleNamespace
 
 
 def seed() -> int:
