@@ -47,6 +47,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the maximum values across the
             specified axis.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = ivy.Container.static_argmax(x, axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[0],
+                          [2]]),
+            b: ivy.array([[2],
+                          [0]])
+        }
         """
         return ContainerBase.cont_multi_map_in_static_method(
             "argmax",
@@ -94,6 +106,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the maximum values across the
             specified axis.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = x.argmax(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[0],
+                          [2]]),
+            b: ivy.array([[2],
+                          [0]])
+        }
         """
         return self.static_argmax(
             self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
@@ -137,6 +161,19 @@ class ContainerWithSearching(ContainerBase):
         ret
             a container containing the indices of the minimum values across the
             specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = ivy.Container.static_argmin(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[2],
+                          [1]]),
+            b: ivy.array([[0],
+                          [0]])
+        }
         """
         return ContainerBase.cont_multi_map_in_static_method(
             "argmin",
@@ -185,6 +222,28 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the minimum values across the
             specified axis.
 
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.argmin()
+        >>> print(y)
+        {
+            a:ivy.array(1),
+            b:ivy.array(0)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = x.argmin(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[2],
+                          [1]]),
+            b: ivy.array([[0],
+                          [0]])
+        }
         """
         return self.static_argmin(
             self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
