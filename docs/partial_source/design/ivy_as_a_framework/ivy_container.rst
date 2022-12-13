@@ -569,7 +569,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             self._count = 0
 
         def __next__(self):
-            cnt = self._cnt.copy()
+            cnt = self._cnt.cont_copy()
 
             # image filenames
             img_fnames = ivy.Container.cont_list_stack(
