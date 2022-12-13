@@ -71,9 +71,8 @@ def argmax(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
+    Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-0., 1., -1.])
@@ -82,47 +81,30 @@ def argmax(
     ivy.array([1])
 
     >>> x = ivy.array([-0., 1., -1.])
-    >>> ivy.argmax(x,out=x)
+    >>> ivy.argmax(x, out=x)
     >>> print(x)
     ivy.array([1])
 
-    >>> x=ivy.array([[1., -0., -1.], [-2., 3., 2.]])
-    >>> y = ivy.argmax(x, axis= 1)
+    >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
+    >>> y = ivy.argmax(x, axis=1)
     >>> print(y)
     ivy.array([0, 1])
 
-    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True)
+    >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+    >>> y = ivy.argmax(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[0], [2]])
 
-    >>> x=ivy.array([[4., 0., -1.], [2., -3., 6]])
-    >>> y = ivy.argmax(x, axis= 1, output_dtype= ivy.int64)
+    >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+    >>> y = ivy.argmax(x, axis=1, output_dtype=ivy.int64)
     >>> print(y, y.dtype)
     ivy.array([0, 2]) int64
 
-    >>> x=ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
-    >>> z= ivy.zeros((1,3), dtype=ivy.int64)
-    >>> y = ivy.argmax(x, axis= 1, keepdims= True, out= z)
+    >>> x = ivy.array([[4., 0., -1.],[2., -3., 6], [2., -3., 6]])
+    >>> z = ivy.zeros((1,3), dtype=ivy.int64)
+    >>> y = ivy.argmax(x, axis=1, keepdims=True, out=z)
     >>> print(z)
     ivy.array([[0],[2],[2]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0., 1., -1.])
-    >>> y = ivy.argmax(x)
-    >>> print(y)
-    ivy.array([1])
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., 2.])
-    >>> y = x.argmax()
-    >>> print(y)
-    ivy.array(2)
 
     """
     return current_backend(x).argmax(
@@ -183,9 +165,8 @@ def argmin(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
+    Examples
     --------
-
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([0., 1., -1.])
@@ -194,58 +175,35 @@ def argmin(
     ivy.array(2)
 
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
-    >>> y = ivy.argmin(x, axis= 1)
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis=1)
     >>> print(y)
     ivy.array([2, 0])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.]])
-    >>> y = ivy.argmin(x, axis= 1, keepdims= True)
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.]])
+    >>> y = ivy.argmin(x, axis=1, keepdims=True)
     >>> print(y)
     ivy.array([[2],
               [0]])
 
-    >>> x=ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+    >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
     >>> y= ivy.zeros((1,3), dtype=ivy.int64)
-    >>> ivy.argmin(x, axis= 1, keepdims= True, out= y)
+    >>> ivy.argmin(x, axis=1, keepdims=True, out=y)
     >>> print(y)
     ivy.array([[2],
                [0],
                [1]])
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., 1., -1.])
-    >>> y = ivy.argmin(x)
-    >>> print(y)
-    ivy.array(2)
-
 
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
     >>> y = ivy.argmin(x)
     >>> print(y)
-    {a:ivy.array(1),b:ivy.array(0)}
+    {
+        a:ivy.array(1),
+        b:ivy.array(0)
+    }
 
-
-    Instance Method Examples
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([0., 1., -1.])
-    >>> y = x.argmin()
-    >>> print(y)
-    ivy.array(2)
-
-    Using :class:`ivy.Container` instance method:
-
-    >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
-    >>> y = x.argmin()
-    >>> print(y)
-    {a:ivy.array(1),b:ivy.array(0)}
     """
     return current_backend(x).argmin(
         x, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
