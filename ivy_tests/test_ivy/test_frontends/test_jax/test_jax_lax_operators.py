@@ -1722,6 +1722,8 @@ def test_jax_lax_expm1(
     fn_tree="jax.lax.log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_lax_log1p(
