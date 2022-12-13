@@ -3352,7 +3352,7 @@ class ContainerBase(dict, abc.ABC):
             return self.cont_map_sub_conts(_fn)
         return self._cont_slice_keys(key_slice)
 
-    def with_print_limit(self, print_limit, inplace=False):
+    def cont_with_print_limit(self, print_limit, inplace=False):
         """Summary.
 
         Parameters
@@ -3383,9 +3383,9 @@ class ContainerBase(dict, abc.ABC):
             Default value = False)
 
         """
-        return self.with_print_limit(None, inplace)
+        return self.cont_with_print_limit(None, inplace)
 
-    def with_key_length_limit(self, key_length_limit, inplace=False):
+    def cont_with_key_length_limit(self, key_length_limit, inplace=False):
         """Summary.
 
         Parameters
@@ -3415,9 +3415,9 @@ class ContainerBase(dict, abc.ABC):
             Default value = False)
 
         """
-        return self.with_key_length_limit(None, inplace)
+        return self.cont_with_key_length_limit(None, inplace)
 
-    def with_print_indent(self, print_indent, inplace=False):
+    def cont_with_print_indent(self, print_indent, inplace=False):
         """Summary.
 
         Parameters
@@ -3438,7 +3438,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_print_line_spacing(self, print_line_spacing, inplace=False):
+    def cont_with_print_line_spacing(self, print_line_spacing, inplace=False):
         """Summary.
 
         Parameters
@@ -3459,7 +3459,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_default_key_color(self, default_key_color, inplace=False):
+    def cont_with_default_key_color(self, default_key_color, inplace=False):
         """Summary.
 
         Parameters
@@ -3533,10 +3533,10 @@ class ContainerBase(dict, abc.ABC):
         this_cont[sub_cont_kc] = ivy.Container({"SUB_CONT": None})
 
         # get the formatted reprs
-        this_repr = this_cont.with_default_key_color("green").__repr__()
-        this_repr_red = this_cont.with_default_key_color("red").__repr__()
+        this_repr = this_cont.cont_with_default_key_color("green").__repr__()
+        this_repr_red = this_cont.cont_with_default_key_color("red").__repr__()
         this_repr_stripped = ansi_escape.sub("", this_repr)
-        sub_repr = sub_cont.with_default_key_color("red").__repr__()
+        sub_repr = sub_cont.cont_with_default_key_color("red").__repr__()
 
         # remove the outer brackets from the sub repr
         sub_repr = "\n" + "\n".join(sub_repr.split("\n")[1:-1]) + "\n"
