@@ -573,13 +573,13 @@ This is useful if we need to recursively unroll the entire batch in the time dim
 
             # image filenames
             img_fnames = ivy.Container.cont_list_stack(
-                [cnt.imgs.map(
+                [cnt.imgs.cont_map(
                     lambda fname, _: fname.format(self._count + i)
                 ) for i in range(self._batch_size)], 0
             )
 
             # load from disk
-            loaded_imgs = img_fnames.map(
+            loaded_imgs = img_fnames.cont_map(
                 lambda fnames, _: np.concatenate(
                     [np.expand_dims(cv2.imread(fname, -1), 0)
                      for fname in fnames], 0
