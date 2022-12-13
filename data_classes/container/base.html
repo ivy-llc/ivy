@@ -500,6 +500,25 @@ container_rightmost.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_handle_inplace">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_handle_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_handle_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_handle_inplace" title="Permalink to this definition"></a></dt>
+<dd><p>Returns an inplace update of out, provided it is not None, by updating with
+the values in ret.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ret</strong> – The container with the return values</p></li>
+<li><p><strong>out</strong> – The optional out container, which is primed for being overwritten if it
+exists</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>The out container, but filled with the values from the ret container</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_inplace_update">
 <span class="sig-name descname"><span class="pre">cont_inplace_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_in</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">config</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_inplace_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_inplace_update" title="Permalink to this definition"></a></dt>
 <dd><p>Update the contents of this container inplace, using either a new dict or
@@ -835,25 +854,6 @@ from flat list.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Size of h5 file contents, and batch size.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.handle_inplace">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.handle_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.handle_inplace" title="Permalink to this definition"></a></dt>
-<dd><p>Returns an inplace update of out, provided it is not None, by updating with
-the values in ret.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ret</strong> – The container with the return values</p></li>
-<li><p><strong>out</strong> – The optional out container, which is primed for being overwritten if it
-exists</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>The out container, but filled with the values from the ret container</em></p>
 </dd>
 </dl>
 </dd></dl>
