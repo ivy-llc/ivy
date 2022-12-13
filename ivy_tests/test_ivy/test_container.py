@@ -1936,7 +1936,7 @@ def test_container_map(inplace, device):
 
 
 @pytest.mark.parametrize("inplace", [True, False])
-def test_container_map_conts(inplace, device):
+def test_container_map_sub_conts(inplace, device):
     # without key_chains specification
     container_orig = Container(
         {
@@ -1954,7 +1954,9 @@ def test_container_map_conts(inplace, device):
 
     # with self
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c), inplace=inplace)
+    container_mapped = container.cont_map_sub_conts(
+        lambda c, _: _add_e_attr(c), inplace=inplace
+    )
     if inplace:
         container_mapped = container
     assert "e" in container_mapped
@@ -1964,7 +1966,7 @@ def test_container_map_conts(inplace, device):
 
     # without self
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map_conts(
+    container_mapped = container.cont_map_sub_conts(
         lambda c, _: _add_e_attr(c), include_self=False, inplace=inplace
     )
     if inplace:
