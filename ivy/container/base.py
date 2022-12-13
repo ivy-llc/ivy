@@ -2218,7 +2218,7 @@ class ContainerBase(dict, abc.ABC):
                 key_chain_found = kc
             return sub_cont
 
-        self.map_conts(_check_sub_cont)
+        self.cont_map_sub_conts(_check_sub_cont)
 
         return key_chain_found
 
@@ -2314,7 +2314,7 @@ class ContainerBase(dict, abc.ABC):
                 key_chain_found = kc
             return sub_cont
 
-        self.map_conts(_check_sub_cont)
+        self.cont_map_sub_conts(_check_sub_cont)
 
         return key_chain_found
 
@@ -3104,7 +3104,7 @@ class ContainerBase(dict, abc.ABC):
             return self
         return ivy.Container(return_dict, **self._config)
 
-    def map_conts(
+    def cont_map_sub_conts(
         self,
         func,
         key_chains=None,
@@ -3146,7 +3146,7 @@ class ContainerBase(dict, abc.ABC):
         for key, value in self.items():
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value, ivy.Container):
-                ret = value.map_conts(
+                ret = value.cont_map_sub_conts(
                     func, key_chains, to_apply, prune_unapplied, inplace, this_key_chain
                 )
                 if prune_unapplied and not ret:
@@ -3275,7 +3275,7 @@ class ContainerBase(dict, abc.ABC):
                 cont.clear()
             return ivy.Container()
 
-        ret = self.map_conts(_maybe_cutoff, inplace=inplace)
+        ret = self.cont_map_sub_conts(_maybe_cutoff, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3300,7 +3300,7 @@ class ContainerBase(dict, abc.ABC):
                 cont.clear()
             return ivy.Container()
 
-        ret = self.map_conts(_maybe_cutoff, inplace=inplace)
+        ret = self.cont_map_sub_conts(_maybe_cutoff, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3349,7 +3349,7 @@ class ContainerBase(dict, abc.ABC):
                     return cont._slice_keys(key_slice[depth])
                 return cont
 
-            return self.map_conts(_fn)
+            return self.cont_map_sub_conts(_fn)
         return self._slice_keys(key_slice)
 
     def with_print_limit(self, print_limit, inplace=False):
@@ -3368,7 +3368,7 @@ class ContainerBase(dict, abc.ABC):
             cont._print_limit = print_limit
             return cont
 
-        ret = self.map_conts(_update_print_limit, inplace=inplace)
+        ret = self.cont_map_sub_conts(_update_print_limit, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3401,7 +3401,7 @@ class ContainerBase(dict, abc.ABC):
             cont._key_length_limit = key_length_limit
             return cont
 
-        ret = self.map_conts(_update_key_length_limit, inplace=inplace)
+        ret = self.cont_map_sub_conts(_update_key_length_limit, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3433,7 +3433,7 @@ class ContainerBase(dict, abc.ABC):
             cont._print_indent = print_indent
             return cont
 
-        ret = self.map_conts(_update_print_indent, inplace=inplace)
+        ret = self.cont_map_sub_conts(_update_print_indent, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3454,7 +3454,7 @@ class ContainerBase(dict, abc.ABC):
             cont._print_line_spacing = print_line_spacing
             return cont
 
-        ret = self.map_conts(_update_print_line_spacing, inplace=inplace)
+        ret = self.cont_map_sub_conts(_update_print_line_spacing, inplace=inplace)
         if inplace:
             return
         return ret
@@ -3475,7 +3475,7 @@ class ContainerBase(dict, abc.ABC):
             cont._default_key_color = default_key_color
             return cont
 
-        ret = self.map_conts(_update_default_key_color, inplace=inplace)
+        ret = self.cont_map_sub_conts(_update_default_key_color, inplace=inplace)
         if inplace:
             return
         return ret
