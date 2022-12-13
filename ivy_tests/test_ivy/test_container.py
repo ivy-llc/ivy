@@ -67,7 +67,9 @@ def test_container_list_stack(device):
             },
         }
     )
-    container_list_stacked = ivy.Container.list_stack([container_0, container_1], 0)
+    container_list_stacked = ivy.Container.cont_list_stack(
+        [container_0, container_1], 0
+    )
     assert np.allclose(ivy.to_numpy(container_list_stacked["a"][0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_stacked.a[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_stacked["b"]["c"][0]), np.array([2]))
