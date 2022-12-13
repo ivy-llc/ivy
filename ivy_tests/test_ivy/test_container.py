@@ -112,7 +112,7 @@ def test_container_unify(device):
         )
 
     # test
-    container_unified = ivy.Container.unify(conts, dev0, "concat", 0)
+    container_unified = ivy.Container.cont_unify(conts, dev0, "concat", 0)
     assert np.allclose(ivy.to_numpy(container_unified.a[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_unified.b.c[0]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container_unified.b.d[0]), np.array([3]))
