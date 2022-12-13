@@ -17,7 +17,7 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_all",
             x,
             key_chains=key_chains,
@@ -99,7 +99,7 @@ class ContainerWithSet(ContainerBase):
             b:[values=ivy.array([1,2,3,4]),counts=ivy.array([3,1,2,1])]
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_counts",
             x,
             key_chains=key_chains,
@@ -183,7 +183,7 @@ class ContainerWithSet(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_values",
             x,
             key_chains=key_chains,
@@ -222,7 +222,7 @@ class ContainerWithSet(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unique_inverse",
             x,
             key_chains=key_chains,
