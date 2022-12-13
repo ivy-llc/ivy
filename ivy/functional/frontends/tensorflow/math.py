@@ -366,3 +366,9 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def equal(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.equal(x, y)
