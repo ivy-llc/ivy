@@ -130,3 +130,27 @@ def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
     )
     temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
     return temp_std, temp_mean
+
+
+@to_ivy_arrays_and_back
+def unique(input, sorted=True, return_inverse=False, return_counts=False, dim=None):
+    if dim is None:
+        input_subset = input
+        values, indices, inverse_indices, counts = ivy.unique_all(input_subset)
+
+        if sorted:
+            values = ivy.sort(values)
+
+        if return_inverse is True and return_counts is True:
+            return values, inverse_indices, counts
+
+        elif return_inverse is False and return_counts is True:
+            return values, counts
+
+        elif return_counts is False and return_inverse is True:
+            return values, inverse_indices
+
+        return values
+
+    else:
+        raise NotImplementedError()

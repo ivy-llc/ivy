@@ -678,3 +678,71 @@ def test_torch_std_mean(
         unbiased=bool(correction),
         keepdim=keepdims,
     )
+
+
+@handle_frontend_test(
+    fn_tree="torch.unique",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_num_dims=1,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="shape",
+        ),
+    ).filter(lambda x: "bfloat16" not in x[0] and "float16" not in x[0]),
+    dim=helpers.get_axis(
+        allow_none=True,
+        unique=True,
+        shape=st.shared(
+            helpers.get_shape(
+                min_num_dims=1,
+                max_num_dims=5,
+                min_dim_size=1,
+                max_dim_size=5,
+            ),
+            key="shape",
+        ),
+        min_size=1,
+        max_size=1,
+        force_int=True,
+    ),
+    sorted=st.booleans(),
+    return_inverse=st.booleans(),
+    return_counts=st.booleans(),
+)
+def test_torch_unique(
+    *,
+    dtype_and_values,
+    dim,
+    sorted,
+    return_inverse,
+    return_counts,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        sorted=sorted,
+        return_inverse=return_inverse,
+        return_counts=return_counts,
+        dim=dim,
+    )
