@@ -190,6 +190,14 @@ class ndarray:
             out=out,
         )
 
+    def diagonal(self, *, offset=0, axis1=0, axis2=1):
+        return np_frontend.diagonal(
+            self._ivyArray,
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
+        )
+
     def sort(self, *, axis=-1, kind=None, order=None):
         return np_frontend.sort(self._ivy_array, axis=axis, kind=kind, order=order)
 

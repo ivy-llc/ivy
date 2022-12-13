@@ -1329,3 +1329,39 @@ def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterabl
                 duplicates.append(val)
                 duplicate_index_chains[len(duplicates) - 1] = [index_chain]
     return list(duplicate_index_chains.values())
+
+
+def prune_empty(nest):
+    """Prune empty nests from a nest.
+
+    Parameters
+    ----------
+    nest
+        nest to prune.
+
+    Returns
+    -------
+        pruned nest with all empty nests removed
+    """
+    valid = False
+    if isinstance(nest, dict):
+        keys = [k for k in nest]
+        for k in keys:
+            nest[k] = prune_empty(nest[k])
+            if nest[k] is not None:
+                valid = True
+        for k in keys:
+            if nest[k] is None:
+                del nest[k]
+    elif isinstance(nest, (list, tuple)):
+        nest = list(nest)
+        for i in range(len(nest)):
+            nest[i] = prune_empty(nest[i])
+            if nest[i] is not None:
+                valid = True
+        for i in range(len(nest) - 1, -1, -1):
+            if nest[i] is None:
+                del nest[i]
+    if not valid and not (ivy.is_array(nest) or isinstance(nest, (int, float, str))):
+        return None
+    return nest
