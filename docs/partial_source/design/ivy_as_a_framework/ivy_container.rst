@@ -457,7 +457,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
-There are also methods: :code:`with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`with_key_length_limit` for setting the maximum key length before string clipping, :code:`with_print_indent` for controlling the nested indent, and many more.
+There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
 Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
 
 Use Cases
