@@ -83,7 +83,7 @@ class ContainerBase(dict, abc.ABC):
             Default is ``None``.
         container_combine_method
             The method to use for combining containers arriving from different queues.
-            Default is ivy.Container.list_join
+            Default is ivy.Container.cont_list_join
         queue_timeout
             The timeout when waiting for containers to arrive from the queues.
             Default is global.
@@ -124,7 +124,7 @@ class ContainerBase(dict, abc.ABC):
         if ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method = {
-                    "list_join": self.list_join,
+                    "list_join": self.cont_list_join,
                     "concat": lambda conts: self.concat(conts, 0),
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
@@ -256,7 +256,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     @staticmethod
-    def list_join(containers, config=None):
+    def cont_list_join(containers, config=None):
         """Join containers of lists together along the specified dimension.
 
         Parameters
@@ -281,7 +281,7 @@ class ContainerBase(dict, abc.ABC):
                 new_list = list()
                 for container in containers:
                     new_list.append(container[key])
-                return_dict[key] = ivy.Container.list_join(new_list, config)
+                return_dict[key] = ivy.Container.cont_list_join(new_list, config)
             return ivy.Container(return_dict, **config)
         else:
             return [item for sublist in containers for item in sublist]
