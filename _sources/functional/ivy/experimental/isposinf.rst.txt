@@ -5,9 +5,9 @@ isposinf
 
 .. autofunction:: ivy.array.array_methods.isposinf
 
-.. autofunction:: ivy.container.container_methods.isposinf
-
 .. autofunction:: ivy.container.container_methods.static_isposinf
+
+.. autofunction:: ivy.container.container_methods.isposinf
 |
 | **Supported Frameworks:**
 

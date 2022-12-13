@@ -5,9 +5,9 @@ cos
 
 .. autofunction:: ivy.array.array_methods.cos
 
-.. autofunction:: ivy.container.container_methods.cos
-
 .. autofunction:: ivy.container.container_methods.static_cos
+
+.. autofunction:: ivy.container.container_methods.cos
 |
 | **Supported Frameworks:**
 
