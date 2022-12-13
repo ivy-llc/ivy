@@ -592,7 +592,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 1
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(1, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(1, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -600,7 +600,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 2
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(2, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(2, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -608,7 +608,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 3
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(3, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(3, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -616,7 +616,7 @@ def test_container_cutoff_at_depth(inplace, device):
 
     # depth 4
     cont = Container({"a": a_val, "b": {"c": {"d": {"e": bcde_val}}}})
-    cont_cutoff = cont.cutoff_at_depth(4, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_depth(4, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
@@ -632,7 +632,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 0
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(0, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(0, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert np.allclose(ivy.to_numpy(cont_cutoff.a.c.d), ivy.to_numpy(d_val))
@@ -640,7 +640,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 1
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(1, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(1, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a.c
@@ -648,7 +648,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 2
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(2, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(2, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a
@@ -656,7 +656,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 3
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(3, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(3, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff.a
@@ -664,7 +664,7 @@ def test_container_cutoff_at_height(inplace, device):
 
     # height 4
     cont = Container({"a": {"c": {"d": d_val}}, "b": {"c": {"d": {"e": e_val}}}})
-    cont_cutoff = cont.cutoff_at_height(4, inplace=inplace)
+    cont_cutoff = cont.cont_cutoff_at_height(4, inplace=inplace)
     if inplace:
         cont_cutoff = cont
     assert not cont_cutoff
@@ -3078,10 +3078,10 @@ def test_container_try_kc(device):
             },
         }
     )
-    assert cont.try_kc("a") == cont.a
-    assert cont.try_kc("b/c") == cont.b.c
-    assert cont.try_kc("b/d") == cont.b.d
-    assert cont.try_kc("b/e") is cont
+    assert cont.cont_try_kc("a") == cont.a
+    assert cont.cont_try_kc("b/c") == cont.b.c
+    assert cont.cont_try_kc("b/d") == cont.b.d
+    assert cont.cont_try_kc("b/e") is cont
 
 
 def test_container_with_print_limit(device):
