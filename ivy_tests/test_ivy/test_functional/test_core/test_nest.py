@@ -416,14 +416,14 @@ def test_insert_into_nest_at_indices(nest, indices, values):
 # nested_map
 @pytest.mark.parametrize("x", [{"a": [[0, 1], [2, 3]], "b": {"c": [[0], [1]]}}])
 @pytest.mark.parametrize("fn", [lambda x: x**2])
-@pytest.mark.parametrize("inplace", [True, False])
-def test_nested_map(x, fn, inplace):
+@pytest.mark.parametrize("shallow", [True, False])
+def test_nested_map(x, fn, shallow):
     x_copy = copy.deepcopy(x)
-    result = ivy.nested_map(x, fn, shallow=inplace)
+    result = ivy.nested_map(x, fn, shallow=shallow)
     map_nested_dicts(x_copy, fn)
 
     assert result == x_copy
-    if inplace:
+    if shallow:
         assert x == x_copy
     else:
         assert x != x_copy
