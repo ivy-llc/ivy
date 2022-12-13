@@ -2597,13 +2597,13 @@ def test_container_create_if_absent(device):
 
     # depth 1
     container = Container(dict_in)
-    container.create_if_absent("a", None, True)
+    container.cont_create_if_absent("a", None, True)
     assert np.allclose(ivy.to_numpy(container.a), np.array([[[1.0], [2.0], [3.0]]]))
-    container.create_if_absent("e", ivy.array([[[4.0], [8.0], [12.0]]]), True)
+    container.cont_create_if_absent("e", ivy.array([[[4.0], [8.0], [12.0]]]), True)
     assert np.allclose(ivy.to_numpy(container.e), np.array([[[4.0], [8.0], [12.0]]]))
 
     # depth 2
-    container.create_if_absent("f/g", np.array([[[5.0], [10.0], [15.0]]]), True)
+    container.cont_create_if_absent("f/g", np.array([[[5.0], [10.0], [15.0]]]), True)
     assert np.allclose(ivy.to_numpy(container.f.g), np.array([[[5.0], [10.0], [15.0]]]))
 
 
@@ -2617,18 +2617,18 @@ def test_container_if_exists(device):
     }
     container = Container(dict_in)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("a")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("a")), np.array([[[1.0], [2.0], [3.0]]])
     )
     assert "c" not in container
-    assert container.if_exists("c") is None
+    assert container.cont_if_exists("c") is None
     container["c"] = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("c")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("c")), np.array([[[1.0], [2.0], [3.0]]])
     )
-    assert container.if_exists("d") is None
+    assert container.cont_if_exists("d") is None
     container.d = ivy.array([[[1.0], [2.0], [3.0]]], device=device)
     assert np.allclose(
-        ivy.to_numpy(container.if_exists("d")), np.array([[[1.0], [2.0], [3.0]]])
+        ivy.to_numpy(container.cont_if_exists("d")), np.array([[[1.0], [2.0], [3.0]]])
     )
 
 
