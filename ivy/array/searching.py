@@ -47,6 +47,30 @@ class ArrayWithSearching(abc.ABC):
             containing the indices of the maximum values. The returned array must have
             the default array index data type.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., 2.])
+        >>> y = x.argmax()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[1., -0., -1.], [-2., 3., 2.]])
+        >>> y = x.argmax(axis=1)
+        >>> print(y)
+        ivy.array([0, 1])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, keepdims=True)
+        >>> print(y)
+        ivy.array([[0], [2]])
+
+        >>> x = ivy.array([[4., 0., -1.], [2., -3., 6]])
+        >>> y = x.argmax(axis=1, output_dtype=ivy.int64)
+        >>> print(y, y.dtype)
+        ivy.array([0, 2]) int64
+
         """
         return ivy.argmax(
             self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
@@ -92,6 +116,22 @@ class ArrayWithSearching(abc.ABC):
             Array containing the indices of the minimum values across the specified
             axis.
 
+        Examples
+        --------
+        Using :class:`ivy.Array` instance method:
+
+        >>> x = ivy.array([0., 1., -1.])
+        >>> y = x.argmin()
+        >>> print(y)
+        ivy.array(2)
+
+        >>> x = ivy.array([[0., 1., -1.],[-2., 1., 2.],[1., -2., 0.]])
+        >>> y= ivy.zeros((1,3), dtype=ivy.int64)
+        >>> x.argmin(axis=1, keepdims=True, out=y)
+        >>> print(y)
+        ivy.array([[2],
+                   [0],
+                   [1]])
         """
         return ivy.argmin(
             self._data, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
