@@ -201,7 +201,7 @@ class Module(abc.ABC):
         else:
             ret = self.v
         if flatten_key_chains:
-            return ret.flatten_key_chains()
+            return ret.cont_flatten_key_chains()
         return ret
 
     def _top_mod_fn(self, /, *, depth=None):
@@ -646,7 +646,7 @@ class Module(abc.ABC):
                 }
             )
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         if show_v:
             return self.v
@@ -693,7 +693,7 @@ class Module(abc.ABC):
             else:
                 ret = self.v
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         else:
             print(
@@ -761,8 +761,8 @@ class Module(abc.ABC):
             upper_sub_mods = self.top_mod(upper_depth).sub_mods(depth=mid_depth)
             lower_sub_mods = self.sub_mods(depth=lower_depth)
             if flatten_key_chains:
-                upper_sub_mods = upper_sub_mods.flatten_key_chains()
-                lower_sub_mods = lower_sub_mods.flatten_key_chains()
+                upper_sub_mods = upper_sub_mods.cont_flatten_key_chains()
+                lower_sub_mods = lower_sub_mods.cont_flatten_key_chains()
             upper_sub_mods.show_sub_container(lower_sub_mods)
         else:
             print(
