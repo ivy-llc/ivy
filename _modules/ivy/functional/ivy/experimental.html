@@ -3671,6 +3671,44 @@
         <span class="n">ary</span><span class="p">,</span> <span class="n">indices_or_sections</span><span class="o">=</span><span class="n">indices_or_sections</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+
+
+<div class="viewcode-block" id="is_native_dtype"><a class="viewcode-back" href="../../../../functional/ivy/experimental/is_native_dtype.html#ivy.functional.ivy.experimental.is_native_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the input dtype is a Native dtype.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        Determine whether the input data type is a native data type object.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Boolean, whether or not dtype_in is a native data type.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.is_native_dtype(np.int32)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.is_native_array(ivy.float64)</span>
+<span class="sd">    False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 
 
