@@ -4418,20 +4418,20 @@ def test_torch_special_or(
     )
 
 
-# cosh
+# acosh
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
-    method_name="cosh",
+    method_name="acosh",
     dtype_and_x=helpers.dtype_and_values(
+        min_value=1.0,
         available_dtypes=helpers.get_dtypes("float"),
-        allow_inf=False,
     ),
 )
-def test_torch_instance_cosh(
-    dtype_and_x,
+def test_torch_instance_acosh(
     init_num_positional_args: pf.NumPositionalArgFn,
     method_num_positional_args: pf.NumPositionalArgMethod,
+    dtype_and_x,
     as_variable: pf.AsVariableFlags,
     native_array: pf.NativeArrayFlags,
     frontend_method_data,
@@ -4446,7 +4446,7 @@ def test_torch_instance_cosh(
         init_all_as_kwargs_np={
             "data": x[0],
         },
-        method_input_dtypes=input_dtype,
+        method_input_dtypes=[],
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,

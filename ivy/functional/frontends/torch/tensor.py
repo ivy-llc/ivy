@@ -405,8 +405,9 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
     def acosh(self):
-        return torch_frontend.acosh(self.data)
+        return torch_frontend.acosh(self._ivy_array)
 
     # Special Methods #
     # -------------------#
