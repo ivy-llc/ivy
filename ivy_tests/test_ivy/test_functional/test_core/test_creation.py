@@ -22,7 +22,6 @@ def test_native_array(
     as_variable,
     num_positional_args,
     native_array,
-    with_out,
     instance_method,
     backend_fw,
     fn_name,
@@ -33,7 +32,7 @@ def test_native_array(
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
-        with_out=with_out,
+        with_out=False,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         container_flags=[False],

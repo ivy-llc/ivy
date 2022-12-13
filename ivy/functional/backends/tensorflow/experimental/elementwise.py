@@ -291,7 +291,7 @@ def nextafter(
 @with_unsupported_dtypes(
     {"2.9.1 and below": ("uint8", "uint16", "uint32", "uint64")}, backend_version
 )
-def diff_(
+def diff(
     x: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
     /,
     *,
