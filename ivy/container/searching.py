@@ -48,7 +48,7 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmax",
             x,
             axis=axis,
@@ -138,7 +138,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the minimum values across the
             specified axis.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmin",
             x,
             axis=axis,
@@ -228,7 +228,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
@@ -306,7 +306,7 @@ class ContainerWithSearching(ContainerBase):
             where condition is False.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "where", condition, x1, x2, out=out
         )
 
@@ -384,7 +384,7 @@ class ContainerWithSearching(ContainerBase):
         ret
             Indices for where the boolean array is True.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argwhere",
             x,
             key_chains=key_chains,
