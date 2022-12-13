@@ -2275,7 +2275,7 @@ def test_container_reshape_like(device):
     new_shapes = Container({"a": (1,), "b": {"c": (1, 2, 1), "d": (3, 1, 1)}})
 
     # without leading shape
-    container_reshaped = container.reshape_like(new_shapes)
+    container_reshaped = container.cont_reshape_like(new_shapes)
     assert list(container_reshaped["a"].shape) == [1]
     assert list(container_reshaped.a.shape) == [1]
     assert list(container_reshaped["b"]["c"].shape) == [1, 2, 1]
@@ -2302,7 +2302,7 @@ def test_container_reshape_like(device):
             },
         }
     )
-    container_reshaped = container.reshape_like(new_shapes, leading_shape=[3])
+    container_reshaped = container.cont_reshape_like(new_shapes, leading_shape=[3])
     assert list(container_reshaped["a"].shape) == [3, 1]
     assert list(container_reshaped.a.shape) == [3, 1]
     assert list(container_reshaped["b"]["c"].shape) == [3, 1, 2, 1]
