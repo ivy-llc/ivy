@@ -357,3 +357,8 @@ def asinh(x):
 @to_ivy_arrays_and_back
 def atanh(x):
     return ivy.atanh(x)
+
+
+@to_ivy_arrays_and_back
+def select(pred, on_true, on_false):
+    return ivy.where(pred, on_true, on_false)

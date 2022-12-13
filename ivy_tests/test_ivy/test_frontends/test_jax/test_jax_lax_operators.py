@@ -2232,3 +2232,52 @@ def test_jax_lax_atanh(
         on_device=on_device,
         x=x[0],
     )
+
+
+# select
+@st.composite
+def _dtype_pred_ontrue_on_false(draw):
+    shape = draw(helpers.get_shape(min_num_dims=1, min_dim_size=1))
+    pred = draw(helpers.array_values(dtype="bool", shape=shape))
+    dtypes, on_true_on_false = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            num_arrays=2,
+            shape=shape,
+            large_abs_safety_factor=16,
+            small_abs_safety_factor=16,
+            safety_factor_scale="log",
+            shared_dtype=True,
+        )
+    )
+    return dtypes, pred, on_true_on_false
+
+
+@handle_frontend_test(
+    fn_tree="jax.lax.select",
+    dtype_pred_ontrue_on_false=_dtype_pred_ontrue_on_false(),
+)
+def test_jax_lax_select(
+    *,
+    dtype_pred_ontrue_on_false,
+    as_variable,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, pred, on_true_on_false = dtype_pred_ontrue_on_false
+    helpers.test_frontend_function(
+        input_dtypes=["bool"] + input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        pred=pred,
+        on_true=on_true_on_false[0],
+        on_false=on_true_on_false[0],
+    )
