@@ -434,7 +434,7 @@ def test_torch_nll_loss(
         reduction=reduction,
     )
 
-    
+
 # soft margin loss
 @handle_frontend_test(
     fn_tree="torch.nn.functional.soft_margin_loss",
@@ -479,4 +479,3 @@ def test_torch_soft_margin_loss(
         reduce=reduce,
         reduction=reduction,
     )
-    
