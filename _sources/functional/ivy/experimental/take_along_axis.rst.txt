@@ -5,9 +5,9 @@ take_along_axis
 
 .. autofunction:: ivy.array.array_methods.take_along_axis
 
-.. autofunction:: ivy.container.container_methods.take_along_axis
-
 .. autofunction:: ivy.container.container_methods.static_take_along_axis
+
+.. autofunction:: ivy.container.container_methods.take_along_axis
 |
 | **Supported Frameworks:**
 

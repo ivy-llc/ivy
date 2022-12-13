@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -519,9 +519,8 @@
 <span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
 <span class="sd">    instances in place of any of the arguments.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [True, True]])</span>
@@ -531,19 +530,8 @@
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    ivy.array([[1,6],[3,4]])</span>
 
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [False, True]])</span>
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.native_array([[1, 2], [3, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([[5, 6], [7, 8]])</span>
-<span class="sd">    &gt;&gt;&gt; res = ivy.where(condition, x1, x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(res)</span>
-<span class="sd">    array([[1, 6], [7, 4]])</span>
-
-<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
-
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[6, 13, 22, 7, 12], [7, 11, 16, 32, 9]])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.native_array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])</span>
+<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([[44, 20, 8, 35, 9], [98, 23, 43, 6, 13]])</span>
 <span class="sd">    &gt;&gt;&gt; res = ivy.where(((x1 % 2 == 0) &amp; (x2 % 2 == 1)), x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(res)</span>
 <span class="sd">    ivy.array([[ 44, 20, 8, 35, 12], [98, 23, 16, 6, 13]])</span>
@@ -569,30 +557,6 @@
 <span class="sd">        a: ivy.array([0, 2, -3.6]),</span>
 <span class="sd">        b: ivy.array([3, 4, 3.1])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    -------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; condition = ivy.array([[True, False], [True, True]])</span>
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.array([[1, 2], [3, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.array([[5, 6], [7, 8]])</span>
-<span class="sd">    &gt;&gt;&gt; res = x1.where(condition,x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(res)</span>
-<span class="sd">    ivy.array([[1, 6], [3, 4]])</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
-<span class="sd">    &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; res = x1.where((x1.a &gt; x2.a), x2)</span>
-<span class="sd">    &gt;&gt;&gt; print(res)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([3, 7, 5]),</span>
-<span class="sd">        b: ivy.array([2, 8, 6])</span>
-<span class="sd">    }</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x1</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 

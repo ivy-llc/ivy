@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -494,6 +494,16 @@
 <span class="sd">            a container containing the values of x1 where condition is True, and x2</span>
 <span class="sd">            where condition is False.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; res = ivy.Container.static_where((x1.a &gt; x2.a), x1, x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([3, 7, 5]),</span>
+<span class="sd">            b: ivy.array([2, 8, 6])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;where&quot;</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
@@ -530,6 +540,16 @@
 <span class="sd">            a container containing the values of x1 where condition is True, and x2</span>
 <span class="sd">            where condition is False.</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))</span>
+<span class="sd">        &gt;&gt;&gt; x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))</span>
+<span class="sd">        &gt;&gt;&gt; res = x1.where((x1.a &gt; x2.a), x2)</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([3, 7, 5]),</span>
+<span class="sd">            b: ivy.array([2, 8, 6])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
@@ -572,6 +592,26 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            Indices for where the boolean array is True.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        Using :class:`ivy.Container` instance method</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; res = ivy.Container.static_argwhere(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0], [1]]),</span>
+<span class="sd">            b: ivy.array([[0], [1]])</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))</span>
+<span class="sd">        &gt;&gt;&gt; res = ivy.Container.static_argwhere(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(res)</span>
+<span class="sd">        {</span>
+<span class="sd">            a: ivy.array([[0]]),</span>
+<span class="sd">            b: ivy.array([[0], [1]])</span>
+<span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;argwhere&quot;</span><span class="p">,</span>

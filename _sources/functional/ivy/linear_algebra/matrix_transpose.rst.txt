@@ -5,9 +5,9 @@ matrix_transpose
 
 .. autofunction:: ivy.array.array_methods.matrix_transpose
 
-.. autofunction:: ivy.container.container_methods.static_matrix_transpose
-
 .. autofunction:: ivy.container.container_methods.matrix_transpose
+
+.. autofunction:: ivy.container.container_methods.static_matrix_transpose
 |
 | **Supported Frameworks:**
 

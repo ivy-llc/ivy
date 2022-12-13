@@ -22,14 +22,6 @@ Experimental
    experimental/dct.rst
    experimental/fft.rst
    experimental/dropout1d.rst
-   experimental/isin.rst
-   experimental/msort.rst
-   experimental/triu_indices.rst
-   experimental/vorbis_window.rst
-   experimental/hann_window.rst
-   experimental/kaiser_window.rst
-   experimental/kaiser_bessel_derived_window.rst
-   experimental/hamming_window.rst
    experimental/is_ivy_sparse_array.rst
    experimental/is_native_sparse_array.rst
    experimental/native_sparse_array.rst
@@ -37,7 +29,20 @@ Experimental
    experimental/dirichlet.rst
    experimental/beta.rst
    experimental/gamma.rst
-   experimental/binary_cross_entropy_with_logits.rst
+   experimental/median.rst
+   experimental/nanmean.rst
+   experimental/unravel_index.rst
+   experimental/quantile.rst
+   experimental/diagflat.rst
+   experimental/kron.rst
+   experimental/eig.rst
+   experimental/triu_indices.rst
+   experimental/vorbis_window.rst
+   experimental/hann_window.rst
+   experimental/kaiser_window.rst
+   experimental/kaiser_bessel_derived_window.rst
+   experimental/hamming_window.rst
+   experimental/is_native_dtype.rst
    experimental/flatten.rst
    experimental/moveaxis.rst
    experimental/ndenumerate.rst
@@ -59,14 +64,9 @@ Experimental
    experimental/atleast_3d.rst
    experimental/take_along_axis.rst
    experimental/hsplit.rst
-   experimental/is_native_dtype.rst
-   experimental/median.rst
-   experimental/nanmean.rst
-   experimental/unravel_index.rst
-   experimental/quantile.rst
-   experimental/diagflat.rst
-   experimental/kron.rst
-   experimental/eig.rst
+   experimental/binary_cross_entropy_with_logits.rst
+   experimental/isin.rst
+   experimental/msort.rst
    experimental/sinc.rst
    experimental/lcm.rst
    experimental/fmod.rst
