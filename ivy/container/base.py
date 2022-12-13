@@ -1467,14 +1467,14 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **self._config)
 
     def _prune_key_chains_input_as_seq(self, key_chains):
-        return_cont = self.copy()
+        return_cont = self.cont_copy()
         for kc in key_chains:
             return_cont = return_cont.prune_key_chain(kc)
         return return_cont
 
     def _prune_key_chains_input_as_dict(self, key_chains, return_cont=None):
         if return_cont is None:
-            return_cont = self.copy()
+            return_cont = self.cont_copy()
         for k, v in key_chains.items():
             if isinstance(v, dict):
                 ret_cont = self._prune_key_chains_input_as_dict(v, return_cont[k])
@@ -1952,7 +1952,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if return_dict is None:
-            return_dict = self.copy()
+            return_dict = self.cont_copy()
         for k, v in return_dict.items():
             if not _is_jsonable(v):
                 if isinstance(v, dict):
@@ -2560,7 +2560,7 @@ class ContainerBase(dict, abc.ABC):
         if inplace:
             cont = self
         else:
-            cont = self.copy()
+            cont = self.cont_copy()
         sub_cont = cont
         for key in keys[:-1]:
             if key not in sub_cont:
@@ -2591,7 +2591,7 @@ class ContainerBase(dict, abc.ABC):
         if inplace:
             cont = self
         else:
-            cont = self.copy()
+            cont = self.cont_copy()
         sub_cont = cont
         for key in keys[:-1]:
             ivy.assertions.check_elem_in_list(
@@ -2632,7 +2632,7 @@ class ContainerBase(dict, abc.ABC):
             if inplace:
                 return_dict = self
             else:
-                return_dict = self.copy()
+                return_dict = self.cont_copy()
         for k, v in target_dict.items():
             if isinstance(v, dict):
                 return_dict[k] = self.set_at_key_chains(v, return_dict[k], inplace)
@@ -2663,7 +2663,7 @@ class ContainerBase(dict, abc.ABC):
             if inplace:
                 return_dict = self
             else:
-                return_dict = self.copy()
+                return_dict = self.cont_copy()
         for k, v in target_dict.items():
             ivy.assertions.check_elem_in_list(
                 k,
@@ -2936,7 +2936,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to replace the old key-chains by the new ones. Default is ``True``.
 
         """
-        new_cont = self.copy() if keep_orig else ivy.Container()
+        new_cont = self.cont_copy() if keep_orig else ivy.Container()
         for old_kc, new_kc in keychain_mapping.items():
             if replace and old_kc in new_cont:
                 new_cont = new_cont.prune_key_chain(old_kc)
@@ -2961,7 +2961,7 @@ class ContainerBase(dict, abc.ABC):
             Whether to replace the old key-chains by the new ones. Default is ``True``.
 
         """
-        new_cont = self.copy() if keep_orig else ivy.Container()
+        new_cont = self.cont_copy() if keep_orig else ivy.Container()
         for old_kc, new in mapping.items():
             if replace and old_kc in new_cont:
                 new_cont = new_cont.prune_key_chain(old_kc)
@@ -3007,7 +3007,7 @@ class ContainerBase(dict, abc.ABC):
             **self._config,
         )
 
-    def copy(self):
+    def cont_copy(self):
         """Create a copy of this container.
 
         Returns
@@ -3201,7 +3201,7 @@ class ContainerBase(dict, abc.ABC):
         """
         leading_shape = self._ivy.default(leading_shape, list())
         if return_cont is None:
-            return_cont = self.copy()
+            return_cont = self.cont_copy()
         for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
             if isinstance(v_shape, dict):
                 return_cont[k] = self.reshape_like(
@@ -3266,7 +3266,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         total_depth = self.max_depth
-        copy = self.copy()
+        copy = self.cont_copy()
 
         def _maybe_cutoff(cont, kc):
             if total_depth - copy[kc].max_depth < depth_cutoff:
@@ -3291,7 +3291,7 @@ class ContainerBase(dict, abc.ABC):
              (Default value = False)
 
         """
-        copy = self.copy()
+        copy = self.cont_copy()
 
         def _maybe_cutoff(cont, kc):
             if copy[kc].max_depth > height_cutoff:
@@ -3315,7 +3315,7 @@ class ContainerBase(dict, abc.ABC):
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
             end_idx = max([i for i, k in enumerate(keys) if k[0] == end_char]) + 1
             key_slice = slice(start_idx, end_idx, 1)
-        ret = self.copy()
+        ret = self.cont_copy()
         desired_keys = keys[key_slice]
         # noinspection PyUnresolvedReferences
         return ret.at_key_chains(desired_keys)
@@ -3513,7 +3513,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         # copy this container
-        this_cont = self.copy()
+        this_cont = self.cont_copy()
 
         # get the sub-container
         if isinstance(sub_cont_or_keychain, str):

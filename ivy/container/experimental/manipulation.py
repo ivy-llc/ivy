@@ -333,8 +333,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
                         [[1, 0]]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_vstack(
             new_xs,
             key_chains=key_chains,
@@ -417,8 +417,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
             b: ivy.array([[4, 5, 1, 0]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_hstack(
             new_xs,
             key_chains=key_chains,
@@ -1618,8 +1618,8 @@ class ContainerWithManipulationExperimental(ContainerBase):
                            [[5, 0]]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_dstack(
             new_xs,
             key_chains=key_chains,
