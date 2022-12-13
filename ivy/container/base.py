@@ -3180,7 +3180,7 @@ class ContainerBase(dict, abc.ABC):
 
         return self.cont_map(to_list)
 
-    def reshape_like(self, target_dict, leading_shape=None, return_cont=None):
+    def cont_reshape_like(self, target_dict, leading_shape=None, return_cont=None):
         """Set shapes of container entries to shapes specified by new container with the
         same key structure.
 
@@ -3204,7 +3204,7 @@ class ContainerBase(dict, abc.ABC):
             return_cont = self.cont_copy()
         for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
             if isinstance(v_shape, dict):
-                return_cont[k] = self.reshape_like(
+                return_cont[k] = self.cont_reshape_like(
                     v_shape, leading_shape, return_cont[k]
                 )
             else:
