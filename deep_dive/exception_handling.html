@@ -68,6 +68,8 @@
 <li class="toctree-l2"><a class="reference internal" href="ivy_frontends_tests.html">Ivy Frontend Tests</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Exception Handling</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#ivy-exception-class">Ivy Exception Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configurable-mode-for-stack-trace">Configurable Mode for Stack Trace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ivy-func-wrapper-pruning">Ivy <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> Pruning</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#handle-exceptions-decorator">&#64;handle_exceptions Decorator</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#assertion-function">Assertion Function</a></li>
 </ul>
@@ -206,6 +208,161 @@ This is to reduce repetition and the creation of similar exception classes.</p>
 </pre></div>
 </div>
 </section>
+<section id="configurable-mode-for-stack-trace">
+<h2>Configurable Mode for Stack Trace<a class="headerlink" href="#configurable-mode-for-stack-trace" title="Permalink to this heading"></a></h2>
+<p>Due to the transpilation nature of Ivy, user can code in the frontend framework
+which they are familiar with, then run their code with another backend
+framework. For instance, someone who is familiar with NumPy can run their code
+with a PyTorch backend via Ivy’s NumPy frontend. Given their total lack of
+familiarity of certain backend frameworks (which is PyTorch in the above scenario),
+they might not want to see stack traces which go right down through Ivy
+functions and through PyTorch functions.</p>
+<p>Therefore, options are made available for the stack traces to either truncate
+at the frontend or ivy level, or in other cases, no truncation at all.</p>
+<p>Let’s look at the 3 different modes with example of <code class="code docutils literal notranslate"><span class="pre">ivy.all</span></code> below!</p>
+<ol class="arabic simple">
+<li><p>Full</p></li>
+</ol>
+<p>This is the default mode and keeps the complete stack traces. All frontend and
+ivy specific stack traces are displayed.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+...
+File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 124, in new_fn
+  return fn(*new_args, **new_kwargs)
+File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 186, in new_fn
+  ret = fn(*args, **kwargs)
+File &quot;.../ivy/ivy/functional/backends/torch/utility.py&quot;, line 19, in all
+  return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+
+During the handling of the above exception, another exception occurred:
+
+...
+File &quot;.../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 15, in all
+  ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 82, in new_fn
+  return fn(*args, **kwargs)
+File &quot;.../ivy/ivy/exceptions.py&quot;, line 120, in new_fn
+  raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Frontend-only</p></li>
+</ol>
+<p>This option displays only frontend-related stack traces. If compared with the
+stack traces in the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode above, the <code class="code docutils literal notranslate"><span class="pre">torch</span></code> related traces
+are pruned. Only the <code class="code docutils literal notranslate"><span class="pre">numpy</span></code> frontend related errors are shown.
+A message is also displayed to inform that the traces are truncated and
+the instructions to switch it back to the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode is included.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;frontend&#39;)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+
+&lt;stack trace is truncated to frontend specific files, call
+`ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to frontend specific files, call
+`ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  ...
+  File &quot;.../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 15, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+
+IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Ivy specific</p></li>
+</ol>
+<p>This option displays only ivy-related stack traces. If compared with the
+stack traces in the <code class="code docutils literal notranslate"><span class="pre">frontend</span></code> mode above, the <code class="code docutils literal notranslate"><span class="pre">torch</span></code> related traces
+are available again. A message is also displayed to inform that the traces are
+truncated and the instructions to switch it back to the <code class="code docutils literal notranslate"><span class="pre">full</span></code> mode
+is included.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_exception_trace_mode(&#39;ivy&#39;)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+
+&lt;stack trace is truncated to ivy specific files, call
+`ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  ...
+  File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 186, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/functional/backends/torch/utility.py&quot;, line 19, in all
+    return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+
+During the handling of the above exception, another exception occurred:
+
+&lt;stack trace is truncated to ivy specific files, call `ivy.set_exception_trace_mode(&#39;full&#39;)` to view the full trace&gt;
+  ...
+  File &quot;.../ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+</section>
+<section id="ivy-func-wrapper-pruning">
+<h2>Ivy <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> Pruning<a class="headerlink" href="#ivy-func-wrapper-pruning" title="Permalink to this heading"></a></h2>
+<p>Due to the wrapping operations in Ivy, a long list of less informative
+<code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> traces is often seen in the stack. An example is shown
+below:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+  ...
+  File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 462, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 402, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 124, in new_fn
+    return fn(*new_args, **new_kwargs)
+  File &quot;.../ivy/ivy/func_wrapper.py&quot;, line 186, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/functional/backends/torch/utility.py&quot;, line 19, in all
+    return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+
+During the handling of the above exception, another exception occurred:
+
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;.../ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 285, in new_fn
+    ret = fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/functional/frontends/numpy/func_wrapper.py&quot;, line 263, in new_fn
+    return fn(*ivy_args, **ivy_kwargs)
+  ...
+
+IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+<p>Including all of these wrapper functions in the stack trace can be very
+unwieldy, thus they can be prevented entirely by setting
+<code class="code docutils literal notranslate"><span class="pre">ivy.set_show_func_wrapper_trace_mode(False)</span></code>.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; ivy.set_show_func_wrapper_trace_mode(False)
+&gt;&gt;&gt; ivy.functional.frontends.numpy.all(ivy.array([1,2,3]), axis=2)
+
+&lt;func_wrapper.py stack trace is squashed, call
+`ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;.../ivy/ivy/exceptions.py&quot;, line 118, in new_fn
+    return fn(*args, **kwargs)
+  File &quot;.../ivy/ivy/functional/backends/torch/utility.py&quot;, line 19, in all
+    return torch.all(x, dim=axis, keepdim=keepdims, out=out)
+
+During the handling of the above exception, another exception occurred:
+
+&lt;func_wrapper.py stack trace is squashed, call
+`ivy.set_show_func_wrapper_trace_mode(True)` in order to view this&gt;
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;.../ivy/ivy/functional/frontends/numpy/logic/truth_value_testing.py&quot;, line 15, in all
+    ret = ivy.all(a, axis=axis, keepdims=keepdims, out=out)
+  File &quot;.../ivy/ivy/exceptions.py&quot;, line 121, in new_fn
+    raise ivy.exceptions.IvyError(fn.__name__, str(e))
+
+IvyError: torch: all: Dimension out of range (expected to be in range of [-1, 0], but got 2)
+</pre></div>
+</div>
+<p>From the above example, it can be seen that the <code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> related
+traces have been hidden. A message is displayed as well to the user so that
+they are aware of the pruning. The instructions to recover the
+<code class="code docutils literal notranslate"><span class="pre">func_wrapper</span></code> traces are shown too.</p>
+</section>
 <section id="handle-exceptions-decorator">
 <h2>&#64;handle_exceptions Decorator<a class="headerlink" href="#handle-exceptions-decorator" title="Permalink to this heading"></a></h2>
 <p>To ensure that all backend exceptions are caught properly, a decorator is used to handle functions in the <code class="code docutils literal notranslate"><span class="pre">try/except</span></code> block.</p>
@@ -215,10 +372,12 @@ This is to reduce repetition and the creation of similar exception classes.</p>
     <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyError</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">_print_traceback_history</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyError</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyBackendException</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="n">_print_traceback_history</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyBackendException</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
     <span class="n">new_fn</span><span class="o">.</span><span class="n">handle_exceptions</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="n">new_fn</span>
