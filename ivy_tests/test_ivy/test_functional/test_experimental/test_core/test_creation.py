@@ -284,6 +284,7 @@ def test_hamming_window(
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-11, max_value=11),
+    dtypes_x=helpers.dtype_and_values(available_dtypes=("int32", "int64"))
 )
 def test_tril_indices(
     *,
@@ -292,7 +293,7 @@ def test_tril_indices(
     k,
     num_positional_args,
     as_variable,
-    with_out,
+    # with_out,
     native_array,
     container_flags,
     instance_method,
@@ -300,8 +301,11 @@ def test_tril_indices(
     fn_name,
     on_device,
     ground_truth_backend,
+    dtypes_x,
 ):
+    dtypes, _ = dtypes_x
     helpers.test_function(
+        input_dtypes=dtypes,
         ground_truth_backend=ground_truth_backend,
         as_variable_flags=as_variable,
         with_out=False,
