@@ -1252,6 +1252,10 @@
 </li>
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_create_if_absent">cont_create_if_absent() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_create_if_absent">[1]</a>
 </li>
+      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_cutoff_at_depth">cont_cutoff_at_depth() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_cutoff_at_depth">[1]</a>
+</li>
+      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_cutoff_at_height">cont_cutoff_at_height() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_cutoff_at_height">[1]</a>
+</li>
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_deep_copy">cont_deep_copy() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_deep_copy">[1]</a>
 </li>
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_flatten_key_chains">cont_flatten_key_chains() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_flatten_key_chains">[1]</a>
@@ -1273,6 +1277,8 @@
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_multi_map_in_static_method">cont_multi_map_in_static_method() (ivy.container.base.ContainerBase static method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_multi_map_in_static_method">[1]</a>
 </li>
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_reshape_like">cont_reshape_like() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_reshape_like">[1]</a>
+</li>
+      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_try_kc">cont_try_kc() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_try_kc">[1]</a>
 </li>
       <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cont_unify">cont_unify() (ivy.container.base.ContainerBase static method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_unify">[1]</a>
 </li>
@@ -1336,14 +1342,14 @@
 </li>
       <li><a href="data_classes/container/losses.html#ivy.container.losses.ContainerWithLosses">ContainerWithLosses (class in ivy.container.losses)</a>, <a href="data_classes/container/losses/ContainerWithLosses.html#ivy.container.losses.ContainerWithLosses">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_classes/container/experimental.html#ivy.container.experimental.ContainerWithLossesExperimental">ContainerWithLossesExperimental (class in ivy.container.experimental)</a>
 </li>
       <li><a href="data_classes/container/manipulation.html#ivy.container.manipulation.ContainerWithManipulation">ContainerWithManipulation (class in ivy.container.manipulation)</a>, <a href="data_classes/container/manipulation/ContainerWithManipulation.html#ivy.container.manipulation.ContainerWithManipulation">[1]</a>
 </li>
       <li><a href="data_classes/container/experimental.html#ivy.container.experimental.ContainerWithManipulationExperimental">ContainerWithManipulationExperimental (class in ivy.container.experimental)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_classes/container/norms.html#ivy.container.norms.ContainerWithNorms">ContainerWithNorms (class in ivy.container.norms)</a>, <a href="data_classes/container/norms/ContainerWithNorms.html#ivy.container.norms.ContainerWithNorms">[1]</a>
 </li>
       <li><a href="data_classes/container/experimental.html#ivy.container.experimental.ContainerWithNormsExperimental">ContainerWithNormsExperimental (class in ivy.container.experimental)</a>
@@ -1632,10 +1638,6 @@
         <li><a href="data_classes/container.html#ivy.container.container.Container.current_backend_str">(ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.current_backend_str">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.current_backend_str">[2]</a>
 </li>
       </ul></li>
-      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cutoff_at_depth">cutoff_at_depth() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cutoff_at_depth">[1]</a>
-</li>
-      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.cutoff_at_height">cutoff_at_height() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cutoff_at_height">[1]</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -8154,8 +8156,6 @@
         <li><a href="data_classes/container.html#ivy.container.container.Container.try_else_none">(ivy.container.container.Container method)</a>, <a href="data_classes/container/container.html#ivy.container.container.Container.try_else_none">[1]</a>, <a href="data_classes/container/container/Container.html#ivy.container.container.Container.try_else_none">[2]</a>
 </li>
       </ul></li>
-      <li><a href="data_classes/container/base.html#ivy.container.base.ContainerBase.try_kc">try_kc() (ivy.container.base.ContainerBase method)</a>, <a href="data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.try_kc">[1]</a>
-</li>
       <li><a href="functional/ivy/data_type.html#ivy.functional.ivy.data_type.type_promote_arrays">type_promote_arrays() (in module ivy.functional.ivy.data_type)</a>, <a href="functional/ivy/data_type/type_promote_arrays.html#ivy.functional.ivy.data_type.type_promote_arrays">[1]</a>
 
       <ul>
