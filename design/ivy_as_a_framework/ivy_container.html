@@ -668,7 +668,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cnt</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">cnt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cnt</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
 
         <span class="c1"># image filenames</span>
         <span class="n">img_fnames</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_list_stack</span><span class="p">(</span>
