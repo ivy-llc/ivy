@@ -572,7 +572,7 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             cnt = self._cnt.copy()
 
             # image filenames
-            img_fnames = ivy.Container.list_stack(
+            img_fnames = ivy.Container.cont_list_stack(
                 [cnt.imgs.map(
                     lambda fname, _: fname.format(self._count + i)
                 ) for i in range(self._batch_size)], 0
