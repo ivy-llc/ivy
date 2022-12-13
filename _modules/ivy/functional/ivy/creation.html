@@ -510,12 +510,40 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
+<span class="sd">    With :class:`ivy.Shape` input:</span>
+
 <span class="sd">    &gt;&gt;&gt; shape = (2,2)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.ones(shape)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
 <span class="sd">    ivy.array([[1., 1.],</span>
 <span class="sd">           [1., 1.]])</span>
 
+<span class="sd">    With :class:`ivy.Dtype` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = (3,2)</span>
+<span class="sd">    &gt;&gt;&gt; d_type = object.__new__(Dtype, &quot;int64&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.ones(shape, dtype=d_type)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[1, 1, 1],</span>
+<span class="sd">           [1, 1]])</span>
+<span class="sd">    </span>
+<span class="sd">    With :class:`ivy.Device` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = (3,2)</span>
+<span class="sd">    &gt;&gt;&gt; dev = object.__new__(Device, &quot;cpu&quot;)</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.ones(shape, device=dev)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    ivy.array([[1, 1, 1],</span>
+<span class="sd">           [1, 1]])</span>
+
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; shape = (1,5,2)</span>
+<span class="sd">    &gt;&gt;&gt; array = ivy.array(shape)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.ones(shape, out=array)</span>
+<span class="sd">    &gt;&gt;&gt; print(array)</span>
+<span class="sd">    ivy.array([[1.],</span>
+<span class="sd">           [1., 1., 1., 1., 1.], [1., 1.]])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
