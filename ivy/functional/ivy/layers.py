@@ -7,6 +7,7 @@ from typing import Optional, Tuple, Union, List, Callable
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -22,6 +23,7 @@ from ivy.exceptions import handle_exceptions
 # Linear #
 
 
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def linear(
@@ -210,49 +212,6 @@ def dropout(
     if ivy.exists(out):
         return ivy.inplace_update(out, x)
     return x
-
-
-@handle_exceptions
-@to_native_arrays_and_back
-@handle_array_like
-def dropout1d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples from
-     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
-     In this case, dropout1d performs a channel-wise dropout but assumes
-     a channel is a 1D feature map.
-
-    Parameters
-    ----------
-    x
-        a 2D or 3D input array. Should have a floating-point data type.
-    prob
-        probability of a channel to be zero-ed.
-    training
-        controls whether dropout1d is performed during training or ignored
-        during testing.
-    data_format
-        "NWC" or "NCW". Defaults to "NWC".
-    out
-        optional output array, for writing the result to.
-        It must have a shape that the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array with some channels zero-ed and the rest of channels are
-         scaled by (1/1-prob).
-    """
-    return current_backend(x).dropout1d(
-        x, prob, training=training, data_format=data_format, out=out
-    )
 
 
 # Attention #
@@ -1639,7 +1598,8 @@ def conv(
 # LSTM #
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def lstm_update(
@@ -1865,3 +1825,4 @@ def fft(
         4.04549134e-18+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j])
     """
     return current_backend(x).fft(x, dim, norm=norm, n=n, out=out)
+

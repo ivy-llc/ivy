@@ -5,6 +5,11 @@ from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_b
 
 
 @to_ivy_arrays_and_back
+def accumulate_n(inputs, input_type=None, shape=None, dtype=None, name=None):
+    return ivy.astype(ivy.sum(ivy.array(inputs)), ivy.int64)
+
+
+@to_ivy_arrays_and_back
 def add(x, y, name=None):
     x, y = promote_types_of_tensorflow_inputs(x, y)
     return ivy.add(x, y)
@@ -361,3 +366,9 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def equal(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.equal(x, y)

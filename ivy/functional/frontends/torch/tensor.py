@@ -21,6 +21,14 @@ class Tensor:
     def ivy_array(self):
         return self._ivy_array
 
+    @property
+    def device(self):
+        return ivy.dev(self._ivy_array)
+
+    @property
+    def dtype(self):
+        return self._ivy_array.dtype
+
     # Setters #
     # --------#
 
@@ -32,11 +40,24 @@ class Tensor:
 
     # Instance Methods #
     # ---------------- #
-    def reshape(self, shape):
-        return torch_frontend.reshape(self._ivy_array, shape)
+    def reshape(self, *args, shape=None):
+        if args and shape:
+            raise TypeError("reshape() got multiple values for argument 'shape'")
+        if shape is not None:
+            return torch_frontend.reshape(self._ivy_array, shape)
+        if args:
+            if isinstance(args[0], tuple):
+                shape = args[0]
+                return torch_frontend.reshape(self._ivy_array, shape)
+            else:
+                return torch_frontend.reshape(self._ivy_array, args)
+        return torch_frontend.reshape(self._ivy_array)
 
     def add(self, other, *, alpha=1):
         return torch_frontend.add(self._ivy_array, other, alpha=alpha)
+
+    def chunk(self, chunks, dim=0):
+        return torch_frontend.chunk(self._ivy_array, chunks, dim=dim)
 
     def add_(self, other, *, alpha=1):
         self._ivy_array = self.add(other, alpha=alpha).ivy_array
@@ -50,7 +71,7 @@ class Tensor:
         return self
 
     def sum(self):
-        return torch_frontend.sum(self._ivyArray)
+        return torch_frontend.sum(self._ivy_array)
 
     def sin(self):
         return torch_frontend.sin(self._ivy_array)
@@ -285,17 +306,14 @@ class Tensor:
     def max(self, dim=None, keepdim=False):
         return torch_frontend.max(self._ivy_array, dim=dim, keepdim=keepdim)
 
-    def device(self):
-        return ivy.dev(self._ivy_array)
-
     def is_cuda(self):
         return "gpu" in ivy.dev(self._ivy_array)
 
-    def pow(self, other):
-        return ivy.pow(self._ivy_array, other)
+    def pow(self, exponent):
+        return ivy.pow(self._ivy_array, exponent)
 
-    def pow_(self, other):
-        self._ivy_array = self.pow(other).ivy_array
+    def pow_(self, exponent):
+        self._ivy_array = self.pow(exponent).data
         return self
 
     def size(self, dim=None):
@@ -311,11 +329,14 @@ class Tensor:
                     "but got {}".format(len(shape), len(shape) - 1, dim)
                 )
 
-    def matmul(self, tensor2):
-        return torch_frontend.matmul(self._ivy_array, tensor2)
+    def matmul(self, other):
+        return torch_frontend.matmul(self._ivy_array, other)
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
+
+    def argmin(self, dim=None, keepdim=False):
+        return torch_frontend.argmin(self._ivy_array, dim=dim, keepdim=keepdim)
 
     def ceil(self):
         return torch_frontend.ceil(self._ivy_array)
@@ -341,6 +362,48 @@ class Tensor:
 
     def cumsum(self, dim, dtype):
         return torch_frontend.cumsum(self._ivy_array, dim, dtype=dtype)
+
+    def inverse(self):
+        return torch_frontend.inverse(self._ivy_array)
+
+    def neg(self):
+        return torch_frontend.negative(self._ivy_array)
+
+    def int(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.int32)
+
+    def bool(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.bool)
+
+    def type(self, dtype=None, non_blocking=False, **kwargs):
+        if ivy.exists(dtype):
+            return ivy.astype(self._ivy_array, dtype)
+        else:
+            return str(self._ivy_array.dtype)
+
+    def type_as(self, other):
+        if self.dtype == other.dtype:
+            return self._ivy_array
+        else:
+            return ivy.astype(self._ivy_array, other.dtype)
+
+    def byte(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.uint8)
+
+    def ne(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def squeeze(self, dim):
+        return torch_frontend.squeeze(self._ivy_array, dim)
+
+    def flip(self, dims):
+        return torch_frontend.flip(self._ivy_array, dims)
+
+    def tril(self, diagonal=0):
+        return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
+
+    def index_select(self, dim, index):
+        return torch_frontend.index_select(self._ivy_array, dim, index)
 
     # Special Methods #
     # -------------------#
@@ -394,6 +457,21 @@ class Tensor:
     def __itruediv__(self, other, *, rounding_mode=None):
         self._ivy_array = self.__truediv__(other, rounding_mode=rounding_mode).ivy_array
         return self
+
+    def __eq__(self, other):
+        return ivy.equal(self._ivy_array, other)
+
+    def __gt__(self, other):
+        return torch_frontend.greater(self._ivy_array, other)
+
+    def __ne__(self, other):
+        return torch_frontend.ne(self._ivy_array, other)
+
+    def __lt__(self, other):
+        return torch_frontend.less(self._ivy_array, other)
+
+    def __or__(self, other):
+        return torch_frontend.bitwise_or(self._ivy_array, other)
 
     # Method aliases
     absolute, absolute_ = abs, abs_
