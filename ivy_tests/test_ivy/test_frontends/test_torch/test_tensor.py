@@ -4420,32 +4420,36 @@ def test_torch_special_or(
 
 # sqrt
 @handle_frontend_method(
-    class_tree="ivy.functional.frontends.torch.tensor",
+    class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
                 available_dtypes=helpers.get_dtypes("numeric", full=True),
-                                    ),
+    ),
 )
 def test_torch_instance_sqrt(
     dtype_x,
-    as_variable,
-    native_array
+    init_num_positional_args: pf.NumPositionalArgFn,
+    method_num_positional_args: pf.NumPositionalArgMethod,
+    as_variable: pf.AsVariableFlags,
+    native_array: pf.NativeArrayFlags,
+    frontend,
+    frontend_method_data
 ):
     input_dtype, x = dtype_x
     helpers.test_frontend_method(
         init_input_dtypes=input_dtype,
         init_as_variable_flags=as_variable,
-        init_num_positional_args=1,
+        init_num_positional_args=init_num_positional_args,
         init_native_array_flags=native_array,
         init_all_as_kwargs_np={"data": x[0]},
         method_input_dtypes=input_dtype,
         method_as_variable_flags=as_variable,
-        method_num_positional_args=0,
+        method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
         method_all_as_kwargs_np={},
-        frontend="torch",
-        class_="tensor",
-        method_name="sqrt",
+        frontend_method_data=frontend_method_data,
+        frontend=frontend,
     )
+
 
