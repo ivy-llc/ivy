@@ -233,7 +233,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     @staticmethod
-    def handle_inplace(ret, out):
+    def cont_handle_inplace(ret, out):
         """Returns an inplace update of out, provided it is not None, by updating with
         the values in ret.
 
