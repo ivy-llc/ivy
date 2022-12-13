@@ -141,7 +141,7 @@ def test_container_combine(device):
             },
         }
     )
-    container_comb = ivy.Container.combine(container_0, container_1)
+    container_comb = ivy.Container.cont_combine(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_comb.a), np.array([4]))
     assert np.equal(ivy.to_numpy(container_comb.b.c), np.array([5]))
     assert np.equal(ivy.to_numpy(container_comb.b.d), np.array([3]))
