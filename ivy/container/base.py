@@ -3211,7 +3211,7 @@ class ContainerBase(dict, abc.ABC):
                 return_cont[k] = self._ivy.reshape(v, leading_shape + list(v_shape))
         return ivy.Container(return_cont, **self._config)
 
-    def create_if_absent(self, key, value, inplace=True):
+    def cont_create_if_absent(self, key, value, inplace=True):
         """Add a key to the container with corresponding value, if it is not already
         present. otherwise, do nothing.
 
@@ -3228,7 +3228,7 @@ class ContainerBase(dict, abc.ABC):
             return
         self.set_at_key_chain(key, value, inplace)
 
-    def if_exists(self, key):
+    def cont_if_exists(self, key):
         """Returns the sub-container at the following key if it exists, otherwise None.
 
         Parameters
