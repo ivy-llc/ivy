@@ -6,6 +6,7 @@ from hypothesis import assume, strategies as st
 import ivy
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_frontend_test
+from ivy.functional.frontends.jax.numpy import can_cast
 
 
 # add
@@ -937,24 +938,12 @@ def test_jax_lax_exp(
     )
 
 
-@st.composite
-def _sample_castable_numeric_dtype(draw):
-    dtype = draw(helpers.get_dtypes("numeric", full=False, key="dtype"))[0]
-    to_dtype = draw(helpers.get_dtypes("numeric", full=False))[0]
-    assume(ivy.can_cast(dtype, to_dtype))
-    return to_dtype
-
-
 @handle_frontend_test(
     fn_tree="jax.lax.convert_element_type",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("numeric", full=False, key="dtype"),
-        num_arrays=1,
-        min_num_dims=1,
-        min_value=-5,
-        max_value=5,
+        available_dtypes=helpers.get_dtypes("valid"),
     ),
-    new_dtype=_sample_castable_numeric_dtype(),
+    new_dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_jax_lax_convert_element_type(
     *,
@@ -968,8 +957,9 @@ def test_jax_lax_convert_element_type(
     frontend,
 ):
     input_dtype, x = dtype_and_x
+    assume(can_cast(input_dtype[0], new_dtype[0]))
     helpers.test_frontend_function(
-        input_dtypes=input_dtype,
+        input_dtypes=input_dtype + new_dtype,
         as_variable_flags=as_variable,
         with_out=False,
         num_positional_args=num_positional_args,
@@ -978,7 +968,7 @@ def test_jax_lax_convert_element_type(
         fn_tree=fn_tree,
         on_device=on_device,
         operand=x[0],
-        new_dtype=new_dtype,
+        new_dtype=new_dtype[0],
     )
 
 
@@ -1732,6 +1722,8 @@ def test_jax_lax_expm1(
     fn_tree="jax.lax.log1p",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
+        small_abs_safety_factor=2,
+        safety_factor_scale="log",
     ),
 )
 def test_jax_lax_log1p(
