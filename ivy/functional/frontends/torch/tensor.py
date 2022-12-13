@@ -334,7 +334,7 @@ class Tensor:
 
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
-    
+
     def argmin(self, dim=None, keepdim=False):
         return torch_frontend.argmin(self._ivy_array, dim=dim, keepdim=keepdim)
 
