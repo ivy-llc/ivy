@@ -2982,7 +2982,7 @@ class ContainerBase(dict, abc.ABC):
             )
         return new_cont
 
-    def flatten_key_chains(
+    def cont_flatten_key_chains(
         self, include_empty=False, above_height=None, below_depth=None
     ):
         """Summary.
