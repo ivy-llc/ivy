@@ -4424,7 +4424,7 @@ def test_torch_special_or(
     init_tree="torch.tensor",
     method_name="sqrt",
     dtype_x=helpers.dtype_and_values(
-                available_dtypes=helpers.get_dtypes("numeric", full=True),
+                available_dtypes=helpers.get_dtypes("bfloat16", full=True),
     ),
 )
 def test_torch_instance_sqrt(
