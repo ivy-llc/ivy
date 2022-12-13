@@ -1153,7 +1153,7 @@ def test_container_set_at_keys(device):
     container_orig = Container(dict_in)
 
     # explicit function call
-    orig_container = container_orig.copy()
+    orig_container = container_orig.cont_copy()
     container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
@@ -1176,7 +1176,7 @@ def test_container_set_at_key_chain(device):
     container_orig = Container(dict_in)
 
     # explicit function call
-    container = container_orig.copy()
+    container = container_orig.cont_copy()
     container = container.set_at_key_chain("b/e", ivy.array([4], device=device))
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
@@ -1190,7 +1190,7 @@ def test_container_set_at_key_chain(device):
     assert np.allclose(ivy.to_numpy(container["f"]), np.array([5]))
 
     # overridden built-in function call
-    container = container_orig.copy()
+    container = container_orig.cont_copy()
     assert "b/e" not in container
     container["b/e"] = ivy.array([4], device=device)
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
@@ -1215,7 +1215,7 @@ def test_container_overwrite_at_key_chain(device):
     container_orig = Container(dict_in)
 
     # explicit function call
-    container = container_orig.copy()
+    container = container_orig.cont_copy()
     # noinspection PyBroadException
     try:
         container.overwrite_at_key_chain("b/e", ivy.array([4], device=device))
@@ -3054,7 +3054,7 @@ def test_container_copy(device):
         },
     }
     cont = Container(dict_in)
-    cont_deepcopy = cont.copy()
+    cont_deepcopy = cont.cont_copy()
     assert np.allclose(ivy.to_numpy(cont.a), ivy.to_numpy(cont_deepcopy.a))
     assert np.allclose(ivy.to_numpy(cont.b.c), ivy.to_numpy(cont_deepcopy.b.c))
     assert np.allclose(ivy.to_numpy(cont.b.d), ivy.to_numpy(cont_deepcopy.b.d))
