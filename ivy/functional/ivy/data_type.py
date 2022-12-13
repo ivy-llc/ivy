@@ -5,7 +5,7 @@ import math
 from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
-
+import importlib
 # local
 import ivy
 from ivy.backend_handler import current_backend
@@ -83,9 +83,9 @@ def _get_function_list(func):
         if isinstance(node, ast.Call):
             nodef = node.func
             if isinstance(nodef, ast.Name):
-                    names[nodef.id]=getattr(func,'__self__',None)
+                    names[nodef.id]=getattr(func,'__self__',getattr(importlib.import_module(func.__module__),func.__qualname__.split('.')[0],None))
             elif isinstance(nodef, ast.Attribute):
-                    names[nodef.attr] = getattr(func,'__self__',None)
+                    names[nodef.attr] = getattr(func,'__self__',getattr(importlib.import_module(func.__module__),func.__qualname__.split('.')[0],None))
 
     return names
 

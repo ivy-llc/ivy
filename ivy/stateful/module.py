@@ -465,8 +465,8 @@ class Module(abc.ABC):
         keychain_mappings
             Dict storing those keys and ids being removed.
         """
-        created_ids = created.map(lambda x, kc: id(x))
-        vs_ids = vs.map(lambda x, kc: id(x))
+        created_ids = created.cont_map(lambda x, kc: id(x))
+        vs_ids = vs.cont_map(lambda x, kc: id(x))
         ids = dict()
         duplicate_keychains = list()
         keychain_mappings = dict()
@@ -480,8 +480,8 @@ class Module(abc.ABC):
             duplicate_keychains.append(kc)
             keychain_mappings[kc] = ids[x]
 
-        created_ids.map(lambda x, kc: unique_callback(x, kc))
-        vs_ids.map(
+        created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
+        vs_ids.cont_map(
             lambda x, kc: unique_callback(x, kc)
             if x not in ids
             else found_dup_callback(x, kc)
