@@ -794,7 +794,7 @@ class ContainerWithCreation(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.handle_inplace(
+        return ContainerBase.cont_handle_inplace(
             self.map(
                 lambda x_: ivy.meshgrid([x_._data] + list(arrays))
                 if ivy.is_array(x_)
