@@ -284,7 +284,7 @@ def test_hamming_window(
     n_rows=helpers.ints(min_value=0, max_value=10),
     n_cols=st.none() | helpers.ints(min_value=0, max_value=10),
     k=helpers.ints(min_value=-11, max_value=11),
-    dtypes_x=helpers.dtype_and_values(available_dtypes=("int32", "int64"))
+    dtypes_x=helpers.dtype_and_values(available_dtypes=("int32", "int64")),
 )
 def test_tril_indices(
     *,
