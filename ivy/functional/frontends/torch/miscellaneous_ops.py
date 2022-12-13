@@ -1,6 +1,5 @@
 import ivy
-from .. import versions
-from ivy.func_wrapper import with_unsupported_dtypes
+from ivy.func_wrapper import with_unsupported_dtypes, with_supported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 
 
@@ -17,7 +16,18 @@ def fliplr(input):
         allow_equal=True,
         message="requires tensor to be at least 2D",
     )
-    return ivy.flip(input, axis=(-1,))
+    return ivy.fliplr(input)
+
+
+@to_ivy_arrays_and_back
+def flipud(input):
+    ivy.assertions.check_greater(
+        len(input.shape),
+        1,
+        allow_equal=True,
+        message="requires tensor to be at least 1D",
+    )
+    return ivy.flipud(input)
 
 
 @to_ivy_arrays_and_back
@@ -28,16 +38,14 @@ def roll(input, shifts, dims=None):
 @to_ivy_arrays_and_back
 @with_unsupported_dtypes(
     {"1.11.0 and below": ("uint8", "bfloat16", "float16"), "1.12.1": ()},
-    versions["torch"],
+    "torch",
 )
 def cumsum(input, dim, *, dtype=None, out=None):
     return ivy.cumsum(input, axis=dim, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes(
-    {"1.11.0 and below": ("float16", "bfloat16")}, versions["torch"]
-)
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 def trace(input):
     if "int" in input.dtype:
         input = input.astype("int64")
@@ -45,8 +53,11 @@ def trace(input):
     return ivy.astype(ivy.trace(input), target_type)
 
 
+@with_unsupported_dtypes(
+    {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
+)
 @to_ivy_arrays_and_back
-def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
+def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
@@ -100,11 +111,6 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
     epsilon = 1e-07
 
-    # Torch performs a conversion here for numerical stability
-    # But we wish to return an output with the same dtype as the input.
-    original_dtype = input.dtype
-    input = ivy.astype(input, ivy.float64)
-
     # To iterate through the n-th dimension of `input`, it is easiest to swap
     # the dimension that we wish to iterate through to be first, then iterate
     # through the re-ordered data. This re-ordering is fine for our purposes
@@ -117,7 +123,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     for individual_tensor in individual_tensors:
         # These tensors may be multidimensional, but must be treated as a single vector.
         original_shape = individual_tensor.shape
-        tensor_flattened = flatten(individual_tensor)
+        tensor_flattened = ivy.flatten(individual_tensor)
 
         # Don't scale up to the maximum norm, only scale down to it.
         norm = ivy.vector_norm(tensor_flattened, axis=0, ord=p)
@@ -129,7 +135,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
         )
 
     # We must undo our axis swap from the start.
-    ret = ivy.asarray(ret, dtype=original_dtype)
+    ret = ivy.asarray(ret, dtype=ret[0].dtype)
     ret = ivy.swapaxes(ret, 0, dim)
     ret = ivy.reshape(ret, input.shape)
 
@@ -138,6 +144,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     return ret
 
 
+@with_unsupported_dtypes({"1.11.0 and below": ("float16", "bfloat16")}, "torch")
 @to_ivy_arrays_and_back
 def logcumsumexp(input, dim, *, out=None):
     if len(input.shape) == 0:
@@ -154,6 +161,15 @@ def logcumsumexp(input, dim, *, out=None):
     return ret
 
 
+@with_supported_dtypes(
+    {
+        "1.11.0 and below": (
+            "int32",
+            "int64",
+        )
+    },
+    "torch",
+)
 @to_ivy_arrays_and_back
 def repeat_interleave(input, repeats, dim=None, *, output_size=None):
     return ivy.repeat(input, repeats, axis=dim)
@@ -235,14 +251,14 @@ def rot90(input, k, dims):
     new_axes[min(dims)], new_axes[max(dims)] = max(dims), min(dims)
     if k == 1:
         flipped = ivy.flip(input, axis=dims[1])
-        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
+        return ivy.permute_dims(flipped, axes=new_axes)
     elif k == 2:
         return ivy.flip(input, axis=dims)
     elif k == 3:
         flipped = ivy.flip(input, axis=dims[0])
-        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
+        return ivy.permute_dims(flipped, axes=new_axes)
     else:
-        return ivy.copy_array(input)
+        return input
 
 
 @to_ivy_arrays_and_back
@@ -254,6 +270,22 @@ def vander(x, N=None, increasing=False):
 
 
 @to_ivy_arrays_and_back
-@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, versions["torch"])
+@with_unsupported_dtypes({"1.11.0 and below": ("int8",)}, "torch")
 def lcm(input, other, *, out=None):
     return ivy.lcm(input, other, out=out)
+
+
+@to_ivy_arrays_and_back
+def einsum(equation, *operands):
+    return ivy.einsum(equation, *operands)
+
+
+@to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def cross(input, other, dim=None, *, out=None):
+    if dim is None:
+        dim = -1
+    input, other = ivy.promote_types_of_inputs(input, other)
+
+    if dim is not None:
+        return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)

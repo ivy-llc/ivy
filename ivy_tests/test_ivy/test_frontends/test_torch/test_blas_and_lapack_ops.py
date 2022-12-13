@@ -1,11 +1,11 @@
 # global
 import sys
 import numpy as np
-from hypothesis import given, strategies as st
+from hypothesis import strategies as st
 
 # local
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import handle_cmd_line_args
+from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
 # helpers
@@ -147,8 +147,8 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False, skip_float16=False):
 
 
 # addbmm
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.addbmm",
     dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True),
     beta=st.floats(
         min_value=-5,
@@ -164,18 +164,19 @@ def _get_dtype_input_and_mat_vec(draw, *, with_input=False, skip_float16=False):
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.addbmm"
-    ),
 )
 def test_torch_addbmm(
+    *,
     dtype_and_matrices,
     beta,
     alpha,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -184,21 +185,21 @@ def test_torch_addbmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="addbmm",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         input=input,
         batch1=mat1,
         batch2=mat2,
         beta=beta,
         alpha=alpha,
-        out=None,
     )
 
 
 # addmm
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.addmm",
     dtype_and_matrices=_get_dtype_input_and_matrices(with_input=True),
     beta=st.floats(
         min_value=-5,
@@ -214,18 +215,19 @@ def test_torch_addbmm(
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.addmm"
-    ),
 )
 def test_torch_addmm(
+    *,
     dtype_and_matrices,
     beta,
     alpha,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -234,21 +236,21 @@ def test_torch_addmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="addmm",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         input=input,
         mat1=mat1,
         mat2=mat2,
         beta=beta,
         alpha=alpha,
-        out=None,
     )
 
 
 # addmv
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.addmv",
     dtype_and_matrices=_get_dtype_input_and_mat_vec(with_input=True, skip_float16=True),
     beta=st.floats(
         min_value=-5,
@@ -264,18 +266,19 @@ def test_torch_addmm(
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.addmv"
-    ),
 )
 def test_torch_addmv(
+    *,
     dtype_and_matrices,
     beta,
     alpha,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input, mat, vec = dtype_and_matrices
     helpers.test_frontend_function(
@@ -284,21 +287,21 @@ def test_torch_addmv(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="addmv",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-03,
         input=input,
         mat=mat,
         vec=vec,
         beta=beta,
         alpha=alpha,
-        out=None,
     )
 
 
 # addr
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.addr",
     dtype_and_vecs=_get_dtype_input_and_vectors(with_input=True),
     beta=st.floats(
         min_value=-5,
@@ -314,18 +317,19 @@ def test_torch_addmv(
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.addr"
-    ),
 )
 def test_torch_addr(
+    *,
     dtype_and_vecs,
     beta,
     alpha,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input, vec1, vec2 = dtype_and_vecs
 
@@ -335,21 +339,21 @@ def test_torch_addr(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="addr",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         input=input,
         vec1=vec1,
         vec2=vec2,
         beta=beta,
         alpha=alpha,
-        out=None,
     )
 
 
 # baddbmm
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.baddbmm",
     dtype_and_matrices=_get_dtype_and_3dbatch_matrices(with_input=True, input_3d=True),
     beta=st.floats(
         min_value=-5,
@@ -365,18 +369,19 @@ def test_torch_addr(
         allow_subnormal=False,
         allow_infinity=False,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.baddbmm"
-    ),
 )
 def test_torch_baddbmm(
+    *,
     dtype_and_matrices,
     beta,
     alpha,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, input, batch1, batch2 = dtype_and_matrices
 
@@ -386,32 +391,33 @@ def test_torch_baddbmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="baddbmm",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         input=input,
         batch1=batch1,
         batch2=batch2,
         beta=beta,
         alpha=alpha,
-        out=None,
     )
 
 
 # bmm
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.bmm",
     dtype_and_matrices=_get_dtype_and_3dbatch_matrices(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.bmm"
-    ),
 )
 def test_torch_bmm(
+    *,
     dtype_and_matrices,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, mat1, mat2 = dtype_and_matrices
     helpers.test_frontend_function(
@@ -420,18 +426,18 @@ def test_torch_bmm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="bmm",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-02,
         input=mat1,
         mat2=mat2,
-        out=None,
     )
 
 
 # cholesky
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.cholesky",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_value=0,
@@ -442,17 +448,18 @@ def test_torch_bmm(
         and np.linalg.det(np.asarray(x[1])) != 0
     ),
     upper=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.cholesky"
-    ),
 )
 def test_torch_cholesky(
+    *,
     dtype_and_x,
     upper,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     x = x[0]
@@ -465,8 +472,9 @@ def test_torch_cholesky(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="cholesky",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-02,
         input=x,
         upper=upper,
@@ -474,19 +482,20 @@ def test_torch_cholesky(
 
 
 # ger
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.ger",
     dtype_and_vecs=_get_dtype_input_and_vectors(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.ger"
-    ),
 )
 def test_torch_ger(
+    *,
     dtype_and_vecs,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -495,89 +504,29 @@ def test_torch_ger(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="ger",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vec1,
         vec2=vec2,
     )
 
 
-# inverse
-@handle_cmd_line_args
-@given(
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", index=1, full=True),
-        min_value=0,
-        max_value=25,
-        shape=helpers.ints(min_value=2, max_value=10).map(lambda x: tuple([x, x])),
-    ).filter(lambda x: np.linalg.cond(x[1]) < 1 / sys.float_info.epsilon),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.inverse"
-    ),
-)
-def test_torch_inverse(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="inverse",
-        rtol=1e-03,
-        input=x[0],
-    )
-
-
-# det
-@handle_cmd_line_args
-@given(
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.det"
-    ),
-)
-def test_torch_det(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="det",
-        input=x,
-    )
-
-
 # logdet
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.logdet",
     dtype_and_x=_get_dtype_and_square_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.logdet"
-    ),
 )
 def test_torch_logdet(
+    *,
     dtype_and_x,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -586,54 +535,28 @@ def test_torch_logdet(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="logdet",
-        input=x,
-    )
-
-
-# slogdet
-@handle_cmd_line_args
-@given(
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.slogdet"
-    ),
-)
-def test_torch_slogdet(
-    dtype_and_x,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="slogdet",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x,
     )
 
 
 # matmul
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.matmul",
     dtype_xy=_get_dtype_and_3dbatch_matrices(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.matmul"
-    ),
 )
 def test_torch_matmul(
+    *,
     dtype_xy,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -642,8 +565,9 @@ def test_torch_matmul(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="matmul",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-02,
         input=x,
         other=y,
@@ -651,50 +575,15 @@ def test_torch_matmul(
     )
 
 
-# matrix_power
-@handle_cmd_line_args
-@given(
-    dtype_and_x=_get_dtype_and_square_matrix(),
-    n=helpers.ints(min_value=2, max_value=5),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.matrix_power"
-    ),
-)
-def test_torch_matrix_power(
-    dtype_and_x,
-    n,
-    as_variable,
-    with_out,
-    num_positional_args,
-    native_array,
-):
-    dtype, x = dtype_and_x
-    helpers.test_frontend_function(
-        input_dtypes=dtype,
-        as_variable_flags=as_variable,
-        with_out=with_out,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="matrix_power",
-        rtol=1e-01,
-        input=x,
-        n=n,
-        out=None,
-    )
-
-
 # matrix_rank
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.matrix_rank",
     dtype_and_x=_get_dtype_and_square_matrix(),
     rtol=st.floats(1e-05, 1e-03),
     sym=st.booleans(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.matrix_rank"
-    ),
 )
 def test_torch_matrix_rank(
+    *,
     dtype_and_x,
     rtol,
     sym,
@@ -702,6 +591,9 @@ def test_torch_matrix_rank(
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -710,8 +602,9 @@ def test_torch_matrix_rank(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="matrix_rank",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-01,
         input=x,
         tol=rtol,
@@ -720,19 +613,20 @@ def test_torch_matrix_rank(
 
 
 # mm
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.mm",
     dtype_xy=_get_dtype_input_and_matrices(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.mm"
-    ),
 )
 def test_torch_mm(
+    *,
     dtype_xy,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x, y = dtype_xy
     helpers.test_frontend_function(
@@ -741,29 +635,31 @@ def test_torch_mm(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="mm",
-        rtol=1e-03,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        atol=1e-02,
+        rtol=1e-02,
         input=x,
         mat2=y,
-        out=None,
     )
 
 
 # mv
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.mv",
     dtype_mat_vec=_get_dtype_input_and_mat_vec(skip_float16=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.mv"
-    ),
 )
 def test_torch_mv(
+    *,
     dtype_mat_vec,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, mat, vec = dtype_mat_vec
     helpers.test_frontend_function(
@@ -772,8 +668,9 @@ def test_torch_mv(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="mv",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-03,
         input=mat,
         vec=vec,
@@ -782,19 +679,20 @@ def test_torch_mv(
 
 
 # outer
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.outer",
     dtype_and_vecs=_get_dtype_input_and_vectors(),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.outer"
-    ),
 )
 def test_torch_outer(
+    *,
     dtype_and_vecs,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -803,17 +701,17 @@ def test_torch_outer(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="outer",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vec1,
         vec2=vec2,
-        out=None,
     )
 
 
 # pinverse
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.pinverse",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=2,
@@ -821,18 +719,19 @@ def test_torch_outer(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.pinverse"
-    ),
     rtol=st.floats(1e-5, 1e-3),
 )
 def test_torch_pinverse(
+    *,
     dtype_and_x,
     rtol,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -841,8 +740,9 @@ def test_torch_pinverse(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="pinverse",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-03,
         input=x[0],
         rcond=rtol,
@@ -850,8 +750,8 @@ def test_torch_pinverse(
 
 
 # qr
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.qr",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=2,
@@ -861,18 +761,19 @@ def test_torch_pinverse(
         min_value=2,
         max_value=5,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.qr"
-    ),
     some=st.booleans(),
 )
 def test_torch_qr(
+    *,
     dtype_and_x,
     some,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -881,18 +782,18 @@ def test_torch_qr(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="qr",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         rtol=1e-02,
         input=x[0],
         some=some,
-        out=None,
     )
 
 
 # svd
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.svd",
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float", index=1, full=True),
         min_num_dims=3,
@@ -900,20 +801,21 @@ def test_torch_qr(
         min_dim_size=2,
         max_dim_size=5,
     ),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.svd"
-    ),
     some=st.booleans(),
     compute=st.booleans(),
 )
 def test_torch_svd(
+    *,
     dtype_and_x,
     some,
     compute,
     as_variable,
     with_out,
-    native_array,
     num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, x = dtype_and_x
     helpers.test_frontend_function(
@@ -922,29 +824,30 @@ def test_torch_svd(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="svd",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=x[0],
         some=some,
         compute_uv=compute,
-        out=None,
     )
 
 
 # vdot
-@handle_cmd_line_args
-@given(
+@handle_frontend_test(
+    fn_tree="torch.vdot",
     dtype_and_vecs=_get_dtype_input_and_vectors(same_size=True),
-    num_positional_args=helpers.num_positional_args(
-        fn_name="ivy.functional.frontends.torch.vdot"
-    ),
 )
 def test_torch_vdot(
+    *,
     dtype_and_vecs,
     as_variable,
     with_out,
     num_positional_args,
     native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     dtype, vec1, vec2 = dtype_and_vecs
     helpers.test_frontend_function(
@@ -953,8 +856,9 @@ def test_torch_vdot(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        frontend="torch",
-        fn_tree="vdot",
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
         input=vec1,
         other=vec2,
     )

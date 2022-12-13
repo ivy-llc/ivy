@@ -16,7 +16,7 @@ def gelu(
     x: JaxArray,
     /,
     *,
-    approximate: bool = True,
+    approximate: bool = False,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jax.nn.gelu(x, approximate)

@@ -149,5 +149,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-from . import extensions
-from .extensions import *
+from . import experimental
+from .experimental import *

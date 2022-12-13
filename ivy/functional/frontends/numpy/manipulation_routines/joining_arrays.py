@@ -3,21 +3,25 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting,
+    handle_numpy_dtype,
 )
 
 
-@handle_numpy_casting
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting
 def concatenate(arrays, /, axis=0, out=None, *, dtype=None, casting="same_kind"):
     if dtype:
         arrays = [ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype)) for a in arrays]
     return ivy.concat(arrays, axis=axis, out=out)
 
 
+@to_ivy_arrays_and_back
 def stack(arrays, axis=0, out=None):
     return ivy.stack(arrays, axis=axis, out=out)
 
 
+@to_ivy_arrays_and_back
 def vstack(tup):
     if len(ivy.shape(tup[0])) == 1:
         xs = []
@@ -30,6 +34,7 @@ def vstack(tup):
 row_stack = vstack
 
 
+@to_ivy_arrays_and_back
 def hstack(tup):
     if len(ivy.shape(tup[0])) == 1:
         xs = []

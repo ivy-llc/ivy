@@ -1,4 +1,5 @@
 import ivy
+from ivy.func_wrapper import with_unsupported_dtypes
 from ivy.functional.frontends.torch.func_wrapper import to_ivy_arrays_and_back
 from collections import namedtuple
 
@@ -47,8 +48,18 @@ def any(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def sum(input, dim=None, keepdim=False, *, out=None):
+    return ivy.sum(input, axis=dim, keepdims=keepdim, out=out)
+
+
+@to_ivy_arrays_and_back
 def mean(input, dim, keepdim=False, *, out=None):
     return ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+
+
+@to_ivy_arrays_and_back
+def nanmean(input, dim=None, keepdim=False, *, dtype=None, out=None):
+    return ivy.nanmean(input, axis=dim, keepdims=keepdim, dtype=dtype, out=out)
 
 
 @to_ivy_arrays_and_back
@@ -57,8 +68,17 @@ def std(input, dim, unbiased, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
-def prod(input, dim=None, keepdim=False, *, dtype=None, out=None):
-    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim, out=out)
+@with_unsupported_dtypes(
+    {
+        "1.11.0 and below": (
+            "float16",
+            "bfloat16",
+        )
+    },
+    "torch",
+)
+def prod(input, dim, keepdim=False, *, dtype=None):
+    return ivy.prod(input, axis=dim, dtype=dtype, keepdims=keepdim)
 
 
 @to_ivy_arrays_and_back
@@ -83,5 +103,30 @@ def min(input, dim=None, keepdim=False, *, out=None):
 
 
 @to_ivy_arrays_and_back
+def max(input, dim=None, keepdim=False, *, out=None):
+    if dim is None:
+        return ivy.max(input, axis=dim, keepdims=keepdim, out=out)
+    elif out is not None:
+        ivy.max(input, axis=dim, keepdims=keepdim, out=out[0])
+        ivy.argmax(input, axis=dim, keepdims=keepdim, out=out[1])
+        return out
+    else:
+        max_tuple = namedtuple("max", ["values", "indices"])
+        return max_tuple(
+            ivy.max(input, axis=dim, keepdims=keepdim),
+            ivy.argmax(input, axis=dim, keepdims=keepdim),
+        )
+
+
+@to_ivy_arrays_and_back
 def moveaxis(input, source, destination):
     return ivy.moveaxis(input, source, destination)
+
+
+@to_ivy_arrays_and_back
+def std_mean(input, dim, unbiased, keepdim=False, *, out=None):
+    temp_std = ivy.std(
+        input, axis=dim, correction=int(unbiased), keepdims=keepdim, out=out
+    )
+    temp_mean = ivy.mean(input, axis=dim, keepdims=keepdim, out=out)
+    return temp_std, temp_mean

@@ -21,7 +21,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_native_array.
@@ -46,16 +45,13 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
         ret
             Boolean, whether or not x is a native array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_native_array",
             x,
             exclusive=exclusive,
@@ -63,7 +59,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_native_array(
@@ -75,7 +70,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -100,9 +94,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -116,7 +107,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -129,7 +119,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_ivy_array.
@@ -154,16 +143,13 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_ivy_array",
             x,
             exclusive=exclusive,
@@ -171,7 +157,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_ivy_array(
@@ -183,7 +168,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_native_array.
@@ -208,9 +192,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -224,7 +205,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -237,7 +217,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.is_array.
@@ -271,7 +250,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             Boolean, whether or not x is an array.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_array",
             x,
             exclusive=exclusive,
@@ -279,7 +258,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
         )
 
     def is_array(
@@ -291,7 +269,6 @@ class ContainerWithGeneral(ContainerBase):
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
         ivy.Container instance method variant of ivy.is_array.
@@ -316,9 +293,6 @@ class ContainerWithGeneral(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
 
         Returns
         -------
@@ -332,105 +306,6 @@ class ContainerWithGeneral(ContainerBase):
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
             map_sequences=map_sequences,
-            out=out,
-        )
-
-    @staticmethod
-    def static_is_ivy_container(
-        x: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container static method variant of ivy.is_ivy_container.
-        This method simply wraps the function, and so the docstring for
-        ivy.ivy.is_ivy_container also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        x
-            The input to check
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not x is an ivy container.
-        """
-        return ContainerBase.multi_map_in_static_method(
-            "is_ivy_container",
-            x,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
-        )
-
-    def is_ivy_container(
-        self: ivy.Container,
-        /,
-        *,
-        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
-        to_apply: bool = True,
-        prune_unapplied: bool = False,
-        map_sequences: bool = False,
-        out: Optional[ivy.Container] = None,
-    ) -> ivy.Container:
-        """
-        ivy.Container instance method variant of ivy.is_ivy_container.
-        This method simply wraps the function, and so the docstring for
-        ivy.is_ivy_container also applies to this method with minimal changes.
-
-        Parameters
-        ----------
-        self
-            The input to check
-        key_chains
-            The key-chains to apply or not apply the method to. Default is ``None``.
-        to_apply
-            If True, the method will be applied to key_chains, otherwise key_chains
-            will be skipped. Default is ``True``.
-        prune_unapplied
-            Whether to prune key_chains for which the function was not applied.
-            Default is ``False``.
-        map_sequences
-            Whether to also map method to sequences (lists, tuples).
-            Default is ``False``.
-        out
-            optional output, for writing the result to. It must have a shape that the
-            inputs broadcast to.
-
-        Returns
-        -------
-        ret
-            Boolean, whether or not x is an ivy container.
-        """
-        return self.static_is_ivy_container(
-            self,
-            key_chains=key_chains,
-            to_apply=to_apply,
-            prune_unapplied=prune_unapplied,
-            map_sequences=map_sequences,
-            out=out,
         )
 
     @staticmethod
@@ -492,7 +367,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip_vector_norm",
             x,
             max_norm,
@@ -620,7 +495,7 @@ class ContainerWithGeneral(ContainerBase):
         """
         # inplace update the leaves
         cont = x
-        cont = ContainerBase.multi_map_in_static_method(
+        cont = ContainerBase.cont_multi_map_in_static_method(
             "inplace_update",
             cont,
             val,
@@ -757,7 +632,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inplace_decrement",
             x,
             val,
@@ -899,7 +774,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inplace_increment",
             x,
             val,
@@ -1007,7 +882,7 @@ class ContainerWithGeneral(ContainerBase):
         ret
             True if support, raises exception otherwise`
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "assert_supports_inplace",
             x,
             key_chains=key_chains,
@@ -1129,7 +1004,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "all_equal",
             x1,
             *xs,
@@ -1289,7 +1164,7 @@ class ContainerWithGeneral(ContainerBase):
             New container with the final dimension expanded of arrays at its leaves,
             and the encodings stored in this channel.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fourier_encode",
             x,
             max_freq,
@@ -1447,7 +1322,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gather",
             params,
             indices,
@@ -1563,7 +1438,7 @@ class ContainerWithGeneral(ContainerBase):
             entire container.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "has_nans",
             self,
             include_infs=include_infs,
@@ -1690,7 +1565,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "scatter_nd",
             indices,
             updates,
@@ -1848,12 +1723,12 @@ class ContainerWithGeneral(ContainerBase):
         ref
             New container of given shape, with the values updated at the indices.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "scatter_flat",
             indices,
             updates,
-            size,
-            reduction,
+            size=size,
+            reduction=reduction,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -1972,7 +1847,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gather_nd",
             params,
             indices,
@@ -2113,7 +1988,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_reduce",
             x,
             pattern,
@@ -2267,7 +2142,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_repeat",
             x,
             pattern,
@@ -2421,7 +2296,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "value_is_nan",
             x,
             include_infs=include_infs,
@@ -2568,7 +2443,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_numpy",
             x,
             copy=copy,
@@ -2701,7 +2576,7 @@ class ContainerWithGeneral(ContainerBase):
             b: 3
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_scalar",
             x,
             key_chains=key_chains,
@@ -2816,7 +2691,7 @@ class ContainerWithGeneral(ContainerBase):
         {a:[0,1,2]}
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_list",
             x,
             key_chains=key_chains,
@@ -2973,7 +2848,7 @@ class ContainerWithGeneral(ContainerBase):
             b: ivy.array([0.909, 2.5])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stable_divide",
             numerator,
             denominator,
@@ -3116,7 +2991,7 @@ class ContainerWithGeneral(ContainerBase):
             numerically stable power.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stable_pow",
             base,
             exponent,
@@ -3222,7 +3097,7 @@ class ContainerWithGeneral(ContainerBase):
             ivy.Container with each array having einops.rearrange applied.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "einops_rearrange",
             x,
             pattern,
@@ -3347,7 +3222,7 @@ class ContainerWithGeneral(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip_matrix_norm",
             x,
             max_norm,
@@ -3488,7 +3363,7 @@ class ContainerWithGeneral(ContainerBase):
 
         With `ivy.Container` input and backend set as 'tensorflow':
 
-        >>> x = ivy.Container(a=ivy.variable(ivy.array([2.0, 0.0])),
+        >>> x = ivy.Container(a=ivy.array(ivy.array([2.0, 0.0])),
         ...                   b=ivy.array([0., 5.5, -8]))
         >>> ret = ivy.Container.static_supports_inplace_updates(x)
         >>> print(ret)
@@ -3497,7 +3372,7 @@ class ContainerWithGeneral(ContainerBase):
             b: false
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "supports_inplace_updates",
             x,
             key_chains=key_chains,
@@ -3641,7 +3516,7 @@ class ContainerWithGeneral(ContainerBase):
             c: ivy.array(2)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "get_num_dims",
             x,
             as_array=as_array,

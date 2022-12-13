@@ -22,6 +22,7 @@ from ivy.func_wrapper import (
     handle_out_argument,
     to_native_arrays_and_back,
     handle_nestable,
+    handle_array_like,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -170,119 +171,22 @@ def num_ivy_arrays_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> int
 
     Examples
     --------
-    With :class:`ivy.Array` input:
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
     >>> x1 = ivy.array([-1, 0, 5.2])
     >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     2
 
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x1 = ivy.array([-1, 0, 5.2])
-    >>> x2 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.array([2])
-    >>> x4 = ivy.array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With :class:`ivy.NativeArray` input:
-
     >>> x1 = ivy.native_array([-1, 0, 5.2])
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
-    3
+    0
 
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
+    >>> x = ivy.Container(x1=ivy.array([-1]),
+    ...                   x2=ivy.native_array([-1]))
     >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
     >>> print(y)
     1
-
-    >>> x1 = ivy.native_array([-1, 0, 5.2])
-    >>> x2 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> x3 = ivy.native_array([2])
-    >>> x4 = ivy.native_array([-1, 0, 5.2, 4, 5])
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    With a mix of :class:`ivy.Container` and :class:`ivy.Array` input:
-
-    >>> x = ivy.Container(x1= ivy.array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    1
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    2
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    3
-
-    >>> x = ivy.Container(x1=ivy.array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.array([2]),
-    ...                   x4=ivy.array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    4
-
-    With a mix of :class:`ivy.Container` and :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.Container(x1= ivy.native_array([-1, 0, 5.2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                    x2=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.native_array([2]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
-    >>> x = ivy.Container(x1=ivy.native_array([-1, 0, 5.2, 6, 5.3]),
-    ...                   x2=ivy.native_array([-1, 0, 5.2, 4, 5]),
-    ...                   x3=ivy.native_array([2]),
-    ...                   x4=ivy.native_array([-1, 0, 5.2, 4, 5]))
-    >>> y = ivy.num_ivy_arrays_on_dev(ivy.default_device())
-    >>> print(y)
-    0
-
     """
     return len(ivy.get_all_ivy_arrays_on_dev(device))
 
@@ -318,7 +222,6 @@ def print_all_ivy_arrays_on_dev(
     >>> ivy.print_all_ivy_arrays_on_dev(y, attr_only = False)
     [1,0,2]
     [3,2,1]
-
     """
     arrs = ivy.get_all_ivy_arrays_on_dev(device).values()
     if attr_only:
@@ -341,15 +244,15 @@ def dev(
     Parameters
     ----------
     x
-          array for which to get the device handle.
+        array for which to get the device handle.
 
     as_native
-          Whether or not to return the dev in native format. Default is ``False``.
+        Whether or not to return the dev in native format. Default is ``False``.
 
     Returns
     -------
     ret
-          Device handle for the array, in native framework format.
+        Device handle for the array, in native framework format.
 
     Functional Examples
     --------------------
@@ -376,7 +279,7 @@ def dev(
 
 @handle_exceptions
 def as_ivy_dev(device: Union[ivy.Device, str], /) -> ivy.Device:
-    """Convert native data type to string representation.
+    """Convert device to string representation.
 
     Parameters
     ----------
@@ -400,6 +303,30 @@ def as_native_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> ivy.NativeD
     ----------
     device
         The device string to convert to native device handle.
+        A native device handle can be passed in instead - in this case
+        the unmodified parameter is returned.
+
+    Examples
+    --------
+    With :class:`ivy.Device` input:
+
+    >>> ivy.set_backend("numpy")
+    >>> ivy.as_native_dev("cpu")
+    'cpu'
+
+    >>> ivy.set_backend("tensorflow")
+    >>> ivy.as_native_dev("tpu:3")
+    '/TPU:3'
+
+    With :class:`ivy.NativeDevice` input:
+
+    >>> import torch
+    >>> device = torch.device("cuda")
+    >>> device
+    device(type='cuda')
+    >>> ivy.as_native_dev(device)
+    device(type='cuda')
+
 
     Returns
     -------
@@ -420,6 +347,13 @@ def clear_mem_on_dev(device: Union[ivy.Device, ivy.NativeDevice], /) -> None:
     ----------
     device
         The device string to convert to native device handle.
+
+    Examples
+    --------
+    >>> import torch
+    >>> ivy.set_backend("torch")
+    >>> device = torch.device("cuda")
+    >>> ivy.clear_mem_on_dev(device)
 
     """
     ivy.current_backend(None).clear_mem_on_dev(device)
@@ -685,6 +619,8 @@ def num_gpus() -> int:
     Examples
     --------
     >>> print(ivy.num_gpus())
+    0
+    >>> print(ivy.num_gpus())
     1
 
     """
@@ -839,6 +775,7 @@ def unset_default_device() -> None:
 @handle_out_argument
 @handle_nestable
 @handle_exceptions
+@handle_array_like
 def to_device(
     x: Union[ivy.Array, ivy.NativeArray],
     device: Union[ivy.Device, ivy.NativeDevice],
@@ -920,9 +857,7 @@ def split_factor(device: Union[ivy.Device, ivy.NativeDevice] = None, /) -> float
 
 @handle_exceptions
 def set_split_factor(
-    factor: float,
-    device: Union[ivy.Device, ivy.NativeDevice] = None,
-    /,
+    factor: float, /, *, device: Union[ivy.Device, ivy.NativeDevice] = None
 ) -> None:
     """Set the global split factor for a given device, which can be used to scale batch
     splitting chunk sizes for the device across the codebase.

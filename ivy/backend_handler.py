@@ -8,7 +8,6 @@ from typing import Optional
 # local
 from ivy.func_wrapper import _wrap_function
 
-
 backend_stack = []
 implicit_backend = "numpy"
 ivy_original_dict = ivy.__dict__.copy()
@@ -47,7 +46,7 @@ _backend_reverse_dict["ivy.functional.backends.torch"] = "torch"
 
 
 # Backend Getting/Setting #
-# ------------------------#
+# ----------------------- #
 
 
 def _determine_backend_from_args(args):
@@ -110,52 +109,48 @@ def fn_name_from_version_specific_fn_name(name, version):
         specific function
 
     """
-    # TODO: add docstring and tests
+    # TODO: add tests
     version = str(version)
     if version.find("+") != -1:
-        version = int(version[: version.index("+")].replace(".", ""))
+        version = tuple(map(int, version[: version.index("+")].split(".")))
     else:
-        version = int(version.replace(".", ""))
+        version = tuple(map(int, version.split(".")))
     if "_to_" in name:
         i = name.index("_v_")
         e = name.index("_to_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         version_end = name[e + 4 :]
-        version_end = int(version_end.replace("p", ""))
-        if version in range(version_start, version_end + 1):
+        version_end = tuple(map(int, version_end.split("p")))
+        if version_start <= version <= version_end:
             return name[0:i]
     elif "_and_above" in name:
         i = name.index("_v_")
         e = name.index("_and_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         if version >= version_start:
             return name[0:i]
     else:
         i = name.index("_v_")
         e = name.index("_and_")
         version_start = name[i + 3 : e]
-        version_start = int(version_start.replace("p", ""))
+        version_start = tuple(map(int, version_start.split("p")))
         if version <= version_start:
             return name[0:i]
 
 
 def set_backend_to_specific_version(backend):
     """
+    Updates the backend dict to make the original function
+    name point to the version specific one.
 
     Parameters
     ----------
     backend
         the backend module for which we provide the version support
-    Returns
-        The function doesn't return anything and updates the backend __dict__
-        to make the original function name to point to the version specific one
-
-    -------
-
     """
-    # TODO: add docstring, functionality and tests
+    # TODO: add functionality and tests
     f = str(backend.__name__)
     f = f[f.index("backends") + 9 :]
 
@@ -202,7 +197,6 @@ def current_backend(*args, **kwargs):
     >>> x = np.array([2.0])
     >>> print(ivy.current_backend(x))
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-
     """
     global implicit_backend
     # if a global backend has been set with set_backend then this will be returned
@@ -241,7 +235,6 @@ def set_backend(backend: str):
     >>> native = ivy.native_array([1])
     >>> print(type(native))
     <class 'jaxlib.xla_extension.DeviceArray'>
-
     """
     ivy.assertions.check_false(
         isinstance(backend, str) and backend not in _backend_dict,
@@ -265,16 +258,42 @@ def set_backend(backend: str):
     backend_stack.append(backend)
     set_backend_to_specific_version(backend)
     for k, v in ivy_original_dict.items():
+        compositional = k not in backend.__dict__
         if k not in backend.__dict__:
             if k in backend.invalid_dtypes and k in ivy.__dict__:
                 del ivy.__dict__[k]
                 continue
             backend.__dict__[k] = v
-        ivy.__dict__[k] = _wrap_function(key=k, to_wrap=backend.__dict__[k], original=v)
+        ivy.__dict__[k] = _wrap_function(
+            key=k, to_wrap=backend.__dict__[k], original=v, compositional=compositional
+        )
 
     if verbosity.level > 0:
         verbosity.cprint("backend stack: {}".format(backend_stack))
     ivy.locks["backend_setter"].release()
+
+
+def set_numpy_backend():
+    """Sets NumPy to be the global backend. equivalent to `ivy.set_backend("numpy")`."""
+    set_backend("numpy")
+
+
+def set_jax_backend():
+    """Sets JAX to be the global backend. equivalent to `ivy.set_backend("jax")`."""
+    set_backend("jax")
+
+
+def set_tensorflow_backend():
+    """
+    Sets TensorFlow to be the global backend. equivalent to
+    `ivy.set_backend("tensorflow")`.
+    """
+    set_backend("tensorflow")
+
+
+def set_torch_backend():
+    """Sets torch to be the global backend. equivalent to `ivy.set_backend("torch")`."""
+    set_backend("torch")
 
 
 def get_backend(backend: Optional[str] = None):
@@ -307,7 +326,6 @@ def get_backend(backend: Optional[str] = None):
     >>> ivy_jax = ivy.get_backend()
     >>> print(ivy_jax)
     <module 'ivy.functional.backends.jax' from '/ivy/ivy/functional/backends/jax/__init__.py'>   # noqa
-
     """
     # ToDo: change this so that it doesn't depend at all on the global ivy. Currently
     #  all backend-agnostic implementations returned in this module will still
@@ -359,7 +377,6 @@ def unset_backend():
     >>> x = ivy.native_array([1])
     >>> print(type(x))
     <class'tensorflow.python.framework.ops.EagerTensor'>
-
     """
     backend = None
     # if the backend stack is empty, nothing is done and we just return `None`

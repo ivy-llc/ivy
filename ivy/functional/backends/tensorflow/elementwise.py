@@ -198,6 +198,7 @@ def cos(
     return tf.cos(x)
 
 
+@with_unsupported_dtypes({"2.9.1 and below": ("float16",)}, backend_version)
 def cosh(
     x: Union[tf.Tensor, tf.Variable],
     /,
@@ -582,11 +583,7 @@ def sqrt(
     *,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    if x.dtype == "float32":
-        x_64 = tf.cast(x, tf.float64)
-        return tf.cast(tf.sqrt(x_64), x.dtype)
-    else:
-        return tf.math.sqrt(x)
+    return tf.math.sqrt(x)
 
 
 def square(
@@ -642,13 +639,13 @@ def trunc(
     elif not ("int" in str(x.dtype)):
         if not ret.get_shape().ndims == 0:
             ret = tf.tensor_scatter_nd_update(
-                x, tf.where(tf.greater(x, 0)), tf.math.floor(x[x > 0])
+                x, tf.where(tf.greater_equal(x, 0)), tf.math.floor(x[x >= 0])
             )
             ret = tf.tensor_scatter_nd_update(
                 ret, tf.where(tf.less(x, 0)), tf.math.ceil(x[x < 0])
             )
         else:
-            ret = (tf.math.floor if ret > 0 else tf.math.ceil)(ret)
+            ret = (tf.math.floor if ret >= 0 else tf.math.ceil)(ret)
     return ret
 
 
@@ -681,7 +678,7 @@ def maximum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -709,7 +706,7 @@ def minimum(
     x2: Union[tf.Tensor, tf.Variable],
     /,
     *,
-    use_where: bool = False,
+    use_where: bool = True,
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)

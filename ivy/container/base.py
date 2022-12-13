@@ -83,7 +83,7 @@ class ContainerBase(dict, abc.ABC):
             Default is ``None``.
         container_combine_method
             The method to use for combining containers arriving from different queues.
-            Default is ivy.Container.list_join
+            Default is ivy.Container.cont_list_join
         queue_timeout
             The timeout when waiting for containers to arrive from the queues.
             Default is global.
@@ -124,7 +124,7 @@ class ContainerBase(dict, abc.ABC):
         if ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method = {
-                    "list_join": self.list_join,
+                    "list_join": self.cont_list_join,
                     "concat": lambda conts: self.concat(conts, 0),
                 }[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
@@ -159,7 +159,7 @@ class ContainerBase(dict, abc.ABC):
     # --------------#
 
     @staticmethod
-    def multi_map_in_static_method(
+    def cont_multi_map_in_static_method(
         fn_name,
         *args,
         key_chains=None,
@@ -233,7 +233,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     @staticmethod
-    def handle_inplace(ret, out):
+    def cont_handle_inplace(ret, out):
         """Returns an inplace update of out, provided it is not None, by updating with
         the values in ret.
 
@@ -256,7 +256,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     @staticmethod
-    def list_join(containers, config=None):
+    def cont_list_join(containers, config=None):
         """Join containers of lists together along the specified dimension.
 
         Parameters
@@ -281,7 +281,7 @@ class ContainerBase(dict, abc.ABC):
                 new_list = list()
                 for container in containers:
                     new_list.append(container[key])
-                return_dict[key] = ivy.Container.list_join(new_list, config)
+                return_dict[key] = ivy.Container.cont_list_join(new_list, config)
             return ivy.Container(return_dict, **config)
         else:
             return [item for sublist in containers for item in sublist]
@@ -674,11 +674,19 @@ class ContainerBase(dict, abc.ABC):
             value0 = values[0]
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             is_container = [ivy.is_ivy_container(x) for x in values]
+
+            def _found_in_key_chains(this_key_chain, key_chains):
+                if key_chains is None:
+                    return False
+                for key_chain in key_chains:
+                    if this_key_chain.startswith(key_chain):
+                        return True
+                return False
+
             if not assert_identical and not all(is_container) and any(is_container):
+                found = _found_in_key_chains(this_key_chain, key_chains)
                 if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                        this_key_chain not in key_chains and to_apply
-                    ):
+                    if (found and not to_apply) or (not found and to_apply):
                         if prune_unapplied:
                             continue
                         return_dict[key] = value0
@@ -707,10 +715,9 @@ class ContainerBase(dict, abc.ABC):
                         continue
                     return_dict[key] = ret
                 else:
+                    found = _found_in_key_chains(this_key_chain, key_chains)
                     if key_chains is not None:
-                        if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply
-                        ):
+                        if (found and not to_apply) or (not found and to_apply):
                             if prune_unapplied:
                                 continue
                             return_dict[key] = value0
@@ -3015,6 +3022,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
+
+    def __deepcopy__(self, memo):
+        return self.deep_copy()
 
     def map(
         self,

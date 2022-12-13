@@ -14,5 +14,15 @@ def flip(m, axis=None):
 
 
 @to_ivy_arrays_and_back
+def fliplr(m):
+    return ivy.fliplr(m, out=None)
+
+
+@to_ivy_arrays_and_back
 def flipud(m):
     return ivy.flipud(m, out=None)
+
+
+@to_ivy_arrays_and_back
+def rot90(m, k=1, axes=(0, 1)):
+    return ivy.rot90(m, k=k, axes=axes)

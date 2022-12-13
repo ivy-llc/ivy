@@ -69,7 +69,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([3, 2, 1])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "astype",
             x,
             dtype,
@@ -221,7 +221,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: ivy.array([0.2, 3.])
         }]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "broadcast_arrays",
             *arrays,
             key_chains=key_chains,
@@ -352,7 +352,7 @@ class ContainerWithDataTypes(ContainerBase):
                          [2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "broadcast_to",
             x,
             shape,
@@ -472,7 +472,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: true
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "can_cast",
             from_,
             to,
@@ -546,7 +546,7 @@ class ContainerWithDataTypes(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dtype",
             x,
             as_native,
@@ -589,7 +589,8 @@ class ContainerWithDataTypes(ContainerBase):
 
     @staticmethod
     def static_default_float_dtype(
-        input=None,
+        *,
+        input: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
         float_dtype: Optional[Union[ivy.FloatDtype, ivy.NativeDtype]] = None,
         as_native: Optional[bool] = None,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
@@ -597,11 +598,11 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "default_float_dtype",
-            input,
-            float_dtype,
-            as_native,
+            input=input,
+            float_dtype=float_dtype,
+            as_native=as_native,
             key_chains=key_chains,
             to_apply=to_apply,
             prune_unapplied=prune_unapplied,
@@ -616,7 +617,7 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "function_supported_dtypes",
             fn,
             key_chains=key_chains,
@@ -633,7 +634,7 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "function_unsupported_dtypes",
             fn,
             key_chains=key_chains,
@@ -645,12 +646,14 @@ class ContainerWithDataTypes(ContainerBase):
     @staticmethod
     def static_finfo(
         type: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "finfo",
             type,
             key_chains=key_chains,
@@ -661,24 +664,32 @@ class ContainerWithDataTypes(ContainerBase):
 
     def finfo(
         self: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
         return self.static_finfo(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
     def static_iinfo(
         type: ivy.Container,
+        /,
+        *,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "iinfo",
             type,
             key_chains=key_chains,
@@ -706,7 +717,11 @@ class ContainerWithDataTypes(ContainerBase):
         }
         """
         return self.static_iinfo(
-            self, key_chains, to_apply, prune_unapplied, map_sequences
+            self,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
         )
 
     @staticmethod
@@ -718,7 +733,7 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_bool_dtype",
             dtype_in,
             key_chains=key_chains,
@@ -806,7 +821,7 @@ class ContainerWithDataTypes(ContainerBase):
         >>> print(x.a.dtype, x.b.dtype)
         float32 int32
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_float_dtype",
             dtype_in,
             key_chains=key_chains,
@@ -898,7 +913,7 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_int_dtype",
             dtype_in,
             key_chains=key_chains,
@@ -931,7 +946,7 @@ class ContainerWithDataTypes(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "is_uint_dtype",
             dtype_in,
             key_chains=key_chains,
@@ -1004,7 +1019,7 @@ class ContainerWithDataTypes(ContainerBase):
             b: float32
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "result_type",
             *arrays_and_dtypes,
             key_chains=key_chains,

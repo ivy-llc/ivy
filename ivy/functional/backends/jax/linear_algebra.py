@@ -61,15 +61,27 @@ def diagonal(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     if not x.dtype == bool and not jnp.issubdtype(x.dtype, jnp.integer):
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
         ret_edited = jnp.diagonal(
-            x.at[1 / x == -jnp.inf].set(-jnp.inf), offset, axis1, axis2
+            x.at[1 / x == -jnp.inf].set(-jnp.inf),
+            offset=offset,
+            axis1=axis1,
+            axis2=axis2,
         )
         ret_edited = ret_edited.at[ret_edited == -jnp.inf].set(-0.0)
         ret = ret.at[ret == ret_edited].set(ret_edited[ret == ret_edited])
     else:
-        ret = jnp.diagonal(x, offset, axis1, axis2)
+        ret = jnp.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
     return ret
+
+
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
+def eig(x: JaxArray, /, *, out: Optional[JaxArray] = None) -> Tuple[JaxArray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", JaxArray), ("eigenvectors", JaxArray)]
+    )
+    eigenvalues, eigenvectors = jnp.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
@@ -168,6 +180,17 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
     if len(x.shape) == 3:
         if x.shape[-3] == 0:
             return jnp.asarray(0).astype(x.dtype)
@@ -190,16 +213,31 @@ def matrix_rank(
     if len(x.shape) < 2 or len(singular_values.shape) == 0:
         return jnp.array(0, dtype=x.dtype)
     max_values = jnp.max(singular_values, axis=axis)
-    if atol and rtol is None:
-        ret = jnp.sum(singular_values > atol, axis=axis)
-    elif rtol and atol is None:
-        ret = jnp.sum(singular_values > max_values * rtol, axis=axis)
-    elif rtol and atol:
-        tol = jnp.max(atol, max_values * rtol)
-        ret = jnp.sum(singular_values > tol, axis=axis)
-    else:
-        ret = jnp.sum(singular_values != 0, axis=axis)
-
+    if atol is None:
+        if rtol is None:
+            ret = jnp.sum(singular_values != 0, axis=axis)
+        else:
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = jnp.sum(singular_values > atol, axis=axis)
+        else:
+            tol = jnp.max(atol, max_values * rtol)
+            ret = jnp.sum(singular_values > tol, axis=axis)
     if len(ret_shape):
         ret = ret.reshape(ret_shape)
     return ret.astype(x.dtype)
@@ -231,7 +269,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
-def qr(x: JaxArray, /, *, mode: str = "reduced") -> Tuple[JaxArray, JaxArray]:
+def qr(
+    x: JaxArray, /, *, mode: str = "reduced", out: Optional[JaxArray] = None
+) -> Tuple[JaxArray, JaxArray]:
     res = namedtuple("qr", ["Q", "R"])
     q, r = jnp.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -309,6 +349,17 @@ def tensordot(
     return jnp.tensordot(x1, x2, axes)
 
 
+def tensorsolve(
+    x1: JaxArray,
+    x2: JaxArray,
+    /,
+    *,
+    axes: Union[int, Tuple[Sequence[int], Sequence[int]]] = None,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.linalg.tensorsolve(x1, x2, axes)
+
+
 @with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: JaxArray,
@@ -364,6 +415,7 @@ def diag(
     return jnp.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"0.3.14 and below": ("float16", "bfloat16")}, backend_version)
 def vander(
     x: JaxArray,
     /,

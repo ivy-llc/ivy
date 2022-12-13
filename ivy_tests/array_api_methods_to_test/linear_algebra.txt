@@ -18,6 +18,6 @@ solve
 svd
 svdvals
 tensordot
-#trace # failing for jax, numpy due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202
+#trace # failing for jax, numpy, tensorflow, torch due to issues with dtypes in output in test: https://github.com/data-apis/array-api/issues/202
 #vecdot #failing for torch, due to unexpected behaviour on some dtypes while type-casting (https://github.com/pytorch/pytorch/issues/84530)
 vector_norm

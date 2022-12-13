@@ -94,7 +94,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "linear",
             x,
             weight,
@@ -198,7 +198,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dropout",
             x,
             prob,
@@ -237,6 +237,58 @@ class ContainerWithLayers(ContainerBase):
         )
 
     @staticmethod
+    def static_dropout1d(
+        x: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return ContainerBase.cont_multi_map_in_static_method(
+            "dropout1d",
+            x,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def dropout1d(
+        self: ivy.Container,
+        prob: float,
+        /,
+        *,
+        training: bool = True,
+        data_format: str = "NWC",
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        return self.static_dropout1d(
+            self,
+            prob,
+            training=training,
+            data_format=data_format,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    @staticmethod
     def static_scaled_dot_product_attention(
         q: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         k: Union[ivy.Array, ivy.NativeArray, ivy.Container],
@@ -251,7 +303,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "scaled_dot_product_attention",
             q,
             k,
@@ -313,7 +365,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "multi_head_attention",
             x,
             scale,
@@ -431,7 +483,7 @@ class ContainerWithLayers(ContainerBase):
             ...                [-3.25, 10.5, 24.2]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv1d",
             x,
             filters,
@@ -577,7 +629,7 @@ class ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv2d",
             x,
             filters,
@@ -681,7 +733,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv1d_transpose",
             x,
             filters,
@@ -745,7 +797,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv2d_transpose",
             x,
             filters,
@@ -851,7 +903,7 @@ class ContainerWithLayers(ContainerBase):
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "depthwise_conv2d",
             x,
             filters,
@@ -938,19 +990,63 @@ class ContainerWithLayers(ContainerBase):
     def static_conv3d(
         x: Union[ivy.Array, ivy.NativeArray, ivy.Container],
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: int,
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: int = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        """
+        ivy.Container static method variant of ivy.conv3d. This method simply
+        wraps the function, and so the docstring for ivy.conv3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input volume *[batch_size,d,h,w,d_in]*.
+        filters
+            Convolution filters *[fdfh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.full((1, 2, 3, 3, 1),0.5),\
+                              b = ivy.full((1, 2, 5, 5, 1),1.))
+
+        >>> filters = ivy.ones((3, 3, 3, 1, 1))
+
+        >>> result = ivy.Container.static_conv3d(x, filters, 2, 'SAME')
+        >>> print(result)
+        {
+            a: ivy.array([[[[[4.],[4.]],[[4.],[4.]]]]]),
+            b: ivy.array([[[[[8.],[12.],[8.]],[[12.],[18.],[12.]],[[8.],[12.],[8.]]]]])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv3d",
             x,
             filters,
@@ -968,18 +1064,62 @@ class ContainerWithLayers(ContainerBase):
     def conv3d(
         self: ivy.Container,
         filters: Union[ivy.Array, ivy.NativeArray, ivy.Container],
-        strides: int,
+        strides: Union[int, Tuple[int, int, int]],
         padding: str,
         /,
         *,
         data_format: str = "NDHWC",
-        dilations: int = 1,
+        dilations: Optional[Union[int, Tuple[int, int, int]]] = 1,
         key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
         to_apply: bool = True,
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
+        """
+        ivy.Container instance method variant of ivy.conv3d. This method simply
+        wraps the function, and so the docstring for ivy.conv3d also applies
+        to this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            Input volume *[batch_size,d,h,w,d_in]*.
+        filters
+            Convolution filters *[fdfh,fw,d_in,d_out]*.
+        strides
+            The stride of the sliding window for each dimension of input.
+        padding
+            "SAME" or "VALID" indicating the algorithm, or list indicating
+            the per-dimension paddings.
+        data_format
+            "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        dilations
+            The dilation factor for each dimension of input. (Default value = 1)
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The result of the convolution operation.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.full((1, 2, 3, 3, 1),0.5),\
+                              b = ivy.full((1, 2, 5, 5, 1),1.))
+
+        >>> filters = ivy.ones((3, 3, 3, 1, 1))
+
+        >>> result = x.conv3d(filters, 2, 'SAME')
+        >>> print(result)
+        {
+            a: ivy.array([[[[[4.],[4.]],[[4.],[4.]]]]]),
+            b: ivy.array([[[[[8.],[12.],[8.]],[[12.],[18.],[12.]],[[8.],[12.],[8.]]]]])
+        }
+
+        """
         return self.static_conv3d(
             self,
             filters,
@@ -1011,7 +1151,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv3d_transpose",
             x,
             filters,
@@ -1076,7 +1216,7 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "lstm_update",
             x,
             init_h,

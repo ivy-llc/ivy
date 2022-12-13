@@ -11,7 +11,7 @@ import numpy as np
 import ivy
 from ivy import inf
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.backends.numpy.helpers import _handle_0_dim_output
+from ivy.functional.backends.numpy.helpers import _scalar_output_to_0d_array
 from . import backend_version
 
 
@@ -31,6 +31,7 @@ def cholesky(
     return ret
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def cross(
     x1: np.ndarray,
     x2: np.ndarray,
@@ -45,7 +46,7 @@ def cross(
     return np.cross(a=x1, b=x2, axisa=axisa, axisb=axisb, axisc=axisc, axis=axis)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def det(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
     return np.linalg.det(x)
@@ -64,6 +65,15 @@ def diagonal(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
+def eig(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> Tuple[np.ndarray]:
+    result_tuple = NamedTuple(
+        "eig", [("eigenvalues", np.ndarray), ("eigenvectors", np.ndarray)]
+    )
+    eigenvalues, eigenvectors = np.linalg.eig(x)
+    return result_tuple(eigenvalues, eigenvectors)
+
+
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def eigh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> Tuple[np.ndarray]:
@@ -78,12 +88,12 @@ def eigh(
 def eigvalsh(
     x: np.ndarray, /, *, UPLO: Optional[str] = "L", out: Optional[np.ndarray] = None
 ) -> np.ndarray:
-    return np.linalg.eigvalsh(x)
+    return np.linalg.eigvalsh(x, UPLO=UPLO)
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def inner(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.inner(x1, x2)
@@ -131,7 +141,7 @@ def matmul(
 matmul.support_native_out = True
 
 
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def matrix_norm(
     x: np.ndarray,
@@ -162,7 +172,7 @@ def matrix_power(
     },
     backend_version,
 )
-@_handle_0_dim_output
+@_scalar_output_to_0d_array
 def matrix_rank(
     x: np.ndarray,
     /,
@@ -171,27 +181,77 @@ def matrix_rank(
     rtol: Optional[Union[float, Tuple[float]]] = None,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
-    if len(x.shape) < 2:
-        return np.asarray(0).astype(x.dtype)
-    if type(atol) and type(rtol) == tuple:
-        if atol.all() and rtol.all() is None:
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=atol)).astype(x.dtype)
-        elif atol.all() and rtol.all():
-            tol = np.maximum(atol, rtol)
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=tol)).astype(x.dtype)
+    def dim_reduction(array):
+        if array.ndim == 1:
+            ret = array[0]
+        elif array.ndim == 2:
+            ret = array[0][0]
+        elif array.ndim == 3:
+            ret = array[0][0][0]
+        elif array.ndim == 4:
+            ret = array[0][0][0][0]
+        return ret
+
+    if len(x.shape) == 3:
+        if x.shape[-3] == 0:
+            return np.asarray(0).astype(x.dtype)
+    elif len(x.shape) > 3:
+        if x.shape[-3] == 0 or x.shape[-4] == 0:
+            return np.asarray(0).astype(x.dtype)
+    axis = None
+    ret_shape = x.shape[:-2]
+    if len(x.shape) == 2:
+        singular_values = np.linalg.svd(x, compute_uv=False)
+    elif len(x.shape) > 2:
+        y = x.reshape((-1, *x.shape[-2:]))
+        singular_values = np.asarray(
+            [
+                np.linalg.svd(split[0], compute_uv=False)
+                for split in np.split(y, y.shape[0], axis=0)
+            ]
+        )
+        axis = 1
+    if len(x.shape) < 2 or len(singular_values.shape) == 0:
+        return np.array(0, dtype=x.dtype)
+    max_values = np.max(singular_values, axis=axis)
+    if atol is None:
+        if rtol is None:
+            ret = np.sum(singular_values != 0, axis=axis)
         else:
-            ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    else:
-        ret = np.asarray(np.linalg.matrix_rank(x, tol=rtol)).astype(x.dtype)
-    return ret
+            try:
+                max_rtol = max_values * rtol
+            except ValueError:
+                if ivy.all(
+                    element == rtol[0] for element in rtol
+                ):  # all elements are same in rtol
+                    rtol = dim_reduction(rtol)
+                    max_rtol = max_values * rtol
+            if not isinstance(rtol, float) and rtol.size > 1:
+                if ivy.all(element == max_rtol[0] for element in max_rtol):
+                    max_rtol = dim_reduction(max_rtol)
+            elif not isinstance(max_values, float) and max_values.size > 1:
+                if ivy.all(element == max_values[0] for element in max_values):
+                    max_rtol = dim_reduction(max_rtol)
+            ret = ivy.sum(singular_values > max_rtol, axis=axis)
+    else:  # atol is not None
+        if rtol is None:  # atol is not None, rtol is None
+            ret = np.sum(singular_values > atol, axis=axis)
+        else:
+            tol = np.max(atol, max_values * rtol)
+            ret = np.sum(singular_values > tol, axis=axis)
+    if len(ret_shape):
+        ret = ret.reshape(ret_shape)
+    return ret.astype(x.dtype)
 
 
-def matrix_transpose(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
+def matrix_transpose(
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
+) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 
 
 def outer(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.outer(x1, x2, out=out)
@@ -215,7 +275,9 @@ def pinv(
 
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
-def qr(x: np.ndarray, mode: str = "reduced") -> NamedTuple:
+def qr(
+    x: np.ndarray, /, *, mode: str = "reduced", out: Optional[np.ndarray] = None
+) -> NamedTuple:
     res = namedtuple("qr", ["Q", "R"])
     q, r = np.linalg.qr(x, mode=mode)
     return res(q, r)
@@ -238,7 +300,7 @@ def slogdet(
 
 @with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def solve(
-    x1: np.ndarray, x2: np.ndarray, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray, x2: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     expanded_last = False
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
@@ -276,15 +338,27 @@ def svdvals(x: np.ndarray, *, out: Optional[np.ndarray] = None) -> np.ndarray:
 def tensordot(
     x1: np.ndarray,
     x2: np.ndarray,
-    axes: Union[int, Tuple[List[int], List[int]]] = 2,
+    /,
     *,
+    axes: Union[int, Tuple[List[int], List[int]]] = 2,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=axes)
 
 
-@_handle_0_dim_output
+def tensorsolve(
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axes: Union[int, Tuple[List[int], List[int]]] = None,
+    out: Optional[np.ndarray] = None,
+) -> np.ndarray:
+    return np.linalg.tensorsolve(x1, x2, axes=axes)
+
+
+@_scalar_output_to_0d_array
 @with_unsupported_dtypes({"1.23.0 and below": ("float16", "bfloat16")}, backend_version)
 def trace(
     x: np.ndarray,
@@ -302,7 +376,12 @@ trace.support_native_out = True
 
 
 def vecdot(
-    x1: np.ndarray, x2: np.ndarray, axis: int = -1, *, out: Optional[np.ndarray] = None
+    x1: np.ndarray,
+    x2: np.ndarray,
+    /,
+    *,
+    axis: int = -1,
+    out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     x1, x2 = ivy.promote_types_of_inputs(x1, x2)
     return np.tensordot(x1, x2, axes=(axis, axis))
@@ -310,10 +389,11 @@ def vecdot(
 
 def vector_norm(
     x: np.ndarray,
+    /,
+    *,
     axis: Optional[Union[int, Sequence[int]]] = None,
     keepdims: bool = False,
     ord: Union[int, float, Literal[inf, -inf]] = 2,
-    *,
     out: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     if axis is None:
@@ -343,6 +423,7 @@ def diag(
     return np.diag(x, k=k)
 
 
+@with_unsupported_dtypes({"1.23.0 and below": ("float16",)}, backend_version)
 def vander(
     x: np.ndarray,
     /,
@@ -355,7 +436,7 @@ def vander(
 
 
 def vector_to_skew_symmetric_matrix(
-    vector: np.ndarray, *, out: Optional[np.ndarray] = None
+    vector: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1

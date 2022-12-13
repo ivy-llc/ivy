@@ -37,7 +37,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.concat also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "concat",
             xs,
             axis=axis,
@@ -160,7 +160,7 @@ class ContainerWithManipulation(ContainerBase):
             c: ivy.array([[[6., 7., 8.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "expand_dims",
             x,
             axis=axis,
@@ -278,7 +278,7 @@ class ContainerWithManipulation(ContainerBase):
             A container with list of sub-arrays.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "split",
             x,
             num_or_size_splits=num_or_size_splits,
@@ -372,8 +372,34 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.permute_dims. This method simply
         wraps the function, and so the docstring for ivy.permute_dims also applies
         to this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            tuple containing a permutation of (0, 1, ..., N-1) where N is the number
+            of axes (dimensions) of x.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``self`` permuted along the given axes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+        >>> y = ivy.Container.static_permute_dims(x, axes=(1, 0))
+        >>> print(y)
+        {
+            a:ivy.array([[0.],[1.],[2.]]),
+            b:ivy.array([[3.],[4.],[5.]])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "permute_dims",
             x,
             axes,
@@ -399,6 +425,32 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.permute_dims. This method simply
         wraps the function, and so the docstring for ivy.permute_dims also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            tuple containing a permutation of (0, 1, ..., N-1) where N is the number
+            of axes (dimensions) of x.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            A container with the elements of ``self`` permuted along the given axes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[0., 1., 2.]]), b=ivy.array([[3., 4., 5.]]))
+        >>> y = x.permute_dims(axes=(1, 0))
+        >>> print(y)
+        {
+            a:ivy.array([[0.],[1.],[2.]]),
+            b:ivy.array([[3.],[4.],[5.]])
+        }
         """
         return self.static_permute_dims(
             self,
@@ -478,7 +530,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([4, 3, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "flip",
             x,
             axis=axis,
@@ -578,6 +630,7 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences: bool = False,
         copy: Optional[bool] = None,
         out: Optional[ivy.Container] = None,
+        order: Optional[str] = "C",
     ) -> ivy.Container:
         """
         ivy.Container static method variant of ivy.reshape. This method simply wraps the
@@ -614,6 +667,17 @@ class ContainerWithManipulation(ContainerBase):
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
+        order
+            Read the elements of x using this index order, and place the elements into
+            the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
 
         Returns
         -------
@@ -638,9 +702,22 @@ class ContainerWithManipulation(ContainerBase):
                           [4, 5]])
         }
 
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> y = ivy.Container.static_reshape(x, (3,2), order='F')
+        >>> print(y)
+        {
+            a: ivy.array([[0, 3],
+                          [1, 4],
+                          [2, 5]]),
+            b: ivy.array([[0, 3],
+                          [1, 4],
+                          [2, 5]])
+        }
+
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "reshape",
             x,
             shape,
@@ -650,6 +727,7 @@ class ContainerWithManipulation(ContainerBase):
             map_sequences=map_sequences,
             copy=copy,
             out=out,
+            order=order,
         )
 
     def reshape(
@@ -662,6 +740,7 @@ class ContainerWithManipulation(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
         copy: Optional[bool] = None,
+        order: Optional[str] = "C",
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -695,6 +774,17 @@ class ContainerWithManipulation(ContainerBase):
         map_sequences
             Whether to also map method to sequences (lists, tuples).
             Default is ``False``.
+        order
+            Read the elements of the input container using this index order,
+            and place the elements into the reshaped array using this index order.
+            ‘C’ means to read / write the elements using C-like index order,
+            with the last axis index changing fastest, back to the first axis index
+            changing slowest.
+            ‘F’ means to read / write the elements using Fortran-like index order, with
+            the first index changing fastest, and the last index changing slowest.
+            Note that the ‘C’ and ‘F’ options take no account of the memory layout
+            of the underlying array, and only refer to the order of indexing.
+            Default order is 'C'
         out
             optional output container, for writing the result to. It must have a shape
             that the inputs broadcast to.
@@ -717,6 +807,17 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[0, 1, 2],
                           [3, 4, 5]])
         }
+
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2, 3, 4, 5]),
+        ...                   b=ivy.array([0, 1, 2, 3, 4, 5]))
+        >>> y = x.reshape((2,3), order='F')
+        >>> print(y)
+        {
+            a: ivy.array([[0, 2, 4],
+                          [1, 3, 5]]),
+            b: ivy.array([[0, 2, 4],
+                          [1, 3, 5]])
+        }
         """
         return self.static_reshape(
             self,
@@ -727,6 +828,7 @@ class ContainerWithManipulation(ContainerBase):
             map_sequences=map_sequences,
             copy=copy,
             out=out,
+            order=order,
         )
 
     @staticmethod
@@ -810,7 +912,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([4., 5., 3.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "roll",
             x,
             shift,
@@ -914,8 +1016,54 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.squeeze. This method simply
         wraps the function, and so the docstring for ivy.squeeze also applies to
         this method with minimal changes.
+
+        Parameters
+        ----------
+        x
+            input container.
+        axis
+            axis (or axes) to squeeze.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
+        >>> y = ivy.Container.static_squeeze(x, 0)
+        >>> print(y)
+        {
+            a: ivy.array([[10., 11.]]),
+            b: ivy.array([[11., 12.]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[[10.], [11.]]]),
+        ...                   b=ivy.array([[[11.], [12.]]]))
+        >>> y = ivy.Container.static_squeeze(x, [0, 2])
+        >>> print(y)
+        {
+            a: ivy.array([[10.], [11.]]),
+            b: ivy.array([[11.], [12.]])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "squeeze",
             x,
             axis=axis,
@@ -941,6 +1089,32 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.squeeze. This method simply wraps
         the function, and so the docstring for ivy.squeeze also applies to this method
         with minimal changes.
+
+        Parameters
+        ----------
+        self
+            input container.
+        axis
+            axis (or axes) to squeeze.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output container, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            an output container with the results.
 
         Examples
         --------
@@ -1024,7 +1198,7 @@ class ContainerWithManipulation(ContainerBase):
                         [1, 0]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stack",
             xs,
             axis=axis,
@@ -1068,15 +1242,6 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[[4, 5]],
                         [[1, 0]]])
         }
-        >>> ivy.Container.static_stack([x,y],axis=1)
-        {
-            a: ivy.array([[[0, 1],
-                        [3, 2]],
-                        [[2, 3],
-                        [1, 0]]]),
-            b: ivy.array([[[4, 5],
-                        [1, 0]]])
-        }
         """
         new_xs = xs.copy()
         new_xs.insert(0, self.copy())
@@ -1118,7 +1283,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([3., 3., 4., 4., 5., 5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "repeat",
             x,
             repeats,
@@ -1201,7 +1366,7 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tile",
             x,
             reps,
@@ -1266,8 +1431,19 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container static method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies to
         this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
+        >>> y = ivy.Container.static_constant_pad(x, pad_width = [[2, 3]])
+        >>> print(y)
+        {
+            a: ivy.array([0, 0, 1, 2, 3, 0, 0, 0]),
+            b: ivy.array([0, 0, 4, 5, 6, 0, 0, 0])
+        }
+
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "constant_pad",
             x,
             pad_width,
@@ -1295,6 +1471,16 @@ class ContainerWithManipulation(ContainerBase):
         ivy.Container instance method variant of ivy.constant_pad. This method simply
         wraps the function, and so the docstring for ivy.constant_pad also applies to
         this method with minimal changes.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a = ivy.array([1, 2, 3]), b = ivy.array([4, 5, 6]))
+        >>> y = x.constant_pad(pad_width = [[2, 3]])
+        >>> print(y)
+        {
+            a: ivy.array([0, 0, 1, 2, 3, 0, 0, 0]),
+            b: ivy.array([0, 0, 4, 5, 6, 0, 0, 0])
+        }
         """
         return self.static_constant_pad(
             self,
@@ -1324,7 +1510,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.zero_pad also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zero_pad",
             x,
             pad_width,
@@ -1379,7 +1565,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.swapaxes also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "swapaxes",
             x,
             axis0,
@@ -1498,7 +1684,7 @@ class ContainerWithManipulation(ContainerBase):
                          [[15, 16]]])
         }]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unstack",
             x,
             axis=axis,
@@ -1652,7 +1838,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([1., 1., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip",
             x,
             x_min,

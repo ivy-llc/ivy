@@ -100,7 +100,7 @@ elu.supported_dtypes = {
 def selu(x):
     alpha = 1.6732632423543772848170429916717
     scale = ivy.astype(ivy.array(1.0507009873554804934193349852946), ivy.dtype(x))
-    return ivy.multiply(scale, elu(x=x, alpha=alpha))
+    return ivy.multiply(scale, elu(x=x, alpha=alpha).ivy_array)
 
 
 selu.supported_dtypes = {
@@ -124,3 +124,34 @@ selu.supported_dtypes = {
         "float64",
     ),
 }
+
+
+def deserialize(name, custom_objects=None):
+    return ivy.deserialize(name, custom_objects=custom_objects)
+
+
+deserialize.supported_dtypes = {
+    "numpy": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "tensorflow": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+    "torch": (
+        "float32",
+        "float64",
+    ),
+    "jax": (
+        "float16",
+        "float32",
+        "float64",
+    ),
+}
+
+
+def get(name, custom_objects=None):
+    return ivy.get(name, custom_objects=custom_objects)

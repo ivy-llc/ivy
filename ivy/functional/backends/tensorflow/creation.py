@@ -3,16 +3,11 @@
 from numbers import Number
 from typing import Union, List, Optional, Sequence
 
-
 import tensorflow as tf
 
 # local
 import ivy
-
-
 from ivy.func_wrapper import with_unsupported_dtypes
-from . import backend_version
-
 from ivy.functional.ivy.creation import (
     asarray_to_native_arrays_and_back,
     asarray_infer_device,
@@ -20,6 +15,7 @@ from ivy.functional.ivy.creation import (
     NestedSequence,
     SupportsBufferProtocol,
 )
+from . import backend_version
 
 
 # Array API Standard #
@@ -241,7 +237,7 @@ def full(
 def full_like(
     x: Union[tf.Tensor, tf.Variable],
     /,
-    fill_value: Union[int, float],
+    fill_value: Number,
     *,
     dtype: tf.DType,
     device: str,
@@ -250,6 +246,10 @@ def full_like(
     ivy.assertions.check_fill_value_and_dtype_are_compatible(fill_value, dtype)
     with tf.device(device):
         return tf.experimental.numpy.full_like(x, fill_value, dtype=dtype)
+
+
+def _slice_at_axis(sl, axis):
+    return (slice(None),) * axis + (sl,) + (...,)
 
 
 def linspace(
@@ -270,11 +270,17 @@ def linspace(
         start = tf.constant(start, dtype=dtype)
         stop = tf.constant(stop, dtype=dtype)
         if not endpoint:
-            ans = tf.linspace(start, stop, num + 1, axis=axis)[:-1]
+            ans = tf.linspace(start, stop, num + 1, axis=axis)
+            if axis < 0:
+                axis += len(ans.shape)
+            ans = tf.convert_to_tensor(
+                ans.numpy()[_slice_at_axis(slice(None, -1), axis)]
+            )
         else:
             ans = tf.linspace(start, stop, num, axis=axis)
-        ans = tf.cast(ans, dtype)
-        return ans
+        if dtype.is_integer and ans.dtype.is_floating:
+            ans = tf.math.floor(ans)
+        return tf.cast(ans, dtype)
 
 
 def meshgrid(
@@ -390,7 +396,7 @@ def logspace(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     power_seq = ivy.linspace(start, stop, num, axis=axis, dtype=dtype, device=device)
-    return base**power_seq
+    return ivy.pow(ivy.asarray(base, dtype=dtype), power_seq)
 
 
 def one_hot(

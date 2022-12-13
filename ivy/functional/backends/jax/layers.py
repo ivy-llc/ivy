@@ -9,6 +9,9 @@ import ivy
 from ivy.functional.backends.jax import JaxArray
 from typing import Union, Tuple, Optional, Sequence
 
+# Extra #
+# ------#
+
 
 def _conv_transpose_padding(k, s, padding, dilation, diff=0):
     k = (k - 1) * dilation + 1
@@ -188,12 +191,12 @@ def conv2d_transpose(
 def conv3d(
     x: JaxArray,
     filters: JaxArray,
-    strides: Union[int, Tuple[int, int]],
+    strides: Union[int, Tuple[int, int, int]],
     padding: str,
     /,
     *,
     data_format: str = "NDHWC",
-    dilations: int = 1,
+    dilations: Union[int, Tuple[int, int, int]] = 1,
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     strides = [strides] * 3 if isinstance(strides, int) else strides

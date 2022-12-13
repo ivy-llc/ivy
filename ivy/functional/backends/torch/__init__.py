@@ -105,8 +105,6 @@ from . import activations
 from .activations import *
 from . import compilation
 from .compilation import *
-from . import converters
-from .converters import *
 from . import creation
 from .creation import *
 from . import data_type
@@ -137,5 +135,5 @@ from . import statistical
 from .statistical import *
 from . import utility
 from .utility import *
-from . import extensions
-from .extensions import *
+from . import experimental
+from .experimental import *

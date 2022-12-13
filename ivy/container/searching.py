@@ -48,7 +48,7 @@ class ContainerWithSearching(ContainerBase):
             specified axis.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmax",
             x,
             axis=axis,
@@ -106,7 +106,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
+        output_dtype: Optional[Union[ivy.int32, ivy.int64]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -126,7 +126,7 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        dtype
+        output_dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -138,8 +138,13 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the minimum values across the
             specified axis.
         """
-        return ContainerBase.multi_map_in_static_method(
-            "argmin", x, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+        return ContainerBase.cont_multi_map_in_static_method(
+            "argmin",
+            x,
+            axis=axis,
+            keepdims=keepdims,
+            output_dtype=output_dtype,
+            out=out,
         )
 
     def argmin(
@@ -148,7 +153,7 @@ class ContainerWithSearching(ContainerBase):
         *,
         axis: Optional[int] = None,
         keepdims: bool = False,
-        dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
+        output_dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         """
@@ -168,7 +173,7 @@ class ContainerWithSearching(ContainerBase):
             singleton dimensions, and, accordingly, the result must be compatible with
             the input array (see Broadcasting). Otherwise, if False, the reduced axes
             (dimensions) must not be included in the result. Default = False.
-        dtype
+        output_dtype
             An optional output_dtype from: int32, int64. Defaults to int64.
         out
             optional output container, for writing the result to. It must have a shape
@@ -182,7 +187,7 @@ class ContainerWithSearching(ContainerBase):
 
         """
         return self.static_argmin(
-            self, axis=axis, keepdims=keepdims, dtype=dtype, out=out
+            self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
         )
 
     @staticmethod
@@ -223,7 +228,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
@@ -301,7 +306,7 @@ class ContainerWithSearching(ContainerBase):
             where condition is False.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "where", condition, x1, x2, out=out
         )
 
@@ -379,7 +384,7 @@ class ContainerWithSearching(ContainerBase):
         ret
             Indices for where the boolean array is True.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argwhere",
             x,
             key_chains=key_chains,
@@ -424,6 +429,27 @@ class ContainerWithSearching(ContainerBase):
         -------
         ret
             Indices for where the boolean array is True.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0], [1]]),
+            b: ivy.array([[0], [1]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
+        >>> res = x.argwhere()
+        >>> print(res)
+        {
+            a: ivy.array([[0]]),
+            b: ivy.array([[0], [1]])
+        }
+
         """
         return self.static_argwhere(
             self,
