@@ -113,7 +113,7 @@ class ContainerWithSorting(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argsort",
             x,
             axis=axis,
@@ -251,7 +251,7 @@ class ContainerWithSorting(ContainerBase):
             b: ivy.array([[0.7, 9.], [0., 0.4]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sort",
             x,
             axis=axis,
@@ -354,7 +354,7 @@ class ContainerWithSorting(ContainerBase):
         also applies to this method with minimal changes.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "searchsorted",
             x1,
             v,

@@ -25,6 +25,10 @@ class Tensor:
     def device(self):
         return ivy.dev(self._ivy_array)
 
+    @property
+    def dtype(self):
+        return self._ivy_array.dtype
+
     # Setters #
     # --------#
 
@@ -331,6 +335,9 @@ class Tensor:
     def argmax(self, dim=None, keepdim=False):
         return torch_frontend.argmax(self._ivy_array, dim=dim, keepdim=keepdim)
 
+    def argmin(self, dim=None, keepdim=False):
+        return torch_frontend.argmin(self._ivy_array, dim=dim, keepdim=keepdim)
+
     def ceil(self):
         return torch_frontend.ceil(self._ivy_array)
 
@@ -365,6 +372,24 @@ class Tensor:
     def int(self, memory_format=None):
         return ivy.astype(self._ivy_array, ivy.int32)
 
+    def bool(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.bool)
+
+    def type(self, dtype=None, non_blocking=False, **kwargs):
+        if ivy.exists(dtype):
+            return ivy.astype(self._ivy_array, dtype)
+        else:
+            return str(self._ivy_array.dtype)
+
+    def type_as(self, other):
+        if self.dtype == other.dtype:
+            return self._ivy_array
+        else:
+            return ivy.astype(self._ivy_array, other.dtype)
+
+    def byte(self, memory_format=None):
+        return ivy.astype(self._ivy_array, ivy.uint8)
+
     def ne(self, other):
         return torch_frontend.ne(self._ivy_array, other)
 
@@ -373,6 +398,12 @@ class Tensor:
 
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
+
+    def tril(self, diagonal=0):
+        return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
+
+    def index_select(self, dim, index):
+        return torch_frontend.index_select(self._ivy_array, dim, index)
 
     # Special Methods #
     # -------------------#

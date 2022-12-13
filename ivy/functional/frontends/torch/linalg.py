@@ -73,8 +73,6 @@ def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
 def svd(input, /, *, full_matrices=True):
     return ivy.svd(input, compute_uv=True, full_matrices=full_matrices)
 
-
 @to_ivy_arrays_and_back
 def eigh(input, *, UPLO="L", out=None):
     return ivy.eigh(input, UPLO=UPLO, out=out)
-

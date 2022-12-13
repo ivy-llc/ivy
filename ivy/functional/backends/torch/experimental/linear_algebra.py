@@ -2,7 +2,7 @@
 import math
 
 import torch
-from typing import Optional
+from typing import Optional, Tuple
 
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
@@ -108,3 +108,11 @@ def kron(
 
 
 kron.support_native_out = True
+
+
+def eig(x: torch.Tensor, /) -> Tuple[torch.Tensor, ...]:
+    if not torch.is_complex(x):
+        ret = torch.linalg.eig(x.to(torch.complex128))
+    else:
+        ret = torch.linalg.eig(x)
+    return tuple(ret)
