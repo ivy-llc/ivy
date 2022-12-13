@@ -3305,7 +3305,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def _slice_keys(self, key_slice):
+    def _cont_slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
             ivy.assertions.check_true(len(key_slice) == 3 and key_slice[1] == ":")
@@ -3320,7 +3320,7 @@ class ContainerBase(dict, abc.ABC):
         # noinspection PyUnresolvedReferences
         return ret.at_key_chains(desired_keys)
 
-    def slice_keys(self, key_slice, all_depths=False):
+    def cont_slice_keys(self, key_slice, all_depths=False):
         """Summary.
 
         Parameters
@@ -3346,11 +3346,11 @@ class ContainerBase(dict, abc.ABC):
                 depth = 0 if kc == "" else len(kc.split("/"))
                 if depth in key_slice:
                     # noinspection PyProtectedMember
-                    return cont._slice_keys(key_slice[depth])
+                    return cont._cont_slice_keys(key_slice[depth])
                 return cont
 
             return self.cont_map_sub_conts(_fn)
-        return self._slice_keys(key_slice)
+        return self._cont_slice_keys(key_slice)
 
     def with_print_limit(self, print_limit, inplace=False):
         """Summary.
