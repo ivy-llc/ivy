@@ -1092,20 +1092,31 @@ def test_jax_lax_ge(
 @st.composite
 def _reshape_helper(draw):
     # generate a shape s.t len(shape) > 0
-    shape = draw(helpers.get_shape(min_num_dims=1))
+    shape = draw(
+        helpers.get_shape(
+            allow_none=False,
+            min_num_dims=1,
+            max_num_dims=3,
+            min_dim_size=1,
+            max_dim_size=3,
+        )
+    )
 
     reshape_shape = draw(helpers.reshape_shapes(shape=shape))
 
-    dtype = draw(helpers.array_dtypes(num_arrays=1))
-    x = draw(helpers.array_values(dtype=dtype[0], shape=shape))
-
+    dtypes, x = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            shape=shape,
+        )
+    )
     is_dim = draw(st.booleans())
     if is_dim:
-        # generate a permutation of [0, 1, 2, ... len(shape) - 1]
-        permut = draw(st.permutations(list(range(len(shape)))))
-        return x, dtype, reshape_shape, permut
+        dims = [x for x in range(len(shape))]
+        permut = draw(st.permutations(dims))
+        return x, dtypes, reshape_shape, permut
     else:
-        return x, dtype, reshape_shape, None
+        return x, dtypes, reshape_shape, None
 
 
 @handle_frontend_test(
