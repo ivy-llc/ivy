@@ -1394,7 +1394,7 @@ class ContainerBase(dict, abc.ABC):
             return [0]
         sub_shapes = [
             v
-            for k, v in self.map(
+            for k, v in self.cont_map(
                 lambda x, kc: list(x.shape)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)
@@ -1419,12 +1419,12 @@ class ContainerBase(dict, abc.ABC):
 
     def _get_shapes(self):
 
-        return self.map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
+        return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
     def _get_dev(self, as_native=False):
         sub_devs = [
             v
-            for k, v in self.map(
+            for k, v in self.cont_map(
                 lambda x, kc: self._ivy.dev(x, as_native=as_native)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else None
@@ -1730,7 +1730,7 @@ class ContainerBase(dict, abc.ABC):
                 return x
             return bool(x)
 
-        return self.map(
+        return self.cont_map(
             lambda x, kc: _ret_bool(x),
             key_chains,
             to_apply,
@@ -1820,7 +1820,7 @@ class ContainerBase(dict, abc.ABC):
             else len(num_or_size_splits)
         )
         # noinspection PyTypeChecker
-        return self.map(
+        return self.cont_map(
             lambda x, kc: self._ivy.split(
                 x,
                 num_or_size_splits=num_or_size_splits,
@@ -1847,7 +1847,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         return sum(
-            self.map(
+            self.cont_map(
                 lambda x, kc: ivy.is_array(x, exclusive=exclusive)
             ).to_iterator_values()
         )
@@ -2164,7 +2164,7 @@ class ContainerBase(dict, abc.ABC):
                 has_key = True
             return x
 
-        self.map(map_fn)
+        self.cont_map(map_fn)
         return has_key
 
     def has_key_chain(self, key_chain):
@@ -2415,7 +2415,7 @@ class ContainerBase(dict, abc.ABC):
                     key_chains_to_keep.append(kc)
             return x
 
-        self.map(map_fn)
+        self.cont_map(map_fn)
         return self.at_key_chains(
             key_chains_to_keep, ignore_key_errors=ignore_key_errors
         )
@@ -2717,7 +2717,7 @@ class ContainerBase(dict, abc.ABC):
                     key_chains_to_prune.append(kc)
             return x
 
-        self.map(map_fn)
+        self.cont_map(map_fn)
         return self.prune_key_chains(key_chains_to_prune)
 
     def prune_key_chain(self, key_chain):
@@ -3023,12 +3023,12 @@ class ContainerBase(dict, abc.ABC):
         return: A deep copy of the container
 
         """
-        return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
+        return self.cont_map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
     def __deepcopy__(self, memo):
         return self.cont_deep_copy()
 
-    def map(
+    def cont_map(
         self,
         func,
         key_chains=None,
@@ -3072,7 +3072,7 @@ class ContainerBase(dict, abc.ABC):
         for key, value in self.items():
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value, ivy.Container):
-                ret = value.map(
+                ret = value.cont_map(
                     func,
                     key_chains,
                     to_apply,
@@ -3178,7 +3178,7 @@ class ContainerBase(dict, abc.ABC):
             except (IvyBackendException):
                 return x
 
-        return self.map(to_list)
+        return self.cont_map(to_list)
 
     def reshape_like(self, target_dict, leading_shape=None, return_cont=None):
         """Set shapes of container entries to shapes specified by new container with the
@@ -3721,7 +3721,7 @@ class ContainerBase(dict, abc.ABC):
             json_dumped_str = _align_arrays(
                 json.dumps(
                     ivy.Container(new_dict, **self._config)
-                    .map(
+                    .cont_map(
                         lambda x, kc: x
                         if _is_jsonable(x)
                         else _repr(x).replace(" ", "").replace(",", ", ")

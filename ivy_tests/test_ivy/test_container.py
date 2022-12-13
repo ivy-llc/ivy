@@ -1839,7 +1839,7 @@ def test_container_map(inplace, device):
     }
     container_orig = Container(dict_in)
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(lambda x, _: x + 1, inplace=inplace)
+    container_mapped = container.cont_map(lambda x, _: x + 1, inplace=inplace)
     if inplace:
         container_iterator = container.to_iterator()
     else:
@@ -1856,7 +1856,9 @@ def test_container_map(inplace, device):
 
     # with key_chains to apply
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(lambda x, _: x + 1, ["a", "b/c"], inplace=inplace)
+    container_mapped = container.cont_map(
+        lambda x, _: x + 1, ["a", "b/c"], inplace=inplace
+    )
     if inplace:
         container_mapped = container
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[2]]))
@@ -1868,7 +1870,7 @@ def test_container_map(inplace, device):
 
     # with key_chains to apply pruned
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(
+    container_mapped = container.cont_map(
         lambda x, _: x + 1, ["a", "b/c"], prune_unapplied=True, inplace=inplace
     )
     if inplace:
@@ -1882,7 +1884,7 @@ def test_container_map(inplace, device):
 
     # with key_chains to not apply
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(
+    container_mapped = container.cont_map(
         lambda x, _: x + 1,
         Container({"a": None, "b": {"d": None}}),
         to_apply=False,
@@ -1899,7 +1901,7 @@ def test_container_map(inplace, device):
 
     # with key_chains to not apply pruned
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(
+    container_mapped = container.cont_map(
         lambda x, _: x + 1,
         Container({"a": None, "b": {"d": None}}),
         to_apply=False,
@@ -1923,7 +1925,7 @@ def test_container_map(inplace, device):
         }
     )
     container = container_orig.cont_deep_copy()
-    container_mapped = container.map(
+    container_mapped = container.cont_map(
         lambda x, _: x + 1, inplace=inplace, map_sequences=True
     )
     if inplace:
