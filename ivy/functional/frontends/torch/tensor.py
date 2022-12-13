@@ -405,6 +405,9 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    def acosh(self):
+        return torch_frontend.acosh(self.data)
+
     # Special Methods #
     # -------------------#
 
