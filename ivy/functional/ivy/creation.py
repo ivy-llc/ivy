@@ -396,7 +396,7 @@ def ones(
     >>> print(y)
     ivy.array([[1, 1, 1],
            [1, 1]])
-    
+
     With :class:`ivy.Device` input:
 
     >>> shape = (3,2)

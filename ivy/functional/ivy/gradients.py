@@ -29,7 +29,7 @@ def _get_duplicate_index_chains(xs):
     """
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
-        duplicate_index_chains = xs.duplicate_array_keychains()
+        duplicate_index_chains = xs.cont_duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
     return duplicate_index_chains
@@ -84,7 +84,7 @@ def _get_required_native_variables(xs, xs_grad_idxs):
     xs = (
         xs
         if ivy.is_array(xs)
-        else xs.prune_empty()
+        else xs.cont_prune_empty()
         if isinstance(xs, ivy.Container)
         else ivy.prune_empty(xs)
     )

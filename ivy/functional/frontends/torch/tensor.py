@@ -408,6 +408,13 @@ class Tensor:
     def sqrt(self):
         return torch_frontend.sqrt(self._ivy_array)
 
+    def where(self, condition, other):
+        return ivy.where(condition, self._ivy_array, other)
+
+    def clone(self, memory_format=None):
+        return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
+
+
     # Special Methods #
     # -------------------#
 

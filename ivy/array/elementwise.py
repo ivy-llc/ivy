@@ -1799,7 +1799,7 @@ class ArrayWithElementwise(abc.ABC):
         --------
         With :class:`ivy.Array` input:
 
-         >>> x = ivy.array([2, 3 ,5, 7])
+        >>> x = ivy.array([2, 3 ,5, 7])
         >>> y = x.negative()
         >>> print(y)
         ivy.array([-2, -3, -5, -7])
