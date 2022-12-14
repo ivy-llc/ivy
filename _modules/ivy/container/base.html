@@ -871,8 +871,8 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
-        <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">cont</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">())</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cont_all_key_chains</span><span class="p">()</span>
+        <span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">cont</span><span class="o">.</span><span class="n">cont_all_key_chains</span><span class="p">())</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">sets</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_identical"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_identical">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -925,7 +925,9 @@
             <span class="n">common_key_chains</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_common_key_chains</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">common_key_chains</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">False</span>
-            <span class="n">containers</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">common_key_chains</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+            <span class="n">containers</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">cont</span><span class="o">.</span><span class="n">cont_at_key_chains</span><span class="p">(</span><span class="n">common_key_chains</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span>
+            <span class="p">]</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cont</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sl</span><span class="p">])</span>
         <span class="c1"># noinspection PyProtectedMember</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
@@ -1528,7 +1530,7 @@
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_shapes</span><span class="p">:</span>
@@ -1558,7 +1560,7 @@
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
                 <span class="k">else</span> <span class="kc">None</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span>
         <span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sub_devs</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -1568,10 +1570,10 @@
     <span class="k">def</span> <span class="nf">_cont_at_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">return_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span><span class="p">)</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ignore_key_errors</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
                 <span class="k">continue</span>
-            <span class="n">return_cont</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">return_cont</span><span class="o">.</span><span class="n">cont_set_at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_cont</span>
 
     <span class="k">def</span> <span class="nf">_cont_at_key_chains_input_as_dict</span><span class="p">(</span>
@@ -1588,7 +1590,7 @@
                     <span class="n">v</span><span class="p">,</span> <span class="n">new_current_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span>
                     <span class="n">new_current_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">ignore_key_errors</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
@@ -1599,7 +1601,7 @@
     <span class="k">def</span> <span class="nf">_cont_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
         <span class="n">return_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
-            <span class="n">return_cont</span> <span class="o">=</span> <span class="n">return_cont</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">)</span>
+            <span class="n">return_cont</span> <span class="o">=</span> <span class="n">return_cont</span><span class="o">.</span><span class="n">cont_prune_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_cont</span>
 
     <span class="k">def</span> <span class="nf">_cont_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">return_cont</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -1619,7 +1621,7 @@
 
 <div class="viewcode-block" id="ContainerBase.cont_duplicate_array_keychains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_duplicate_array_keychains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_duplicate_array_keychains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">duplciates</span> <span class="o">=</span> <span class="p">()</span>
-        <span class="n">key_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+        <span class="n">key_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_all_key_chains</span><span class="p">()</span>
         <span class="n">skips</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)):</span>
             <span class="n">temp_duplicates</span> <span class="o">=</span> <span class="p">()</span>
@@ -1746,7 +1748,7 @@
                         <span class="n">to_apply</span><span class="p">,</span>
                         <span class="n">prune_unapplied</span><span class="p">,</span>
                         <span class="n">map_sequences</span><span class="p">,</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
@@ -1793,7 +1795,7 @@
                         <span class="n">to_apply</span><span class="p">,</span>
                         <span class="n">prune_unapplied</span><span class="p">,</span>
                         <span class="n">map_sequences</span><span class="p">,</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="p">)</span></div>
@@ -1979,7 +1981,7 @@
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
-            <span class="p">)</span><span class="o">.</span><span class="n">to_iterator_values</span><span class="p">()</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator_values</span><span class="p">()</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_size_ordered_arrays"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_size_ordered_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">cont_size_ordered_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1995,7 +1997,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">array_dict</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_flatten_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">):</span> <span class="n">v</span>
-            <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
@@ -2155,7 +2157,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_iterator"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_to_iterator"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_to_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">cont_to_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -2178,11 +2180,11 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">kc</span> <span class="o">=</span> <span class="n">key_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">key</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">include_empty</span> <span class="ow">or</span> <span class="n">value</span><span class="p">):</span>
-                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="p">,</span> <span class="n">include_empty</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="p">,</span> <span class="n">include_empty</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">kc</span><span class="p">,</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_iterator_values"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_iterator_values">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_to_iterator_values"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_to_iterator_values">[docs]</a>    <span class="k">def</span> <span class="nf">cont_to_iterator_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -2198,11 +2200,13 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">include_empty</span> <span class="ow">or</span> <span class="n">value</span><span class="p">):</span>
                 <span class="c1"># noinspection PyCompatibility</span>
-                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator_values</span><span class="p">(</span><span class="n">include_empty</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_to_iterator_values</span><span class="p">(</span><span class="n">include_empty</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_iterator_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_iterator_keys">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_to_iterator_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_to_iterator_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_to_iterator_keys</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -2226,11 +2230,13 @@
                 <span class="n">kc</span> <span class="o">=</span> <span class="n">key_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span> <span class="k">else</span> <span class="n">key</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">include_empty</span> <span class="ow">or</span> <span class="n">value</span><span class="p">):</span>
                 <span class="c1"># noinspection PyCompatibility</span>
-                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="p">,</span> <span class="n">include_empty</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_to_iterator_keys</span><span class="p">(</span>
+                    <span class="n">kc</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="p">,</span> <span class="n">include_empty</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">kc</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_flat_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_to_flat_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_to_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">cont_to_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Returns</span>
@@ -2239,9 +2245,9 @@
 <span class="sd">            Container as flat list.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()])</span></div>
 
-<div class="viewcode-block" id="ContainerBase.from_flat_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.from_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">from_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flat_list</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_from_flat_list"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_from_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">cont_from_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flat_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return new container object with the same hierarchy, but with values replaced</span>
 <span class="sd">        from flat list.</span>
 
@@ -2258,13 +2264,13 @@
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">from_flat_list</span><span class="p">(</span><span class="n">flat_list</span><span class="p">)</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_from_flat_list</span><span class="p">(</span><span class="n">flat_list</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">new_value</span> <span class="o">=</span> <span class="n">flat_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">new_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.has_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.has_key">[docs]</a>    <span class="k">def</span> <span class="nf">has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_key</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_has_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_has_key">[docs]</a>    <span class="k">def</span> <span class="nf">cont_has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether container object has specified key somewhere in the nested</span>
 <span class="sd">        structure.</span>
 
@@ -2299,7 +2305,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="n">map_fn</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">has_key</span></div>
 
-<div class="viewcode-block" id="ContainerBase.has_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.has_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">has_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_has_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_has_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">cont_has_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether container object has specified key-chain.</span>
 
 <span class="sd">        Parameters</span>
@@ -2322,7 +2328,7 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="ContainerBase.find_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.find_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_find_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_find_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">cont_find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the sub-container in the current container if it exsits.</span>
 
 <span class="sd">        Parameters</span>
@@ -2337,7 +2343,7 @@
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="n">sub_cont_key_chains</span> <span class="o">=</span> <span class="n">sub_cont_to_find</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+            <span class="n">sub_cont_key_chains</span> <span class="o">=</span> <span class="n">sub_cont_to_find</span><span class="o">.</span><span class="n">cont_all_key_chains</span><span class="p">()</span>
             <span class="n">kcs_in_sub_cont</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont_key_chains</span><span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">kcs_in_sub_cont</span>
@@ -2354,7 +2360,7 @@
 
         <span class="k">return</span> <span class="n">key_chain_found</span></div>
 
-<div class="viewcode-block" id="ContainerBase.contains_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_contains_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">cont_contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether the current container contains the sub-container, with</span>
 <span class="sd">        matching structure and array values.</span>
 
@@ -2373,11 +2379,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">True</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
             <span class="k">else</span> <span class="kc">False</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.assert_contains_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.assert_contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">assert_contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_assert_contains_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_assert_contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">cont_assert_contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asserts that the current container contains the sub-container, otherwise</span>
 <span class="sd">        exception raised with the diff printed to screen.</span>
 
@@ -2391,9 +2397,11 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">contains_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">))</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cont_contains_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
-            <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span>
+            <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_structure</span><span class="p">(</span>
                 <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">key_chain</span><span class="p">:</span>
@@ -2405,7 +2413,9 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.find_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.find_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_find_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_find_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">cont_find_sub_structure</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Find the sub-container structure in the current container if it exsits.</span>
 
 <span class="sd">        Parameters</span>
@@ -2431,7 +2441,7 @@
 <span class="sd">            kc</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="n">sub_struc_key_chains</span> <span class="o">=</span> <span class="n">sub_struc_to_find</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+            <span class="n">sub_struc_key_chains</span> <span class="o">=</span> <span class="n">sub_struc_to_find</span><span class="o">.</span><span class="n">cont_all_key_chains</span><span class="p">()</span>
             <span class="n">kcs_in_sub_cont</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_struc_key_chains</span><span class="p">]</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">kcs_in_sub_cont</span>
@@ -2450,7 +2460,7 @@
 
         <span class="k">return</span> <span class="n">key_chain_found</span></div>
 
-<div class="viewcode-block" id="ContainerBase.contains_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_contains_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">cont_contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Determine whether the current container contains the sub-container structure.</span>
 
 <span class="sd">        Parameters</span>
@@ -2466,11 +2476,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="kc">True</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span>
+            <span class="p">)</span>
             <span class="k">else</span> <span class="kc">False</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.assert_contains_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.assert_contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">assert_contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_assert_contains_sub_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_assert_contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">cont_assert_contains_sub_structure</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asserts that the current container contains the sub-container structure,</span>
 <span class="sd">        otherwise exception raised with the diff printed to screen.</span>
 
@@ -2487,10 +2501,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">contains_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cont_contains_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">:</span>
-            <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span>
+            <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_structure</span><span class="p">(</span>
                 <span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">key_chain</span><span class="p">:</span>
@@ -2508,7 +2522,7 @@
                 <span class="p">)</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.at_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">at_keys</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_at_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_at_keys</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query container object at specified keys, either as list or nested dict.</span>
@@ -2548,11 +2562,11 @@
             <span class="k">return</span> <span class="n">x</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="n">map_fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_at_key_chains</span><span class="p">(</span>
             <span class="n">key_chains_to_keep</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">cont_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query container object at a specified key-chain.</span>
 
 <span class="sd">        Parameters</span>
@@ -2579,7 +2593,7 @@
                 <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Query container object at specified key-chains, either as list or nested</span>
 <span class="sd">        dict.</span>
 
@@ -2618,7 +2632,7 @@
                 <span class="s2">&quot; or ivy.Container, but found type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">))</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.all_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.all_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">all_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_all_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_all_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_all_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -2627,9 +2641,9 @@
 <span class="sd">            Default value = False)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)]</span></div>
+        <span class="k">return</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="ContainerBase.key_chains_containing"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.key_chains_containing">[docs]</a>    <span class="k">def</span> <span class="nf">key_chains_containing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_str</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_key_chains_containing"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_key_chains_containing">[docs]</a>    <span class="k">def</span> <span class="nf">cont_key_chains_containing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_str</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="sd">        Parameters</span>
@@ -2642,11 +2656,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span>
             <span class="n">kc</span>
-            <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">sub_str</span> <span class="ow">in</span> <span class="n">kc</span>
         <span class="p">]</span></div>
 
-<div class="viewcode-block" id="ContainerBase.set_at_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_set_at_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_set_at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set values of container object at specified keys.</span>
 
 <span class="sd">        Parameters</span>
@@ -2665,12 +2679,12 @@
             <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">target_dict</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">target_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="n">target_dict</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">cont_set_at_keys</span><span class="p">(</span><span class="n">target_dict</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.set_at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_set_at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_set_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">cont_set_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set value of container object at a specified key-chain.</span>
 
 <span class="sd">        Parameters</span>
@@ -2701,7 +2715,7 @@
         <span class="n">sub_cont</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">cont</span></div>
 
-<div class="viewcode-block" id="ContainerBase.overwrite_at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.overwrite_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_overwrite_at_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_overwrite_at_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">cont_overwrite_at_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overwrite value of container object at a specified key-chain.</span>
 
 <span class="sd">        Parameters</span>
@@ -2730,19 +2744,19 @@
                 <span class="n">key</span><span class="p">,</span>
                 <span class="n">sub_cont</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
-<span class="s2">                call overwrite_at_key_chain&quot;</span><span class="p">,</span>
+<span class="s2">                call cont_overwrite_at_key_chain&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span>
             <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
             <span class="n">sub_cont</span><span class="p">,</span>
             <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
-<span class="s2">            call overwrite_at_key_chain&quot;</span><span class="p">,</span>
+<span class="s2">            call cont_overwrite_at_key_chain&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">sub_cont</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">cont</span></div>
 
-<div class="viewcode-block" id="ContainerBase.set_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.set_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">set_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_set_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_set_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_set_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set values of container object at specified key-chains.</span>
 
 <span class="sd">        Parameters</span>
@@ -2767,12 +2781,14 @@
                 <span class="n">return_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_at_key_chains</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_set_at_key_chains</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.overwrite_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.overwrite_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_overwrite_at_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_overwrite_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_overwrite_at_key_chains</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Overwrite values of container object at specified key-chains.</span>
 
 <span class="sd">        Parameters</span>
@@ -2801,17 +2817,17 @@
                 <span class="n">k</span><span class="p">,</span>
                 <span class="n">return_dict</span><span class="p">,</span>
                 <span class="n">message</span><span class="o">=</span><span class="s2">&quot;key chain must already exist in container in order to </span><span class="se">\</span>
-<span class="s2">                call overwrite_at_key_chain&quot;</span><span class="p">,</span>
+<span class="s2">                call cont_overwrite_at_key_chain&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_at_key_chains</span><span class="p">(</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_overwrite_at_key_chains</span><span class="p">(</span>
                     <span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">inplace</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_keys">[docs]</a>    <span class="k">def</span> <span class="nf">prune_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_keys</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_keys</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune set of keys.</span>
 
 <span class="sd">        Parameters</span>
@@ -2850,9 +2866,9 @@
             <span class="k">return</span> <span class="n">x</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="n">map_fn</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prune_key_chains</span><span class="p">(</span><span class="n">key_chains_to_prune</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_prune_key_chains</span><span class="p">(</span><span class="n">key_chains_to_prune</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune chain of keys, specified as &#39;key1/key2/key3/...&#39;.</span>
 
 <span class="sd">        Parameters</span>
@@ -2873,7 +2889,9 @@
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">new_val</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">new_val</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                        <span class="n">new_val</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_prune_key_chain</span><span class="p">(</span>
+                            <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                        <span class="p">)</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_val</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2885,7 +2903,7 @@
                     <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune set of key chains.</span>
 
 <span class="sd">        Parameters</span>
@@ -2915,7 +2933,7 @@
                 <span class="s2">&quot;or ivy.Container, but found type </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">))</span>
             <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.format_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.format_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">format_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_fn</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_format_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_format_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_format_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_fn</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format all key-chains, using the formatting function.</span>
 
 <span class="sd">        Parameters</span>
@@ -2929,20 +2947,20 @@
 <span class="sd">            Container with the same key-chain structure, but the key strings formatted.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">format_fn</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()})</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">format_fn</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()})</span></div>
 
-<div class="viewcode-block" id="ContainerBase.sort_by_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.sort_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">sort_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_sort_by_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_sort_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">cont_sort_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">v_back</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">sort_by_key</span><span class="p">()</span>
+                <span class="n">v_back</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_sort_by_key</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">v_back</span> <span class="o">=</span> <span class="n">v</span>
             <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_back</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_empty"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_nones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_empty"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_nones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prunes empty keys from the container dict structure. Returns None</span>
 <span class="sd">        if the entire container is empty.</span>
 
@@ -2962,7 +2980,7 @@
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_empty</span><span class="p">(</span><span class="n">keep_nones</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_prune_empty</span><span class="p">(</span><span class="n">keep_nones</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">new_value</span><span class="p">:</span>
                     <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keep_nones</span><span class="p">:</span>
@@ -2973,7 +2991,7 @@
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
         <span class="k">return</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_key_from_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_key_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_key_from_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_key_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_key_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune absolute key or key containing a certain substring from all</span>
 <span class="sd">        key chains.</span>
 
@@ -3007,12 +3025,14 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">out_cont</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_from_key_chains</span><span class="p">(</span><span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span><span class="p">)</span>
+                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_prune_key_from_key_chains</span><span class="p">(</span>
+                    <span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">out_cont</span></div>
 
-<div class="viewcode-block" id="ContainerBase.prune_keys_from_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.prune_keys_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_keys_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_prune_keys_from_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_prune_keys_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_prune_keys_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Recursively prune absolute keys or keys containing certain substrings from</span>
 <span class="sd">        all key chains.</span>
 
@@ -3048,12 +3068,16 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">out_cont</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_from_key_chains</span><span class="p">(</span><span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span><span class="p">)</span>
+                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_prune_key_from_key_chains</span><span class="p">(</span>
+                    <span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">out_cont</span></div>
 
-<div class="viewcode-block" id="ContainerBase.restructure_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.restructure_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">restructure_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mapping</span><span class="p">,</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_restructure_key_chains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_restructure_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_restructure_key_chains</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mapping</span><span class="p">,</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new container with the same contents, but a new key-chain structure.</span>
 <span class="sd">        Given by the mapping with keys as old key-chains and values as new key-chains.</span>
 
@@ -3071,13 +3095,13 @@
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">old_kc</span><span class="p">,</span> <span class="n">new_kc</span> <span class="ow">in</span> <span class="n">keychain_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">replace</span> <span class="ow">and</span> <span class="n">old_kc</span> <span class="ow">in</span> <span class="n">new_cont</span><span class="p">:</span>
-                <span class="n">new_cont</span> <span class="o">=</span> <span class="n">new_cont</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">old_kc</span><span class="p">)</span>
+                <span class="n">new_cont</span> <span class="o">=</span> <span class="n">new_cont</span><span class="o">.</span><span class="n">cont_prune_key_chain</span><span class="p">(</span><span class="n">old_kc</span><span class="p">)</span>
             <span class="n">new_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_combine</span><span class="p">(</span>
                 <span class="n">new_cont</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">new_kc</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">old_kc</span><span class="p">]})</span>
             <span class="p">)</span>
         <span class="k">return</span> <span class="n">new_cont</span></div>
 
-<div class="viewcode-block" id="ContainerBase.restructure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.restructure">[docs]</a>    <span class="k">def</span> <span class="nf">restructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_restructure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_restructure">[docs]</a>    <span class="k">def</span> <span class="nf">cont_restructure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new container with the same contents, but a new key-chain structure,</span>
 <span class="sd">        and transposes and/or reshaped arrays. Given by the mapping with keys as old</span>
 <span class="sd">        key-chains and values as new key-chains.</span>
@@ -3096,7 +3120,7 @@
         <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">old_kc</span><span class="p">,</span> <span class="n">new</span> <span class="ow">in</span> <span class="n">mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">replace</span> <span class="ow">and</span> <span class="n">old_kc</span> <span class="ow">in</span> <span class="n">new_cont</span><span class="p">:</span>
-                <span class="n">new_cont</span> <span class="o">=</span> <span class="n">new_cont</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">old_kc</span><span class="p">)</span>
+                <span class="n">new_cont</span> <span class="o">=</span> <span class="n">new_cont</span><span class="o">.</span><span class="n">cont_prune_key_chain</span><span class="p">(</span><span class="n">old_kc</span><span class="p">)</span>
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">old_kc</span><span class="p">]</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">new_kc</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;key_chain&quot;</span><span class="p">]</span>
@@ -3134,7 +3158,7 @@
                 <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_flatten_key_chain</span><span class="p">(</span>
                     <span class="n">kc</span><span class="p">,</span> <span class="n">above_height</span><span class="o">=</span><span class="n">above_height</span><span class="p">,</span> <span class="n">below_depth</span><span class="o">=</span><span class="n">below_depth</span>
                 <span class="p">):</span> <span class="n">v</span>
-                <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span>
             <span class="p">},</span>
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span>
         <span class="p">)</span></div>
@@ -3358,7 +3382,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cont_set_at_key_chain</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_if_exists"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_if_exists">[docs]</a>    <span class="k">def</span> <span class="nf">cont_if_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the sub-container at the following key if it exists, otherwise None.</span>
@@ -3450,7 +3474,7 @@
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="n">desired_keys</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">key_slice</span><span class="p">]</span>
         <span class="c1"># noinspection PyUnresolvedReferences</span>
-        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">desired_keys</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_at_key_chains</span><span class="p">(</span><span class="n">desired_keys</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ContainerBase.cont_slice_keys"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_slice_keys">[docs]</a>    <span class="k">def</span> <span class="nf">cont_slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">,</span> <span class="n">all_depths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
@@ -3506,7 +3530,7 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="c1"># noinspection PyTypeChecker</span>
-<div class="viewcode-block" id="ContainerBase.remove_print_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.remove_print_limit">[docs]</a>    <span class="k">def</span> <span class="nf">remove_print_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_remove_print_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_remove_print_limit">[docs]</a>    <span class="k">def</span> <span class="nf">cont_remove_print_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3538,7 +3562,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.remove_key_length_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.remove_key_length_limit">[docs]</a>    <span class="k">def</span> <span class="nf">remove_key_length_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_remove_key_length_limit"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_remove_key_length_limit">[docs]</a>    <span class="k">def</span> <span class="nf">cont_remove_key_length_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3612,7 +3636,7 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
-<div class="viewcode-block" id="ContainerBase.with_ivy_backend"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.with_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">with_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_with_ivy_backend"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3631,12 +3655,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy_backend</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.show"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_show"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_show">[docs]</a>    <span class="k">def</span> <span class="nf">cont_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
     <span class="c1"># noinspection PyUnresolvedReferences</span>
-<div class="viewcode-block" id="ContainerBase.show_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.show_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_or_keychain</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_show_sub_container"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_show_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">cont_show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_or_keychain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
 
 <span class="sd">        Parameters</span>
@@ -3649,12 +3673,12 @@
 
         <span class="c1"># get the sub-container</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sub_cont_or_keychain</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">sub_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">sub_cont_or_keychain</span><span class="p">)</span>
+            <span class="n">sub_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">sub_cont_or_keychain</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">sub_cont_or_keychain</span>
 
         <span class="c1"># find the key chain of the sub-container</span>
-        <span class="n">sub_cont_kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">)</span>
+        <span class="n">sub_cont_kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">)</span>
 
         <span class="c1"># show this container if key-chain not found, and return</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sub_cont_kc</span><span class="p">:</span>
@@ -4036,7 +4060,7 @@
             <span class="k">if</span> <span class="n">query</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span>
             <span class="k">if</span> <span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">query</span> <span class="ow">or</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ret</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ret</span>
@@ -4077,15 +4101,15 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">query</span> <span class="ow">or</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">query</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_set_at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;/&quot;</span> <span class="ow">in</span> <span class="n">key</span> <span class="ow">or</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_key_chain</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_has_key_chain</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_sub_container</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_contains_sub_container</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
 
@@ -4179,7 +4203,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">max_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
+        <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_to_iterator_keys</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">kcs</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">kcs</span><span class="p">])</span></div>

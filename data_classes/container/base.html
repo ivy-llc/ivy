@@ -240,106 +240,6 @@ order. Default is <code class="docutils literal notranslate"><span class="pre">T
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.all_key_chains">
-<span class="sig-name descname"><span class="pre">all_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.all_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.all_key_chains" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>include_empty</strong> – Default value = False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.assert_contains_sub_container">
-<span class="sig-name descname"><span class="pre">assert_contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.assert_contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.assert_contains_sub_container" title="Permalink to this definition"></a></dt>
-<dd><p>Asserts that the current container contains the sub-container, otherwise
-exception raised with the diff printed to screen.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.assert_contains_sub_structure">
-<span class="sig-name descname"><span class="pre">assert_contains_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.assert_contains_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.assert_contains_sub_structure" title="Permalink to this definition"></a></dt>
-<dd><p>Asserts that the current container contains the sub-container structure,
-otherwise exception raised with the diff printed to screen.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.at_key_chain">
-<span class="sig-name descname"><span class="pre">at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.at_key_chain" title="Permalink to this definition"></a></dt>
-<dd><p>Query container object at a specified key-chain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chain</strong> – param ignore_key_errors: (Default value = False)</p></li>
-<li><p><strong>ignore_key_errors</strong> – (Default value = False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – sub-container or value at specified key chain</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.at_key_chains">
-<span class="sig-name descname"><span class="pre">at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.at_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Query container object at specified key-chains, either as list or nested
-dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chains</strong> – param ignore_none: (Default value = True)</p></li>
-<li><p><strong>ignore_key_errors</strong> – Default value = False)</p></li>
-<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>type</em> – sub-container containing only the specified key chains</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.at_keys">
-<span class="sig-name descname"><span class="pre">at_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.at_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.at_keys" title="Permalink to this definition"></a></dt>
-<dd><p>Query container object at specified keys, either as list or nested dict.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>queries</strong> – The keys to query.</p></li>
-<li><p><strong>ignore_none</strong> – Whether to ignore None input. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>containing</strong> – Whether to include keys which only contain the query substrings.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>ignore_key_errors</strong> – Whether to ignore Key-errors when trying to access the dict.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>sub-container containing only key-chains containing the specified keys.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.config">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.config" title="Permalink to this definition"></a></dt>
@@ -365,6 +265,16 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Boolean, whether all entries are boolean False.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_all_key_chains">
+<span class="sig-name descname"><span class="pre">cont_all_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_all_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_all_key_chains" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_empty</strong> – Default value = False)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -413,6 +323,39 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Container object with all entries boolean evaluated.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_assert_contains_sub_container">
+<span class="sig-name descname"><span class="pre">cont_assert_contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_assert_contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_assert_contains_sub_container" title="Permalink to this definition"></a></dt>
+<dd><p>Asserts that the current container contains the sub-container, otherwise
+exception raised with the diff printed to screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_assert_contains_sub_structure">
+<span class="sig-name descname"><span class="pre">cont_assert_contains_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_assert_contains_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_assert_contains_sub_structure" title="Permalink to this definition"></a></dt>
+<dd><p>Asserts that the current container contains the sub-container structure,
+otherwise exception raised with the diff printed to screen.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -467,6 +410,63 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_at_key_chain">
+<span class="sig-name descname"><span class="pre">cont_at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_at_key_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Query container object at a specified key-chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chain</strong> – param ignore_key_errors: (Default value = False)</p></li>
+<li><p><strong>ignore_key_errors</strong> – (Default value = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – sub-container or value at specified key chain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_at_key_chains">
+<span class="sig-name descname"><span class="pre">cont_at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_at_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Query container object at specified key-chains, either as list or nested
+dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chains</strong> – param ignore_none: (Default value = True)</p></li>
+<li><p><strong>ignore_key_errors</strong> – Default value = False)</p></li>
+<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>type</em> – sub-container containing only the specified key chains</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_at_keys">
+<span class="sig-name descname"><span class="pre">cont_at_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">queries</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_key_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_at_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_at_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Query container object at specified keys, either as list or nested dict.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queries</strong> – The keys to query.</p></li>
+<li><p><strong>ignore_none</strong> – Whether to ignore None input. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>containing</strong> – Whether to include keys which only contain the query substrings.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>ignore_key_errors</strong> – Whether to ignore Key-errors when trying to access the dict.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>sub-container containing only key-chains containing the specified keys.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_combine">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_combine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_combine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_combine" title="Permalink to this definition"></a></dt>
 <dd><p>Combine keys and values in a sequence of containers, with priority given to
@@ -495,6 +495,41 @@ container_rightmost.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>list of key-chains.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_contains_sub_container">
+<span class="sig-name descname"><span class="pre">cont_contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_contains_sub_container" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the current container contains the sub-container, with
+matching structure and array values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Bool</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_contains_sub_structure">
+<span class="sig-name descname"><span class="pre">cont_contains_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_contains_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_contains_sub_structure" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether the current container contains the sub-container structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -599,6 +634,37 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_find_sub_container">
+<span class="sig-name descname"><span class="pre">cont_find_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_find_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_find_sub_container" title="Permalink to this definition"></a></dt>
+<dd><p>Find the sub-container in the current container if it exsits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_cont_to_find</strong> – The sub-container to find.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_find_sub_structure">
+<span class="sig-name descname"><span class="pre">cont_find_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_struc_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_find_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_find_sub_structure" title="Permalink to this definition"></a></dt>
+<dd><p>Find the sub-container structure in the current container if it exsits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_struc_to_find</strong> – The sub-container to find.</p></li>
+<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_flatten_key_chain">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_flatten_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">above_height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">below_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_flatten_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_flatten_key_chain" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.</p>
@@ -625,6 +691,20 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 <li><p><strong>above_height</strong> – Default value = None)</p></li>
 <li><p><strong>below_depth</strong> – Default value = None)</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_format_key_chains">
+<span class="sig-name descname"><span class="pre">cont_format_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_format_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_format_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Format all key-chains, using the formatting function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>format_fn</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container with the same key-chain structure, but the key strings formatted.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -689,6 +769,21 @@ results in the global ivy.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_from_flat_list">
+<span class="sig-name descname"><span class="pre">cont_from_flat_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_from_flat_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_from_flat_list" title="Permalink to this definition"></a></dt>
+<dd><p>Return new container object with the same hierarchy, but with values replaced
+from flat list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>flat_list</strong> – flat list of values to populate container with.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Container.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_handle_inplace">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_handle_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_handle_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_handle_inplace" title="Permalink to this definition"></a></dt>
 <dd><p>Returns an inplace update of out, provided it is not None, by updating with
@@ -703,6 +798,35 @@ exists</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>The out container, but filled with the values from the ret container</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_has_key">
+<span class="sig-name descname"><span class="pre">cont_has_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_has_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_has_key" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether container object has specified key somewhere in the nested
+structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>query_key</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Boolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_has_key_chain">
+<span class="sig-name descname"><span class="pre">cont_has_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_has_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_has_key_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Determine whether container object has specified key-chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_chain</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Boolean</p>
 </dd>
 </dl>
 </dd></dl>
@@ -820,6 +944,19 @@ container.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_key_chains_containing">
+<span class="sig-name descname"><span class="pre">cont_key_chains_containing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_key_chains_containing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_key_chains_containing" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_str</strong> – param include_empty: (Default value = False)</p></li>
+<li><p><strong>include_empty</strong> – (Default value = False)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -964,6 +1101,155 @@ rather than a variable or traced array. (Default value = False)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_overwrite_at_key_chain">
+<span class="sig-name descname"><span class="pre">cont_overwrite_at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_overwrite_at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_overwrite_at_key_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Overwrite value of container object at a specified key-chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chain</strong> – param val:</p></li>
+<li><p><strong>inplace</strong> – Default value = False)</p></li>
+<li><p><strong>val</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – new container with updated value at key chain, provided it existed before.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_overwrite_at_key_chains">
+<span class="sig-name descname"><span class="pre">cont_overwrite_at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_overwrite_at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_overwrite_at_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Overwrite values of container object at specified key-chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_dict</strong> – param return_dict: (Default value = None)</p></li>
+<li><p><strong>inplace</strong> – Default value = False)</p></li>
+<li><p><strong>return_dict</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – new container with updated values at the key chains, provided they
+existed before.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_empty">
+<span class="sig-name descname"><span class="pre">cont_prune_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_nones</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_empty" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prunes empty keys from the container dict structure. Returns None
+if the entire container is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keep_nones</strong> – Default value = False)</p></li>
+<li><p><strong>base</strong> – Default value = True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container with empty keys pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_key_chain">
+<span class="sig-name descname"><span class="pre">cont_prune_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_key_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prune chain of keys, specified as ‘key1/key2/key3/…’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key_chain</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container with keys in key chain pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_key_chains">
+<span class="sig-name descname"><span class="pre">cont_prune_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prune set of key chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chains</strong> – param ignore_none: (Default value = True)</p></li>
+<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container with keys in the set of key chains pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_key_from_key_chains">
+<span class="sig-name descname"><span class="pre">cont_prune_key_from_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_key_from_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_key_from_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prune absolute key or key containing a certain substring from all
+key chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>absolute</strong> – The absolute key to detect in the key chains. (Default value = None)</p></li>
+<li><p><strong>containing</strong> – A substring to check each key for, when deciding which keys to prune.
+(Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Container with specified key or substring-containing-key from all key chains</em></p></li>
+<li><p><em>removed from the chain.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_keys">
+<span class="sig-name descname"><span class="pre">cont_prune_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prune set of keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_keys</strong> – param ignore_none: (Default value = True)</p></li>
+<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – Container with key-chains containing the specified keys pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_prune_keys_from_key_chains">
+<span class="sig-name descname"><span class="pre">cont_prune_keys_from_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_prune_keys_from_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_prune_keys_from_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Recursively prune absolute keys or keys containing certain substrings from
+all key chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>absolute</strong> – The absolute key to detect in the key chains. (Default value = None)</p></li>
+<li><p><strong>containing</strong> – A substring to check each key for, when deciding which keys to prune.
+(Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>Container with specified keys or substring-containing-keys from all</em></p></li>
+<li><p><em>key chains removed from the chain.</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_reduce">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_reduce" title="Permalink to this definition"></a></dt>
 <dd><p>Reduce containers.</p>
@@ -977,6 +1263,28 @@ rather than a variable or traced array. (Default value = False)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>reduced containers</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_remove_key_length_limit">
+<span class="sig-name descname"><span class="pre">cont_remove_key_length_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_remove_key_length_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_remove_key_length_limit" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inplace</strong> – Default value = False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_remove_print_limit">
+<span class="sig-name descname"><span class="pre">cont_remove_print_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_remove_print_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_remove_print_limit" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inplace</strong> – Default value = False)</p>
 </dd>
 </dl>
 </dd></dl>
@@ -996,6 +1304,107 @@ same key structure.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>ret</em> – new container with values of updated shapes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_restructure">
+<span class="sig-name descname"><span class="pre">cont_restructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_restructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_restructure" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new container with the same contents, but a new key-chain structure,
+and transposes and/or reshaped arrays. Given by the mapping with keys as old
+key-chains and values as new key-chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
+<li><p><strong>keep_orig</strong> – Whether to keep the original keys, are start from a new container.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_restructure_key_chains">
+<span class="sig-name descname"><span class="pre">cont_restructure_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keychain_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_restructure_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_restructure_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Create a new container with the same contents, but a new key-chain structure.
+Given by the mapping with keys as old key-chains and values as new key-chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>keychain_mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
+<li><p><strong>keep_orig</strong> – Whether to keep the original keys, or start from a new empty container.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_set_at_key_chain">
+<span class="sig-name descname"><span class="pre">cont_set_at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_set_at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_set_at_key_chain" title="Permalink to this definition"></a></dt>
+<dd><p>Set value of container object at a specified key-chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chain</strong> – param val:</p></li>
+<li><p><strong>inplace</strong> – Default value = False)</p></li>
+<li><p><strong>val</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – new container with updated value at key chain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_set_at_key_chains">
+<span class="sig-name descname"><span class="pre">cont_set_at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_set_at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_set_at_key_chains" title="Permalink to this definition"></a></dt>
+<dd><p>Set values of container object at specified key-chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>target_dict</strong> – param return_dict: (Default value = None)</p></li>
+<li><p><strong>inplace</strong> – Default value = False)</p></li>
+<li><p><strong>return_dict</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>ret</em> – new container with updated values at the key chains</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_set_at_keys">
+<span class="sig-name descname"><span class="pre">cont_set_at_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_set_at_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_set_at_keys" title="Permalink to this definition"></a></dt>
+<dd><p>Set values of container object at specified keys.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>target_dict</strong> – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>type</em> – new container with updated value at each key</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_show">
+<span class="sig-name descname"><span class="pre">cont_show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_show" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_show_sub_container">
+<span class="sig-name descname"><span class="pre">cont_show_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont_or_keychain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_show_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_show_sub_container" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sub_cont_or_keychain</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -1040,6 +1449,11 @@ rather than a variable or traced array. (Default value = False)</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_sort_by_key">
+<span class="sig-name descname"><span class="pre">cont_sort_by_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_sort_by_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_sort_by_key" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_structural_diff">
@@ -1119,6 +1533,64 @@ appending to file. (Default value = None)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>pickle_filepath</strong> – Filepath for where to save the container to disk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_flat_list">
+<span class="sig-name descname"><span class="pre">cont_to_flat_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_to_flat_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_flat_list" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Container as flat list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_iterator">
+<span class="sig-name descname"><span class="pre">cont_to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_keys_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_to_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_iterator" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chain</strong> – Default value = ‘’)</p></li>
+<li><p><strong>leaf_keys_only</strong> – Default value = False)</p></li>
+<li><p><strong>include_empty</strong> – Default value = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Iterator for the container elements.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_iterator_keys">
+<span class="sig-name descname"><span class="pre">cont_to_iterator_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_keys_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_to_iterator_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_iterator_keys" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chain</strong> – Default value = ‘’)</p></li>
+<li><p><strong>leaf_keys_only</strong> – Default value = False)</p></li>
+<li><p><strong>include_empty</strong> – Default value = False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Iterator for the container elements.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_iterator_values">
+<span class="sig-name descname"><span class="pre">cont_to_iterator_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_to_iterator_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_iterator_values" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>include_empty</strong> – Default value = False)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Iterator for the container values.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1239,6 +1711,21 @@ Default is <code class="docutils literal notranslate"><span class="pre">0</span>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_with_ivy_backend">
+<span class="sig-name descname"><span class="pre">cont_with_ivy_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_with_ivy_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_with_ivy_backend" title="Permalink to this definition"></a></dt>
+<dd><p>Summary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – input Container</p></li>
+<li><p><strong>ivy_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – backend to use</p></li>
+<li><p><strong>inplace</strong> – whether to modify the container or return a copy</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_with_key_length_limit">
 <span class="sig-name descname"><span class="pre">cont_with_key_length_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_length_limit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_with_key_length_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_with_key_length_limit" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.</p>
@@ -1294,41 +1781,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">0</span>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.contains_sub_container">
-<span class="sig-name descname"><span class="pre">contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.contains_sub_container" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether the current container contains the sub-container, with
-matching structure and array values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Bool</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.contains_sub_structure">
-<span class="sig-name descname"><span class="pre">contains_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.contains_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.contains_sub_structure" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether the current container contains the sub-container structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_cont</strong> – The sub-container to check.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dev</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.dev" title="Permalink to this definition"></a></dt>
@@ -1341,66 +1793,6 @@ the devices are not consistent.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dev_str</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.dev_str" title="Permalink to this definition"></a></dt>
 <dd><p>The device to which the arrays in the container belong, with None returned if
 the devices are not consistent.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.find_sub_container">
-<span class="sig-name descname"><span class="pre">find_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.find_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.find_sub_container" title="Permalink to this definition"></a></dt>
-<dd><p>Find the sub-container in the current container if it exsits.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_cont_to_find</strong> – The sub-container to find.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.find_sub_structure">
-<span class="sig-name descname"><span class="pre">find_sub_structure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_struc_to_find</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_shapes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.find_sub_structure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.find_sub_structure" title="Permalink to this definition"></a></dt>
-<dd><p>Find the sub-container structure in the current container if it exsits.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_struc_to_find</strong> – The sub-container to find.</p></li>
-<li><p><strong>check_shapes</strong> – Whether to check array shapes in the sub-structure. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>partial</strong> – Whether to also check for partially complete sub-containers.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.format_key_chains">
-<span class="sig-name descname"><span class="pre">format_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format_fn</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.format_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.format_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Format all key-chains, using the formatting function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>format_fn</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Container with the same key-chain structure, but the key strings formatted.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.from_flat_list">
-<span class="sig-name descname"><span class="pre">from_flat_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flat_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.from_flat_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.from_flat_list" title="Permalink to this definition"></a></dt>
-<dd><p>Return new container object with the same hierarchy, but with values replaced
-from flat list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>flat_list</strong> – flat list of values to populate container with.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container.</em></p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1417,313 +1809,15 @@ from flat list.</p>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.has_key">
-<span class="sig-name descname"><span class="pre">has_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.has_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.has_key" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether container object has specified key somewhere in the nested
-structure.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>query_key</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Boolean</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.has_key_chain">
-<span class="sig-name descname"><span class="pre">has_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.has_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.has_key_chain" title="Permalink to this definition"></a></dt>
-<dd><p>Determine whether container object has specified key-chain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_chain</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Boolean</p>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.ivy">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ivy</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.ivy" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.key_chains_containing">
-<span class="sig-name descname"><span class="pre">key_chains_containing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.key_chains_containing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.key_chains_containing" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>sub_str</strong> – param include_empty: (Default value = False)</p></li>
-<li><p><strong>include_empty</strong> – (Default value = False)</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.max_depth">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_depth</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.max_depth" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.overwrite_at_key_chain">
-<span class="sig-name descname"><span class="pre">overwrite_at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.overwrite_at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.overwrite_at_key_chain" title="Permalink to this definition"></a></dt>
-<dd><p>Overwrite value of container object at a specified key-chain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chain</strong> – param val:</p></li>
-<li><p><strong>inplace</strong> – Default value = False)</p></li>
-<li><p><strong>val</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – new container with updated value at key chain, provided it existed before.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.overwrite_at_key_chains">
-<span class="sig-name descname"><span class="pre">overwrite_at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.overwrite_at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.overwrite_at_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Overwrite values of container object at specified key-chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>target_dict</strong> – param return_dict: (Default value = None)</p></li>
-<li><p><strong>inplace</strong> – Default value = False)</p></li>
-<li><p><strong>return_dict</strong> – (Default value = None)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – new container with updated values at the key chains, provided they
-existed before.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_empty">
-<span class="sig-name descname"><span class="pre">prune_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_nones</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_empty" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prunes empty keys from the container dict structure. Returns None
-if the entire container is empty.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keep_nones</strong> – Default value = False)</p></li>
-<li><p><strong>base</strong> – Default value = True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Container with empty keys pruned.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_key_chain">
-<span class="sig-name descname"><span class="pre">prune_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_key_chain" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prune chain of keys, specified as ‘key1/key2/key3/…’.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>key_chain</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Container with keys in key chain pruned.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_key_chains">
-<span class="sig-name descname"><span class="pre">prune_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prune set of key chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chains</strong> – param ignore_none: (Default value = True)</p></li>
-<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Container with keys in the set of key chains pruned.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_key_from_key_chains">
-<span class="sig-name descname"><span class="pre">prune_key_from_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_key_from_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_key_from_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prune absolute key or key containing a certain substring from all
-key chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>absolute</strong> – The absolute key to detect in the key chains. (Default value = None)</p></li>
-<li><p><strong>containing</strong> – A substring to check each key for, when deciding which keys to prune.
-(Default value = None)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Container with specified key or substring-containing-key from all key chains</em></p></li>
-<li><p><em>removed from the chain.</em></p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_keys">
-<span class="sig-name descname"><span class="pre">prune_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_none</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_keys" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prune set of keys.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query_keys</strong> – param ignore_none: (Default value = True)</p></li>
-<li><p><strong>ignore_none</strong> – (Default value = True)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Container with key-chains containing the specified keys pruned.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.prune_keys_from_key_chains">
-<span class="sig-name descname"><span class="pre">prune_keys_from_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">absolute</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">containing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.prune_keys_from_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.prune_keys_from_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Recursively prune absolute keys or keys containing certain substrings from
-all key chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>absolute</strong> – The absolute key to detect in the key chains. (Default value = None)</p></li>
-<li><p><strong>containing</strong> – A substring to check each key for, when deciding which keys to prune.
-(Default value = None)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><em>Container with specified keys or substring-containing-keys from all</em></p></li>
-<li><p><em>key chains removed from the chain.</em></p></li>
-</ul>
-</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.remove_key_length_limit">
-<span class="sig-name descname"><span class="pre">remove_key_length_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.remove_key_length_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.remove_key_length_limit" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inplace</strong> – Default value = False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.remove_print_limit">
-<span class="sig-name descname"><span class="pre">remove_print_limit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.remove_print_limit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.remove_print_limit" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>inplace</strong> – Default value = False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.restructure">
-<span class="sig-name descname"><span class="pre">restructure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.restructure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.restructure" title="Permalink to this definition"></a></dt>
-<dd><p>Create a new container with the same contents, but a new key-chain structure,
-and transposes and/or reshaped arrays. Given by the mapping with keys as old
-key-chains and values as new key-chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
-<li><p><strong>keep_orig</strong> – Whether to keep the original keys, are start from a new container.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.restructure_key_chains">
-<span class="sig-name descname"><span class="pre">restructure_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keychain_mapping</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_orig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.restructure_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.restructure_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Create a new container with the same contents, but a new key-chain structure.
-Given by the mapping with keys as old key-chains and values as new key-chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>keychain_mapping</strong> – A dict with keys as old key-chains and values as new key-chains.</p></li>
-<li><p><strong>keep_orig</strong> – Whether to keep the original keys, or start from a new empty container.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>replace</strong> – Whether to replace the old key-chains by the new ones. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.set_at_key_chain">
-<span class="sig-name descname"><span class="pre">set_at_key_chain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.set_at_key_chain"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.set_at_key_chain" title="Permalink to this definition"></a></dt>
-<dd><p>Set value of container object at a specified key-chain.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chain</strong> – param val:</p></li>
-<li><p><strong>inplace</strong> – Default value = False)</p></li>
-<li><p><strong>val</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – new container with updated value at key chain</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.set_at_key_chains">
-<span class="sig-name descname"><span class="pre">set_at_key_chains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.set_at_key_chains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.set_at_key_chains" title="Permalink to this definition"></a></dt>
-<dd><p>Set values of container object at specified key-chains.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>target_dict</strong> – param return_dict: (Default value = None)</p></li>
-<li><p><strong>inplace</strong> – Default value = False)</p></li>
-<li><p><strong>return_dict</strong> – (Default value = None)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – new container with updated values at the key chains</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.set_at_keys">
-<span class="sig-name descname"><span class="pre">set_at_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.set_at_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.set_at_keys" title="Permalink to this definition"></a></dt>
-<dd><p>Set values of container object at specified keys.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>target_dict</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>type</em> – new container with updated value at each key</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.shapes">
@@ -1740,22 +1834,6 @@ are not consistent across arrays.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.show">
-<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.show" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.show_sub_container">
-<span class="sig-name descname"><span class="pre">show_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont_or_keychain</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.show_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.show_sub_container" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sub_cont_or_keychain</strong> – </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.shuffle_h5_file">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shuffle_h5_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.shuffle_h5_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.shuffle_h5_file" title="Permalink to this definition"></a></dt>
 <dd><p>Shuffle entries in all datasets of h5 file, such that they are still aligned
@@ -1769,11 +1847,6 @@ along axis 0.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.sort_by_key">
-<span class="sig-name descname"><span class="pre">sort_by_key</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.sort_by_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.sort_by_key" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.split_conts">
@@ -1800,79 +1873,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>A list of sub-arrays.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_flat_list">
-<span class="sig-name descname"><span class="pre">to_flat_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.to_flat_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_flat_list" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Container as flat list.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_iterator">
-<span class="sig-name descname"><span class="pre">to_iterator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_keys_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.to_iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_iterator" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chain</strong> – Default value = ‘’)</p></li>
-<li><p><strong>leaf_keys_only</strong> – Default value = False)</p></li>
-<li><p><strong>include_empty</strong> – Default value = False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Iterator for the container elements.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_iterator_keys">
-<span class="sig-name descname"><span class="pre">to_iterator_keys</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key_chain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">leaf_keys_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.to_iterator_keys"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_iterator_keys" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>key_chain</strong> – Default value = ‘’)</p></li>
-<li><p><strong>leaf_keys_only</strong> – Default value = False)</p></li>
-<li><p><strong>include_empty</strong> – Default value = False)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Iterator for the container elements.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_iterator_values">
-<span class="sig-name descname"><span class="pre">to_iterator_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.to_iterator_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_iterator_values" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>include_empty</strong> – Default value = False)</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Iterator for the container values.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.with_ivy_backend">
-<span class="sig-name descname"><span class="pre">with_ivy_backend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ivy_backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.with_ivy_backend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.with_ivy_backend" title="Permalink to this definition"></a></dt>
-<dd><p>Summary.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> – input Container</p></li>
-<li><p><strong>ivy_backend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – backend to use</p></li>
-<li><p><strong>inplace</strong> – whether to modify the container or return a copy</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>

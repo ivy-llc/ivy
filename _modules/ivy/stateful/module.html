@@ -518,14 +518,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret_cont</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">has_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">):</span>
-            <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_has_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">):</span>
+            <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">orig_key_chain</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">old_kc</span><span class="p">,</span> <span class="n">new_kc</span> <span class="ow">in</span> <span class="n">keychain_mappings</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">orig_key_chain</span> <span class="ow">in</span> <span class="n">old_kc</span><span class="p">:</span>
-                <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span>
-                    <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">v</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">new_kc</span><span class="p">)</span>
+                <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">cont_set_at_key_chain</span><span class="p">(</span>
+                    <span class="s2">&quot;/&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">new_kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]),</span> <span class="n">v</span><span class="o">.</span><span class="n">cont_at_key_chain</span><span class="p">(</span><span class="n">new_kc</span><span class="p">)</span>
                 <span class="p">)</span>
         <span class="k">return</span> <span class="n">ret_cont</span>
 
@@ -617,7 +617,7 @@
             <span class="k">else</span> <span class="n">found_dup_callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">dup_kc</span> <span class="ow">in</span> <span class="n">duplicate_keychains</span><span class="p">:</span>
-            <span class="n">vs</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">dup_kc</span><span class="p">)</span>
+            <span class="n">vs</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">cont_prune_key_chain</span><span class="p">(</span><span class="n">dup_kc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vs</span><span class="p">,</span> <span class="n">keychain_mappings</span>
 
     <span class="c1"># Overridable #</span>
@@ -794,7 +794,7 @@
 <span class="sd">            current module. Default is ``None``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">cont_show_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="s2">&quot;both self.top_v and self.v must be initialized in order to show v in &quot;</span>
@@ -817,9 +817,9 @@
 <span class="sd">            which all nested key-chains flattened. Default is ``False``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">):</span>
-            <span class="n">kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">kc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span><span class="p">(</span><span class="n">depth</span><span class="p">)</span><span class="o">.</span><span class="n">cont_find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">kc</span><span class="p">:</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">restructure_key_chains</span><span class="p">({</span><span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">kc</span><span class="p">},</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">cont_restructure_key_chains</span><span class="p">({</span><span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">kc</span><span class="p">},</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
             <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
@@ -897,7 +897,7 @@
             <span class="k">if</span> <span class="n">flatten_key_chains</span><span class="p">:</span>
                 <span class="n">upper_sub_mods</span> <span class="o">=</span> <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
                 <span class="n">lower_sub_mods</span> <span class="o">=</span> <span class="n">lower_sub_mods</span><span class="o">.</span><span class="n">cont_flatten_key_chains</span><span class="p">()</span>
-            <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">show_sub_container</span><span class="p">(</span><span class="n">lower_sub_mods</span><span class="p">)</span>
+            <span class="n">upper_sub_mods</span><span class="o">.</span><span class="n">cont_show_sub_container</span><span class="p">(</span><span class="n">lower_sub_mods</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
                 <span class="s2">&quot;self.top_mod must be initialized in order to show mod in top_mod,&quot;</span>
@@ -1066,7 +1066,7 @@
         <span class="n">sco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_call_order</span>
         <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_with_top_mod_key_chain</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_chain</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-            <span class="n">kcs</span> <span class="o">=</span> <span class="n">sco</span><span class="o">.</span><span class="n">key_chains_containing</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">kcs</span> <span class="o">=</span> <span class="n">sco</span><span class="o">.</span><span class="n">cont_key_chains_containing</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">kcs</span><span class="p">:</span>
                 <span class="n">max_key</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                     <span class="n">kcs</span><span class="p">,</span>
@@ -1083,7 +1083,7 @@
                 <span class="p">)</span>
             <span class="n">sco</span> <span class="o">=</span> <span class="n">sco</span><span class="p">[</span><span class="n">max_key</span><span class="p">]</span>
         <span class="n">final_key</span> <span class="o">=</span> <span class="n">key_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">kcs</span> <span class="o">=</span> <span class="n">sco</span><span class="o">.</span><span class="n">key_chains_containing</span><span class="p">(</span><span class="n">final_key</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">kcs</span> <span class="o">=</span> <span class="n">sco</span><span class="o">.</span><span class="n">cont_key_chains_containing</span><span class="p">(</span><span class="n">final_key</span><span class="p">,</span> <span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kcs</span><span class="p">:</span>
             <span class="n">sorted_kcs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                 <span class="n">kcs</span><span class="p">,</span>
@@ -1231,10 +1231,10 @@
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_partial_v</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">v_from_constructor</span><span class="p">:</span>
-                    <span class="n">created_n_found</span><span class="o">.</span><span class="n">assert_contains_sub_structure</span><span class="p">(</span>
+                    <span class="n">created_n_found</span><span class="o">.</span><span class="n">cont_assert_contains_sub_structure</span><span class="p">(</span>
                         <span class="n">v_from_constructor</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span>
                     <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span><span class="o">.</span><span class="n">set_at_key_chains</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span><span class="o">.</span><span class="n">cont_set_at_key_chains</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">created_n_found</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span>
                     <span class="n">created_n_found</span><span class="p">,</span> <span class="n">created</span>
@@ -1473,7 +1473,7 @@
                 <span class="n">params_hk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_native_module</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">RNG</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="n">params_dict</span> <span class="o">=</span> <span class="n">_hk_flat_map_to_dict</span><span class="p">(</span><span class="n">params_hk</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
-                <span class="n">param_iterator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+                <span class="n">param_iterator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hk_params</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
                 <span class="n">_</span><span class="p">,</span> <span class="n">param0</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">param_iterator</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">param0</span><span class="o">.</span><span class="n">device</span><span class="p">())</span>
 
