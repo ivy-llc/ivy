@@ -168,18 +168,20 @@ def test_function(
     arg_np_vals, args_idxs, c_arg_vals = _get_nested_np_arrays(args_np)
     kwarg_np_vals, kwargs_idxs, c_kwarg_vals = _get_nested_np_arrays(kwargs_np)
 
+    native_array_flags = test_flags.native_arrays
+    as_variable_flags = test_flags.as_variable
+    container_flags = test_flags.container
+
     # make all lists equal in length
     num_arrays = c_arg_vals + c_kwarg_vals
     if len(input_dtypes) < num_arrays:
         input_dtypes = [input_dtypes[0] for _ in range(num_arrays)]
-    if len(test_flags.as_variable_flags) < num_arrays:
-        as_variable_flags = [test_flags.as_variable_flags[0] for _ in range(num_arrays)]
-    if len(test_flags.native_array_flags) < num_arrays:
-        native_array_flags = [
-            test_flags.native_array_flags[0] for _ in range(num_arrays)
-        ]
-    if len(test_flags.container_flags) < num_arrays:
-        container_flags = [test_flags.container_flags[0] for _ in range(num_arrays)]
+    if len(test_flags.as_variable) < num_arrays:
+        as_variable_flags = [test_flags.as_variable[0] for _ in range(num_arrays)]
+    if len(test_flags.native_arrays) < num_arrays:
+        native_array_flags = [test_flags.native_arrays[0] for _ in range(num_arrays)]
+    if len(test_flags.container) < num_arrays:
+        container_flags = [test_flags.container[0] for _ in range(num_arrays)]
 
     # update variable flags to be compatible with float dtype and with_out args
     as_variable_flags = [

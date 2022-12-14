@@ -15,14 +15,13 @@ from ivy_tests.test_ivy.test_functional.test_core.test_dtype import astype_helpe
 @handle_test(
     fn_tree="functional.ivy.native_array",
     dtype_and_x_and_cast_dtype=astype_helper(),
+    with_out=st.just(False),
+    container_flags=st.just([False]),
 )
 def test_native_array(
     *,
     dtype_and_x_and_cast_dtype,
-    as_variable,
-    num_positional_args,
-    native_array,
-    instance_method,
+    test_flags,
     backend_fw,
     fn_name,
     on_device,
@@ -31,12 +30,7 @@ def test_native_array(
     input_dtype, x, dtype = dtype_and_x_and_cast_dtype
     helpers.test_function(
         input_dtypes=input_dtype,
-        as_variable_flags=as_variable,
-        with_out=False,
-        num_positional_args=num_positional_args,
-        native_array_flags=native_array,
-        container_flags=[False],
-        instance_method=instance_method,
+        test_flags=test_flags,
         on_device=on_device,
         fw=backend_fw,
         fn_name=fn_name,
