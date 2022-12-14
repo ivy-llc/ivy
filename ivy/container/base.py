@@ -1877,7 +1877,7 @@ class ContainerBase(dict, abc.ABC):
             alphabetical_keys=False,
         )
 
-    def to_disk_as_hdf5(
+    def cont_to_disk_as_hdf5(
         self, h5_obj_or_filepath, starting_index=0, mode="a", max_batch_size=None
     ):
         """Save container object to disk, as an h5py file, at the specified filepath.
@@ -1912,7 +1912,9 @@ class ContainerBase(dict, abc.ABC):
                     h5_group = h5_obj.create_group(key)
                 else:
                     h5_group = h5_obj[key]
-                value.to_disk_as_hdf5(h5_group, starting_index, mode, max_batch_size)
+                value.cont_to_disk_as_hdf5(
+                    h5_group, starting_index, mode, max_batch_size
+                )
             else:
                 value_as_np = self._ivy.to_numpy(value)
                 value_shape = value_as_np.shape

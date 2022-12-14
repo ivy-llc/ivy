@@ -1057,7 +1057,7 @@ class Module(abc.ABC):
         None
         """
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
-        self.v.to_disk_as_hdf5(weights_path)
+        self.v.cont_to_disk_as_hdf5(weights_path)
 
     def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """
