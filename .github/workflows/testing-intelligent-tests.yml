@@ -30,8 +30,3 @@ jobs:
            echo "Hello!" > tests.pbz2
            git push origin master
          continue-on-error: true
-
-#       - name: Push Mapping
-#         run: |
-#
-#           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
