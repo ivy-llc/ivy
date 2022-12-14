@@ -405,7 +405,6 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
-
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def clamp(self, min=None, max=None, *, out=None):
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
