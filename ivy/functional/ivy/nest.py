@@ -95,6 +95,7 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /):
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
+@handle_exceptions
 def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple],
     index: Sequence[Union[str, int]],
@@ -211,7 +212,7 @@ def map_nest_at_index(
     /,
     shallow: bool = True,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List] = None,
-) -> None:
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
     """Map a function to the value of a nested item at a specified index.
 
     Parameters
@@ -344,7 +345,7 @@ def set_nest_at_indices(
     values: Union[List[int], Tuple[int], Iterable[int]],
     /,
     shallow: bool = True,
-) -> Any:
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
     """Set the value of a nested item at specified indices with specified values.
 
     Parameters
@@ -449,7 +450,7 @@ def map_nest_at_indices(
     fn: Callable,
     /,
     shallow: bool = True,
-):
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
     """Map a function to the values of a nested item at the specified indices.
 
     Parameters
