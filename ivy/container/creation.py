@@ -795,7 +795,7 @@ class ContainerWithCreation(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
         return ContainerBase.cont_handle_inplace(
-            self.map(
+            self.cont_map(
                 lambda x_: ivy.meshgrid([x_._data] + list(arrays))
                 if ivy.is_array(x_)
                 else x_,
