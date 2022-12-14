@@ -1023,7 +1023,7 @@ class ContainerBase(dict, abc.ABC):
             Boolean
 
         """
-        array_conts = [cont.size_ordered_arrays(exclusive) for cont in containers]
+        array_conts = [cont.cont_size_ordered_arrays(exclusive) for cont in containers]
         array_cont0 = array_conts[0]
         array_cont0_len = len(array_cont0)
         for array_cont in array_conts[1:]:
@@ -1852,7 +1852,7 @@ class ContainerBase(dict, abc.ABC):
             ).to_iterator_values()
         )
 
-    def size_ordered_arrays(self, exclusive=False):
+    def cont_size_ordered_arrays(self, exclusive=False):
         """Return a container with keychains mapped to flat keys, and arrays given in
         order of smallest to largest.
 
