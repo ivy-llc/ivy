@@ -59,17 +59,28 @@ class FunctionTestFlags:
         with_out,
         instance_method,
         as_variable,
-        native_array,
-        container_flags,
+        native_arrays,
+        container,
         gradient,
     ):
         self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.instance_method = instance_method
-        self.native_arrays = native_array
-        self.container = container_flags
+        self.native_arrays = native_arrays
+        self.container = container
         self.as_variable = as_variable
         self.gradient = gradient
+
+    def __str__(self):
+        return (
+            f"num_positional_args={self.num_positional_args}. "
+            f"with_out={self.with_out}. "
+            f"instance_method={self.instance_method}. "
+            f"native_arrays={self.native_arrays}. "
+            f"container={self.container}. "
+            f"as_variable={self.as_variable}. "
+            f"gradient={self.gradient}."
+        )
 
 
 @st.composite
@@ -77,12 +88,12 @@ def function_flags(
     draw,
     *,
     num_positional_args,
-    instance_method=BuiltInstanceStrategy,
-    with_out=BuiltWithOutStrategy,
-    gradient=BuiltGradientStrategy,
-    as_variable=BuiltAsVariableStrategy,
-    native_arrays=BuiltNativeArrayStrategy,
-    container_flags=BuiltContainerStrategy
+    instance_method,
+    with_out,
+    gradient,
+    as_variable,
+    native_arrays,
+    container_flags,
 ):
     return draw(
         st.builds(
