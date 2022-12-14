@@ -56,8 +56,8 @@ class ContainerWithActivations(ContainerBase):
         >>> y = ivy.Container.static_relu(x)
         >>> print(y)
         {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -117,8 +117,8 @@ class ContainerWithActivations(ContainerBase):
         >>> y = x.relu()
         >>> print(y)
         {
-        a: ivy.array([1., 0.]),
-        b: ivy.array([0.40000001, 0.])
+            a: ivy.array([1., 0.]),
+            b: ivy.array([0.40000001, 0.])
         }
 
         """
@@ -176,11 +176,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = ivy.Container.static_leaky_relu(x)
         >>> print(y)
         {
-              a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
@@ -239,11 +240,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a =ivy.array([0.39, -0.85]))
+        >>> x = ivy.Container(a=ivy.array([0.39, -0.85]), b=ivy.array([1., -0.2]))
         >>> y = x.leaky_relu()
         >>> print(y)
         {
-            a: ivy.array([0.39, -0.17])
+            a: ivy.array([0.38999999, -0.17]),
+            b: ivy.array([1., -0.04])
         }
 
         """
