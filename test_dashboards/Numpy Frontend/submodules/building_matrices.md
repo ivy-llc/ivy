@@ -1,0 +1,3 @@
+|                 | torch                                                                                                                                                                              |
+|:----------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| test_numpy_diag | <a href="https://github.com/unifyai/ivy/actions/runs/3690265775/jobs/6247091329" rel="noopener noreferrer" target="_blank"><img src=https://img.shields.io/badge/-failure-red></a> |
