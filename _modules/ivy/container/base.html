@@ -1452,7 +1452,7 @@
     <span class="c1"># Private Methods #</span>
     <span class="c1"># ----------------#</span>
 
-    <span class="k">def</span> <span class="nf">_call_static_method_with_flexible_args</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_cont_call_static_method_with_flexible_args</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">static_method</span><span class="p">,</span>
         <span class="o">*</span><span class="n">args</span><span class="p">,</span>
@@ -1516,7 +1516,7 @@
             <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_get_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
@@ -1547,11 +1547,11 @@
             <span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_get_shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_get_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">sub_devs</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
@@ -1565,7 +1565,7 @@
             <span class="k">return</span> <span class="n">sub_devs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_at_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_at_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">return_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span><span class="p">)</span>
@@ -1574,7 +1574,7 @@
             <span class="n">return_cont</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_cont</span>
 
-    <span class="k">def</span> <span class="nf">_at_key_chains_input_as_dict</span><span class="p">(</span>
+    <span class="k">def</span> <span class="nf">_cont_at_key_chains_input_as_dict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">current_chain</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1584,7 +1584,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">new_current_chain</span> <span class="o">=</span> <span class="n">current_chain</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">k</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_dict</span><span class="p">(</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_at_key_chains_input_as_dict</span><span class="p">(</span>
                     <span class="n">v</span><span class="p">,</span> <span class="n">new_current_chain</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1596,18 +1596,18 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
         <span class="n">return_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
             <span class="n">return_cont</span> <span class="o">=</span> <span class="n">return_cont</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_cont</span>
 
-    <span class="k">def</span> <span class="nf">_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">return_cont</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">return_cont</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">return_cont</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">return_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="n">ret_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="n">ret_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
                 <span class="k">if</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">del</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1617,7 +1617,7 @@
     <span class="c1"># Public Methods #</span>
     <span class="c1"># ---------------#</span>
 
-<div class="viewcode-block" id="ContainerBase.duplicate_array_keychains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.duplicate_array_keychains">[docs]</a>    <span class="k">def</span> <span class="nf">duplicate_array_keychains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_duplicate_array_keychains"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_duplicate_array_keychains">[docs]</a>    <span class="k">def</span> <span class="nf">cont_duplicate_array_keychains</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">duplciates</span> <span class="o">=</span> <span class="p">()</span>
         <span class="n">key_chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
         <span class="n">skips</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -2599,15 +2599,15 @@
         <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_seq</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_at_key_chains_input_as_seq</span><span class="p">(</span>
                 <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_dict</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_at_key_chains_input_as_dict</span><span class="p">(</span>
                 <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
             <span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_seq</span><span class="p">(</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_at_key_chains_input_as_seq</span><span class="p">(</span>
                 <span class="p">[</span><span class="n">key_chains</span><span class="p">],</span> <span class="n">ignore_key_errors</span><span class="o">=</span><span class="n">ignore_key_errors</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2902,11 +2902,11 @@
         <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_dict</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prune_key_chains_input_as_seq</span><span class="p">([</span><span class="n">key_chains</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_prune_key_chains_input_as_seq</span><span class="p">([</span><span class="n">key_chains</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">IvyException</span><span class="p">(</span>
                 <span class="s2">&quot;Invalid type for input key_chains, must either be a list, tuple, dict &quot;</span>
@@ -4141,28 +4141,28 @@
         <span class="sd">&quot;&quot;&quot;The shape of the arrays in the container, with None placed in indices which</span>
 <span class="sd">        are not consistent across arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shape</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_get_shape</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shapes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The shapes of each array in the container, with None placed in leaf entries</span>
 <span class="sd">        without a shape attribute.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_shapes</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_get_shapes</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The device to which the arrays in the container belong, with None returned if</span>
 <span class="sd">        the devices are not consistent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dev</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_get_dev</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dev_str</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The device to which the arrays in the container belong, with None returned if</span>
 <span class="sd">        the devices are not consistent.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dev</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_get_dev</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

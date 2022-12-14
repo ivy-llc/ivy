@@ -159,7 +159,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-        <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">duplicate_array_keychains</span><span class="p">()</span>
+        <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">cont_duplicate_array_keychains</span><span class="p">()</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)):</span>
         <span class="n">duplicate_index_chains</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">duplicate_array_index_chains</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">duplicate_index_chains</span>
