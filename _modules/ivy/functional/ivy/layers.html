@@ -1335,7 +1335,7 @@
 <span class="sd">    &gt;&gt;&gt; filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO</span>
 
 <span class="sd">    &gt;&gt;&gt; result = ivy.conv3d(x, filters, 1, &#39;SAME&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; print(result.shapes)</span>
+<span class="sd">    &gt;&gt;&gt; print(result.cont_shapes)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: [1,3,5,5,3],</span>
 <span class="sd">        b: [1,5,32,32,3],</span>
