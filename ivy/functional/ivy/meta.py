@@ -28,17 +28,17 @@ def _compute_cost_and_update_grads(
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
             lambda v: cost_fn(
-                batch, v=variables.set_at_key_chains(v) if unique_outer else v
+                batch, v=variables.cont_set_at_key_chains(v) if unique_outer else v
             ),
-            variables.at_key_chains(outer_v, ignore_none=True)
+            variables.cont_at_key_chains(outer_v, ignore_none=True)
             if keep_outer_v
-            else variables.prune_key_chains(outer_v, ignore_none=True),
+            else variables.cont_prune_key_chains(outer_v, ignore_none=True),
             retain_grads=False,
         )
         var = (
-            variables.at_key_chains(outer_v, ignore_none=True)
+            variables.cont_at_key_chains(outer_v, ignore_none=True)
             if keep_outer_v
-            else variables.prune_key_chains(outer_v, ignore_none=True)
+            else variables.cont_prune_key_chains(outer_v, ignore_none=True)
         )
         inner_grads = ivy.Container(
             {
@@ -89,17 +89,18 @@ def _train_task(
         # compute inner gradient for update the inner variables
         cost, inner_update_grads = ivy.execute_with_gradients(
             lambda v: inner_cost_fn(
-                inner_batch, v=variables.set_at_key_chains(v) if unique_inner else v
+                inner_batch,
+                v=variables.cont_set_at_key_chains(v) if unique_inner else v,
             ),
-            variables.at_key_chains(inner_v, ignore_none=True)
+            variables.cont_at_key_chains(inner_v, ignore_none=True)
             if keep_innver_v
-            else variables.prune_key_chains(inner_v, ignore_none=True),
+            else variables.cont_prune_key_chains(inner_v, ignore_none=True),
             retain_grads=order > 1,
         )
         var = (
-            variables.at_key_chains(inner_v, ignore_none=True)
+            variables.cont_at_key_chains(inner_v, ignore_none=True)
             if keep_innver_v
-            else variables.prune_key_chains(inner_v, ignore_none=True)
+            else variables.cont_prune_key_chains(inner_v, ignore_none=True)
         )
         inner_update_grads = ivy.Container(
             {
@@ -133,11 +134,11 @@ def _train_task(
         # update cost and update parameters
         total_cost = total_cost + cost
         if unique_inner:
-            variables = variables.set_at_key_chains(
+            variables = variables.cont_set_at_key_chains(
                 inner_optimization_step(
-                    variables.at_key_chains(inner_v)
+                    variables.cont_at_key_chains(inner_v)
                     if keep_innver_v
-                    else variables.prune_key_chains(inner_v),
+                    else variables.cont_prune_key_chains(inner_v),
                     inner_update_grads,
                     inner_learning_rate,
                     stop_gradients=stop_gradients,
@@ -703,7 +704,7 @@ def maml_step(
             outer_batch_fn,
             inner_cost_fn,
             outer_cost_fn,
-            variables.set_at_key_chains(v) if unique_outer else v,
+            variables.cont_set_at_key_chains(v) if unique_outer else v,
             inner_grad_steps,
             inner_learning_rate,
             inner_optimization_step,
@@ -718,9 +719,9 @@ def maml_step(
             num_tasks,
             False,
         ),
-        variables.at_key_chains(outer_v, ignore_none=True)
+        variables.cont_at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v
-        else variables.prune_key_chains(outer_v, ignore_none=True),
+        else variables.cont_prune_key_chains(outer_v, ignore_none=True),
     )
     if isinstance(func_ret, tuple):
         grads = grads["0"] if "0" in grads else grads

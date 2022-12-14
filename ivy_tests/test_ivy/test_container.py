@@ -1064,15 +1064,15 @@ def test_container_at_keys(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    new_container = container.at_keys(["a", "c"])
+    new_container = container.cont_at_keys(["a", "c"])
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert "d" not in new_container["b"]
-    new_container = container.at_keys("c")
+    new_container = container.cont_at_keys("c")
     assert "a" not in new_container
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert "d" not in new_container["b"]
-    new_container = container.at_keys(["b"])
+    new_container = container.cont_at_keys(["b"])
     assert "a" not in new_container
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
@@ -1086,9 +1086,9 @@ def test_container_at_key_chain(device):
     container = Container(dict_in)
 
     # explicit function call
-    sub_container = container.at_key_chain("b")
+    sub_container = container.cont_at_key_chain("b")
     assert np.allclose(ivy.to_numpy(sub_container["c"]), np.array([2]))
-    sub_container = container.at_key_chain("b/c")
+    sub_container = container.cont_at_key_chain("b/c")
     assert np.allclose(ivy.to_numpy(sub_container), np.array([2]))
 
     # overridden built-in function call
@@ -1105,15 +1105,15 @@ def test_container_at_key_chains(device):
     }
     container = Container(dict_in)
     target_cont = Container({"a": True, "b": {"c": True}})
-    new_container = container.at_key_chains(target_cont)
+    new_container = container.cont_at_key_chains(target_cont)
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert "d" not in new_container["b"]
-    new_container = container.at_key_chains(["b/c", "b/d"])
+    new_container = container.cont_at_key_chains(["b/c", "b/d"])
     assert "a" not in new_container
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
-    new_container = container.at_key_chains("b/c")
+    new_container = container.cont_at_key_chains("b/c")
     assert "a" not in new_container
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert "d" not in new_container["b"]
@@ -1126,7 +1126,7 @@ def test_container_all_key_chains(include_empty, device):
     bd_val = Container() if include_empty else ivy.array([3], device=device)
     dict_in = {"a": a_val, "b": {"c": bc_val, "d": bd_val}}
     container = Container(dict_in)
-    kcs = container.all_key_chains(include_empty)
+    kcs = container.cont_all_key_chains(include_empty)
     assert kcs[0] == "a"
     assert kcs[1] == "b/c"
     assert kcs[2] == "b/d"
@@ -1139,7 +1139,7 @@ def test_container_key_chains_containing(include_empty, device):
     bd_val = Container() if include_empty else ivy.array([3], device=device)
     dict_in = {"a_sub": a_val, "b": {"c": bc_val, "d_sub": bd_val}}
     container = Container(dict_in)
-    kcs = container.key_chains_containing("sub", include_empty)
+    kcs = container.cont_key_chains_containing("sub", include_empty)
     assert kcs[0] == "a_sub"
     assert kcs[1] == "b/d_sub"
 
@@ -1154,12 +1154,12 @@ def test_container_set_at_keys(device):
 
     # explicit function call
     orig_container = container_orig.cont_copy()
-    container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
+    container = orig_container.cont_set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
     assert not container.cont_has_key("c")  # noqa
     assert not container.cont_has_key("d")  # noqa
-    container = orig_container.set_at_keys(
+    container = orig_container.cont_set_at_keys(
         {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
     )
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([5]))
@@ -1177,12 +1177,12 @@ def test_container_set_at_key_chain(device):
 
     # explicit function call
     container = container_orig.cont_copy()
-    container = container.set_at_key_chain("b/e", ivy.array([4], device=device))
+    container = container.cont_set_at_key_chain("b/e", ivy.array([4], device=device))
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
     assert np.allclose(ivy.to_numpy(container["b"]["e"]), np.array([4]))
-    container = container.set_at_key_chain("f", ivy.array([5], device=device))
+    container = container.cont_set_at_key_chain("f", ivy.array([5], device=device))
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([3]))
@@ -1218,12 +1218,14 @@ def test_container_overwrite_at_key_chain(device):
     container = container_orig.cont_copy()
     # noinspection PyBroadException
     try:
-        container.overwrite_at_key_chain("b/e", ivy.array([4], device=device))
+        container.cont_overwrite_at_key_chain("b/e", ivy.array([4], device=device))
         exception_raised = False
     except Exception:
         exception_raised = True
     assert exception_raised
-    container = container.overwrite_at_key_chain("b/d", ivy.array([4], device=device))
+    container = container.cont_overwrite_at_key_chain(
+        "b/d", ivy.array([4], device=device)
+    )
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container["b"]["d"]), np.array([4]))
@@ -1242,12 +1244,12 @@ def test_container_set_at_key_chains(device):
     target_container = Container(
         {"a": ivy.array([4], device=device), "b": {"d": ivy.array([5], device=device)}}
     )
-    new_container = container.set_at_key_chains(target_container, inplace=False)
+    new_container = container.cont_set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([5]))
     target_container = Container({"b": {"c": ivy.array([7], device=device)}})
-    new_container = container.set_at_key_chains(target_container, inplace=False)
+    new_container = container.cont_set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([7]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
@@ -1266,18 +1268,22 @@ def test_container_overwrite_at_key_chains(device):
     target_container = Container(
         {"a": ivy.array([4], device=device), "b": {"d": ivy.array([5], device=device)}}
     )
-    new_container = container.overwrite_at_key_chains(target_container, inplace=False)
+    new_container = container.cont_overwrite_at_key_chains(
+        target_container, inplace=False
+    )
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([5]))
     target_container = Container({"b": {"c": ivy.array([7], device=device)}})
-    new_container = container.overwrite_at_key_chains(target_container, inplace=False)
+    new_container = container.cont_overwrite_at_key_chains(
+        target_container, inplace=False
+    )
     assert np.allclose(ivy.to_numpy(new_container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["c"]), np.array([7]))
     assert np.allclose(ivy.to_numpy(new_container["b"]["d"]), np.array([3]))
     # noinspection PyBroadException
     try:
-        container.overwrite_at_key_chains(
+        container.cont_overwrite_at_key_chains(
             Container({"b": {"e": ivy.array([5], device=device)}})
         )
         exception_raised = False
@@ -1292,7 +1298,7 @@ def test_container_prune_keys(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    container_pruned = container.prune_keys(["a", "c"])
+    container_pruned = container.cont_prune_keys(["a", "c"])
     assert "a" not in container_pruned
     assert np.allclose(ivy.to_numpy(container_pruned["b"]["d"]), np.array([[3]]))
     assert np.allclose(ivy.to_numpy(container_pruned.b.d), np.array([[3]]))
@@ -1322,7 +1328,7 @@ def test_container_prune_keys(device):
     assert _test_a_exception(container_pruned)
     assert _test_bc_exception(container_pruned)
 
-    container_pruned = container.prune_keys(["a", "d"])
+    container_pruned = container.cont_prune_keys(["a", "d"])
     assert "a" not in container_pruned
     assert np.allclose(ivy.to_numpy(container_pruned["b"]["c"]), np.array([[2]]))
     assert np.allclose(ivy.to_numpy(container_pruned.b.c), np.array([[2]]))
@@ -1337,7 +1343,7 @@ def test_container_prune_key_chain(device):
         "b": {"c": ivy.array([2], device=device), "d": None},
     }
     container = Container(dict_in)
-    container_pruned = container.prune_key_chain("b/c")
+    container_pruned = container.cont_prune_key_chain("b/c")
     assert np.allclose(ivy.to_numpy(container_pruned["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.a), np.array([[1]]))
     assert container_pruned["b"]["d"] is None
@@ -1353,7 +1359,7 @@ def test_container_prune_key_chain(device):
 
     assert _test_exception(container_pruned)
 
-    container_pruned = container.prune_key_chain("b")
+    container_pruned = container.cont_prune_key_chain("b")
     assert np.allclose(ivy.to_numpy(container_pruned["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.a), np.array([[1]]))
     assert "b" not in container_pruned.keys()
@@ -1374,7 +1380,7 @@ def test_container_prune_key_chains(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    container_pruned = container.prune_key_chains(["a", "b/c"])
+    container_pruned = container.cont_prune_key_chains(["a", "b/c"])
     assert "a" not in container_pruned
     assert np.allclose(ivy.to_numpy(container_pruned["b"]["d"]), np.array([[3]]))
     assert np.allclose(ivy.to_numpy(container_pruned.b.d), np.array([[3]]))
@@ -1397,7 +1403,7 @@ def test_container_prune_key_chains(device):
     assert _test_a_exception(container_pruned)
     assert _test_bc_exception(container_pruned)
 
-    container_pruned = container.prune_key_chains(
+    container_pruned = container.cont_prune_key_chains(
         Container({"a": True, "b": {"c": True}})
     )
     assert "a" not in container_pruned
@@ -1414,7 +1420,7 @@ def test_container_format_key_chains(device):
         "b ": {"c": ivy.array([2], device=device), "d-": ivy.array([3], device=device)},
     }
     cont = Container(dict_in)
-    cont_formatted = cont.format_key_chains(
+    cont_formatted = cont.cont_format_key_chains(
         lambda s: s.replace("_", "").replace(" ", "").replace("-", "")
     )
     assert np.allclose(ivy.to_numpy(cont_formatted["a"]), np.array([1]))
@@ -1431,7 +1437,7 @@ def test_container_sort_by_key(device):
         "a": {"d": ivy.array([2], device=device), "c": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    container_sorted = container.sort_by_key()
+    container_sorted = container.cont_sort_by_key()
     for k, k_true in zip(container_sorted.keys(), ["a", "b"]):
         assert k == k_true
     for k, k_true in zip(container_sorted.a.keys(), ["c", "d"]):
@@ -1515,7 +1521,7 @@ def test_container_prune_keys_from_key_chains(device):
     )
 
     # absolute
-    container_pruned = container.prune_keys_from_key_chains(["Bee", "Eee"])
+    container_pruned = container.cont_prune_keys_from_key_chains(["Bee", "Eee"])
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
@@ -1528,7 +1534,7 @@ def test_container_prune_keys_from_key_chains(device):
     assert "Eee" not in container_pruned
 
     # containing
-    container_pruned = container.prune_keys_from_key_chains(containing=["B", "E"])
+    container_pruned = container.cont_prune_keys_from_key_chains(containing=["B", "E"])
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
