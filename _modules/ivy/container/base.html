@@ -1153,7 +1153,7 @@
 <span class="sd">            Boolean</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">array_conts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">size_ordered_arrays</span><span class="p">(</span><span class="n">exclusive</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+        <span class="n">array_conts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">cont_size_ordered_arrays</span><span class="p">(</span><span class="n">exclusive</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
         <span class="n">array_cont0</span> <span class="o">=</span> <span class="n">array_conts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">array_cont0_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_cont0</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">array_cont</span> <span class="ow">in</span> <span class="n">array_conts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
@@ -1982,7 +1982,7 @@
             <span class="p">)</span><span class="o">.</span><span class="n">to_iterator_values</span><span class="p">()</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.size_ordered_arrays"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.size_ordered_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">size_ordered_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_size_ordered_arrays"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_size_ordered_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">cont_size_ordered_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a container with keychains mapped to flat keys, and arrays given in</span>
 <span class="sd">        order of smallest to largest.</span>
 
