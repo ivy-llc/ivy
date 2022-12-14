@@ -234,7 +234,7 @@ def conv_transpose(
     output_shape,
     strides,
     padding="SAME",
-    data_format="NWC",
+    data_format="NHWC",
     dilations=None,
     name=None,
 ):
