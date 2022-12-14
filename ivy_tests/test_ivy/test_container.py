@@ -1444,7 +1444,7 @@ def test_container_prune_empty(device):
         "b": {"c": {}, "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    container_pruned = container.prune_empty()
+    container_pruned = container.cont_prune_empty()
     assert np.allclose(ivy.to_numpy(container_pruned["a"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["b"]["d"]), np.array([[3]]))
@@ -1477,7 +1477,7 @@ def test_container_prune_key_from_key_chains(device):
     )
 
     # absolute
-    container_pruned = container.prune_key_from_key_chains("Bee")
+    container_pruned = container.cont_prune_key_from_key_chains("Bee")
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
@@ -1487,7 +1487,7 @@ def test_container_prune_key_from_key_chains(device):
     assert "Bee" not in container_pruned
 
     # containing
-    container_pruned = container.prune_key_from_key_chains(containing="B")
+    container_pruned = container.cont_prune_key_from_key_chains(containing="B")
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
@@ -1515,7 +1515,7 @@ def test_container_prune_keys_from_key_chains(device):
     )
 
     # absolute
-    container_pruned = container.prune_keys_from_key_chains(["Bee", "Eee"])
+    container_pruned = container.cont_prune_keys_from_key_chains(["Bee", "Eee"])
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
@@ -1528,7 +1528,7 @@ def test_container_prune_keys_from_key_chains(device):
     assert "Eee" not in container_pruned
 
     # containing
-    container_pruned = container.prune_keys_from_key_chains(containing=["B", "E"])
+    container_pruned = container.cont_prune_keys_from_key_chains(containing=["B", "E"])
     assert np.allclose(ivy.to_numpy(container_pruned["Ayy"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned.Ayy), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_pruned["Cee"]), np.array([[2]]))
