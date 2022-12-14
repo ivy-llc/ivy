@@ -4245,7 +4245,7 @@ def test_torch_instance_index_select(
 
 
 @st.composite
-def _get_clip_inputs(draw):
+def _get_clamp_inputs(draw):
     shape = draw(
         helpers.get_shape(
             min_num_dims=1, max_num_dims=5, min_dim_size=2, max_dim_size=10
@@ -4289,7 +4289,7 @@ def _get_clip_inputs(draw):
     class_tree=CLASS_TREE,
     init_tree="torch.tensor",
     method_name="clamp",
-    dtype_and_x_min_max=_get_clip_inputs(),
+    dtype_and_x_min_max=_get_clamp_inputs(),
 )
 def test_torch_instance_clamp(
     dtype_and_x_min_max,
@@ -4313,7 +4313,7 @@ def test_torch_instance_clamp(
         method_as_variable_flags=as_variable,
         method_num_positional_args=method_num_positional_args,
         method_native_array_flags=native_array,
-        method_all_as_kwargs_np={"min": -1, "max": 1},
+        method_all_as_kwargs_np={"min": min, "max": max},
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
