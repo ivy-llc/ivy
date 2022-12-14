@@ -148,7 +148,7 @@ def reshape_shapes(draw, *, shape):
     # assume(all(side <= MAX_SIDE for side in rshape))
     if len(rshape) != 0 and size > 0 and draw(st.booleans()):
         index = draw(number_helpers.ints(min_value=0, max_value=len(rshape) - 1))
-        rshape[index] = -1
+        rshape[index] = 1
     return tuple(rshape)
 
 

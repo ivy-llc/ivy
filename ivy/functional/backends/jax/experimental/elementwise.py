@@ -1,7 +1,10 @@
 import operator
 from typing import Optional, Union, Tuple, List
+from numbers import Number
 from ivy.functional.backends.jax import JaxArray
 import jax.numpy as jnp
+
+jax_ArrayLike = Union[JaxArray, Number]
 
 
 def lcm(x1: JaxArray, x2: JaxArray, /, *, out: Optional[JaxArray] = None) -> JaxArray:
@@ -61,6 +64,16 @@ def exp2(
     out: Optional[JaxArray] = None,
 ) -> JaxArray:
     return jnp.exp2(x)
+
+
+def copysign(
+    x1: jax_ArrayLike,
+    x2: jax_ArrayLike,
+    /,
+    *,
+    out: Optional[JaxArray] = None,
+) -> JaxArray:
+    return jnp.copysign(x1, x2)
 
 
 def count_nonzero(
@@ -176,9 +189,15 @@ def allclose(
 
 
 def diff(
-    x: Union[JaxArray, int, float, list, tuple], /, *, out: Optional[JaxArray] = None
+    x: Union[JaxArray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[JaxArray, int, float, list, tuple]] = None,
+    append: Optional[Union[JaxArray, int, float, list, tuple]] = None,
 ) -> JaxArray:
-    return jnp.diff(x, out=out)
+    return jnp.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 def fix(
