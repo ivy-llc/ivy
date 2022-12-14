@@ -561,7 +561,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def structural_diff(
+    def cont_structural_diff(
         *containers,
         mode="all",
         diff_keys="diff",
@@ -982,7 +982,7 @@ class ContainerBase(dict, abc.ABC):
                 containers, check_types, check_shapes, key_chains, to_apply, partial
             ),
             "Containers did not have identical structure:\n\n{}".format(
-                ivy.Container.structural_diff(*containers)
+                ivy.Container.cont_structural_diff(*containers)
             ),
         )
 
@@ -2366,7 +2366,7 @@ class ContainerBase(dict, abc.ABC):
             # noinspection PyTypeChecker
             raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
-                    ivy.Container.structural_diff(
+                    ivy.Container.cont_structural_diff(
                         self[key_chain],
                         sub_cont,
                         detect_key_diffs=not partial,
