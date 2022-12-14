@@ -16,7 +16,7 @@ def _from_torch_frontend_tensor_to_ivy_array(x):
 def _from_ivy_array_to_torch_frontend_tensor(x, nested=False, include_derived=None):
     if nested:
         return ivy.nested_map(
-            x, _from_ivy_array_to_torch_frontend_tensor, include_derived
+            x, _from_ivy_array_to_torch_frontend_tensor, include_derived, shallow=False
         )
     elif isinstance(x, ivy.Array) or ivy.is_native_array(x):
         a = torch_frontend.Tensor(0)  # TODO: Find better initialisation workaround
@@ -52,14 +52,10 @@ def inputs_to_ivy_arrays(fn: Callable) -> Callable:
             has_out = True
         # convert all input arrays to ivy.Array instances
         new_args = ivy.nested_map(
-            args,
-            _to_ivy_array,
-            include_derived={tuple: True},
+            args, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
         new_kwargs = ivy.nested_map(
-            kwargs,
-            _to_ivy_array,
-            include_derived={tuple: True},
+            kwargs, _to_ivy_array, include_derived={tuple: True}, shallow=False
         )
         # add the original out argument back to the keyword arguments
         if has_out:

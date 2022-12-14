@@ -602,10 +602,12 @@ def test_frontend_function(
         args_np = ivy.nested_map(
             args_ivy,
             lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+            shallow=False,
         )
         kwargs_np = ivy.nested_map(
             kwargs_ivy,
             lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+            shallow=False,
         )
 
         # temporarily set frontend framework as backend
@@ -619,10 +621,12 @@ def test_frontend_function(
                 else ivy.as_native_dtype(x)
                 if isinstance(x, ivy.Dtype)
                 else x,
+                shallow=False,
             )
             kwargs_frontend = ivy.nested_map(
                 kwargs_np,
                 lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+                shallow=False,
             )
 
             # change ivy dtypes to native dtypes
@@ -1275,18 +1279,22 @@ def test_frontend_method(
     args_constructor_np = ivy.nested_map(
         args_constructor_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     kwargs_constructor_np = ivy.nested_map(
         kwargs_constructor_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     args_method_np = ivy.nested_map(
         args_method_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
     kwargs_method_np = ivy.nested_map(
         kwargs_method_ivy,
         lambda x: ivy.to_numpy(x._data) if isinstance(x, ivy.Array) else x,
+        shallow=False,
     )
 
     ivy_frontend_creation_fn = getattr(
@@ -1305,10 +1313,12 @@ def test_frontend_method(
     args_constructor_frontend = ivy.nested_map(
         args_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
     kwargs_constructor_frontend = ivy.nested_map(
         kwargs_constructor_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
     args_method_frontend = ivy.nested_map(
         args_method_np,
@@ -1319,10 +1329,12 @@ def test_frontend_method(
         else ivy.as_native_dev(x)
         if isinstance(x, ivy.Device)
         else x,
+        shallow=False,
     )
     kwargs_method_frontend = ivy.nested_map(
         kwargs_method_np,
         lambda x: ivy.native_array(x) if isinstance(x, np.ndarray) else x,
+        shallow=False,
     )
 
     # change ivy dtypes to native dtypes

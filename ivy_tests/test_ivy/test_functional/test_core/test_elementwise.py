@@ -1898,7 +1898,9 @@ def pow_helper(draw, available_dtypes=None):
     )
     dtype2 = dtype2[0]
     if "int" in dtype2:
-        x2 = ivy.nested_map(x2[0], lambda x: abs(x), include_derived={list: True})
+        x2 = ivy.nested_map(
+            x2[0], lambda x: abs(x), include_derived={list: True}, shallow=False
+        )
     return [dtype1, dtype2], [x1, x2]
 
 
