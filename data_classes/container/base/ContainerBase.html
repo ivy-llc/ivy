@@ -631,6 +631,43 @@ results in the global ivy.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_from_disk_as_json">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_from_disk_as_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_from_disk_as_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_from_disk_as_json" title="Permalink to this definition"></a></dt>
+<dd><p>Load container object from disk at the specified json filepath. If some
+objects were not json-able during saving, then they will be loaded as strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
+results in the global ivy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Container loaded from disk</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_from_disk_as_pickled">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_from_disk_as_pickled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_from_disk_as_pickled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_from_disk_as_pickled" title="Permalink to this definition"></a></dt>
+<dd><p>Load container object from disk at the specified pickle filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pickle_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
+<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
+results in the global ivy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Container loaded from disk</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_handle_inplace">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_handle_inplace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_handle_inplace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_handle_inplace" title="Permalink to this definition"></a></dt>
 <dd><p>Returns an inplace update of out, provided it is not None, by updating with
@@ -1173,43 +1210,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>ret</em> – Container with the same key-chain structure, but the key strings formatted.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.from_disk_as_json">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_disk_as_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.from_disk_as_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.from_disk_as_json" title="Permalink to this definition"></a></dt>
-<dd><p>Load container object from disk at the specified json filepath. If some
-objects were not json-able during saving, then they will be loaded as strings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>json_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
-results in the global ivy.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container loaded from disk</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.from_disk_as_pickled">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_disk_as_pickled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ivyh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.from_disk_as_pickled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.from_disk_as_pickled" title="Permalink to this definition"></a></dt>
-<dd><p>Load container object from disk at the specified pickle filepath.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pickle_filepath</strong> – Filepath where the container object is saved to disk.</p></li>
-<li><p><strong>ivyh</strong> – Handle to ivy module to use for the calculations. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>, which
-results in the global ivy.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container loaded from disk</em></p>
 </dd>
 </dl>
 </dd></dl>
