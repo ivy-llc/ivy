@@ -2007,7 +2007,7 @@
             <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.to_disk_as_hdf5"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.to_disk_as_hdf5">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk_as_hdf5</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_to_disk_as_hdf5"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_to_disk_as_hdf5">[docs]</a>    <span class="k">def</span> <span class="nf">cont_to_disk_as_hdf5</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">starting_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save container object to disk, as an h5py file, at the specified filepath.</span>
@@ -2042,7 +2042,9 @@
                     <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">value</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">)</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">cont_to_disk_as_hdf5</span><span class="p">(</span>
+                    <span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span>
+                <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">value_as_np</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="n">value_shape</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="o">.</span><span class="n">shape</span>

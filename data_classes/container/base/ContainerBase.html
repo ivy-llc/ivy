@@ -1072,6 +1072,25 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_disk_as_hdf5">
+<span class="sig-name descname"><span class="pre">cont_to_disk_as_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_to_disk_as_hdf5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_disk_as_hdf5" title="Permalink to this definition"></a></dt>
+<dd><p>Save container object to disk, as an h5py file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h5_obj_or_filepath</strong> – Filepath for where to save the container to disk, or h5 object.</p></li>
+<li><p><strong>starting_index</strong> – Batch index for which to start writing to file, if it already exists
+(Default value = 0)</p></li>
+<li><p><strong>mode</strong> – H5 read/write mode for writing to disk, [‘r’, ‘r+’, ‘w’, ‘w-’, ‘a’],
+default is ‘a’.</p></li>
+<li><p><strong>max_batch_size</strong> – Maximum batch size for the container on disk, this is useful if later
+appending to file. (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_trim_key">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_trim_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_trim_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_trim_key" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.
@@ -1733,25 +1752,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret Container as nested dict.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_disk_as_hdf5">
-<span class="sig-name descname"><span class="pre">to_disk_as_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">starting_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'a'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_disk_as_hdf5"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_disk_as_hdf5" title="Permalink to this definition"></a></dt>
-<dd><p>Save container object to disk, as an h5py file, at the specified filepath.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>h5_obj_or_filepath</strong> – Filepath for where to save the container to disk, or h5 object.</p></li>
-<li><p><strong>starting_index</strong> – Batch index for which to start writing to file, if it already exists
-(Default value = 0)</p></li>
-<li><p><strong>mode</strong> – H5 read/write mode for writing to disk, [‘r’, ‘r+’, ‘w’, ‘w-’, ‘a’],
-default is ‘a’.</p></li>
-<li><p><strong>max_batch_size</strong> – Maximum batch size for the container on disk, this is useful if later
-appending to file. (Default value = None)</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
