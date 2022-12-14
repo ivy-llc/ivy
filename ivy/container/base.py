@@ -1508,7 +1508,7 @@ class ContainerBase(dict, abc.ABC):
             skips = chain.from_iterable(duplciates)
         return duplciates
 
-    def update_config(self, **config):
+    def cont_update_config(self, **config):
         new_config = dict()
         for k, v in config.items():
             att_name = "_" + k
@@ -1538,7 +1538,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         # update config
-        self.update_config(**config)
+        self.cont_update_config(**config)
 
         # update container values inplace
         if dict_in is None:
