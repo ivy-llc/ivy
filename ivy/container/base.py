@@ -212,7 +212,7 @@ class ContainerBase(dict, abc.ABC):
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
-        ret = ivy.Container.multi_map(
+        ret = ivy.Container.cont_multi_map(
             map_fn,
             conts,
             key_chains,
@@ -417,7 +417,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def diff(
+    def cont_diff(
         *containers,
         mode="all",
         diff_keys="diff",
@@ -525,7 +525,7 @@ class ContainerBase(dict, abc.ABC):
             keys_present = [key in cont for cont in containers]
             all_keys_present = sum(keys_present) == num_containers
             if all_keys_present:
-                res = ivy.Container.diff(
+                res = ivy.Container.cont_diff(
                     *[cont[key] for cont in containers],
                     mode=mode,
                     diff_keys=diff_keys,
@@ -561,7 +561,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def structural_diff(
+    def cont_structural_diff(
         *containers,
         mode="all",
         diff_keys="diff",
@@ -600,7 +600,7 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-        return ivy.Container.diff(
+        return ivy.Container.cont_diff(
             *containers,
             mode=mode,
             diff_keys=diff_keys,
@@ -611,7 +611,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def multi_map(
+    def cont_multi_map(
         func,
         containers,
         key_chains=None,
@@ -661,7 +661,7 @@ class ContainerBase(dict, abc.ABC):
                 break
         ivy.assertions.check_exists(
             container0,
-            message="No containers found in the inputs to ivy.Container.multi_map",
+            message="No containers found in the inputs to ivy.Container.cont_multi_map",
         )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
@@ -694,7 +694,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = func(values, this_key_chain)
             else:
                 if isinstance(value0, ivy.Container):
-                    ret = ivy.Container.multi_map(
+                    ret = ivy.Container.cont_multi_map(
                         func,
                         values,
                         key_chains,
@@ -727,7 +727,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def common_key_chains(containers):
+    def cont_common_key_chains(containers):
         """Return the key-chains common across all containers.
 
         Parameters
@@ -746,7 +746,7 @@ class ContainerBase(dict, abc.ABC):
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
-    def identical(
+    def cont_identical(
         containers,
         check_types=True,
         check_shapes=True,
@@ -792,7 +792,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if partial:
-            common_key_chains = ivy.Container.common_key_chains(containers)
+            common_key_chains = ivy.Container.cont_common_key_chains(containers)
             if not common_key_chains:
                 return False
             containers = [cont.at_key_chains(common_key_chains) for cont in containers]
@@ -824,7 +824,7 @@ class ContainerBase(dict, abc.ABC):
                         return False
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
-                ret = ivy.Container.identical(
+                ret = ivy.Container.cont_identical(
                     values,
                     check_types,
                     check_shapes,
@@ -840,7 +840,7 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     @staticmethod
-    def assert_identical(
+    def cont_assert_identical(
         containers,
         check_types=True,
         check_shapes=True,
@@ -879,7 +879,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         ivy.assertions.check_true(
-            ivy.Container.identical(
+            ivy.Container.cont_identical(
                 containers,
                 check_types,
                 check_shapes,
@@ -890,7 +890,7 @@ class ContainerBase(dict, abc.ABC):
                 partial,
             ),
             "Containers were not identical:\n\n{}".format(
-                ivy.Container.diff(*containers)
+                ivy.Container.cont_diff(*containers)
             ),
         )
 
@@ -933,7 +933,7 @@ class ContainerBase(dict, abc.ABC):
             Boolean
 
         """
-        return ivy.Container.identical(
+        return ivy.Container.cont_identical(
             containers,
             check_types,
             check_shapes,
@@ -982,7 +982,7 @@ class ContainerBase(dict, abc.ABC):
                 containers, check_types, check_shapes, key_chains, to_apply, partial
             ),
             "Containers did not have identical structure:\n\n{}".format(
-                ivy.Container.structural_diff(*containers)
+                ivy.Container.cont_structural_diff(*containers)
             ),
         )
 
@@ -2210,7 +2210,7 @@ class ContainerBase(dict, abc.ABC):
             if (
                 kcs_in_sub_cont
                 and min(kcs_in_sub_cont)
-                and ivy.Container.identical(
+                and ivy.Container.cont_identical(
                     [sub_cont, sub_cont_to_find], partial=partial
                 )
             ):
@@ -2269,7 +2269,7 @@ class ContainerBase(dict, abc.ABC):
             # noinspection PyTypeChecker
             raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
-                    ivy.Container.diff(self[key_chain], sub_cont)
+                    ivy.Container.cont_diff(self[key_chain], sub_cont)
                 )
             )
 
@@ -2366,7 +2366,7 @@ class ContainerBase(dict, abc.ABC):
             # noinspection PyTypeChecker
             raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure:\n\n{}".format(
-                    ivy.Container.structural_diff(
+                    ivy.Container.cont_structural_diff(
                         self[key_chain],
                         sub_cont,
                         detect_key_diffs=not partial,

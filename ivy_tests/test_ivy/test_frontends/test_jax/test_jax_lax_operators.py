@@ -2034,9 +2034,7 @@ def test_jax_lax_square(
 
 @handle_frontend_test(
     fn_tree="jax.lax.erf",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_lax_erf(
     *,
@@ -2058,6 +2056,8 @@ def test_jax_lax_erf(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
     )
 
