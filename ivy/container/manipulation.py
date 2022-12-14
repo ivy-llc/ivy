@@ -37,7 +37,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.concat also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "concat",
             xs,
             axis=axis,
@@ -68,8 +68,8 @@ class ContainerWithManipulation(ContainerBase):
         the function, and so the docstring for ivy.concat also applies to this method
         with minimal changes.
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_concat(
             new_xs,
             axis=axis,
@@ -160,7 +160,7 @@ class ContainerWithManipulation(ContainerBase):
             c: ivy.array([[[6., 7., 8.]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "expand_dims",
             x,
             axis=axis,
@@ -278,7 +278,7 @@ class ContainerWithManipulation(ContainerBase):
             A container with list of sub-arrays.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "split",
             x,
             num_or_size_splits=num_or_size_splits,
@@ -399,7 +399,7 @@ class ContainerWithManipulation(ContainerBase):
             b:ivy.array([[3.],[4.],[5.]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "permute_dims",
             x,
             axes,
@@ -530,7 +530,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([4, 3, 2])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "flip",
             x,
             axis=axis,
@@ -717,7 +717,7 @@ class ContainerWithManipulation(ContainerBase):
 
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "reshape",
             x,
             shape,
@@ -912,7 +912,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([4., 5., 3.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "roll",
             x,
             shift,
@@ -1063,7 +1063,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([[11.], [12.]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "squeeze",
             x,
             axis=axis,
@@ -1198,7 +1198,7 @@ class ContainerWithManipulation(ContainerBase):
                         [1, 0]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "stack",
             xs,
             axis=axis,
@@ -1243,8 +1243,8 @@ class ContainerWithManipulation(ContainerBase):
                         [[1, 0]]])
         }
         """
-        new_xs = xs.copy()
-        new_xs.insert(0, self.copy())
+        new_xs = xs.cont_copy() if ivy.is_ivy_container(xs) else xs.copy()
+        new_xs.insert(0, self.cont_copy())
         return self.static_stack(
             new_xs,
             axis=axis,
@@ -1283,7 +1283,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([3., 3., 4., 4., 5., 5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "repeat",
             x,
             repeats,
@@ -1366,7 +1366,7 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tile",
             x,
             reps,
@@ -1443,7 +1443,7 @@ class ContainerWithManipulation(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "constant_pad",
             x,
             pad_width,
@@ -1510,7 +1510,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.zero_pad also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zero_pad",
             x,
             pad_width,
@@ -1565,7 +1565,7 @@ class ContainerWithManipulation(ContainerBase):
         wraps the function, and so the docstring for ivy.swapaxes also applies to
         this method with minimal changes.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "swapaxes",
             x,
             axis0,
@@ -1684,7 +1684,7 @@ class ContainerWithManipulation(ContainerBase):
                          [[15, 16]]])
         }]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "unstack",
             x,
             axis=axis,
@@ -1838,7 +1838,7 @@ class ContainerWithManipulation(ContainerBase):
             b: ivy.array([1., 1., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "clip",
             x,
             x_min,

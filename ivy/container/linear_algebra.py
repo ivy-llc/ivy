@@ -58,7 +58,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         ret
             the matrix multiplication result of x1 and x2
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matmul",
             x1,
             x2,
@@ -204,7 +204,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                           [1., 2.]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "cholesky",
             x,
             upper=upper,
@@ -363,7 +363,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array([0., 6., 0.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "cross",
             x1,
             x2,
@@ -458,7 +458,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "det",
             x,
             key_chains=key_chains,
@@ -510,7 +510,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "diagonal",
             x,
             offset=offset,
@@ -560,7 +560,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "diag",
             x,
             k=k,
@@ -619,7 +619,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "eigh",
             x,
             UPLO=UPLO,
@@ -731,7 +731,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "eigvalsh",
             x,
             UPLO=UPLO,
@@ -822,7 +822,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inner",
             x1,
             x2,
@@ -867,7 +867,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
 
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "inv",
             x,
             adjoint=adjoint,
@@ -963,8 +963,9 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-        ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost two
+            dimensions form``MxN`` matrices. Should have a floating-point
+            data type.
         rtol
             relative tolerance for small singular values approximately less
             than or equal to ``rtol * largest_singular_value`` are set to zero.
@@ -982,26 +983,24 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],
-        ...                             [3., 4.]]))
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.Container.static_pinv(x)
+        >>> print(y)
         {
             a: ivy.array([[-2., 1.],
-        ...               [1.5, -0.5]])
+                          [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
-        out = ivy.Container(a=ivy.array())
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a=ivy.zeros((2, 2)))
+        >>> ivy.Container.static_pinv(x, 0, out=out)
+        >>> print(out)
         {
             a: ivy.array([[0.0426, 0.0964],
-        ...               [0.0605, 0.1368]])
+                          [0.0605, 0.1368]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "pinv",
             x,
             rtol=rtol,
@@ -1023,11 +1022,12 @@ class ContainerWithLinearAlgebra(ContainerBase):
         Parameters
         ----------
         x
-        input array having shape ``(..., M, N)`` and whose innermost two dimensions form
-            ``MxN`` matrices. Should have a floating-point data type.
+            input array having shape ``(..., M, N)`` and whose innermost
+            two dimensions form``MxN`` matrices. Should have a floating-point
+            data type.
         rtol
-        relative tolerance for small singular values approximately less than or equal to
-            ``rtol * largest_singular_value`` are set to zero.
+            relative tolerance for small singular values approximately less
+            than or equal to ``rtol * largest_singular_value`` are set to zero.
         out
             optional output array, for writing the result to.
             It must have a shape that the inputs broadcast to.
@@ -1043,25 +1043,22 @@ class ContainerWithLinearAlgebra(ContainerBase):
 
         Examples
         --------
-        x = ivy.Container(a= ivy.array([[1., 2.],
-        ...                             [3., 4.]]))
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))
+        >>> y = ivy.pinv(x)
+        >>> print(y)
         {
             a: ivy.array([[-2., 1.],
-        ...               [1.5, -0.5]])
+                          [1.5, -0.5]])
         }
 
-        x = ivy.Container(a=ivy.array([[1., 2.],
-        ...                            [3., 4.]]))
-        out = ivy.Container(a=ivy.array())
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))
+        >>> out = ivy.Container(a=ivy.array())
+        >>> ivy.pinv(x, 0., out=out)
+        >>> print(out)
         {
             a: ivy.array([[0.0426, 0.0964],
-        ...               [0.0605, 0.1368]])
+                          [0.0605, 0.1368]])
         }
-
         """
         return self.static_pinv(
             self,
@@ -1146,7 +1143,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matrix_norm",
             x,
             ord=ord,
@@ -1259,7 +1256,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matrix_power",
             x,
             n,
@@ -1366,7 +1363,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array(1.)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matrix_rank",
             x,
             key_chains=key_chains,
@@ -1505,7 +1502,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                           [4., 1.]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matrix_transpose",
             x,
             key_chains=key_chains,
@@ -1580,7 +1577,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "outer",
             x1,
             x2,
@@ -1624,7 +1621,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "qr",
             x,
             mode=mode,
@@ -1721,7 +1718,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "slogdet",
             x,
             key_chains=key_chains,
@@ -1814,7 +1811,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "solve",
             x1,
             x2,
@@ -1859,7 +1856,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Container, Tuple[ivy.Container, ...]]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "svd",
             x,
             compute_uv=compute_uv,
@@ -1905,7 +1902,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "svdvals",
             x,
             key_chains=key_chains,
@@ -1947,7 +1944,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tensordot",
             x1,
             x2,
@@ -2069,7 +2066,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             b: ivy.array(19)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "trace",
             x,
             offset=offset,
@@ -2179,7 +2176,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vecdot",
             x1,
             x2,
@@ -2303,7 +2300,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
             by :ref:`type-promotion`.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vector_norm",
             x,
             axis=axis,
@@ -2425,7 +2422,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vector_to_skew_symmetric_matrix",
             vector,
             key_chains=key_chains,
@@ -2514,7 +2511,7 @@ class ContainerWithLinearAlgebra(ContainerBase):
                     )
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "vander",
             x,
             N=N,

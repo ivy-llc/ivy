@@ -44,11 +44,15 @@ def _bias_flag_and_initializer(draw):
 
 @st.composite
 def _input_channels_and_dtype_and_values(draw):
-    input_channels = draw(st.integers(min_value=1, max_value=10))
+    input_channels = draw(st.integers(min_value=1, max_value=2))
     x_shape = draw(helpers.get_shape()) + (input_channels,)
     dtype, vals = draw(
         helpers.dtype_and_values(
-            available_dtypes=ivy_np.valid_float_dtypes, shape=x_shape
+            available_dtypes=helpers.get_dtypes("float"),
+            shape=x_shape,
+            min_value=0,
+            max_value=1,
+            small_abs_safety_factor=4,
         )
     )
     return input_channels, dtype, vals
@@ -59,7 +63,7 @@ def _input_channels_and_dtype_and_values(draw):
     method_tree="Linear.__call__",
     ic_n_dtype_n_vals=_input_channels_and_dtype_and_values(),
     output_channels=st.shared(
-        st.integers(min_value=1, max_value=10), key="output_channels"
+        st.integers(min_value=1, max_value=2), key="output_channels"
     ),
     weight_initializer=_sample_initializer(),
     wb_n_b_init=_bias_flag_and_initializer(),

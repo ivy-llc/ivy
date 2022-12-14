@@ -245,10 +245,7 @@ def matrix_rank(
 
 
 def matrix_transpose(
-    x: np.ndarray, 
-    /, 
-    *, 
-    out: Optional[np.ndarray] = None
+    x: np.ndarray, /, *, out: Optional[np.ndarray] = None
 ) -> np.ndarray:
     return np.swapaxes(x, -1, -2)
 

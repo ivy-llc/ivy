@@ -60,7 +60,7 @@ class ContainerWithConversions(ContainerBase):
             Container object with all sub-arrays converted to their native format.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_native",
             x,
             nested=nested,
@@ -181,7 +181,7 @@ class ContainerWithConversions(ContainerBase):
             instances.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_ivy",
             x,
             nested=nested,

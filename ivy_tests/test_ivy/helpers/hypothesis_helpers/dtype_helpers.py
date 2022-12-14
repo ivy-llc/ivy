@@ -5,64 +5,9 @@ from typing import Optional
 
 # local
 import ivy
-import ivy.functional.backends.numpy as ivy_np  # ToDo should be removed.
 from . import number_helpers as nh
 from . import array_helpers as ah
 from .. import globals as test_globals
-
-
-@st.composite
-def array_dtypes(
-    draw,
-    *,
-    num_arrays=st.shared(nh.ints(min_value=1, max_value=4), key="num_arrays"),
-    available_dtypes=ivy_np.valid_float_dtypes,
-    shared_dtype=False,
-    array_api_dtypes=False,
-):
-    """Draws a list of data types.
-
-    Parameters
-    ----------
-    draw
-        special function that draws data randomly (but is reproducible) from a given
-        data-set (ex. list).
-    num_arrays
-        number of data types to be drawn.
-    available_dtypes
-        universe of available data types.
-    shared_dtype
-        if True, all data types in the list are same.
-    array_api_dtypes
-        if True, use data types that can be promoted with the array_api_promotion
-        table.
-
-    Returns
-    -------
-    A strategy that draws a list.
-    """
-    if not isinstance(num_arrays, int):
-        num_arrays = draw(num_arrays)
-    if num_arrays == 1:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
-    elif shared_dtype:
-        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
-        dtypes = [dtypes[0] for _ in range(num_arrays)]
-    else:
-        unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))
-        if array_api_dtypes:
-            pairs = ivy.array_api_promotion_table.keys()
-        else:
-            pairs = ivy.promotion_table.keys()
-        # added to avoid complex dtypes from being sampled if they are not available.
-        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
-        available_dtypes = [
-            pair for pair in pairs if not any([d in pair for d in unwanted_types])
-        ]
-        dtypes = list(draw(st.sampled_from(available_dtypes)))
-        if num_arrays > 2:
-            dtypes += [dtypes[i % 2] for i in range(num_arrays - 2)]
-    return dtypes
 
 
 @st.composite
@@ -157,6 +102,60 @@ def get_dtypes(
     if key is None:
         return [draw(st.sampled_from(valid_dtypes[index:]))]
     return [draw(st.shared(st.sampled_from(valid_dtypes[index:]), key=key))]
+
+
+@st.composite
+def array_dtypes(
+    draw,
+    *,
+    num_arrays=st.shared(nh.ints(min_value=1, max_value=4), key="num_arrays"),
+    available_dtypes=get_dtypes("valid"),
+    shared_dtype=False,
+    array_api_dtypes=False,
+):
+    """Draws a list of data types.
+
+    Parameters
+    ----------
+    draw
+        special function that draws data randomly (but is reproducible) from a given
+        data-set (ex. list).
+    num_arrays
+        number of data types to be drawn.
+    available_dtypes
+        universe of available data types.
+    shared_dtype
+        if True, all data types in the list are same.
+    array_api_dtypes
+        if True, use data types that can be promoted with the array_api_promotion
+        table.
+
+    Returns
+    -------
+    A strategy that draws a list.
+    """
+    if not isinstance(num_arrays, int):
+        num_arrays = draw(num_arrays)
+    if num_arrays == 1:
+        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+    elif shared_dtype:
+        dtypes = draw(ah.list_of_length(x=st.sampled_from(available_dtypes), length=1))
+        dtypes = [dtypes[0] for _ in range(num_arrays)]
+    else:
+        unwanted_types = set(ivy.all_dtypes).difference(set(available_dtypes))
+        if array_api_dtypes:
+            pairs = ivy.array_api_promotion_table.keys()
+        else:
+            pairs = ivy.promotion_table.keys()
+        # added to avoid complex dtypes from being sampled if they are not available.
+        pairs = [pair for pair in pairs if all([d in available_dtypes for d in pair])]
+        available_dtypes = [
+            pair for pair in pairs if not any([d in pair for d in unwanted_types])
+        ]
+        dtypes = list(draw(st.sampled_from(available_dtypes)))
+        if num_arrays > 2:
+            dtypes += [dtypes[i % 2] for i in range(num_arrays - 2)]
+    return dtypes
 
 
 @st.composite
