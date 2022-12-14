@@ -2599,7 +2599,7 @@ def test_container_shapes(device):
             "d": ivy.array([[9.0]], device=device),
         },
     }
-    container_shapes = Container(dict_in).shapes
+    container_shapes = Container(dict_in).cont_shapes
     assert list(container_shapes["a"]) == [1, 3, 1]
     assert list(container_shapes.a) == [1, 3, 1]
     assert list(container_shapes["b"]["c"]) == [1, 2, 1]
