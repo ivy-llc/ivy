@@ -4045,7 +4045,7 @@ class ContainerBase(dict, abc.ABC):
         return self._cont_get_shape()
 
     @property
-    def shapes(self):
+    def cont_shapes(self):
         """The shapes of each array in the container, with None placed in leaf entries
         without a shape attribute.
         """
