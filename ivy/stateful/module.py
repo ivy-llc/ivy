@@ -639,7 +639,7 @@ class Module(abc.ABC):
                 next_depth = None
             ret = ivy.Container(
                 {
-                    ivy.Container.flatten_key_chain(
+                    ivy.Container.cont_flatten_key_chain(
                         sm.__repr__(), replacement="_"
                     ): sm.sub_mods(show_v=show_v, depth=next_depth)
                     for sm in self._sub_mods
@@ -719,13 +719,17 @@ class Module(abc.ABC):
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")]
+        mods = [
+            ivy.Container.cont_flatten_key_chain(top_mod.__repr__(), replacement="_")
+        ]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
             mods.append(
-                ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")
+                ivy.Container.cont_flatten_key_chain(
+                    top_mod.__repr__(), replacement="_"
+                )
             )
             if depth == max_depth:
                 break
