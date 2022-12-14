@@ -2104,7 +2104,7 @@ class ContainerBase(dict, abc.ABC):
             else:
                 yield kc
 
-    def to_flat_list(self):
+    def cont_to_flat_list(self):
         """Summary.
 
         Returns
@@ -2115,7 +2115,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return list([item for key, item in self.cont_to_iterator()])
 
-    def from_flat_list(self, flat_list):
+    def cont_from_flat_list(self, flat_list):
         """Return new container object with the same hierarchy, but with values replaced
         from flat list.
 
@@ -2132,7 +2132,7 @@ class ContainerBase(dict, abc.ABC):
         new_dict = dict()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                new_value = value.from_flat_list(flat_list)
+                new_value = value.cont_from_flat_list(flat_list)
             else:
                 new_value = flat_list.pop(0)
             new_dict[key] = new_value
