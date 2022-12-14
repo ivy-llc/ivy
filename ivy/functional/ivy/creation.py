@@ -1190,6 +1190,7 @@ def linspace(
     >>> x = ivy.array([1,2])
     >>> y = ivy.array([4,5])
     >>> z = ivy.linspace(x, y, 4, axis = 0)
+    >>> print(z)
     ivy.array([[1, 2],
                [2, 3],
                [3, 4],
