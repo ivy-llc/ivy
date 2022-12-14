@@ -987,7 +987,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def identical_configs(containers):
+    def cont_identical_configs(containers):
         """Returns a single boolean as to whether the input containers all have
         identical configs.
 
