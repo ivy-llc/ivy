@@ -664,7 +664,7 @@ class Module(abc.ABC):
             current module. Default is ``None``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
-            self.top_v(depth).show_sub_container(self.v)
+            self.top_v(depth).cont_show_sub_container(self.v)
         else:
             print(
                 "both self.top_v and self.v must be initialized in order to show v in "
@@ -767,7 +767,7 @@ class Module(abc.ABC):
             if flatten_key_chains:
                 upper_sub_mods = upper_sub_mods.cont_flatten_key_chains()
                 lower_sub_mods = lower_sub_mods.cont_flatten_key_chains()
-            upper_sub_mods.show_sub_container(lower_sub_mods)
+            upper_sub_mods.cont_show_sub_container(lower_sub_mods)
         else:
             print(
                 "self.top_mod must be initialized in order to show mod in top_mod,"
