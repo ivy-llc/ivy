@@ -212,7 +212,7 @@ class ContainerBase(dict, abc.ABC):
         # Replace each container in arg and kwarg with the arrays at the leaf
         # levels of that container using map_fn and call fn using those arrays
         # as inputs
-        ret = ivy.Container.multi_map(
+        ret = ivy.Container.cont_multi_map(
             map_fn,
             conts,
             key_chains,
@@ -611,7 +611,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def multi_map(
+    def cont_multi_map(
         func,
         containers,
         key_chains=None,
@@ -661,7 +661,7 @@ class ContainerBase(dict, abc.ABC):
                 break
         ivy.assertions.check_exists(
             container0,
-            message="No containers found in the inputs to ivy.Container.multi_map",
+            message="No containers found in the inputs to ivy.Container.cont_multi_map",
         )
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, ivy.Container) else {}
@@ -694,7 +694,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = func(values, this_key_chain)
             else:
                 if isinstance(value0, ivy.Container):
-                    ret = ivy.Container.multi_map(
+                    ret = ivy.Container.cont_multi_map(
                         func,
                         values,
                         key_chains,
