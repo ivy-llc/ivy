@@ -2812,7 +2812,7 @@ def test_container_reduce(device):
             },
         }
     )
-    res = ivy.Container.reduce([container_a, container_b], lambda x: x[0] + x[1])
+    res = ivy.Container.cont_reduce([container_a, container_b], lambda x: x[0] + x[1])
     assert np.allclose(ivy.to_numpy(res.a), np.array([3.0]))
     assert np.allclose(ivy.to_numpy(res.b.c), np.array([6]))
     assert np.allclose(ivy.to_numpy(res.b.d), np.array([9]))
