@@ -2904,13 +2904,13 @@ def test_container_assert_identical_structure(device):
     container5 = Container({"d": ivy.array([4], device=device)})
 
     # with identical
-    ivy.Container.assert_identical_structure([container0, container1])
-    ivy.Container.assert_identical_structure([container1, container0])
-    ivy.Container.assert_identical_structure([container1, container0, container1])
+    ivy.Container.cont_assert_identical_structure([container0, container1])
+    ivy.Container.cont_assert_identical_structure([container1, container0])
+    ivy.Container.cont_assert_identical_structure([container1, container0, container1])
 
     # without identical
     try:
-        ivy.Container.assert_identical_structure(
+        ivy.Container.cont_assert_identical_structure(
             [container0, container1, container2, container3]
         )
         error_caught = False
@@ -2918,7 +2918,7 @@ def test_container_assert_identical_structure(device):
         error_caught = True
     # partial
     try:
-        ivy.Container.assert_identical_structure(
+        ivy.Container.cont_assert_identical_structure(
             [container0, container1, container2, container3, container4, container5],
             partial=True,
         )
@@ -2927,7 +2927,9 @@ def test_container_assert_identical_structure(device):
         error_caught = True
     assert error_caught
     try:
-        ivy.Container.assert_identical_structure([container0, container5], partial=True)
+        ivy.Container.cont_assert_identical_structure(
+            [container0, container5], partial=True
+        )
         error_caught = False
     except IvyException:
         error_caught = True
