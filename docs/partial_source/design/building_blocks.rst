@@ -464,17 +464,28 @@ Let's take another example, but compile to Tensorflow, NumPy and JAX:
 
 Converting this code to a graph, we get a slightly different graph for each backend:
 
+Tensorflow:
+
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_tf.png?raw=true
    :align: center
    :width: 75%
+
+|
+
+Numpy:
 
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_numpy.png?raw=true
    :align: center
    :width: 75%
 
+|
+
+Jax:
+
 .. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/design/compiled_graph_jax.png?raw=true
    :align: center
    :width: 75%
+|
 
 The example above further emphasizes that the graph compiler creates a computation graph consisting of backend functions, not Ivy functions.
 Specifically, the same Ivy code compiles to different graphs depending on the selected backend.

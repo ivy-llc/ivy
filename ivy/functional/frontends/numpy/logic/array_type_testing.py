@@ -3,11 +3,13 @@ import ivy
 from ivy.functional.frontends.numpy.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_numpy_casting_special,
+    handle_numpy_dtype,
 )
 
 
-@handle_numpy_casting_special
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting_special
 def isfinite(
     x,
     /,
@@ -25,8 +27,9 @@ def isfinite(
     return ret
 
 
-@handle_numpy_casting_special
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting_special
 def isinf(
     x,
     /,
@@ -44,8 +47,9 @@ def isinf(
     return ret
 
 
-@handle_numpy_casting_special
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
+@handle_numpy_casting_special
 def isnan(
     x,
     /,
