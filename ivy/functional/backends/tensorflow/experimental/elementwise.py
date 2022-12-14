@@ -1,5 +1,6 @@
 import operator
 from typing import Union, Optional, Tuple, List
+from numbers import Number
 import tensorflow as tf
 from .. import backend_version
 
@@ -8,9 +9,6 @@ from .. import backend_version
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
 import tensorflow_probability as tfp
-from tensorflow.python.ops.numpy_ops import np_config
-
-np_config.enable_numpy_behavior()
 
 
 def sinc(
@@ -96,6 +94,28 @@ def exp2(
     out: Optional[Union[tf.Tensor, tf.Variable]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.math.pow(2, x, name=None)
+
+
+def copysign(
+    x1: Union[tf.Tensor, tf.Variable, Number],
+    x2: Union[tf.Tensor, tf.Variable, Number],
+    /,
+    *,
+    out: Optional[tf.Tensor] = None,
+) -> Union[tf.Tensor, tf.Variable]:
+    # Cast our inputs to float64 to match numpy behaviour
+    tensor_x2 = tf.convert_to_tensor(x2)
+    # Cast our inputs to float64 if needed to match numpy behaviour
+    if not tensor_x2.dtype.is_floating:
+        tensor_x2 = tf.cast(tensor_x2, tf.float64)
+    tensor_x1 = tf.convert_to_tensor(x1)
+    if not tensor_x1.dtype.is_floating:
+        tensor_x1 = tf.cast(tensor_x1, tf.float64)
+    # Replace any zero values with 1/the value, since tf.math.sign always
+    # returns 0 for positive or negative zero
+    signable_x2 = tf.where(tf.equal(tensor_x2, 0), tf.math.divide(1, x2), tensor_x2)
+    signs = tf.math.sign(signable_x2)
+    return tf.math.multiply(tf.math.abs(tensor_x1), signs)
 
 
 def count_nonzero(
@@ -275,9 +295,14 @@ def diff(
     x: Union[tf.Tensor, tf.Variable, int, float, list, tuple],
     /,
     *,
-    out: Optional[Union[tf.Tensor, tf.Variable]] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
+    append: Optional[Union[tf.Tensor, tf.Variable, int, float, list, tuple]] = None,
 ) -> Union[tf.Tensor, tf.Variable]:
-    return tf.experimental.numpy.diff(x)
+    x = tf.experimental.numpy.append(prepend, x, axis=axis)
+    x = tf.experimental.numpy.append(x, append, axis=axis)
+    return tf.experimental.numpy.diff(x, n=n, axis=axis)
 
 
 @with_unsupported_dtypes({"2.9.1 and below": ("bfloat16, float16,")}, backend_version)

@@ -16,7 +16,7 @@ from ivy.exceptions import handle_exceptions
 
 @handle_exceptions
 def index_nest(
-    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray],
+    nest: Union[List, Tuple, Dict, ivy.Array, ivy.NativeArray, ivy.Container],
     index: Union[List[int], Tuple[int], Iterable[int]],
     /,
 ) -> Any:
@@ -52,6 +52,19 @@ def index_nest(
     >>> z = ivy.index_nest(x, y)
     >>> print(z)
     ivy.array([3., 4.])
+
+    With :class:`ivy.Container` inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1.,2.], [3.,4.]]),
+    ...                   b = (50,60))
+    >>> y = [1]
+    >>> z = ivy.index_nest(x, y)
+    >>> print(z)
+    >>> z
+    {
+        a: ivy.array([3., 4.]),
+        b: 60
+    }
 
     With :code:`Dict` input:
 
@@ -314,7 +327,11 @@ def map_nest_at_index(
 
 
 @handle_exceptions
-def multi_index_nest(nest: Iterable, indices: Tuple, /):
+def multi_index_nest(
+    nest: Union[List, Dict, Tuple, ivy.Array, ivy.NativeArray, ivy.Container],
+    indices: Iterable[Iterable[int]],
+    /,
+) -> Iterable[Any]:
     """Repeatedly index a nested object, using a tuple of tuples of indices or keys in
     the case of dicts.
 
@@ -325,6 +342,56 @@ def multi_index_nest(nest: Iterable, indices: Tuple, /):
     indices
         A tuple of tuples of indices to apply.
 
+    Returns
+    -------
+    ret
+        The result elements through indexing the nested object.
+
+    Examples
+    --------
+    With :code:`Tuple` inputs:
+
+    >>> x = (1, 2)
+    >>> y = [[0]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [1]
+
+    With :class:`ivy.Array` inputs:
+
+    >>> x = ivy.array([[1., 2.],
+    ...                [3., 4.]])
+    >>> y = [[0],[1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1., 2.], ivy.array([3., 4.])]
+
+    With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([1,2]),
+    ...                   b=[30,40])
+    >>> y = ('a', ('b', 0))
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [ivy.array([1, 2]), 30]
+
+    With :code:`Dict` input:
+
+    >>> x = {'a': 0, 'b': [1, [2, 3]], 'c': (4, 5)}
+    >>> y = (('b', 1), 'a')
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    [[2, 3], 0]
+
+    With :code:`List` inputs:
+
+    >>> x = [['a', 'b', 'c'],
+    ...      ['d', 'e', 'f'],
+    ...      ['g', ['h', 'i']]]
+    >>> y = [[2, 1, 0], [0, 1]]
+    >>> z = ivy.multi_index_nest(x, y)
+    >>> print(z)
+    ['h', 'b']
     """
     return [index_nest(nest, index) for index in indices]
 
@@ -1370,3 +1437,39 @@ def duplicate_array_index_chains(nest: Union[ivy.Array, ivy.NativeArray, Iterabl
                 duplicates.append(val)
                 duplicate_index_chains[len(duplicates) - 1] = [index_chain]
     return list(duplicate_index_chains.values())
+
+
+def prune_empty(nest):
+    """Prune empty nests from a nest.
+
+    Parameters
+    ----------
+    nest
+        nest to prune.
+
+    Returns
+    -------
+        pruned nest with all empty nests removed
+    """
+    valid = False
+    if isinstance(nest, dict):
+        keys = [k for k in nest]
+        for k in keys:
+            nest[k] = prune_empty(nest[k])
+            if nest[k] is not None:
+                valid = True
+        for k in keys:
+            if nest[k] is None:
+                del nest[k]
+    elif isinstance(nest, (list, tuple)):
+        nest = list(nest)
+        for i in range(len(nest)):
+            nest[i] = prune_empty(nest[i])
+            if nest[i] is not None:
+                valid = True
+        for i in range(len(nest) - 1, -1, -1):
+            if nest[i] is None:
+                del nest[i]
+    if not valid and not (ivy.is_array(nest) or isinstance(nest, (int, float, str))):
+        return None
+    return nest

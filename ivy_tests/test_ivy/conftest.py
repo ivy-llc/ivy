@@ -4,6 +4,7 @@ import pytest
 from typing import Dict
 
 # local
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
 from ivy import DefaultDevice
 from ivy_tests.test_ivy.helpers import globals as test_globals
 from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
@@ -141,25 +142,15 @@ def process_cl_flags(config) -> Dict[str, bool]:
             )
         # skipping a test
         if v[0] or no_extra_testing:
-            GENERAL_CONFIG_DICT[k] = False
+            pf.build_flag(k, False)
         # extra testing
         if v[1]:
-            GENERAL_CONFIG_DICT[k] = True
-        # let hypothesis generate it
-        if not v[0] ^ v[1]:
-            if k in ["instance_method", "test_gradients"]:
-                UNSET_TEST_API_CONFIG["flag"].append(k)
-            elif k == "container":
-                UNSET_TEST_API_CONFIG["list"].append("container_flags")
-            elif k == "with_out":
-                UNSET_TEST_CONFIG["flag"].append(k)
-            else:
-                UNSET_TEST_CONFIG["list"].append(k)
+            pf.build_flag(k, True)
 
 
 def pytest_addoption(parser):
     parser.addoption("--device", action="store", default="cpu")
-    parser.addoption("--backend", action="store", default="all")
+    parser.addoption("-B", "--backend", action="store", default="all")
     parser.addoption("--compile_graph", action="store_true")
     parser.addoption("--with_implicit", action="store_true")
 

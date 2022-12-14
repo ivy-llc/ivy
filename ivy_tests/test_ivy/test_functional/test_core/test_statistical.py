@@ -13,7 +13,7 @@ from ivy_tests.test_ivy.helpers import handle_test
 def statistical_dtype_values(draw, *, function):
     large_abs_safety_factor = 2
     small_abs_safety_factor = 2
-    if function in ["mean", "std", "var"]:
+    if any(ele in function for ele in ["mean", "std", "var"]):
         large_abs_safety_factor = 24
         small_abs_safety_factor = 24
     dtype, values, axis = draw(
@@ -33,7 +33,7 @@ def statistical_dtype_values(draw, *, function):
     shape = values[0].shape
     size = values[0].size
     max_correction = np.min(shape)
-    if function == "var" or "std" in function:
+    if any(ele in function for ele in ["std", "var"]):
         if size == 1:
             correction = 0
         elif isinstance(axis, int):

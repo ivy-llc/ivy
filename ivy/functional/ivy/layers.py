@@ -7,6 +7,7 @@ from typing import Optional, Tuple, Union, List, Callable
 import ivy
 from ivy.backend_handler import current_backend
 from ivy.func_wrapper import (
+    inputs_to_ivy_arrays,
     to_native_arrays_and_back,
     handle_out_argument,
     handle_nestable,
@@ -22,6 +23,7 @@ from ivy.exceptions import handle_exceptions
 # Linear #
 
 
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def linear(
@@ -212,49 +214,6 @@ def dropout(
     return x
 
 
-@handle_exceptions
-@to_native_arrays_and_back
-@handle_array_like
-def dropout1d(
-    x: Union[ivy.Array, ivy.NativeArray],
-    prob: float,
-    /,
-    *,
-    training: bool = True,
-    data_format: str = "NWC",
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    """Randomly zero out entire channels with probability prob using samples from
-     a Bernoulli distribution and the remaining channels are scaled by (1/1-prob).
-     In this case, dropout1d performs a channel-wise dropout but assumes
-     a channel is a 1D feature map.
-
-    Parameters
-    ----------
-    x
-        a 2D or 3D input array. Should have a floating-point data type.
-    prob
-        probability of a channel to be zero-ed.
-    training
-        controls whether dropout1d is performed during training or ignored
-        during testing.
-    data_format
-        "NWC" or "NCW". Defaults to "NWC".
-    out
-        optional output array, for writing the result to.
-        It must have a shape that the inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        an array with some channels zero-ed and the rest of channels are
-         scaled by (1/1-prob).
-    """
-    return current_backend(x).dropout1d(
-        x, prob, training=training, data_format=data_format, out=out
-    )
-
-
 # Attention #
 
 
@@ -307,9 +266,8 @@ def scaled_dot_product_attention(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
@@ -335,15 +293,6 @@ def scaled_dot_product_attention(
     >>> ivy.scaled_dot_product_attention(q, k, v, 1, out=out)
     >>> print(out)
     ivy.array([[[4.04, 5.03],[4.3 , 5.3 ],[4.3 , 5.3 ]]])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
-    >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
-    >>> v = ivy.native_array([[[0.4, 1.3], [2.2, 3.1],[4.3, 5.3]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
-    >>> print(result)
-    ivy.array([[[4.04,5.03],[4.3,5.3],[4.3,5.3]]])
 
     >>> q = ivy.native_array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
     >>> k = ivy.native_array([[[0.6, 1.5], [2.4, 3.3],[4.2, 5.1]]])
@@ -372,7 +321,10 @@ def scaled_dot_product_attention(
     ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
     >>> result = ivy.scaled_dot_product_attention(q, k, v, 1)
     >>> print(result)
-    {a:ivy.array([[[4.27,5.4],[4.4,5.6],[4.4,5.6]]]),b:ivy.array([[[4.35,5.54],[4.4,5.6],[4.4,5.6]]])}
+    {
+        a:ivy.array([[[4.27, 5.4],[4.4, 5.6],[4.4, 5.6]]]),
+        b:ivy.array([[[4.35, 5.54],[4.4, 5.6],[4.4, 5.6]]])
+    }
 
 
     >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
@@ -432,52 +384,6 @@ def scaled_dot_product_attention(
                        [4.3, 5.3],
                        [4.3, 5.3]]])
     }
-
-
-    Instance Method Examples
-    ------------------------
-
-    With :class:`ivy.Array` input:
-
-    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
-    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
-    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
-    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
-    >>> print(result)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
-
-    >>> q = ivy.array([[[0.2, 1.], [2.2, 3.], [4.4, 5.6]]])
-    >>> k = ivy.array([[[0.6, 1.5], [2.4, 3.3], [4.2, 5.1]]])
-    >>> v = ivy.array([[[0.4, 1.3], [2.2, 3.1], [4.3, 5.3]]])
-    >>> mask = ivy.array([[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]])
-    >>> out = ivy.zeros(shape=(1, 3, 2))
-    >>> ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask, out=out)
-    >>> print(out)
-    ivy.array([[[2.3, 3.23],[2.3, 3.23],[2.3, 3.23]]])
-
-    With :class:`ivy.Container` input:
-
-    >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
-    ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
-    >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
-    ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
-    >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
-    ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
-    >>> mask =
-    ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],[1.0, 1.0, 1.0],[1.0, 1.0,1.0]]]),
-    ...               b=ivy.array([[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0,1.0]]]))
-    >>> result = ivy.scaled_dot_product_attention(q, k, v, 1, mask=mask)
-    >>> print(result)
-    {
-        a: ivy.array([[[4.27, 5.4],
-                    [4.4, 5.6],
-                    [4.4, 5.6]]]),
-        b: ivy.array([[[4.35, 5.54],
-                    [4.4, 5.6],
-                    [4.4, 5.6]]])
-    }
-
     With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:
 
     >>> q = ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]])
@@ -495,8 +401,6 @@ def scaled_dot_product_attention(
                     [4.3, 5.3],
                     [4.3, 5.3]]])
     }
-
-
     """
     # BS x Q x K
     sim = ivy.einsum("... q f, ... k f -> ... q k", q, k) * scale
@@ -1301,7 +1205,7 @@ def conv3d(
     >>> filters = ivy.ones((3, 5, 5, 1, 3)).astype(ivy.float32) #DHWIO
 
     >>> result = ivy.conv3d(x, filters, 1, 'SAME')
-    >>> print(result.shapes)
+    >>> print(result.cont_shapes)
     {
         a: [1,3,5,5,3],
         b: [1,5,32,32,3],
@@ -1637,7 +1541,8 @@ def conv(
 # LSTM #
 
 
-@to_native_arrays_and_back
+@inputs_to_ivy_arrays
+@handle_nestable
 @handle_exceptions
 @handle_array_like
 def lstm_update(
@@ -1770,69 +1675,3 @@ def get_x_data_format(dims: int = 2, data_format: str = "channel_first"):
             return "NCDHW"
         else:
             return "NDHWC"
-
-
-@to_native_arrays_and_back
-@handle_out_argument
-@handle_exceptions
-@handle_array_like
-def fft(
-    x: Union[ivy.Array, ivy.NativeArray],
-    dim: int,
-    /,
-    *,
-    norm: Optional[str] = "backward",
-    n: Optional[Union[int, Tuple[int]]] = None,
-    out: Optional[ivy.Array] = None,
-) -> ivy.Array:
-    r"""Computes the one dimensional discrete Fourier transform given input at least
-    1-D input x.
-
-    Parameters
-    ----------
-    x
-        Input volume *[...,d_in,...]*,
-        where d_in indicates the dimension that needs FFT.
-    dim
-        The dimension along which to take the one dimensional FFT.
-    norm
-        Optional argument, "backward", "ortho" or "forward". Defaults to be "backward".
-        "backward" indicates no normalization.
-        "ortho" indicates normalization by $\frac{1}{\sqrt{n}}$.
-        "forward" indicates normalization by $\frac{1}{n}$.
-    n
-        Optional argument indicating the sequence length, if given, the input would be
-        padded with zero or truncated to length n before performing FFT.
-        Should be a integer greater than 1.
-    out
-        Optional output array, for writing the result to. It must have a shape that the
-        inputs broadcast to.
-
-    Returns
-    -------
-    ret
-        The result of the FFT operation.
-
-    Examples
-    --------
-    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0)
-    ivy.array([-3.44509285e-16+1.14423775e-17j,  8.00000000e+00-8.11483250e-16j,
-            2.33486982e-16+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j,
-            9.95799250e-17+2.33486982e-16j,  0.00000000e+00+7.66951701e-17j,
-            1.14423775e-17+1.22464680e-16j,  0.00000000e+00+1.22464680e-16j])
-    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, n=16)
-    ivy.array([-3.44509285e-16+1.14423775e-17j,  1.00000000e+00+5.02733949e+00j,
-        8.00000000e+00-8.11483250e-16j,  1.00000000e+00-5.02733949e+00j,
-        2.33486982e-16+1.22464680e-16j,  1.00000000e+00-1.49660576e+00j,
-        0.00000000e+00+1.22464680e-16j,  1.00000000e+00-6.68178638e-01j,
-        9.95799250e-17+2.33486982e-16j,  1.00000000e+00-1.98912367e-01j,
-        0.00000000e+00+7.66951701e-17j,  1.00000000e+00+1.98912367e-01j,
-        1.14423775e-17+1.22464680e-16j,  1.00000000e+00+6.68178638e-01j,
-        0.00000000e+00+1.22464680e-16j,  1.00000000e+00+1.49660576e+00j])
-    >>> ivy.fft(np.exp(2j * np.pi * np.arange(8) / 8), 0, norm="ortho")
-    ivy.array([-1.21802426e-16+4.04549134e-18j,  2.82842712e+00-2.86902654e-16j,
-        8.25501143e-17+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j,
-        3.52068201e-17+8.25501143e-17j,  0.00000000e+00+2.71158374e-17j,
-        4.04549134e-18+4.32978028e-17j,  0.00000000e+00+4.32978028e-17j])
-    """
-    return current_backend(x).fft(x, dim, norm=norm, n=n, out=out)

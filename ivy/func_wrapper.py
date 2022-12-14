@@ -3,6 +3,7 @@ import functools
 import logging
 from types import FunctionType
 from typing import Callable
+import inspect
 
 # import typing
 
@@ -53,30 +54,30 @@ def _get_first_array(*args, **kwargs):
 def handle_array_like(fn: Callable) -> Callable:
     @functools.wraps(fn)
     def new_fn(*args, **kwargs):
-        # args = list(args)
-        # num_args = len(args)
-        # try:
-        #     type_hints = typing.get_type_hints(fn)
-        # except TypeError:
-        #     return fn(*args, **kwargs)
-        # parameters = type_hints
-        # annotations = type_hints.values()
-        #
-        # for i, (annotation, parameter, arg) in enumerate(
-        #     zip(annotations, parameters, args)
-        # ):
-        #     annotation_str = str(annotation)
-        #     if "Array" in annotation_str and all(
-        #         sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
-        #     ):
-        #
-        #         if i < num_args:
-        #             if isinstance(arg, (list, tuple)):
-        #                 args[i] = ivy.array(arg)
-        #         elif parameters in kwargs:
-        #             kwarg = kwargs[parameter]
-        #             if isinstance(kwarg, (list, tuple)):
-        #                 kwargs[parameter] = ivy.array(kwarg)
+        args = list(args)
+        num_args = len(args)
+        try:
+            type_hints = dict(inspect.signature(fn).parameters)
+        except TypeError:
+            return fn(*args, **kwargs)
+        parameters = [param.name for param in type_hints.values()]
+        annotations = [param.annotation for param in type_hints.values()]
+
+        for i, (annotation, parameter, arg) in enumerate(
+            zip(annotations, parameters, args)
+        ):
+            annotation_str = str(annotation)
+            if "Array" in annotation_str and all(
+                sq not in annotation_str for sq in ["Sequence", "List", "Tuple"]
+            ):
+
+                if i < num_args:
+                    if isinstance(arg, (list, tuple)):
+                        args[i] = ivy.array(arg)
+                elif parameters in kwargs:
+                    kwarg = kwargs[parameter]
+                    if isinstance(kwarg, (list, tuple)):
+                        kwargs[parameter] = ivy.array(kwarg)
 
         return fn(*args, **kwargs)
 

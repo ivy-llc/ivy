@@ -482,12 +482,23 @@ def test_nested_any_w_extra_nest_types(fn):
 
 
 # duplicate_array_index_chains
-x = ivy.array([-1.0])
-y = ivy.array([1.0])
-
-
-@pytest.mark.parametrize("nest", [[{"a": x, "b": {"c": y, "d": x}}, (x, y)]])
-def test_duplicate_array_index_chains(nest):
+@pytest.mark.parametrize("x", [[-1.0]])
+@pytest.mark.parametrize("y", [[1.0]])
+@pytest.mark.parametrize(
+    "nest", [[{"a": None, "b": {"c": None, "d": None}}, [None, None]]]
+)
+def test_duplicate_array_index_chains(nest, x, y):
+    x = ivy.array(x)
+    y = ivy.array(y)
+    nest[0]["a"] = nest[0]["b"]["d"] = nest[1][0] = x
+    nest[0]["b"]["c"] = nest[1][1] = y
     duplicate_index_chains = ivy.duplicate_array_index_chains(nest)
     assert duplicate_index_chains[0] == [[0, "a"], [0, "b", "d"], [1, 0]]
     assert duplicate_index_chains[1] == [[0, "b", "c"], [1, 1]]
+
+
+# prune_empty
+@pytest.mark.parametrize("nest", [{"a": [{}, {}], "b": {"c": [1], "d": []}}])
+def test_prune_empty(nest):
+    ret = ivy.prune_empty(ivy.copy_nest(nest))
+    assert ret == {"b": {"c": [1]}}

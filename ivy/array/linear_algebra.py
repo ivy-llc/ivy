@@ -179,6 +179,14 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         return ivy.diag(self._data, k=k, out=out)
 
+    def eig(
+        self: ivy.Array,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.eig(self._data, out=out)
+
     def eigh(
         self: ivy.Array,
         /,
@@ -239,6 +247,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def inner(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -316,6 +325,15 @@ class ArrayWithLinearAlgebra(abc.ABC):
             self._data, ord=ord, axis=axis, keepdims=keepdims, out=out
         )
 
+    def matrix_power(
+        self: ivy.Array,
+        n: int,
+        /,
+        *,
+        out: Optional[ivy.Array] = None,
+    ) -> ivy.Array:
+        return ivy.matrix_power(self._data, n, out=out)
+
     def matrix_rank(
         self: ivy.Array,
         /,
@@ -387,7 +405,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         return ivy.matrix_rank(self._data, atol=atol, rtol=rtol, out=out)
 
     def matrix_transpose(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         """
         Transposes a matrix (or a stack of matrices) ``x``.
@@ -423,6 +441,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
     def outer(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -430,6 +449,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def pinv(
         self: ivy.Array,
+        /,
         *,
         rtol: Optional[Union[float, Tuple[float]]] = None,
         out: Optional[ivy.Array] = None,
@@ -437,20 +457,18 @@ class ArrayWithLinearAlgebra(abc.ABC):
         """
         Examples
         --------
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        y = pinv(x, None, None)
-        print(y)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> y = x.pinv()
+        >>> print(y)
         ivy.array([[-2., 1.],
-        ...        [1.5, -0.5]])
+                   [1.5, -0.5]])
 
-        x = ivy.array([[1., 2.],
-        ...            [3., 4.]])
-        out = ivy.array()
-        pinv(x, 0, out)
-        print(out)
+        >>> x = ivy.array([[1., 2.], [3., 4.]])
+        >>> z = ivy.zeros((2,2))
+        >>> x.pinv(rtol=0, out=z)
+        >>> print(z)
         ivy.array([[0.0426, 0.0964],
-        ...       [0.0605, 0.1368]])
+                   [0.0605, 0.1368]])
         """
         return ivy.pinv(self._data, rtol=rtol, out=out)
 
@@ -496,12 +514,20 @@ class ArrayWithLinearAlgebra(abc.ABC):
         >>> print(y)
         slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(0.6931472))
 
+        >>> x = ivy.array([[1.2, 2.0, 3.1],
+        ...                [6.0, 5.2, 4.0],
+        ...                [9.0, 8.0, 7.0]])
+        >>> y = x.slogdet()
+        >>> print(y)
+        slogdet(sign=ivy.array(-1.), logabsdet=ivy.array(1.098611))
+
         """
         return ivy.slogdet(self._data)
 
     def solve(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
@@ -509,23 +535,34 @@ class ArrayWithLinearAlgebra(abc.ABC):
 
     def svd(
         self: ivy.Array,
+        /,
         *,
         compute_uv: bool = True,
         full_matrices: bool = True,
     ) -> Union[ivy.Array, Tuple[ivy.Array, ...]]:
         return ivy.svd(self._data, compute_uv=compute_uv, full_matrices=full_matrices)
 
-    def svdvals(self: ivy.Array, *, out: Optional[ivy.Array] = None) -> ivy.Array:
+    def svdvals(self: ivy.Array, /, *, out: Optional[ivy.Array] = None) -> ivy.Array:
         return ivy.svdvals(self._data, out=out)
 
     def tensordot(
         self: ivy.Array,
         x2: Union[ivy.Array, ivy.NativeArray],
+        /,
         *,
         axes: Union[int, Tuple[List[int], List[int]]] = 2,
         out: Optional[ivy.Array] = None,
     ) -> ivy.Array:
         return ivy.tensordot(self._data, x2, axes=axes, out=out)
+
+    def tensorsolve(
+        self: ivy.Array,
+        x2: Union[ivy.Array, ivy.NativeArray],
+        /,
+        *,
+        axes: Union[int, Tuple[List[int], List[int]]] = None,
+    ) -> Tuple[ivy.Array]:
+        return ivy.tensorsolve(self._data, x2, axes=axes)
 
     def trace(
         self: ivy.Array,
@@ -605,7 +642,7 @@ class ArrayWithLinearAlgebra(abc.ABC):
         )
 
     def vector_to_skew_symmetric_matrix(
-        self: ivy.Array, *, out: Optional[ivy.Array] = None
+        self: ivy.Array, /, *, out: Optional[ivy.Array] = None
     ) -> ivy.Array:
         return ivy.vector_to_skew_symmetric_matrix(self._data, out=out)
 

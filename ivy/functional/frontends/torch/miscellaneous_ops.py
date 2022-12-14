@@ -16,7 +16,18 @@ def fliplr(input):
         allow_equal=True,
         message="requires tensor to be at least 2D",
     )
-    return ivy.flip(input, axis=(-1,))
+    return ivy.fliplr(input)
+
+
+@to_ivy_arrays_and_back
+def flipud(input):
+    ivy.assertions.check_greater(
+        len(input.shape),
+        1,
+        allow_equal=True,
+        message="requires tensor to be at least 1D",
+    )
+    return ivy.flipud(input)
 
 
 @to_ivy_arrays_and_back
@@ -46,7 +57,7 @@ def trace(input):
     {"1.11.0 and below": ("int8", "float16", "bfloat16", "bool")}, "torch"
 )
 @to_ivy_arrays_and_back
-def tril_indices(row, col, offset=0, *, dtype="int64", device="cpu", layout=None):
+def tril_indices(row, col, offset=0, *, dtype=ivy.int64, device="cpu", layout=None):
     sample_matrix = ivy.tril(ivy.ones((row, col), device=device), k=offset)
     return ivy.stack(ivy.nonzero(sample_matrix)).astype(dtype)
 
@@ -100,11 +111,6 @@ def renorm(input, p, dim, maxnorm, *, out=None):
     # Torch hardcodes this magic number
     epsilon = 1e-07
 
-    # Torch performs a conversion here for numerical stability
-    # But we wish to return an output with the same dtype as the input.
-    original_dtype = input.dtype
-    input = ivy.astype(input, ivy.float64)
-
     # To iterate through the n-th dimension of `input`, it is easiest to swap
     # the dimension that we wish to iterate through to be first, then iterate
     # through the re-ordered data. This re-ordering is fine for our purposes
@@ -129,7 +135,7 @@ def renorm(input, p, dim, maxnorm, *, out=None):
         )
 
     # We must undo our axis swap from the start.
-    ret = ivy.asarray(ret, dtype=original_dtype)
+    ret = ivy.asarray(ret, dtype=ret[0].dtype)
     ret = ivy.swapaxes(ret, 0, dim)
     ret = ivy.reshape(ret, input.shape)
 
@@ -245,14 +251,14 @@ def rot90(input, k, dims):
     new_axes[min(dims)], new_axes[max(dims)] = max(dims), min(dims)
     if k == 1:
         flipped = ivy.flip(input, axis=dims[1])
-        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
+        return ivy.permute_dims(flipped, axes=new_axes)
     elif k == 2:
         return ivy.flip(input, axis=dims)
     elif k == 3:
         flipped = ivy.flip(input, axis=dims[0])
-        return ivy.permute_dims(flipped, axes=new_axes, out=flipped)
+        return ivy.permute_dims(flipped, axes=new_axes)
     else:
-        return ivy.copy_array(input)
+        return input
 
 
 @to_ivy_arrays_and_back
@@ -275,6 +281,7 @@ def einsum(equation, *operands):
 
 
 @to_ivy_arrays_and_back
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
 def cross(input, other, dim=None, *, out=None):
     if dim is None:
         dim = -1
@@ -282,3 +289,8 @@ def cross(input, other, dim=None, *, out=None):
 
     if dim is not None:
         return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def gcd(input, other, *, out=None):
+    return ivy.gcd(input, other, out=out)

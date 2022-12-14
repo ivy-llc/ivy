@@ -179,6 +179,39 @@ def test_torch_fliplr(
     )
 
 
+# flipud
+@handle_frontend_test(
+    fn_tree="torch.flipud",
+    dtype_and_values=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        shape=helpers.get_shape(min_num_dims=1),
+    ),
+)
+def test_torch_flipud(
+    *,
+    dtype_and_values,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, value = dtype_and_values
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=value[0],
+    )
+
+
 # cumsum
 @handle_frontend_test(
     fn_tree="torch.cumsum",
@@ -442,7 +475,7 @@ def test_torch_trace(
     row=st.integers(min_value=0, max_value=10),
     col=st.integers(min_value=0, max_value=10),
     offset=st.integers(),
-    dtype=helpers.get_dtypes("valid", none=True, full=False),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_torch_tril_indices(
     *,
@@ -476,9 +509,9 @@ def test_torch_tril_indices(
 
 @handle_frontend_test(
     fn_tree="torch.triu_indices",
-    row=st.integers(min_value=0, max_value=100),
-    col=st.integers(min_value=0, max_value=100),
-    offset=st.integers(),
+    row=st.integers(min_value=1, max_value=100),
+    col=st.integers(min_value=1, max_value=100),
+    offset=st.integers(min_value=-10, max_value=10),
 )
 def test_torch_triu_indices(
     *,
@@ -544,83 +577,19 @@ def test_torch_tril(
     )
 
 
-@st.composite
-def _get_dtype_and_arrays_and_start_end_dim(
-    draw,
-    *,
-    available_dtypes,
-    min_num_dims=1,
-    max_num_dims=5,
-    min_dim_size=1,
-    max_dim_size=5,
-):
-    """Samples a dtype, array, and start and end dimension which are within the array,
-    with the caveat that the end dimension can be `-1`. This is to match the API
-    for PyTorch's flatten.
-
-    Parameters
-    ----------
-    available_dtypes
-        The dtypes that are permitted for the array, expected to be
-        `helpers.get_dtypes("valid") or similar.
-
-    min_num_dims
-        The minimum number of dimensions the array can have. Defaults to 1
-
-    max_num_dims
-        The maximum number of dimensions the array can have. Defaults to 5
-
-    min_dim_size
-        The minimum size of any dimension in the array. Defaults to 1
-
-    max_dim_size
-        The maximum size of any dimension in the array. Defaults to 5
-
-    Returns
-    -------
-    ret
-        A 4-tuple (dtype, array, start_dim, end_dim) where dtype is
-        one of the available dtypes, the array is an array of values
-        and start_dim and end_dim are legal dimensions contained
-        within the array, with either start_dim <= end_dim or
-        end_dim = 1.
-
-    """
-    num_dims = draw(st.integers(min_value=min_num_dims, max_value=max_num_dims))
-    shape = tuple(
-        draw(st.integers(min_value=min_dim_size, max_value=max_dim_size))
-        for _ in range(num_dims)
-    )
-
-    dtype, array = draw(
-        helpers.dtype_and_values(
-            available_dtypes=available_dtypes,
-            shape=shape,
-        )
-    )
-
-    start_dim = draw(st.integers(min_value=0, max_value=num_dims - 1))
-
-    # End_dim must be either -1 or in [start_dim, num_dims)
-    # If end_dim is -1, then it's going to flatten to a 1-D array.
-    is_full_flatten = draw(st.booleans())
-    if is_full_flatten:
-        end_dim = -1
-    else:
-        end_dim = draw(st.integers(min_value=start_dim, max_value=num_dims - 1))
-
-    return dtype, array, start_dim, end_dim
-
-
 @handle_frontend_test(
     fn_tree="torch.flatten",
-    dtype_and_input_and_start_end_dim=_get_dtype_and_arrays_and_start_end_dim(
+    dtype_input_axes=helpers.dtype_values_axis(
         available_dtypes=helpers.get_dtypes("valid"),
+        valid_axis=True,
+        min_num_dims=1,
+        min_axes_size=2,
+        max_axes_size=2,
     ),
 )
 def test_torch_flatten(
     *,
-    dtype_and_input_and_start_end_dim,
+    dtype_input_axes,
     as_variable,
     with_out,
     num_positional_args,
@@ -629,7 +598,7 @@ def test_torch_flatten(
     fn_tree,
     frontend,
 ):
-    dtype, input, start_dim, end_dim = dtype_and_input_and_start_end_dim
+    dtype, input, axes = dtype_input_axes
     helpers.test_frontend_function(
         input_dtypes=dtype,
         as_variable_flags=as_variable,
@@ -640,8 +609,8 @@ def test_torch_flatten(
         fn_tree=fn_tree,
         on_device=on_device,
         input=input[0],
-        start_dim=start_dim,
-        end_dim=end_dim,
+        start_dim=axes[0],
+        end_dim=axes[1],
     )
 
 
@@ -1088,4 +1057,44 @@ def test_torch_cross(
         input=input,
         other=other,
         dim=dim,
+    )
+
+
+# gcd
+@handle_frontend_test(
+    fn_tree="torch.gcd",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=-100,
+        max_value=100,
+        min_num_dims=1,
+        max_num_dims=3,
+        min_dim_size=1,
+        max_dim_size=3,
+        num_arrays=2,
+        shared_dtype=True,
+    ),
+)
+def test_torch_gcd(
+    *,
+    dtype_and_x,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=True,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x[0],
+        other=x[1],
     )

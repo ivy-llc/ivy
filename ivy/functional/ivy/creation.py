@@ -380,12 +380,40 @@ def ones(
 
     Examples
     --------
+    With :class:`ivy.Shape` input:
+
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
     ivy.array([[1., 1.],
            [1., 1.]])
 
+    With :class:`ivy.Dtype` input:
+
+    >>> shape = (3,2)
+    >>> d_type = object.__new__(Dtype, "int64")
+    >>> y = ivy.ones(shape, dtype=d_type)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+
+    With :class:`ivy.Device` input:
+
+    >>> shape = (3,2)
+    >>> dev = object.__new__(Device, "cpu")
+    >>> y = ivy.ones(shape, device=dev)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+
+    With :class:`ivy.Array` input:
+
+    >>> shape = (1,5,2)
+    >>> array = ivy.array(shape)
+    >>> ivy.ones(shape, out=array)
+    >>> print(array)
+    ivy.array([[1.],
+           [1., 1., 1., 1., 1.], [1., 1.]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
@@ -401,7 +429,7 @@ def ones(
 def full_like(
     x: Union[ivy.Array, ivy.NativeArray],
     /,
-    fill_value: float,
+    fill_value: Number,
     *,
     dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Optional[Union[ivy.Device, ivy.NativeDevice]] = None,
@@ -952,11 +980,14 @@ def eye(
     k
         index of the diagonal. A positive value refers to an upper diagonal, a negative
         value to a lower diagonal, and 0 to the main diagonal. Default: ``0``.
+    batch_shape
+        optional input that determines returning identity array shape.
+        Default: ``None``.
     dtype
         output array data type. If dtype is None, the output array data type must be the
         default floating-point data type. Default: ``None``.
     device
-         device on which to place the created array.
+        the device on which to place the created array.
     out
         optional output array, for writing the result to. It must have a shape that the
         inputs broadcast to.
@@ -974,7 +1005,84 @@ def eye(
 
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
-    instances in place of any of the arguments.
+    instances as a replacement to any of the arguments.
+
+    Functional Examples
+    -------------------
+
+    With :'n_rows' input:
+
+    >>> x1 = ivy.eye(3)
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'n_cols' input:
+
+    >>> x1 = ivy.eye(3,4)
+    >>> print(x1)
+    ivy.array([[1., 0., 0., 0.],
+               [0., 1., 0., 0.],
+               [0., 0., 1., 0.]])
+
+
+    With :'k' input:
+
+    >>> x1 = ivy.eye(3, k=1)
+    >>> print(x1)
+    ivy.array([[0., 1., 0.],
+               [0., 0., 1.],
+               [0., 0., 0.]])
+
+
+    With :'dtype' input:
+
+    >>> x1 = ivy.eye(4, k=2, dtype=ivy.IntDtype('int32'))
+    >>> print(x1)
+    ivy.array([[0, 0, 1, 0],
+               [0, 0, 0, 1],
+               [0, 0, 0, 0],
+               [0, 0, 0, 0]])
+
+
+    With :'batch_shape' input:
+
+    >>> x1 = ivy.eye(2, 3, batch_shape=[3])
+    >>> print(x1)
+    ivy.array([[[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]],
+
+                [[1., 0., 0.],
+                [0., 1., 0.]]])
+    >>> x1.shape
+    (3, 2, 3)
+    # Suppose batch_shape = [a, b] then the returning identity array shape is [a, b, numRows, numColumns]
+
+
+    With :'out' input:
+
+    >>> a1 = ivy.ones(3)
+    >>> ivy.eye(3, out=a1)
+    >>> print(a1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+
+    With :'device' input:
+
+    >>> x1 = ivy.eye(3, device=ivy.Device('cpu'))
+    >>> print(x1)
+    ivy.array([[1., 0., 0.],
+               [0., 1., 0.],
+               [0., 0., 1.]])
+
+    # Array ``x1`` is now stored on the CPU.
 
     """
     return current_backend().eye(
@@ -1048,6 +1156,54 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With float input:
+
+    >>> ivy.linspace(1, 2, 4)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> ivy.linspace(1, 2, 4, endpoint=False)
+    ivy.array([1., 1.25, 1.5 , 1.75])
+
+    >>> ivy.linspace(1, 10, 4, dtype = int)
+    ivy.array([ 1,  4,  7, 10])
+
+    >>> ivy.linspace(1, 2, 4, device = "gpu")
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2])
+    >>> y = ivy.array([4,5])
+
+    >>> ivy.linspace(x, y, 4)
+    ivy.array([[1, 2, 3, 4], [2, 3, 4, 5]])
+
+    >>> ivy.linspace(x, y, 4, axis = 0)
+    ivy.array([[1, 2],
+               [2, 3],
+               [3, 4],
+               [4, 5]])
+
+    Instance Method Examples
+    -------------------
+    With :class:`ivy.Array` input:
+
+    >>> x.linspace(y, 4)
+    ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])
+
+    >>> x.linspace(y, 4, axis = 0)
+    ivy.array([[4, 5],
+               [3, 4],
+               [2, 3],
+               [1, 2]])
     """
     return current_backend(start).linspace(
         start,
@@ -1478,6 +1634,7 @@ def one_hot(
     on_value: Optional[Number] = None,
     off_value: Optional[Number] = None,
     axis: Optional[int] = None,
+    dtype: Optional[Union[ivy.Dtype, ivy.NativeDtype]] = None,
     device: Union[ivy.Device, ivy.NativeDevice] = None,
     out: Optional[ivy.Array] = None,
 ) -> ivy.Array:
@@ -1520,6 +1677,7 @@ def one_hot(
         on_value=on_value,
         off_value=off_value,
         axis=axis,
+        dtype=dtype,
         device=device,
         out=out,
     )
@@ -1580,6 +1738,96 @@ def logspace(
     Both the description and the type hints above assumes an array input for simplicity,
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
+
+    Functional Examples
+    -------------------
+    With General input:
+
+    >>> x = ivy.logspace(2.0,3.0,num=4)
+    >>> print(x)
+    ivy.array([100., 215.443469, 464.15888336, 1000.])
+
+    >>> x = ivy.logspace(2.0, 3.0, num=4,axis=0,base=3)
+    >>> print(x)
+    ivy.array([9., 12.98024613, 18.72075441, 27.])
+
+    With :class:`ivy.Array` input:
+
+    >>> y1 = ivy.array([[1, 2, 3], [7, 4, 5]])
+    >>> y2 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> op = ivy.logspace(y1, y2, 2, axis=2,base=2)
+    >>> print(op)
+    ivy.array([[[2.000e+00, 2.000e+00]
+                [4.000e+00, 8.000e+00]
+                [8.000e+00, 5.120e+02]],
+
+               [[1.280e+02, 3.200e+01]
+                [1.600e+01, 1.280e+02]
+                [3.200e+01, 2.048e+03]]])
+
+    >>> x1 = ivy.array([1, 2, 3, 4, 5, 6])
+    >>> x2 = ivy.array([7, 11, 2, 9, 7, 6])
+    >>> op = ivy.logspace(x1,x2,2,axis=1)
+    >>> print(op)
+    ivy.array([[1.e+01, 1.e+07]
+               [1.e+02, 1.e+11]
+               [1.e+03, 1.e+02]
+               [1.e+04, 1.e+09]
+               [1.e+05, 1.e+07]
+               [1.e+06, 1.e+06]])
+
+    >>> x = ivy.array([3., 2., 1.])
+    >>> y = ivy.array([13., 72., 11.])
+    >>> op = ivy.logspace(x, y, 3, axis=1,dev_str=ivy.Device('cpu'))
+    >>> print(op)
+    ivy.array([[1.e+03, 1.e+08, 1.e+13]
+               [1.e+02, 1.e+37, 1.e+72]
+               [1.e+01, 1.e+06, 1.e+11]])
+
+    # Array ``op`` is now stored on the CPU.
+
+    >>> y1 = ivy.array([[1, 3, 9], [5, 7, 11]])
+    >>> y2 = ivy.zeros(3)
+    >>> op = ivy.logspace(y1, y2, 3, axis=1,base=1)
+    >>> print(op)
+    ivy.array([[[1., 1., 1.]
+                [1., 1., 1.]
+                [1., 1., 1.]],
+
+               [[1., 1., 1.]
+                [1., 1., 1.]
+                [1., 1., 1.]]])
+
+    >>> x1 = ivy.array([[5, 13, 9], [15, 6, 7]])
+    >>> x2 = ivy.ones(3)
+    >>> op = ivy.logspace(x1, x2, 2, axis=0, base=2)
+    >>> print(op)
+    ivy.array([[[3.2000e+01, 8.1920e+03, 5.1200e+02]
+                [3.2768e+04, 6.4000e+01, 1.2800e+02]],
+               [[2.0000e+00 2.0000e+00 2.0000e+00]
+                [2.0000e+00 2.0000e+00 2.0000e+00]]])
+
+     With :class:`ivy.Container` input:
+
+    >>> x = ivy.Container(a=ivy.array([5., 6.]), b=ivy.array([21., 12.]))
+    >>> op = ivy.logspace(x.a,x.b,num=3)
+    >>> print(op)
+    ivy.array([[1.e+05, 1.e+13, 1.e+21]
+               [1.e+06, 1.e+09, 1.e+12]])
+
+    >>> x = ivy.Container(a=ivy.array([.3, .8]), b=ivy.array([.2, .2]))
+    >>> y = ivy.Container(a=ivy.array([.3, .2]), b=ivy.array([.7, .9]))
+    >>> op1 = ivy.logspace(x.a,y.b,num=3)
+    >>> op2 = ivy.logspace(x.b,y.a,num=3)
+    >>> op = ivy.logspace(op1,op2,num=5,base=2)
+    >>> print(op)
+    ivy.array([[[3.98688589, 3.71321804, 3.45833531, 3.22094823, 2.99985588]
+                [8.95241962, 7.04342969, 5.54150764, 4.35985143, 3.43016841]
+                [32.26442336, 19.12940149, 11.34171831, 6.72444323, 3.98688589]],
+
+               [[79.31783778, 34.97866642, 15.42537138, 6.80249153, 2.99985588]
+                [135.24747445, 52.19416699, 20.14256517, 7.77333857, 2.99985588]
+                [246.1309628, 81.78050455, 27.17273296, 9.02852606, 2.99985588]]])
 
     """
     return current_backend(start).logspace(

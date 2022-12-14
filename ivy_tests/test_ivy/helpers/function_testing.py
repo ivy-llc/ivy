@@ -3,7 +3,8 @@ import copy
 from typing import Union, List
 import numpy as np
 import types
-from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
+import importlib
+import inspect
 
 try:
     import tensorflow as tf
@@ -11,15 +12,21 @@ except ImportError:
     tf = types.SimpleNamespace()
     tf.TensorShape = None
 
-
-import importlib
-import inspect
-
 # local
 import ivy
+import ivy_tests.test_ivy.helpers.test_parameter_flags as pf
+from ivy_tests.test_ivy.helpers.available_frameworks import available_frameworks
 from ivy.functional.ivy.gradients import _variable
 from ivy_tests.test_ivy.test_frontends import NativeClass
 from ivy_tests.test_ivy.helpers.structs import FrontendMethodData
+from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
+from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
+from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
+from .assertions import (
+    value_test,
+    check_unsupported_dtype,
+)
 
 
 def empty_func(*args, **kwargs):
@@ -33,20 +40,12 @@ try:
 except ImportError:
     is_jax_native_array = empty_func
 
-
-from ivy.functional.frontends.torch.tensor import Tensor as torch_tensor
-from ivy.functional.frontends.tensorflow.tensor import EagerTensor as tf_tensor
-from ivy.functional.frontends.jax.devicearray import DeviceArray
-from ivy.functional.frontends.numpy.ndarray.ndarray import ndarray
-
-
 try:
     from ivy.functional.backends.numpy.general import (
         is_native_array as is_numpy_native_array,
     )
 except ImportError:
     is_numpy_native_array = empty_func
-
 
 try:
     from ivy.functional.backends.tensorflow.general import (
@@ -55,19 +54,12 @@ try:
 except ImportError:
     is_tensorflow_native_array = empty_func
 
-
 try:
     from ivy.functional.backends.torch.general import (
         is_native_array as is_torch_native_array,
     )
 except ImportError:
     is_torch_native_array = empty_func
-
-
-from .assertions import (
-    value_test,
-    check_unsupported_dtype,
-)
 
 
 # ToDo, this is temporary until unsupported_dtype is embedded
@@ -818,15 +810,15 @@ def gradient_test(
 def test_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: int = 0,
-    init_native_array_flags: List[bool] = None,
+    init_as_variable_flags: Union[List[bool], pf.AsVariableFlags] = None,
+    init_num_positional_args: Union[int, pf.NumPositionalArg] = 0,
+    init_native_array_flags: Union[List[bool], pf.NativeArrayFlags] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_as_variable_flags: List[bool],
-    method_num_positional_args: int,
-    method_native_array_flags: List[bool],
-    method_container_flags: List[bool],
+    method_as_variable_flags: Union[List[bool], pf.AsVariableFlags],
+    method_num_positional_args: Union[int, pf.NumPositionalArg],
+    method_native_array_flags: Union[List[bool], pf.NativeArrayFlags],
+    method_container_flags: Union[List[bool], pf.ContainerFlags],
     method_all_as_kwargs_np: dict,
     class_name: str,
     method_name: str = "__call__",
@@ -1034,7 +1026,7 @@ def test_method(
             )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         v = ins.__getattribute__("v")
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
+        v_np = v.cont_map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1068,7 +1060,7 @@ def test_method(
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
-        v_gt = v_np.map(
+        v_gt = v_np.cont_map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
@@ -1097,14 +1089,14 @@ def test_method(
 def test_frontend_method(
     *,
     init_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]] = None,
-    init_as_variable_flags: List[bool] = None,
-    init_num_positional_args: int = 0,
-    init_native_array_flags: List[bool] = None,
+    init_as_variable_flags: Union[List[bool], pf.AsVariableFlags] = None,
+    init_num_positional_args: Union[int, pf.NumPositionalArgFn] = 0,
+    init_native_array_flags: Union[List[bool], pf.NativeArrayFlags] = None,
     init_all_as_kwargs_np: dict = None,
     method_input_dtypes: Union[ivy.Dtype, List[ivy.Dtype]],
-    method_as_variable_flags: List[bool],
-    method_num_positional_args: int,
-    method_native_array_flags: List[bool],
+    method_as_variable_flags: Union[List[bool], pf.AsVariableFlags],
+    method_num_positional_args: Union[int, pf.NumPositionalArgMethod],
+    method_native_array_flags: Union[List[bool], pf.NativeArrayFlags],
     method_all_as_kwargs_np: dict,
     frontend: str,
     frontend_method_data: FrontendMethodData,
@@ -1366,8 +1358,6 @@ def test_frontend_method(
         frontend_ret_np_flat = [ivy.to_numpy(x) for x in frontend_ret_flat]
     ivy.unset_backend()
 
-    ret_np_flat = flatten_and_to_np(ret=ret)
-
     # assuming value test will be handled manually in the test function
     if not test_values:
         return ret, frontend_ret
@@ -1581,10 +1571,15 @@ def get_ret_and_flattened_np_array(fn, *args, **kwargs):
     version.
     """
     ret = fn(*args, **kwargs)
-    if _is_frontend_array(ret):
-        ret = ret.ivy_array
-    if isinstance(ret, ivy.functional.frontends.numpy.ndarray):
-        ret = ret.ivy_array
+
+    def map_fn(x):
+        if _is_frontend_array(x):
+            return x.ivy_array
+        if isinstance(x, ivy.functional.frontends.numpy.ndarray):
+            return x.ivy_array
+        return x
+
+    ret = ivy.nested_map(ret, map_fn, include_derived={tuple: True})
     return ret, flatten_and_to_np(ret=ret)
 
 
