@@ -168,18 +168,18 @@ def test_container_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([4]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_1), np.array([6]))
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == {}
@@ -203,19 +203,19 @@ def test_container_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert "a" not in container_diff_diff_only
     assert "b" in container_diff_diff_only
     assert "c" in container_diff_diff_only["b"]
     assert "d" not in container_diff_diff_only["b"]
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert "a" in container_diff_same_only
@@ -242,18 +242,18 @@ def test_container_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.d), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([3]))
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == {}
@@ -277,12 +277,12 @@ def test_container_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert "a" not in container_diff_diff_only
@@ -290,7 +290,7 @@ def test_container_diff(device):
     assert "c" not in container_diff_diff_only["b"]
     assert "d" in container_diff_diff_only["b"]
     assert "e" in container_diff_diff_only["b"]
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert "a" in container_diff_same_only
@@ -318,15 +318,15 @@ def test_container_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == {}
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == container_diff.to_dict()
@@ -334,18 +334,18 @@ def test_container_diff(device):
     # all different strings
     container_0 = Container({"a": "1", "b": {"c": "2", "d": "3"}})
     container_1 = Container({"a": "4", "b": {"c": "5", "d": "6"}})
-    container_diff = ivy.Container.diff(container_0, container_1)
+    container_diff = ivy.Container.cont_diff(container_0, container_1)
     assert container_diff.a.diff_0 == "1"
     assert container_diff.a.diff_1 == "4"
     assert container_diff.b.c.diff_0 == "2"
     assert container_diff.b.c.diff_1 == "5"
     assert container_diff.b.d.diff_0 == "3"
     assert container_diff.b.d.diff_1 == "6"
-    container_diff_diff_only = ivy.Container.diff(
+    container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-    container_diff_same_only = ivy.Container.diff(
+    container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == {}
@@ -371,18 +371,18 @@ def test_container_structural_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    container_diff = ivy.Container.cont_structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([[4]]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([[[5]]]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
-    container_diff_diff_only = ivy.Container.structural_diff(
+    container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-    container_diff_same_only = ivy.Container.structural_diff(
+    container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == {}
@@ -406,19 +406,19 @@ def test_container_structural_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    container_diff = ivy.Container.cont_structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-    container_diff_diff_only = ivy.Container.structural_diff(
+    container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
     assert "a" not in container_diff_diff_only
     assert "b" in container_diff_diff_only
     assert "c" in container_diff_diff_only["b"]
     assert "d" not in container_diff_diff_only["b"]
-    container_diff_same_only = ivy.Container.structural_diff(
+    container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
     assert "a" in container_diff_same_only
@@ -445,18 +445,18 @@ def test_container_structural_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    container_diff = ivy.Container.cont_structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.d), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([4]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([6]))
-    container_diff_diff_only = ivy.Container.structural_diff(
+    container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == container_diff.to_dict()
-    container_diff_same_only = ivy.Container.structural_diff(
+    container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == {}
@@ -480,12 +480,12 @@ def test_container_structural_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    container_diff = ivy.Container.cont_structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([6]))
-    container_diff_diff_only = ivy.Container.structural_diff(
+    container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
     assert "a" not in container_diff_diff_only
@@ -493,7 +493,7 @@ def test_container_structural_diff(device):
     assert "c" not in container_diff_diff_only["b"]
     assert "d" in container_diff_diff_only["b"]
     assert "e" in container_diff_diff_only["b"]
-    container_diff_same_only = ivy.Container.structural_diff(
+    container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
     assert "a" in container_diff_same_only
@@ -521,15 +521,15 @@ def test_container_structural_diff(device):
             },
         }
     )
-    container_diff = ivy.Container.structural_diff(container_0, container_1)
+    container_diff = ivy.Container.cont_structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
-    container_diff_diff_only = ivy.Container.structural_diff(
+    container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
     assert container_diff_diff_only.to_dict() == {}
-    container_diff_same_only = ivy.Container.structural_diff(
+    container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
     assert container_diff_same_only.to_dict() == container_diff.to_dict()
@@ -702,9 +702,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys({0: slc})
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_cont])
-    assert Container.identical([cont_sliced.c, sub_cont])
-    assert Container.identical([cont_sliced.d, sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_cont])
     assert "e" not in cont_sliced
 
     # with dict, depth 1
@@ -714,11 +714,11 @@ def test_container_slice_keys(str_slice, device):
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
     cont_sliced = cont.cont_slice_keys({1: slc})
-    assert Container.identical([cont_sliced.a, sub_sub_cont])
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
-    assert Container.identical([cont_sliced.e, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.a, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.e, sub_sub_cont])
 
     # with dict, depth 0, 1
     sub_cont = Container({"a": a_val, "b": b_val, "c": c_val, "d": d_val, "e": e_val})
@@ -728,9 +728,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys({0: slc, 1: slc})
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
     assert "e" not in cont_sliced
 
     # all depths
@@ -741,9 +741,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys(slc, all_depths=True)
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
     assert "e" not in cont_sliced
 
 
@@ -1998,7 +1998,7 @@ def test_container_multi_map(device):
     )
 
     # with key_chains to apply
-    container_mapped = ivy.Container.multi_map(
+    container_mapped = ivy.Container.cont_multi_map(
         lambda x, _: x[0] + x[1], [container0, container1], assert_identical=True
     )
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[4]]))
@@ -2028,7 +2028,7 @@ def test_container_multi_map(device):
         }
     )
 
-    container_mapped = ivy.Container.multi_map(
+    container_mapped = ivy.Container.cont_multi_map(
         lambda x, _: x[0] + x[1],
         [container0, container1],
         map_nests=True,
@@ -2042,7 +2042,7 @@ def test_container_multi_map(device):
     # Non identical containers
     a = ivy.Container(a={"b": 2, "c": 4}, d={"e": 6, "f": 9})
     b = ivy.Container(a=2, d=3)
-    container_mapped = ivy.Container.multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
+    container_mapped = ivy.Container.cont_multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
 
     assert np.allclose(ivy.to_numpy(container_mapped["a"].b, copy=False), 1)
     assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"], copy=False), 2)
@@ -2059,32 +2059,32 @@ def test_container_common_key_chains(device):
     cont2 = Container({"a": arr1, "b": {"d": arr3, "e": arr1}})
 
     # 0
-    common_kcs = Container.common_key_chains([cont0])
+    common_kcs = Container.cont_common_key_chains([cont0])
     assert len(common_kcs) == 3
     assert "a" in common_kcs
     assert "b/c" in common_kcs
     assert "b/d" in common_kcs
 
     # 0-1
-    common_kcs = Container.common_key_chains([cont0, cont1])
+    common_kcs = Container.cont_common_key_chains([cont0, cont1])
     assert len(common_kcs) == 2
     assert "b/c" in common_kcs
     assert "b/d" in common_kcs
 
     # 0-2
-    common_kcs = Container.common_key_chains([cont0, cont2])
+    common_kcs = Container.cont_common_key_chains([cont0, cont2])
     assert len(common_kcs) == 2
     assert "a" in common_kcs
     assert "b/d" in common_kcs
 
     # 1-2
-    common_kcs = Container.common_key_chains([cont1, cont2])
+    common_kcs = Container.cont_common_key_chains([cont1, cont2])
     assert len(common_kcs) == 2
     assert "b/d" in common_kcs
     assert "b/e" in common_kcs
 
     # all
-    common_kcs = Container.common_key_chains([cont0, cont1, cont2])
+    common_kcs = Container.cont_common_key_chains([cont0, cont1, cont2])
     assert len(common_kcs) == 1
     assert "b/d" in common_kcs
 
@@ -2109,20 +2109,20 @@ def test_container_identical(device):
     container4 = Container({"d": arr3})
 
     # the same
-    assert ivy.Container.identical([container0, container1])
-    assert ivy.Container.identical([container1, container0])
+    assert ivy.Container.cont_identical([container0, container1])
+    assert ivy.Container.cont_identical([container1, container0])
 
     # not the same
-    assert not ivy.Container.identical([container0, container2])
-    assert not ivy.Container.identical([container2, container0])
-    assert not ivy.Container.identical([container1, container2])
-    assert not ivy.Container.identical([container2, container1])
+    assert not ivy.Container.cont_identical([container0, container2])
+    assert not ivy.Container.cont_identical([container2, container0])
+    assert not ivy.Container.cont_identical([container1, container2])
+    assert not ivy.Container.cont_identical([container2, container1])
 
     # partial
-    assert ivy.Container.identical([container0, container3], partial=True)
-    assert ivy.Container.identical([container3, container0], partial=True)
-    assert not ivy.Container.identical([container0, container4], partial=True)
-    assert not ivy.Container.identical([container4, container0], partial=True)
+    assert ivy.Container.cont_identical([container0, container3], partial=True)
+    assert ivy.Container.cont_identical([container3, container0], partial=True)
+    assert not ivy.Container.cont_identical([container0, container4], partial=True)
+    assert not ivy.Container.cont_identical([container4, container0], partial=True)
 
 
 def test_container_identical_structure(device):
@@ -2241,9 +2241,9 @@ def test_container_identical_array_shapes(device):
     assert ivy.Container.identical_array_shapes([container0, container1])
     assert ivy.Container.identical_array_shapes([container1, container0])
     assert ivy.Container.identical_array_shapes([container1, container0, container1])
-    assert not ivy.Container.identical([container0, container2])
-    assert not ivy.Container.identical([container1, container2])
-    assert not ivy.Container.identical([container0, container1, container2])
+    assert not ivy.Container.cont_identical([container0, container2])
+    assert not ivy.Container.cont_identical([container1, container2])
+    assert not ivy.Container.cont_identical([container0, container1, container2])
 
 
 def test_container_with_entries_as_lists(device):
@@ -2810,28 +2810,28 @@ def test_container_assert_identical(device):
     container4 = Container({"d": arr3})
 
     # the same
-    ivy.Container.assert_identical([container0, container1])
-    ivy.Container.assert_identical([container1, container0])
+    ivy.Container.cont_assert_identical([container0, container1])
+    ivy.Container.cont_assert_identical([container1, container0])
 
     # not the same
     try:
-        ivy.Container.assert_identical([container0, container2])
+        ivy.Container.cont_assert_identical([container0, container2])
         error_caught = False
     except IvyException:
         error_caught = True
     assert error_caught
     try:
-        ivy.Container.assert_identical([container1, container2])
+        ivy.Container.cont_assert_identical([container1, container2])
         error_caught = False
     except IvyException:
         error_caught = True
     assert error_caught
 
     # partial
-    ivy.Container.assert_identical([container0, container3], partial=True)
-    ivy.Container.assert_identical([container3, container0], partial=True)
+    ivy.Container.cont_assert_identical([container0, container3], partial=True)
+    ivy.Container.cont_assert_identical([container3, container0], partial=True)
     try:
-        ivy.Container.assert_identical([container4, container0], partial=True)
+        ivy.Container.cont_assert_identical([container4, container0], partial=True)
         error_caught = False
     except IvyException:
         error_caught = True
