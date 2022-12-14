@@ -653,13 +653,11 @@ for ivy.pinv also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – </p></li>
-<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – <p><code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p>
-</p></li>
-<li><p><strong>M</strong> – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – <code class="docutils literal notranslate"><span class="pre">MxN</span></code> matrices. Should have a floating-point data type.</p></li>
-<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>to</strong> (<em>relative tolerance for small singular values approximately less than</em><em> or </em><em>equal</em>) – <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
+<li><p><strong>x</strong> – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost
+two dimensions form``MxN`` matrices. Should have a floating-point
+data type.</p></li>
+<li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 It must have a shape that the inputs broadcast to.</p></li>
 </ul>
@@ -675,27 +673,25 @@ must have shape <code class="docutils literal notranslate"><span class="pre">(..
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>x = ivy.Container(a= ivy.array([[1., 2.],
-…                             [3., 4.]]))
-y = pinv(x, None, None)
-print(y)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([[-2., 1.],</p>
-</div></blockquote>
-<p>…               [1.5, -0.5]])
-}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],
-…                            [3., 4.]]))
-out = ivy.Container(a=ivy.array())
-pinv(x, 0, out)
-print(out)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([[0.0426, 0.0964],</p>
-</div></blockquote>
-<p>…               [0.0605, 0.1368]])
-}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[-2., 1.],</span>
+<span class="go">                  [1.5, -0.5]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[0.0426, 0.0964],</span>
+<span class="go">                  [0.0605, 0.1368]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -1231,11 +1227,9 @@ for ivy.pinv also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – </p></li>
-<li><p><strong>``</strong><strong>(</strong><strong>...</strong> (<em>input array having shape</em>) – </p></li>
-<li><p><strong>M</strong> – </p></li>
-<li><p><strong>form</strong> (<em>N</em><em>)</em><em>`` and whose innermost two dimensions</em>) – </p></li>
-<li><p><strong>type.</strong> (<em>MxN matrices. Should have a floating-point data</em>) – </p></li>
+<li><p><strong>x</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – input array having shape <code class="docutils literal notranslate"><span class="pre">(...,</span> <span class="pre">M,</span> <span class="pre">N)</span></code> and whose innermost two
+dimensions form``MxN`` matrices. Should have a floating-point
+data type.</p></li>
 <li><p><strong>rtol</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]]) – relative tolerance for small singular values approximately less (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
 than or equal to <code class="docutils literal notranslate"><span class="pre">rtol</span> <span class="pre">*</span> <span class="pre">largest_singular_value</span></code> are set to zero.</p></li>
 <li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
@@ -1253,27 +1247,25 @@ must have shape <code class="docutils literal notranslate"><span class="pre">(..
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>x = ivy.Container(a= ivy.array([[1., 2.],
-…                             [3., 4.]]))
-y = pinv(x, None, None)
-print(y)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([[-2., 1.],</p>
-</div></blockquote>
-<p>…               [1.5, -0.5]])
-}</p>
-<p>x = ivy.Container(a=ivy.array([[1., 2.],
-…                            [3., 4.]]))
-out = ivy.Container(a=ivy.array())
-pinv(x, 0, out)
-print(out)
-{</p>
-<blockquote>
-<div><p>a: ivy.array([[0.0426, 0.0964],</p>
-</div></blockquote>
-<p>…               [0.0605, 0.1368]])
-}</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_pinv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[-2., 1.],</span>
+<span class="go">                  [1.5, -0.5]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">4.</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">out</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_pinv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[0.0426, 0.0964],</span>
+<span class="go">                  [0.0605, 0.1368]])</span>
+<span class="go">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">

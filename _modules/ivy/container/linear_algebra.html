@@ -1093,8 +1093,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
-<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
-<span class="sd">        ``MxN`` matrices. Should have a floating-point data type.</span>
+<span class="sd">            input array having shape ``(..., M, N)`` and whose innermost two</span>
+<span class="sd">            dimensions form``MxN`` matrices. Should have a floating-point</span>
+<span class="sd">            data type.</span>
 <span class="sd">        rtol</span>
 <span class="sd">            relative tolerance for small singular values approximately less</span>
 <span class="sd">            than or equal to ``rtol * largest_singular_value`` are set to zero.</span>
@@ -1112,23 +1113,21 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],</span>
-<span class="sd">        ...                             [3., 4.]]))</span>
-<span class="sd">        y = pinv(x, None, None)</span>
-<span class="sd">        print(y)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_pinv(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[-2., 1.],</span>
-<span class="sd">        ...               [1.5, -0.5]])</span>
+<span class="sd">                          [1.5, -0.5]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],</span>
-<span class="sd">        ...                            [3., 4.]]))</span>
-<span class="sd">        out = ivy.Container(a=ivy.array())</span>
-<span class="sd">        pinv(x, 0, out)</span>
-<span class="sd">        print(out)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; out = ivy.Container(a=ivy.zeros((2, 2)))</span>
+<span class="sd">        &gt;&gt;&gt; ivy.Container.static_pinv(x, 0, out=out)</span>
+<span class="sd">        &gt;&gt;&gt; print(out)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0.0426, 0.0964],</span>
-<span class="sd">        ...               [0.0605, 0.1368]])</span>
+<span class="sd">                          [0.0605, 0.1368]])</span>
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
@@ -1153,11 +1152,12 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        x</span>
-<span class="sd">        input array having shape ``(..., M, N)`` and whose innermost two dimensions form</span>
-<span class="sd">            ``MxN`` matrices. Should have a floating-point data type.</span>
+<span class="sd">            input array having shape ``(..., M, N)`` and whose innermost</span>
+<span class="sd">            two dimensions form``MxN`` matrices. Should have a floating-point</span>
+<span class="sd">            data type.</span>
 <span class="sd">        rtol</span>
-<span class="sd">        relative tolerance for small singular values approximately less than or equal to</span>
-<span class="sd">            ``rtol * largest_singular_value`` are set to zero.</span>
+<span class="sd">            relative tolerance for small singular values approximately less</span>
+<span class="sd">            than or equal to ``rtol * largest_singular_value`` are set to zero.</span>
 <span class="sd">        out</span>
 <span class="sd">            optional output array, for writing the result to.</span>
 <span class="sd">            It must have a shape that the inputs broadcast to.</span>
@@ -1173,25 +1173,22 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        x = ivy.Container(a= ivy.array([[1., 2.],</span>
-<span class="sd">        ...                             [3., 4.]]))</span>
-<span class="sd">        y = pinv(x, None, None)</span>
-<span class="sd">        print(y)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a= ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.pinv(x)</span>
+<span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[-2., 1.],</span>
-<span class="sd">        ...               [1.5, -0.5]])</span>
+<span class="sd">                          [1.5, -0.5]])</span>
 <span class="sd">        }</span>
 
-<span class="sd">        x = ivy.Container(a=ivy.array([[1., 2.],</span>
-<span class="sd">        ...                            [3., 4.]]))</span>
-<span class="sd">        out = ivy.Container(a=ivy.array())</span>
-<span class="sd">        pinv(x, 0, out)</span>
-<span class="sd">        print(out)</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[1., 2.], [3., 4.]]))</span>
+<span class="sd">        &gt;&gt;&gt; out = ivy.Container(a=ivy.array())</span>
+<span class="sd">        &gt;&gt;&gt; ivy.pinv(x, 0., out=out)</span>
+<span class="sd">        &gt;&gt;&gt; print(out)</span>
 <span class="sd">        {</span>
 <span class="sd">            a: ivy.array([[0.0426, 0.0964],</span>
-<span class="sd">        ...               [0.0605, 0.1368]])</span>
+<span class="sd">                          [0.0605, 0.1368]])</span>
 <span class="sd">        }</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_pinv</span><span class="p">(</span>
             <span class="bp">self</span><span class="p">,</span>
