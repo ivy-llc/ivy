@@ -687,8 +687,6 @@ def eigvalsh(
     >>> print(y)
     ivy.array([[-1.,  3.]])
 
-    Using out
-
     >>> x = ivy.array([[[3.0,2.0],[2.0,3.0]]])
     >>> y = ivy.zeros([1,2])
     >>> ivy.eigvalsh(x, out=y)
@@ -699,8 +697,6 @@ def eigvalsh(
     >>> ivy.eigvalsh(x, out=x)
     >>> print(x)
     ivy.array([[1., 5.]])
-
-    Using UPLO
 
     >>> x = ivy.array([[[2.0,3.0,6.0],[3.0,4.0,5.0],[6.0,5.0,9.0]],
     ... [[1.0,1.0,1.0],[1.0,2.0,2.0],[1.0,2.0,2.0]]])
