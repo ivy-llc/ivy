@@ -1559,7 +1559,7 @@ def test_container_restructure_key_chains(device):
             },
         }
     )
-    container_restructured = container.restructure_key_chains({"a": "A"})
+    container_restructured = container.cont_restructure_key_chains({"a": "A"})
     assert np.allclose(ivy.to_numpy(container_restructured["A"]), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_restructured["b/c"]), np.array([[2]]))
@@ -1577,7 +1577,7 @@ def test_container_restructure_key_chains(device):
             },
         }
     )
-    container_restructured = container.restructure_key_chains(
+    container_restructured = container.cont_restructure_key_chains(
         {"a": "A", "b/c": "B/C", "b/d": "B/D"}
     )
     assert np.allclose(ivy.to_numpy(container_restructured["A"]), np.array([[1]]))
@@ -1598,7 +1598,7 @@ def test_container_restructure(device):
             },
         }
     )
-    container_restructured = container.restructure(
+    container_restructured = container.cont_restructure(
         {
             "a": {"key_chain": "A", "pattern": "a b -> b a"},
             "b/c": {"key_chain": "B/C", "pattern": "a b -> (a b)"},
