@@ -262,13 +262,18 @@ def diff(
     x: Union[torch.Tensor, int, float, list, tuple],
     /,
     *,
-    out: Optional[torch.Tensor] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
+    append: Optional[Union[torch.Tensor, int, float, list, tuple]] = None,
 ) -> torch.Tensor:
     x = x if type(x) == torch.Tensor else torch.Tensor(x)
-    return torch.diff(x, out=out)
+    prepend = prepend if type(prepend) == torch.Tensor else torch.Tensor(prepend)
+    append = append if type(append) == torch.Tensor else torch.Tensor(append)
+    return torch.diff(x, n=n, dim=axis, prepend=prepend, append=append)
 
 
-gcd.support_native_out = True
+gcd.support_native_out = False
 
 
 def signbit(

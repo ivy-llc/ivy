@@ -78,7 +78,8 @@ def test_fomaml_step_unique_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -88,7 +89,8 @@ def test_fomaml_step_unique_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_v["latent"] * sub_batch_in["x"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -96,11 +98,11 @@ def test_fomaml_step_unique_vars(
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         all_outer_grads.append(
             [
                 (
@@ -219,7 +221,8 @@ def test_fomaml_step_shared_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
@@ -229,14 +232,15 @@ def test_fomaml_step_shared_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
@@ -249,7 +253,7 @@ def test_fomaml_step_shared_vars(
 
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(latent_np)
@@ -391,7 +395,8 @@ def test_fomaml_step_overlapping_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -401,7 +406,8 @@ def test_fomaml_step_overlapping_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -409,11 +415,11 @@ def test_fomaml_step_overlapping_vars(
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
     weight_np = ivy.to_numpy(variables.weight[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         all_outer_grads.append(
             [
                 (
@@ -524,14 +530,15 @@ def test_reptile_step(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in):
@@ -539,7 +546,7 @@ def test_reptile_step(
 
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(latent_np)
@@ -652,7 +659,8 @@ def test_maml_step_unique_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -662,7 +670,8 @@ def test_maml_step_unique_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -670,11 +679,11 @@ def test_maml_step_unique_vars(
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         all_outer_grads.append(
             [
                 (
@@ -791,7 +800,8 @@ def test_maml_step_shared_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
@@ -801,14 +811,15 @@ def test_maml_step_shared_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_batch_in["x"] * sub_v["latent"] ** 2)[0]
         return cost / batch_size
 
     # numpy
-    variables_np = variables.map(lambda x, kc: ivy.to_ivy(x))
-    batch_np = batch.map(lambda x, kc: ivy.to_ivy(x))
+    variables_np = variables.cont_map(lambda x, kc: ivy.to_ivy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_ivy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
@@ -852,7 +863,7 @@ def test_maml_step_shared_vars(
 
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(variables_np)
@@ -1008,7 +1019,8 @@ def test_maml_step_overlapping_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost - (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -1018,7 +1030,8 @@ def test_maml_step_overlapping_vars(
         cost = 0
         batch_size = batch_in.shared_shape[0]
         for sub_batch_in, sub_v in zip(
-            batch_in.unstack_conts(0, keepdims=True), v.unstack_conts(0, keepdims=True)
+            batch_in.cont_unstack_conts(0, keepdims=True),
+            v.cont_unstack_conts(0, keepdims=True),
         ):
             cost = cost + (sub_batch_in["x"] * sub_v["latent"] * sub_v["weight"])[0]
         return cost / batch_size
@@ -1026,11 +1039,11 @@ def test_maml_step_overlapping_vars(
     # numpy
     latent_np = ivy.to_numpy(variables.latent)
     weight_np = ivy.to_numpy(variables.weight)
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true weight gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack_conts(0, True, num_tasks):
+    for sub_batch in batch_np.cont_unstack_conts(0, True, num_tasks):
         all_outer_grads.append(
             [
                 (

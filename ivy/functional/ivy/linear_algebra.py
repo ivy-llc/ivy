@@ -1191,6 +1191,57 @@ def matrix_power(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Examples
+    --------
+    With :code: 'ivy.Array' inputs:
+
+    >>> x = ivy.array([[1., 2.], [3., 4.]])
+    >>> ivy.matrix_power(x,1)
+    ivy.array([[1., 2.],
+               [3., 4.]])
+
+    >>> x = ivy.array([[3., 2.], [-5., -3.]])
+    >>> ivy.matrix_power(x,-1)
+    ivy.array([[-3., -2.],
+               [ 5.,  3.]])
+
+    >>> x = ivy.array([[4., -1.], [0., 2.]])
+    >>> ivy.matrix_power(x,0)
+    ivy.array([[1., 0.],
+               [0., 1.]])
+
+    >>> x = ivy.array([[1., 2.], [0., 1.]])
+    >>> ivy.matrix_power(x,5)
+    ivy.array([[ 1., 10.],
+               [ 0.,  1.]])
+
+    >>> x = ivy.array([[1/2, 0.], [0., -1/3]])
+    >>> ivy.matrix_power(x,-2)
+    ivy.array([[4., 0.],
+               [0., 9.]])
+
+
+    With :code: 'ivy.NativeArray' inputs:
+
+    >>> x = ivy.native_array([[1., 2., 3.], [6., 5., 4.], [7., 8., 9.]])
+    >>> ivy.matrix_power(x,2)
+    ivy.array([[ 34.,  36.,  38.],
+               [ 64.,  69.,  74.],
+               [118., 126., 134.]])
+
+
+    With :code: 'ivy.Container' inputs:
+
+    >>> x = ivy.Container(a = ivy.array([[1., 2.], [3., 4.]]),
+                          b = ivy.array([[1., 0.], [0., 0.]]))
+    >>> ivy.matrix_power(x,3)
+    {
+        a: ivy.array([[37., 54.],
+                      [81., 118.]]),
+        b: ivy.array([[1., 0.],
+                      [0., 0.]])
+    }
+
     """
     return current_backend(x).matrix_power(x, n, out=out)
 

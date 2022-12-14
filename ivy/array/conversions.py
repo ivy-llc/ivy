@@ -17,7 +17,9 @@ def _to_native(x: Any, inplace: bool = False) -> Any:
     if isinstance(x, ivy.Array):
         return x.data
     elif isinstance(x, ivy.Container):
-        return x.map(lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace)
+        return x.cont_map(
+            lambda x_, _: _to_native(x_, inplace=inplace), inplace=inplace
+        )
     return x
 
 
