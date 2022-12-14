@@ -2548,7 +2548,7 @@ def test_container_to_and_from_disk_as_pickled(device):
     container = Container(dict_in)
 
     # saving
-    container.to_disk_as_pickled(save_filepath)
+    container.cont_to_disk_as_pickled(save_filepath)
     assert os.path.exists(save_filepath)
 
     # loading
@@ -2573,7 +2573,7 @@ def test_container_to_and_from_disk_as_json(device):
     container = Container(dict_in)
 
     # saving
-    container.to_disk_as_json(save_filepath)
+    container.cont_to_disk_as_json(save_filepath)
     assert os.path.exists(save_filepath)
 
     # loading
