@@ -1802,7 +1802,7 @@ def test_container_to_flat_list(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    container_flat_list = container.to_flat_list()
+    container_flat_list = container.cont_to_flat_list()
     for value, expected_value in zip(
         container_flat_list,
         [
@@ -1821,7 +1821,7 @@ def test_container_from_flat_list(device):
     }
     container = Container(dict_in)
     flat_list = [4, 5, 6]
-    container = container.from_flat_list(flat_list)
+    container = container.cont_from_flat_list(flat_list)
     assert np.allclose(ivy.to_numpy(container["a"], copy=False), np.array([4]))
     assert np.allclose(ivy.to_numpy(container.a, copy=False), np.array([4]))
     assert np.allclose(ivy.to_numpy(container["b"]["c"], copy=False), np.array([5]))
