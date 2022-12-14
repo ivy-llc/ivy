@@ -23,7 +23,8 @@ jobs:
            pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd Mapping
-           echo "Test" > tests.pbz2
+           echo "Test2" > tests.pbz2
+           sleep 10
            git add .
            git commit -m "Update Mapping Test"
            git push origin master
