@@ -178,11 +178,11 @@ def test_container_diff(device):
     container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    assert container_diff_diff_only.cont_to_dict() == container_diff.cont_to_dict()
     container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == {}
+    assert container_diff_same_only.cont_to_dict() == {}
 
     # some different arrays
     container_0 = Container(
@@ -252,11 +252,11 @@ def test_container_diff(device):
     container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    assert container_diff_diff_only.cont_to_dict() == container_diff.cont_to_dict()
     container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == {}
+    assert container_diff_same_only.cont_to_dict() == {}
 
     # some different keys
     container_0 = Container(
@@ -325,11 +325,11 @@ def test_container_diff(device):
     container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == {}
+    assert container_diff_diff_only.cont_to_dict() == {}
     container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == container_diff.to_dict()
+    assert container_diff_same_only.cont_to_dict() == container_diff.cont_to_dict()
 
     # all different strings
     container_0 = Container({"a": "1", "b": {"c": "2", "d": "3"}})
@@ -344,11 +344,11 @@ def test_container_diff(device):
     container_diff_diff_only = ivy.Container.cont_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    assert container_diff_diff_only.cont_to_dict() == container_diff.cont_to_dict()
     container_diff_same_only = ivy.Container.cont_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == {}
+    assert container_diff_same_only.cont_to_dict() == {}
 
 
 def test_container_structural_diff(device):
@@ -381,11 +381,11 @@ def test_container_structural_diff(device):
     container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    assert container_diff_diff_only.cont_to_dict() == container_diff.cont_to_dict()
     container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == {}
+    assert container_diff_same_only.cont_to_dict() == {}
 
     # some different shapes
     container_0 = Container(
@@ -455,11 +455,11 @@ def test_container_structural_diff(device):
     container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    assert container_diff_diff_only.cont_to_dict() == container_diff.cont_to_dict()
     container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == {}
+    assert container_diff_same_only.cont_to_dict() == {}
 
     # some different keys
     container_0 = Container(
@@ -528,11 +528,11 @@ def test_container_structural_diff(device):
     container_diff_diff_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="diff_only"
     )
-    assert container_diff_diff_only.to_dict() == {}
+    assert container_diff_diff_only.cont_to_dict() == {}
     container_diff_same_only = ivy.Container.cont_structural_diff(
         container_0, container_1, mode="same_only"
     )
-    assert container_diff_same_only.to_dict() == container_diff.to_dict()
+    assert container_diff_same_only.cont_to_dict() == container_diff.cont_to_dict()
 
 
 def test_container_from_dict(device):
@@ -888,7 +888,7 @@ def test_container_to_raw(device):
         (ivy.array([2], device=device), ivy.array([3], device=device)),
     )
     container = Container(tuple_in, types_to_iteratively_nest=[tuple])
-    raw = container.to_raw()
+    raw = container.cont_to_raw()
     assert np.allclose(ivy.to_numpy(raw[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(raw[1][0]), np.array([2]))
     assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
@@ -2548,7 +2548,7 @@ def test_container_to_and_from_disk_as_pickled(device):
     container = Container(dict_in)
 
     # saving
-    container.to_disk_as_pickled(save_filepath)
+    container.cont_to_disk_as_pickled(save_filepath)
     assert os.path.exists(save_filepath)
 
     # loading
@@ -2573,7 +2573,7 @@ def test_container_to_and_from_disk_as_json(device):
     container = Container(dict_in)
 
     # saving
-    container.to_disk_as_json(save_filepath)
+    container.cont_to_disk_as_json(save_filepath)
     assert os.path.exists(save_filepath)
 
     # loading
@@ -3002,7 +3002,7 @@ def test_container_to_nested_list(device):
             },
         }
     )
-    res = ivy.Container.to_nested_list(container0)
+    res = ivy.Container.cont_to_nested_list(container0)
     assert res == [1, [True, [2.0, 3]]]
 
 
