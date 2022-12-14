@@ -788,6 +788,36 @@ same key structure.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_structural_diff">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_structural_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_key_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_shape_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_structural_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_structural_diff" title="Permalink to this definition"></a></dt>
+<dd><p>Compare keys and shapes in a sequence of containers, returning the single
+shared values where they are the same, and new nested sub-dicts with all values
+where they are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> – containers to compare</p></li>
+<li><p><strong>mode</strong> – The mode of the diff operation, returning either all keys and values,
+only those that are consist across the containers, or only the differences.
+Default is all.</p></li>
+<li><p><strong>diff_keys</strong> – The key/keys to add to the returned container when differences are found.
+Default is “diff”.</p></li>
+<li><p><strong>detect_key_diffs</strong> – Whether to treat different keys as detected differences.
+If not, the keys among the input containers are simply combined without
+flagging differences. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>detect_shape_diffs</strong> – Whether to treat different array shapes as detected differences.
+Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
+<li><p><strong>*containers</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Compared containers</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_try_kc">
 <span class="sig-name descname"><span class="pre">cont_try_kc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_try_kc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_try_kc" title="Permalink to this definition"></a></dt>
 <dd><p>Tries the following key or key chain, returning self if not present.</p>
@@ -1654,36 +1684,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>A list of sub-arrays.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.structural_diff">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">structural_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_key_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_shape_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.structural_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.structural_diff" title="Permalink to this definition"></a></dt>
-<dd><p>Compare keys and shapes in a sequence of containers, returning the single
-shared values where they are the same, and new nested sub-dicts with all values
-where they are different.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> – containers to compare</p></li>
-<li><p><strong>mode</strong> – The mode of the diff operation, returning either all keys and values,
-only those that are consist across the containers, or only the differences.
-Default is all.</p></li>
-<li><p><strong>diff_keys</strong> – The key/keys to add to the returned container when differences are found.
-Default is “diff”.</p></li>
-<li><p><strong>detect_key_diffs</strong> – Whether to treat different keys as detected differences.
-If not, the keys among the input containers are simply combined without
-flagging differences. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>detect_shape_diffs</strong> – Whether to treat different array shapes as detected differences.
-Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>config</strong> – The configuration for the containers. Default is the same as container0.</p></li>
-<li><p><strong>*containers</strong> – </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Compared containers</em></p>
 </dd>
 </dl>
 </dd></dl>
