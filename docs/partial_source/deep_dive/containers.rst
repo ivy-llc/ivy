@@ -5,7 +5,7 @@ Containers
 .. _`dict`: https://github.com/unifyai/ivy/blob/e47a7b18628aa73ba0c064d3d07352a7ab672bd1/ivy/container/base.py#L56
 .. _`ivy.Container.cont_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L4030
 .. _`ivy.Container.cont_all_true`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L1490
-.. _`ivy.Container.to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
+.. _`ivy.Container.cont_to_iterator`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L3019
 .. _`ContainerBase`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L56
 .. _`ivy.Container.cont_multi_map`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L593
 .. _`ivy.Container.cont_diff`: https://github.com/unifyai/ivy/blob/8d1eef71522be7f98b601e5f97bb2c54142795b3/ivy/container/base.py#L396
@@ -60,7 +60,7 @@ Container Instance Methods
 --------------------------
 
 Container instance methods are methods which are specific to the container itself.
-A few examples include `ivy.Container.cont_map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.cont_all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.to_iterator`_ which returns an iterator for traversing the leaves of the container.
+A few examples include `ivy.Container.cont_map`_ which is used for mapping a function to all leaves of the container, `ivy.Container.cont_all_true`_ which determines if all container leaves evaluate to boolean `True`, and `ivy.Container.cont_to_iterator`_ which returns an iterator for traversing the leaves of the container.
 
 There are many more examples, check out the abstract `ContainerBase`_ class to see some more!
 
