@@ -754,7 +754,7 @@ def test_container_show(device):
     }
     cont = Container(dict_in)
     print(cont)
-    cont.show()
+    cont.cont_show()
 
 
 def test_container_find_sub_container(device):
@@ -816,8 +816,8 @@ def test_container_show_sub_container(device):
     }
     top_cont = Container(dict_in)
     sub_cont = Container(dict_in["b"])
-    top_cont.show_sub_container("b")
-    top_cont.show_sub_container(sub_cont)
+    top_cont.cont_show_sub_container("b")
+    top_cont.cont_show_sub_container(sub_cont)
 
 
 def test_container_from_dict_w_cont_types(device):
@@ -3155,13 +3155,13 @@ def test_container_remove_print_limit(device):
     )
     default_print_limit = cont._print_limit
     id_cont = id(cont)
-    cont1 = cont.remove_print_limit()
+    cont1 = cont.cont_remove_print_limit()
     assert cont1._print_limit is None
     assert id(cont1) != id(cont)
     assert cont._print_limit == default_print_limit
     assert cont._print_limit != cont1._print_limit
     assert cont.b._print_limit == default_print_limit
-    cont.remove_print_limit(inplace=True)
+    cont.cont_remove_print_limit(inplace=True)
     assert cont._print_limit is None
     assert cont.b._print_limit is None
     assert id(cont) == id_cont
@@ -3204,13 +3204,13 @@ def test_container_remove_key_length_limit(device):
     cont.cont_with_key_length_limit(5, inplace=True)
     default_key_length_limit = cont._key_length_limit
     id_cont = id(cont)
-    cont1 = cont.remove_key_length_limit()
+    cont1 = cont.cont_remove_key_length_limit()
     assert cont1._key_length_limit is None
     assert id(cont1) != id(cont)
     assert cont._key_length_limit == default_key_length_limit
     assert cont.b._key_length_limit == default_key_length_limit
     assert cont._key_length_limit != cont1._key_length_limit
-    cont.remove_key_length_limit(inplace=True)
+    cont.cont_remove_key_length_limit(inplace=True)
     assert cont._key_length_limit is None
     assert cont.b._key_length_limit is None
     assert id(cont) == id_cont
@@ -3299,11 +3299,11 @@ def test_container_with_ivy_backend(device):
         }
     )
     id_container0 = id(container0)
-    container0 = ivy.Container.with_ivy_backend(container0, "numpy")
+    container0 = ivy.Container.cont_with_ivy_backend(container0, "numpy")
     assert container0.config["ivyh"] == "numpy"
     assert id_container0 != id(container0)
     id_container0 = id(container0)
-    ivy.Container.with_ivy_backend(container0, "torch", inplace=True)
+    ivy.Container.cont_with_ivy_backend(container0, "torch", inplace=True)
     assert container0.config["ivyh"] == "torch"
     assert id(container0) == id_container0
 
