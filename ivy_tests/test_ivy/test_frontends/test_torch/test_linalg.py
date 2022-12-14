@@ -368,9 +368,9 @@ def test_torch_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
-    
-    
-#svdvals
+
+
+# svdvals
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_square_matrix(),
