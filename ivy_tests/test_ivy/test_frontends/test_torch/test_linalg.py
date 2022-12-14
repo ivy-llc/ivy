@@ -24,6 +24,7 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
+# helpers
 @st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
