@@ -23,7 +23,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "diagflat",
             x,
             offset=offset,
@@ -124,7 +124,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
             b: ivy.array([450])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "kron",
             a,
             b,
@@ -216,7 +216,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
                 ])
         )
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "eig",
             x,
             key_chains=key_chains,
@@ -238,6 +238,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.eig.
         This method simply wraps the function, and so the docstring for
         ivy.eig also applies to this method with minimal changes.
+
         Parameters
         ----------
             x

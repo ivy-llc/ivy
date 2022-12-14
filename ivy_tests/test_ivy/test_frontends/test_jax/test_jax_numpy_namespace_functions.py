@@ -3718,7 +3718,7 @@ def test_jax_numpy_divide(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=False,
-        all_aliases=["jax.numpy.true_divide"],
+        all_aliases=["numpy.true_divide"],
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
         frontend=frontend,
