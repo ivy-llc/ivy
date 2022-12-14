@@ -2321,7 +2321,7 @@ def assert_supports_inplace(x: Union[ivy.Array, ivy.NativeArray], /) -> bool:
 @handle_array_like
 def get_item(
     x: Union[ivy.Array, ivy.NativeArray],
-    query: Union[ivy.Array, ivy.NativeArray],
+    query: Union[ivy.Array, ivy.NativeArray, Tuple],
 ) -> ivy.Array:
     """
      Gather slices from x according to query array, identical to x[query].

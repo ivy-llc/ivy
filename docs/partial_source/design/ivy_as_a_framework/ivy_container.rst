@@ -312,7 +312,7 @@ We can then very quickly find conflicting leaves.
 
     cnt0 = ivy.Container({'a': ivy.array([0.]),
                       'b': ivy.array([1.])})
-    cnt1 = cnt0.deep_copy()
+    cnt1 = cnt0.cont_deep_copy()
     cnt1.b = ivy.array([0.])
 
     print(ivy.Container.diff(cnt0, cnt1))
@@ -395,7 +395,7 @@ All nested structures below this depth are truncated into single keys with a â€œ
 
 .. code-block:: python
 
-    weights.flatten_key_chains(above_height=1)
+    weights.cont_flatten_key_chains(above_height=1)
 
     {
         decoder__l0: {
@@ -430,7 +430,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 .. code-block:: python
 
-    weights.flatten_key_chains(below_depth=1)
+    weights.cont_flatten_key_chains(below_depth=1)
 
     {
         decoder: {
@@ -457,7 +457,7 @@ All nested structures above this height are truncated into single keys with a â€
 
 These are very useful methods when stepping through code and debugging complex nested structures such as the weights of a network.
 
-There are also methods: :code:`with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`with_key_length_limit` for setting the maximum key length before string clipping, :code:`with_print_indent` for controlling the nested indent, and many more.
+There are also methods: :code:`cont_with_print_limit` for controlling the printable size of arrays before the shape is instead displayed, :code:`cont_with_key_length_limit` for setting the maximum key length before string clipping, :code:`cont_with_print_indent` for controlling the nested indent, and many more.
 Check out the `docs <https://lets-unify.ai/ivy/core/container.html>`_ for more details!
 
 Use Cases
@@ -569,17 +569,17 @@ This is useful if we need to recursively unroll the entire batch in the time dim
             self._count = 0
 
         def __next__(self):
-            cnt = self._cnt.copy()
+            cnt = self._cnt.cont_copy()
 
             # image filenames
-            img_fnames = ivy.Container.list_stack(
-                [cnt.imgs.map(
+            img_fnames = ivy.Container.cont_list_stack(
+                [cnt.imgs.cont_map(
                     lambda fname, _: fname.format(self._count + i)
                 ) for i in range(self._batch_size)], 0
             )
 
             # load from disk
-            loaded_imgs = img_fnames.map(
+            loaded_imgs = img_fnames.cont_map(
                 lambda fnames, _: np.concatenate(
                     [np.expand_dims(cv2.imread(fname, -1), 0)
                      for fname in fnames], 0
