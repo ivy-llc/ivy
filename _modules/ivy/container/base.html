@@ -1381,8 +1381,8 @@
                     <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Container reduce operation only valid for containers of arrays&quot;</span>
                 <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.flatten_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.flatten_key_chain">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">flatten_key_chain</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_flatten_key_chain"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_flatten_key_chain">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_flatten_key_chain</span><span class="p">(</span>
         <span class="n">key_chain</span><span class="p">,</span> <span class="n">replacement</span><span class="o">=</span><span class="s2">&quot;__&quot;</span><span class="p">,</span> <span class="n">above_height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">below_depth</span><span class="o">=</span><span class="kc">None</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Summary.</span>
@@ -1994,7 +1994,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">array_dict</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">flatten_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">):</span> <span class="n">v</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_flatten_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">):</span> <span class="n">v</span>
             <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="n">exclusive</span><span class="p">)</span>
         <span class="p">}</span>
@@ -3129,7 +3129,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
             <span class="p">{</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">flatten_key_chain</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_flatten_key_chain</span><span class="p">(</span>
                     <span class="n">kc</span><span class="p">,</span> <span class="n">above_height</span><span class="o">=</span><span class="n">above_height</span><span class="p">,</span> <span class="n">below_depth</span><span class="o">=</span><span class="n">below_depth</span>
                 <span class="p">):</span> <span class="n">v</span>
                 <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="n">include_empty</span><span class="p">)</span>
