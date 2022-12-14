@@ -76,7 +76,7 @@ def test_fomaml_step_unique_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -87,7 +87,7 @@ def test_fomaml_step_unique_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -164,9 +164,9 @@ def test_fomaml_step_unique_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # fomaml step shared vars
@@ -219,7 +219,7 @@ def test_fomaml_step_shared_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -230,7 +230,7 @@ def test_fomaml_step_shared_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -332,9 +332,9 @@ def test_fomaml_step_shared_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # fomaml step overlapping vars
@@ -393,7 +393,7 @@ def test_fomaml_step_overlapping_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -404,7 +404,7 @@ def test_fomaml_step_overlapping_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -486,9 +486,9 @@ def test_fomaml_step_overlapping_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # reptile step
@@ -528,7 +528,7 @@ def test_reptile_step(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -593,9 +593,9 @@ def test_reptile_step(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # Second Order #
@@ -657,7 +657,7 @@ def test_maml_step_unique_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -668,7 +668,7 @@ def test_maml_step_unique_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -743,9 +743,9 @@ def test_maml_step_unique_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # maml step shared vars
@@ -798,7 +798,7 @@ def test_maml_step_shared_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -809,7 +809,7 @@ def test_maml_step_shared_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -957,9 +957,9 @@ def test_maml_step_shared_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # maml step overlapping vars
@@ -1017,7 +1017,7 @@ def test_maml_step_overlapping_vars(
     # inner cost function
     def inner_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -1028,7 +1028,7 @@ def test_maml_step_overlapping_vars(
     # outer cost function
     def outer_cost_fn(batch_in, v):
         cost = 0
-        batch_size = batch_in.shared_shape[0]
+        batch_size = batch_in.cont_shape[0]
         for sub_batch_in, sub_v in zip(
             batch_in.cont_unstack_conts(0, keepdims=True),
             v.cont_unstack_conts(0, keepdims=True),
@@ -1110,9 +1110,9 @@ def test_maml_step_overlapping_vars(
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == "all":
-            assert list(inner_v_rets.shared_shape) == [num_tasks, 1]
+            assert list(inner_v_rets.cont_shape) == [num_tasks, 1]
         elif return_inner_v == "first":
-            assert list(inner_v_rets.shared_shape) == [1, 1]
+            assert list(inner_v_rets.cont_shape) == [1, 1]
 
 
 # Still to Add #
