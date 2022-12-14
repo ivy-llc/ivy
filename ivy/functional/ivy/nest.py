@@ -95,7 +95,6 @@ def prune_nest_at_index(nest: Iterable, index: Tuple, /):
         prune_nest_at_index(nest[index[0]], index[1:])
 
 
-@handle_exceptions
 def set_nest_at_index(
     nest: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple],
     index: Sequence[Union[str, int]],
@@ -176,17 +175,18 @@ def set_nest_at_index(
             _result = nest_type(nest)
         else:
             _result = copy_nest(nest)
-        _result = list(_result) if isinstance(nest, tuple) else _result
+    _result = list(_result) if isinstance(nest, tuple) else _result
     if len(index) == 1:
         if shallow:
             try:
                 nest[index[0]] = value
             except TypeError:
                 print("shallow cannot be set to True for immutable types")
-        _result = list(_result) if isinstance(_result, tuple) else _result
         _result[index[0]] = value
     else:
-        set_nest_at_index(nest[index[0]], index[1:], value, shallow, _result[index[0]])
+        _result[index[0]] = set_nest_at_index(
+            nest[index[0]], index[1:], value, shallow, _result[index[0]]
+        )
     _result = nest_type(_result)
     return _result
 
@@ -397,14 +397,12 @@ def set_nest_at_indices(
     >>> print(nest)
     ivy.array([[1., 11., 3.], [4., 5., 22.]])
     """
+    nest_type = type(nest)
     if shallow:
         result = type(nest)(nest)
     else:
         result = copy_nest(nest)
-    outer_tupled = False
-    if isinstance(nest, tuple):
-        outer_tupled = True
-        result = list(result)
+    result = list(result) if isinstance(result, tuple) else result
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
     for i, (index, value) in enumerate(zip(indices, values)):
@@ -421,8 +419,8 @@ def set_nest_at_indices(
             result = set_nest_at_index(
                 result, index, value, _result=result, shallow=shallow
             )
-    if outer_tupled:
-        result = tuple(result)
+
+    result = nest_type(result)
     return result
 
 
