@@ -279,9 +279,8 @@ def softmax(
     ret
         The input array with softmax applied element-wise.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1.0, 0, 1.0])
@@ -295,24 +294,6 @@ def softmax(
     >>> print(y)
     ivy.array([[0.0768, 0.231 , 0.693 ],
                [0.0768, 0.231 , 0.693 ]])
-
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1.5, 0.3, 1.2])
-    >>> y = ivy.softmax(x)
-    >>> print(y)
-    ivy.array([0.49 , 0.147, 0.363])
-
-    Instance Method Example
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([1.0, 0, 1.0])
-    >>> y = x.softmax()
-    >>> print(y)
-    ivy.array([0.422, 0.155, 0.422])
     """
     return current_backend(x).softmax(x, axis=axis, out=out)
 
@@ -368,24 +349,6 @@ def softplus(
     >>> y = ivy.softplus(x, threshold=2)
     >>> print(y)
     ivy.array([1.31, 2.13, 3.  ])
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([-0.3461, -0.6491])
-    >>> y = ivy.softplus(x)
-    >>> print(y)
-    ivy.array([0.535,0.42])
-
-
-    Instance Method Example
-    ------------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-0.3461, -0.6491])
-    >>> y = x.softplus()
-    >>> print(y)
-    ivy.array([0.535,0.42])
 
     """
     return current_backend(x).softplus(x, beta=beta, threshold=threshold, out=out)
