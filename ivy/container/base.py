@@ -840,7 +840,7 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     @staticmethod
-    def assert_identical(
+    def cont_assert_identical(
         containers,
         check_types=True,
         check_shapes=True,
