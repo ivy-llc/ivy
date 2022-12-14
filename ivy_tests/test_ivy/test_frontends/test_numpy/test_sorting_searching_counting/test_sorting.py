@@ -113,7 +113,7 @@ def test_numpy_msort(
 @handle_frontend_test(
     fn_tree="numpy.sort_complex",
     dtype_x_axis=helpers.dtype_values_axis(
-        available_dtypes=helpers.get_dtypes("float"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_num_dims=1,
         min_dim_size=1,
         min_axis=-1,
@@ -142,5 +142,4 @@ def test_numpy_sort_complex(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        a=x[0],
     )
