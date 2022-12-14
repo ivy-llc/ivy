@@ -1621,7 +1621,7 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def all_false(
+    def cont_all_false(
         self,
         assert_is_bool=False,
         key_chains=None,
