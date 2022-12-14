@@ -406,5 +406,15 @@ from . import name_space_functions
 from .name_space_functions import *
 from . import dtype
 from .dtype import can_cast, promote_types
+from . import comparison
+from .comparison import *
+from . import general
+from .general import *
+from . import manipulations
+from .manipulations import *
+from . import mathematical_functions
+from .mathematical_functions import *
+from . import statistaical
+from .statistaical import *
 
 from .._src.numpy.lax_numpy import _rewriting_take
