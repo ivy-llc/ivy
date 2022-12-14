@@ -52,7 +52,7 @@ def _grad_func(y, xs, retain_grads):
             list(
                 torch.autograd.grad(
                     [y],
-                    [v for k, v in xs.to_iterator()],
+                    [v for k, v in xs.cont_to_iterator()],
                     retain_graph=True,
                     create_graph=retain_grads,
                     allow_unused=True,

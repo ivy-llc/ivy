@@ -1398,7 +1398,7 @@ class ContainerBase(dict, abc.ABC):
                 lambda x, kc: list(x.shape)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)
-            ).to_iterator()
+            ).cont_to_iterator()
             if v
         ]
         if not sub_shapes:
@@ -1428,7 +1428,7 @@ class ContainerBase(dict, abc.ABC):
                 lambda x, kc: self._ivy.dev(x, as_native=as_native)
                 if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else None
-            ).to_iterator()
+            ).cont_to_iterator()
             if v
         ]
         if len(set(sub_devs)) <= 1:
@@ -1616,7 +1616,7 @@ class ContainerBase(dict, abc.ABC):
                         to_apply,
                         prune_unapplied,
                         map_sequences,
-                    ).to_iterator()
+                    ).cont_to_iterator()
                 ]
             )
         )
@@ -1663,7 +1663,7 @@ class ContainerBase(dict, abc.ABC):
                         to_apply,
                         prune_unapplied,
                         map_sequences,
-                    ).to_iterator()
+                    ).cont_to_iterator()
                 ]
             )
         )
@@ -1849,7 +1849,7 @@ class ContainerBase(dict, abc.ABC):
         return sum(
             self.cont_map(
                 lambda x, kc: ivy.is_array(x, exclusive=exclusive)
-            ).to_iterator_values()
+            ).cont_to_iterator_values()
         )
 
     def cont_size_ordered_arrays(self, exclusive=False):
@@ -1865,7 +1865,7 @@ class ContainerBase(dict, abc.ABC):
         """
         array_dict = {
             ivy.Container.cont_flatten_key_chain(kc): v
-            for kc, v in self.to_iterator()
+            for kc, v in self.cont_to_iterator()
             if ivy.is_array(v, exclusive=exclusive)
         }
         return ivy.Container(
@@ -2025,7 +2025,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return return_dict
 
-    def to_iterator(self, key_chain="", leaf_keys_only=False, include_empty=False):
+    def cont_to_iterator(self, key_chain="", leaf_keys_only=False, include_empty=False):
         """
 
         Parameters
@@ -2048,11 +2048,11 @@ class ContainerBase(dict, abc.ABC):
             else:
                 kc = key_chain + "/" + key if key_chain != "" else key
             if isinstance(value, ivy.Container) and (not include_empty or value):
-                yield from value.to_iterator(kc, leaf_keys_only, include_empty)
+                yield from value.cont_to_iterator(kc, leaf_keys_only, include_empty)
             else:
                 yield kc, value
 
-    def to_iterator_values(self, include_empty=False):
+    def cont_to_iterator_values(self, include_empty=False):
         """
 
         Parameters
@@ -2068,11 +2068,13 @@ class ContainerBase(dict, abc.ABC):
         for key, value in self.items():
             if isinstance(value, ivy.Container) and (not include_empty or value):
                 # noinspection PyCompatibility
-                yield from value.to_iterator_values(include_empty)
+                yield from value.cont_to_iterator_values(include_empty)
             else:
                 yield value
 
-    def to_iterator_keys(self, key_chain="", leaf_keys_only=False, include_empty=False):
+    def cont_to_iterator_keys(
+        self, key_chain="", leaf_keys_only=False, include_empty=False
+    ):
         """
 
         Parameters
@@ -2096,7 +2098,9 @@ class ContainerBase(dict, abc.ABC):
                 kc = key_chain + "/" + key if key_chain != "" else key
             if isinstance(value, ivy.Container) and (not include_empty or value):
                 # noinspection PyCompatibility
-                yield from value.to_iterator_keys(kc, leaf_keys_only, include_empty)
+                yield from value.cont_to_iterator_keys(
+                    kc, leaf_keys_only, include_empty
+                )
             else:
                 yield kc
 
@@ -2109,7 +2113,7 @@ class ContainerBase(dict, abc.ABC):
             Container as flat list.
 
         """
-        return list([item for key, item in self.to_iterator()])
+        return list([item for key, item in self.cont_to_iterator()])
 
     def from_flat_list(self, flat_list):
         """Return new container object with the same hierarchy, but with values replaced
@@ -2497,7 +2501,7 @@ class ContainerBase(dict, abc.ABC):
             Default value = False)
 
         """
-        return [kc for kc, v in self.to_iterator(include_empty=include_empty)]
+        return [kc for kc, v in self.cont_to_iterator(include_empty=include_empty)]
 
     def key_chains_containing(self, sub_str, include_empty=False):
         """
@@ -2512,7 +2516,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return [
             kc
-            for kc, v in self.to_iterator(include_empty=include_empty)
+            for kc, v in self.cont_to_iterator(include_empty=include_empty)
             if sub_str in kc
         ]
 
@@ -2799,7 +2803,7 @@ class ContainerBase(dict, abc.ABC):
             Container with the same key-chain structure, but the key strings formatted.
 
         """
-        return ivy.Container({format_fn(k): v for k, v in self.to_iterator()})
+        return ivy.Container({format_fn(k): v for k, v in self.cont_to_iterator()})
 
     def sort_by_key(self):
 
@@ -3004,7 +3008,7 @@ class ContainerBase(dict, abc.ABC):
                 ivy.Container.cont_flatten_key_chain(
                     kc, above_height=above_height, below_depth=below_depth
                 ): v
-                for kc, v in self.to_iterator(include_empty=include_empty)
+                for kc, v in self.cont_to_iterator(include_empty=include_empty)
             },
             **self._config,
         )
@@ -4049,7 +4053,7 @@ class ContainerBase(dict, abc.ABC):
     @property
     def max_depth(self):
 
-        kcs = [kc for kc in self.to_iterator_keys(include_empty=True)]
+        kcs = [kc for kc in self.cont_to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
         return max([len(kc.split("/")) for kc in kcs])
