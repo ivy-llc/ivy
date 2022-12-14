@@ -2830,7 +2830,7 @@ class ContainerBase(dict, abc.ABC):
             new_dict[k] = v_back
         return ivy.Container(new_dict, **self._config)
 
-    def prune_empty(self, keep_nones=False, base=True):
+    def cont_prune_empty(self, keep_nones=False, base=True):
         """Recursively prunes empty keys from the container dict structure. Returns None
         if the entire container is empty.
 
@@ -2850,7 +2850,7 @@ class ContainerBase(dict, abc.ABC):
         out_dict = dict()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                new_value = value.prune_empty(keep_nones, False)
+                new_value = value.cont_prune_empty(keep_nones, False)
                 if new_value:
                     out_dict[key] = new_value
             elif self._ivy.exists(value) or keep_nones:
@@ -2861,7 +2861,7 @@ class ContainerBase(dict, abc.ABC):
             return ivy.Container(**self._config)
         return
 
-    def prune_key_from_key_chains(self, absolute=None, containing=None):
+    def cont_prune_key_from_key_chains(self, absolute=None, containing=None):
         """Recursively prune absolute key or key containing a certain substring from all
         key chains.
 
@@ -2895,7 +2895,9 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     out_cont = value
             elif isinstance(value, ivy.Container):
-                out_cont[key] = value.prune_key_from_key_chains(absolute, containing)
+                out_cont[key] = value.cont_prune_key_from_key_chains(
+                    absolute, containing
+                )
             else:
                 out_cont[key] = value
         return out_cont
@@ -2936,7 +2938,9 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     out_cont = value
             elif isinstance(value, ivy.Container):
-                out_cont[key] = value.prune_key_from_key_chains(absolute, containing)
+                out_cont[key] = value.cont_prune_key_from_key_chains(
+                    absolute, containing
+                )
             else:
                 out_cont[key] = value
         return out_cont
