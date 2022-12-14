@@ -422,15 +422,7 @@ def set_nest_at_indices(
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
     for index, value in zip(indices, values):
-        if shallow:
-            result = set_nest_at_index(
-                nest, index, value, _result=result, shallow=shallow
-            )
-        else:
-            result = set_nest_at_index(
-                result, index, value, _result=result, shallow=shallow
-            )
-
+        result = set_nest_at_index(nest, index, value, _result=result, shallow=shallow)
     result = nest_type(result)
     return result
 
