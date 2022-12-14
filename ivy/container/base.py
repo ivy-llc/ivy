@@ -946,7 +946,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def assert_identical_structure(
+    def cont_assert_identical_structure(
         containers,
         check_types=True,
         check_shapes=True,
