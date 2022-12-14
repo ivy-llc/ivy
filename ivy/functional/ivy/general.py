@@ -2075,15 +2075,12 @@ def set_queue_timeout(timeout: float):
         The timeout when waiting for containers to arrive from the queues.
         To be set in seconds.
 
-
     Examples
     --------
     >>> x = ivy.set_queue_timeout(10)
     >>> x = ivy.get_queue_timeout()
     >>> print(x)
     10.0
-
-    To set the timeout for example 30 seconds
 
     >>> ivy.set_queue_timeout(30)
     >>> y = ivy.get_queue_timeout()
@@ -2163,13 +2160,12 @@ def set_tmp_dir(tmp_dr: str) -> None:
     ----------
     tmp_dr
         The new directory for saving temporary files
+
     Examples
     --------
     >>> x = ivy.get_tmp_dir()
     >>> print(x)
     /tmp
-
-    To set the temp base to 1e-04
 
     >>> ivy.set_tmp_dir("/my_tmp")
     >>> y = ivy.get_tmp_dir()
@@ -2603,7 +2599,7 @@ def scatter_nd(
     >>> print(scatter)
     ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])
 
-    scatter into an empty array, With :class:`ivy.Container` input:
+    With scatter into an empty array, With :class:`ivy.Container` input:
 
     >>> indices = ivy.Container(a=ivy.array([[4],[3],[6]]),
     ...                         b=ivy.array([[5],[1],[2]]))
@@ -2618,7 +2614,7 @@ def scatter_nd(
         b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])
     }
 
-    scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:
+    With scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:
 
     >>> indices = ivy.array([[4],[3],[1]])
     >>> updates = ivy.Container(a=ivy.array([10, 20, 30]),
