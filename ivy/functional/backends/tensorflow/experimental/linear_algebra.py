@@ -1,5 +1,7 @@
 from typing import Union, Optional, Tuple
 import tensorflow as tf
+from ivy.func_wrapper import with_unsupported_dtypes
+from .. import backend_version
 
 import ivy
 
@@ -48,7 +50,7 @@ def kron(
 ) -> Union[tf.Tensor, tf.Variable]:
     return tf.experimental.numpy.kron(a, b)
 
-
+@with_unsupported_dtypes({"2.9.1 and below and below": ("int8", "uint16", "uint32", "int64")}, backend_version)
 def matrix_exp(
     x: Union[tf.Tensor, tf.Variable],
     /,
