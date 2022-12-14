@@ -1101,7 +1101,7 @@ class Module(abc.ABC):
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
-                    created_n_found.assert_contains_sub_structure(
+                    created_n_found.cont_assert_contains_sub_structure(
                         v_from_constructor, partial=True
                     )
                 self.v = created_n_found.set_at_key_chains(v_from_constructor)

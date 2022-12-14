@@ -795,17 +795,17 @@ def test_container_find_sub_structure(device):
         {"c": ivy.array([4], device=device), "d": ivy.array([5], device=device)}
     )
     assert not top_cont.find_sub_container(sub_cont)
-    found_kc = top_cont.find_sub_structure(sub_cont)
+    found_kc = top_cont.cont_find_sub_structure(sub_cont)
     assert found_kc == "b"
-    found_kc = top_cont.find_sub_structure(top_cont)
+    found_kc = top_cont.cont_find_sub_structure(top_cont)
     assert found_kc == ""
 
     # partial
     partial_sub_cont = Container({"d": ivy.array([5], device=device)})
-    found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
+    found_kc = top_cont.cont_find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == "b"
     partial_sub_cont = Container({"b": {"d": ivy.array([5], device=device)}})
-    found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
+    found_kc = top_cont.cont_find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == ""
 
 
@@ -1720,14 +1720,14 @@ def test_container_contains(device):
     )
     assert not container.cont_contains_sub_container(sub_struc)
     assert sub_struc not in container
-    assert container.contains_sub_structure(sub_struc)
-    assert container.contains_sub_structure(container)
+    assert container.cont_contains_sub_structure(sub_struc)
+    assert container.cont_contains_sub_structure(container)
 
     # partial sub-structure
     partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=device)}})
-    assert container.contains_sub_structure(container, partial=True)
-    assert container.contains_sub_structure(partial_sub_struc, partial=True)
-    assert not partial_sub_struc.contains_sub_structure(container, partial=True)
+    assert container.cont_contains_sub_structure(container, partial=True)
+    assert container.cont_contains_sub_structure(partial_sub_struc, partial=True)
+    assert not partial_sub_struc.cont_contains_sub_structure(container, partial=True)
 
 
 @pytest.mark.parametrize("include_empty", [True, False])
@@ -3064,15 +3064,15 @@ def test_container_assert_contains(device):
         error_caught = True
     assert error_caught
     assert sub_struc not in container
-    container.assert_contains_sub_structure(sub_struc)
-    container.assert_contains_sub_structure(container)
+    container.cont_assert_contains_sub_structure(sub_struc)
+    container.cont_assert_contains_sub_structure(container)
 
     # partial sub-structure
     partial_sub_struc = Container({"b": {"d": ivy.array([4.0], device=device)}})
-    container.assert_contains_sub_structure(container, partial=True)
-    container.assert_contains_sub_structure(partial_sub_struc, partial=True)
+    container.cont_assert_contains_sub_structure(container, partial=True)
+    container.cont_assert_contains_sub_structure(partial_sub_struc, partial=True)
     try:
-        partial_sub_struc.assert_contains_sub_structure(container, partial=True)
+        partial_sub_struc.cont_assert_contains_sub_structure(container, partial=True)
         error_caught = False
     except IvyException:
         error_caught = True
