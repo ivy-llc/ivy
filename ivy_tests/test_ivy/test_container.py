@@ -898,7 +898,7 @@ def test_container_as_bools(device):
     dict_in = {"a": ivy.array([1], device=device), "b": {"c": [], "d": True}}
     container = Container(dict_in)
 
-    container_bools = container.as_bools()
+    container_bools = container.cont_as_bools()
     assert container_bools["a"] is True
     assert container_bools.a is True
     assert container_bools["b"]["c"] is False
