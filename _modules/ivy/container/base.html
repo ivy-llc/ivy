@@ -359,7 +359,7 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_ivy_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-                        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">cont_unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_handle_inplace"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_handle_inplace">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1740,7 +1740,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">v</span>
-                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_bools</span><span class="p">(</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_as_bools</span><span class="p">(</span>
                         <span class="n">assert_is_bool</span><span class="p">,</span>
                         <span class="n">key_chains</span><span class="p">,</span>
                         <span class="n">to_apply</span><span class="p">,</span>
@@ -1787,7 +1787,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
                 <span class="p">[</span>
                     <span class="n">v</span>
-                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_bools</span><span class="p">(</span>
+                    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_as_bools</span><span class="p">(</span>
                         <span class="n">assert_is_bool</span><span class="p">,</span>
                         <span class="n">key_chains</span><span class="p">,</span>
                         <span class="n">to_apply</span><span class="p">,</span>
@@ -1821,7 +1821,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.as_bools"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.as_bools">[docs]</a>    <span class="k">def</span> <span class="nf">as_bools</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_as_bools"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_as_bools">[docs]</a>    <span class="k">def</span> <span class="nf">cont_as_bools</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assert_is_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1868,7 +1868,7 @@
             <span class="n">map_sequences</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.unstack_conts"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.unstack_conts">[docs]</a>    <span class="k">def</span> <span class="nf">unstack_conts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_unstack_conts"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_unstack_conts">[docs]</a>    <span class="k">def</span> <span class="nf">cont_unstack_conts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Unstack containers along specified dimension.</span>
 
 <span class="sd">        Parameters</span>
@@ -1963,9 +1963,9 @@
             <span class="n">to_apply</span><span class="p">,</span>
             <span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="n">dim_size</span><span class="p">)</span></div>
+        <span class="p">)</span><span class="o">.</span><span class="n">cont_unstack_conts</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="n">dim_size</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.num_arrays"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.num_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">num_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_num_arrays"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_num_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">cont_num_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Compute the number of arrays present at the leaf nodes, including variables</span>
 <span class="sd">        by default.</span>
 

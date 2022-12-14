@@ -251,30 +251,6 @@ order. Default is <code class="docutils literal notranslate"><span class="pre">T
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.as_bools">
-<span class="sig-name descname"><span class="pre">as_bools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">assert_is_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.as_bools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.as_bools" title="Permalink to this definition"></a></dt>
-<dd><p>Return boolean evaluation for all nested items in the container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>assert_is_bool</strong> – Whether or not to assert the entry is of type Boolean.
-(Default value = False)</p></li>
-<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
-<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
-will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container object with all entries boolean evaluated.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.assert_contains_sub_container">
 <span class="sig-name descname"><span class="pre">assert_contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.assert_contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.assert_contains_sub_container" title="Permalink to this definition"></a></dt>
 <dd><p>Asserts that the current container contains the sub-container, otherwise
@@ -413,6 +389,30 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Boolean, whether all entries are boolean True.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_as_bools">
+<span class="sig-name descname"><span class="pre">cont_as_bools</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">assert_is_bool</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_as_bools"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_as_bools" title="Permalink to this definition"></a></dt>
+<dd><p>Return boolean evaluation for all nested items in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>assert_is_bool</strong> – Whether or not to assert the entry is of type Boolean.
+(Default value = False)</p></li>
+<li><p><strong>key_chains</strong> – The key-chains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p></li>
+<li><p><strong>to_apply</strong> – If True, the method will be applied to key_chains, otherwise key_chains
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>prune_unapplied</strong> – Whether to prune key_chains for which the function was not applied.
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map method to sequences (lists, tuples).
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Container object with all entries boolean evaluated.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -951,6 +951,19 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_num_arrays">
+<span class="sig-name descname"><span class="pre">cont_num_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_num_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_num_arrays" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the number of arrays present at the leaf nodes, including variables
+by default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exclusive</strong> – Whether to check if the data type is exclusively an array,
+rather than a variable or traced array. (Default value = False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_reduce">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_reduce" title="Permalink to this definition"></a></dt>
 <dd><p>Reduce containers.</p>
@@ -1088,6 +1101,24 @@ Default is <code class="docutils literal notranslate"><span class="pre">0</span>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Unified container</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_unstack_conts">
+<span class="sig-name descname"><span class="pre">cont_unstack_conts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_unstack_conts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_unstack_conts" title="Permalink to this definition"></a></dt>
+<dd><p>Unstack containers along specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> – Dimensions along which to unstack.</p></li>
+<li><p><strong>keepdims</strong> – Whether to keep dimension 1 in the unstack dimensions. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>dim_size</strong> – Size of the dimension to unstack. Determined from inputs by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>List of containers, unstacked along the specified dimension.</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1346,19 +1377,6 @@ structure.</p>
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.max_depth">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_depth</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.max_depth" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.num_arrays">
-<span class="sig-name descname"><span class="pre">num_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.num_arrays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.num_arrays" title="Permalink to this definition"></a></dt>
-<dd><p>Compute the number of arrays present at the leaf nodes, including variables
-by default.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>exclusive</strong> – Whether to check if the data type is exclusively an array,
-rather than a variable or traced array. (Default value = False)</p>
-</dd>
-</dl>
-</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.overwrite_at_key_chain">
@@ -1840,24 +1858,6 @@ appending to file. (Default value = None)</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p><em>ret</em> – Container data in its raw form.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.unstack_conts">
-<span class="sig-name descname"><span class="pre">unstack_conts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.unstack_conts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.unstack_conts" title="Permalink to this definition"></a></dt>
-<dd><p>Unstack containers along specified dimension.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> – Dimensions along which to unstack.</p></li>
-<li><p><strong>keepdims</strong> – Whether to keep dimension 1 in the unstack dimensions. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>dim_size</strong> – Size of the dimension to unstack. Determined from inputs by default.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>List of containers, unstacked along the specified dimension.</em></p>
 </dd>
 </dl>
 </dd></dl>
