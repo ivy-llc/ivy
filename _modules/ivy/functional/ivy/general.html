@@ -1957,14 +1957,11 @@
 <span class="sd">    val</span>
 <span class="sd">        The value to set the global minimum denominator to.</span>
 
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.get_min_denominator()</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    1e-12</span>
-
-<span class="sd">    To set the minimum denominator to 1e-13</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_min_denominator(1e-13)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.get_min_denominator()</span>
@@ -2005,14 +2002,11 @@
 <span class="sd">    val</span>
 <span class="sd">        The new value to set the minimum base to.</span>
 
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.get_min_base()</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    1e-05</span>
-
-<span class="sd">    To set the minimum base to 1e-04</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_min_base(1e-04)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.get_min_base()</span>
@@ -2744,7 +2738,7 @@
 <span class="sd">        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    With scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:</span>
+<span class="sd">    With :class:`ivy.Container` and :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; indices = ivy.array([[4],[3],[1]])</span>
 <span class="sd">    &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</span>
