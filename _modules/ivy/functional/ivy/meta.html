@@ -614,7 +614,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shared_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">cont_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">rets</span> <span class="o">=</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span>
         <span class="n">inner_batch_fn</span><span class="p">,</span>
@@ -701,7 +701,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shared_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">cont_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="c1"># noinspection PyTypeChecker</span>
     <span class="n">rets</span> <span class="o">=</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span>
@@ -825,7 +825,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shared_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">cont_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">unique_outer</span> <span class="o">=</span> <span class="n">outer_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="n">func_ret</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">_train_tasks</span><span class="p">(</span>

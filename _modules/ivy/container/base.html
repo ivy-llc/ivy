@@ -1528,7 +1528,7 @@
             <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
             <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span>
@@ -1557,8 +1557,8 @@
         <span class="n">sub_devs</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">v</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
-                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="n">as_native</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
                 <span class="k">else</span> <span class="kc">None</span>
             <span class="p">)</span><span class="o">.</span><span class="n">cont_to_iterator</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">v</span>
@@ -1888,7 +1888,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">dim_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">dim_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shared_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+            <span class="n">dim_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_shape</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">keepdims</span><span class="p">:</span>
             <span class="c1"># noinspection PyTypeChecker</span>
             <span class="k">return</span> <span class="p">[</span>
@@ -1953,13 +1953,13 @@
         <span class="p">)</span>
         <span class="c1"># noinspection PyTypeChecker</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
-            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                 <span class="n">x</span><span class="p">,</span>
                 <span class="n">num_or_size_splits</span><span class="o">=</span><span class="n">num_or_size_splits</span><span class="p">,</span>
                 <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span>
                 <span class="n">with_remainder</span><span class="o">=</span><span class="n">with_remainder</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
             <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="p">,</span>
             <span class="n">to_apply</span><span class="p">,</span>
@@ -2048,7 +2048,7 @@
                     <span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">value_as_np</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">value_as_np</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="n">value_shape</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="o">.</span><span class="n">shape</span>
                 <span class="n">this_batch_size</span> <span class="o">=</span> <span class="n">value_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">max_batch_size</span><span class="p">:</span>
@@ -2983,7 +2983,7 @@
                 <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_prune_empty</span><span class="p">(</span><span class="n">keep_nones</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">new_value</span><span class="p">:</span>
                     <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keep_nones</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keep_nones</span><span class="p">:</span>
                 <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
@@ -3330,7 +3330,7 @@
 <div class="viewcode-block" id="ContainerBase.cont_with_entries_as_lists"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_with_entries_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">cont_with_entries_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="n">IvyBackendException</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">x</span>
 
@@ -3355,7 +3355,7 @@
 <span class="sd">            new container with values of updated shapes</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">leading_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">leading_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
+        <span class="n">leading_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">leading_shape</span><span class="p">,</span> <span class="nb">list</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">return_cont</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">return_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">v_shape</span><span class="p">),</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">target_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">return_cont</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
@@ -3364,7 +3364,9 @@
                     <span class="n">v_shape</span><span class="p">,</span> <span class="n">leading_shape</span><span class="p">,</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">leading_shape</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">v_shape</span><span class="p">))</span>
+                <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span>
+                    <span class="n">v</span><span class="p">,</span> <span class="n">leading_shape</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">v_shape</span><span class="p">)</span>
+                <span class="p">)</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_cont</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ContainerBase.cont_create_if_absent"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_create_if_absent">[docs]</a>    <span class="k">def</span> <span class="nf">cont_create_if_absent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -3649,7 +3651,7 @@
 <span class="sd">            whether to modify the container or return a copy</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="s2">&quot;ivyh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy_backend</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
@@ -3823,7 +3825,7 @@
                 <span class="n">rep</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="n">as_repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="p">(</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">))</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">))</span>
                     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span>
                     <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_print_limit</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_print_limit</span>
@@ -3832,7 +3834,10 @@
                 <span class="k">elif</span> <span class="p">(</span>
                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
                     <span class="ow">and</span> <span class="n">v</span>
-                    <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">))</span>
+                    <span class="ow">and</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span><span class="o">.</span><span class="n">is_native_array</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
+                    <span class="p">)</span>
                 <span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span>
                         <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
@@ -4152,18 +4157,18 @@
     <span class="c1"># private</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">_ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_cont_ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">,</span> <span class="n">ivy</span><span class="p">)</span>
 
-    <span class="nd">@_ivy</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">_ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_ivy</span><span class="p">):</span>
+    <span class="nd">@_cont_ivy</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_cont_ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">local_ivy</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">local_ivy</span>
 
     <span class="c1"># public</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">shared_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">cont_shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The shape of the arrays in the container, with None placed in indices which</span>
 <span class="sd">        are not consistent across arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -4193,7 +4198,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cont_ivy</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
