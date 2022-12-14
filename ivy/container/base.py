@@ -2138,7 +2138,7 @@ class ContainerBase(dict, abc.ABC):
             new_dict[key] = new_value
         return ivy.Container(new_dict, **self._config)
 
-    def has_key(self, query_key):
+    def cont_has_key(self, query_key):
         """Determine whether container object has specified key somewhere in the nested
         structure.
 
@@ -2173,7 +2173,7 @@ class ContainerBase(dict, abc.ABC):
         self.cont_map(map_fn)
         return has_key
 
-    def has_key_chain(self, key_chain):
+    def cont_has_key_chain(self, key_chain):
         """Determine whether container object has specified key-chain.
 
         Parameters
@@ -3957,7 +3957,7 @@ class ContainerBase(dict, abc.ABC):
 
     def __contains__(self, key):
         if isinstance(key, str) and ("/" in key or "." in key):
-            return self.has_key_chain(key)
+            return self.cont_has_key_chain(key)
         elif isinstance(key, ivy.Container):
             return self.contains_sub_container(key)
         else:
