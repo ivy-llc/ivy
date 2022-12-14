@@ -5,9 +5,9 @@ tile
 
 .. autofunction:: ivy.array.array_methods.tile
 
-.. autofunction:: ivy.container.container_methods.static_tile
-
 .. autofunction:: ivy.container.container_methods.tile
+
+.. autofunction:: ivy.container.container_methods.static_tile
 |
 | **Supported Frameworks:**
 

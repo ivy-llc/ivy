@@ -5,9 +5,9 @@ allclose
 
 .. autofunction:: ivy.array.array_methods.allclose
 
-.. autofunction:: ivy.container.container_methods.allclose
-
 .. autofunction:: ivy.container.container_methods.static_allclose
+
+.. autofunction:: ivy.container.container_methods.allclose
 |
 | **Supported Frameworks:**
 

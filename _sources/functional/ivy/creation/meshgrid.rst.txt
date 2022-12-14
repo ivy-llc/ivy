@@ -5,9 +5,9 @@ meshgrid
 
 .. autofunction:: ivy.array.array_methods.meshgrid
 
-.. autofunction:: ivy.container.container_methods.meshgrid
-
 .. autofunction:: ivy.container.container_methods.static_meshgrid
+
+.. autofunction:: ivy.container.container_methods.meshgrid
 |
 | **Supported Frameworks:**
 

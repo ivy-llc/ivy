@@ -5,9 +5,9 @@ minimum
 
 .. autofunction:: ivy.array.array_methods.minimum
 
-.. autofunction:: ivy.container.container_methods.minimum
-
 .. autofunction:: ivy.container.container_methods.static_minimum
+
+.. autofunction:: ivy.container.container_methods.minimum
 |
 | **Supported Frameworks:**
 

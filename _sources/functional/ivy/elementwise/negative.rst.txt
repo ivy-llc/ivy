@@ -5,9 +5,9 @@ negative
 
 .. autofunction:: ivy.array.array_methods.negative
 
-.. autofunction:: ivy.container.container_methods.static_negative
-
 .. autofunction:: ivy.container.container_methods.negative
+
+.. autofunction:: ivy.container.container_methods.static_negative
 |
 | **Supported Frameworks:**
 
