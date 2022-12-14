@@ -553,7 +553,7 @@ def test_container_depth(device):
     cont_depth1 = Container(
         {"a": ivy.array([1], device=device), "b": ivy.array([2], device=device)}
     )
-    assert cont_depth1.max_depth == 1
+    assert cont_depth1.cont_max_depth == 1
     cont_depth2 = Container(
         {
             "a": ivy.array([1], device=device),
@@ -563,7 +563,7 @@ def test_container_depth(device):
             },
         }
     )
-    assert cont_depth2.max_depth == 2
+    assert cont_depth2.cont_max_depth == 2
     cont_depth3 = Container(
         {
             "a": ivy.array([1], device=device),
@@ -573,14 +573,14 @@ def test_container_depth(device):
             },
         }
     )
-    assert cont_depth3.max_depth == 3
+    assert cont_depth3.cont_max_depth == 3
     cont_depth4 = Container(
         {
             "a": ivy.array([1], device=device),
             "b": {"c": {"d": {"e": ivy.array([2], device=device)}}},
         }
     )
-    assert cont_depth4.max_depth == 4
+    assert cont_depth4.cont_max_depth == 4
 
 
 @pytest.mark.parametrize("inplace", [True, False])
@@ -2617,7 +2617,7 @@ def test_container_dev_str(device):
         },
     }
     container = Container(dict_in)
-    assert container.dev_str == device
+    assert container.cont_dev_str == device
 
 
 def test_container_create_if_absent(device):
@@ -3300,11 +3300,11 @@ def test_container_with_ivy_backend(device):
     )
     id_container0 = id(container0)
     container0 = ivy.Container.cont_with_ivy_backend(container0, "numpy")
-    assert container0.config["ivyh"] == "numpy"
+    assert container0.cont_config["ivyh"] == "numpy"
     assert id_container0 != id(container0)
     id_container0 = id(container0)
     ivy.Container.cont_with_ivy_backend(container0, "torch", inplace=True)
-    assert container0.config["ivyh"] == "torch"
+    assert container0.cont_config["ivyh"] == "torch"
     assert id(container0) == id_container0
 
 
