@@ -1,26 +1,29 @@
 # global
+import ivy.functional.frontends.tensorflow.ragged as ragged_tf
 import ivy
 
-try:
-    import tensorflow as tf
-except ImportError:
-    import types
-
-    tf = types.SimpleNamespace()
-    tf.Tensor = None
-    tf.RaggedTensor = None
+# try:
+#     import tensorflow as tf
+# except ImportError:
+#     import types
+#
+#     tf = types.SimpleNamespace()
+#     tf.Tensor = None
+#     tf.RaggedTensor = None
 
 
 def _is_composite_array(x):
-    if isinstance(x, tf.RaggedTensor):
+    if isinstance(x, ragged_tf.ragged.RaggedTensor):
         return True
     if ivy.is_ivy_sparse_array(x) or ivy.is_native_sparse_array(x):
         return True
     return False
 
 
-def _flatten_composite_array(x):
-    if isinstance(x, tf.RaggedTensor):
+def _flatten_composite_array(x, expand_composites=False):
+    if isinstance(x, ragged_tf.ragged.RaggedTensor):
+        if not expand_composites:
+            return x
         new_struc = [x.flat_values]
         for row_split in x.nested_row_splits:
             new_struc.append(row_split)
