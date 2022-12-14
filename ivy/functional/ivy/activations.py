@@ -59,21 +59,14 @@ def relu(
     >>> print(y)
     ivy.array([1.5, 0.7, 0.])
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., -1., 2.])
-    >>> y = ivy.relu(x)
-    >>> print(y)
-    ivy.array([0., 0., 2.])
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([1.0, -1.2]), b=ivy.array([0.4, -0.2]))
-    >>> x = ivy.relu(x, out = x)
+    >>> x = ivy.relu(x, out=x)
     >>> print(x)
     {
-    a: ivy.array([1., 0.]),
-    b: ivy.array([0.40000001, 0.])
+        a: ivy.array([1., 0.]),
+        b: ivy.array([0.40000001, 0.])
     }
     """
     return current_backend(x).relu(x, out=out)
@@ -119,24 +112,26 @@ def leaky_relu(
 
     >>> x = ivy.array([1.5, 0.7, -2.4])
     >>> y = ivy.zeros(3)
-    >>> ivy.leaky_relu(x, out = y)
+    >>> ivy.leaky_relu(x, out=y)
     >>> print(y)
     ivy.array([ 1.5 ,  0.7 , -0.48])
 
     >>> x = ivy.array([[1.1, 2.2, 3.3],
     ...                [-4.4, -5.5, -6.6]])
-    >>> ivy.leaky_relu(x, out = x)
+    >>> ivy.leaky_relu(x, out=x)
     >>> print(x)
     ivy.array([[ 1.1 ,  2.2 ,  3.3 ],
        [-0.88, -1.1 , -1.32]])
 
+    With :class:`ivy.Container` input:
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([0., -1., 2.])
-    >>> y = ivy.leaky_relu(x)
-    >>> print(y)
-    ivy.array([ 0. , -0.2,  2. ])
+    >>> x = ivy.Container(a=ivy.array([0.0, -1.2]), b=ivy.array([0.4, -0.2]))
+    >>> x = ivy.leaky_relu(x, out=x)
+    >>> print(x)
+    {
+        a: ivy.array([0., -0.24000001]),
+        b: ivy.array([0.40000001, -0.04])
+    }
     """
     return current_backend(x).leaky_relu(x, alpha=alpha, out=out)
 
