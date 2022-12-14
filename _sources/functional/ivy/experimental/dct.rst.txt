@@ -5,9 +5,9 @@ dct
 
 .. autofunction:: ivy.array.array_methods.dct
 
-.. autofunction:: ivy.container.container_methods.dct
-
 .. autofunction:: ivy.container.container_methods.static_dct
+
+.. autofunction:: ivy.container.container_methods.dct
 |
 | **Supported Frameworks:**
 

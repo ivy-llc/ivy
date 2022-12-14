@@ -5,9 +5,9 @@ shuffle
 
 .. autofunction:: ivy.array.array_methods.shuffle
 
-.. autofunction:: ivy.container.container_methods.shuffle
-
 .. autofunction:: ivy.container.container_methods.static_shuffle
+
+.. autofunction:: ivy.container.container_methods.shuffle
 |
 | **Supported Frameworks:**
 
