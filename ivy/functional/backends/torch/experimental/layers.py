@@ -69,6 +69,11 @@ def max_pool2d(
     elif len(strides) == 1:
         strides = (strides[0], strides[0])
 
+    if isinstance(kernel, int):
+        kernel = (kernel, kernel)
+    elif len(kernel) == 1:
+        kernel = (kernel[0], kernel[0])
+
     if data_format == "NHWC":
         x = x.permute(0, 3, 1, 2)
     x_shape = list(x.shape[2:])
