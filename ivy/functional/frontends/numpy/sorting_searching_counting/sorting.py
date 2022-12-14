@@ -27,4 +27,4 @@ def msort(a):
 
 @to_ivy_arrays_and_back
 def sort_complex(a):
-    return ivy.sort(a, axis=0)
+    return ivy.sort(a)
