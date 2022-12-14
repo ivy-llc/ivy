@@ -1933,7 +1933,7 @@ class ContainerBase(dict, abc.ABC):
                     starting_index : starting_index + amount_to_write
                 ] = value_as_np[0:amount_to_write]
 
-    def to_disk_as_pickled(self, pickle_filepath):
+    def cont_to_disk_as_pickled(self, pickle_filepath):
         """Save container object to disk, as an pickled file, at the specified filepath.
 
         Parameters
@@ -1942,9 +1942,9 @@ class ContainerBase(dict, abc.ABC):
             Filepath for where to save the container to disk.
 
         """
-        pickle.dump(self.to_native().to_dict(), open(pickle_filepath, "wb"))
+        pickle.dump(self.to_native().cont_to_dict(), open(pickle_filepath, "wb"))
 
-    def to_jsonable(self, return_dict=None):
+    def cont_to_jsonable(self, return_dict=None):
         """
 
         Parameters
@@ -1958,12 +1958,12 @@ class ContainerBase(dict, abc.ABC):
         for k, v in return_dict.items():
             if not _is_jsonable(v):
                 if isinstance(v, dict):
-                    return_dict[k] = self.to_jsonable(v)
+                    return_dict[k] = self.cont_to_jsonable(v)
                 else:
                     return_dict[k] = str(v)
         return return_dict
 
-    def to_disk_as_json(self, json_filepath):
+    def cont_to_disk_as_json(self, json_filepath):
         """Save container object to disk, as an json file, at the specified filepath.
 
         Parameters
@@ -1973,18 +1973,18 @@ class ContainerBase(dict, abc.ABC):
 
         """
         with open(json_filepath, "w+") as json_data_file:
-            json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
+            json.dump(self.cont_to_jsonable().cont_to_dict(), json_data_file, indent=4)
 
-    def to_nested_list(self):
+    def cont_to_nested_list(self):
         return_list = list()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_list.append(value.to_nested_list())
+                return_list.append(value.cont_to_nested_list())
             elif value is not None and key != "_f":
                 return_list.append(value)
         return return_list
 
-    def to_raw(self):
+    def cont_to_raw(self):
         """Constructor to their original form.
 
         Returns
@@ -1996,11 +1996,11 @@ class ContainerBase(dict, abc.ABC):
         return_item = dict()
         for i, (key, value) in enumerate(self.items()):
             if isinstance(value, ivy.Container):
-                return_item[key] = value.to_raw()
+                return_item[key] = value.cont_to_raw()
             elif key[0:3] == "it_" and tuple(self._types_to_iteratively_nest):
                 return_item = list(
                     [
-                        v.to_raw() if isinstance(v, ivy.Container) else v
+                        v.cont_to_raw() if isinstance(v, ivy.Container) else v
                         for v in self.values()
                     ]
                 )
@@ -2009,7 +2009,7 @@ class ContainerBase(dict, abc.ABC):
                 return_item[key] = value
         return return_item
 
-    def to_dict(self):
+    def cont_to_dict(self):
         """Summary.
 
         Returns
@@ -2020,7 +2020,7 @@ class ContainerBase(dict, abc.ABC):
         return_dict = dict()
         for key, value in self.items():
             if isinstance(value, ivy.Container):
-                return_dict[key] = value.to_dict()
+                return_dict[key] = value.cont_to_dict()
             else:
                 return_dict[key] = value
         return return_dict
@@ -2747,9 +2747,9 @@ class ContainerBase(dict, abc.ABC):
                     if len(new_val) > 0:
                         out_dict[key] = new_val
                 else:
-                    new_val = value.to_dict()
+                    new_val = value.cont_to_dict()
                     if len(new_val) > 0:
-                        out_dict[key] = value.to_dict()
+                        out_dict[key] = value.cont_to_dict()
             else:
                 if len(keys_in_chain) != 1 or key != keys_in_chain[0]:
                     out_dict[key] = value
@@ -3017,7 +3017,7 @@ class ContainerBase(dict, abc.ABC):
             A copy of the container
 
         """
-        return ivy.Container(self.to_dict(), **self._config)
+        return ivy.Container(self.cont_to_dict(), **self._config)
 
     def cont_deep_copy(self):
         """Create a deep copy (copying all internal tensors) of this container.
@@ -3728,7 +3728,7 @@ class ContainerBase(dict, abc.ABC):
                         if _is_jsonable(x)
                         else _repr(x).replace(" ", "").replace(",", ", ")
                     )
-                    .to_dict(),
+                    .cont_to_dict(),
                     indent=self._print_indent,
                 )
             )
