@@ -100,5 +100,6 @@ def matrix_exp(
 ) -> JaxArray:
     return jnp.exp(x)
 
+
 def eig(x: JaxArray, /) -> Tuple[JaxArray, ...]:
     return tuple(jnp.linalg.eig(x))

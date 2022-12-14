@@ -218,4 +218,3 @@ def eig(
     )
     """
     return current_backend(x).eig(x)
-    

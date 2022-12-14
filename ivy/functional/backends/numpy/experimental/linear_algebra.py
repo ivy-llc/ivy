@@ -99,6 +99,7 @@ def matrix_exp(
 ) -> np.ndarray:
     return np.exp(x)
 
+
 def eig(x: np.ndarray, /) -> Tuple[np.ndarray, ...]:
     if ivy.dtype(x) == ivy.float16:
         x = x.astype(np.float32)
