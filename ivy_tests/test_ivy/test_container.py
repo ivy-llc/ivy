@@ -950,7 +950,7 @@ def test_container_unstack_conts(device):
     container = Container(dict_in)
 
     # without key_chains specification
-    container_unstacked = container.unstack_conts(0)
+    container_unstacked = container.cont_unstack_conts(0)
     for cont, a, bc, bd in zip(container_unstacked, [1, 2, 3], [2, 3, 4], [3, 4, 5]):
         assert np.array_equal(ivy.to_numpy(cont["a"]), np.array([a]))
         assert np.array_equal(ivy.to_numpy(cont.a), np.array([a]))
