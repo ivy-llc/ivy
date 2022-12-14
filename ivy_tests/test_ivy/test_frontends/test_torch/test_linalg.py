@@ -374,7 +374,6 @@ def test_torch_svd(
 @handle_frontend_test(
     fn_tree="torch.linalg.svdvals",
     dtype_and_x=_get_dtype_and_square_matrix(),
-    n=helpers.ints(min_value=2, max_value=5),
 )
 def test_torch_svdvals(
     *,
