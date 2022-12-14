@@ -219,9 +219,8 @@ def sigmoid(
     ret
         an array containing the sigmoid activation of each element in ``x``.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([-1., 1., 2.])
@@ -229,23 +228,11 @@ def sigmoid(
     >>> print(y)
     ivy.array([0.269, 0.731, 0.881])
 
-    With :class:`ivy.NativeArray` input:
 
-    >>> x = ivy.native_array([-1.3, 3.8, 2.1])
+    >>> x = ivy.array([-1.3, 3.8, 2.1])
     >>> y = ivy.sigmoid(x)
     >>> print(y)
     ivy.array([0.214, 0.978, 0.891])
-
-    Instance Method Example
-    -----------------------
-
-    Using :class:`ivy.Array` instance method:
-
-    >>> x = ivy.array([-1., 1., 2.])
-    >>> y = x.sigmoid()
-    >>> print(y)
-    ivy.array([0.269, 0.731, 0.881])
-
     """
     return current_backend(x).sigmoid(x, out=out)
 
