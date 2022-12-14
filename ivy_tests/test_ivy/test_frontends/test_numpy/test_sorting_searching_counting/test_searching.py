@@ -332,3 +332,36 @@ def test_numpy_nanargmin(
         axis=axis,
         keepdims=keep_dims,
     )
+
+    
+# extract
+@handle_frontend_test(
+    fn_tree="numpy.extract",
+    dtype_and_x=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+    ),
+    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
+)
+def test_numpy_extract(
+    dtype_and_x,
+    cond,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+    on_device,
+):
+    dtype, x = dtype_and_x
+    cond = cond
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        cond=cond,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+    )
