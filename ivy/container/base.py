@@ -2269,7 +2269,7 @@ class ContainerBase(dict, abc.ABC):
                 self.cont_contains_sub_container(sub_cont, partial)
             )
         except ivy.exceptions.IvyException:
-            key_chain = self.find_sub_structure(
+            key_chain = self.cont_find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
@@ -2281,7 +2281,9 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
 
-    def find_sub_structure(self, sub_struc_to_find, check_shapes=True, partial=False):
+    def cont_find_sub_structure(
+        self, sub_struc_to_find, check_shapes=True, partial=False
+    ):
         """Find the sub-container structure in the current container if it exsits.
 
         Parameters
@@ -2326,7 +2328,7 @@ class ContainerBase(dict, abc.ABC):
 
         return key_chain_found
 
-    def contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
+    def cont_contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
         """Determine whether the current container contains the sub-container structure.
 
         Parameters
@@ -2342,11 +2344,15 @@ class ContainerBase(dict, abc.ABC):
         """
         return (
             True
-            if isinstance(self.find_sub_structure(sub_cont, check_shapes, partial), str)
+            if isinstance(
+                self.cont_find_sub_structure(sub_cont, check_shapes, partial), str
+            )
             else False
         )
 
-    def assert_contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
+    def cont_assert_contains_sub_structure(
+        self, sub_cont, check_shapes=True, partial=False
+    ):
         """Asserts that the current container contains the sub-container structure,
         otherwise exception raised with the diff printed to screen.
 
@@ -2363,10 +2369,10 @@ class ContainerBase(dict, abc.ABC):
         """
         try:
             ivy.assertions.check_true(
-                self.contains_sub_structure(sub_cont, check_shapes, partial)
+                self.cont_contains_sub_structure(sub_cont, check_shapes, partial)
             )
         except ivy.exceptions.IvyException:
-            key_chain = self.find_sub_structure(
+            key_chain = self.cont_find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
             )
             if not key_chain:
