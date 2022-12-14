@@ -4533,4 +4533,3 @@ def test_torch_instance_acosh(
         frontend_method_data=frontend_method_data,
         frontend=frontend,
     )
-    
