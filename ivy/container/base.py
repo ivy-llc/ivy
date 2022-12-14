@@ -1213,7 +1213,7 @@ class ContainerBase(dict, abc.ABC):
             h5_obj.close()
 
     @staticmethod
-    def reduce(containers, reduction, config=None):
+    def cont_reduce(containers, reduction, config=None):
         """Reduce containers.
 
         Parameters
@@ -1237,7 +1237,7 @@ class ContainerBase(dict, abc.ABC):
         if isinstance(container0, ivy.Container):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = ivy.Container.reduce(
+                return_dict[key] = ivy.Container.cont_reduce(
                     [container[key] for container in containers], reduction
                 )
             return ivy.Container(return_dict, **config)
