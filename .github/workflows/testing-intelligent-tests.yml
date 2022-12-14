@@ -24,7 +24,7 @@ jobs:
            cp Mapping/tests.pbz2 ivy/
            cd Mapping
            echo "Test3" > tests.pbz2
-           sleep 10
+           sleep 20
            git add .
            git commit -m "Update Mapping Test"
            git push origin master
