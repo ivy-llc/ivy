@@ -2419,7 +2419,7 @@ def test_container_to_and_from_disk_as_hdf5(device):
     container2 = Container(dict_in_2)
 
     # saving
-    container1.to_disk_as_hdf5(save_filepath, max_batch_size=2)
+    container1.cont_to_disk_as_hdf5(save_filepath, max_batch_size=2)
     assert os.path.exists(save_filepath)
 
     # loading
@@ -2433,7 +2433,7 @@ def test_container_to_and_from_disk_as_hdf5(device):
     )
 
     # appending
-    container1.to_disk_as_hdf5(save_filepath, max_batch_size=2, starting_index=1)
+    container1.cont_to_disk_as_hdf5(save_filepath, max_batch_size=2, starting_index=1)
     assert os.path.exists(save_filepath)
 
     # loading after append
@@ -2483,7 +2483,7 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device):
     container = Container(dict_in)
 
     # saving
-    container.to_disk_as_hdf5(save_filepath, max_batch_size=3)
+    container.cont_to_disk_as_hdf5(save_filepath, max_batch_size=3)
     assert os.path.exists(save_filepath)
 
     # shuffling
