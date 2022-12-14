@@ -15,6 +15,7 @@ from ivy.func_wrapper import (
     inputs_to_native_arrays,
     handle_nestable,
     handle_array_like,
+    inputs_to_ivy_arrays,
 )
 from ivy.exceptions import handle_exceptions
 
@@ -44,9 +45,9 @@ def _is_valid_dtypes_attributes(fn: Callable) -> bool:
 def _handle_nestable_dtype_info(fn):
     def new_fn(type):
         if isinstance(type, ivy.Container):
-            type = type.map(lambda x, kc: fn(x))
-            type.__dict__["max"] = type.map(lambda x, kc: x.max)
-            type.__dict__["min"] = type.map(lambda x, kc: x.min)
+            type = type.cont_map(lambda x, kc: fn(x))
+            type.__dict__["max"] = type.cont_map(lambda x, kc: x.max)
+            type.__dict__["min"] = type.cont_map(lambda x, kc: x.min)
             return type
         return fn(type)
 
@@ -133,7 +134,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
             out = merge_fn(f_supported, out)
 
         # skip if it's not a function
-        if not inspect.isfunction(fn):
+        if not inspect.isfunction(fn) and not inspect.ismethod(fn):
             continue
 
         fl = _get_function_list(fn)
@@ -306,13 +307,13 @@ def broadcast_arrays(*arrays: Union[ivy.Array, ivy.NativeArray]) -> List[ivy.Arr
     ----------
     arrays
         an arbitrary number of arrays to-be broadcasted.
-        Each array must have the same shape. Each array must have the same dtype as its
-        corresponding input array.
 
     Returns
     -------
     ret
         A list containing broadcasted arrays of type `ivy.Array`
+        Each array must have the same shape, and each array must have the same
+        dtype as its corresponding input array.
 
     Examples
     --------
@@ -442,7 +443,7 @@ def broadcast_to(
     return current_backend(x).broadcast_to(x, shape)
 
 
-@inputs_to_native_arrays
+@inputs_to_ivy_arrays
 @handle_nestable
 @handle_exceptions
 def can_cast(
@@ -510,7 +511,9 @@ def can_cast(
         b: true
     }
     """
-    return current_backend(from_).can_cast(from_, to)
+    if isinstance(from_, ivy.Dtype):
+        return (from_, to) in ivy.promotion_table
+    return (from_.dtype, to) in ivy.promotion_table
 
 
 @inputs_to_native_arrays
@@ -1924,13 +1927,11 @@ def unset_default_float_dtype():
 
 @handle_exceptions
 def unset_default_int_dtype():
-    """
-
-    Reset the current default int dtype to the previous state.
+    """Resets the current default int dtype to the previous state.
 
     Parameters
     ----------
-    None
+    None-
 
     Examples
     --------
@@ -1941,7 +1942,6 @@ def unset_default_int_dtype():
     >>> ivy.unset_default_int_dtype()
     >>> ivy.default_int_dtype()
     'int32'
-
     """
     global default_int_dtype_stack
     if default_int_dtype_stack:
@@ -2023,17 +2023,31 @@ def promote_types_of_inputs(
         return isinstance(a1, float) and "int" in str(a2.dtype)
 
     if hasattr(x1, "dtype") and not hasattr(x2, "dtype"):
-        x2 = (
-            ivy.asarray(x2, dtype=x1.dtype)
-            if not _special_case(x2, x1)
-            else ivy.asarray(x2, dtype="float64")
-        )
+        if x1.dtype == bool and not isinstance(x2, bool):
+            x2 = (
+                ivy.asarray(x2)
+                if not _special_case(x2, x1)
+                else ivy.asarray(x2, dtype="float64")
+            )
+        else:
+            x2 = (
+                ivy.asarray(x2, dtype=x1.dtype)
+                if not _special_case(x2, x1)
+                else ivy.asarray(x2, dtype="float64")
+            )
     elif hasattr(x2, "dtype") and not hasattr(x1, "dtype"):
-        x1 = (
-            ivy.asarray(x1, dtype=x2.dtype)
-            if not _special_case(x1, x2)
-            else ivy.asarray(x1, dtype="float64")
-        )
+        if x2.dtype == bool and not isinstance(x1, bool):
+            x1 = (
+                ivy.asarray(x1)
+                if not _special_case(x1, x2)
+                else ivy.asarray(x1, dtype="float64")
+            )
+        else:
+            x1 = (
+                ivy.asarray(x1, dtype=x2.dtype)
+                if not _special_case(x1, x2)
+                else ivy.asarray(x1, dtype="float64")
+            )
     elif not (hasattr(x1, "dtype") or hasattr(x2, "dtype")):
         x1 = ivy.asarray(x1)
         x2 = ivy.asarray(x2)
