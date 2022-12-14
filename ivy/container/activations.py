@@ -548,11 +548,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = ivy.Container.static_softmax(x)
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
@@ -611,11 +612,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))
+        >>> x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))
         >>> y = x.softmax()
         >>> print(y)
         {
-            a: ivy.array([0.422, 0.155, 0.422])
+            a: ivy.array([0.7310586, 0.2689414]),
+            b: ivy.array([0.72844321, 0.19852395, 0.07303288])
         }
 
         """
@@ -677,11 +679,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))
+        >>> x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))
         >>> y = ivy.Container.static_softplus(x)
         >>> print(y)
         {
-            a: ivy.array([0.535, 0.42])
+            a: ivy.array([0.53499615, 0.42036411]),
+            b: ivy.array([1.31326175, 0.69314718])
         }
 
         >>> x = ivy.Container(a=ivy.array([-1., 2., 4.]))
