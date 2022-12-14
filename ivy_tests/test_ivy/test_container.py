@@ -910,15 +910,15 @@ def test_container_as_bools(device):
 def test_container_all_true(device):
     assert not Container(
         {"a": ivy.array([1], device=device), "b": {"c": [], "d": True}}
-    ).all_true()
+    ).cont_all_true()
     assert Container(
         {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
-    ).all_true()
+    ).cont_all_true()
     # noinspection PyBroadException
     try:
         assert Container(
             {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
-        ).all_true(assert_is_bool=True)
+        ).cont_all_true(assert_is_bool=True)
         error_raised = False
     except IvyException:
         error_raised = True
@@ -2986,7 +2986,7 @@ def test_container_cont_inplace_update(device):
     container0.inplace_update(container1)
     assert id0 == id(container0)
     assert id1 == id(container1)
-    assert ivy.Container.all_true(container0.all_equal(container1))
+    assert ivy.Container.cont_all_true(container0.all_equal(container1))
 
 
 def test_container_to_nested_list(device):

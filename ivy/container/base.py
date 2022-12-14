@@ -1574,7 +1574,7 @@ class ContainerBase(dict, abc.ABC):
                 else:
                     self[key] = value
 
-    def all_true(
+    def cont_all_true(
         self,
         assert_is_bool=False,
         key_chains=None,
