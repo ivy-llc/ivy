@@ -2380,8 +2380,8 @@ def test_container_slice_via_key(device):
         },
     }
     container = Container(dict_in)
-    containerx = container.slice_via_key("x")
-    containery = container.slice_via_key("y")
+    containerx = container.cont_slice_via_key("x")
+    containery = container.cont_slice_via_key("y")
     assert np.array_equal(ivy.to_numpy(containerx["a"]), np.array([0.0]))
     assert np.array_equal(ivy.to_numpy(containerx.a), np.array([0.0]))
     assert np.array_equal(ivy.to_numpy(containerx["b"]["c"]), np.array([1.0]))
