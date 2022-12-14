@@ -2196,7 +2196,7 @@ class ContainerBase(dict, abc.ABC):
                 return False
         return True
 
-    def find_sub_container(self, sub_cont_to_find, partial=False):
+    def cont_find_sub_container(self, sub_cont_to_find, partial=False):
         """Find the sub-container in the current container if it exsits.
 
         Parameters
@@ -2228,7 +2228,7 @@ class ContainerBase(dict, abc.ABC):
 
         return key_chain_found
 
-    def contains_sub_container(self, sub_cont, partial=False):
+    def cont_contains_sub_container(self, sub_cont, partial=False):
         """Determine whether the current container contains the sub-container, with
         matching structure and array values.
 
@@ -2247,11 +2247,11 @@ class ContainerBase(dict, abc.ABC):
         """
         return (
             True
-            if isinstance(self.find_sub_container(sub_cont, partial), str)
+            if isinstance(self.cont_find_sub_container(sub_cont, partial), str)
             else False
         )
 
-    def assert_contains_sub_container(self, sub_cont, partial=False):
+    def cont_assert_contains_sub_container(self, sub_cont, partial=False):
         """Asserts that the current container contains the sub-container, otherwise
         exception raised with the diff printed to screen.
 
@@ -2265,7 +2265,9 @@ class ContainerBase(dict, abc.ABC):
 
         """
         try:
-            ivy.assertions.check_true(self.contains_sub_container(sub_cont, partial))
+            ivy.assertions.check_true(
+                self.cont_contains_sub_container(sub_cont, partial)
+            )
         except ivy.exceptions.IvyException:
             key_chain = self.find_sub_structure(
                 sub_cont, check_shapes=False, partial=True
@@ -3528,7 +3530,7 @@ class ContainerBase(dict, abc.ABC):
             sub_cont = sub_cont_or_keychain
 
         # find the key chain of the sub-container
-        sub_cont_kc = self.find_sub_container(sub_cont)
+        sub_cont_kc = self.cont_find_sub_container(sub_cont)
 
         # show this container if key-chain not found, and return
         if not sub_cont_kc:
@@ -3959,7 +3961,7 @@ class ContainerBase(dict, abc.ABC):
         if isinstance(key, str) and ("/" in key or "." in key):
             return self.cont_has_key_chain(key)
         elif isinstance(key, ivy.Container):
-            return self.contains_sub_container(key)
+            return self.cont_contains_sub_container(key)
         else:
             return dict.__contains__(self, key)
 
