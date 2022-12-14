@@ -118,7 +118,7 @@ def test_median(
     fn_tree="functional.experimental.nanmean",
     dtype_x_axis=statistical_dtype_values(function="nanmean"),
     keep_dims=st.booleans(),
-    dtype=helpers.get_dtypes("float"),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_nanmean(
     *,
@@ -152,7 +152,7 @@ def test_nanmean(
         a=x[0],
         axis=axis,
         keepdims=keep_dims,
-        dtype=dtype,
+        dtype=dtype[0],
     )
 
 
@@ -187,7 +187,7 @@ def test_unravel_index(
     with_out,
     num_positional_args,
     native_array,
-    container,
+    container_flags,
     instance_method,
     backend_fw,
     fn_name,
@@ -202,7 +202,7 @@ def test_unravel_index(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        container_flags=container,
+        container_flags=container_flags,
         instance_method=instance_method,
         fw=backend_fw,
         fn_name=fn_name,

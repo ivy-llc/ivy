@@ -476,3 +476,10 @@ def test_duplicate_array_index_chains(nest, x, y):
     duplicate_index_chains = ivy.duplicate_array_index_chains(nest)
     assert duplicate_index_chains[0] == [[0, "a"], [0, "b", "d"], [1, 0]]
     assert duplicate_index_chains[1] == [[0, "b", "c"], [1, 1]]
+
+
+# prune_empty
+@pytest.mark.parametrize("nest", [{"a": [{}, {}], "b": {"c": [1], "d": []}}])
+def test_prune_empty(nest):
+    ret = ivy.prune_empty(ivy.copy_nest(nest))
+    assert ret == {"b": {"c": [1]}}

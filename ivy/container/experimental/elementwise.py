@@ -1,5 +1,6 @@
 # global
 from typing import Optional, Union, List, Dict, Tuple
+from numbers import Number
 
 # local
 import ivy
@@ -61,7 +62,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([-0.090, 0.070, -0.057])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sinc",
             x,
             key_chains=key_chains,
@@ -177,7 +178,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "lcm",
             x1,
             x2,
@@ -284,7 +285,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ nan,  nan,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fmod",
             x1,
             x2,
@@ -377,7 +378,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 0,  0,  nan])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fmax",
             x1,
             x2,
@@ -470,7 +471,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1, 1])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "float_power",
             x1,
             x2,
@@ -559,7 +560,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([32., 64., 128.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "exp2",
             x,
             key_chains=key_chains,
@@ -603,6 +604,109 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
         return self.static_exp2(self, out=out)
+
+    @staticmethod
+    def static_copysign(
+        x1: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        x2: Union[ivy.Array, ivy.NativeArray, ivy.Container, Number],
+        /,
+        *,
+        key_chains: Optional[Union[List[str], Dict[str, str]]] = None,
+        to_apply: bool = True,
+        prune_unapplied: bool = False,
+        map_sequences: bool = False,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """
+        ivy.Container static method variant of ivy.copysign. This method simply wraps
+        the function, and so the docstring for ivy.copysign also applies to this
+        method with minimal changes.
+
+        Parameters
+        ----------
+        x1
+            Container, Array, or scalar to change the sign of
+        x2
+            Container, Array, or scalar from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> ivy.Container.static_copysign(x1, x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> ivy.Container.static_copysign(23, x1)
+        {
+            a: ivy.array([23., 23., 23.]),
+            b: ivy.array(-23.)
+        }
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
+            "copysign",
+            x1,
+            x2,
+            key_chains=key_chains,
+            to_apply=to_apply,
+            prune_unapplied=prune_unapplied,
+            map_sequences=map_sequences,
+            out=out,
+        )
+
+    def copysign(
+        self: ivy.Container,
+        x2: ivy.Container,
+        /,
+        *,
+        out: Optional[ivy.Container] = None,
+    ) -> ivy.Container:
+        """ivy.Container instance method variant of ivy.copysign. This method simply
+        wraps the function, and so the docstring for ivy.copysign also applies to
+        this method with minimal changes.
+
+        Parameters
+        ----------
+        self
+            Container to change the sign of
+        x2
+            Container from which the new signs are applied
+            Unsigned zeroes are considered positive.
+        out
+            optional output Container, for writing the result to.
+
+        Returns
+        -------
+        ret
+            x1 with the signs of x2.
+            This is a scalar if both x1 and x2 are scalars.
+
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([0,1,2]), b=ivy.array(-1))
+        >>> x2 = ivy.Container(a=-1, b=ivy.array(10))
+        >>> x1.copysign(x2)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(1.)
+        }
+        >>> x1.copysign(-1)
+        {
+            a: ivy.array([-0., -1., -2.]),
+            b: ivy.array(-1.)
+        }
+        """
+        return self.static_copysign(self, x2, out=out)
 
     @staticmethod
     def static_count_nonzero(
@@ -682,7 +786,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([[[3, 4]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "count_nonzero",
             a,
             axis=axis,
@@ -803,7 +907,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container static method variant of ivy.nansum. This method simply wraps
         the function, and so the docstring for ivy.nansum also applies to this method
         with minimal changes.
-        
+
         Parameters
         ----------
         x
@@ -820,13 +924,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -848,7 +952,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([7., 0.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nansum",
             x,
             axis=axis,
@@ -874,7 +978,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ivy.Container instance method variant of ivy.nansum. This method simply
         wraps the function, and so the docstring for ivy.nansum also applies to this
         method with minimal changes.
-        
+
         Parameters
         ----------
         self
@@ -891,13 +995,13 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         out
             Alternate output array in which to place the result.
             The default is None.
-        
+
         Returns
         -------
         ret
             A new array holding the result is returned unless out is specified,
             in which it is returned.
-        
+
         Examples
         --------
         With one :class:`ivy.Container` input:
@@ -961,7 +1065,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gcd",
             x1,
             x2,
@@ -1097,7 +1201,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isclose",
             a,
             b,
@@ -1250,7 +1354,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([False, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isposinf",
             x,
             key_chains=key_chains,
@@ -1339,7 +1443,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([False, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isneginf",
             x,
             key_chains=key_chains,
@@ -1443,7 +1547,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([1., 2., 1.,  5e+100])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nan_to_num",
             x,
             key_chains=key_chains,
@@ -1499,12 +1603,14 @@ class ContainerWithElementWiseExperimental(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([1, 2, 3, nan]),\
-                               b=ivy.array([1, 2, 3, inf]))
-        >>> x.nan_to_num(posinf=5e+100)
+        >>> a = ivy.array([1., 2, 3, ivy.nan], dtype="float64")
+        >>> b = ivy.array([1., 2, 3, ivy.inf], dtype="float64")
+        >>> x = ivy.Container(a=a, b=b)
+        >>> ret = x.nan_to_num(posinf=5e+100)
+        >>> print(ret)
         {
-            a: ivy.array([1.,  1.,  3.,  0.0])
-            b: ivy.array([1., 2., 1.,  5e+100])
+            a: ivy.array([1., 2., 3., 0.]),
+            b: ivy.array([1.e+000, 2.e+000, 3.e+000, 5.e+100])
         }
         """
         return self.static_nan_to_num(
@@ -1554,7 +1660,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.08746284, 5.169925  , 5.32192809])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logaddexp2",
             x1,
             x2,
@@ -1642,7 +1748,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "signbit",
             x,
             key_chains=key_chains,
@@ -1764,7 +1870,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: true
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "allclose",
             x1,
             x2,
@@ -1906,7 +2012,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 1,  2,  3, -7])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "diff",
             x,
             key_chains=key_chains,
@@ -1991,7 +2097,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([ 3.0 ])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "fix",
             x,
             key_chains=key_chains,
@@ -2092,7 +2198,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([5.5e-30])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nextafter",
             x1,
             x2,
@@ -2223,7 +2329,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([0.0006, 0.0244])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "zeta",
             x,
             q,
@@ -2311,7 +2417,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         edge_order: Optional[int] = 1,
         axis: Optional[Union[int, list, tuple]] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "gradient",
             x,
             key_chains=key_chains,
