@@ -405,6 +405,12 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    def where(self, condition, other):
+        return ivy.where(condition, self._ivy_array, other)
+
+    def clone(self, memory_format=None):
+        return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
+
     # Special Methods #
     # -------------------#
 
