@@ -2945,7 +2945,9 @@ class ContainerBase(dict, abc.ABC):
                 out_cont[key] = value
         return out_cont
 
-    def restructure_key_chains(self, keychain_mapping, keep_orig=True, replace=True):
+    def cont_restructure_key_chains(
+        self, keychain_mapping, keep_orig=True, replace=True
+    ):
         """Create a new container with the same contents, but a new key-chain structure.
         Given by the mapping with keys as old key-chains and values as new key-chains.
 
@@ -2969,7 +2971,7 @@ class ContainerBase(dict, abc.ABC):
             )
         return new_cont
 
-    def restructure(self, mapping, keep_orig=True, replace=True):
+    def cont_restructure(self, mapping, keep_orig=True, replace=True):
         """Create a new container with the same contents, but a new key-chain structure,
         and transposes and/or reshaped arrays. Given by the mapping with keys as old
         key-chains and values as new key-chains.

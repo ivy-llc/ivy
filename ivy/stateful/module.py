@@ -689,7 +689,7 @@ class Module(abc.ABC):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).cont_find_sub_container(self.v)
             if kc:
-                ret = self.v.restructure_key_chains({"": kc}, keep_orig=False)
+                ret = self.v.cont_restructure_key_chains({"": kc}, keep_orig=False)
             else:
                 ret = self.v
             if flatten_key_chains:
