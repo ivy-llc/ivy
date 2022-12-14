@@ -1998,7 +1998,7 @@ def test_container_multi_map(device):
     )
 
     # with key_chains to apply
-    container_mapped = ivy.Container.multi_map(
+    container_mapped = ivy.Container.cont_multi_map(
         lambda x, _: x[0] + x[1], [container0, container1], assert_identical=True
     )
     assert np.allclose(ivy.to_numpy(container_mapped["a"]), np.array([[4]]))
@@ -2028,7 +2028,7 @@ def test_container_multi_map(device):
         }
     )
 
-    container_mapped = ivy.Container.multi_map(
+    container_mapped = ivy.Container.cont_multi_map(
         lambda x, _: x[0] + x[1],
         [container0, container1],
         map_nests=True,
@@ -2042,7 +2042,7 @@ def test_container_multi_map(device):
     # Non identical containers
     a = ivy.Container(a={"b": 2, "c": 4}, d={"e": 6, "f": 9})
     b = ivy.Container(a=2, d=3)
-    container_mapped = ivy.Container.multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
+    container_mapped = ivy.Container.cont_multi_map(lambda xs, _: xs[0] / xs[1], [a, b])
 
     assert np.allclose(ivy.to_numpy(container_mapped["a"].b, copy=False), 1)
     assert np.allclose(ivy.to_numpy(container_mapped["a"]["c"], copy=False), 2)
