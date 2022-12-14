@@ -10,6 +10,9 @@ class EagerTensor:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+        self._dtype = tf_frontend.DType(
+            tf_frontend.tensorflow_type_to_enum[self._ivy_array.dtype]
+        )
 
     def __repr__(self):
         return (
@@ -36,7 +39,7 @@ class EagerTensor:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return self._dtype
 
     @property
     def shape(self):
@@ -78,6 +81,10 @@ class EagerTensor:
         return y.__rand__(self._ivy_array)
 
     def __array__(self, dtype=None, name="array"):
+        if ivy.is_native_dtype(dtype):
+            dtype = ivy.as_ivy_dtype(dtype)
+        if not isinstance(dtype, str):
+            dtype = tf_frontend.as_dtype(dtype)._ivy_dtype
         return ivy.asarray(self._ivy_array, dtype=dtype)
 
     def __bool__(self, name="bool"):

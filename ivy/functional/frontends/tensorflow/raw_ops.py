@@ -6,7 +6,10 @@ from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     map_raw_ops_alias,
 )
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
+from ivy.functional.frontends.tensorflow import (
+    promote_types_of_tensorflow_inputs,
+    as_dtype,
+)
 
 from ivy.func_wrapper import with_unsupported_dtypes
 
@@ -39,6 +42,10 @@ ArgMax = to_ivy_arrays_and_back(
 
 @to_ivy_arrays_and_back
 def ArgMin(*, input, dimension, output_type=None, name=None):
+    if ivy.is_native_dtype(output_type):
+        output_type = ivy.as_ivy_dtype(output_type)
+    if not isinstance(output_type, str):
+        output_type = as_dtype(output_type)._ivy_dtype
     if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=dimension), output_type)
     return ivy.astype(ivy.argmin(input, axis=dimension), "int64")
@@ -349,6 +356,10 @@ def Round(*, x, name="Round"):
 
 @to_ivy_arrays_and_back
 def Shape(*, input, output_type=ivy.int32, name="Shape"):
+    if ivy.is_native_dtype(output_type):
+        output_type = ivy.as_ivy_dtype(output_type)
+    if not isinstance(output_type, str):
+        output_type = as_dtype(output_type)._ivy_dtype
     return ivy.astype(ivy.shape(input, as_array=True), output_type, copy=False)
 
 

@@ -386,3 +386,14 @@ def exp2(input, out=None):
 @to_ivy_arrays_and_back
 def rsqrt(input, *, out=None):
     return ivy.reciprocal(ivy.sqrt(input), out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+@to_ivy_arrays_and_back
+def expm1(input, out=None):
+    return ivy.expm1(input, out=out)
+
+
+@with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, "torch")
+def logaddexp2(x1, x2, out=None):
+    return ivy.logaddexp2(x1, x2, out=out)
