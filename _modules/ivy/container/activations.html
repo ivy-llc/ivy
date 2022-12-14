@@ -678,11 +678,12 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_softmax(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0.422, 0.155, 0.422])</span>
+<span class="sd">            a: ivy.array([0.7310586, 0.2689414]),</span>
+<span class="sd">            b: ivy.array([0.72844321, 0.19852395, 0.07303288])</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -741,11 +742,12 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0, 1.0]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1.0, 0]), b=ivy.array([1.3, 0, -1.0]))</span>
 <span class="sd">        &gt;&gt;&gt; y = x.softmax()</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0.422, 0.155, 0.422])</span>
+<span class="sd">            a: ivy.array([0.7310586, 0.2689414]),</span>
+<span class="sd">            b: ivy.array([0.72844321, 0.19852395, 0.07303288])</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -807,11 +809,12 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-0.3461, -0.6491]))</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-0.3461, -0.6491]), b=ivy.array([1., 0.]))</span>
 <span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_softplus(x)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
-<span class="sd">            a: ivy.array([0.535, 0.42])</span>
+<span class="sd">            a: ivy.array([0.53499615, 0.42036411]),</span>
+<span class="sd">            b: ivy.array([1.31326175, 0.69314718])</span>
 <span class="sd">        }</span>
 
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([-1., 2., 4.]))</span>
