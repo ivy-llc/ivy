@@ -24,6 +24,7 @@ jobs:
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py extra
+           cd ..
            cp ivy/tests.pbz2 Mapping/
            cd Mapping
            git add .
