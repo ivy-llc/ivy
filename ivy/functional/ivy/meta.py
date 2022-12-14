@@ -43,7 +43,7 @@ def _compute_cost_and_update_grads(
         inner_grads = ivy.Container(
             {
                 k: ivy.zeros_like(v) if k not in inner_grads else inner_grads[k]
-                for k, v in var.to_iterator()
+                for k, v in var.cont_to_iterator()
             }
         )
         if batched:
@@ -106,7 +106,7 @@ def _train_task(
                 k: ivy.zeros_like(v)
                 if k not in inner_update_grads
                 else inner_update_grads[k]
-                for k, v in var.to_iterator()
+                for k, v in var.cont_to_iterator()
             }
         )
         if batched:
