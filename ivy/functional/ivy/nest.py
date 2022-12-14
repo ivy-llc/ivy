@@ -120,6 +120,11 @@ def set_nest_at_index(
     _result
         Placeholder for the result of the update. do not set this paramter.
 
+    Returns
+    -------
+    ret
+        nest with changed value at the given index.
+
     Examples
     --------
     With :class:`ivy.Array` inputs:
@@ -228,6 +233,11 @@ def map_nest_at_index(
         Only works if nest is a mutable type. Default is ``True``.
     _result
         Placeholder for the result of the update. do not set this paramter.
+
+    Returns
+    -------
+    ret
+        nest with applicable of fn on given index.
 
     Examples
     --------
@@ -360,6 +370,11 @@ def set_nest_at_indices(
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
 
+    Returns
+    -------
+    ret
+        nest with updated values at the given indices.
+
     Examples
     --------
     With :code:`List` inputs:
@@ -464,6 +479,11 @@ def map_nest_at_indices(
     shallow
         Whether to inplace update the input nest or not
         Only works if nest is a mutable type. Default is ``True``.
+
+    Returns
+    -------
+    ret
+        nest with applicable of fn on given indices.
 
     Examples
     --------
