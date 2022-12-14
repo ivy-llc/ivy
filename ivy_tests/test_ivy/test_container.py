@@ -2262,9 +2262,11 @@ def test_container_identical_array_shapes(device):
     )
 
     # with identical
-    assert ivy.Container.identical_array_shapes([container0, container1])
-    assert ivy.Container.identical_array_shapes([container1, container0])
-    assert ivy.Container.identical_array_shapes([container1, container0, container1])
+    assert ivy.Container.cont_identical_array_shapes([container0, container1])
+    assert ivy.Container.cont_identical_array_shapes([container1, container0])
+    assert ivy.Container.cont_identical_array_shapes(
+        [container1, container0, container1]
+    )
     assert not ivy.Container.cont_identical([container0, container2])
     assert not ivy.Container.cont_identical([container1, container2])
     assert not ivy.Container.cont_identical([container0, container1, container2])
