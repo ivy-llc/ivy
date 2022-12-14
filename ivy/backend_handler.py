@@ -359,7 +359,11 @@ def unset_backend():
 
     Examples
     --------
-    Torch is the last set backend hence is the backend used here:
+    Torch is the last set backend hence is the backend used in the first examples.
+    However, as seen in the example after, if `unset_backend` is called before
+    `ivy.native_array` then tensorflow will become the current backend and any
+    torch backend implementations in the Ivy dict will be swapped with the
+    tensorflow implementation::
 
     >>> ivy.set_backend("tensorflow")
     >>> ivy.set_backend("torch")
