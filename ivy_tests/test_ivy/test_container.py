@@ -1015,7 +1015,7 @@ def test_container_size_ordered_arrays(device):
         },
     }
     container = Container(dict_in)
-    size_ordered = container.size_ordered_arrays()
+    size_ordered = container.cont_size_ordered_arrays()
     assert np.allclose(ivy.to_numpy(size_ordered.a), np.array([[0.0, 1.0, 2.0, 3.0]]))
     assert np.allclose(ivy.to_numpy(size_ordered.b__c), np.array([[5.0, 10.0]]))
     assert np.allclose(ivy.to_numpy(size_ordered.b__d), np.array([[10.0, 9.0, 8.0]]))
