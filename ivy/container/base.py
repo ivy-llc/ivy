@@ -1293,7 +1293,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def trim_key(key, max_length):
+    def cont_trim_key(key, max_length):
         """Summary.
         Returns a trimmed key with a maximum length of max_length.
 
@@ -3774,7 +3774,7 @@ class ContainerBase(dict, abc.ABC):
                         sub_str.split(' "')[:-1]
                         + [
                             termcolor.colored(
-                                ivy.Container.trim_key(
+                                ivy.Container.cont_trim_key(
                                     sub_str.split(' "')[-1], self._key_length_limit
                                 ),
                                 self._default_key_color,
