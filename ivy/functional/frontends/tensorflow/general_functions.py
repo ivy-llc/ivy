@@ -140,3 +140,8 @@ def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
 @to_ivy_arrays_and_back
 def stack(values, axis=0, name="stack"):
     return ivy.stack(values, axis=axis)
+
+
+@to_ivy_arrays_and_back
+def pad(tensor, paddings, mode="CONSTANT", constant_values=0, name=None):
+    return ivy.pad(tensor, paddings, mode=mode, constant_values=constant_values)
