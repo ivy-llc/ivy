@@ -402,8 +402,6 @@ from . import fft
 from . import linalg
 from . import creation
 from .creation import *
-from . import name_space_functions
-from .name_space_functions import *
 from . import dtype
 from .dtype import can_cast, promote_types
 from . import comparison
