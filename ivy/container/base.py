@@ -1039,7 +1039,7 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     @staticmethod
-    def from_disk_as_hdf5(
+    def cont_from_disk_as_hdf5(
         h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None
     ):
         """Load container object from disk, as an h5py file, at the specified hdf5
@@ -1076,7 +1076,7 @@ class ContainerBase(dict, abc.ABC):
         items = sorted(h5_obj.items()) if alphabetical_keys else h5_obj.items()
         for key, value in items:
             if isinstance(value, h5py.Group):
-                container_dict[key] = ivy.Container.from_disk_as_hdf5(
+                container_dict[key] = ivy.Container.cont_from_disk_as_hdf5(
                     value, slice_obj, ivyh
                 )
             elif isinstance(value, h5py.Dataset):
