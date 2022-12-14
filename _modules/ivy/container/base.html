@@ -1798,7 +1798,7 @@
             <span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.slice_via_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.slice_via_key">[docs]</a>    <span class="k">def</span> <span class="nf">slice_via_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_key</span><span class="p">):</span>
+<div class="viewcode-block" id="ContainerBase.cont_slice_via_key"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_slice_via_key">[docs]</a>    <span class="k">def</span> <span class="nf">cont_slice_via_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Get slice of container, based on key.</span>
 
 <span class="sd">        Parameters</span>
@@ -1816,7 +1816,7 @@
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">slice_key</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">slice_via_key</span><span class="p">(</span><span class="n">slice_key</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">cont_slice_via_key</span><span class="p">(</span><span class="n">slice_key</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>

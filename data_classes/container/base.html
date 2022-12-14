@@ -1002,6 +1002,20 @@ same key structure.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_slice_via_key">
+<span class="sig-name descname"><span class="pre">cont_slice_via_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_slice_via_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_slice_via_key" title="Permalink to this definition"></a></dt>
+<dd><p>Get slice of container, based on key.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slice_key</strong> – key to slice container at.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><em>Container object sliced at desired key.</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_structural_diff">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_structural_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">containers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'all'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'diff'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_key_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detect_shape_diffs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_structural_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_structural_diff" title="Permalink to this definition"></a></dt>
 <dd><p>Compare keys and shapes in a sequence of containers, returning the single
@@ -1656,20 +1670,6 @@ order of smallest to largest.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>exclusive</strong> – Whether to check if the data type is exclusively an array,
 rather than a variable or traced array. (Default value = False)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.slice_via_key">
-<span class="sig-name descname"><span class="pre">slice_via_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">slice_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.slice_via_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.slice_via_key" title="Permalink to this definition"></a></dt>
-<dd><p>Get slice of container, based on key.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>slice_key</strong> – key to slice container at.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>Container object sliced at desired key.</em></p>
 </dd>
 </dl>
 </dd></dl>
