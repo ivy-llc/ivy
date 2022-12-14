@@ -719,7 +719,9 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">with_grads</span><span class="p">:</span>
                 <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">v</span><span class="o">.</span><span class="n">config</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">v</span><span class="o">.</span><span class="n">cont_config</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span>
+                <span class="k">else</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_with_tracking</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v_orig</span>
