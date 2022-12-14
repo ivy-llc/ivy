@@ -2552,7 +2552,7 @@ def test_container_to_and_from_disk_as_pickled(device):
     assert os.path.exists(save_filepath)
 
     # loading
-    loaded_container = Container.from_disk_as_pickled(save_filepath)
+    loaded_container = Container.cont_from_disk_as_pickled(save_filepath)
     assert np.array_equal(ivy.to_numpy(loaded_container.a), ivy.to_numpy(container.a))
     assert np.array_equal(
         ivy.to_numpy(loaded_container.b.c), ivy.to_numpy(container.b.c)
