@@ -331,6 +331,9 @@ def zeros(
            [0., 0., 0., 0., 0.],
            [0., 0., 0., 0., 0.]])
 
+    >>> x = ivy.zeros(5)
+    >>> print(x)
+    ivy.array([0., 0., 0., 0., 0.])
     """
     return current_backend().zeros(shape, dtype=dtype, device=device, out=out)
 
