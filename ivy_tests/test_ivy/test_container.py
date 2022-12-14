@@ -2220,13 +2220,15 @@ def test_container_identical_configs(device):
     container2 = Container({"a": ivy.array([1], device=device)}, print_limit=10)
 
     # with identical
-    assert ivy.Container.identical_configs([container0, container1])
-    assert ivy.Container.identical_configs([container1, container0])
-    assert ivy.Container.identical_configs([container1, container0, container1])
+    assert ivy.Container.cont_identical_configs([container0, container1])
+    assert ivy.Container.cont_identical_configs([container1, container0])
+    assert ivy.Container.cont_identical_configs([container1, container0, container1])
 
     # without identical
-    assert not ivy.Container.identical_configs([container1, container2])
-    assert not ivy.Container.identical_configs([container1, container0, container2])
+    assert not ivy.Container.cont_identical_configs([container1, container2])
+    assert not ivy.Container.cont_identical_configs(
+        [container1, container0, container2]
+    )
 
 
 def test_container_identical_array_shapes(device):
@@ -2517,7 +2519,7 @@ def test_container_pickle(device):
     cont_again = pickle.loads(pickled)
     assert cont_again._local_ivy is None
     ivy.Container.cont_identical_structure([cont, cont_again])
-    ivy.Container.identical_configs([cont, cont_again])
+    ivy.Container.cont_identical_configs([cont, cont_again])
 
     # with module attribute
     cont = Container(dict_in, ivyh=ivy)
@@ -2527,7 +2529,7 @@ def test_container_pickle(device):
     # noinspection PyUnresolvedReferences
     assert cont_again._local_ivy.current_backend_str() is ivy.current_backend_str()
     ivy.Container.cont_identical_structure([cont, cont_again])
-    ivy.Container.identical_configs([cont, cont_again])
+    ivy.Container.cont_identical_configs([cont, cont_again])
 
 
 def test_container_to_and_from_disk_as_pickled(device):
