@@ -309,7 +309,7 @@ to Ivy’s implementations.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>Torch is the last set backend hence is the backend backend used here:</p>
+<p>Torch is the last set backend hence is the backend used here:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">native_array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
@@ -317,9 +317,6 @@ to Ivy’s implementations.</p>
 <span class="go">&lt;class &#39;torch.Tensor&#39;&gt;</span>
 </pre></div>
 </div>
-<p>However if <cite>unset_backend</cite> is called before <cite>ivy.native_array</cite> then tensorflow
-will become the current backend and any torch backend implementations in the
-Ivy dict will be swapped with the tensorflow implementation:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;tensorflow&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">unset_backend</span><span class="p">()</span>
