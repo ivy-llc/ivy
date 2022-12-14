@@ -2810,28 +2810,28 @@ def test_container_assert_identical(device):
     container4 = Container({"d": arr3})
 
     # the same
-    ivy.Container.assert_identical([container0, container1])
-    ivy.Container.assert_identical([container1, container0])
+    ivy.Container.cont_assert_identical([container0, container1])
+    ivy.Container.cont_assert_identical([container1, container0])
 
     # not the same
     try:
-        ivy.Container.assert_identical([container0, container2])
+        ivy.Container.cont_assert_identical([container0, container2])
         error_caught = False
     except IvyException:
         error_caught = True
     assert error_caught
     try:
-        ivy.Container.assert_identical([container1, container2])
+        ivy.Container.cont_assert_identical([container1, container2])
         error_caught = False
     except IvyException:
         error_caught = True
     assert error_caught
 
     # partial
-    ivy.Container.assert_identical([container0, container3], partial=True)
-    ivy.Container.assert_identical([container3, container0], partial=True)
+    ivy.Container.cont_assert_identical([container0, container3], partial=True)
+    ivy.Container.cont_assert_identical([container3, container0], partial=True)
     try:
-        ivy.Container.assert_identical([container4, container0], partial=True)
+        ivy.Container.cont_assert_identical([container4, container0], partial=True)
         error_caught = False
     except IvyException:
         error_caught = True
