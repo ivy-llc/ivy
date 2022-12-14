@@ -124,17 +124,9 @@ def average(a, /, *, axis=None, weights=None, returned=False, keepdims=False):
     else:
         return avg.astype(dtype)
 
+
 @to_ivy_arrays_and_back
-def nanvar(
-        a,
-        axis=None,
-        dtype=None,
-        out=None,
-        ddof=0.0,
-        keepdims=False,
-        *,
-        where=True
-):
+def nanvar(a, axis=None, dtype=None, out=None, ddof=0.0, keepdims=False, *, where=True):
     is_nan = ivy.isnan(a)
     axis = tuple(axis) if isinstance(axis, list) else axis
 
@@ -153,7 +145,7 @@ def nanvar(
 
         if dtype:
             a = ivy.astype(ivy.array(a), ivy.as_ivy_dtype(dtype))
-        ret = ivy.var(a, axis=axis, correction=ddof ,keepdims=keepdims, out=out)
+        ret = ivy.var(a, axis=axis, correction=ddof, keepdims=keepdims, out=out)
 
         if ivy.is_array(where):
             where = ivy.array(where, dtype=ivy.bool)

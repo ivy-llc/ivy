@@ -210,6 +210,7 @@ def test_numpy_average(
     except AssertionError:
         assume(False)
 
+
 # nanvar
 @handle_frontend_test(
     fn_tree="numpy.nanvar",
@@ -219,18 +220,18 @@ def test_numpy_average(
     keepdims=st.booleans(),
 )
 def test_numpy_nanvar(
-        *,
-        dtype_x_axis,
-        dtype,
-        keepdims,
-        where,
-        num_positional_args,
-        with_out,
-        as_variable,
-        native_array,
-        on_device,
-        fn_tree,
-        frontend,
+    *,
+    dtype_x_axis,
+    dtype,
+    keepdims,
+    where,
+    num_positional_args,
+    with_out,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
 ):
     x_dtype, x, axis, ddof = dtype_x_axis
     if isinstance(axis, tuple):
@@ -259,4 +260,3 @@ def test_numpy_nanvar(
         keepdims=keepdims,
         where=where,
     )
-
