@@ -427,11 +427,12 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = ivy.Container.static_sigmoid(x)
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
 
         """
@@ -486,13 +487,13 @@ class ContainerWithActivations(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([-1., 1., 2.]))
+        >>> ivy.Container(a=ivy.array([-1., 1., 2.]), b=ivy.array([0.5, 0., -0.1]))
         >>> y = x.sigmoid()
         >>> print(y)
         {
-            a: ivy.array([0.269, 0.731, 0.881])
+            a: ivy.array([0.2689414, 0.7310586, 0.88079703]),
+            b: ivy.array([0.62245935, 0.5, 0.4750208])
         }
-
         """
         return self.static_sigmoid(
             self,
