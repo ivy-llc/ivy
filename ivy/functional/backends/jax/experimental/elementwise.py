@@ -188,7 +188,7 @@ def allclose(
     return jnp.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
-def diff_(
+def diff(
     x: Union[JaxArray, int, float, list, tuple],
     /,
     *,
