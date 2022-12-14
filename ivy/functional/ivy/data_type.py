@@ -6,6 +6,7 @@ from numbers import Number
 from typing import Union, Tuple, List, Optional, Callable, Iterable, Any
 import numpy as np
 import importlib
+
 # local
 import ivy
 from ivy.backend_handler import current_backend
@@ -83,9 +84,25 @@ def _get_function_list(func):
         if isinstance(node, ast.Call):
             nodef = node.func
             if isinstance(nodef, ast.Name):
-                    names[nodef.id]=getattr(func,'__self__',getattr(importlib.import_module(func.__module__),func.__qualname__.split('.')[0],None))
+                names[nodef.id] = getattr(
+                    func,
+                    "__self__",
+                    getattr(
+                        importlib.import_module(func.__module__),
+                        func.__qualname__.split(".")[0],
+                        None,
+                    ),
+                )
             elif isinstance(nodef, ast.Attribute):
-                    names[nodef.attr] = getattr(func,'__self__',getattr(importlib.import_module(func.__module__),func.__qualname__.split('.')[0],None))
+                names[nodef.attr] = getattr(
+                    func,
+                    "__self__",
+                    getattr(
+                        importlib.import_module(func.__module__),
+                        func.__qualname__.split(".")[0],
+                        None,
+                    ),
+                )
 
     return names
 
@@ -95,11 +112,11 @@ def _get_functions_from_string(func_names, module):
     ret = set()
     # We only care about the functions in the ivy or the same module
     for func_name in func_names.keys():
-        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name,None)):
+        if hasattr(ivy, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(ivy, func_name))
-        elif hasattr(module, func_name) and callable(getattr(ivy, func_name,None)):
+        elif hasattr(module, func_name) and callable(getattr(ivy, func_name, None)):
             ret.add(getattr(module, func_name))
-        elif callable(getattr(func_names[func_name], func_name,None)):
+        elif callable(getattr(func_names[func_name], func_name, None)):
             ret.add(getattr(func_names[func_name], func_name))
     return ret
 
@@ -124,7 +141,7 @@ def _nested_get(f, base_set, merge_fn, get_fn, wrapper=set):
         # if it's in the backend, we can get the dtypes directly
         # if it's in the front end, we need to recurse
         # if it's einops, we need to recurse
-        if not getattr(fn,'__module__',None):
+        if not getattr(fn, "__module__", None):
             continue
         if "backend" in fn.__module__:
             f_supported = wrapper(get_fn(fn, False))
