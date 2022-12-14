@@ -5,6 +5,7 @@ import numpy as np
 import types
 import importlib
 import inspect
+
 try:
     import tensorflow as tf
 except ImportError:
@@ -1025,7 +1026,7 @@ def test_method(
             )
             ins = ivy.__dict__[class_name](*args_constructor, **kwargs_constructor, v=v)
         v = ins.__getattribute__("v")
-        v_np = v.map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
+        v_np = v.cont_map(lambda x, kc: ivy.to_numpy(x) if ivy.is_array(x) else x)
         if method_with_v:
             kwargs_method = dict(**kwargs_method, v=v)
     ret, ret_np_flat = get_ret_and_flattened_np_array(
@@ -1059,7 +1060,7 @@ def test_method(
     )
     ins_gt = ivy.__dict__[class_name](*args_gt_constructor, **kwargs_gt_constructor)
     if isinstance(ins_gt, ivy.Module):
-        v_gt = v_np.map(
+        v_gt = v_np.cont_map(
             lambda x, kc: ivy.asarray(x) if isinstance(x, np.ndarray) else x
         )
         kwargs_gt_method = dict(**kwargs_gt_method, v=v_gt)
