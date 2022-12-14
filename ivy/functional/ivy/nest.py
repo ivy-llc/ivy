@@ -290,30 +290,26 @@ def map_nest_at_index(
     }
 
     """
-    outer_tupled = False
+    nest_type = type(nest)
     if _result is None:
         if shallow:
-            _result = type(nest)(nest)
+            _result = nest_type(nest)
         else:
             _result = copy_nest(nest)
-        if isinstance(nest, tuple):
-            outer_tupled = True
-            _result = list(_result)
+    _result = list(_result) if isinstance(nest, tuple) else _result
     if len(index) == 1:
         ret = fn(nest[index[0]])
         if shallow:
-            nest[index[0]] = ret
+            try:
+                nest[index[0]] = ret
+            except TypeError:
+                print("shallow cannot be set to True for immutable types")
         _result[index[0]] = ret
     else:
-        inner_tuppled = False
-        if isinstance(_result[index[0]], tuple):
-            _result[index[0]] = list(_result[index[0]])
-            inner_tuppled = True
-        map_nest_at_index(nest[index[0]], index[1:], fn, shallow, _result[index[0]])
-        if inner_tuppled:
-            _result[index[0]] = tuple(_result[index[0]])
-    if outer_tupled:
-        _result = tuple(_result)
+        _result[index[0]] = map_nest_at_index(
+            nest[index[0]], index[1:], fn, shallow, _result[index[0]]
+        )
+    _result = nest_type(_result)
     return _result
 
 
@@ -515,26 +511,15 @@ def map_nest_at_indices(
     >>> print(nest)
     ivy.array([[-9., 8., -17.], [11., -3., 5.]])
     """
+    nest_type = type(nest)
     if shallow:
-        result = type(nest)(nest)
+        result = nest_type(nest)
     else:
         result = copy_nest(nest)
-    outer_tupled = False
-    if isinstance(nest, tuple):
-        outer_tupled = True
-        result = list(result)
+    result = list(result) if isinstance(result, tuple) else result
     for i, index in enumerate(indices):
-        if i == 0:
-            result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
-            continue
-        if shallow:
-            result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
-        else:
-            result = map_nest_at_index(
-                result, index, fn, _result=result, shallow=shallow
-            )
-    if outer_tupled:
-        result = tuple(result)
+        result = map_nest_at_index(nest, index, fn, _result=result, shallow=shallow)
+    result = nest_type(result)
     return result
 
 
