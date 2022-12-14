@@ -1610,7 +1610,7 @@ class ContainerBase(dict, abc.ABC):
             np.prod(
                 [
                     v
-                    for k, v in self.as_bools(
+                    for k, v in self.cont_as_bools(
                         assert_is_bool,
                         key_chains,
                         to_apply,
@@ -1657,7 +1657,7 @@ class ContainerBase(dict, abc.ABC):
             np.sum(
                 [
                     v
-                    for k, v in self.as_bools(
+                    for k, v in self.cont_as_bools(
                         assert_is_bool,
                         key_chains,
                         to_apply,
@@ -1691,7 +1691,7 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
 
-    def as_bools(
+    def cont_as_bools(
         self,
         assert_is_bool=False,
         key_chains=None,
