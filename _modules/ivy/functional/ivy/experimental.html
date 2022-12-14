@@ -248,7 +248,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12.).reshape((2, 1, 3, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.max_pool2d(x, (2, 2), (1, 1), &#39;SAME&#39;))</span>
 <span class="sd">    ivy.array([[[[ 2,  3],</span>
 <span class="sd">             [ 4,  5],</span>
@@ -259,7 +259,7 @@
 <span class="sd">             [10, 11],</span>
 <span class="sd">             [10, 11]]]])</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48.).reshape((2, 4, 3, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.max_pool2d(x, 3, 1, &#39;VALID&#39;))</span>
 <span class="sd">    ivy.array([[[[16, 17]],</span>
 
@@ -449,7 +449,7 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12).reshape((2, 1, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(12.).reshape((2, 1, 3, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool2d(x, (2, 2), (1, 1), &#39;SAME&#39;))</span>
 <span class="sd">    ivy.array([[[[ 1.,  2.],</span>
 <span class="sd">             [ 3.,  4.],</span>
@@ -459,7 +459,7 @@
 <span class="sd">           [[[ 7.,  8.],</span>
 <span class="sd">             [ 9., 10.],</span>
 <span class="sd">             [10., 11.]]]])</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48).reshape((2, 4, 3, 2))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.arange(48.).reshape((2, 4, 3, 2))</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.avg_pool2d(x, 3, 1, &#39;VALID&#39;))</span>
 <span class="sd">    ivy.array([[[[ 8.,  9.]],</span>
 
@@ -2043,9 +2043,8 @@
 <span class="sd">        The binary cross entropy with logits loss between the given distributions.</span>
 
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 0, 1])</span>
@@ -2066,14 +2065,6 @@
 <span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y, pos_weight=pos_weight)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    ivy.array([[2.672, 0.002, 0.029, 5.305]])</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1.3, 1.7, 2.2, 0.6])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([1.541, 0.168, 2.305, 0.437])</span>
 
 <span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
 
@@ -2103,17 +2094,6 @@
 <span class="sd">    {</span>
 <span class="sd">        a: ivy.array([0.024, 3.822, 0.263])</span>
 <span class="sd">    }</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 1, 0, 0])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1.8, 5.2, 12.2, 7.2])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([0.153, 0.006, 12.205, 7.201])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">reduction</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">])</span>

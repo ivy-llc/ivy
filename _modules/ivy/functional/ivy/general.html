@@ -2205,15 +2205,12 @@
 <span class="sd">        The timeout when waiting for containers to arrive from the queues.</span>
 <span class="sd">        To be set in seconds.</span>
 
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.set_queue_timeout(10)</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.get_queue_timeout()</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    10.0</span>
-
-<span class="sd">    To set the timeout for example 30 seconds</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_queue_timeout(30)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.get_queue_timeout()</span>
@@ -2293,13 +2290,12 @@
 <span class="sd">    ----------</span>
 <span class="sd">    tmp_dr</span>
 <span class="sd">        The new directory for saving temporary files</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.get_tmp_dir()</span>
 <span class="sd">    &gt;&gt;&gt; print(x)</span>
 <span class="sd">    /tmp</span>
-
-<span class="sd">    To set the temp base to 1e-04</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_tmp_dir(&quot;/my_tmp&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.get_tmp_dir()</span>
@@ -2733,7 +2729,7 @@
 <span class="sd">    &gt;&gt;&gt; print(scatter)</span>
 <span class="sd">    ivy.array([ 0, 11,  0, 10,  9,  0,  0, 12])</span>
 
-<span class="sd">    scatter into an empty array, With :class:`ivy.Container` input:</span>
+<span class="sd">    With scatter into an empty array, With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; indices = ivy.Container(a=ivy.array([[4],[3],[6]]),</span>
 <span class="sd">    ...                         b=ivy.array([[5],[1],[2]]))</span>
@@ -2748,7 +2744,7 @@
 <span class="sd">        b: ivy.array([0, 30, 40, 0, 0, 20, 0, 0, 0, 0])</span>
 <span class="sd">    }</span>
 
-<span class="sd">    scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:</span>
+<span class="sd">    With scatter into an array, With :class:`ivy.Container` and :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; indices = ivy.array([[4],[3],[1]])</span>
 <span class="sd">    &gt;&gt;&gt; updates = ivy.Container(a=ivy.array([10, 20, 30]),</span>
