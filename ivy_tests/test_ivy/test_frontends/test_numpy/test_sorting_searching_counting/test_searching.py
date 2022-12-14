@@ -340,7 +340,7 @@ def test_numpy_nanargmin(
     dtype_and_x=helpers.dtype_and_values(
         available_dtypes=helpers.get_dtypes("float"),
     ),
-    cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
+    cond = hnp.arrays(hnp.boolean_dtypes()),
 )
 def test_numpy_extract(
     dtype_and_x,
