@@ -1933,7 +1933,7 @@ class ContainerBase(dict, abc.ABC):
                     starting_index : starting_index + amount_to_write
                 ] = value_as_np[0:amount_to_write]
 
-    def to_disk_as_pickled(self, pickle_filepath):
+    def cont_to_disk_as_pickled(self, pickle_filepath):
         """Save container object to disk, as an pickled file, at the specified filepath.
 
         Parameters
@@ -1944,7 +1944,7 @@ class ContainerBase(dict, abc.ABC):
         """
         pickle.dump(self.to_native().to_dict(), open(pickle_filepath, "wb"))
 
-    def to_jsonable(self, return_dict=None):
+    def cont_to_jsonable(self, return_dict=None):
         """
 
         Parameters
@@ -1958,12 +1958,12 @@ class ContainerBase(dict, abc.ABC):
         for k, v in return_dict.items():
             if not _is_jsonable(v):
                 if isinstance(v, dict):
-                    return_dict[k] = self.to_jsonable(v)
+                    return_dict[k] = self.cont_to_jsonable(v)
                 else:
                     return_dict[k] = str(v)
         return return_dict
 
-    def to_disk_as_json(self, json_filepath):
+    def cont_to_disk_as_json(self, json_filepath):
         """Save container object to disk, as an json file, at the specified filepath.
 
         Parameters
@@ -1973,7 +1973,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         with open(json_filepath, "w+") as json_data_file:
-            json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
+            json.dump(self.cont_to_jsonable().to_dict(), json_data_file, indent=4)
 
     def to_nested_list(self):
         return_list = list()
