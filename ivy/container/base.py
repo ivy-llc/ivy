@@ -1090,7 +1090,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(container_dict, ivyh=ivyh)
 
     @staticmethod
-    def from_disk_as_pickled(pickle_filepath, ivyh=None):
+    def cont_from_disk_as_pickled(pickle_filepath, ivyh=None):
         """Load container object from disk at the specified pickle filepath.
 
         Parameters

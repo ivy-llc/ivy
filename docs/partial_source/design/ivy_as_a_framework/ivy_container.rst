@@ -265,7 +265,7 @@ For example, if the container mainly contains arrays (such as the weights of a n
 
    # save and load as pickled
    weights.to_disk_as_pickled('weights.pickled')
-   loaded = ivy.Container.from_disk_as_pickled('weights.pickled')
+   loaded = ivy.Container.cont_from_disk_as_pickled('weights.pickled')
    assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
