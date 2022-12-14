@@ -409,7 +409,7 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def clamp(self, min=None, max=None, *, out=None):
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
-=======
+
     def where(self, condition, other):
         return ivy.where(condition, self._ivy_array, other)
 
