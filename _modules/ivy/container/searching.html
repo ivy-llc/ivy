@@ -238,8 +238,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\</span>
-<span class="sd">        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])</span>
+<span class="sd">        &gt;&gt;&gt; a = ivy.array([[4., 0., -1.], [2., -3., 6]])</span>
+<span class="sd">        &gt;&gt;&gt; b = ivy.array([[1., 2., 3.], [1., 1., 1.]])</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=a, b=b)</span>
 <span class="sd">        &gt;&gt;&gt; y = x.argmax(axis=1, keepdims=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
 <span class="sd">        {</span>
