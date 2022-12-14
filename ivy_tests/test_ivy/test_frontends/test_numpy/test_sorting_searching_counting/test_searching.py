@@ -337,14 +337,12 @@ def test_numpy_nanargmin(
 # extract
 @handle_frontend_test(
     fn_tree="numpy.extract",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float"),
+    dtype_and_cond=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes(["float". "bool"]),
     ),
-    cond = hnp.arrays(hnp.boolean_dtypes()),
 )
 def test_numpy_extract(
-    dtype_and_x,
-    cond,
+    dtype_and_cond,
     as_variable,
     num_positional_args,
     native_array,
@@ -352,8 +350,7 @@ def test_numpy_extract(
     fn_tree,
     on_device,
 ):
-    dtype, x = dtype_and_x
-    cond = cond
+    dtype, cond = dtype_and_cond
     helpers.test_frontend_function(
         input_dtypes=dtype,
         cond=cond,
