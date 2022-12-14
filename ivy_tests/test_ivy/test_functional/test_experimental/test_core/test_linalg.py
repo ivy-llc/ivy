@@ -5,6 +5,7 @@ from hypothesis import strategies as st
 # local
 import ivy_tests.test_ivy.helpers as helpers
 from ivy_tests.test_ivy.helpers import handle_test
+import ivy
 
 
 @st.composite
@@ -216,4 +217,45 @@ def test_kron(
         fn_name=fn_name,
         a=x[0],
         b=x[1],
+    )
+
+
+@handle_test(
+    fn_tree="functional.experimental.eig",
+    dtype_x=helpers.dtype_and_values(
+        available_dtypes=(ivy.float32, ivy.float64, ivy.int32, ivy.int64),
+        min_num_dims=2,
+        max_num_dims=3,
+        min_dim_size=10,
+        max_dim_size=10,
+        min_value=1.0,
+        max_value=1.0e5,
+        shared_dtype=True,
+    ),
+)
+def test_eig(
+    dtype_x,
+    as_variable,
+    num_positional_args,
+    native_array,
+    container_flags,
+    instance_method,
+    backend_fw,
+    fn_name,
+    ground_truth_backend,
+):
+    dtype, x = dtype_x
+    helpers.test_function(
+        ground_truth_backend=ground_truth_backend,
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        container_flags=container_flags,
+        instance_method=instance_method,
+        fw=backend_fw,
+        fn_name=fn_name,
+        test_values=False,
+        x=x[0],
     )

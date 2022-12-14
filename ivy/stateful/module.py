@@ -201,7 +201,7 @@ class Module(abc.ABC):
         else:
             ret = self.v
         if flatten_key_chains:
-            return ret.flatten_key_chains()
+            return ret.cont_flatten_key_chains()
         return ret
 
     def _top_mod_fn(self, /, *, depth=None):
@@ -324,7 +324,7 @@ class Module(abc.ABC):
         ret
             The height of the network. Return 0 for leaf module.
         """
-        return self.sub_mods().max_depth - 1
+        return self.sub_mods().cont_max_depth - 1
 
     def _find_variables(self, /, *, obj=None):
         """
@@ -388,14 +388,14 @@ class Module(abc.ABC):
         -------
         ret_cont
         """
-        if v.has_key_chain(orig_key_chain):
-            ret_cont = v.at_key_chain(orig_key_chain)
+        if v.cont_has_key_chain(orig_key_chain):
+            ret_cont = v.cont_at_key_chain(orig_key_chain)
         else:
             ret_cont = ivy.Container()
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key_chain in old_kc:
-                ret_cont = ret_cont.set_at_key_chain(
-                    "/".join(new_kc.split("/")[1:]), v.at_key_chain(new_kc)
+                ret_cont = ret_cont.cont_set_at_key_chain(
+                    "/".join(new_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
                 )
         return ret_cont
 
@@ -465,8 +465,8 @@ class Module(abc.ABC):
         keychain_mappings
             Dict storing those keys and ids being removed.
         """
-        created_ids = created.map(lambda x, kc: id(x))
-        vs_ids = vs.map(lambda x, kc: id(x))
+        created_ids = created.cont_map(lambda x, kc: id(x))
+        vs_ids = vs.cont_map(lambda x, kc: id(x))
         ids = dict()
         duplicate_keychains = list()
         keychain_mappings = dict()
@@ -480,14 +480,14 @@ class Module(abc.ABC):
             duplicate_keychains.append(kc)
             keychain_mappings[kc] = ids[x]
 
-        created_ids.map(lambda x, kc: unique_callback(x, kc))
-        vs_ids.map(
+        created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
+        vs_ids.cont_map(
             lambda x, kc: unique_callback(x, kc)
             if x not in ids
             else found_dup_callback(x, kc)
         )
         for dup_kc in duplicate_keychains:
-            vs = vs.prune_key_chain(dup_kc)
+            vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
     # Overridable #
@@ -639,14 +639,14 @@ class Module(abc.ABC):
                 next_depth = None
             ret = ivy.Container(
                 {
-                    ivy.Container.flatten_key_chain(
+                    ivy.Container.cont_flatten_key_chain(
                         sm.__repr__(), replacement="_"
                     ): sm.sub_mods(show_v=show_v, depth=next_depth)
                     for sm in self._sub_mods
                 }
             )
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         if show_v:
             return self.v
@@ -664,7 +664,7 @@ class Module(abc.ABC):
             current module. Default is ``None``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
-            self.top_v(depth).show_sub_container(self.v)
+            self.top_v(depth).cont_show_sub_container(self.v)
         else:
             print(
                 "both self.top_v and self.v must be initialized in order to show v in "
@@ -687,13 +687,13 @@ class Module(abc.ABC):
             which all nested key-chains flattened. Default is ``False``.
         """
         if ivy.exists(self.top_v) and ivy.exists(self.v):
-            kc = self.top_v(depth).find_sub_container(self.v)
+            kc = self.top_v(depth).cont_find_sub_container(self.v)
             if kc:
-                ret = self.v.restructure_key_chains({"": kc}, keep_orig=False)
+                ret = self.v.cont_restructure_key_chains({"": kc}, keep_orig=False)
             else:
                 ret = self.v
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         else:
             print(
@@ -719,13 +719,17 @@ class Module(abc.ABC):
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")]
+        mods = [
+            ivy.Container.cont_flatten_key_chain(top_mod.__repr__(), replacement="_")
+        ]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
             mods.append(
-                ivy.Container.flatten_key_chain(top_mod.__repr__(), replacement="_")
+                ivy.Container.cont_flatten_key_chain(
+                    top_mod.__repr__(), replacement="_"
+                )
             )
             if depth == max_depth:
                 break
@@ -761,9 +765,9 @@ class Module(abc.ABC):
             upper_sub_mods = self.top_mod(upper_depth).sub_mods(depth=mid_depth)
             lower_sub_mods = self.sub_mods(depth=lower_depth)
             if flatten_key_chains:
-                upper_sub_mods = upper_sub_mods.flatten_key_chains()
-                lower_sub_mods = lower_sub_mods.flatten_key_chains()
-            upper_sub_mods.show_sub_container(lower_sub_mods)
+                upper_sub_mods = upper_sub_mods.cont_flatten_key_chains()
+                lower_sub_mods = lower_sub_mods.cont_flatten_key_chains()
+            upper_sub_mods.cont_show_sub_container(lower_sub_mods)
         else:
             print(
                 "self.top_mod must be initialized in order to show mod in top_mod,"
@@ -932,7 +936,7 @@ class Module(abc.ABC):
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
-            kcs = sco.key_chains_containing(key, include_empty=True)
+            kcs = sco.cont_key_chains_containing(key, include_empty=True)
             if kcs:
                 max_key = sorted(
                     kcs,
@@ -949,7 +953,7 @@ class Module(abc.ABC):
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
-        kcs = sco.key_chains_containing(final_key, include_empty=True)
+        kcs = sco.cont_key_chains_containing(final_key, include_empty=True)
         if kcs:
             sorted_kcs = sorted(
                 kcs,
@@ -1053,7 +1057,7 @@ class Module(abc.ABC):
         None
         """
         os.makedirs("/".join(weights_path.split("/")[:-1]), exist_ok=True)
-        self.v.to_disk_as_hdf5(weights_path)
+        self.v.cont_to_disk_as_hdf5(weights_path)
 
     def build(self, *args, from_call=False, device=None, dtype=None, **kwargs):
         """
@@ -1097,15 +1101,15 @@ class Module(abc.ABC):
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
                 if v_from_constructor:
-                    created_n_found.assert_contains_sub_structure(
+                    created_n_found.cont_assert_contains_sub_structure(
                         v_from_constructor, partial=True
                     )
-                self.v = created_n_found.set_at_key_chains(v_from_constructor)
+                self.v = created_n_found.cont_set_at_key_chains(v_from_constructor)
             else:
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
-                ivy.Container.assert_identical_structure(
+                ivy.Container.cont_assert_identical_structure(
                     [created_n_found, v_from_constructor]
                 )
                 self.v = v_from_constructor
@@ -1206,7 +1210,7 @@ class Module(abc.ABC):
                 self._ivy_module = ivy_module
 
             def __call__(self, *args, **kwargs):
-                self._ivy_module.v = self._ivy_module.v.map(
+                self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: hk.get_parameter(
                         name=kc,
                         shape=x.shape,
@@ -1339,13 +1343,13 @@ class Module(abc.ABC):
                 params_hk = self._native_module.init(RNG, *args, **kwargs)
                 params_dict = _hk_flat_map_to_dict(params_hk)
                 self._hk_params = ivy.Container(params_dict)
-                param_iterator = self._hk_params.to_iterator()
+                param_iterator = self._hk_params.cont_to_iterator()
                 _, param0 = next(param_iterator)
                 self._dev = ivy.as_ivy_dev(param0.device())
 
             def _forward(self, *a, **kw):
                 a, kw = ivy.args_to_native(*a, **kw)
-                params_hk = _dict_to_hk_flat_map(self.v.to_dict())
+                params_hk = _dict_to_hk_flat_map(self.v.cont_to_dict())
                 ret = self._native_module.apply(params_hk, None, *a, **kw)
                 if isinstance(ret, tuple):
                     return ivy.args_to_native(*ret)
@@ -1556,7 +1560,7 @@ class Module(abc.ABC):
                 p.data = v.data
 
             def _inplace_update_v(self, new_v):
-                ivy.Container.multi_map(
+                ivy.Container.cont_multi_map(
                     lambda xs, kc: self._inplace_update(xs[0], xs[1]),
                     [self._native_params, new_v],
                 )
@@ -1616,12 +1620,14 @@ class MyTorchModule(torch.nn.Module):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.register_parameter(
                 name=kc, param=torch.nn.Parameter(ivy.to_native(x))
             )
         )
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: self._parameters[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(
+            lambda x, kc: self._parameters[kc]
+        )
 
     def forward(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
@@ -1638,16 +1644,16 @@ class MyTFModule(tf.keras.Model):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.add_weight(
                 name=kc, shape=x.shape, dtype=x.dtype, trainable=True
             )
         )
         model_weights = list()
-        self._ivy_module.v.map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
+        self._ivy_module.v.cont_map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
         self.set_weights(model_weights)
         params = {re.sub(":\\d+", "", param.name): param for param in self.variables}
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: params[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(lambda x, kc: params[kc])
 
     def call(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)

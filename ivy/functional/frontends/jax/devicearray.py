@@ -3,6 +3,7 @@
 # local
 import ivy
 import ivy.functional.frontends.jax as jax_frontend
+from ivy.functional.frontends.numpy import dtype
 
 
 class DeviceArray:
@@ -10,6 +11,7 @@ class DeviceArray:
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
         )
+        self._dtype = dtype(self._ivy_array.dtype)
 
     def __repr__(self):
         return (
@@ -22,6 +24,10 @@ class DeviceArray:
     @property
     def ivy_array(self):
         return self._ivy_array
+
+    @property
+    def dtype(self):
+        return self._dtype
 
     @property
     def at(self):

@@ -368,3 +368,34 @@ def test_torch_svd(
         atol=1e-2,
         ground_truth_backend=frontend,
     )
+    
+    
+#svdvals
+@handle_frontend_test(
+    fn_tree="torch.linalg.svdvals",
+    dtype_and_x=_get_dtype_and_square_matrix(),
+)
+def test_torch_svdvals(
+    *,
+    dtype_and_x,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    dtype, x = dtype_and_x
+    helpers.test_frontend_function(
+        input_dtypes=dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        all_aliases=["svdvals"],
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=x,
+    )
