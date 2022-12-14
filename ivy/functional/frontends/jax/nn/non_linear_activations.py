@@ -305,6 +305,13 @@ def softplus(x):
 
 
 @to_ivy_arrays_and_back
+def selu(x):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    return scale * elu(x, alpha)
+
+
+@to_ivy_arrays_and_back
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)
@@ -321,3 +328,4 @@ def hard_silu(x):
 def hard_sigmoid(x):
     dtype = _batch_promotion(x, default_dtype="float64")
     return ivy.divide(ivy.minimum(ivy.maximum(ivy.add(x, 3), 0), 6), 6).astype(dtype)
+
