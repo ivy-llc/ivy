@@ -1024,8 +1024,8 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.identical_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.identical_structure">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">identical_structure</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_identical_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_identical_structure">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_identical_structure</span><span class="p">(</span>
         <span class="n">containers</span><span class="p">,</span>
         <span class="n">check_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1075,8 +1075,8 @@
             <span class="n">key_chain</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.assert_identical_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.assert_identical_structure">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">assert_identical_structure</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_assert_identical_structure"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_assert_identical_structure">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_assert_identical_structure</span><span class="p">(</span>
         <span class="n">containers</span><span class="p">,</span>
         <span class="n">check_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -1108,7 +1108,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">(</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical_structure</span><span class="p">(</span>
                 <span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span>
             <span class="p">),</span>
             <span class="s2">&quot;Containers did not have identical structure:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
@@ -2434,7 +2434,7 @@
             <span class="k">if</span> <span class="p">(</span>
                 <span class="n">kcs_in_sub_cont</span>
                 <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">kcs_in_sub_cont</span><span class="p">)</span>
-                <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">(</span>
+                <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical_structure</span><span class="p">(</span>
                     <span class="p">[</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">],</span>
                     <span class="n">check_shapes</span><span class="o">=</span><span class="n">check_shapes</span><span class="p">,</span>
                     <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span>
