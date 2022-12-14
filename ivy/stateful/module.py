@@ -389,13 +389,13 @@ class Module(abc.ABC):
         ret_cont
         """
         if v.cont_has_key_chain(orig_key_chain):
-            ret_cont = v.at_key_chain(orig_key_chain)
+            ret_cont = v.cont_at_key_chain(orig_key_chain)
         else:
             ret_cont = ivy.Container()
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key_chain in old_kc:
-                ret_cont = ret_cont.set_at_key_chain(
-                    "/".join(new_kc.split("/")[1:]), v.at_key_chain(new_kc)
+                ret_cont = ret_cont.cont_set_at_key_chain(
+                    "/".join(new_kc.split("/")[1:]), v.cont_at_key_chain(new_kc)
                 )
         return ret_cont
 
@@ -487,7 +487,7 @@ class Module(abc.ABC):
             else found_dup_callback(x, kc)
         )
         for dup_kc in duplicate_keychains:
-            vs = vs.prune_key_chain(dup_kc)
+            vs = vs.cont_prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
     # Overridable #
@@ -936,7 +936,7 @@ class Module(abc.ABC):
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
-            kcs = sco.key_chains_containing(key, include_empty=True)
+            kcs = sco.cont_key_chains_containing(key, include_empty=True)
             if kcs:
                 max_key = sorted(
                     kcs,
@@ -953,7 +953,7 @@ class Module(abc.ABC):
                 )
             sco = sco[max_key]
         final_key = key_chain[-1]
-        kcs = sco.key_chains_containing(final_key, include_empty=True)
+        kcs = sco.cont_key_chains_containing(final_key, include_empty=True)
         if kcs:
             sorted_kcs = sorted(
                 kcs,
@@ -1104,7 +1104,7 @@ class Module(abc.ABC):
                     created_n_found.cont_assert_contains_sub_structure(
                         v_from_constructor, partial=True
                     )
-                self.v = created_n_found.set_at_key_chains(v_from_constructor)
+                self.v = created_n_found.cont_set_at_key_chains(v_from_constructor)
             else:
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created

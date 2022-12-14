@@ -741,8 +741,8 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if len(containers) == 1:
-            return containers[0].all_key_chains()
-        sets = [set(cont.all_key_chains()) for cont in containers]
+            return containers[0].cont_all_key_chains()
+        sets = [set(cont.cont_all_key_chains()) for cont in containers]
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
@@ -795,7 +795,9 @@ class ContainerBase(dict, abc.ABC):
             common_key_chains = ivy.Container.cont_common_key_chains(containers)
             if not common_key_chains:
                 return False
-            containers = [cont.at_key_chains(common_key_chains) for cont in containers]
+            containers = [
+                cont.cont_at_key_chains(common_key_chains) for cont in containers
+            ]
         keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
         # noinspection PyProtectedMember
         for key in keys:
@@ -1438,10 +1440,10 @@ class ContainerBase(dict, abc.ABC):
     def _cont_at_key_chains_input_as_seq(self, key_chains, ignore_key_errors=False):
         return_cont = ivy.Container(dict(), **self._config)
         for kc in key_chains:
-            val = self.at_key_chain(kc, ignore_key_errors=ignore_key_errors)
+            val = self.cont_at_key_chain(kc, ignore_key_errors=ignore_key_errors)
             if ignore_key_errors and not ivy.exists(val):
                 continue
-            return_cont.set_at_key_chain(kc, val, inplace=True)
+            return_cont.cont_set_at_key_chain(kc, val, inplace=True)
         return return_cont
 
     def _cont_at_key_chains_input_as_dict(
@@ -1458,7 +1460,7 @@ class ContainerBase(dict, abc.ABC):
                     v, new_current_chain, ignore_key_errors=ignore_key_errors
                 )
             else:
-                val = self.at_key_chain(
+                val = self.cont_at_key_chain(
                     new_current_chain, ignore_key_errors=ignore_key_errors
                 )
                 if ignore_key_errors and not ivy.exists(val):
@@ -1469,7 +1471,7 @@ class ContainerBase(dict, abc.ABC):
     def _cont_prune_key_chains_input_as_seq(self, key_chains):
         return_cont = self.cont_copy()
         for kc in key_chains:
-            return_cont = return_cont.prune_key_chain(kc)
+            return_cont = return_cont.cont_prune_key_chain(kc)
         return return_cont
 
     def _cont_prune_key_chains_input_as_dict(self, key_chains, return_cont=None):
@@ -1489,7 +1491,7 @@ class ContainerBase(dict, abc.ABC):
 
     def cont_duplicate_array_keychains(self):
         duplciates = ()
-        key_chains = self.all_key_chains()
+        key_chains = self.cont_all_key_chains()
         skips = set()
         for i in range(len(key_chains)):
             temp_duplicates = ()
@@ -2211,7 +2213,7 @@ class ContainerBase(dict, abc.ABC):
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            sub_cont_key_chains = sub_cont_to_find.all_key_chains()
+            sub_cont_key_chains = sub_cont_to_find.cont_all_key_chains()
             kcs_in_sub_cont = [kc in sub_cont for kc in sub_cont_key_chains]
             if (
                 kcs_in_sub_cont
@@ -2309,7 +2311,7 @@ class ContainerBase(dict, abc.ABC):
             kc
 
             """
-            sub_struc_key_chains = sub_struc_to_find.all_key_chains()
+            sub_struc_key_chains = sub_struc_to_find.cont_all_key_chains()
             kcs_in_sub_cont = [kc in sub_cont for kc in sub_struc_key_chains]
             if (
                 kcs_in_sub_cont
@@ -2390,7 +2392,7 @@ class ContainerBase(dict, abc.ABC):
                 )
             )
 
-    def at_keys(
+    def cont_at_keys(
         self, queries, ignore_none=True, containing=False, ignore_key_errors=False
     ):
         """Query container object at specified keys, either as list or nested dict.
@@ -2430,11 +2432,11 @@ class ContainerBase(dict, abc.ABC):
             return x
 
         self.cont_map(map_fn)
-        return self.at_key_chains(
+        return self.cont_at_key_chains(
             key_chains_to_keep, ignore_key_errors=ignore_key_errors
         )
 
-    def at_key_chain(self, key_chain, ignore_key_errors=False):
+    def cont_at_key_chain(self, key_chain, ignore_key_errors=False):
         """Query container object at a specified key-chain.
 
         Parameters
@@ -2461,7 +2463,7 @@ class ContainerBase(dict, abc.ABC):
                 raise ivy.exceptions.IvyException(repr(e))
         return ret
 
-    def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
+    def cont_at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
         """Query container object at specified key-chains, either as list or nested
         dict.
 
@@ -2500,7 +2502,7 @@ class ContainerBase(dict, abc.ABC):
                 " or ivy.Container, but found type {}".format(type(key_chains))
             )
 
-    def all_key_chains(self, include_empty=False):
+    def cont_all_key_chains(self, include_empty=False):
         """
 
         Parameters
@@ -2511,7 +2513,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return [kc for kc, v in self.cont_to_iterator(include_empty=include_empty)]
 
-    def key_chains_containing(self, sub_str, include_empty=False):
+    def cont_key_chains_containing(self, sub_str, include_empty=False):
         """
 
         Parameters
@@ -2528,7 +2530,7 @@ class ContainerBase(dict, abc.ABC):
             if sub_str in kc
         ]
 
-    def set_at_keys(self, target_dict):
+    def cont_set_at_keys(self, target_dict):
         """Set values of container object at specified keys.
 
         Parameters
@@ -2547,12 +2549,12 @@ class ContainerBase(dict, abc.ABC):
             if key in target_dict:
                 return_dict[key] = target_dict[key]
             elif isinstance(val, ivy.Container):
-                return_dict[key] = val.set_at_keys(target_dict)
+                return_dict[key] = val.cont_set_at_keys(target_dict)
             else:
                 return_dict[key] = val
         return ivy.Container(return_dict, **self._config)
 
-    def set_at_key_chain(self, key_chain, val, inplace=False):
+    def cont_set_at_key_chain(self, key_chain, val, inplace=False):
         """Set value of container object at a specified key-chain.
 
         Parameters
@@ -2583,7 +2585,7 @@ class ContainerBase(dict, abc.ABC):
         sub_cont[keys[-1]] = val
         return cont
 
-    def overwrite_at_key_chain(self, key_chain, val, inplace=False):
+    def cont_overwrite_at_key_chain(self, key_chain, val, inplace=False):
         """Overwrite value of container object at a specified key-chain.
 
         Parameters
@@ -2612,19 +2614,19 @@ class ContainerBase(dict, abc.ABC):
                 key,
                 sub_cont,
                 message="key chain must already exist in container in order to \
-                call overwrite_at_key_chain",
+                call cont_overwrite_at_key_chain",
             )
             sub_cont = sub_cont[key]
         ivy.assertions.check_elem_in_list(
             keys[-1],
             sub_cont,
             message="key chain must already exist in container in order to \
-            call overwrite_at_key_chain",
+            call cont_overwrite_at_key_chain",
         )
         sub_cont[keys[-1]] = val
         return cont
 
-    def set_at_key_chains(self, target_dict, return_dict=None, inplace=False):
+    def cont_set_at_key_chains(self, target_dict, return_dict=None, inplace=False):
         """Set values of container object at specified key-chains.
 
         Parameters
@@ -2649,12 +2651,14 @@ class ContainerBase(dict, abc.ABC):
                 return_dict = self.cont_copy()
         for k, v in target_dict.items():
             if isinstance(v, dict):
-                return_dict[k] = self.set_at_key_chains(v, return_dict[k], inplace)
+                return_dict[k] = self.cont_set_at_key_chains(v, return_dict[k], inplace)
             else:
                 return_dict[k] = v
         return ivy.Container(return_dict, **self._config)
 
-    def overwrite_at_key_chains(self, target_dict, return_dict=None, inplace=False):
+    def cont_overwrite_at_key_chains(
+        self, target_dict, return_dict=None, inplace=False
+    ):
         """Overwrite values of container object at specified key-chains.
 
         Parameters
@@ -2683,17 +2687,17 @@ class ContainerBase(dict, abc.ABC):
                 k,
                 return_dict,
                 message="key chain must already exist in container in order to \
-                call overwrite_at_key_chain",
+                call cont_overwrite_at_key_chain",
             )
             if isinstance(v, dict):
-                return_dict[k] = self.overwrite_at_key_chains(
+                return_dict[k] = self.cont_overwrite_at_key_chains(
                     v, return_dict[k], inplace
                 )
             else:
                 return_dict[k] = v
         return ivy.Container(return_dict, **self._config)
 
-    def prune_keys(self, query_keys, ignore_none=True):
+    def cont_prune_keys(self, query_keys, ignore_none=True):
         """Recursively prune set of keys.
 
         Parameters
@@ -2732,9 +2736,9 @@ class ContainerBase(dict, abc.ABC):
             return x
 
         self.cont_map(map_fn)
-        return self.prune_key_chains(key_chains_to_prune)
+        return self.cont_prune_key_chains(key_chains_to_prune)
 
-    def prune_key_chain(self, key_chain):
+    def cont_prune_key_chain(self, key_chain):
         """Recursively prune chain of keys, specified as 'key1/key2/key3/...'.
 
         Parameters
@@ -2755,7 +2759,9 @@ class ContainerBase(dict, abc.ABC):
                     if len(keys_in_chain) == 1:
                         new_val = []
                     else:
-                        new_val = value.prune_key_chain("/".join(keys_in_chain[1:]))
+                        new_val = value.cont_prune_key_chain(
+                            "/".join(keys_in_chain[1:])
+                        )
                     if len(new_val) > 0:
                         out_dict[key] = new_val
                 else:
@@ -2767,7 +2773,7 @@ class ContainerBase(dict, abc.ABC):
                     out_dict[key] = value
         return ivy.Container(out_dict, **self._config)
 
-    def prune_key_chains(self, key_chains, ignore_none=True):
+    def cont_prune_key_chains(self, key_chains, ignore_none=True):
         """Recursively prune set of key chains.
 
         Parameters
@@ -2797,7 +2803,7 @@ class ContainerBase(dict, abc.ABC):
                 "or ivy.Container, but found type {}".format(type(key_chains))
             )
 
-    def format_key_chains(self, format_fn):
+    def cont_format_key_chains(self, format_fn):
         """Format all key-chains, using the formatting function.
 
         Parameters
@@ -2813,12 +2819,12 @@ class ContainerBase(dict, abc.ABC):
         """
         return ivy.Container({format_fn(k): v for k, v in self.cont_to_iterator()})
 
-    def sort_by_key(self):
+    def cont_sort_by_key(self):
 
         new_dict = dict()
         for k, v in self.items():
             if isinstance(v, ivy.Container):
-                v_back = v.sort_by_key()
+                v_back = v.cont_sort_by_key()
             else:
                 v_back = v
             new_dict[k] = v_back
@@ -2894,7 +2900,7 @@ class ContainerBase(dict, abc.ABC):
                 out_cont[key] = value
         return out_cont
 
-    def prune_keys_from_key_chains(self, absolute=None, containing=None):
+    def cont_prune_keys_from_key_chains(self, absolute=None, containing=None):
         """Recursively prune absolute keys or keys containing certain substrings from
         all key chains.
 
@@ -2953,7 +2959,7 @@ class ContainerBase(dict, abc.ABC):
         new_cont = self.cont_copy() if keep_orig else ivy.Container()
         for old_kc, new_kc in keychain_mapping.items():
             if replace and old_kc in new_cont:
-                new_cont = new_cont.prune_key_chain(old_kc)
+                new_cont = new_cont.cont_prune_key_chain(old_kc)
             new_cont = ivy.Container.cont_combine(
                 new_cont, ivy.Container({new_kc: self[old_kc]})
             )
@@ -2978,7 +2984,7 @@ class ContainerBase(dict, abc.ABC):
         new_cont = self.cont_copy() if keep_orig else ivy.Container()
         for old_kc, new in mapping.items():
             if replace and old_kc in new_cont:
-                new_cont = new_cont.prune_key_chain(old_kc)
+                new_cont = new_cont.cont_prune_key_chain(old_kc)
             val = self[old_kc]
             if isinstance(new, dict):
                 new_kc = new["key_chain"]
@@ -3240,7 +3246,7 @@ class ContainerBase(dict, abc.ABC):
         """
         if key in self:
             return
-        self.set_at_key_chain(key, value, inplace)
+        self.cont_set_at_key_chain(key, value, inplace)
 
     def cont_if_exists(self, key):
         """Returns the sub-container at the following key if it exists, otherwise None.
@@ -3332,7 +3338,7 @@ class ContainerBase(dict, abc.ABC):
         ret = self.cont_copy()
         desired_keys = keys[key_slice]
         # noinspection PyUnresolvedReferences
-        return ret.at_key_chains(desired_keys)
+        return ret.cont_at_key_chains(desired_keys)
 
     def cont_slice_keys(self, key_slice, all_depths=False):
         """Summary.
@@ -3531,7 +3537,7 @@ class ContainerBase(dict, abc.ABC):
 
         # get the sub-container
         if isinstance(sub_cont_or_keychain, str):
-            sub_cont = self.at_key_chain(sub_cont_or_keychain)
+            sub_cont = self.cont_at_key_chain(sub_cont_or_keychain)
         else:
             sub_cont = sub_cont_or_keychain
 
@@ -3918,7 +3924,7 @@ class ContainerBase(dict, abc.ABC):
             if query == "":
                 return self
             if "/" in query or "." in query:
-                ret = self.at_key_chain(query)
+                ret = self.cont_at_key_chain(query)
                 return ret
             ret = dict.__getitem__(self, query)
             return ret
@@ -3959,7 +3965,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if isinstance(query, str) and ("/" in query or "." in query):
-            return self.set_at_key_chain(query, val, inplace=True)
+            return self.cont_set_at_key_chain(query, val, inplace=True)
         else:
             return dict.__setitem__(self, query, val)
 
