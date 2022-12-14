@@ -1668,7 +1668,7 @@ class ContainerBase(dict, abc.ABC):
             )
         )
 
-    def slice_via_key(self, slice_key):
+    def cont_slice_via_key(self, slice_key):
         """Get slice of container, based on key.
 
         Parameters
@@ -1686,7 +1686,7 @@ class ContainerBase(dict, abc.ABC):
             if key == slice_key:
                 return value
             elif isinstance(value, ivy.Container):
-                return_dict[key] = value.slice_via_key(slice_key)
+                return_dict[key] = value.cont_slice_via_key(slice_key)
             else:
                 return_dict[key] = value
         return ivy.Container(return_dict, **self._config)
