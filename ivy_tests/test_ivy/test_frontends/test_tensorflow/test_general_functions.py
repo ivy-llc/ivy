@@ -877,6 +877,41 @@ def test_tensorflow_gather_nd(
     )
 
 
+@st.composite
+def _pad_helper(draw):
+    mode = draw(
+        st.sampled_from(
+            [
+                "constant",
+                "reflect",
+                "symmetric",
+            ]
+        )
+    )
+    dtype, input, shape = draw(
+        helpers.dtype_and_values(
+            available_dtypes=helpers.get_dtypes("numeric"),
+            ret_shape=True,
+            min_num_dims=1,
+            min_value=-100,
+            max_value=100,
+        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+    )
+    ndim = len(shape)
+    paddings = draw(
+        st.lists(
+            st.tuples(
+                st.integers(min_value=0, max_value=4),
+                st.integers(min_value=0, max_value=4),
+            ),
+            min_size=ndim,
+            max_size=ndim,
+        )
+    )
+    constant_values = draw(st.integers(min_value=0, max_value=4))
+    return dtype, input[0], paddings, mode, constant_values
+
+
 # pad
 @handle_frontend_test(
     fn_tree="tensorflow.pad",
