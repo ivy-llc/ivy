@@ -103,7 +103,7 @@ def set_nest_at_index(
     /,
     shallow: bool = True,
     _result: Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple] = None,
-):
+) -> Union[ivy.Array, ivy.NativeArray, ivy.Container, Dict, List, Tuple]:
     """Set the value of a nested item at a specified index.
 
     Parameters
@@ -170,29 +170,24 @@ def set_nest_at_index(
         b: ivy.array([3., 4.])
     }
     """
-    outer_tupled = False
+    nest_type = type(nest)
     if _result is None:
         if shallow:
-            _result = type(nest)(nest)
+            _result = nest_type(nest)
         else:
             _result = copy_nest(nest)
-        if isinstance(nest, tuple):
-            outer_tupled = True
-            _result = list(_result)
+        _result = list(_result) if isinstance(nest, tuple) else _result
     if len(index) == 1:
         if shallow:
-            nest[index[0]] = value
+            try:
+                nest[index[0]] = value
+            except TypeError:
+                print("shallow cannot be set to True for immutable types")
+        _result = list(_result) if isinstance(_result, tuple) else _result
         _result[index[0]] = value
     else:
-        inner_tupled = False
-        if isinstance(_result[index[0]], tuple):
-            _result[index[0]] = list(_result[index[0]])
-            inner_tupled = True
         set_nest_at_index(nest[index[0]], index[1:], value, shallow, _result[index[0]])
-        if inner_tupled:
-            _result[index[0]] = tuple(_result[index[0]])
-    if outer_tupled:
-        _result = tuple(_result)
+    _result = nest_type(_result)
     return _result
 
 
