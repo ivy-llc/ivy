@@ -2423,7 +2423,7 @@ def test_container_to_and_from_disk_as_hdf5(device):
     assert os.path.exists(save_filepath)
 
     # loading
-    loaded_container = Container.from_disk_as_hdf5(save_filepath, slice(1))
+    loaded_container = Container.cont_from_disk_as_hdf5(save_filepath, slice(1))
     assert np.array_equal(ivy.to_numpy(loaded_container.a), ivy.to_numpy(container1.a))
     assert np.array_equal(
         ivy.to_numpy(loaded_container.b.c), ivy.to_numpy(container1.b.c)
@@ -2437,7 +2437,7 @@ def test_container_to_and_from_disk_as_hdf5(device):
     assert os.path.exists(save_filepath)
 
     # loading after append
-    loaded_container = Container.from_disk_as_hdf5(save_filepath)
+    loaded_container = Container.cont_from_disk_as_hdf5(save_filepath)
     assert np.array_equal(ivy.to_numpy(loaded_container.a), ivy.to_numpy(container2.a))
     assert np.array_equal(
         ivy.to_numpy(loaded_container.b.c), ivy.to_numpy(container2.b.c)
@@ -2447,7 +2447,9 @@ def test_container_to_and_from_disk_as_hdf5(device):
     )
 
     # load slice
-    loaded_sliced_container = Container.from_disk_as_hdf5(save_filepath, slice(1, 2))
+    loaded_sliced_container = Container.cont_from_disk_as_hdf5(
+        save_filepath, slice(1, 2)
+    )
     assert np.array_equal(
         ivy.to_numpy(loaded_sliced_container.a), ivy.to_numpy(container1.a)
     )
@@ -2488,7 +2490,7 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(device):
     Container.shuffle_h5_file(save_filepath)
 
     # loading
-    container_shuffled = Container.from_disk_as_hdf5(save_filepath, slice(3))
+    container_shuffled = Container.cont_from_disk_as_hdf5(save_filepath, slice(3))
 
     # testing
     data = np.array([1, 2, 3])

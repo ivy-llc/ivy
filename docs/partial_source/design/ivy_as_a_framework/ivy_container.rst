@@ -259,7 +259,7 @@ For example, if the container mainly contains arrays (such as the weights of a n
 
    # save and load as hdf5
    weights.to_disk_as_hdf5('weights.hdf5')
-   loaded = ivy.Container.from_disk_as_hdf5('weights.hdf5')
+   loaded = ivy.Container.cont_from_disk_as_hdf5('weights.hdf5')
    assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
 
