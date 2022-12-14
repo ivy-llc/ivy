@@ -399,18 +399,13 @@ def set_nest_at_indices(
     """
     nest_type = type(nest)
     if shallow:
-        result = type(nest)(nest)
+        result = nest_type(nest)
     else:
         result = copy_nest(nest)
     result = list(result) if isinstance(result, tuple) else result
     if not isinstance(values, (list, tuple)):
         values = [values] * len(indices)
-    for i, (index, value) in enumerate(zip(indices, values)):
-        if i == 0:
-            result = set_nest_at_index(
-                nest, index, value, _result=result, shallow=shallow
-            )
-            continue
+    for index, value in zip(indices, values):
         if shallow:
             result = set_nest_at_index(
                 nest, index, value, _result=result, shallow=shallow
