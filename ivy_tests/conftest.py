@@ -38,6 +38,7 @@ def is_db_available():
 
 def pytest_addoption(parser):
     parser.addoption(
+        "-N",
         "--num-examples",
         action="store",
         default=25,
