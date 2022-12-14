@@ -1398,7 +1398,7 @@ class ContainerBase(dict, abc.ABC):
             v
             for k, v in self.cont_map(
                 lambda x, kc: list(x.shape)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)
             ).cont_to_iterator()
             if v
@@ -1427,8 +1427,8 @@ class ContainerBase(dict, abc.ABC):
         sub_devs = [
             v
             for k, v in self.cont_map(
-                lambda x, kc: self._ivy.dev(x, as_native=as_native)
-                if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+                lambda x, kc: self._cont_ivy.dev(x, as_native=as_native)
+                if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
                 else None
             ).cont_to_iterator()
             if v
@@ -1758,7 +1758,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if dim_size is None:
-            dim_size = self.shared_shape[axis]
+            dim_size = self.cont_shape[axis]
         if keepdims:
             # noinspection PyTypeChecker
             return [
@@ -1823,13 +1823,13 @@ class ContainerBase(dict, abc.ABC):
         )
         # noinspection PyTypeChecker
         return self.cont_map(
-            lambda x, kc: self._ivy.split(
+            lambda x, kc: self._cont_ivy.split(
                 x,
                 num_or_size_splits=num_or_size_splits,
                 axis=axis,
                 with_remainder=with_remainder,
             )
-            if self._ivy.is_native_array(x) or isinstance(x, ivy.Array)
+            if self._cont_ivy.is_native_array(x) or isinstance(x, ivy.Array)
             else x,
             key_chains,
             to_apply,
@@ -1918,7 +1918,7 @@ class ContainerBase(dict, abc.ABC):
                     h5_group, starting_index, mode, max_batch_size
                 )
             else:
-                value_as_np = self._ivy.to_numpy(value)
+                value_as_np = self._cont_ivy.to_numpy(value)
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 if not max_batch_size:
@@ -2853,7 +2853,7 @@ class ContainerBase(dict, abc.ABC):
                 new_value = value.cont_prune_empty(keep_nones, False)
                 if new_value:
                     out_dict[key] = new_value
-            elif self._ivy.exists(value) or keep_nones:
+            elif self._cont_ivy.exists(value) or keep_nones:
                 out_dict[key] = value
         if len(out_dict):
             return ivy.Container(out_dict, **self._config)
@@ -3200,7 +3200,7 @@ class ContainerBase(dict, abc.ABC):
     def cont_with_entries_as_lists(self):
         def to_list(x, _=""):
             try:
-                return self._ivy.to_list(x)
+                return self._cont_ivy.to_list(x)
             except (IvyBackendException):
                 return x
 
@@ -3225,7 +3225,7 @@ class ContainerBase(dict, abc.ABC):
             new container with values of updated shapes
 
         """
-        leading_shape = self._ivy.default(leading_shape, list())
+        leading_shape = self._cont_ivy.default(leading_shape, list())
         if return_cont is None:
             return_cont = self.cont_copy()
         for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
@@ -3234,7 +3234,9 @@ class ContainerBase(dict, abc.ABC):
                     v_shape, leading_shape, return_cont[k]
                 )
             else:
-                return_cont[k] = self._ivy.reshape(v, leading_shape + list(v_shape))
+                return_cont[k] = self._cont_ivy.reshape(
+                    v, leading_shape + list(v_shape)
+                )
         return ivy.Container(return_cont, **self._config)
 
     def cont_create_if_absent(self, key, value, inplace=True):
@@ -3519,7 +3521,7 @@ class ContainerBase(dict, abc.ABC):
             whether to modify the container or return a copy
         """
         if inplace:
-            self._ivy = ivy_backend
+            self._cont_ivy = ivy_backend
             self._config["ivyh"] = ivy_backend
             return self
         else:
@@ -3693,7 +3695,7 @@ class ContainerBase(dict, abc.ABC):
                 rep = v.__repr__(as_repr=False)
             else:
                 if (
-                    (self._ivy.is_native_array(v) or isinstance(v, ivy.Array))
+                    (self._cont_ivy.is_native_array(v) or isinstance(v, ivy.Array))
                     and len(list(v.shape)) > 0
                     and ivy.exists(self._print_limit)
                     and reduce(mul, v.shape) > self._print_limit
@@ -3702,7 +3704,10 @@ class ContainerBase(dict, abc.ABC):
                 elif (
                     isinstance(v, (list, tuple))
                     and v
-                    and (self._ivy.is_native_array(v[0]) or isinstance(v[0], ivy.Array))
+                    and (
+                        self._cont_ivy.is_native_array(v[0])
+                        or isinstance(v[0], ivy.Array)
+                    )
                 ):
                     if (
                         isinstance(v, tuple)
@@ -4022,18 +4027,18 @@ class ContainerBase(dict, abc.ABC):
     # private
 
     @property
-    def _ivy(self):
+    def _cont_ivy(self):
 
         return ivy.default(self._local_ivy, ivy)
 
-    @_ivy.setter
-    def _ivy(self, local_ivy):
+    @_cont_ivy.setter
+    def _cont_ivy(self, local_ivy):
         self._local_ivy = local_ivy
 
     # public
 
     @property
-    def shared_shape(self):
+    def cont_shape(self):
         """The shape of the arrays in the container, with None placed in indices which
         are not consistent across arrays.
         """
@@ -4063,7 +4068,7 @@ class ContainerBase(dict, abc.ABC):
     @property
     def ivy(self):
 
-        return self._ivy
+        return self._cont_ivy
 
     @property
     def config(self):
