@@ -2,10 +2,9 @@ USER_EMAIL="rashul.chutani@gmail.com"
 USER_NAME=""
 TARGET_BRANCH=master
 CLONE_DIR=$(mktemp -d)
-SSH_DEPLOY_KEY=${1}
 GITHUB_SERVER="github.com"
 mkdir --parents "$HOME/.ssh"
-DEPLOY_KEY_FILE="$HOME/.ssh/deploy_key_"
+DEPLOY_KEY_FILE="$HOME/.ssh/deploy_key"
 echo "${SSH_DEPLOY_KEY}" > "$DEPLOY_KEY_FILE"
 chmod 600 "$DEPLOY_KEY_FILE"
 
