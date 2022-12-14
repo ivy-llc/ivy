@@ -433,3 +433,74 @@ def test_torch_nll_loss(
         reduce=reduce,
         reduction=reduction,
     )
+
+
+
+# nll_loss
+@handle_frontend_test(
+    fn_tree="torch.nn.functional.gaussian_nll_loss",
+    dtype_and_input=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        min_value=0.01,
+        max_value=1.0,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+    dtype_and_target=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("integer"),
+        min_value=0.0,
+        max_value=1.0,
+        allow_inf=False,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+    dtype_and_var=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("float"),
+        allow_inf=False,
+        min_value=0.0,
+        min_num_dims=1,
+        max_num_dims=1,
+        min_dim_size=1,
+        max_dim_size=1,
+    ),
+    full =st.booleans(),
+    reduction=st.sampled_from(["mean", "none", "sum"]),
+)
+def test_torch_gaussian_nll_loss(
+    *,
+    dtype_and_input,
+    dtype_and_target,
+    dtype_and_var,
+    full,
+    reduction,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    inputs_dtype, input = dtype_and_input
+    target_dtype, target = dtype_and_target
+    var_dtype, var = dtype_and_var
+    helpers.test_frontend_function(
+        input_dtypes=inputs_dtype + target_dtype + var_dtype,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        input=input[0],
+        target=target[0],
+        var=var[0],
+        full = full,
+        reduction=reduction,
+    )

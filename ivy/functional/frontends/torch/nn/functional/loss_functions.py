@@ -214,3 +214,44 @@ def nll_loss(
     ret = reduct(loss)
 
     return ret
+
+
+@to_ivy_arrays_and_back
+def gaussian_nll_loss(
+    input,
+    target,
+    var,
+    full:bool = False,
+    eps:float = 1e-6,
+    reduction:str ="mean",
+):
+
+    
+    
+
+    if input.shape != var.shape:
+        if input.shape[:-1] == var.shape:
+            #need for unsqueeze
+            var_new = ivy.permute_dims( ivy.zeros_like(input), axes = (2,0,1))
+            var_new[0] = var
+            var = ivy.permute_dims( var_new, axes  = (1, 2, 0))
+        
+        elif input.shape[:-1] == var.shape[:-1] and var.shape[-1] == 1:
+            pass
+        else:
+            ivy.exceptions.IvyException(
+            "var shape {} is not compatible with input shape {}".format(var.shape, input.shape)
+        )
+    
+    
+    
+    if ivy.any(var < 0):
+        raise ivy.exceptions.IvyException("var has negative entry/entries")
+
+    
+    loss = 0.5 * (ivy.log(var) + (input - target)**2 / var)
+    if full:
+        loss += 0.5 * ivy.log(2 * ivy.pi)
+    reduction_function = _get_reduction_func(reduction)
+    
+    return reduction_function(loss)
