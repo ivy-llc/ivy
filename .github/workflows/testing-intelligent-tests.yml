@@ -18,7 +18,7 @@ jobs:
        - name: Determine and Run Tests
          id: tests
          run: |
-           ./ivy/push_mapping.sh
+           ./ivy/push_mapping.sh ${{ secrets.SSH_DEPLOY_KEY }}
            git clone -b master git@github.com:unifyai/Mapping.git --depth 1
            cd Mapping
            echo "Hello!" > tests.pbz2

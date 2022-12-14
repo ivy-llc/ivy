@@ -1,6 +1,6 @@
 mkdir --parents "$HOME/.ssh"
 DEPLOY_KEY_FILE="$HOME/.ssh/deploy_key"
-echo "${{ secrets.SSH_DEPLOY_KEY }}" > "$DEPLOY_KEY_FILE"
+echo "$1" > "$DEPLOY_KEY_FILE"
 chmod 600 "$DEPLOY_KEY_FILE"
 SSH_KNOWN_HOSTS_FILE="$HOME/.ssh/known_hosts"
 ssh-keyscan -H github.com > "$SSH_KNOWN_HOSTS_FILE"
