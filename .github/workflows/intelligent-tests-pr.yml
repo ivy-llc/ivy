@@ -1,9 +1,6 @@
 name: intelligent-tests
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'master'
 permissions:
   actions: read
 jobs:
@@ -25,31 +22,32 @@ jobs:
            github_token: ${{ secrets.GITHUB_TOKEN }}
            job_name: ${{ github.job }}
 
-       - name: Update Mapping and Determine Tests
-         env:
-           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+       - name: Determine and Run Tests
+         id: tests
          run: |
-           source ./ivy/push_mapping.sh master1
+           git clone -b master1 https://github.com/unifyai/Mapping.git --depth 1
            pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
            cd ivy
            python determine_tests.py extra
            cd ..
-           cp ivy/tests.pbz2 Mapping/
-           cd Mapping
-           git add .
-           git commit -m "Update Mapping Test"
-           git push origin master1
+           mkdir tests
+           cp ivy/tests.pbz2 tests/
+           cd ivy
+            python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }} 
          continue-on-error: true
 
-       - name: Run Tests
-         id: tests
+       - name: Push Mapping
+         uses: cpina/github-action-push-to-another-repository@main
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-         run: |
-           cd ivy
-           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
-         continue-on-error: true
+         with:
+           source-directory: tests/
+           destination-github-username: 'unifyai'
+           destination-repository-name: 'Mapping'
+           user-email: rashul.chutani@gmail.com
+           commit-message: Update Mapping
+           target-branch: master1
 
        - name: Check on failures
          if: steps.tests.outcome != 'success'
@@ -91,6 +89,7 @@ jobs:
 
        - name: Push Mapping
          uses: cpina/github-action-push-to-another-repository@main
+         continue-on-error: true
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
          with:
