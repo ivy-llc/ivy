@@ -15,14 +15,31 @@ jobs:
            submodules: "recursive"
            fetch-depth: 100
 
-       - name: Determine and Run Tests
+       - name: Update Mapping and Determine Tests
+         env:
+           SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+         run: |
+           source ./ivy/push_mapping.sh master1
+           pip install pydriller pymongo
+           cp Mapping/tests.pbz2 ivy/
+           cd ivy
+           python determine_tests.py extra
+           cp ivy/tests.pbz2 Mapping/
+           cd Mapping
+           git add .
+           git commit -m "Update Mapping"
+           git push origin master1
+         continue-on-error: true
+
+       - name: Run Tests
          id: tests
          env:
            SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
          run: |
-           source ./ivy/push_mapping.sh
-           cd Mapping
-           cat tests.pbz2
-           echo "Hello!" > tests.pbz2
-           git push origin master
+           cd ivy
+           python run_tests.py ${{ secrets.REDIS_CONNECTION_URL }} ${{ secrets.REDIS_PASSWORD }} ${{ secrets.MONGODB_PASSWORD }} ${{ steps.jobs.outputs.html_url }}
          continue-on-error: true
+
+       - name: Check on failures
+         if: steps.tests.outcome != 'success'
+         run: exit 1

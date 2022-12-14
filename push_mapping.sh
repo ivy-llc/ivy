@@ -1,6 +1,6 @@
 USER_EMAIL="rashul.chutani@gmail.com"
 USER_NAME=""
-TARGET_BRANCH=master
+TARGET_BRANCH=$1
 CLONE_DIR=$(mktemp -d)
 GITHUB_SERVER="github.com"
 mkdir --parents "$HOME/.ssh"
