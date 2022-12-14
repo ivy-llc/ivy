@@ -1835,7 +1835,7 @@ class ContainerBase(dict, abc.ABC):
             map_sequences,
         ).cont_unstack_conts(0, dim_size=dim_size)
 
-    def num_arrays(self, exclusive=False):
+    def cont_num_arrays(self, exclusive=False):
         """Compute the number of arrays present at the leaf nodes, including variables
         by default.
 
