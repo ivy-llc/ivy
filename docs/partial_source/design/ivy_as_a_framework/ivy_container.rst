@@ -297,7 +297,7 @@ Alternatively, if the container mainly stored experiment configuration data, the
    # }                                 #
    # ----------------------------------#
 
-   loaded = ivy.Container.from_disk_as_json('config.json')
+   loaded = ivy.Container.cont_from_disk_as_json('config.json')
    assert (config == loaded).all_true()
 
 Comparisons
