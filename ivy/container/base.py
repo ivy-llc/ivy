@@ -1006,7 +1006,7 @@ class ContainerBase(dict, abc.ABC):
         return True
 
     @staticmethod
-    def identical_array_shapes(containers, exclusive=False):
+    def cont_identical_array_shapes(containers, exclusive=False):
         """Determine whether all of the containers have identical number of arrays and
         identical array shapes, regardless of their key-chain structures.
 
