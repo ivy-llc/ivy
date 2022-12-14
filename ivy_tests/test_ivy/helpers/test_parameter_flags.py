@@ -55,6 +55,7 @@ def build_flag(key: str, value: bool):
 class FunctionTestFlags:
     def __init__(
         self,
+        num_positional_args,
         with_out,
         instance_method,
         as_variable,
@@ -62,6 +63,7 @@ class FunctionTestFlags:
         container_flags,
         gradient,
     ):
+        self.num_positional_args = num_positional_args
         self.with_out = with_out
         self.instance_method = instance_method
         self.native_arrays = native_array
@@ -74,6 +76,7 @@ class FunctionTestFlags:
 def function_flags(
     draw,
     *,
+    num_positional_args,
     instance_method=BuiltInstanceStrategy,
     with_out=BuiltWithOutStrategy,
     gradient=BuiltGradientStrategy,
@@ -84,6 +87,7 @@ def function_flags(
     return draw(
         st.builds(
             FunctionTestFlags,
+            num_positional_args=num_positional_args,
             with_out=with_out,
             instance_method=instance_method,
             gradient=gradient,
