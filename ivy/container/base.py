@@ -727,7 +727,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def common_key_chains(containers):
+    def cont_common_key_chains(containers):
         """Return the key-chains common across all containers.
 
         Parameters
@@ -792,7 +792,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         if partial:
-            common_key_chains = ivy.Container.common_key_chains(containers)
+            common_key_chains = ivy.Container.cont_common_key_chains(containers)
             if not common_key_chains:
                 return False
             containers = [cont.at_key_chains(common_key_chains) for cont in containers]
