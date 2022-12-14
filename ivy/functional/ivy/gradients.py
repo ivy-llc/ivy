@@ -29,7 +29,7 @@ def _get_duplicate_index_chains(xs):
     """
     duplicate_index_chains = ()
     if isinstance(xs, ivy.Container):
-        duplicate_index_chains = xs.duplicate_array_keychains()
+        duplicate_index_chains = xs.cont_duplicate_array_keychains()
     elif isinstance(xs, (list, tuple, dict)):
         duplicate_index_chains = ivy.duplicate_array_index_chains(xs)
     return duplicate_index_chains

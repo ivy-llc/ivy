@@ -1322,7 +1322,7 @@ class ContainerBase(dict, abc.ABC):
     # Private Methods #
     # ----------------#
 
-    def _call_static_method_with_flexible_args(
+    def _cont_call_static_method_with_flexible_args(
         self,
         static_method,
         *args,
@@ -1386,7 +1386,7 @@ class ContainerBase(dict, abc.ABC):
             out=out,
         )
 
-    def _get_shape(self):
+    def _cont_get_shape(self):
 
         if not len(self.keys()):
             if ivy.exists(self._queues):
@@ -1417,11 +1417,11 @@ class ContainerBase(dict, abc.ABC):
             ).tolist()
         ]
 
-    def _get_shapes(self):
+    def _cont_get_shapes(self):
 
         return self.cont_map(lambda x, kc: x.shape if hasattr(x, "shape") else None)
 
-    def _get_dev(self, as_native=False):
+    def _cont_get_dev(self, as_native=False):
         sub_devs = [
             v
             for k, v in self.cont_map(
@@ -1435,7 +1435,7 @@ class ContainerBase(dict, abc.ABC):
             return sub_devs[0]
         return None
 
-    def _at_key_chains_input_as_seq(self, key_chains, ignore_key_errors=False):
+    def _cont_at_key_chains_input_as_seq(self, key_chains, ignore_key_errors=False):
         return_cont = ivy.Container(dict(), **self._config)
         for kc in key_chains:
             val = self.at_key_chain(kc, ignore_key_errors=ignore_key_errors)
@@ -1444,7 +1444,7 @@ class ContainerBase(dict, abc.ABC):
             return_cont.set_at_key_chain(kc, val, inplace=True)
         return return_cont
 
-    def _at_key_chains_input_as_dict(
+    def _cont_at_key_chains_input_as_dict(
         self, key_chains, current_chain="", ignore_key_errors=False
     ):
         return_dict = dict()
@@ -1454,7 +1454,7 @@ class ContainerBase(dict, abc.ABC):
             else:
                 new_current_chain = current_chain + "/" + k
             if isinstance(v, dict):
-                return_dict[k] = self._at_key_chains_input_as_dict(
+                return_dict[k] = self._cont_at_key_chains_input_as_dict(
                     v, new_current_chain, ignore_key_errors=ignore_key_errors
                 )
             else:
@@ -1466,18 +1466,18 @@ class ContainerBase(dict, abc.ABC):
                 return_dict[k] = val
         return ivy.Container(return_dict, **self._config)
 
-    def _prune_key_chains_input_as_seq(self, key_chains):
+    def _cont_prune_key_chains_input_as_seq(self, key_chains):
         return_cont = self.cont_copy()
         for kc in key_chains:
             return_cont = return_cont.prune_key_chain(kc)
         return return_cont
 
-    def _prune_key_chains_input_as_dict(self, key_chains, return_cont=None):
+    def _cont_prune_key_chains_input_as_dict(self, key_chains, return_cont=None):
         if return_cont is None:
             return_cont = self.cont_copy()
         for k, v in key_chains.items():
             if isinstance(v, dict):
-                ret_cont = self._prune_key_chains_input_as_dict(v, return_cont[k])
+                ret_cont = self._cont_prune_key_chains_input_as_dict(v, return_cont[k])
                 if ret_cont.shape[0] == 0:
                     del return_cont[k]
             else:
@@ -1487,7 +1487,7 @@ class ContainerBase(dict, abc.ABC):
     # Public Methods #
     # ---------------#
 
-    def duplicate_array_keychains(self):
+    def cont_duplicate_array_keychains(self):
         duplciates = ()
         key_chains = self.all_key_chains()
         skips = set()
@@ -2469,15 +2469,15 @@ class ContainerBase(dict, abc.ABC):
         if key_chains is None and ignore_none:
             return self
         if isinstance(key_chains, (list, tuple)):
-            return self._at_key_chains_input_as_seq(
+            return self._cont_at_key_chains_input_as_seq(
                 key_chains, ignore_key_errors=ignore_key_errors
             )
         elif isinstance(key_chains, dict):
-            return self._at_key_chains_input_as_dict(
+            return self._cont_at_key_chains_input_as_dict(
                 key_chains, ignore_key_errors=ignore_key_errors
             )
         elif isinstance(key_chains, str):
-            return self._at_key_chains_input_as_seq(
+            return self._cont_at_key_chains_input_as_seq(
                 [key_chains], ignore_key_errors=ignore_key_errors
             )
         else:
@@ -2772,11 +2772,11 @@ class ContainerBase(dict, abc.ABC):
         if key_chains is None and ignore_none:
             return self
         if isinstance(key_chains, (list, tuple)):
-            return self._prune_key_chains_input_as_seq(key_chains)
+            return self._cont_prune_key_chains_input_as_seq(key_chains)
         elif isinstance(key_chains, dict):
-            return self._prune_key_chains_input_as_dict(key_chains)
+            return self._cont_prune_key_chains_input_as_dict(key_chains)
         elif isinstance(key_chains, str):
-            return self._prune_key_chains_input_as_seq([key_chains])
+            return self._cont_prune_key_chains_input_as_seq([key_chains])
         else:
             raise ivy.exceptions.IvyException(
                 "Invalid type for input key_chains, must either be a list, tuple, dict "
@@ -4011,28 +4011,28 @@ class ContainerBase(dict, abc.ABC):
         """The shape of the arrays in the container, with None placed in indices which
         are not consistent across arrays.
         """
-        return self._get_shape()
+        return self._cont_get_shape()
 
     @property
     def shapes(self):
         """The shapes of each array in the container, with None placed in leaf entries
         without a shape attribute.
         """
-        return self._get_shapes()
+        return self._cont_get_shapes()
 
     @property
     def dev(self):
         """The device to which the arrays in the container belong, with None returned if
         the devices are not consistent.
         """
-        return self._get_dev()
+        return self._cont_get_dev()
 
     @property
     def dev_str(self):
         """The device to which the arrays in the container belong, with None returned if
         the devices are not consistent.
         """
-        return self._get_dev()
+        return self._cont_get_dev()
 
     @property
     def ivy(self):
