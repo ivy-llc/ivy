@@ -70,6 +70,14 @@
 <li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
@@ -77,20 +85,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
 <li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
-<li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_window.html">kaiser_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flatten.html">flatten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="moveaxis.html">moveaxis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ndenumerate.html">ndenumerate</a></li>
@@ -118,9 +113,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -171,14 +171,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -283,50 +283,6 @@ to this method with minimal changes.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_take_along_axis">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_take_along_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_take_along_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_take_along_axis" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of ivy.take_along_axis. This method simply
-wraps the function, and so the docstring for ivy.take_along_axis also applies to
-this method with minimal changes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>arr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – container with array inputs.</p></li>
-<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – container with indices of the values to extract.</p></li>
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The axis over which to select values. If axis is None, then arr and indices
-must be 1-D sequences of the same length.</p></li>
-<li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The keychains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-<li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
-will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
-<li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
-</dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – a container with arrays of the same shape as those in indices.</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]),</span>                            <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>                                <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_take_along_axis</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="go">{</span>
-<span class="go">    a: ivy.array([[1, 1],</span>
-<span class="go">                  [4, 4]]),</span>
-<span class="go">    b: ivy.array([[6, 5],</span>
-<span class="go">                  [8, 7]])</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py function">
 <dt class="sig sig-object py" id="ivy.container.container_methods.take_along_axis">
 <span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">take_along_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.take_along_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.take_along_axis" title="Permalink to this definition"></a></dt>
 <dd><p>ivy.Container instance method variant of ivy.take_along_axis.
@@ -366,6 +322,50 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 <span class="go">    b: ivy.array([[6, 5],</span>
 <span class="go">                    [8, 7]])</span>
 <span class="go">}]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_take_along_axis">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_take_along_axis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_take_along_axis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_take_along_axis" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of ivy.take_along_axis. This method simply
+wraps the function, and so the docstring for ivy.take_along_axis also applies to
+this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – container with array inputs.</p></li>
+<li><p><strong>indices</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeArray</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – container with indices of the values to extract.</p></li>
+<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The axis over which to select values. If axis is None, then arr and indices
+must be 1-D sequences of the same length.</p></li>
+<li><p><strong>key_chains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]) – The keychains to apply or not apply the method to. Default is <code class="docutils literal notranslate"><span class="pre">None</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>to_apply</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, the method will be applied to key_chains, otherwise key_chains (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
+will be skipped. Default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p></li>
+<li><p><strong>prune_unapplied</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to prune key_chains for which the function was not applied. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>map_sequences</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to also map method to sequences (lists, tuples). (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
+Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – a container with arrays of the same shape as those in indices.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]),</span>                            <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">indices</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>                                <span class="n">b</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">static_take_along_axis</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="go">{</span>
+<span class="go">    a: ivy.array([[1, 1],</span>
+<span class="go">                  [4, 4]]),</span>
+<span class="go">    b: ivy.array([[6, 5],</span>
+<span class="go">                  [8, 7]])</span>
+<span class="go">}</span>
 </pre></div>
 </div>
 </dd></dl>

@@ -5,9 +5,9 @@ atleast_2d
 
 .. autofunction:: ivy.array.array_methods.atleast_2d
 
-.. autofunction:: ivy.container.container_methods.atleast_2d
-
 .. autofunction:: ivy.container.container_methods.static_atleast_2d
+
+.. autofunction:: ivy.container.container_methods.atleast_2d
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ gather
 
 .. autofunction:: ivy.array.array_methods.gather
 
-.. autofunction:: ivy.container.container_methods.gather
-
 .. autofunction:: ivy.container.container_methods.static_gather
+
+.. autofunction:: ivy.container.container_methods.gather
 |
 | **Supported Frameworks:**
 
