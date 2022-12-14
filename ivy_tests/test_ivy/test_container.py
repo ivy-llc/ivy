@@ -702,9 +702,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys({0: slc})
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_cont])
-    assert Container.identical([cont_sliced.c, sub_cont])
-    assert Container.identical([cont_sliced.d, sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_cont])
     assert "e" not in cont_sliced
 
     # with dict, depth 1
@@ -714,11 +714,11 @@ def test_container_slice_keys(str_slice, device):
         {"a": sub_cont, "b": sub_cont, "c": sub_cont, "d": sub_cont, "e": sub_cont}
     )
     cont_sliced = cont.cont_slice_keys({1: slc})
-    assert Container.identical([cont_sliced.a, sub_sub_cont])
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
-    assert Container.identical([cont_sliced.e, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.a, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.e, sub_sub_cont])
 
     # with dict, depth 0, 1
     sub_cont = Container({"a": a_val, "b": b_val, "c": c_val, "d": d_val, "e": e_val})
@@ -728,9 +728,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys({0: slc, 1: slc})
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
     assert "e" not in cont_sliced
 
     # all depths
@@ -741,9 +741,9 @@ def test_container_slice_keys(str_slice, device):
     )
     cont_sliced = cont.cont_slice_keys(slc, all_depths=True)
     assert "a" not in cont_sliced
-    assert Container.identical([cont_sliced.b, sub_sub_cont])
-    assert Container.identical([cont_sliced.c, sub_sub_cont])
-    assert Container.identical([cont_sliced.d, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.b, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.c, sub_sub_cont])
+    assert Container.cont_identical([cont_sliced.d, sub_sub_cont])
     assert "e" not in cont_sliced
 
 
@@ -2109,20 +2109,20 @@ def test_container_identical(device):
     container4 = Container({"d": arr3})
 
     # the same
-    assert ivy.Container.identical([container0, container1])
-    assert ivy.Container.identical([container1, container0])
+    assert ivy.Container.cont_identical([container0, container1])
+    assert ivy.Container.cont_identical([container1, container0])
 
     # not the same
-    assert not ivy.Container.identical([container0, container2])
-    assert not ivy.Container.identical([container2, container0])
-    assert not ivy.Container.identical([container1, container2])
-    assert not ivy.Container.identical([container2, container1])
+    assert not ivy.Container.cont_identical([container0, container2])
+    assert not ivy.Container.cont_identical([container2, container0])
+    assert not ivy.Container.cont_identical([container1, container2])
+    assert not ivy.Container.cont_identical([container2, container1])
 
     # partial
-    assert ivy.Container.identical([container0, container3], partial=True)
-    assert ivy.Container.identical([container3, container0], partial=True)
-    assert not ivy.Container.identical([container0, container4], partial=True)
-    assert not ivy.Container.identical([container4, container0], partial=True)
+    assert ivy.Container.cont_identical([container0, container3], partial=True)
+    assert ivy.Container.cont_identical([container3, container0], partial=True)
+    assert not ivy.Container.cont_identical([container0, container4], partial=True)
+    assert not ivy.Container.cont_identical([container4, container0], partial=True)
 
 
 def test_container_identical_structure(device):
@@ -2241,9 +2241,9 @@ def test_container_identical_array_shapes(device):
     assert ivy.Container.identical_array_shapes([container0, container1])
     assert ivy.Container.identical_array_shapes([container1, container0])
     assert ivy.Container.identical_array_shapes([container1, container0, container1])
-    assert not ivy.Container.identical([container0, container2])
-    assert not ivy.Container.identical([container1, container2])
-    assert not ivy.Container.identical([container0, container1, container2])
+    assert not ivy.Container.cont_identical([container0, container2])
+    assert not ivy.Container.cont_identical([container1, container2])
+    assert not ivy.Container.cont_identical([container0, container1, container2])
 
 
 def test_container_with_entries_as_lists(device):

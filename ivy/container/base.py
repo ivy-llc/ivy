@@ -746,7 +746,7 @@ class ContainerBase(dict, abc.ABC):
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
-    def identical(
+    def cont_identical(
         containers,
         check_types=True,
         check_shapes=True,
@@ -824,7 +824,7 @@ class ContainerBase(dict, abc.ABC):
                         return False
             this_key_chain = key if key_chain == "" else (key_chain + "/" + key)
             if isinstance(value_0, ivy.Container):
-                ret = ivy.Container.identical(
+                ret = ivy.Container.cont_identical(
                     values,
                     check_types,
                     check_shapes,
@@ -879,7 +879,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         ivy.assertions.check_true(
-            ivy.Container.identical(
+            ivy.Container.cont_identical(
                 containers,
                 check_types,
                 check_shapes,
@@ -933,7 +933,7 @@ class ContainerBase(dict, abc.ABC):
             Boolean
 
         """
-        return ivy.Container.identical(
+        return ivy.Container.cont_identical(
             containers,
             check_types,
             check_shapes,
@@ -2210,7 +2210,7 @@ class ContainerBase(dict, abc.ABC):
             if (
                 kcs_in_sub_cont
                 and min(kcs_in_sub_cont)
-                and ivy.Container.identical(
+                and ivy.Container.cont_identical(
                     [sub_cont, sub_cont_to_find], partial=partial
                 )
             ):
