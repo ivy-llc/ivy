@@ -22,10 +22,6 @@ jobs:
            source ./ivy/push_mapping.sh master
            pip install pydriller pymongo
            cp Mapping/tests.pbz2 ivy/
-           cd ivy
-#           python determine_tests.py extra
-           cd ..
-#           cp ivy/tests.pbz2 Mapping/
            cd Mapping
            echo "Test" > tests.pbz2
            git add .
