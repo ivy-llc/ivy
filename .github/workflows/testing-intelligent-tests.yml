@@ -1,9 +1,6 @@
 name: intelligent-tests-temp
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 'master'
 permissions:
   actions: read
 jobs:
@@ -21,6 +18,9 @@ jobs:
        - name: Determine and Run Tests
          id: tests
          run: |
+           mkdir --parents "$HOME/.ssh"
+           echo "${{ secrets.SSH_DEPLOY_KEY }}" > "$HOME/.ssh/deploy_key"
+           chmod 600 "$HOME/.ssh/deploy_key"
            git clone -b master git@github.com:unifyai/Mapping.git --depth 1
            cd Mapping
            echo "Hello!" > tests.pbz2
