@@ -1556,7 +1556,7 @@ class Module(abc.ABC):
                 p.data = v.data
 
             def _inplace_update_v(self, new_v):
-                ivy.Container.multi_map(
+                ivy.Container.cont_multi_map(
                     lambda xs, kc: self._inplace_update(xs[0], xs[1]),
                     [self._native_params, new_v],
                 )
