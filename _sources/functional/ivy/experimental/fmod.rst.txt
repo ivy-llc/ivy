@@ -5,9 +5,9 @@ fmod
 
 .. autofunction:: ivy.array.array_methods.fmod
 
-.. autofunction:: ivy.container.container_methods.fmod
-
 .. autofunction:: ivy.container.container_methods.static_fmod
+
+.. autofunction:: ivy.container.container_methods.fmod
 |
 | **Supported Frameworks:**
 

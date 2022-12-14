@@ -5,9 +5,9 @@ binary_cross_entropy
 
 .. autofunction:: ivy.array.array_methods.binary_cross_entropy
 
-.. autofunction:: ivy.container.container_methods.static_binary_cross_entropy
-
 .. autofunction:: ivy.container.container_methods.binary_cross_entropy
+
+.. autofunction:: ivy.container.container_methods.static_binary_cross_entropy
 |
 | **Supported Frameworks:**
 

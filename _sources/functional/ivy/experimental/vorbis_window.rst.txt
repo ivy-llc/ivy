@@ -3,9 +3,9 @@ vorbis_window
 
 .. autofunction:: ivy.functional.ivy.experimental.vorbis_window
 
-.. autofunction:: ivy.container.container_methods.vorbis_window
-
 .. autofunction:: ivy.container.container_methods.static_vorbis_window
+
+.. autofunction:: ivy.container.container_methods.vorbis_window
 |
 | **Supported Frameworks:**
 

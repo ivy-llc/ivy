@@ -5,9 +5,9 @@ conv1d
 
 .. autofunction:: ivy.array.array_methods.conv1d
 
-.. autofunction:: ivy.container.container_methods.conv1d
-
 .. autofunction:: ivy.container.container_methods.static_conv1d
+
+.. autofunction:: ivy.container.container_methods.conv1d
 |
 | **Supported Frameworks:**
 
