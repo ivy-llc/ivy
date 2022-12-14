@@ -1252,7 +1252,7 @@ class ContainerBase(dict, abc.ABC):
                 )
 
     @staticmethod
-    def flatten_key_chain(
+    def cont_flatten_key_chain(
         key_chain, replacement="__", above_height=None, below_depth=None
     ):
         """Summary.
@@ -1864,7 +1864,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         array_dict = {
-            ivy.Container.flatten_key_chain(kc): v
+            ivy.Container.cont_flatten_key_chain(kc): v
             for kc, v in self.to_iterator()
             if ivy.is_array(v, exclusive=exclusive)
         }
@@ -2999,7 +2999,7 @@ class ContainerBase(dict, abc.ABC):
         """
         return ivy.Container(
             {
-                ivy.Container.flatten_key_chain(
+                ivy.Container.cont_flatten_key_chain(
                     kc, above_height=above_height, below_depth=below_depth
                 ): v
                 for kc, v in self.to_iterator(include_empty=include_empty)
