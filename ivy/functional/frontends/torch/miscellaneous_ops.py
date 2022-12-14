@@ -289,3 +289,8 @@ def cross(input, other, dim=None, *, out=None):
 
     if dim is not None:
         return ivy.cross(input, other, axisa=-1, axisb=-1, axisc=-1, axis=dim, out=out)
+
+
+@to_ivy_arrays_and_back
+def gcd(input, other, *, out=None):
+    return ivy.gcd(input, other, out=out)
