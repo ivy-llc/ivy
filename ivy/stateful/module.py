@@ -388,7 +388,7 @@ class Module(abc.ABC):
         -------
         ret_cont
         """
-        if v.has_key_chain(orig_key_chain):
+        if v.cont_has_key_chain(orig_key_chain):
             ret_cont = v.at_key_chain(orig_key_chain)
         else:
             ret_cont = ivy.Container()
