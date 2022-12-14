@@ -96,7 +96,7 @@ def test_fomaml_step_unique_vars(
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
@@ -236,7 +236,7 @@ def test_fomaml_step_shared_vars(
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
@@ -409,7 +409,7 @@ def test_fomaml_step_overlapping_vars(
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
     weight_np = ivy.to_numpy(variables.weight[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
@@ -531,7 +531,7 @@ def test_reptile_step(
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in):
@@ -670,7 +670,7 @@ def test_maml_step_unique_vars(
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
     latent_np = ivy.to_numpy(variables.latent[0:1])
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
     all_outer_grads = list()
@@ -807,8 +807,8 @@ def test_maml_step_shared_vars(
         return cost / batch_size
 
     # numpy
-    variables_np = variables.map(lambda x, kc: ivy.to_ivy(x))
-    batch_np = batch.map(lambda x, kc: ivy.to_ivy(x))
+    variables_np = variables.cont_map(lambda x, kc: ivy.to_ivy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_ivy(x))
 
     # loss grad function
     def loss_grad_fn(sub_batch_in, w_in, outer=False):
@@ -1026,7 +1026,7 @@ def test_maml_step_overlapping_vars(
     # numpy
     latent_np = ivy.to_numpy(variables.latent)
     weight_np = ivy.to_numpy(variables.weight)
-    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.cont_map(lambda x, kc: ivy.to_numpy(x))
 
     # true weight gradient
     all_outer_grads = list()
