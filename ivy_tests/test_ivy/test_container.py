@@ -2059,32 +2059,32 @@ def test_container_common_key_chains(device):
     cont2 = Container({"a": arr1, "b": {"d": arr3, "e": arr1}})
 
     # 0
-    common_kcs = Container.common_key_chains([cont0])
+    common_kcs = Container.cont_common_key_chains([cont0])
     assert len(common_kcs) == 3
     assert "a" in common_kcs
     assert "b/c" in common_kcs
     assert "b/d" in common_kcs
 
     # 0-1
-    common_kcs = Container.common_key_chains([cont0, cont1])
+    common_kcs = Container.cont_common_key_chains([cont0, cont1])
     assert len(common_kcs) == 2
     assert "b/c" in common_kcs
     assert "b/d" in common_kcs
 
     # 0-2
-    common_kcs = Container.common_key_chains([cont0, cont2])
+    common_kcs = Container.cont_common_key_chains([cont0, cont2])
     assert len(common_kcs) == 2
     assert "a" in common_kcs
     assert "b/d" in common_kcs
 
     # 1-2
-    common_kcs = Container.common_key_chains([cont1, cont2])
+    common_kcs = Container.cont_common_key_chains([cont1, cont2])
     assert len(common_kcs) == 2
     assert "b/d" in common_kcs
     assert "b/e" in common_kcs
 
     # all
-    common_kcs = Container.common_key_chains([cont0, cont1, cont2])
+    common_kcs = Container.cont_common_key_chains([cont0, cont1, cont2])
     assert len(common_kcs) == 1
     assert "b/d" in common_kcs
 
