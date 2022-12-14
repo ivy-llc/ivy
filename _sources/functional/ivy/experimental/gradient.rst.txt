@@ -5,9 +5,9 @@ gradient
 
 .. autofunction:: ivy.array.array_methods.gradient
 
-.. autofunction:: ivy.container.container_methods.gradient
-
 .. autofunction:: ivy.container.container_methods.static_gradient
+
+.. autofunction:: ivy.container.container_methods.gradient
 |
 | **Supported Frameworks:**
 
