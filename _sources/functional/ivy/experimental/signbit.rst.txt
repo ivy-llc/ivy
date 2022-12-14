@@ -5,9 +5,9 @@ signbit
 
 .. autofunction:: ivy.array.array_methods.signbit
 
-.. autofunction:: ivy.container.container_methods.static_signbit
-
 .. autofunction:: ivy.container.container_methods.signbit
+
+.. autofunction:: ivy.container.container_methods.static_signbit
 |
 | **Supported Frameworks:**
 

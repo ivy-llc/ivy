@@ -112,14 +112,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -239,11 +239,6 @@ order. Default is <code class="docutils literal notranslate"><span class="pre">T
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.config">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">config</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.config" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_all_false">
@@ -499,6 +494,11 @@ container_rightmost.</p></li>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_config">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_config</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_config" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_contains_sub_container">
 <span class="sig-name descname"><span class="pre">cont_contains_sub_container</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_cont</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">partial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_contains_sub_container"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_contains_sub_container" title="Permalink to this definition"></a></dt>
@@ -594,6 +594,20 @@ present. otherwise, do nothing.</p>
 <span class="sig-name descname"><span class="pre">cont_deep_copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_deep_copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_deep_copy" title="Permalink to this definition"></a></dt>
 <dd><p>Create a deep copy (copying all internal tensors) of this container.</p>
 <p>return: A deep copy of the container</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_dev">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_dev</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_dev" title="Permalink to this definition"></a></dt>
+<dd><p>The device to which the arrays in the container belong, with None returned if
+the devices are not consistent.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_dev_str">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_dev_str</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_dev_str" title="Permalink to this definition"></a></dt>
+<dd><p>The device to which the arrays in the container belong, with None returned if
+the devices are not consistent.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -948,6 +962,11 @@ container.</p>
 </dl>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_ivy">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_ivy</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_ivy" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_key_chains_containing">
 <span class="sig-name descname"><span class="pre">cont_key_chains_containing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sub_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_empty</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.cont_key_chains_containing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_key_chains_containing" title="Permalink to this definition"></a></dt>
@@ -1048,6 +1067,11 @@ Default is <code class="docutils literal notranslate"><span class="pre">True</sp
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_max_depth">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_max_depth</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_max_depth" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_multi_map">
@@ -1795,20 +1819,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">0</span>
 </dl>
 </dd></dl>
 
-<dl class="py property">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dev</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.dev" title="Permalink to this definition"></a></dt>
-<dd><p>The device to which the arrays in the container belong, with None returned if
-the devices are not consistent.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.dev_str">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dev_str</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.dev_str" title="Permalink to this definition"></a></dt>
-<dd><p>The device to which the arrays in the container belong, with None returned if
-the devices are not consistent.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.h5_file_size">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">h5_file_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/container/base.html#ContainerBase.h5_file_size"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.h5_file_size" title="Permalink to this definition"></a></dt>
@@ -1822,16 +1832,6 @@ the devices are not consistent.</p>
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.ivy">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ivy</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.ivy" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.max_depth">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_depth</span></span><a class="headerlink" href="#ivy.container.base.ContainerBase.max_depth" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.shuffle_h5_file">
