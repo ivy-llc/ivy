@@ -479,6 +479,9 @@ class Tensor:
     def __or__(self, other):
         return torch_frontend.bitwise_or(self._ivy_array, other)
 
+    def __invert__(self):
+        return torch_frontend.bitwise_not(self._ivy_array)
+
     # Method aliases
     absolute, absolute_ = abs, abs_
     ndimension = dim
