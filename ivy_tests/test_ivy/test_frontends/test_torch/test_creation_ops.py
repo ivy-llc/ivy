@@ -334,12 +334,14 @@ def test_torch_range(
     start=st.floats(min_value=-10, max_value=10),
     stop=st.floats(min_value=-10, max_value=10),
     num=st.integers(min_value=1, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_linspace(
     *,
     start,
     stop,
     num,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -360,6 +362,7 @@ def test_torch_linspace(
         start=start,
         end=stop,
         steps=num,
+        dtype=dtype[0],
         device=on_device,
     )
 
@@ -370,12 +373,14 @@ def test_torch_linspace(
     start=st.floats(min_value=-10, max_value=10),
     stop=st.floats(min_value=-10, max_value=10),
     num=st.integers(min_value=1, max_value=10),
+    dtype=helpers.get_dtypes("float", full=False),
 )
 def test_torch_logspace(
     *,
     start,
     stop,
     num,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -396,6 +401,7 @@ def test_torch_logspace(
         start=start,
         end=stop,
         steps=num,
+        dtype=dtype[0],
         device=on_device,
     )
 
@@ -465,13 +471,13 @@ def test_torch_full_like(
         with_out=with_out,
         num_positional_args=num_positional_args,
         native_array_flags=native_array,
-        device=on_device,
+        on_device=on_device,
         frontend=frontend,
         fn_tree=fn_tree,
         input=inputs[0],
         fill_value=fill_value,
         dtype=dtype[0],
-        on_device=on_device,
+        device=on_device,
         test_values=False,
     )
 
@@ -480,10 +486,12 @@ def test_torch_full_like(
 @handle_frontend_test(
     fn_tree="torch.as_tensor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_torch_as_tensor(
     *,
     dtype_and_x,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -492,9 +500,9 @@ def test_torch_as_tensor(
     fn_tree,
     frontend,
 ):
-    dtype, input = dtype_and_x
+    input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -503,6 +511,7 @@ def test_torch_as_tensor(
         fn_tree=fn_tree,
         on_device=on_device,
         data=input[0],
+        dtype=dtype[0],
         device=on_device,
     )
 
@@ -541,10 +550,12 @@ def test_torch_from_numpy(
 @handle_frontend_test(
     fn_tree="torch.tensor",
     dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("valid")),
+    dtype=helpers.get_dtypes("valid", full=False),
 )
 def test_torch_tensor(
     *,
     dtype_and_x,
+    dtype,
     as_variable,
     with_out,
     num_positional_args,
@@ -553,9 +564,9 @@ def test_torch_tensor(
     fn_tree,
     frontend,
 ):
-    dtype, input = dtype_and_x
+    input_dtype, input = dtype_and_x
     helpers.test_frontend_function(
-        input_dtypes=dtype,
+        input_dtypes=input_dtype,
         as_variable_flags=as_variable,
         with_out=with_out,
         num_positional_args=num_positional_args,
@@ -564,5 +575,6 @@ def test_torch_tensor(
         fn_tree=fn_tree,
         on_device=on_device,
         data=input[0],
+        dtype=dtype[0],
         device=on_device,
     )

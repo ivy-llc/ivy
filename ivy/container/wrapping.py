@@ -61,7 +61,7 @@ def _wrap_function(function_name: str, static: bool) -> Callable:
                 ivy.insert_into_nest_at_index(kwargs, data_idx, self)
 
         # return function multi-mapped across the corresponding leaves of the containers
-        return ivy.ContainerBase.multi_map_in_static_method(
+        return ivy.ContainerBase.cont_multi_map_in_static_method(
             function_name,
             *args,
             key_chains=key_chains,

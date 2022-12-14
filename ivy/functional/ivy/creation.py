@@ -380,12 +380,40 @@ def ones(
 
     Examples
     --------
+    With :class:`ivy.Shape` input:
+
     >>> shape = (2,2)
     >>> y = ivy.ones(shape)
     >>> print(y)
     ivy.array([[1., 1.],
            [1., 1.]])
 
+    With :class:`ivy.Dtype` input:
+
+    >>> shape = (3,2)
+    >>> d_type = object.__new__(Dtype, "int64")
+    >>> y = ivy.ones(shape, dtype=d_type)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+    
+    With :class:`ivy.Device` input:
+
+    >>> shape = (3,2)
+    >>> dev = object.__new__(Device, "cpu")
+    >>> y = ivy.ones(shape, device=dev)
+    >>> print(y)
+    ivy.array([[1, 1, 1],
+           [1, 1]])
+
+    With :class:`ivy.Array` input:
+
+    >>> shape = (1,5,2)
+    >>> array = ivy.array(shape)
+    >>> ivy.ones(shape, out=array)
+    >>> print(array)
+    ivy.array([[1.],
+           [1., 1., 1., 1., 1.], [1., 1.]])
     """
     return current_backend().ones(shape, dtype=dtype, device=device, out=out)
 
@@ -1128,6 +1156,54 @@ def linspace(
     but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
+    Functional Examples
+    -------------------
+
+    With float input:
+
+    >>> ivy.linspace(1, 2, 4)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> ivy.linspace(1, 2, 4, endpoint=False)
+    ivy.array([1., 1.25, 1.5 , 1.75])
+
+    >>> ivy.linspace(1, 10, 4, dtype = int)
+    ivy.array([ 1,  4,  7, 10])
+
+    >>> ivy.linspace(1, 2, 4, device = "gpu")
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    >>> out = ivy.array([0,0,0,0])
+    >>> ivy.linspace(1, 2, 4, out = out)
+    >>> print(out)
+    ivy.array([1., 1.33333337, 1.66666663, 2.])
+
+    With :class:`ivy.Array` input:
+
+    >>> x = ivy.array([1,2])
+    >>> y = ivy.array([4,5])
+
+    >>> ivy.linspace(x, y, 4)
+    ivy.array([[1, 2, 3, 4], [2, 3, 4, 5]])
+
+    >>> ivy.linspace(x, y, 4, axis = 0)
+    ivy.array([[1, 2],
+               [2, 3],
+               [3, 4],
+               [4, 5]])
+
+    Instance Method Examples
+    -------------------
+    With :class:`ivy.Array` input:
+
+    >>> x.linspace(y, 4)
+    ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])
+
+    >>> x.linspace(y, 4, axis = 0)
+    ivy.array([[4, 5],
+               [3, 4],
+               [2, 3],
+               [1, 2]])
     """
     return current_backend(start).linspace(
         start,
