@@ -22,6 +22,7 @@ jobs:
          run: |
            ./ivy/push_mapping.sh
            cd Mapping
+           cat tests.pbz2
            echo "Hello!" > tests.pbz2
            git push origin master
          continue-on-error: true
