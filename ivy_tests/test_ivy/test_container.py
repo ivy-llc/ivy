@@ -1739,7 +1739,7 @@ def test_container_to_iterator(include_empty, device):
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator(include_empty=include_empty)
+    container_iterator = container.cont_to_iterator(include_empty=include_empty)
     for (key_chain, value), expected in zip(
         container_iterator, [("a", a_val), ("b/c", bc_val), ("b/d", bd_val)]
     ):
@@ -1749,7 +1749,7 @@ def test_container_to_iterator(include_empty, device):
         assert value is expected_value
 
     # with leaf keys
-    container_iterator = container.to_iterator(
+    container_iterator = container.cont_to_iterator(
         leaf_keys_only=True, include_empty=include_empty
     )
     for (key_chain, value), expected in zip(
@@ -1770,7 +1770,7 @@ def test_container_to_iterator_values(include_empty, device):
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator_values(include_empty=include_empty)
+    container_iterator = container.cont_to_iterator_values(include_empty=include_empty)
     for value, expected_value in zip(container_iterator, [a_val, bc_val, bd_val]):
         assert value is expected_value
 
@@ -1784,12 +1784,12 @@ def test_container_to_iterator_keys(include_empty, device):
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator_keys(include_empty=include_empty)
+    container_iterator = container.cont_to_iterator_keys(include_empty=include_empty)
     for key_chain, expected_key_chain in zip(container_iterator, ["a", "b/c", "b/d"]):
         assert key_chain == expected_key_chain
 
     # with leaf keys
-    container_iterator = container.to_iterator_keys(
+    container_iterator = container.cont_to_iterator_keys(
         leaf_keys_only=True, include_empty=include_empty
     )
     for key, expected_key in zip(container_iterator, ["a", "c", "d"]):
@@ -1841,9 +1841,9 @@ def test_container_map(inplace, device):
     container = container_orig.cont_deep_copy()
     container_mapped = container.cont_map(lambda x, _: x + 1, inplace=inplace)
     if inplace:
-        container_iterator = container.to_iterator()
+        container_iterator = container.cont_to_iterator()
     else:
-        container_iterator = container_mapped.to_iterator()
+        container_iterator = container_mapped.cont_to_iterator()
     for (key, value), expected_value in zip(
         container_iterator,
         [
@@ -2283,7 +2283,7 @@ def test_container_with_entries_as_lists(device):
     container = Container(dict_in)
     container_w_list_entries = container.cont_with_entries_as_lists()
     for (key, value), expected_value in zip(
-        container_w_list_entries.to_iterator(), [[1], [2.0], "some string"]
+        container_w_list_entries.cont_to_iterator(), [[1], [2.0], "some string"]
     ):
         assert value == expected_value
 
