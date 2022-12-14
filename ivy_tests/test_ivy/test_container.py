@@ -1036,12 +1036,12 @@ def test_container_has_key(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert container.has_key("a")  # noqa
-    assert container.has_key("b")  # noqa
-    assert container.has_key("c")  # noqa
-    assert container.has_key("d")  # noqa
-    assert not container.has_key("e")  # noqa
-    assert not container.has_key("f")  # noqa
+    assert container.cont_has_key("a")  # noqa
+    assert container.cont_has_key("b")  # noqa
+    assert container.cont_has_key("c")  # noqa
+    assert container.cont_has_key("d")  # noqa
+    assert not container.cont_has_key("e")  # noqa
+    assert not container.cont_has_key("f")  # noqa
 
 
 def test_container_has_key_chain(device):
@@ -1050,12 +1050,12 @@ def test_container_has_key_chain(device):
         "b": {"c": ivy.array([2], device=device), "d": ivy.array([3], device=device)},
     }
     container = Container(dict_in)
-    assert container.has_key_chain("a")
-    assert container.has_key_chain("b")
-    assert container.has_key_chain("b/c")
-    assert container.has_key_chain("b/d")
-    assert not container.has_key_chain("b/e")
-    assert not container.has_key_chain("c")
+    assert container.cont_has_key_chain("a")
+    assert container.cont_has_key_chain("b")
+    assert container.cont_has_key_chain("b/c")
+    assert container.cont_has_key_chain("b/d")
+    assert not container.cont_has_key_chain("b/e")
+    assert not container.cont_has_key_chain("c")
 
 
 def test_container_at_keys(device):
@@ -1157,8 +1157,8 @@ def test_container_set_at_keys(device):
     container = orig_container.set_at_keys({"b": ivy.array([4], device=device)})
     assert np.allclose(ivy.to_numpy(container["a"]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container["b"]), np.array([4]))
-    assert not container.has_key("c")  # noqa
-    assert not container.has_key("d")  # noqa
+    assert not container.cont_has_key("c")  # noqa
+    assert not container.cont_has_key("d")  # noqa
     container = orig_container.set_at_keys(
         {"a": ivy.array([5], device=device), "c": ivy.array([6], device=device)}
     )
