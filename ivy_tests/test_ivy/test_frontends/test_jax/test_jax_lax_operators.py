@@ -1812,27 +1812,27 @@ def test_jax_lax_transpose(
 
 
 @st.composite
-def _get_dtype_input_and_vectors(draw):
+def _get_dtype_inputs_for_dot(draw):
     dim_size = draw(helpers.ints(min_value=1, max_value=5))
-    dtype = draw(helpers.get_dtypes("float", index=1, full=False))
+    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
     if dim_size == 1:
-        vec1 = draw(
+        lhs = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
             )
         )
-        vec2 = draw(
+        rhs = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
             )
         )
     else:
-        vec1 = draw(
+        lhs = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
             )
         )
-        vec2 = draw(
+        rhs = draw(
             helpers.array_values(
                 dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
             )
@@ -1841,17 +1841,18 @@ def _get_dtype_input_and_vectors(draw):
     if is_pref:
         dtype, values, pref = draw(
             helpers.get_castable_dtype(
-                draw(helpers.get_dtypes("float")), dtype[0], [vec1, vec2]
+                draw(helpers.get_dtypes("numeric")), dtype[0], [lhs, rhs]
             )
         )
+        assume(can_cast(dtype, pref))
         return [dtype], pref, values[0], values[1]
     else:
-        return dtype, None, vec1, vec2
+        return dtype, None, lhs, rhs
 
 
 @handle_frontend_test(
     fn_tree="jax.lax.dot",
-    dtypes_and_xs=_get_dtype_input_and_vectors(),
+    dtypes_and_xs=_get_dtype_inputs_for_dot(),
 )
 def test_jax_lax_dot(
     *,
