@@ -2577,7 +2577,7 @@ def test_container_to_and_from_disk_as_json(device):
     assert os.path.exists(save_filepath)
 
     # loading
-    loaded_container = Container.from_disk_as_json(save_filepath)
+    loaded_container = Container.cont_from_disk_as_json(save_filepath)
     assert np.array_equal(loaded_container.a, container.a)
     assert np.array_equal(loaded_container.b.c, container.b.c)
     assert isinstance(loaded_container.b.d, str)
