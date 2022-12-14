@@ -2,6 +2,7 @@ abs
 acos
 acosh
 add
+angle
 asin
 asinh
 atan

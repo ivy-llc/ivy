@@ -709,9 +709,13 @@ def test_isneginf(
 @handle_test(
     fn_tree="functional.experimental.angle",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("real_and_complex"),
-        min_value=-10,
-        max_value=10,
+        available_dtypes=['float64'],
+        min_value=-5,
+        max_value=5,
+        max_dim_size=5,
+        max_num_dims=5,
+        min_dim_size=1,
+        min_num_dims=1,
         allow_inf=False,
         allow_nan=False,
     ),
@@ -731,7 +735,7 @@ def test_angle(
     fn_name,
     on_device,
 ):
-    input_dtype, x = dtype_and_x
+    input_dtype, z = dtype_and_x
     helpers.test_function(
         input_dtypes=input_dtype,
         as_variable_flags=as_variable,
@@ -744,8 +748,8 @@ def test_angle(
         fw=backend_fw,
         fn_name=fn_name,
         on_device=on_device,
-        x=x[0],
-        deg=deg,
+        z=z[0],
+        deg=False,
     )
 
 

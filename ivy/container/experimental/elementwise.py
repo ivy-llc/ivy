@@ -1547,7 +1547,7 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         }
         """
 
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "angle",
             z,
             key_chains=key_chains,
