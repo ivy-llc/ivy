@@ -52,7 +52,7 @@ def build_flag(key: str, value: bool):
 # Strategy Helpers #
 
 
-class BackendTestFlags:
+class FunctionTestFlags:
     def __init__(
         self,
         with_out,
@@ -71,7 +71,7 @@ class BackendTestFlags:
 
 
 @st.composite
-def backend_flags(
+def function_flags(
     draw,
     *,
     instance_method=BuiltInstanceStrategy,
@@ -83,7 +83,7 @@ def backend_flags(
 ):
     return draw(
         st.builds(
-            BackendTestFlags,
+            FunctionTestFlags,
             with_out=with_out,
             instance_method=instance_method,
             gradient=gradient,
