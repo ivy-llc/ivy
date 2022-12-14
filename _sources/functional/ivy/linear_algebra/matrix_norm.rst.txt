@@ -5,9 +5,9 @@ matrix_norm
 
 .. autofunction:: ivy.array.array_methods.matrix_norm
 
-.. autofunction:: ivy.container.container_methods.matrix_norm
-
 .. autofunction:: ivy.container.container_methods.static_matrix_norm
+
+.. autofunction:: ivy.container.container_methods.matrix_norm
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ trace
 
 .. autofunction:: ivy.array.array_methods.trace
 
-.. autofunction:: ivy.container.container_methods.static_trace
-
 .. autofunction:: ivy.container.container_methods.trace
+
+.. autofunction:: ivy.container.container_methods.static_trace
 |
 | **Supported Frameworks:**
 
