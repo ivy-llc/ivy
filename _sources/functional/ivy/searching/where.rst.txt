@@ -5,9 +5,9 @@ where
 
 .. autofunction:: ivy.array.array_methods.where
 
-.. autofunction:: ivy.container.container_methods.static_where
-
 .. autofunction:: ivy.container.container_methods.where
+
+.. autofunction:: ivy.container.container_methods.static_where
 |
 | **Supported Frameworks:**
 

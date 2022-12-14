@@ -5,9 +5,9 @@ heaviside
 
 .. autofunction:: ivy.array.array_methods.heaviside
 
-.. autofunction:: ivy.container.container_methods.heaviside
-
 .. autofunction:: ivy.container.container_methods.static_heaviside
+
+.. autofunction:: ivy.container.container_methods.heaviside
 |
 | **Supported Frameworks:**
 

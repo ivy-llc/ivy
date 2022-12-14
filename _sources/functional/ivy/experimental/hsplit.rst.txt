@@ -5,9 +5,9 @@ hsplit
 
 .. autofunction:: ivy.array.array_methods.hsplit
 
-.. autofunction:: ivy.container.container_methods.static_hsplit
-
 .. autofunction:: ivy.container.container_methods.hsplit
+
+.. autofunction:: ivy.container.container_methods.static_hsplit
 |
 | **Supported Frameworks:**
 

@@ -70,20 +70,8 @@
 <li class="toctree-l2"><a class="reference internal" href="dct.html">dct</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fft.html">fft</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dropout1d.html">dropout1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
-<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="triu_indices.html">triu_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vorbis_window.html">vorbis_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hann_window.html">hann_window</a></li>
@@ -95,7 +83,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="kaiser_bessel_derived_window.html">kaiser_bessel_derived_window</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hamming_window.html">hamming_window</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_ivy_sparse_array.html">is_ivy_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_sparse_array.html">is_native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array.html">native_sparse_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="native_sparse_array_to_indices_values_and_shape.html">native_sparse_array_to_indices_values_and_shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dirichlet.html">dirichlet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="beta.html">beta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gamma.html">gamma</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
 <li class="toctree-l2"><a class="reference internal" href="flatten.html">flatten</a></li>
 <li class="toctree-l2"><a class="reference internal" href="moveaxis.html">moveaxis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ndenumerate.html">ndenumerate</a></li>
@@ -117,9 +112,14 @@
 <li class="toctree-l2"><a class="reference internal" href="atleast_3d.html">atleast_3d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="take_along_axis.html">take_along_axis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hsplit.html">hsplit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy_with_logits.html">binary_cross_entropy_with_logits</a></li>
-<li class="toctree-l2"><a class="reference internal" href="isin.html">isin</a></li>
-<li class="toctree-l2"><a class="reference internal" href="msort.html">msort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_native_dtype.html">is_native_dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="median.html">median</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nanmean.html">nanmean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unravel_index.html">unravel_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quantile.html">quantile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="diagflat.html">diagflat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kron.html">kron</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eig.html">eig</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinc.html">sinc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lcm.html">lcm</a></li>
 <li class="toctree-l2"><a class="reference internal" href="fmod.html">fmod</a></li>
@@ -170,14 +170,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -253,15 +253,15 @@ If False, returns a symmetric window suitable for use in filter design.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.kaiser_window">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">kaiser_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.kaiser_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.kaiser_window" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container instance method variant of <a href="./kaiser_window/kaiser_window_functional.html">ivy.kaiser_window</a>. This method
+<dt class="sig sig-object py" id="ivy.container.container_methods.static_kaiser_window">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_kaiser_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_kaiser_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_kaiser_window" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container static method variant of <a href="./kaiser_window/kaiser_window_functional.html">ivy.kaiser_window</a>. This method
 simply wraps the function, and so the docstring for ivy.kaiser_window
 also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container including window lenghts.</p></li>
+<li><p><strong>window_length</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – input container including window lenghts.</p></li>
 <li><p><strong>periodic</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, returns a periodic window suitable for use in spectral analysis. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, returns a symmetric window suitable for use in filter design.</p></li>
 <li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a float used as shape parameter for the window. (default: <code class="docutils literal notranslate"><span class="pre">12.0</span></code>)</p></li>
@@ -288,15 +288,15 @@ If False, returns a symmetric window suitable for use in filter design.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.container.container_methods.static_kaiser_window">
-<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">static_kaiser_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.static_kaiser_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.static_kaiser_window" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Container static method variant of ivy.kaiser_window. This method
+<dt class="sig sig-object py" id="ivy.container.container_methods.kaiser_window">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">kaiser_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">periodic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12.0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_chains</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">to_apply</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prune_unapplied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">map_sequences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.kaiser_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.kaiser_window" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of ivy.kaiser_window. This method
 simply wraps the function, and so the docstring for ivy.kaiser_window
 also applies to this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>window_length</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – input container including window lenghts.</p></li>
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container including window lenghts.</p></li>
 <li><p><strong>periodic</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – If True, returns a periodic window suitable for use in spectral analysis. (default: <code class="docutils literal notranslate"><span class="pre">True</span></code>)
 If False, returns a symmetric window suitable for use in filter design.</p></li>
 <li><p><strong>beta</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – a float used as shape parameter for the window. (default: <code class="docutils literal notranslate"><span class="pre">12.0</span></code>)</p></li>

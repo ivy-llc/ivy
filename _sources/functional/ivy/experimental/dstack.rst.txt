@@ -5,9 +5,9 @@ dstack
 
 .. autofunction:: ivy.array.array_methods.dstack
 
-.. autofunction:: ivy.container.container_methods.static_dstack
-
 .. autofunction:: ivy.container.container_methods.dstack
+
+.. autofunction:: ivy.container.container_methods.static_dstack
 |
 | **Supported Frameworks:**
 

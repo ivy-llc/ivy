@@ -5,9 +5,9 @@ exp2
 
 .. autofunction:: ivy.array.array_methods.exp2
 
-.. autofunction:: ivy.container.container_methods.static_exp2
-
 .. autofunction:: ivy.container.container_methods.exp2
+
+.. autofunction:: ivy.container.container_methods.static_exp2
 |
 | **Supported Frameworks:**
 

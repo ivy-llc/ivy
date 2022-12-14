@@ -5,9 +5,9 @@ vstack
 
 .. autofunction:: ivy.array.array_methods.vstack
 
-.. autofunction:: ivy.container.container_methods.static_vstack
-
 .. autofunction:: ivy.container.container_methods.vstack
+
+.. autofunction:: ivy.container.container_methods.static_vstack
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ tril
 
 .. autofunction:: ivy.array.array_methods.tril
 
-.. autofunction:: ivy.container.container_methods.static_tril
-
 .. autofunction:: ivy.container.container_methods.tril
+
+.. autofunction:: ivy.container.container_methods.static_tril
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ nextafter
 
 .. autofunction:: ivy.array.array_methods.nextafter
 
-.. autofunction:: ivy.container.container_methods.nextafter
-
 .. autofunction:: ivy.container.container_methods.static_nextafter
+
+.. autofunction:: ivy.container.container_methods.nextafter
 |
 | **Supported Frameworks:**
 

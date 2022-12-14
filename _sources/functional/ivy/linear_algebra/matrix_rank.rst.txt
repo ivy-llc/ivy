@@ -5,9 +5,9 @@ matrix_rank
 
 .. autofunction:: ivy.array.array_methods.matrix_rank
 
-.. autofunction:: ivy.container.container_methods.matrix_rank
-
 .. autofunction:: ivy.container.container_methods.static_matrix_rank
+
+.. autofunction:: ivy.container.container_methods.matrix_rank
 |
 | **Supported Frameworks:**
 

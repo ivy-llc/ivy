@@ -5,9 +5,9 @@ nansum
 
 .. autofunction:: ivy.array.array_methods.nansum
 
-.. autofunction:: ivy.container.container_methods.static_nansum
-
 .. autofunction:: ivy.container.container_methods.nansum
+
+.. autofunction:: ivy.container.container_methods.static_nansum
 |
 | **Supported Frameworks:**
 
