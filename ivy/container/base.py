@@ -3400,7 +3400,7 @@ class ContainerBase(dict, abc.ABC):
         return ret
 
     # noinspection PyTypeChecker
-    def remove_print_limit(self, inplace=False):
+    def cont_remove_print_limit(self, inplace=False):
         """Summary.
 
         Parameters
@@ -3432,7 +3432,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def remove_key_length_limit(self, inplace=False):
+    def cont_remove_key_length_limit(self, inplace=False):
         """Summary.
 
         Parameters
@@ -3506,7 +3506,7 @@ class ContainerBase(dict, abc.ABC):
             return
         return ret
 
-    def with_ivy_backend(self, ivy_backend: str, inplace=False):
+    def cont_with_ivy_backend(self, ivy_backend: str, inplace=False):
         """Summary.
 
         Parameters
@@ -3525,12 +3525,12 @@ class ContainerBase(dict, abc.ABC):
         else:
             return ivy.Container(self, ivyh=ivy_backend)
 
-    def show(self):
+    def cont_show(self):
 
         print(self)
 
     # noinspection PyUnresolvedReferences
-    def show_sub_container(self, sub_cont_or_keychain):
+    def cont_show_sub_container(self, sub_cont_or_keychain):
         """Summary.
 
         Parameters
