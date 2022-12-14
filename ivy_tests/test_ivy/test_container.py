@@ -990,7 +990,7 @@ def test_container_num_arrays(device):
         },
     }
     container = Container(dict_in)
-    assert container.num_arrays() == 3
+    assert container.cont_num_arrays() == 3
     dict_in = {
         "a": ivy.array([[0.0, 1.0, 2.0, 3.0]], device=device),
         "b": {
@@ -1000,7 +1000,7 @@ def test_container_num_arrays(device):
     }
     container = Container(dict_in)
     assert (
-        container.num_arrays() == 3
+        container.cont_num_arrays() == 3
         if ivy.current_backend_str() in ("numpy", "jax")
         else 2
     )
