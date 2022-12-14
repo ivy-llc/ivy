@@ -411,11 +411,8 @@ class Tensor:
     def clone(self, memory_format=None):
         return torch_frontend.tensor(ivy.array(self._ivy_array, copy=True))
 
-    def sqrt(self):
-        return torch_frontend.sqrt(self.data)
-
     def square(self):
-        return torch_frontend.square(self.data)
+        return torch_frontend.square(self._ivy_array)
 
     # Special Methods #
     # -------------------#
