@@ -926,13 +926,13 @@ def test_container_all_true(device):
 
 
 def test_container_all_false(device):
-    assert Container({"a": False, "b": {"c": [], "d": 0}}).all_false()
-    assert not Container({"a": False, "b": {"c": [1], "d": 0}}).all_false()
+    assert Container({"a": False, "b": {"c": [], "d": 0}}).cont_all_false()
+    assert not Container({"a": False, "b": {"c": [1], "d": 0}}).cont_all_false()
     # noinspection PyBroadException
     try:
         assert Container(
             {"a": ivy.array([1], device=device), "b": {"c": [1], "d": True}}
-        ).all_false(assert_is_bool=True)
+        ).cont_all_false(assert_is_bool=True)
         error_raised = False
     except IvyException:
         error_raised = True
@@ -2982,7 +2982,7 @@ def test_container_cont_inplace_update(device):
         }
     )
     id1 = id(container1)
-    assert ivy.Container.all_false(container0.all_equal(container1))
+    assert ivy.Container.cont_all_false(container0.all_equal(container1))
     container0.inplace_update(container1)
     assert id0 == id(container0)
     assert id1 == id(container1)
