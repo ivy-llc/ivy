@@ -28,7 +28,9 @@ class ContainerWithDevice(ContainerBase):
             b: cpu
         }
         """
-        return ContainerBase.multi_map_in_static_method("dev", x, as_native=as_native)
+        return ContainerBase.cont_multi_map_in_static_method(
+            "dev", x, as_native=as_native
+        )
 
     def dev(self: ivy.Container, as_native: bool = False) -> ivy.Container:
         """
@@ -100,7 +102,7 @@ class ContainerWithDevice(ContainerBase):
             input array x placed on the desired device
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "to_device",
             x,
             device,
