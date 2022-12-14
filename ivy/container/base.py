@@ -1113,7 +1113,7 @@ class ContainerBase(dict, abc.ABC):
         ).to_ivy()
 
     @staticmethod
-    def from_disk_as_json(json_filepath, ivyh=None):
+    def cont_from_disk_as_json(json_filepath, ivyh=None):
         """Load container object from disk at the specified json filepath. If some
         objects were not json-able during saving, then they will be loaded as strings.
 
