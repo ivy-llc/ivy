@@ -489,7 +489,11 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    Torch is the last set backend hence is the backend used here:</span>
+<span class="sd">    Torch is the last set backend hence is the backend used in the first examples.</span>
+<span class="sd">    However, as seen in the example after, if `unset_backend` is called before</span>
+<span class="sd">    `ivy.native_array` then tensorflow will become the current backend and any</span>
+<span class="sd">    torch backend implementations in the Ivy dict will be swapped with the</span>
+<span class="sd">    tensorflow implementation::</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;tensorflow&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
