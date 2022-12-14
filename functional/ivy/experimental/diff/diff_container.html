@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ivy.Array.diff &mdash; Ivy 1.0 documentation</title>
+  <title>ivy.Container.diff &mdash; Ivy 1.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="icon" type="image/png" href="https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_logo_only.png?raw=true">
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
@@ -21,8 +21,8 @@
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
-    <link rel="next" title="ivy.Container.diff" href="diff_container.html" />
-    <link rel="prev" title="ivy.diff" href="diff_functional.html" /> 
+    <link rel="next" title="ivy.Container.static_diff" href="static_diff_container.html" />
+    <link rel="prev" title="ivy.Array.diff" href="diff_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -134,8 +134,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../signbit.html">signbit</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../diff.html">diff</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="diff_functional.html">ivy.diff</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Array.diff</a></li>
-<li class="toctree-l3"><a class="reference internal" href="diff_container.html">ivy.Container.diff</a></li>
+<li class="toctree-l3"><a class="reference internal" href="diff_array.html">ivy.Array.diff</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">ivy.Container.diff</a></li>
 <li class="toctree-l3"><a class="reference internal" href="static_diff_container.html">ivy.Container.static_diff</a></li>
 </ul>
 </li>
@@ -209,9 +209,9 @@
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
                     <li><a href="../../experimental.html">Experimental</a> &raquo;</li>
           <li><a href="../diff.html">diff</a> &raquo;</li>
-      <li>ivy.Array.diff</li>
+      <li>ivy.Container.diff</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../../../../_sources/functional/ivy/experimental/diff/diff_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../../_sources/functional/ivy/experimental/diff/diff_container.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -219,26 +219,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ivy-array-diff">
-<h1>ivy.Array.diff<a class="headerlink" href="#ivy-array-diff" title="Permalink to this heading"></a></h1>
+  <section id="ivy-container-diff">
+<h1>ivy.Container.diff<a class="headerlink" href="#ivy-container-diff" title="Permalink to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.array.array_methods.diff">
-<span class="sig-prename descclassname">ivy.Array.</span></span><span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/array/experimental.html#ArrayWithExperimental.diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.array.array_methods.diff" title="Permalink to this definition"></a></dt>
-<dd><p>ivy.Array instance method variant of <a href="../diff/diff_functional.html">ivy.diff</a>. This method simply
+<dt class="sig sig-object py" id="ivy.container.container_methods.diff">
+<span class="sig-prename descclassname">ivy.Container.</span></span><span class="sig-name descname"><span class="pre">diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/container/experimental.html#ContainerWithExperimental.diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.container_methods.diff" title="Permalink to this definition"></a></dt>
+<dd><p>ivy.Container instance method variant of <a href="../diff/diff_functional.html">ivy.diff</a>. This method simply
 wraps the function, and so the docstring for <a href="../diff/diff_functional.html">ivy.diff</a> also applies to
 this method with minimal changes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>self</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code>]) – array-like input.</p></li>
-<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a>]) – optional output array, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>self</strong> (<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>) – input container with array-like items.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a>]) – optional output container, for writing the result to. (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/array/array/Array.html#ivy.array.array.Array" title="ivy.array.array.Array"><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></a></p>
+<dd class="field-even"><p><a class="reference internal" href="../../../../data_classes/container/container/Container.html#ivy.container.container.Container" title="ivy.container.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">Container</span></code></a></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Returns the n-th discrete difference along the given axis.</p>
+<dd class="field-odd"><p><em>ret</em> – Container including arrays with the n-th discrete difference along the
+given axis.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -263,8 +264,8 @@ this method with minimal changes.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="diff_functional.html" class="btn btn-neutral float-left" title="ivy.diff" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="diff_container.html" class="btn btn-neutral float-right" title="ivy.Container.diff" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="diff_array.html" class="btn btn-neutral float-left" title="ivy.Array.diff" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="static_diff_container.html" class="btn btn-neutral float-right" title="ivy.Container.static_diff" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
