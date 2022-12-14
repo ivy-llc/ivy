@@ -3305,5 +3305,5 @@ def test_container_with_ivy_backend(device):
 def test_container_trim_key(device):
     key = "abcdefg"
     max_length = 3
-    trimmed_key = ivy.Container.trim_key(key, max_length)
+    trimmed_key = ivy.Container.cont_trim_key(key, max_length)
     assert trimmed_key == "adg"
