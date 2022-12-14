@@ -47,8 +47,20 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the maximum values across the
             specified axis.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = ivy.Container.static_argmax(x, axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[0],
+                          [2]]),
+            b: ivy.array([[2],
+                          [0]])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmax",
             x,
             axis=axis,
@@ -94,6 +106,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the maximum values across the
             specified axis.
 
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = x.argmax(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[0],
+                          [2]]),
+            b: ivy.array([[2],
+                          [0]])
+        }
         """
         return self.static_argmax(
             self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
@@ -137,8 +161,21 @@ class ContainerWithSearching(ContainerBase):
         ret
             a container containing the indices of the minimum values across the
             specified axis.
+
+        Examples
+        --------
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = ivy.Container.static_argmin(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[2],
+                          [1]]),
+            b: ivy.array([[0],
+                          [0]])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argmin",
             x,
             axis=axis,
@@ -185,6 +222,28 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the minimum values across the
             specified axis.
 
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method:
+
+        >>> x = ivy.Container(a=ivy.array([0., -1., 2.]), b=ivy.array([3., 4., 5.]))
+        >>> y = x.argmin()
+        >>> print(y)
+        {
+            a:ivy.array(1),
+            b:ivy.array(0)
+        }
+
+        >>> x = ivy.Container(a=ivy.array([[4., 0., -1.], [2., -3., 6]]),\
+        ...                   b=ivy.array([[1., 2., 3.], [1., 1., 1.]])
+        >>> y = x.argmin(axis=1, keepdims=True)
+        >>> print(y)
+        {
+            a: ivy.array([[2],
+                          [1]]),
+            b: ivy.array([[0],
+                          [0]])
+        }
         """
         return self.static_argmin(
             self, axis=axis, keepdims=keepdims, output_dtype=output_dtype, out=out
@@ -228,7 +287,7 @@ class ContainerWithSearching(ContainerBase):
             a container containing the indices of the nonzero values.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "nonzero", x, as_tuple=as_tuple, size=size, fill_value=fill_value
         )
 
@@ -305,8 +364,18 @@ class ContainerWithSearching(ContainerBase):
             a container containing the values of x1 where condition is True, and x2
             where condition is False.
 
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
+        >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
+        >>> res = ivy.Container.static_where((x1.a > x2.a), x1, x2)
+        >>> print(res)
+        {
+            a: ivy.array([3, 7, 5]),
+            b: ivy.array([2, 8, 6])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "where", condition, x1, x2, out=out
         )
 
@@ -341,6 +410,16 @@ class ContainerWithSearching(ContainerBase):
             a container containing the values of x1 where condition is True, and x2
             where condition is False.
 
+        Examples
+        --------
+        >>> x1 = ivy.Container(a=ivy.array([3, 1, 5]), b=ivy.array([2, 4, 6]))
+        >>> x2 = ivy.Container(a=ivy.array([0, 7, 2]), b=ivy.array([3, 8, 5]))
+        >>> res = x1.where((x1.a > x2.a), x2)
+        >>> print(res)
+        {
+            a: ivy.array([3, 7, 5]),
+            b: ivy.array([2, 8, 6])
+        }
         """
         return self.static_where(self, x1, x2, out=out)
 
@@ -383,8 +462,28 @@ class ContainerWithSearching(ContainerBase):
         -------
         ret
             Indices for where the boolean array is True.
+
+        Examples
+        --------
+        Using :class:`ivy.Container` instance method
+
+        >>> x = ivy.Container(a=ivy.array([1, 2]), b=ivy.array([3, 4]))
+        >>> res = ivy.Container.static_argwhere(x)
+        >>> print(res)
+        {
+            a: ivy.array([[0], [1]]),
+            b: ivy.array([[0], [1]])
+        }
+
+        >>> x = ivy.Container(a=ivy.array([1, 0]), b=ivy.array([3, 4]))
+        >>> res = ivy.Container.static_argwhere(x)
+        >>> print(res)
+        {
+            a: ivy.array([[0]]),
+            b: ivy.array([[0], [1]])
+        }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "argwhere",
             x,
             key_chains=key_chains,

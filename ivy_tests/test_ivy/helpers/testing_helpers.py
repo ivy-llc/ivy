@@ -8,7 +8,6 @@ from hypothesis import given, strategies as st
 
 # local
 import ivy
-from ivy_tests.test_ivy import conftest as cfg  # TODO temporary
 from .hypothesis_helpers import number_helpers as nh
 from .globals import TestData
 from . import test_parameter_flags as pf
@@ -127,7 +126,9 @@ def _import_fn(fn_tree: str):
 
 
 def _generate_shared_test_flags(
-    param_names: list, _given_kwargs: dict, fn_tree: str, fn: callable
+    param_names: list,
+    _given_kwargs: dict,
+    fn_tree: str,
 ):
     """
     Generates flags that all tests use.
@@ -136,24 +137,14 @@ def _generate_shared_test_flags(
     -------
     shared flags that all tests use.
     """
-    if "num_positional_args" in param_names:
-        _given_kwargs["num_positional_args"] = num_positional_args(fn_name=fn_tree)
-    for flag_key, flag_value in cfg.GENERAL_CONFIG_DICT.items():
-        if flag_key in param_names:
-            _given_kwargs[flag_key] = st.just(flag_value)
-    for flag in cfg.UNSET_TEST_CONFIG["list"]:
-        if flag in param_names:
-            _given_kwargs[flag] = st.lists(st.booleans(), min_size=1, max_size=1)
-    for flag in cfg.UNSET_TEST_CONFIG["flag"]:
-        if flag in param_names:
-            _given_kwargs[flag] = st.booleans()
-    # Override with_out to be compatible
-    if "with_out" in param_names:
-        for k in inspect.signature(fn).parameters.keys():
-            if k.endswith("out"):
-                break
-        else:
-            _given_kwargs["with_out"] = st.just(False)
+    possible_flags = {
+        "num_positional_args": num_positional_args(fn_name=fn_tree),
+        "as_variable": pf.BuiltNativeArrayStrategy,
+        "native_array": pf.BuiltNativeArrayStrategy,
+        "with_out": pf.BuiltWithOutStrategy,
+    }
+    for k in set(param_names).intersection(possible_flags.keys()):
+        _given_kwargs[k] = possible_flags[k]
     return _given_kwargs
 
 
@@ -202,17 +193,15 @@ def handle_test(
         # No Hypothesis @given is used
         if is_hypothesis_test:
             _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree, callable_fn
+                param_names, given_kwargs, fn_tree
             )
-            for flag in cfg.UNSET_TEST_API_CONFIG["list"]:
-                if flag in param_names:
-                    _given_kwargs[flag] = st.lists(
-                        st.booleans(), min_size=1, max_size=1
-                    )
-            for flag in cfg.UNSET_TEST_API_CONFIG["flag"]:
-                if flag in param_names:
-                    _given_kwargs[flag] = st.booleans()
-
+            possible_flags = {
+                "container_flags": pf.BuiltContainerStrategy,
+                "instance_method": pf.BuiltInstanceStrategy,
+                "test_gradients": pf.BuiltGradientStrategy,
+            }
+            for k in set(param_names).intersection(possible_flags.keys()):
+                _given_kwargs[k] = possible_flags[k]
             wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {
                 "fn_name": fn_name,
@@ -254,7 +243,9 @@ def handle_frontend_test(*, fn_tree: str, **_given_kwargs):
         if is_hypothesis_test:
             param_names = inspect.signature(test_fn).parameters.keys()
             _given_kwargs = _generate_shared_test_flags(
-                param_names, given_kwargs, fn_tree, callable_fn
+                param_names,
+                given_kwargs,
+                fn_tree,
             )
             wrapped_test = given(**_given_kwargs)(test_fn)
             if "fn_tree" in param_names:
@@ -301,7 +292,7 @@ def handle_method(
             method_tree
         )
         supported_device_dtypes = _get_method_supported_devices_dtypes(
-            method_name, method_mod.__name__, class_name
+            method_name, method_mod, class_name
         )
 
         if is_hypothesis_test:

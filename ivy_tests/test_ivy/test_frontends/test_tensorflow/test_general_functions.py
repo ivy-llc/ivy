@@ -796,39 +796,85 @@ def test_tensorflow_stack(
     )
 
 
-@st.composite
-def _pad_helper(draw):
-    mode = draw(
-        st.sampled_from(
-            [
-                "constant",
-                "reflect",
-                "symmetric",
-            ]
-        )
+# gather
+@handle_frontend_test(
+    fn_tree="tensorflow.gather",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+        indices_same_dims=True,
+    ),
+)
+def test_tensorflow_gather(
+    *,
+    params_indices_axis_batch_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+        axis=axis,
+        batch_dims=batch_dims,
     )
-    dtype, input, shape = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("numeric"),
-            ret_shape=True,
-            min_num_dims=1,
-            min_value=-100,
-            max_value=100,
-        ).filter(lambda x: x[0][0] not in ["float16", "bfloat16"])
+
+
+# gather_nd
+@handle_frontend_test(
+    fn_tree="tensorflow.gather_nd",
+    params_indices_axis_batch_dims=helpers.array_indices_axis(
+        array_dtypes=helpers.get_dtypes("valid"),
+        indices_dtypes=["int64"],
+        min_num_dims=5,
+        max_num_dims=10,
+        min_dim_size=1,
+        max_dim_size=5,
+        indices_same_dims=False,
+    ),
+)
+def test_tensorflow_gather_nd(
+    *,
+    params_indices_axis_batch_dims,
+    as_variable,
+    with_out,
+    num_positional_args,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    input_dtypes, params, indices, axis, batch_dims = params_indices_axis_batch_dims
+    helpers.test_frontend_function(
+        input_dtypes=input_dtypes,
+        as_variable_flags=as_variable,
+        with_out=with_out,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        params=params,
+        indices=indices,
+        batch_dims=batch_dims,
     )
-    ndim = len(shape)
-    paddings = draw(
-        st.lists(
-            st.tuples(
-                st.integers(min_value=0, max_value=4),
-                st.integers(min_value=0, max_value=4),
-            ),
-            min_size=ndim,
-            max_size=ndim,
-        )
-    )
-    constant_values = draw(st.integers(min_value=0, max_value=4))
-    return dtype, input[0], paddings, mode, constant_values
 
 
 # pad

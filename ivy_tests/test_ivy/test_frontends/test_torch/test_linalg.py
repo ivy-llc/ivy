@@ -165,7 +165,7 @@ def test_torch_qr(
         on_device=on_device,
         rtol=1e-02,
         atol=1e-05,
-        input=x[0]
+        input=x[0],
     )
 
 

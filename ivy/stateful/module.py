@@ -201,7 +201,7 @@ class Module(abc.ABC):
         else:
             ret = self.v
         if flatten_key_chains:
-            return ret.flatten_key_chains()
+            return ret.cont_flatten_key_chains()
         return ret
 
     def _top_mod_fn(self, /, *, depth=None):
@@ -465,8 +465,8 @@ class Module(abc.ABC):
         keychain_mappings
             Dict storing those keys and ids being removed.
         """
-        created_ids = created.map(lambda x, kc: id(x))
-        vs_ids = vs.map(lambda x, kc: id(x))
+        created_ids = created.cont_map(lambda x, kc: id(x))
+        vs_ids = vs.cont_map(lambda x, kc: id(x))
         ids = dict()
         duplicate_keychains = list()
         keychain_mappings = dict()
@@ -480,8 +480,8 @@ class Module(abc.ABC):
             duplicate_keychains.append(kc)
             keychain_mappings[kc] = ids[x]
 
-        created_ids.map(lambda x, kc: unique_callback(x, kc))
-        vs_ids.map(
+        created_ids.cont_map(lambda x, kc: unique_callback(x, kc))
+        vs_ids.cont_map(
             lambda x, kc: unique_callback(x, kc)
             if x not in ids
             else found_dup_callback(x, kc)
@@ -646,7 +646,7 @@ class Module(abc.ABC):
                 }
             )
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         if show_v:
             return self.v
@@ -693,7 +693,7 @@ class Module(abc.ABC):
             else:
                 ret = self.v
             if flatten_key_chains:
-                return ret.flatten_key_chains()
+                return ret.cont_flatten_key_chains()
             return ret
         else:
             print(
@@ -761,8 +761,8 @@ class Module(abc.ABC):
             upper_sub_mods = self.top_mod(upper_depth).sub_mods(depth=mid_depth)
             lower_sub_mods = self.sub_mods(depth=lower_depth)
             if flatten_key_chains:
-                upper_sub_mods = upper_sub_mods.flatten_key_chains()
-                lower_sub_mods = lower_sub_mods.flatten_key_chains()
+                upper_sub_mods = upper_sub_mods.cont_flatten_key_chains()
+                lower_sub_mods = lower_sub_mods.cont_flatten_key_chains()
             upper_sub_mods.show_sub_container(lower_sub_mods)
         else:
             print(
@@ -1206,7 +1206,7 @@ class Module(abc.ABC):
                 self._ivy_module = ivy_module
 
             def __call__(self, *args, **kwargs):
-                self._ivy_module.v = self._ivy_module.v.map(
+                self._ivy_module.v = self._ivy_module.v.cont_map(
                     lambda x, kc: hk.get_parameter(
                         name=kc,
                         shape=x.shape,
@@ -1616,12 +1616,14 @@ class MyTorchModule(torch.nn.Module):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.register_parameter(
                 name=kc, param=torch.nn.Parameter(ivy.to_native(x))
             )
         )
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: self._parameters[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(
+            lambda x, kc: self._parameters[kc]
+        )
 
     def forward(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)
@@ -1638,16 +1640,16 @@ class MyTFModule(tf.keras.Model):
         self._assign_variables()
 
     def _assign_variables(self):
-        self._ivy_module.v.map(
+        self._ivy_module.v.cont_map(
             lambda x, kc: self.add_weight(
                 name=kc, shape=x.shape, dtype=x.dtype, trainable=True
             )
         )
         model_weights = list()
-        self._ivy_module.v.map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
+        self._ivy_module.v.cont_map(lambda x, kc: model_weights.append(ivy.to_numpy(x)))
         self.set_weights(model_weights)
         params = {re.sub(":\\d+", "", param.name): param for param in self.variables}
-        self._ivy_module.v = self._ivy_module.v.map(lambda x, kc: params[kc])
+        self._ivy_module.v = self._ivy_module.v.cont_map(lambda x, kc: params[kc])
 
     def call(self, *args, **kwargs):
         a, kw = ivy.args_to_native(*args, **kwargs)

@@ -67,7 +67,7 @@ class ContainerWithRandomExperimental(ContainerBase):
                 )
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dirichlet",
             alpha,
             key_chains=key_chains,

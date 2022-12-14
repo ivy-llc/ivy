@@ -94,7 +94,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "linear",
             x,
             weight,
@@ -198,7 +198,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dropout",
             x,
             prob,
@@ -250,7 +250,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "dropout1d",
             x,
             prob,
@@ -303,7 +303,90 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        """
+        ivy.Container static method variant of ivy.scaled_dot_product_attention.
+        This method simply wraps the function, and so the docstring for
+        ivy.scaled_dot_product_attention also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            The queries input container. The shape of queries input array leaves should
+            be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
+            should have the same size as keys and values.
+        k
+            The keys input array container. The shape of keys input array leaves
+            should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
+            leaves should have the same size as queries and values.
+        v
+            The values input array container. The shape of values input array
+            leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
+            input array leaves should have the same size as queries and keys.
+        scale
+            The scale float value.
+            The scale float value is used to scale the query-key pairs before softmax.
+        mask
+            The mask input array/container. The mask to apply to the query-key values.
+            Default is None. The shape of mask input array leaves should be in
+            *[batch_shape,num_queries,num_keys]*.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The output container following applications of scaled dot-product
+            attention. The output array is the weighted sum produced by the
+            attention score and value. The shape of output array is
+            *[batch_shape,num_queries,feat_dim]* .
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+        >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
+        ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+        >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
+        ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
+        >>> mask =
+        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0,1.0]]]),
+        ...               b=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0,1.0]]]))
+        >>> result = ivy.Container.static_scaled_dot_product_attention(q,
+                                                                       k,
+                                                                       v,
+                                                                       1,
+                                                                       mask=mask)
+        >>> print(result)
+        {
+            a: ivy.array([[[4.27, 5.4],
+                        [4.4, 5.6],
+                        [4.4, 5.6]]]),
+            b: ivy.array([[[4.35, 5.54],
+                        [4.4, 5.6],
+                        [4.4, 5.6]]])
+        }
+
+        """
+        return ContainerBase.cont_multi_map_in_static_method(
             "scaled_dot_product_attention",
             q,
             k,
@@ -331,6 +414,88 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
+        """
+        ivy.Container method variant of ivy.scaled_dot_product_attention.
+        This method simply wraps the function, and so the docstring for
+        ivy.scaled_dot_product_attention also applies to this method with minimal
+        changes.
+
+        Parameters
+        ----------
+        self
+            The queries input container. The shape of queries input array leaves should
+            be in *[batch_shape,num_queries,feat_dim]*. The queries input array leaves
+            should have the same size as keys and values.
+        k
+            The keys input array container. The shape of keys input array leaves
+            should be in *[batch_shape,num_keys,feat_dim]*. The keys input array
+            leaves should have the same size as queries and values.
+        v
+            The values input array container. The shape of values input array
+            leaves should be in *[batch_shape,num_keys,feat_dim]*. The values
+            input array leaves should have the same size as queries and keys.
+        scale
+            The scale float value.
+            The scale float value is used to scale the query-key pairs before softmax.
+        mask
+            The mask input array/container. The mask to apply to the query-key values.
+            Default is None. The shape of mask input array leaves should be in
+            *[batch_shape,num_queries,num_keys]*.
+        key_chains
+            The key-chains to apply or not apply the method to. Default is ``None``.
+        to_apply
+            If True, the method will be applied to key_chains, otherwise key_chains
+            will be skipped. Default is ``True``.
+        prune_unapplied
+            Whether to prune key_chains for which the function was not applied.
+            Default is ``False``.
+        map_sequences
+            Whether to also map method to sequences (lists, tuples).
+            Default is ``False``.
+        out
+            optional output array, for writing the result to. It must have a shape
+            that the inputs broadcast to.
+
+        Returns
+        -------
+        ret
+            The output container following applications of scaled dot-product
+            attention. The output array is the weighted sum produced by the
+            attention score and value. The shape of output array is
+            *[batch_shape,num_queries,feat_dim]* .
+
+        Examples
+        --------
+        With :class:`ivy.Container` input:
+
+        >>> q = ivy.Container(a=ivy.array([[[0.2, 1.], [2.7, 3.], [4.4, 5.6]]]),
+        ...                   b=ivy.array([[[1.2, 1.], [2.2, 3.], [4.4, 5.6]]]))
+        >>> k = ivy.Container(a=ivy.array([[[4.2, 1.], [2.2, 3.3],[4.4, 5.6]]]),
+        ...                   b=ivy.array([[[3.2, 1.], [2.2, 3.6], [4.0, 5.6]]]))
+        >>> v = ivy.Container(a=ivy.array([[[5.2, 1.], [2.1, 3.],[4.4, 5.6]]]),
+        ...                   b=ivy.array([[[0.2, 1.], [2.2, 3.],[4.4, 5.6]]]))
+        >>> mask =
+        ... ivy.Container(a=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0,1.0]]]),
+        ...               b=ivy.array([[[1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0, 1.0],
+        ...                             [1.0, 1.0,1.0]]]))
+        >>> result = q.scaled_dot_product_attention(k,
+                                                    v,
+                                                    1,
+                                                    mask=mask)
+        >>> print(result)
+        {
+            a: ivy.array([[[4.27, 5.4],
+                        [4.4, 5.6],
+                        [4.4, 5.6]]]),
+            b: ivy.array([[[4.35, 5.54],
+                        [4.4, 5.6],
+                        [4.4, 5.6]]])
+        }
+
+        """
         return self.static_scaled_dot_product_attention(
             self,
             k,
@@ -365,7 +530,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "multi_head_attention",
             x,
             scale,
@@ -483,7 +648,7 @@ class ContainerWithLayers(ContainerBase):
             ...                [-3.25, 10.5, 24.2]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv1d",
             x,
             filters,
@@ -629,7 +794,7 @@ class ContainerWithLayers(ContainerBase):
             b:ivy.array([[[[4.],[0.],[0.]],[[1.],[6.],[0.]],[[0.],[1.],[5.]]]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv2d",
             x,
             filters,
@@ -733,7 +898,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv1d_transpose",
             x,
             filters,
@@ -797,7 +962,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[Union[ivy.Array, ivy.Container]] = None,
     ) -> Union[ivy.Array, ivy.NativeArray, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv2d_transpose",
             x,
             filters,
@@ -903,7 +1068,7 @@ class ContainerWithLayers(ContainerBase):
         >>> print(y.shape)
         [1, 64, 64, 3]
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "depthwise_conv2d",
             x,
             filters,
@@ -1046,7 +1211,7 @@ class ContainerWithLayers(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv3d",
             x,
             filters,
@@ -1151,7 +1316,7 @@ class ContainerWithLayers(ContainerBase):
         map_sequences: bool = False,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "conv3d_transpose",
             x,
             filters,
@@ -1216,7 +1381,7 @@ class ContainerWithLayers(ContainerBase):
         prune_unapplied: bool = False,
         map_sequences: bool = False,
     ) -> Tuple[ivy.Container, ivy.Container]:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "lstm_update",
             x,
             init_h,

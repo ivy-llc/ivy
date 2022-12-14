@@ -80,9 +80,8 @@ def all(
     y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([1, 2, 3])
@@ -96,22 +95,15 @@ def all(
     >>> print(a)
     ivy.array([[False]])
 
-    >>> x=ivy.array(False)
-    >>> y=ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
+    >>> x = ivy.array(False)
+    >>> y = ivy.all(ivy.array([[0, 4],[1, 5]]), axis=(0,1), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
 
-    >>> x=ivy.array(False)
-    >>> y=ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
+    >>> x = ivy.array(False)
+    >>> y = ivy.all(ivy.array([[[0],[1]],[[1],[1]]]),axis=(0,1,2), out=x, keepdims=False)
     >>> print(y)
     ivy.array(False)
-
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([1, 2, 3])
-    >>> y = ivy.all(x)
-    >>> print(y)
-    ivy.array(True)
 
     With :class:`ivy.Container` input:
 
@@ -198,9 +190,8 @@ def any(
     y,but this function is *nestable*, and therefore also accepts :class:`ivy.Container`
     instances in place of any of the arguments.
 
-    Functional Examples
-    -------------------
-
+    Examples
+    --------
     With :class:`ivy.Array` input:
 
     >>> x = ivy.array([2, 3, 4])
@@ -224,13 +215,6 @@ def any(
     >>> print(y)
     ivy.array(True)
 
-    With :class:`ivy.NativeArray` input:
-
-    >>> x = ivy.native_array([2, 3, 4])
-    >>> y = ivy.any(x)
-    >>> print(y)
-    ivy.array(True)
-
     With :class:`ivy.Container` input:
 
     >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
@@ -240,17 +224,5 @@ def any(
         a: ivy.array(True),
         b: ivy.array(True)
     }
-
-    >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([3, 4, 5]))
-    >>> y = x.any()
-    >>> print(y)
-    {
-        a: ivy.array(True),
-        b: ivy.array(True)
-    }
     """
     return ivy.current_backend(x).any(x, axis=axis, keepdims=keepdims, out=out)
-
-
-# Extra #
-# ------#
