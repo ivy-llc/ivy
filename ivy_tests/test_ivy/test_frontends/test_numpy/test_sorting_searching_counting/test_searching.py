@@ -31,6 +31,7 @@ def _broadcastable(draw):
     cond = draw(hnp.arrays(hnp.boolean_dtypes(), cond_shape))
     return a, cond
 
+
 # where
 @handle_frontend_test(
     fn_tree="numpy.where",
