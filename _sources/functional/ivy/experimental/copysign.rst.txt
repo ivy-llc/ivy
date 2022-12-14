@@ -5,9 +5,9 @@ copysign
 
 .. autofunction:: ivy.array.array_methods.copysign
 
-.. autofunction:: ivy.container.container_methods.static_copysign
-
 .. autofunction:: ivy.container.container_methods.copysign
+
+.. autofunction:: ivy.container.container_methods.static_copysign
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ cosh
 
 .. autofunction:: ivy.array.array_methods.cosh
 
-.. autofunction:: ivy.container.container_methods.static_cosh
-
 .. autofunction:: ivy.container.container_methods.cosh
+
+.. autofunction:: ivy.container.container_methods.static_cosh
 |
 | **Supported Frameworks:**
 

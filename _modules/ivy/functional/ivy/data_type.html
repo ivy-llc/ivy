@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -135,6 +135,7 @@
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Any</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -207,15 +208,31 @@
 <span class="c1"># Get the list of function used the function</span>
 <span class="k">def</span> <span class="nf">_get_function_list</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="n">tree</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">_lstrip_lines</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getsource</span><span class="p">(</span><span class="n">func</span><span class="p">)))</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Extract all the call names</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">tree</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Call</span><span class="p">):</span>
             <span class="n">nodef</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">func</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodef</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
-                <span class="n">names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodef</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">names</span><span class="p">[</span><span class="n">nodef</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">func</span><span class="p">,</span>
+                    <span class="s2">&quot;__self__&quot;</span><span class="p">,</span>
+                    <span class="nb">getattr</span><span class="p">(</span>
+                        <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">),</span>
+                        <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nodef</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Attribute</span><span class="p">):</span>
-                <span class="n">names</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nodef</span><span class="o">.</span><span class="n">attr</span><span class="p">)</span>
+                <span class="n">names</span><span class="p">[</span><span class="n">nodef</span><span class="o">.</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">func</span><span class="p">,</span>
+                    <span class="s2">&quot;__self__&quot;</span><span class="p">,</span>
+                    <span class="nb">getattr</span><span class="p">(</span>
+                        <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">),</span>
+                        <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">names</span>
 
@@ -224,11 +241,13 @@
 <span class="k">def</span> <span class="nf">_get_functions_from_string</span><span class="p">(</span><span class="n">func_names</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="c1"># We only care about the functions in the ivy or the same module</span>
-    <span class="k">for</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="n">func_names</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">func_name</span> <span class="ow">in</span> <span class="n">func_names</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)):</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="n">func_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="n">ret</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">func_name</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">func_names</span><span class="p">[</span><span class="n">func_name</span><span class="p">],</span> <span class="n">func_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">func_names</span><span class="p">[</span><span class="n">func_name</span><span class="p">],</span> <span class="n">func_name</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">ret</span>
 
 
@@ -252,7 +271,8 @@
         <span class="c1"># if it&#39;s in the backend, we can get the dtypes directly</span>
         <span class="c1"># if it&#39;s in the front end, we need to recurse</span>
         <span class="c1"># if it&#39;s einops, we need to recurse</span>
-
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;__module__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">continue</span>
         <span class="k">if</span> <span class="s2">&quot;backend&quot;</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
             <span class="n">f_supported</span> <span class="o">=</span> <span class="n">wrapper</span><span class="p">(</span><span class="n">get_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
@@ -264,7 +284,9 @@
             <span class="n">out</span> <span class="o">=</span> <span class="n">merge_fn</span><span class="p">(</span><span class="n">f_supported</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
 
         <span class="c1"># skip if it&#39;s not a function</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">isfunction</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">or</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">fn</span><span class="p">)):</span>
+
             <span class="k">continue</span>
 
         <span class="n">fl</span> <span class="o">=</span> <span class="n">_get_function_list</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>

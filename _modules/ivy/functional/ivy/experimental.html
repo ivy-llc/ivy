@@ -81,14 +81,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -746,6 +746,501 @@
         <span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="n">training</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+
+
+<div class="viewcode-block" id="isin"><a class="viewcode-back" href="../../../../functional/ivy/experimental/isin/isin_functional.html#ivy.functional.ivy.experimental.isin">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">isin</span><span class="p">(</span>
+    <span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">test_elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">assume_unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">invert</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Tests if each element of elements is in test_elements.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    elements</span>
+<span class="sd">        input array</span>
+<span class="sd">    test_elements</span>
+<span class="sd">        values against which to test for each input element</span>
+<span class="sd">    assume_unique</span>
+<span class="sd">        If True, assumes both elements and test_elements contain unique elements,</span>
+<span class="sd">        which can speed up the calculation. Default value is False.</span>
+<span class="sd">    invert</span>
+<span class="sd">        If True, inverts the boolean return array, resulting in True values for</span>
+<span class="sd">        elements not in test_elements. Default value is False.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        output a boolean array of the same shape as elements that is True for elements</span>
+<span class="sd">        in test_elements and False otherwise.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[10, 7, 4], [3, 2, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y)</span>
+<span class="sd">    ivy.array([[False, False, False], [ True,  True,  True]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 2, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y, invert=True)</span>
+<span class="sd">    ivy.array([False, False, False,  True])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+        <span class="n">elements</span><span class="p">,</span> <span class="n">test_elements</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="n">assume_unique</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span>
+    <span class="p">)</span></div>
+
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+
+
+<span class="c1"># Array API Standard #</span>
+<span class="c1"># -------------------#</span>
+
+
+<div class="viewcode-block" id="msort"><a class="viewcode-back" href="../../../../functional/ivy/experimental/msort/msort_functional.html#ivy.functional.ivy.experimental.msort">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">msort</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Return a copy of an array sorted along the first axis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        array-like input.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        sorted array of the same type and shape as a</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.randint(10, size=(2,3))</span>
+<span class="sd">    &gt;&gt;&gt; ivy.msort(a)</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">        [[6, 2, 6],</span>
+<span class="sd">         [8, 9, 6]]</span>
+<span class="sd">        )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">msort</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
+<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">infer_device</span><span class="p">,</span>
+    <span class="n">outputs_to_ivy_arrays</span><span class="p">,</span>
+    <span class="n">handle_nestable</span><span class="p">,</span>
+    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="triu_indices"><a class="viewcode-back" href="../../../../functional/ivy/experimental/triu_indices/triu_indices_functional.html#ivy.functional.ivy.experimental.triu_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@infer_device</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns the indices of the upper triangular part of a row by col matrix in a</span>
+<span class="sd">    2-by-N shape (tuple of two N dimensional arrays), where the first row contains</span>
+<span class="sd">    row coordinates of all indices and the second row contains column coordinates.</span>
+<span class="sd">    Indices are ordered based on rows and then columns.  The upper triangular part</span>
+<span class="sd">    of the matrix is defined as the elements on and above the diagonal.  The argument</span>
+<span class="sd">    k controls which diagonal to consider. If k = 0, all elements on and above the main</span>
+<span class="sd">    diagonal are retained. A positive value excludes just as many diagonals above the</span>
+<span class="sd">    main diagonal, and similarly a negative value includes just as many diagonals</span>
+<span class="sd">    below the main diagonal. The main diagonal are the set of indices</span>
+<span class="sd">    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Primary purpose of this function is to slice an array of shape (n,m). See</span>
+<span class="sd">    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html</span>
+<span class="sd">    for examples</span>
+
+<span class="sd">    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_rows</span>
+<span class="sd">       number of rows in the 2-d matrix.</span>
+<span class="sd">    n_cols</span>
+<span class="sd">       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows</span>
+<span class="sd">    k</span>
+<span class="sd">       number of shifts from the main diagonal. k = 0 includes main diagonal,</span>
+<span class="sd">       k &gt; 0 moves upwards and k &lt; 0 moves downwards</span>
+<span class="sd">    device</span>
+<span class="sd">       device on which to place the created array. Default: ``None``.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])</span>
+<span class="sd">        contains row coordinates of all indices and the second subarray (i.e ret[1])</span>
+<span class="sd">        contains columns indices.</span>
+
+<span class="sd">    Function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,1)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 1, 1, 2]),</span>
+<span class="sd">    ivy.array([1, 2, 3, 2, 3, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,-2)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,2,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 1]),</span>
+<span class="sd">    ivy.array([0, 1, 1]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1]),</span>
+<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,-4,0)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([]), ivy.array([]))</span>
+
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,-100)</span>
+<span class="sd">    &gt;&gt;&gt; print(x)</span>
+<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/vorbis_window/vorbis_window_functional.html#ivy.functional.ivy.experimental.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns an array that contains a vorbis power complementary window</span>
+<span class="sd">    of size window_length.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        the length of the vorbis window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array. By default float32.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Input array with the vorbis window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(3)</span>
+<span class="sd">    ivy.array([0.38268346, 1. , 0.38268352])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(5)</span>
+<span class="sd">    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vorbis_window</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/hann_window/hann_window_functional.html#ivy.functional.ivy.experimental.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Generate a Hann window. The Hanning window</span>
+<span class="sd">    is a taper formed by using a weighted cosine.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        the size of the returned window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a window to be used as periodic function.</span>
+<span class="sd">        If False, return a symmetric window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The data type to produce. Must be a floating point type.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(4, True)</span>
+<span class="sd">    ivy.array([0. , 0.5, 1. , 0.5])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.hann_window(7, False)</span>
+<span class="sd">    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">hann_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kaiser_window/kaiser_window_functional.html#ivy.functional.ivy.experimental.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kaiser window with window length window_length and shape beta</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
+<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
+<span class="sd">    beta</span>
+<span class="sd">        a float used as shape parameter for the window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5)</span>
+<span class="sd">    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, True, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, False, 5)</span>
+<span class="sd">    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span>
+        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kaiser_bessel_derived_window/kaiser_bessel_derived_window_functional.html#ivy.functional.ivy.experimental.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kaiser bessel derived window with</span>
+<span class="sd">    window length window_length and shape beta</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
+<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
+<span class="sd">    beta</span>
+<span class="sd">        a float used as shape parameter for the window.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_bessel_derived_window(5)</span>
+<span class="sd">    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False)</span>
+<span class="sd">    ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False, 5)</span>
+<span class="sd">    ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
+
+    <span class="n">sum_i_N</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+
+    <span class="k">def</span> <span class="nf">sum_i_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+
+    <span class="n">dn_low</span> <span class="o">=</span> <span class="p">[</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_i_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">sum_2N_1_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span> <span class="o">-</span> <span class="n">n</span><span class="p">)])</span>
+
+    <span class="n">dn_mid</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">sqrt</span><span class="p">(</span><span class="n">sum_2N_1_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span><span class="p">)</span>
+    <span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dn_low</span> <span class="o">+</span> <span class="n">dn_mid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hamming_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/hamming_window/hamming_window_functional.html#ivy.functional.ivy.experimental.hamming_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">hamming_window</span><span class="p">(</span>
+    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.54</span><span class="p">,</span>
+    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.46</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Hamming window with window length window_length</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    window_length</span>
+<span class="sd">        an int defining the length of the window.</span>
+<span class="sd">    periodic</span>
+<span class="sd">         If True, returns a window to be used as periodic function.</span>
+<span class="sd">         If False, return a symmetric window.</span>
+<span class="sd">    alpha</span>
+<span class="sd">        The coefficient alpha in the hamming window equation</span>
+<span class="sd">    beta</span>
+<span class="sd">        The coefficient beta in the hamming window equation</span>
+<span class="sd">    dtype</span>
+<span class="sd">        data type of the returned array.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The array containing the window.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5)</span>
+<span class="sd">    ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False)</span>
+<span class="sd">    ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)</span>
+<span class="sd">    ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+    <span class="k">elif</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
+                <span class="p">],</span>
+                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
+                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+            <span class="p">)</span></div>
+
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">inputs_to_native_arrays</span>
@@ -1329,7 +1824,6 @@
 <span class="k">def</span> <span class="nf">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">native_sparse_array_to_indices_values_and_shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
-
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -1505,846 +1999,140 @@
     <span class="p">)</span></div>
 
 
-
-
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">handle_out_argument</span><span class="p">,</span>
-    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
-    <span class="n">handle_nestable</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
-
-
-<div class="viewcode-block" id="median"><a class="viewcode-back" href="../../../../functional/ivy/experimental/median/median_functional.html#ivy.functional.ivy.experimental.median">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
-    <span class="nb">input</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Compute the median along the specified axis.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    input</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        Axis or axes along which the medians are computed. The default is to compute</span>
-<span class="sd">        the median along a flattened version of the array.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
-<span class="sd">        as dimensions with size one.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The median of the array elements.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10, 7, 4], [3, 2, 1]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.median(a)</span>
-<span class="sd">    3.5</span>
-<span class="sd">    &gt;&gt;&gt; ivy.median(a, axis=0)</span>
-<span class="sd">    ivy.array([6.5, 4.5, 2.5])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="nanmean"><a class="viewcode-back" href="../../../../functional/ivy/experimental/nanmean/nanmean_functional.html#ivy.functional.ivy.experimental.nanmean">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the mean of all non-NaN elements along the specified dimensions.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    a</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    axis</span>
-<span class="sd">        Axis or axes along which the means are computed.</span>
-<span class="sd">        The default is to compute the mean of the flattened array.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
-<span class="sd">        as dimensions with size one. With this option, the result will broadcast</span>
-<span class="sd">        correctly against the original a. If the value is anything but the default,</span>
-<span class="sd">        then keepdims will be passed through to the mean or sum methods of sub-classes</span>
-<span class="sd">        of ndarray. If the sub-classes methods does not implement keepdims any</span>
-<span class="sd">        exceptions will be raised.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        The desired data type of returned tensor. Default is None.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The nanmean of the array elements.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[1, ivy.nan], [3, 4]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.nanmean(a)</span>
-<span class="sd">    2.6666666666666665</span>
-<span class="sd">    &gt;&gt;&gt; ivy.nanmean(a, axis=0)</span>
-<span class="sd">    ivy.array([2.,  4.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="unravel_index"><a class="viewcode-back" href="../../../../functional/ivy/experimental/unravel_index/unravel_index_functional.html#ivy.functional.ivy.experimental.unravel_index">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
-    <span class="n">indices</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Converts a flat index or array of flat indices</span>
-<span class="sd">    into a tuple of coordinate arrays.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    indices</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    shape</span>
-<span class="sd">        The shape of the array to use for unraveling indices.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Tuple with arrays that have the same shape as the indices array.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-<span class="sd">    &gt;&gt;&gt; indices = ivy.array([22, 41, 37])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.unravel_index(indices, (7,6))</span>
-<span class="sd">    (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="quantile"><a class="viewcode-back" href="../../../../functional/ivy/experimental/quantile/quantile_functional.html#ivy.functional.ivy.experimental.quantile">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Compute the q-th quantile of the data along the specified axis.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    a</span>
-<span class="sd">        Input array.</span>
-<span class="sd">    q</span>
-<span class="sd">        Quantile or sequence of quantiles to compute, which must be</span>
-<span class="sd">        between 0 and 1 inclusive.</span>
-<span class="sd">    axis</span>
-<span class="sd">        Axis or axes along which the quantiles are computed. The default</span>
-<span class="sd">        is to compute the quantile(s) along a flattened version of the array.</span>
-<span class="sd">    keepdims</span>
-<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
-<span class="sd">        as dimensions with size one. With this option, the result will broadcast</span>
-<span class="sd">        correctly against the original array a.</span>
-<span class="sd">    interpolation</span>
-<span class="sd">        {&#39;nearest&#39;, &#39;linear&#39;, &#39;lower&#39;, &#39;higher&#39;, &#39;midpoint&#39;}. Default value: &#39;linear&#39;.</span>
-<span class="sd">        This specifies the interpolation method to use when the desired quantile lies</span>
-<span class="sd">        between two data points i &lt; j:</span>
-<span class="sd">        - linear: i + (j - i) * fraction, where fraction is the fractional part of the</span>
-<span class="sd">        index surrounded by i and j.</span>
-<span class="sd">        - lower: i.</span>
-<span class="sd">        - higher: j.</span>
-<span class="sd">        - nearest: i or j, whichever is nearest.</span>
-<span class="sd">        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with</span>
-<span class="sd">        integer dtypes.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis</span>
-<span class="sd">        is None, a rank(q) array. The first rank(q) dimensions index quantiles for</span>
-<span class="sd">        different values of q.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
-<span class="sd">    &gt;&gt;&gt; q = ivy.array(0.5)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q)</span>
-<span class="sd">    ivy.array(3.5)</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
-<span class="sd">    &gt;&gt;&gt; q = 0.5</span>
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q)</span>
-<span class="sd">    ivy.array(3.5)</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=0)</span>
-<span class="sd">    ivy.array([6.5, 4.5, 2.5])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=1)</span>
-<span class="sd">    ivy.array([7.,  2.])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=1, keepdims=True)</span>
-<span class="sd">    ivy.array([[7.],[2.]])</span>
-
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([1., 2., 3., 4.])</span>
-<span class="sd">    &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, interpolation=&#39;lower&#39;)</span>
-<span class="sd">    ivy.array([1., 3.])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span>
-        <span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
-
-<span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
-    <span class="n">handle_out_argument</span><span class="p">,</span>
-    <span class="n">handle_nestable</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_nestable</span><span class="p">,</span> <span class="n">handle_array_like</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.losses</span> <span class="kn">import</span> <span class="n">_reduce_loss</span>
 
 
-<div class="viewcode-block" id="diagflat"><a class="viewcode-back" href="../../../../functional/ivy/experimental/diagflat/diagflat_functional.html#ivy.functional.ivy.experimental.diagflat">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="binary_cross_entropy_with_logits"><a class="viewcode-back" href="../../../../functional/ivy/experimental/binary_cross_entropy_with_logits.html#ivy.functional.ivy.experimental.binary_cross_entropy_with_logits">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">diagflat</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+<span class="nd">@handle_array_like</span>
+<span class="k">def</span> <span class="nf">binary_cross_entropy_with_logits</span><span class="p">(</span>
+    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">padding_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="n">align</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RIGHT_LEFT&quot;</span><span class="p">,</span>
-    <span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a two-dimensional array with the flattened input as a diagonal.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x</span>
-<span class="sd">        Input data, which is flattened and set as the k-th diagonal of the output.</span>
-<span class="sd">    k</span>
-<span class="sd">        Diagonal to set.</span>
-<span class="sd">        Positive value means superdiagonal,</span>
-<span class="sd">        0 refers to the main diagonal,</span>
-<span class="sd">        and negative value means subdiagonal.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The 2-D output array.</span>
-
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
-<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html&gt;`_ </span>
-<span class="sd">    in the standard.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    ------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.diagflat(x)</span>
-<span class="sd">    ivy.array([[1, 0, 0, 0],</span>
-<span class="sd">               [0, 2, 0, 0],</span>
-<span class="sd">               [0, 0, 3, 0],</span>
-<span class="sd">               [0, 0, 0, 4]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.diagflat(x, k=1)</span>
-<span class="sd">    ivy.array([[0, 1, 0],</span>
-<span class="sd">               [0, 0, 2],</span>
-<span class="sd">               [0, 0, 0]])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagflat</span><span class="p">(</span>
-        <span class="n">x</span><span class="p">,</span>
-        <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
-        <span class="n">padding_value</span><span class="o">=</span><span class="n">padding_value</span><span class="p">,</span>
-        <span class="n">align</span><span class="o">=</span><span class="n">align</span><span class="p">,</span>
-        <span class="n">num_rows</span><span class="o">=</span><span class="n">num_rows</span><span class="p">,</span>
-        <span class="n">num_cols</span><span class="o">=</span><span class="n">num_cols</span><span class="p">,</span>
-        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-    <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="kron"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kron/kron_functional.html#ivy.functional.ivy.experimental.kron">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">kron</span><span class="p">(</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
+    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
+    <span class="n">pos_weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
     <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the Kronecker product, a composite array</span>
-<span class="sd">    made of blocks of the second array scaled by the first.</span>
+    <span class="sd">&quot;&quot;&quot;Computes the binary cross entropy with logits loss.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    a</span>
-<span class="sd">        First input array.</span>
-<span class="sd">    b</span>
-<span class="sd">        Second input array</span>
+<span class="sd">    true</span>
+<span class="sd">        input array containing true labels.</span>
+<span class="sd">    pred</span>
+<span class="sd">        input array containing predicted labels as logits.</span>
+<span class="sd">    epsilon</span>
+<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the</span>
+<span class="sd">        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.</span>
+<span class="sd">    pos_weight</span>
+<span class="sd">        a weight for positive examples. Must be an array with length equal to the number</span>
+<span class="sd">        of classes.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
-<span class="sd">        inputs broadcast to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
+<span class="sd">        that the inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        Array representing the Kronecker product of the input arrays.</span>
+<span class="sd">        The binary cross entropy with logits loss between the given distributions.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.array([1,2])</span>
-<span class="sd">    &gt;&gt;&gt; b = ivy.array([3,4])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.kron(a, b)</span>
-<span class="sd">    ivy.array([3, 4, 6, 8])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="eig"><a class="viewcode-back" href="../../../../functional/ivy/experimental/eig/eig_functional.html#ivy.functional.ivy.experimental.eig">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">eig</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:</span>
-<span class="sd">     first is the set of eigenvalues, second is the set of eigenvectors.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    x</span>
-<span class="sd">        An array of shape (..., N, N).</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        A tuple with two elements: first is the set of eigenvalues,</span>
-<span class="sd">        second is the set of eigenvectors</span>
-
-
-<span class="sd">    This function conforms to the `Array API Standard</span>
-<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
-
-<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
-<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    ------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
-<span class="sd">    (</span>
-<span class="sd">    ivy.array([-0.37228132+0.j,  5.37228132+0.j]),</span>
-<span class="sd">    ivy.array([[-0.82456484+0.j, -0.41597356+0.j],</span>
-<span class="sd">               [ 0.56576746+0.j, -0.90937671+0.j]])</span>
-<span class="sd">    )</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
-<span class="sd">    (</span>
-<span class="sd">    ivy.array(</span>
-<span class="sd">        [</span>
-<span class="sd">            [-3.72281323e-01+0.j,  5.37228132e+00+0.j],</span>
-<span class="sd">            [3.88578059e-16+0.j,  1.10000000e+01+0.j]</span>
-<span class="sd">        ]</span>
-<span class="sd">    ),</span>
-<span class="sd">    ivy.array([</span>
-<span class="sd">            [</span>
-<span class="sd">                [-0.82456484+0.j, -0.41597356+0.j], [0.56576746+0.j, -0.90937671+0.j]</span>
-<span class="sd">            ],</span>
-<span class="sd">            [</span>
-<span class="sd">                [-0.76822128+0.j, -0.70710678+0.j], [0.6401844 +0.j, -0.70710678+0.j]</span>
-<span class="sd">            ]</span>
-<span class="sd">        ])</span>
-<span class="sd">    )</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">pi</span><span class="p">,</span> <span class="n">cos</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
-
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">infer_device</span><span class="p">,</span>
-    <span class="n">outputs_to_ivy_arrays</span><span class="p">,</span>
-    <span class="n">handle_nestable</span><span class="p">,</span>
-    <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
-    <span class="n">handle_out_argument</span><span class="p">,</span>
-<span class="p">)</span>
-
-
-<div class="viewcode-block" id="triu_indices"><a class="viewcode-back" href="../../../../functional/ivy/experimental/triu_indices/triu_indices_functional.html#ivy.functional.ivy.experimental.triu_indices">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
-<span class="nd">@infer_device</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">triu_indices</span><span class="p">(</span>
-    <span class="n">n_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">n_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">k</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">device</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDevice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns the indices of the upper triangular part of a row by col matrix in a</span>
-<span class="sd">    2-by-N shape (tuple of two N dimensional arrays), where the first row contains</span>
-<span class="sd">    row coordinates of all indices and the second row contains column coordinates.</span>
-<span class="sd">    Indices are ordered based on rows and then columns.  The upper triangular part</span>
-<span class="sd">    of the matrix is defined as the elements on and above the diagonal.  The argument</span>
-<span class="sd">    k controls which diagonal to consider. If k = 0, all elements on and above the main</span>
-<span class="sd">    diagonal are retained. A positive value excludes just as many diagonals above the</span>
-<span class="sd">    main diagonal, and similarly a negative value includes just as many diagonals</span>
-<span class="sd">    below the main diagonal. The main diagonal are the set of indices</span>
-<span class="sd">    {(i,i)} for i∈[0,min{n_rows, n_cols}−1].</span>
-
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Primary purpose of this function is to slice an array of shape (n,m). See</span>
-<span class="sd">    https://numpy.org/doc/stable/reference/generated/numpy.triu_indices.html</span>
-<span class="sd">    for examples</span>
-
-<span class="sd">    Tensorflow does not support slicing 2-D tensor with tuple of tensor of indices</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    n_rows</span>
-<span class="sd">       number of rows in the 2-d matrix.</span>
-<span class="sd">    n_cols</span>
-<span class="sd">       number of columns in the 2-d matrix. If None n_cols will be the same as n_rows</span>
-<span class="sd">    k</span>
-<span class="sd">       number of shifts from the main diagonal. k = 0 includes main diagonal,</span>
-<span class="sd">       k &gt; 0 moves upwards and k &lt; 0 moves downwards</span>
-<span class="sd">    device</span>
-<span class="sd">       device on which to place the created array. Default: ``None``.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        an 2xN shape, tuple of two N dimensional, where first subarray (i.e. ret[0])</span>
-<span class="sd">        contains row coordinates of all indices and the second subarray (i.e ret[1])</span>
-<span class="sd">        contains columns indices.</span>
-
-<span class="sd">    Function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
-<span class="sd">    instances in place of any of the arguments.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,0)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 2, 2, 3]),</span>
-<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3, 2, 3, 3]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,1)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 0, 1, 1, 2]),</span>
-<span class="sd">    ivy.array([1, 2, 3, 2, 3, 3]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,-2)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3]),</span>
-<span class="sd">    ivy.array([0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 1, 2, 3]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,2,0)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 1]),</span>
-<span class="sd">    ivy.array([0, 1, 1]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,0)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1]),</span>
-<span class="sd">    ivy.array([0, 1, 2, 3, 1, 2, 3]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,-4,0)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([]), ivy.array([]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(4,4,100)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([]), ivy.array([]))</span>
-
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.triu_indices(2,4,-100)</span>
-<span class="sd">    &gt;&gt;&gt; print(x)</span>
-<span class="sd">    (ivy.array([0, 0, 0, 0, 1, 1, 1, 1]), ivy.array([0, 1, 2, 3, 0, 1, 2, 3]))</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">triu_indices</span><span class="p">(</span><span class="n">n_rows</span><span class="p">,</span> <span class="n">n_cols</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="vorbis_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/vorbis_window/vorbis_window_functional.html#ivy.functional.ivy.experimental.vorbis_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">vorbis_window</span><span class="p">(</span>
-    <span class="n">window_length</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Returns an array that contains a vorbis power complementary window</span>
-<span class="sd">    of size window_length.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    window_length</span>
-<span class="sd">        the length of the vorbis window.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        data type of the returned array. By default float32.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Input array with the vorbis window.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(3)</span>
-<span class="sd">    ivy.array([0.38268346, 1. , 0.38268352])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.vorbis_window(5)</span>
-<span class="sd">    ivy.array([0.14943586, 0.8563191 , 1. , 0.8563191, 0.14943568])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">vorbis_window</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="hann_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/hann_window/hann_window_functional.html#ivy.functional.ivy.experimental.hann_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">hann_window</span><span class="p">(</span>
-    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Generate a Hann window. The Hanning window</span>
-<span class="sd">    is a taper formed by using a weighted cosine.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    window_length</span>
-<span class="sd">        the size of the returned window.</span>
-<span class="sd">    periodic</span>
-<span class="sd">        If True, returns a window to be used as periodic function.</span>
-<span class="sd">        If False, return a symmetric window.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        The data type to produce. Must be a floating point type.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The array containing the window.</span>
 
 <span class="sd">    Functional Examples</span>
 <span class="sd">    -------------------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.hann_window(4, True)</span>
-<span class="sd">    ivy.array([0. , 0.5, 1. , 0.5])</span>
 
-<span class="sd">    &gt;&gt;&gt; ivy.hann_window(7, False)</span>
-<span class="sd">    ivy.array([0.  , 0.25, 0.75, 1.  , 0.75, 0.25, 0.  ])</span>
+<span class="sd">    With :class:`ivy.Array` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1.2, 3.8, 5.3, 2.8])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([1.463, 0.022, 5.305, 0.059])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 0, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[6.6, 4.2, 1.7, 7.3]])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y, epsilon=1e-3)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[6.601, 0.015, 1.868, 6.908]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 1, 0]])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([[2.6, 6.2, 3.7, 5.3]])</span>
+<span class="sd">    &gt;&gt;&gt; pos_weight = ivy.array([1.2])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y, pos_weight=pos_weight)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([[2.672, 0.002, 0.029, 5.305]])</span>
+
+<span class="sd">    With :class:`ivy.NativeArray` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1.3, 1.7, 2.2, 0.6])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([1.541, 0.168, 2.305, 0.437])</span>
+
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 0, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([3.1, 3.2, 1.8, 4.6])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([3.144, 3.24, 1.953, 0.01])</span>
+
+<span class="sd">    With :class:`ivy.Container` input:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 1, 0]),b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]),b=ivy.array([1.8, 2.2, 1.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.027, 0.263, 5.305]),</span>
+<span class="sd">        b: ivy.array([1.953, 2.305, 0.263])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 0, 1])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.7, 3.8, 1.2]))</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    {</span>
+<span class="sd">        a: ivy.array([0.024, 3.822, 0.263])</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Instance Method Examples</span>
+<span class="sd">    ------------------------</span>
+
+<span class="sd">    Using :class:`ivy.Array` instance method:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 1, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.array([1.8, 5.2, 12.2, 7.2])</span>
+<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(z)</span>
+<span class="sd">    ivy.array([0.153, 0.006, 12.205, 7.201])</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">hann_window</span><span class="p">(</span>
-        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="kaiser_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kaiser_window/kaiser_window_functional.html#ivy.functional.ivy.experimental.kaiser_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">kaiser_window</span><span class="p">(</span>
-    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the Kaiser window with window length window_length and shape beta</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    window_length</span>
-<span class="sd">        an int defining the length of the window.</span>
-<span class="sd">    periodic</span>
-<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
-<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
-<span class="sd">    beta</span>
-<span class="sd">        a float used as shape parameter for the window.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        data type of the returned array.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The array containing the window.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5)</span>
-<span class="sd">    ivy.array([5.2773e-05, 1.0172e-01, 7.9294e-01, 7.9294e-01, 1.0172e-01]])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, True, 5)</span>
-<span class="sd">    ivy.array([0.0367, 0.4149, 0.9138, 0.9138, 0.4149])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_window(5, False, 5)</span>
-<span class="sd">    ivy.array([0.0367, 0.5529, 1.0000, 0.5529, 0.0367])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span>
-        <span class="n">window_length</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
-    <span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="kaiser_bessel_derived_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kaiser_bessel_derived_window/kaiser_bessel_derived_window_functional.html#ivy.functional.ivy.experimental.kaiser_bessel_derived_window">[docs]</a><span class="nd">@outputs_to_ivy_arrays</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">kaiser_bessel_derived_window</span><span class="p">(</span>
-    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the Kaiser bessel derived window with</span>
-<span class="sd">    window length window_length and shape beta</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    window_length</span>
-<span class="sd">        an int defining the length of the window.</span>
-<span class="sd">    periodic</span>
-<span class="sd">        If True, returns a periodic window suitable for use in spectral analysis.</span>
-<span class="sd">        If False, returns a symmetric window suitable for use in filter design.</span>
-<span class="sd">    beta</span>
-<span class="sd">        a float used as shape parameter for the window.</span>
-<span class="sd">    dtype</span>
-<span class="sd">        data type of the returned array</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The array containing the window.</span>
-
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_bessel_derived_window(5)</span>
-<span class="sd">    ivy.array([0.00713103, 0.70710677, 0.99997455, 0.99997455, 0.70710677])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False)</span>
-<span class="sd">    ivy.array([0.00726415, 0.9999736 , 0.9999736 , 0.00726415])</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.kaiser_derived_window(5, False, 5)</span>
-<span class="sd">    ivy.array([0.18493208, 0.9827513 , 0.9827513 , 0.18493208])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">//</span> <span class="mi">2</span>
-    <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">kaiser_window</span><span class="p">(</span><span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">periodic</span><span class="p">,</span> <span class="n">beta</span><span class="p">)</span>
-
-    <span class="n">sum_i_N</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
-
-    <span class="k">def</span> <span class="nf">sum_i_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
-
-    <span class="n">dn_low</span> <span class="o">=</span> <span class="p">[</span><span class="n">sqrt</span><span class="p">(</span><span class="n">sum_i_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)]</span>
-
-    <span class="k">def</span> <span class="nf">sum_2N_1_n</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">w</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span> <span class="o">-</span> <span class="n">n</span><span class="p">)])</span>
-
-    <span class="n">dn_mid</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">sqrt</span><span class="p">(</span><span class="n">sum_2N_1_n</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">/</span> <span class="n">sum_i_N</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">window_length</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">window_length</span><span class="p">)</span>
-    <span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dn_low</span> <span class="o">+</span> <span class="n">dn_mid</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="hamming_window"><a class="viewcode-back" href="../../../../functional/ivy/experimental/hamming_window/hamming_window_functional.html#ivy.functional.ivy.experimental.hamming_window">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
-<span class="nd">@handle_out_argument</span>
-<span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">hamming_window</span><span class="p">(</span>
-    <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">periodic</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">alpha</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.54</span><span class="p">,</span>
-    <span class="n">beta</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.46</span><span class="p">,</span>
-    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the Hamming window with window length window_length</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    window_length</span>
-<span class="sd">        an int defining the length of the window.</span>
-<span class="sd">    periodic</span>
-<span class="sd">         If True, returns a window to be used as periodic function.</span>
-<span class="sd">         If False, return a symmetric window.</span>
-<span class="sd">    alpha</span>
-<span class="sd">        The coefficient alpha in the hamming window equation</span>
-<span class="sd">    beta</span>
-<span class="sd">        The coefficient beta in the hamming window equation</span>
-<span class="sd">    dtype</span>
-<span class="sd">        data type of the returned array.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        The array containing the window.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5)</span>
-<span class="sd">    ivy.array([0.0800, 0.3979, 0.9121, 0.9121, 0.3979])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False)</span>
-<span class="sd">    ivy.array([0.0800, 0.5400, 1.0000, 0.5400, 0.0800])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.hamming_window(5, periodic=False, alpha=0.2, beta=2)</span>
-<span class="sd">    ivy.array([-1.8000,  0.2000,  2.2000,  0.2000, -1.8000])</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
-    <span class="k">elif</span> <span class="n">window_length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">reduction</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">])</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pos_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">true</span> <span class="o">*</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="n">pos_weight</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">))</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">_reduce_loss</span><span class="p">(</span><span class="n">reduction</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">periodic</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="n">window_length</span> <span class="o">=</span> <span class="n">window_length</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
-                <span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-                <span class="p">[</span>
-                    <span class="n">alpha</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">cos</span><span class="p">((</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">window_length</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
-                    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">window_length</span><span class="p">)</span>
-                <span class="p">],</span>
-                <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span>
-                <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-            <span class="p">)</span></div>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">binary_cross_entropy</span><span class="p">(</span>
+            <span class="n">true</span><span class="p">,</span>
+            <span class="n">pred</span><span class="p">,</span>
+            <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
+            <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">,</span>
+            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+        <span class="p">)</span>
 
-<span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
-
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
-<span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
-
-
-<div class="viewcode-block" id="is_native_dtype"><a class="viewcode-back" href="../../../../functional/ivy/experimental/is_native_dtype.html#ivy.functional.ivy.experimental.is_native_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether the input dtype is a Native dtype.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-<span class="sd">    dtype_in</span>
-<span class="sd">        Determine whether the input data type is a native data type object.</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Boolean, whether or not dtype_in is a native data type.</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.is_native_dtype(np.int32)</span>
-<span class="sd">    True</span>
-
-<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.is_native_array(ivy.float64)</span>
-<span class="sd">    False</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span></div>
+    <span class="k">return</span> <span class="n">result</span></div>
 
 
 
@@ -3883,206 +3671,276 @@
         <span class="n">ary</span><span class="p">,</span> <span class="n">indices_or_sections</span><span class="o">=</span><span class="n">indices_or_sections</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 
+<span class="c1"># global</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="n">handle_nestable</span><span class="p">,</span> <span class="n">handle_array_like</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
-<span class="kn">from</span> <span class="nn">ivy.functional.ivy.losses</span> <span class="kn">import</span> <span class="n">_reduce_loss</span>
 
 
-<div class="viewcode-block" id="binary_cross_entropy_with_logits"><a class="viewcode-back" href="../../../../functional/ivy/experimental/binary_cross_entropy_with_logits.html#ivy.functional.ivy.experimental.binary_cross_entropy_with_logits">[docs]</a><span class="nd">@handle_nestable</span>
-<span class="nd">@handle_exceptions</span>
-<span class="nd">@handle_array_like</span>
-<span class="k">def</span> <span class="nf">binary_cross_entropy_with_logits</span><span class="p">(</span>
-    <span class="n">true</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">pred</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="o">/</span><span class="p">,</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">epsilon</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-7</span><span class="p">,</span>
-    <span class="n">pos_weight</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">reduction</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Computes the binary cross entropy with logits loss.</span>
+<div class="viewcode-block" id="is_native_dtype"><a class="viewcode-back" href="../../../../functional/ivy/experimental/is_native_dtype.html#ivy.functional.ivy.experimental.is_native_dtype">[docs]</a><span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">],</span> <span class="o">/</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the input dtype is a Native dtype.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    true</span>
-<span class="sd">        input array containing true labels.</span>
-<span class="sd">    pred</span>
-<span class="sd">        input array containing predicted labels as logits.</span>
-<span class="sd">    epsilon</span>
-<span class="sd">        a float in [0.0, 1.0] specifying the amount of smoothing when calculating the</span>
-<span class="sd">        loss. If epsilon is ``0``, no smoothing will be applied. Default: ``1e-7``.</span>
-<span class="sd">    pos_weight</span>
-<span class="sd">        a weight for positive examples. Must be an array with length equal to the number</span>
-<span class="sd">        of classes.</span>
-<span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to. It must have a shape</span>
-<span class="sd">        that the inputs broadcast to.</span>
+<span class="sd">    dtype_in</span>
+<span class="sd">        Determine whether the input data type is a native data type object.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The binary cross entropy with logits loss between the given distributions.</span>
+<span class="sd">        Boolean, whether or not dtype_in is a native data type.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.is_native_dtype(np.int32)</span>
+<span class="sd">    True</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    -------------------</span>
-
-<span class="sd">    With :class:`ivy.Array` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1.2, 3.8, 5.3, 2.8])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([1.463, 0.022, 5.305, 0.059])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 0, 0]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([[6.6, 4.2, 1.7, 7.3]])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y, epsilon=1e-3)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[6.601, 0.015, 1.868, 6.908]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[0, 1, 1, 0]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([[2.6, 6.2, 3.7, 5.3]])</span>
-<span class="sd">    &gt;&gt;&gt; pos_weight = ivy.array([1.2])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y, pos_weight=pos_weight)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([[2.672, 0.002, 0.029, 5.305]])</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([0, 1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([1.3, 1.7, 2.2, 0.6])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([1.541, 0.168, 2.305, 0.437])</span>
-
-<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.NativeArray` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([0, 0, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([3.1, 3.2, 1.8, 4.6])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([3.144, 3.24, 1.953, 0.01])</span>
-
-<span class="sd">    With :class:`ivy.Container` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 1, 0]),b=ivy.array([0, 0, 1]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]),b=ivy.array([1.8, 2.2, 1.2]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0.027, 0.263, 5.305]),</span>
-<span class="sd">        b: ivy.array([1.953, 2.305, 0.263])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    With a mix of :class:`ivy.Array` and :class:`ivy.Container` inputs:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 0, 1])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.7, 3.8, 1.2]))</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    {</span>
-<span class="sd">        a: ivy.array([0.024, 3.822, 0.263])</span>
-<span class="sd">    }</span>
-
-<span class="sd">    Instance Method Examples</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    Using :class:`ivy.Array` instance method:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([1, 1, 0, 0])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1.8, 5.2, 12.2, 7.2])</span>
-<span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
-<span class="sd">    &gt;&gt;&gt; print(z)</span>
-<span class="sd">    ivy.array([0.153, 0.006, 12.205, 7.201])</span>
-
+<span class="sd">    &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.is_native_array(ivy.float64)</span>
+<span class="sd">    False</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_elem_in_list</span><span class="p">(</span><span class="n">reduction</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;sum&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">])</span>
-    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pos_weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">true</span> <span class="o">*</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">*</span> <span class="n">pos_weight</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">*</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">))</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">_reduce_loss</span><span class="p">(</span><span class="n">reduction</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">binary_cross_entropy</span><span class="p">(</span>
-            <span class="n">true</span><span class="p">,</span>
-            <span class="n">pred</span><span class="p">,</span>
-            <span class="n">epsilon</span><span class="o">=</span><span class="n">epsilon</span><span class="p">,</span>
-            <span class="n">reduction</span><span class="o">=</span><span class="n">reduction</span><span class="p">,</span>
-            <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
-        <span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">result</span></div>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">is_native_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Sequence</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">handle_out_argument</span><span class="p">,</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_nestable</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<div class="viewcode-block" id="isin"><a class="viewcode-back" href="../../../../functional/ivy/experimental/isin/isin_functional.html#ivy.functional.ivy.experimental.isin">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="median"><a class="viewcode-back" href="../../../../functional/ivy/experimental/median/median_functional.html#ivy.functional.ivy.experimental.median">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">isin</span><span class="p">(</span>
-    <span class="n">elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
-    <span class="n">test_elements</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+<span class="k">def</span> <span class="nf">median</span><span class="p">(</span>
+    <span class="nb">input</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">assume_unique</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">invert</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Tests if each element of elements is in test_elements.</span>
+    <span class="sd">&quot;&quot;&quot;Compute the median along the specified axis.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    elements</span>
-<span class="sd">        input array</span>
-<span class="sd">    test_elements</span>
-<span class="sd">        values against which to test for each input element</span>
-<span class="sd">    assume_unique</span>
-<span class="sd">        If True, assumes both elements and test_elements contain unique elements,</span>
-<span class="sd">        which can speed up the calculation. Default value is False.</span>
-<span class="sd">    invert</span>
-<span class="sd">        If True, inverts the boolean return array, resulting in True values for</span>
-<span class="sd">        elements not in test_elements. Default value is False.</span>
+<span class="sd">    input</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    axis</span>
+<span class="sd">        Axis or axes along which the medians are computed. The default is to compute</span>
+<span class="sd">        the median along a flattened version of the array.</span>
+<span class="sd">    keepdims</span>
+<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
+<span class="sd">        as dimensions with size one.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        output a boolean array of the same shape as elements that is True for elements</span>
-<span class="sd">        in test_elements and False otherwise.</span>
+<span class="sd">        The median of the array elements.</span>
 
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([[10, 7, 4], [3, 2, 1]])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y)</span>
-<span class="sd">    ivy.array([[False, False, False], [ True,  True,  True]])</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 2, 1, 0])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.array([1, 2, 3])</span>
-<span class="sd">    &gt;&gt;&gt; ivy.isin(x, y, invert=True)</span>
-<span class="sd">    ivy.array([False, False, False,  True])</span>
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10, 7, 4], [3, 2, 1]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.median(a)</span>
+<span class="sd">    3.5</span>
+<span class="sd">    &gt;&gt;&gt; ivy.median(a, axis=0)</span>
+<span class="sd">    ivy.array([6.5, 4.5, 2.5])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
-        <span class="n">elements</span><span class="p">,</span> <span class="n">test_elements</span><span class="p">,</span> <span class="n">assume_unique</span><span class="o">=</span><span class="n">assume_unique</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="nanmean"><a class="viewcode-back" href="../../../../functional/ivy/experimental/nanmean/nanmean_functional.html#ivy.functional.ivy.experimental.nanmean">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">nanmean</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">dtype</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeDtype</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the mean of all non-NaN elements along the specified dimensions.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    axis</span>
+<span class="sd">        Axis or axes along which the means are computed.</span>
+<span class="sd">        The default is to compute the mean of the flattened array.</span>
+<span class="sd">    keepdims</span>
+<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
+<span class="sd">        as dimensions with size one. With this option, the result will broadcast</span>
+<span class="sd">        correctly against the original a. If the value is anything but the default,</span>
+<span class="sd">        then keepdims will be passed through to the mean or sum methods of sub-classes</span>
+<span class="sd">        of ndarray. If the sub-classes methods does not implement keepdims any</span>
+<span class="sd">        exceptions will be raised.</span>
+<span class="sd">    dtype</span>
+<span class="sd">        The desired data type of returned tensor. Default is None.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        The nanmean of the array elements.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([[1, ivy.nan], [3, 4]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.nanmean(a)</span>
+<span class="sd">    2.6666666666666665</span>
+<span class="sd">    &gt;&gt;&gt; ivy.nanmean(a, axis=0)</span>
+<span class="sd">    ivy.array([2.,  4.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
     <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="unravel_index"><a class="viewcode-back" href="../../../../functional/ivy/experimental/unravel_index/unravel_index_functional.html#ivy.functional.ivy.experimental.unravel_index">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">unravel_index</span><span class="p">(</span>
+    <span class="n">indices</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Converts a flat index or array of flat indices</span>
+<span class="sd">    into a tuple of coordinate arrays.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    indices</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    shape</span>
+<span class="sd">        The shape of the array to use for unraveling indices.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Tuple with arrays that have the same shape as the indices array.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    -------------------</span>
+<span class="sd">    &gt;&gt;&gt; indices = ivy.array([22, 41, 37])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.unravel_index(indices, (7,6))</span>
+<span class="sd">    (ivy.array([3, 6, 6]), ivy.array([4, 5, 1]))</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="quantile"><a class="viewcode-back" href="../../../../functional/ivy/experimental/quantile/quantile_functional.html#ivy.functional.ivy.experimental.quantile">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">quantile</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">axis</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">keepdims</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">interpolation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Compute the q-th quantile of the data along the specified axis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        Input array.</span>
+<span class="sd">    q</span>
+<span class="sd">        Quantile or sequence of quantiles to compute, which must be</span>
+<span class="sd">        between 0 and 1 inclusive.</span>
+<span class="sd">    axis</span>
+<span class="sd">        Axis or axes along which the quantiles are computed. The default</span>
+<span class="sd">        is to compute the quantile(s) along a flattened version of the array.</span>
+<span class="sd">    keepdims</span>
+<span class="sd">        If this is set to True, the axes which are reduced are left in the result</span>
+<span class="sd">        as dimensions with size one. With this option, the result will broadcast</span>
+<span class="sd">        correctly against the original array a.</span>
+<span class="sd">    interpolation</span>
+<span class="sd">        {&#39;nearest&#39;, &#39;linear&#39;, &#39;lower&#39;, &#39;higher&#39;, &#39;midpoint&#39;}. Default value: &#39;linear&#39;.</span>
+<span class="sd">        This specifies the interpolation method to use when the desired quantile lies</span>
+<span class="sd">        between two data points i &lt; j:</span>
+<span class="sd">        - linear: i + (j - i) * fraction, where fraction is the fractional part of the</span>
+<span class="sd">        index surrounded by i and j.</span>
+<span class="sd">        - lower: i.</span>
+<span class="sd">        - higher: j.</span>
+<span class="sd">        - nearest: i or j, whichever is nearest.</span>
+<span class="sd">        - midpoint: (i + j) / 2. linear and midpoint interpolation do not work with</span>
+<span class="sd">        integer dtypes.</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A (rank(q) + N - len(axis)) dimensional array of same dtype as a, or, if axis</span>
+<span class="sd">        is None, a rank(q) array. The first rank(q) dimensions index quantiles for</span>
+<span class="sd">        different values of q.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
+<span class="sd">    &gt;&gt;&gt; q = ivy.array(0.5)</span>
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q)</span>
+<span class="sd">    ivy.array(3.5)</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([[10., 7., 4.], [3., 2., 1.]])</span>
+<span class="sd">    &gt;&gt;&gt; q = 0.5</span>
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q)</span>
+<span class="sd">    ivy.array(3.5)</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=0)</span>
+<span class="sd">    ivy.array([6.5, 4.5, 2.5])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=1)</span>
+<span class="sd">    ivy.array([7.,  2.])</span>
+
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, axis=1, keepdims=True)</span>
+<span class="sd">    ivy.array([[7.],[2.]])</span>
+
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([1., 2., 3., 4.])</span>
+<span class="sd">    &gt;&gt;&gt; q = ivy.array([0.3, 0.7])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.quantile(a, q, interpolation=&#39;lower&#39;)</span>
+<span class="sd">    ivy.array([1., 3.])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
+    <span class="p">)</span></div>
+
 <span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.backend_handler</span> <span class="kn">import</span> <span class="n">current_backend</span>
 <span class="kn">from</span> <span class="nn">ivy.func_wrapper</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">to_native_arrays_and_back</span><span class="p">,</span>
     <span class="n">handle_out_argument</span><span class="p">,</span>
@@ -4091,44 +3949,182 @@
 <span class="kn">from</span> <span class="nn">ivy.exceptions</span> <span class="kn">import</span> <span class="n">handle_exceptions</span>
 
 
-<span class="c1"># Array API Standard #</span>
-<span class="c1"># -------------------#</span>
-
-
-<div class="viewcode-block" id="msort"><a class="viewcode-back" href="../../../../functional/ivy/experimental/msort/msort_functional.html#ivy.functional.ivy.experimental.msort">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<div class="viewcode-block" id="diagflat"><a class="viewcode-back" href="../../../../functional/ivy/experimental/diagflat/diagflat_functional.html#ivy.functional.ivy.experimental.diagflat">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
 <span class="nd">@handle_out_argument</span>
 <span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
-<span class="k">def</span> <span class="nf">msort</span><span class="p">(</span>
-    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">],</span>
+<span class="k">def</span> <span class="nf">diagflat</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="o">/</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
-    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">padding_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">align</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;RIGHT_LEFT&quot;</span><span class="p">,</span>
+    <span class="n">num_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">num_cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Return a copy of an array sorted along the first axis.</span>
+    <span class="sd">&quot;&quot;&quot;Returns a two-dimensional array with the flattened input as a diagonal.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    a</span>
-<span class="sd">        array-like input.</span>
+<span class="sd">    x</span>
+<span class="sd">        Input data, which is flattened and set as the k-th diagonal of the output.</span>
+<span class="sd">    k</span>
+<span class="sd">        Diagonal to set.</span>
+<span class="sd">        Positive value means superdiagonal,</span>
+<span class="sd">        0 refers to the main diagonal,</span>
+<span class="sd">        and negative value means subdiagonal.</span>
 <span class="sd">    out</span>
-<span class="sd">        optional output array, for writing the result to.</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        sorted array of the same type and shape as a</span>
+<span class="sd">        The 2-D output array.</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_. This docstring is an extension of the</span>
+<span class="sd">    `docstring &lt;https://data-apis.org/array-api/latest/extensions/generated/signatures.linalg.diagonal.html&gt;`_ </span>
+<span class="sd">    in the standard.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diagflat(x)</span>
+<span class="sd">    ivy.array([[1, 0, 0, 0],</span>
+<span class="sd">               [0, 2, 0, 0],</span>
+<span class="sd">               [0, 0, 3, 0],</span>
+<span class="sd">               [0, 0, 0, 4]])</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([1,2])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.diagflat(x, k=1)</span>
+<span class="sd">    ivy.array([[0, 1, 0],</span>
+<span class="sd">               [0, 0, 2],</span>
+<span class="sd">               [0, 0, 0]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">diagflat</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span>
+        <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span>
+        <span class="n">padding_value</span><span class="o">=</span><span class="n">padding_value</span><span class="p">,</span>
+        <span class="n">align</span><span class="o">=</span><span class="n">align</span><span class="p">,</span>
+        <span class="n">num_rows</span><span class="o">=</span><span class="n">num_rows</span><span class="p">,</span>
+        <span class="n">num_cols</span><span class="o">=</span><span class="n">num_cols</span><span class="p">,</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="kron"><a class="viewcode-back" href="../../../../functional/ivy/experimental/kron/kron_functional.html#ivy.functional.ivy.experimental.kron">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_out_argument</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">kron</span><span class="p">(</span>
+    <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the Kronecker product, a composite array</span>
+<span class="sd">    made of blocks of the second array scaled by the first.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a</span>
+<span class="sd">        First input array.</span>
+<span class="sd">    b</span>
+<span class="sd">        Second input array</span>
+<span class="sd">    out</span>
+<span class="sd">        optional output array, for writing the result to. It must have a shape that the</span>
+<span class="sd">        inputs broadcast to.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Array representing the Kronecker product of the input arrays.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; a = ivy.randint(10, size=(2,3))</span>
-<span class="sd">    &gt;&gt;&gt; ivy.msort(a)</span>
-<span class="sd">    ivy.array(</span>
-<span class="sd">        [[6, 2, 6],</span>
-<span class="sd">         [8, 9, 6]]</span>
-<span class="sd">        )</span>
+<span class="sd">    &gt;&gt;&gt; a = ivy.array([1,2])</span>
+<span class="sd">    &gt;&gt;&gt; b = ivy.array([3,4])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.kron(a, b)</span>
+<span class="sd">    ivy.array([3, 4, 6, 8])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">msort</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">kron</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="eig"><a class="viewcode-back" href="../../../../functional/ivy/experimental/eig/eig_functional.html#ivy.functional.ivy.experimental.eig">[docs]</a><span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_nestable</span>
+<span class="nd">@handle_exceptions</span>
+<span class="k">def</span> <span class="nf">eig</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
+    <span class="o">/</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Computes eigenvalies and eigenvectors of x. Returns a tuple with two elements:</span>
+<span class="sd">     first is the set of eigenvalues, second is the set of eigenvectors.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x</span>
+<span class="sd">        An array of shape (..., N, N).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        A tuple with two elements: first is the set of eigenvalues,</span>
+<span class="sd">        second is the set of eigenvectors</span>
+
+
+<span class="sd">    This function conforms to the `Array API Standard</span>
+<span class="sd">    &lt;https://data-apis.org/array-api/latest/&gt;`_.</span>
+
+<span class="sd">    Both the description and the type hints above assumes an array input for simplicity,</span>
+<span class="sd">    but this function is *nestable*, and therefore also accepts :class:`ivy.Container`</span>
+<span class="sd">    instances in place of any of the arguments.</span>
+
+<span class="sd">    Functional Examples</span>
+<span class="sd">    ------------------</span>
+
+<span class="sd">    With :class:`ivy.Array` inputs:</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[1,2], [3,4]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
+<span class="sd">    (</span>
+<span class="sd">    ivy.array([-0.37228132+0.j,  5.37228132+0.j]),</span>
+<span class="sd">    ivy.array([[-0.82456484+0.j, -0.41597356+0.j],</span>
+<span class="sd">               [ 0.56576746+0.j, -0.90937671+0.j]])</span>
+<span class="sd">    )</span>
+
+<span class="sd">    &gt;&gt;&gt; x = ivy.array([[[1,2], [3,4]], [[5,6], [5,6]]])</span>
+<span class="sd">    &gt;&gt;&gt; ivy.eig(x)</span>
+<span class="sd">    (</span>
+<span class="sd">    ivy.array(</span>
+<span class="sd">        [</span>
+<span class="sd">            [-3.72281323e-01+0.j,  5.37228132e+00+0.j],</span>
+<span class="sd">            [3.88578059e-16+0.j,  1.10000000e+01+0.j]</span>
+<span class="sd">        ]</span>
+<span class="sd">    ),</span>
+<span class="sd">    ivy.array([</span>
+<span class="sd">            [</span>
+<span class="sd">                [-0.82456484+0.j, -0.41597356+0.j], [0.56576746+0.j, -0.90937671+0.j]</span>
+<span class="sd">            ],</span>
+<span class="sd">            [</span>
+<span class="sd">                [-0.76822128+0.j, -0.70710678+0.j], [0.6401844 +0.j, -0.70710678+0.j]</span>
+<span class="sd">            ]</span>
+<span class="sd">        ])</span>
+<span class="sd">    )</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">List</span>
@@ -5237,6 +5233,10 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">spacing</span><span class="o">=</span><span class="n">spacing</span><span class="p">,</span> <span class="n">edge_order</span><span class="o">=</span><span class="n">edge_order</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span>
     <span class="p">)</span></div>
+
+
+
+
 </pre></div>
 
            </div>
