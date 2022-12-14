@@ -1105,7 +1105,7 @@ class Module(abc.ABC):
                 created_n_found, _ = self._remove_duplicate_variables(
                     created_n_found, created
                 )
-                ivy.Container.assert_identical_structure(
+                ivy.Container.cont_assert_identical_structure(
                     [created_n_found, v_from_constructor]
                 )
                 self.v = v_from_constructor
