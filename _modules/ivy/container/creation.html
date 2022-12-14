@@ -925,7 +925,7 @@
         <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">([</span><span class="n">x_</span><span class="o">.</span><span class="n">_data</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">arrays</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
                 <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>

@@ -210,7 +210,7 @@
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
                 <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
@@ -289,7 +289,7 @@
 <span class="sd">        }</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
                 <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
@@ -422,7 +422,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span>
                 <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
@@ -539,7 +539,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">var</span><span class="p">(</span>
                     <span class="n">x_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">correction</span><span class="o">=</span><span class="n">correction</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="n">keepdims</span>
                 <span class="p">)</span>
@@ -1608,7 +1608,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cont_handle_inplace</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cont_map</span><span class="p">(</span>
                 <span class="k">lambda</span> <span class="n">x_</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">x_</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x_</span><span class="p">)</span> <span class="k">else</span> <span class="n">x_</span><span class="p">,</span>
                 <span class="n">key_chains</span><span class="p">,</span>
                 <span class="n">to_apply</span><span class="p">,</span>
