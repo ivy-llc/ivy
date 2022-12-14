@@ -4,12 +4,11 @@ import numpy as np
 from hypothesis import strategies as st
 
 # local
-import ivy
 import ivy_tests.test_ivy.helpers as helpers
-from ivy_tests.test_ivy.helpers import assert_all_close
 from ivy_tests.test_ivy.helpers import handle_frontend_test
 
 
+# helpers
 @st.composite
 def _get_dtype_and_square_matrix(draw):
     dim_size = draw(helpers.ints(min_value=2, max_value=5))
@@ -22,7 +21,6 @@ def _get_dtype_and_square_matrix(draw):
     return dtype, mat
 
 
-# helpers
 @st.composite
 def _get_dtype_and_matrix(draw):
     arbitrary_dims = draw(helpers.get_shape(max_dim_size=5))
