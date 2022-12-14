@@ -767,20 +767,20 @@ def test_container_find_sub_container(device):
     # full
     sub_cont = Container(dict_in["b"])
     assert sub_cont in top_cont
-    found_kc = top_cont.find_sub_container(sub_cont)
+    found_kc = top_cont.cont_find_sub_container(sub_cont)
     assert found_kc == "b"
-    found_kc = top_cont.find_sub_container(top_cont)
+    found_kc = top_cont.cont_find_sub_container(top_cont)
     assert found_kc == ""
 
     # partial
     partial_sub_cont = Container({"d": arr3})
-    found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
+    found_kc = top_cont.cont_find_sub_container(partial_sub_cont, partial=True)
     assert found_kc == "b"
-    assert partial_sub_cont.find_sub_container(top_cont, partial=True) is False
+    assert partial_sub_cont.cont_find_sub_container(top_cont, partial=True) is False
     partial_sub_cont = Container({"b": {"d": arr3}})
-    found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
+    found_kc = top_cont.cont_find_sub_container(partial_sub_cont, partial=True)
     assert found_kc == ""
-    assert partial_sub_cont.find_sub_container(top_cont, partial=True) is False
+    assert partial_sub_cont.cont_find_sub_container(top_cont, partial=True) is False
 
 
 def test_container_find_sub_structure(device):
@@ -1704,21 +1704,21 @@ def test_container_contains(device):
     assert "b/d" in container
 
     # sub-container
-    assert container.contains_sub_container(container)
-    assert container.contains_sub_container(sub_cont)
+    assert container.cont_contains_sub_container(container)
+    assert container.cont_contains_sub_container(sub_cont)
     assert sub_cont in container
 
     # partial sub-container
     partial_sub_cont = Container({"b": {"d": arr2}})
-    assert container.contains_sub_container(container, partial=True)
-    assert container.contains_sub_container(partial_sub_cont, partial=True)
-    assert not partial_sub_cont.contains_sub_container(container, partial=True)
+    assert container.cont_contains_sub_container(container, partial=True)
+    assert container.cont_contains_sub_container(partial_sub_cont, partial=True)
+    assert not partial_sub_cont.cont_contains_sub_container(container, partial=True)
 
     # sub-structure
     sub_struc = Container(
         {"c": ivy.array([3.0], device=device), "d": ivy.array([4.0], device=device)}
     )
-    assert not container.contains_sub_container(sub_struc)
+    assert not container.cont_contains_sub_container(sub_struc)
     assert sub_struc not in container
     assert container.contains_sub_structure(sub_struc)
     assert container.contains_sub_structure(container)
@@ -3039,16 +3039,16 @@ def test_container_assert_contains(device):
     assert "b/d" in container
 
     # sub-container
-    container.assert_contains_sub_container(container)
-    container.assert_contains_sub_container(sub_cont)
+    container.cont_assert_contains_sub_container(container)
+    container.cont_assert_contains_sub_container(sub_cont)
     assert sub_cont in container
 
     # partial sub-container
     partial_sub_cont = Container({"b": {"d": arr2}})
-    container.assert_contains_sub_container(container, partial=True)
-    container.assert_contains_sub_container(partial_sub_cont, partial=True)
+    container.cont_assert_contains_sub_container(container, partial=True)
+    container.cont_assert_contains_sub_container(partial_sub_cont, partial=True)
     try:
-        partial_sub_cont.assert_contains_sub_container(container, partial=True)
+        partial_sub_cont.cont_assert_contains_sub_container(container, partial=True)
         error_caught = False
     except IvyException:
         error_caught = True
@@ -3058,7 +3058,7 @@ def test_container_assert_contains(device):
         {"c": ivy.array([3.0], device=device), "d": ivy.array([4.0], device=device)}
     )
     try:
-        not container.assert_contains_sub_container(sub_struc)
+        not container.cont_assert_contains_sub_container(sub_struc)
         error_caught = False
     except IvyException:
         error_caught = True
