@@ -1,7 +1,13 @@
 # global
 import ivy
-from ivy.functional.frontends.tensorflow import promote_types_of_tensorflow_inputs
-from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.tensorflow import (
+    promote_types_of_tensorflow_inputs,
+)
+from ivy.functional.frontends.tensorflow.func_wrapper import (
+    to_ivy_arrays_and_back,
+    handle_tf_dtype,
+    to_ivy_dtype,
+)
 
 
 @to_ivy_arrays_and_back
@@ -17,6 +23,7 @@ def add(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
@@ -28,6 +35,7 @@ def asinh(x, name="asinh"):
     return ivy.asinh(x)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def confusion_matrix(
     labels, predictions, num_classes=None, weights=None, dtype=ivy.int32, name=None
@@ -78,6 +86,7 @@ def confusion_matrix(
     return ivy.scatter_nd(indices, values, shape=shape)
 
 
+@handle_tf_dtype
 @to_ivy_arrays_and_back
 def count_nonzero(input, axis=None, keepdims=None, dtype=ivy.int64, name=None):
     x = ivy.array(input)
@@ -351,6 +360,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=axis), output_type)
     else:
@@ -366,3 +376,9 @@ def truediv(x, y, name="truediv"):
     elif x_dtype in [ivy.int32, ivy.uint32, ivy.int64, ivy.uint64]:
         return ivy.divide(ivy.astype(x, ivy.float64), ivy.astype(y, ivy.float64))
     return ivy.divide(x, y)
+
+
+@to_ivy_arrays_and_back
+def equal(x, y, name=None):
+    x, y = promote_types_of_tensorflow_inputs(x, y)
+    return ivy.equal(x, y)
