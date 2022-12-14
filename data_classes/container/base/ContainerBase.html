@@ -1091,6 +1091,38 @@ appending to file. (Default value = None)</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_disk_as_json">
+<span class="sig-name descname"><span class="pre">cont_to_disk_as_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_to_disk_as_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_disk_as_json" title="Permalink to this definition"></a></dt>
+<dd><p>Save container object to disk, as an json file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json_filepath</strong> – Filepath for where to save the container to disk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_disk_as_pickled">
+<span class="sig-name descname"><span class="pre">cont_to_disk_as_pickled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_to_disk_as_pickled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_disk_as_pickled" title="Permalink to this definition"></a></dt>
+<dd><p>Save container object to disk, as an pickled file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pickle_filepath</strong> – Filepath for where to save the container to disk.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_to_jsonable">
+<span class="sig-name descname"><span class="pre">cont_to_jsonable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_to_jsonable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_to_jsonable" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>return_dict</strong> – Default value = None)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.cont_trim_key">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cont_trim_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.cont_trim_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.cont_trim_key" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.
@@ -1757,28 +1789,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_disk_as_json">
-<span class="sig-name descname"><span class="pre">to_disk_as_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_disk_as_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_disk_as_json" title="Permalink to this definition"></a></dt>
-<dd><p>Save container object to disk, as an json file, at the specified filepath.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>json_filepath</strong> – Filepath for where to save the container to disk.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_disk_as_pickled">
-<span class="sig-name descname"><span class="pre">to_disk_as_pickled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pickle_filepath</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_disk_as_pickled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_disk_as_pickled" title="Permalink to this definition"></a></dt>
-<dd><p>Save container object to disk, as an pickled file, at the specified filepath.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pickle_filepath</strong> – Filepath for where to save the container to disk.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_flat_list">
 <span class="sig-name descname"><span class="pre">to_flat_list</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_flat_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_flat_list" title="Permalink to this definition"></a></dt>
 <dd><p>Summary.</p>
@@ -1832,16 +1842,6 @@ Default is <code class="docutils literal notranslate"><span class="pre">False</s
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><em>Iterator for the container values.</em></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="ivy.container.base.ContainerBase.to_jsonable">
-<span class="sig-name descname"><span class="pre">to_jsonable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">return_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/container/base.html#ContainerBase.to_jsonable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.container.base.ContainerBase.to_jsonable" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>return_dict</strong> – Default value = None)</p>
 </dd>
 </dl>
 </dd></dl>

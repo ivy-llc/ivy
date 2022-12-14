@@ -264,7 +264,7 @@ For example, if the container mainly contains arrays (such as the weights of a n
           [loaded, weights], same_arrays=False)
 
    # save and load as pickled
-   weights.to_disk_as_pickled('weights.pickled')
+   weights.cont_to_disk_as_pickled('weights.pickled')
    loaded = ivy.Container.cont_from_disk_as_pickled('weights.pickled')
    assert ivy.Container.cont_identical(
           [loaded, weights], same_arrays=False)
@@ -281,7 +281,7 @@ Alternatively, if the container mainly stored experiment configuration data, the
                         'optim': 'ADAM'}})
 
    # save and load as json
-   config.to_disk_as_json('config.json')
+   config.cont_to_disk_as_json('config.json')
 
    # config.json contents -------------#
    # {                                 #

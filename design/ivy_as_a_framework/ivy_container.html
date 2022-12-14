@@ -390,7 +390,7 @@ This is not possible with Dicts.</p>
        <span class="p">[</span><span class="n">loaded</span><span class="p">,</span> <span class="n">weights</span><span class="p">],</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># save and load as pickled</span>
-<span class="n">weights</span><span class="o">.</span><span class="n">to_disk_as_pickled</span><span class="p">(</span><span class="s1">&#39;weights.pickled&#39;</span><span class="p">)</span>
+<span class="n">weights</span><span class="o">.</span><span class="n">cont_to_disk_as_pickled</span><span class="p">(</span><span class="s1">&#39;weights.pickled&#39;</span><span class="p">)</span>
 <span class="n">loaded</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_from_disk_as_pickled</span><span class="p">(</span><span class="s1">&#39;weights.pickled&#39;</span><span class="p">)</span>
 <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_identical</span><span class="p">(</span>
        <span class="p">[</span><span class="n">loaded</span><span class="p">,</span> <span class="n">weights</span><span class="p">],</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -405,7 +405,7 @@ This is not possible with Dicts.</p>
                      <span class="s1">&#39;optim&#39;</span><span class="p">:</span> <span class="s1">&#39;ADAM&#39;</span><span class="p">}})</span>
 
 <span class="c1"># save and load as json</span>
-<span class="n">config</span><span class="o">.</span><span class="n">to_disk_as_json</span><span class="p">(</span><span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
+<span class="n">config</span><span class="o">.</span><span class="n">cont_to_disk_as_json</span><span class="p">(</span><span class="s1">&#39;config.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># config.json contents -------------#</span>
 <span class="c1"># {                                 #</span>
