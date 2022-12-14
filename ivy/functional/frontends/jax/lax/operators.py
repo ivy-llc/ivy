@@ -4,6 +4,7 @@ from typing import Any
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import to_ivy_arrays_and_back
+from ivy.functional.frontends.jax.numpy import can_cast
 
 
 @to_ivy_arrays_and_back
@@ -117,7 +118,10 @@ def conv_transpose(
 
 @to_ivy_arrays_and_back
 def convert_element_type(operand, new_dtype):
-    return ivy.astype(operand, new_dtype)
+    assert can_cast(ivy.dtype(operand), new_dtype), "Cannot cast from {} to {}".format(
+        ivy.dtype(operand), new_dtype
+    )
+    return ivy.astype(operand, new_dtype, copy=False)
 
 
 @to_ivy_arrays_and_back
