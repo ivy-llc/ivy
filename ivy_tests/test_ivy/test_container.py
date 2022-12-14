@@ -2169,27 +2169,49 @@ def test_container_identical_structure(device):
     container5 = Container({"d": ivy.array([4], device=device)})
 
     # with identical
-    assert ivy.Container.identical_structure([container0, container1])
-    assert ivy.Container.identical_structure([container1, container0])
-    assert ivy.Container.identical_structure([container1, container0, container1])
+    assert ivy.Container.cont_identical_structure([container0, container1])
+    assert ivy.Container.cont_identical_structure([container1, container0])
+    assert ivy.Container.cont_identical_structure([container1, container0, container1])
 
     # without identical
-    assert not ivy.Container.identical_structure([container2, container3])
-    assert not ivy.Container.identical_structure([container0, container3])
-    assert not ivy.Container.identical_structure([container1, container2])
-    assert not ivy.Container.identical_structure([container1, container0, container2])
+    assert not ivy.Container.cont_identical_structure([container2, container3])
+    assert not ivy.Container.cont_identical_structure([container0, container3])
+    assert not ivy.Container.cont_identical_structure([container1, container2])
+    assert not ivy.Container.cont_identical_structure(
+        [container1, container0, container2]
+    )
 
     # partial
-    assert ivy.Container.identical_structure([container0, container4], partial=True)
-    assert ivy.Container.identical_structure([container1, container4], partial=True)
-    assert ivy.Container.identical_structure([container2, container4], partial=True)
-    assert ivy.Container.identical_structure([container3, container4], partial=True)
-    assert ivy.Container.identical_structure([container4, container4], partial=True)
-    assert not ivy.Container.identical_structure([container0, container5], partial=True)
-    assert not ivy.Container.identical_structure([container1, container5], partial=True)
-    assert not ivy.Container.identical_structure([container2, container5], partial=True)
-    assert not ivy.Container.identical_structure([container3, container5], partial=True)
-    assert not ivy.Container.identical_structure([container4, container5], partial=True)
+    assert ivy.Container.cont_identical_structure(
+        [container0, container4], partial=True
+    )
+    assert ivy.Container.cont_identical_structure(
+        [container1, container4], partial=True
+    )
+    assert ivy.Container.cont_identical_structure(
+        [container2, container4], partial=True
+    )
+    assert ivy.Container.cont_identical_structure(
+        [container3, container4], partial=True
+    )
+    assert ivy.Container.cont_identical_structure(
+        [container4, container4], partial=True
+    )
+    assert not ivy.Container.cont_identical_structure(
+        [container0, container5], partial=True
+    )
+    assert not ivy.Container.cont_identical_structure(
+        [container1, container5], partial=True
+    )
+    assert not ivy.Container.cont_identical_structure(
+        [container2, container5], partial=True
+    )
+    assert not ivy.Container.cont_identical_structure(
+        [container3, container5], partial=True
+    )
+    assert not ivy.Container.cont_identical_structure(
+        [container4, container5], partial=True
+    )
 
 
 def test_container_identical_configs(device):
@@ -2494,7 +2516,7 @@ def test_container_pickle(device):
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
     assert cont_again._local_ivy is None
-    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.cont_identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 
     # with module attribute
@@ -2504,7 +2526,7 @@ def test_container_pickle(device):
     cont_again = pickle.loads(pickled)
     # noinspection PyUnresolvedReferences
     assert cont_again._local_ivy.current_backend_str() is ivy.current_backend_str()
-    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.cont_identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 
 
