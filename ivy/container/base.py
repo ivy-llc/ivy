@@ -417,7 +417,7 @@ class ContainerBase(dict, abc.ABC):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def diff(
+    def cont_diff(
         *containers,
         mode="all",
         diff_keys="diff",
@@ -525,7 +525,7 @@ class ContainerBase(dict, abc.ABC):
             keys_present = [key in cont for cont in containers]
             all_keys_present = sum(keys_present) == num_containers
             if all_keys_present:
-                res = ivy.Container.diff(
+                res = ivy.Container.cont_diff(
                     *[cont[key] for cont in containers],
                     mode=mode,
                     diff_keys=diff_keys,
@@ -600,7 +600,7 @@ class ContainerBase(dict, abc.ABC):
             Compared containers
 
         """
-        return ivy.Container.diff(
+        return ivy.Container.cont_diff(
             *containers,
             mode=mode,
             diff_keys=diff_keys,
@@ -890,7 +890,7 @@ class ContainerBase(dict, abc.ABC):
                 partial,
             ),
             "Containers were not identical:\n\n{}".format(
-                ivy.Container.diff(*containers)
+                ivy.Container.cont_diff(*containers)
             ),
         )
 
@@ -2269,7 +2269,7 @@ class ContainerBase(dict, abc.ABC):
             # noinspection PyTypeChecker
             raise ivy.exceptions.IvyException(
                 "Containers did not have identical structure and values:\n\n{}".format(
-                    ivy.Container.diff(self[key_chain], sub_cont)
+                    ivy.Container.cont_diff(self[key_chain], sub_cont)
                 )
             )
 
