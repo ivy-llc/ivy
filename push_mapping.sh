@@ -5,7 +5,7 @@ CLONE_DIR=$(mktemp -d)
 SSH_DEPLOY_KEY=${1}
 GITHUB_SERVER="github.com"
 mkdir --parents "$HOME/.ssh"
-DEPLOY_KEY_FILE="$HOME/.ssh/deploy_key"
+DEPLOY_KEY_FILE="$HOME/.ssh/deploy_key_"
 echo "${SSH_DEPLOY_KEY}" > "$DEPLOY_KEY_FILE"
 chmod 600 "$DEPLOY_KEY_FILE"
 
