@@ -5,9 +5,9 @@ multinomial
 
 .. autofunction:: ivy.array.array_methods.multinomial
 
-.. autofunction:: ivy.container.container_methods.multinomial
-
 .. autofunction:: ivy.container.container_methods.static_multinomial
+
+.. autofunction:: ivy.container.container_methods.multinomial
 |
 | **Supported Frameworks:**
 

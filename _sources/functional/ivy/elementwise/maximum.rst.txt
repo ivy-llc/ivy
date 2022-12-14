@@ -5,9 +5,9 @@ maximum
 
 .. autofunction:: ivy.array.array_methods.maximum
 
-.. autofunction:: ivy.container.container_methods.maximum
-
 .. autofunction:: ivy.container.container_methods.static_maximum
+
+.. autofunction:: ivy.container.container_methods.maximum
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ nanmean
 
 .. autofunction:: ivy.array.array_methods.nanmean
 
-.. autofunction:: ivy.container.container_methods.nanmean
-
 .. autofunction:: ivy.container.container_methods.static_nanmean
+
+.. autofunction:: ivy.container.container_methods.nanmean
 |
 | **Supported Frameworks:**
 

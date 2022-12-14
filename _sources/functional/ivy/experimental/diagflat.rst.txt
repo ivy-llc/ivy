@@ -5,9 +5,9 @@ diagflat
 
 .. autofunction:: ivy.array.array_methods.diagflat
 
-.. autofunction:: ivy.container.container_methods.diagflat
-
 .. autofunction:: ivy.container.container_methods.static_diagflat
+
+.. autofunction:: ivy.container.container_methods.diagflat
 |
 | **Supported Frameworks:**
 

@@ -5,9 +5,9 @@ svdvals
 
 .. autofunction:: ivy.array.array_methods.svdvals
 
-.. autofunction:: ivy.container.container_methods.static_svdvals
-
 .. autofunction:: ivy.container.container_methods.svdvals
+
+.. autofunction:: ivy.container.container_methods.static_svdvals
 |
 | **Supported Frameworks:**
 
