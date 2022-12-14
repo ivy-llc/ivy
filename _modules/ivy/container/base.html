@@ -342,7 +342,7 @@
         <span class="c1"># Replace each container in arg and kwarg with the arrays at the leaf</span>
         <span class="c1"># levels of that container using map_fn and call fn using those arrays</span>
         <span class="c1"># as inputs</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map</span><span class="p">(</span>
             <span class="n">map_fn</span><span class="p">,</span>
             <span class="n">conts</span><span class="p">,</span>
             <span class="n">key_chains</span><span class="p">,</span>
@@ -740,8 +740,8 @@
             <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="ContainerBase.multi_map"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.multi_map">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">multi_map</span><span class="p">(</span>
+<div class="viewcode-block" id="ContainerBase.cont_multi_map"><a class="viewcode-back" href="../../../data_classes/container/base/ContainerBase.html#ivy.container.base.ContainerBase.cont_multi_map">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cont_multi_map</span><span class="p">(</span>
         <span class="n">func</span><span class="p">,</span>
         <span class="n">containers</span><span class="p">,</span>
         <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -791,7 +791,7 @@
                 <span class="k">break</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span>
             <span class="n">container0</span><span class="p">,</span>
-            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No containers found in the inputs to ivy.Container.multi_map&quot;</span><span class="p">,</span>
+            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No containers found in the inputs to ivy.Container.cont_multi_map&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">container0</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
@@ -824,7 +824,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map</span><span class="p">(</span>
                         <span class="n">func</span><span class="p">,</span>
                         <span class="n">values</span><span class="p">,</span>
                         <span class="n">key_chains</span><span class="p">,</span>

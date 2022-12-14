@@ -1686,7 +1686,7 @@
                 <span class="n">p</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">data</span>
 
             <span class="k">def</span> <span class="nf">_inplace_update_v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_v</span><span class="p">):</span>
-                <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">multi_map</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">cont_multi_map</span><span class="p">(</span>
                     <span class="k">lambda</span> <span class="n">xs</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inplace_update</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
                     <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_native_params</span><span class="p">,</span> <span class="n">new_v</span><span class="p">],</span>
                 <span class="p">)</span>
