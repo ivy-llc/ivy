@@ -2955,9 +2955,9 @@ def test_container_duplicate_array_keychains(device):
             },
         }
     )
-    res = ivy.Container.duplicate_array_keychains(container0)
+    res = ivy.Container.cont_duplicate_array_keychains(container0)
     assert res == (("a", "b/c"),)
-    res = ivy.Container.duplicate_array_keychains(container1)
+    res = ivy.Container.cont_duplicate_array_keychains(container1)
     assert res == ()
 
 
