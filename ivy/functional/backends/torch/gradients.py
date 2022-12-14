@@ -48,7 +48,7 @@ def _grad_func(y, xs, retain_grads):
         )[0]
         grads = grads_ if grads is None else grads
     elif isinstance(xs, ivy.Container):
-        grads = xs.from_flat_list(
+        grads = xs.cont_from_flat_list(
             list(
                 torch.autograd.grad(
                     [y],
