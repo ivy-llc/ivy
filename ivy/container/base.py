@@ -895,7 +895,7 @@ class ContainerBase(dict, abc.ABC):
         )
 
     @staticmethod
-    def identical_structure(
+    def cont_identical_structure(
         containers,
         check_types=True,
         check_shapes=True,
@@ -978,7 +978,7 @@ class ContainerBase(dict, abc.ABC):
 
         """
         ivy.assertions.check_true(
-            ivy.Container.identical_structure(
+            ivy.Container.cont_identical_structure(
                 containers, check_types, check_shapes, key_chains, to_apply, partial
             ),
             "Containers did not have identical structure:\n\n{}".format(
@@ -2304,7 +2304,7 @@ class ContainerBase(dict, abc.ABC):
             if (
                 kcs_in_sub_cont
                 and min(kcs_in_sub_cont)
-                and ivy.Container.identical_structure(
+                and ivy.Container.cont_identical_structure(
                     [sub_cont, sub_struc_to_find],
                     check_shapes=check_shapes,
                     partial=partial,
