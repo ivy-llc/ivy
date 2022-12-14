@@ -324,7 +324,7 @@ class Module(abc.ABC):
         ret
             The height of the network. Return 0 for leaf module.
         """
-        return self.sub_mods().max_depth - 1
+        return self.sub_mods().cont_max_depth - 1
 
     def _find_variables(self, /, *, obj=None):
         """
