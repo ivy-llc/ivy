@@ -847,6 +847,8 @@ def diff(
     return ivy.current_backend().diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@handle_nestable
+@to_native_arrays_and_back
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
@@ -897,19 +899,19 @@ def allclose(
     >>> x2 = ivy.array([1.00001e10, 1e-8])
     >>> y = ivy.allclose(x1, x2)
     >>> print(y)
-    False
+    ivy.array(False)
 
     >>> x1 = ivy.array([1.0, ivy.nan])
     >>> x2 = ivy.array([1.0, ivy.nan])
     >>> y = ivy.allclose(x1, x2, equal_nan=True)
     >>> print(y)
-    True
+    ivy.array(True)
 
     >>> x1 = ivy.array([1e-10, 1e-10])
     >>> x2 = ivy.array([1.00001e-10, 1e-10])
     >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
     >>> print(y)
-    True
+    ivy.array(True)
 
     """
     return ivy.current_backend().allclose(
