@@ -336,6 +336,11 @@ class ndarray:
     ):
         return ivy.array(ivy.reshape(self._ivy_array, -1), dtype=ivy.float64)[0]
 
+    def __str__(
+        self,
+    ):
+        return str(self)
+
     def __contains__(self, key, /):
         return key in ivy.reshape(self._ivy_array, -1)
 
