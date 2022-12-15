@@ -883,28 +883,26 @@
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 4, 5])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.array([3., 4., 5.])</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
-<span class="sd">    float64</span>
-
-<span class="sd">    With :class:`ivy.NativeArray` input:</span>
-
-<span class="sd">    &gt;&gt;&gt; x = ivy.native_array([3., 4, 7.5])</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.native_array([3, 4, 7])</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, y))</span>
-<span class="sd">    float64</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.result_type(x, y)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
+<span class="sd">    float32</span>
 
 <span class="sd">    With :class:`ivy.Dtype` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(ivy.uint8, ivy.uint64))</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.result_type(ivy.uint8, ivy.uint64)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    uint64</span>
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([3, 4, 5]))</span>
-<span class="sd">    &gt;&gt;&gt; print(x.a.dtype)</span>
+<span class="sd">    &gt;&gt;&gt; d = x.a.dtype</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    int32</span>
 
-<span class="sd">    &gt;&gt;&gt; print(ivy.result_type(x, ivy.float64))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a = ivy.array([3, 4, 5]))</span>
+<span class="sd">    &gt;&gt;&gt; d = ivy.result_type(x, ivy.float64)</span>
+<span class="sd">    &gt;&gt;&gt; print(d)</span>
 <span class="sd">    {</span>
 <span class="sd">        a: float64</span>
 <span class="sd">    }</span>
