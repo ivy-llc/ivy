@@ -223,9 +223,7 @@
                     <span class="s2">&quot;__self__&quot;</span><span class="p">,</span>
                     <span class="nb">getattr</span><span class="p">(</span>
                         <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">),</span>
-                        <span class="nb">getattr</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="fm">__init__</span><span class="p">,</span> <span class="s2">&quot;__self__&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
-                            <span class="s2">&quot;.&quot;</span>
-                        <span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="n">func</span><span class="o">.</span><span class="vm">__qualname__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span>
                         <span class="kc">None</span><span class="p">,</span>
                     <span class="p">),</span>
                 <span class="p">)</span>
