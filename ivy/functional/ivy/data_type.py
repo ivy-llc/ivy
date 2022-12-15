@@ -89,9 +89,7 @@ def _get_function_list(func):
                     "__self__",
                     getattr(
                         importlib.import_module(func.__module__),
-                        getattr(func.__init__, "__self__", None).__qualname__.split(
-                            "."
-                        )[0],
+                        func.__qualname__.split(".")[0],
                         None,
                     ),
                 )
