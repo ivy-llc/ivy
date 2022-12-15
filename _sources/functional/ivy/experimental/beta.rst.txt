@@ -2,6 +2,12 @@ beta
 ====
 
 .. autofunction:: ivy.functional.ivy.experimental.beta
+
+.. autofunction:: ivy.array.array_methods.beta
+
+.. autofunction:: ivy.container.container_methods.static_beta
+
+.. autofunction:: ivy.container.container_methods.beta
 |
 | **Supported Frameworks:**
 
@@ -21,3 +27,15 @@ beta
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: beta
+
+   beta/beta_functional.rst
+   beta/beta_array.rst
+   beta/beta_container.rst
+   beta/static_beta_container.rst
+

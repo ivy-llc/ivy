@@ -2,6 +2,8 @@ gamma
 =====
 
 .. autofunction:: ivy.functional.ivy.experimental.gamma
+
+.. autofunction:: ivy.array.array_methods.gamma
 |
 | **Supported Frameworks:**
 
@@ -21,3 +23,13 @@ gamma
 
 .. |numpy_logo| image:: ../../../logos/supported/numpy_logo.png
    :target: https://numpy.org
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: gamma
+
+   gamma/gamma_functional.rst
+   gamma/gamma_array.rst
+
