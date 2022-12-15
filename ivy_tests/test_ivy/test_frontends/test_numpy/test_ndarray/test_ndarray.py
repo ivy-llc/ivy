@@ -1957,9 +1957,8 @@ def test_numpy_instance_float__(
     init_tree="numpy.array",
     method_name="__str__",
     dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("string"),
+        available_dtypes=helpers.get_dtypes("numeric"),
         min_dim_size=1,
-        max_dim_size=1,
     ),
 )
 def test_numpy_instance_str__(
