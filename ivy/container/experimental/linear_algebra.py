@@ -180,7 +180,7 @@ class ContainerWithLinearAlgebraExperimental(ContainerBase):
         to_apply: bool = True,
         out: Optional[ivy.Container] = None,
     ) -> ivy.Container:
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "matrix_exp",
             x,
             out=out,
