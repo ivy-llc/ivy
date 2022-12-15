@@ -56,5 +56,11 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
   out_flat = psum_p.bind(
       *leaves, axes=tuple(axis_name), axis_index_groups=axis_index_groups)
   return tree_util.tree_unflatten(treedef, out_flat)
+
+@to_ivy_arrays_and_back 
+def pmax(x, axis_name, *, axis_index_groups=None):
+    return tree_util.tree_unflatten(treedef, out_flat)   
+    
+    
         
         
