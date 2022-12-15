@@ -60,7 +60,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "abs",
             x,
             key_chains=key_chains,
@@ -185,7 +185,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "acosh",
             x,
             key_chains=key_chains,
@@ -310,7 +310,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "acos",
             x,
             key_chains=key_chains,
@@ -411,7 +411,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([12, 15, 18])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "add",
             x1,
             x2,
@@ -626,7 +626,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([nan, nan, -0.201])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "asin",
             x,
             key_chains=key_chains,
@@ -760,7 +760,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.94, -2.37, 0., -1.75])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "asinh",
             x,
             key_chains=key_chains,
@@ -885,7 +885,7 @@ class ContainerWithElementwise(ContainerBase):
 
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "atan",
             x,
             key_chains=key_chains,
@@ -1026,7 +1026,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.07, -0.696, 0., -0.993])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "atan2",
             x1,
             x2,
@@ -1170,7 +1170,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "atanh",
             x,
             key_chains=key_chains,
@@ -1289,7 +1289,7 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a data type determined
             by :ref:`type-promotion`.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_and",
             x1,
             x2,
@@ -1416,7 +1416,7 @@ class ContainerWithElementwise(ContainerBase):
             The returned container must have a data type determined by
             :ref:`type-promotion`.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_left_shift",
             x1,
             x2,
@@ -1524,7 +1524,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results.
             The returned array must have the same data type as ``x``.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_invert",
             x,
             key_chains=key_chains,
@@ -1637,7 +1637,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.54, 1., 0.96])
         }
         """
-        return ivy.ContainerBase.multi_map_in_static_method(
+        return ivy.ContainerBase.cont_multi_map_in_static_method(
             "cos",
             x,
             key_chains=key_chains,
@@ -1776,7 +1776,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([7, 7, 7])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_or",
             x1,
             x2,
@@ -1924,7 +1924,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1, 2, 16])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_right_shift",
             x1,
             x2,
@@ -2060,7 +2060,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([6])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "bitwise_xor",
             x1,
             x2,
@@ -2191,7 +2191,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([6., -3., 6.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "ceil",
             x,
             key_chains=key_chains,
@@ -2325,7 +2325,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.23, 1.52, 10.1])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "cosh",
             x,
             key_chains=key_chains,
@@ -2467,7 +2467,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1.25, 0.333, 0.45])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "divide",
             x1,
             x2,
@@ -2618,7 +2618,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "equal",
             x1,
             x2,
@@ -2749,7 +2749,7 @@ class ContainerWithElementwise(ContainerBase):
             determined by :ref:`type-promotion`.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "exp",
             x,
             key_chains=key_chains,
@@ -2862,7 +2862,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([19.08553696, 53.59815216])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "expm1",
             x,
             key_chains=key_chains,
@@ -2993,7 +2993,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([5., -4., 5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "floor",
             x,
             key_chains=key_chains,
@@ -3133,7 +3133,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([3., 2., 2.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "floor_divide",
             x1,
             x2,
@@ -3285,7 +3285,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "greater",
             x1,
             x2,
@@ -3423,7 +3423,7 @@ class ContainerWithElementwise(ContainerBase):
             b:ivy.array([False,False,False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "greater_equal",
             x1,
             x2,
@@ -3555,7 +3555,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isfinite",
             x,
             key_chains=key_chains,
@@ -3680,7 +3680,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isinf",
             x,
             key_chains=key_chains,
@@ -3808,7 +3808,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isnan",
             x,
             key_chains=key_chains,
@@ -3937,7 +3937,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "less",
             x1,
             x2,
@@ -4076,7 +4076,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "less_equal",
             x1,
             x2,
@@ -4224,7 +4224,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "log",
             x,
             key_chains=key_chains,
@@ -4360,7 +4360,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "log1p",
             x,
             key_chains=key_chains,
@@ -4474,7 +4474,7 @@ class ContainerWithElementwise(ContainerBase):
             floating-point data type determined by :ref:`type-promotion`.
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "log2",
             x,
             key_chains=key_chains,
@@ -4592,7 +4592,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "log10",
             x,
             key_chains=key_chains,
@@ -4728,7 +4728,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([5.05, 6.05, 7.05])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logaddexp",
             x1,
             x2,
@@ -4860,38 +4860,35 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using 'ivy.Container' instance
 
-        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> a = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> b = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> w = ivy.Container.static_logical_and(a, b)
+        >>> print(w)
+        {
+            a:ivy.array([True,False,False,False])
+        }
+
         >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> x = ivy.Container.static_logical_and(j, m)
+        >>> print(x)
+        {
+            a:ivy.array([False,True,False,False])
+        }
+
+
         >>> k = ivy.Container(a=ivy.array([True, False, True]),
         ...                   b=ivy.array([True, False, False]))
         >>> l = ivy.Container(a=ivy.array([True, True, True]),
         ...                   b=ivy.array([False, False, False]))
-        >>> m = ivy.array([False, True, False, True])
-        >>> n = ivy.array([True, False, True, False])
-
-        >>> w = ivy.Container.static_logical_and(i, j)
-        >>> x = ivy.Container.static_logical_and(j, m)
-        >>> y = ivy.Container.static_logical_and(m, n)
         >>> z = ivy.Container.static_logical_and(k, l)
-        {
-            a: ivy.array([True, False, False, False])
-        }
-
-        >>> print(x)
-        {
-            a: ivy.array([False, True, False, False])
-        }
-
-        >>> print(y)
-        ivy.array([False, False, False, False])
-
         >>> print(z)
         {
-            a: ivy.array([True, False, True]),
-            b: ivy.array([False, False, False])
+            a:ivy.array([True,False,True]),
+            b:ivy.array([False,False,False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logical_and",
             x1,
             x2,
@@ -4951,33 +4948,27 @@ class ContainerWithElementwise(ContainerBase):
         --------
         Using 'ivy.Container' instance
 
-        >>> i = ivy.Container(a=ivy.array([True, False, True, False]))
-        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
-        >>> k = ivy.Container(a=ivy.array([True, False, True]),
-        ...                   b=ivy.array([True, False, False]))
-        >>> l = ivy.Container(a=ivy.array([True, True, True]),
-        ...                   b=ivy.array([False, False, False]))
-        >>> m = ivy.array([False, True, False, True])
-        >>> n = ivy.array([True, False, True, False])
-
-        >>> w = i.logical_and(j)
-        >>> x = j.logical_and(m)
-        >>> y = m.logical_and(n)
-        >>> z = k.logical_and(l)
-
+        >>> a = ivy.Container(a=ivy.array([True, False, True, False]))
+        >>> b = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> w = a.logical_and(b)
         >>> print(w)
         {
             a:ivy.array([True,False,False,False])
         }
 
+        >>> j = ivy.Container(a=ivy.array([True, True, False, False]))
+        >>> m = ivy.array([False, True, False, True])
+        >>> x = j.logical_and(m)
         >>> print(x)
         {
             a:ivy.array([False,True,False,False])
         }
 
-        >>> print(y)
-        ivy.array([False, False, False, False])
-
+        >>> k = ivy.Container(a=ivy.array([True, False, True]),
+        ...                   b=ivy.array([True, False, False]))
+        >>> l = ivy.Container(a=ivy.array([True, True, True]),
+        ...                   b=ivy.array([False, False, False]))
+        >>> z = k.logical_and(l)
         >>> print(z)
         {
             a:ivy.array([True,False,True]),
@@ -5046,7 +5037,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logical_not",
             x,
             key_chains=key_chains,
@@ -5181,7 +5172,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logical_or",
             x1,
             x2,
@@ -5339,7 +5330,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([False, False, False, True, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "logical_xor",
             x1,
             x2,
@@ -5462,7 +5453,7 @@ class ContainerWithElementwise(ContainerBase):
             a container containing the element-wise results. The returned container
             must have a data type determined by :ref:`type-promotion`.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "multiply",
             x1,
             x2,
@@ -5612,7 +5603,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-3., -4., 5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "negative",
             x,
             key_chains=key_chains,
@@ -5742,7 +5733,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, True, True])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "not_equal",
             x1,
             x2,
@@ -5886,7 +5877,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([3., 4., -5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "positive",
             x,
             key_chains=key_chains,
@@ -6016,7 +6007,7 @@ class ContainerWithElementwise(ContainerBase):
             b:ivy.array([8,27])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "pow",
             x1,
             x2,
@@ -6179,7 +6170,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0., 0., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "remainder",
             x1,
             x2,
@@ -6340,7 +6331,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-301., -527., 4.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "round",
             x,
             key_chains=key_chains,
@@ -6463,7 +6454,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-1., 1., 1., 0.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sign",
             x,
             key_chains=key_chains,
@@ -6588,7 +6579,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-0.757, -0.959, -0.279])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sin",
             x,
             key_chains=key_chains,
@@ -6722,7 +6713,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.721, -1.14, -10.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sinh",
             x,
             key_chains=key_chains,
@@ -6855,7 +6846,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "square",
             x,
             key_chains=key_chains,
@@ -6980,7 +6971,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([9.64, 7.35, 5.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "sqrt",
             x,
             key_chains=key_chains,
@@ -7122,7 +7113,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-1, 6, 4])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "subtract",
             x1,
             x2,
@@ -7266,7 +7257,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([-0.143, 1.16, -3.38])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tan",
             x,
             key_chains=key_chains,
@@ -7389,7 +7380,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([0.995, 0.999, 0.9999])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "tanh",
             x,
             key_chains=key_chains,
@@ -7514,7 +7505,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([12., -3., 1.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "trunc",
             x,
             key_chains=key_chains,
@@ -7635,7 +7626,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1., -0.99999928, 0.91903949])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "erf",
             x,
             key_chains=key_chains,
@@ -7765,7 +7756,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([2, 8, 5])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "minimum",
             x1,
             x2,
@@ -7917,7 +7908,7 @@ class ContainerWithElementwise(ContainerBase):
                           [3, 9]])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "maximum",
             x1,
             x2,
@@ -8046,7 +8037,7 @@ class ContainerWithElementwise(ContainerBase):
         ret
             a container with the element-wise recirpocal of ``x``
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "reciprocal",
             x,
             key_chains=key_chains,
@@ -8156,7 +8147,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "deg2rad",
             x,
             key_chains=key_chains,
@@ -8279,7 +8270,7 @@ class ContainerWithElementwise(ContainerBase):
         }
 
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "rad2deg",
             x,
             key_chains=key_chains,
@@ -8410,7 +8401,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([1., 0., -4.])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "trunc_divide",
             x1,
             x2,
@@ -8544,7 +8535,7 @@ class ContainerWithElementwise(ContainerBase):
             b: ivy.array([True, False, False])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "isreal",
             x,
             key_chains=key_chains,
@@ -8663,7 +8654,7 @@ class ContainerWithElementwise(ContainerBase):
             b: 10.5
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "trapz",
             y,
             key_chains=key_chains,

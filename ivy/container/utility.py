@@ -80,7 +80,7 @@ class ContainerWithUtility(ContainerBase):
             b: ivy.array(False)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "all",
             x,
             axis=axis,
@@ -238,15 +238,15 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 0, 0]))
         >>> y = ivy.Container.static_any(x)
         >>> print(y)
         {
             a: ivy.array(True),
-            b: ivy.array(True)
+            b: ivy.array(False)
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "any",
             x,
             axis=axis,
@@ -321,12 +321,12 @@ class ContainerWithUtility(ContainerBase):
 
         Examples
         --------
-        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 1, 1]))
+        >>> x = ivy.Container(a=ivy.array([0, 1, 2]), b=ivy.array([0, 0, 0]))
         >>> y = x.any()
         >>> print(y)
         {
             a: ivy.array(True),
-            b: ivy.array(True)
+            b: ivy.array(False)
         }
         """
         return self.static_any(

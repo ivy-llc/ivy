@@ -3,12 +3,17 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
 class EagerTensor:
     def __init__(self, array):
         self._ivy_array = (
             ivy.array(array) if not isinstance(array, ivy.Array) else array
+        )
+        self._dtype = tf_frontend.DType(
+            tf_frontend.tensorflow_type_to_enum[self._ivy_array.dtype]
         )
 
     def __repr__(self):
@@ -36,7 +41,7 @@ class EagerTensor:
 
     @property
     def dtype(self):
-        return self._ivy_array.dtype
+        return self._dtype
 
     @property
     def shape(self):
@@ -78,7 +83,8 @@ class EagerTensor:
         return y.__rand__(self._ivy_array)
 
     def __array__(self, dtype=None, name="array"):
-        return ivy.asarray(self._ivy_array, dtype=dtype)
+        dtype = to_ivy_dtype(dtype)
+        return array(ivy.asarray(self._ivy_array, dtype=dtype))
 
     def __bool__(self, name="bool"):
         if isinstance(self._ivy_array, int):

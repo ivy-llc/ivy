@@ -258,8 +258,16 @@ def signbit(
 signbit.support_native_out = True
 
 
-def diff(x: np.ndarray, /, *, out: Optional[np.ndarray] = None) -> np.ndarray:
-    return np.diff(x)
+def diff(
+    x: Union[np.ndarray, int, float, list, tuple],
+    /,
+    *,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+    append: Optional[Union[np.ndarray, int, float, list, tuple]] = None,
+) -> np.ndarray:
+    return np.diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
 diff.support_native_out = False
@@ -275,7 +283,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
 
 
 isclose.support_native_out = False
