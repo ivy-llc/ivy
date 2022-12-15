@@ -758,6 +758,43 @@ def test_jax_numpy_arange(
     )
 
 
+# zeros
+@handle_frontend_test(
+    fn_tree="jax.numpy.zeros",
+    shape=helpers.get_shape(
+        allow_none=False,
+        min_num_dims=1,
+        max_num_dims=5,
+        min_dim_size=1,
+        max_dim_size=10,
+    ),
+    dtypes=helpers.get_dtypes("numeric", full=False),
+)
+def test_jax_numpy_zeros(
+    *,
+    dtypes,
+    shape,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        shape=shape,
+        dtype=dtypes[0],
+    )
+
+
 # ones
 @handle_frontend_test(
     fn_tree="jax.numpy.ones",
