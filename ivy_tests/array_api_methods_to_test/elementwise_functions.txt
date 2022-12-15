@@ -2,7 +2,6 @@ abs
 acos
 acosh
 add
-angle
 asin
 asinh
 atan
@@ -22,7 +21,7 @@ divide
 exp
 expm1
 floor
-floor_divide 
+floor_divide
 greater
 greater_equal
 isfinite

@@ -2112,7 +2112,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         x
             input container with array-like items.
-
         out
             optional output container, for writing the result to.
 
@@ -2156,7 +2155,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         ----------
         self
             input container with array-like items.
-
         out
             optional output container, for writing the result to.
 

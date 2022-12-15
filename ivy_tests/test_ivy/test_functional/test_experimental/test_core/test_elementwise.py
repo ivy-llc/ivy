@@ -749,7 +749,7 @@ def test_angle(
         fn_name=fn_name,
         on_device=on_device,
         z=z[0],
-        deg=False,
+        deg=deg,
     )
 
 
