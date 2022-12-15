@@ -667,14 +667,13 @@ def test_tensorflow_shape(
         out_type=output_dtype,
     )
 
-# Shape_n
+
 @handle_frontend_test(
 fn_tree="tensorflow.shape_n",
 dtype_and_x=helpers.dtype_and_values(
     available_dtypes=helpers.get_dtypes("valid"),
     max_num_dims=5),
 output_dtype=st.sampled_from(["int32", "int64"]),
-
 )
 def test_tensorflow_shape_n(
     *,
@@ -701,6 +700,8 @@ def test_tensorflow_shape_n(
         input=input,
         out_type=output_dtype,
     )
+
+
 # range
 @handle_frontend_test(
     fn_tree="tensorflow.range",

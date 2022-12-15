@@ -121,7 +121,7 @@ def shape(input, out_type=ivy.int32, name=None):
     else:
         return ivy.array(ivy.shape(input), dtype="int64")
 
-# Shape_n
+
 @to_ivy_arrays_and_back
 def shape_n(input, out_type=ivy.int32, name=None):
     out_type = to_ivy_dtype(out_type)
@@ -129,6 +129,7 @@ def shape_n(input, out_type=ivy.int32, name=None):
         return [EagerTensor(ivy.array(ivy.shape(i), dtype=out_type)) for i in input]
     else:
         return [EagerTensor(ivy.array(ivy.shape(i), dtype='int64')) for i in input]
+
 
 @with_unsupported_dtypes({"2.10.0 and below": ("float16", "bfloat16")}, "tensorflow")
 @handle_tf_dtype
