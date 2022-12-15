@@ -39,6 +39,7 @@ def _broadcastable_trio(draw):
             available_dtypes=helpers.get_dtypes("numeric"),
             num_arrays=2,
             shape=shape,
+            shared_dtype=True,
             large_abs_safety_factor=16,
             small_abs_safety_factor=16,
             safety_factor_scale="log",

@@ -305,6 +305,13 @@ def softplus(x):
 
 
 @to_ivy_arrays_and_back
+def selu(x):
+    alpha = 1.6732632423543772848170429916717
+    scale = 1.0507009873554804934193349852946
+    return scale * elu(x, alpha)
+
+
+@to_ivy_arrays_and_back
 def swish(x):
     ret = x / (1 + ivy.exp(-x))
     return ivy.asarray(ret, dtype=x.dtype)

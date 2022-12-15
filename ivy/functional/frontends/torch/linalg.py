@@ -70,5 +70,15 @@ def matrix_rank(input, *, atol=None, rtol=None, hermitian=False, out=None):
 
 
 @to_ivy_arrays_and_back
+def cholesky(input, *, upper=False, out=None):
+    return ivy.cholesky(input, upper=upper, out=out)
+    
+    
+@to_ivy_arrays_and_back
 def svd(input, /, *, full_matrices=True):
     return ivy.svd(input, compute_uv=True, full_matrices=full_matrices)
+
+
+@to_ivy_arrays_and_back
+def svdvals(input, *, out=None):
+    return ivy.svdvals(input, out=out)

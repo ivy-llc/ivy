@@ -1812,41 +1812,51 @@ def test_jax_lax_transpose(
 
 
 @st.composite
-def _two_valid_xs(draw):
-    n = draw(st.integers(min_value=0, max_value=5))
-    m = draw(st.integers(min_value=0, max_value=5))
-    k = draw(st.integers(min_value=0, max_value=5))
-    valid_shapes = [
-        ((n, 1), (1, n)),
-        ((n, 1), (n, 1)),
-        ((m, k), (k, 1)),
-        ((m, k), (k, n)),
-    ]
-    s1, s2 = draw(st.sampled_from(valid_shapes))
-    d1, v1 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=s1,
+def _get_dtype_inputs_for_dot(draw):
+    dim_size = draw(helpers.ints(min_value=1, max_value=5))
+    dtype = draw(helpers.get_dtypes("numeric", index=1, full=False))
+    if dim_size == 1:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
         )
-    )
-    d2, v2 = draw(
-        helpers.dtype_and_values(
-            available_dtypes=helpers.get_dtypes("valid"),
-            shape=s2,
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size,), min_value=2, max_value=5
+            )
         )
-    )
-    return (d1, d2), (v1, v2)
+    else:
+        lhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+        rhs = draw(
+            helpers.array_values(
+                dtype=dtype[0], shape=(dim_size, dim_size), min_value=2, max_value=5
+            )
+        )
+    is_pref = draw(st.booleans())
+    if is_pref:
+        dtype, values, pref = draw(
+            helpers.get_castable_dtype(
+                draw(helpers.get_dtypes("numeric")), dtype[0], [lhs, rhs]
+            )
+        )
+        assume(can_cast(dtype, pref))
+        return [dtype], pref, values[0], values[1]
+    else:
+        return dtype, None, lhs, rhs
 
 
 @handle_frontend_test(
     fn_tree="jax.lax.dot",
-    dtypes_and_xs=_two_valid_xs(),
-    dtype=helpers.get_dtypes("valid", full=False, none=True),
+    dtypes_and_xs=_get_dtype_inputs_for_dot(),
 )
 def test_jax_lax_dot(
     *,
     dtypes_and_xs,
-    dtype,
     as_variable,
     num_positional_args,
     native_array,
@@ -1854,7 +1864,7 @@ def test_jax_lax_dot(
     fn_tree,
     frontend,
 ):
-    input_dtypes, xs = dtypes_and_xs
+    input_dtypes, dtype, lhs, rhs = dtypes_and_xs
     helpers.test_frontend_function(
         input_dtypes=input_dtypes,
         as_variable_flags=as_variable,
@@ -1864,8 +1874,10 @@ def test_jax_lax_dot(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
-        lhs=xs[0],
-        rhs=xs[1],
+        rtol=1e-2,
+        atol=1e-2,
+        lhs=lhs,
+        rhs=rhs,
         precision=None,
         preferred_element_type=dtype,
     )
@@ -2034,9 +2046,7 @@ def test_jax_lax_square(
 
 @handle_frontend_test(
     fn_tree="jax.lax.erf",
-    dtype_and_x=helpers.dtype_and_values(
-        available_dtypes=helpers.get_dtypes("float", full=True)
-    ),
+    dtype_and_x=helpers.dtype_and_values(available_dtypes=helpers.get_dtypes("float")),
 )
 def test_jax_lax_erf(
     *,
@@ -2058,6 +2068,8 @@ def test_jax_lax_erf(
         frontend=frontend,
         fn_tree=fn_tree,
         on_device=on_device,
+        rtol=1e-2,
+        atol=1e-2,
         x=x[0],
     )
 

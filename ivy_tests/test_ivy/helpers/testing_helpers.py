@@ -315,6 +315,8 @@ def handle_method(
                         _given_kwargs[k] = num_positional_args(
                             fn_name=class_name + ".__init__"
                         )
+                elif v is pf.BuiltGradientStrategy:
+                    _given_kwargs[k] = v
 
             wrapped_test = given(**_given_kwargs)(test_fn)
             possible_arguments = {
