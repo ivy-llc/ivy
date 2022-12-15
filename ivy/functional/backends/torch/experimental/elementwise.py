@@ -1,6 +1,7 @@
 # global
 from typing import Optional, Union, Tuple, List
 from numbers import Number
+from math import pi
 import torch
 
 # local
@@ -8,7 +9,7 @@ import ivy
 from ivy.functional.backends.torch.elementwise import _cast_for_unary_op
 from ivy.func_wrapper import with_unsupported_dtypes
 from .. import backend_version
-from math import pi
+
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float",)}, backend_version)
 def lcm(
@@ -232,7 +233,7 @@ def angle(
     deg: Optional[bool] = None,
     out: Optional[torch.Tensor] = None,
 ) -> torch.Tensor:
-    if(deg == True):
+    if deg:
         return torch.angle(input, out=out) * (180 / pi)
     else:
         return torch.angle(input, out=out)
