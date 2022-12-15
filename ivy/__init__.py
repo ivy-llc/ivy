@@ -608,6 +608,7 @@ from .container import (
     Container,
     add_ivy_container_instance_methods,
 )
+from .nested_array import NestedArray
 from .backend_handler import (
     current_backend,
     get_backend,
