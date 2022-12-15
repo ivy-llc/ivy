@@ -408,6 +408,9 @@ class Tensor:
     def index_select(self, dim, index):
         return torch_frontend.index_select(self._ivy_array, dim, index)
 
+    def sqrt(self):
+        return torch_frontend.sqrt(self._ivy_array)
+
     def where(self, condition, other):
         return ivy.where(condition, self._ivy_array, other)
 
