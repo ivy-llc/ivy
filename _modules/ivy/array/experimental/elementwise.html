@@ -717,6 +717,48 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">isneginf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="ArrayWithElementWiseExperimental.angle"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+        <span class="o">/</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">deg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">out</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ivy.Array instance method variant of ivy.angle. This method simply</span>
+<span class="sd">        wraps the function, and so the docstring for ivy.angle also applies to</span>
+<span class="sd">        this method with minimal changes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z</span>
+<span class="sd">            Array-like input.</span>
+<span class="sd">        deg</span>
+<span class="sd">            optional bool.</span>
+<span class="sd">        out</span>
+<span class="sd">            optional output array, for writing the result to.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ret</span>
+<span class="sd">            Returns an array of angles for each complex number in the input.</span>
+<span class="sd">            If def is False(default), angle is calculated in radian and if</span>
+<span class="sd">            def is True, then angle is calculated in degrees.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; ivy.set_backend(&#39;tensorflow&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; z = ivy.array([-1 + 1j, -2 + 2j, 3 - 3j])</span>
+<span class="sd">        &gt;&gt;&gt; z</span>
+<span class="sd">        ivy.array([-1.+1.j, -2.+2.j,  3.-3.j])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.angle(z)</span>
+<span class="sd">        ivy.array([ 2.35619449,  2.35619449, -0.78539816])</span>
+<span class="sd">        &gt;&gt;&gt; ivy.set_backend(&#39;numpy&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; ivy.angle(z,deg=True)</span>
+<span class="sd">        ivy.array([135., 135., -45.])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="ArrayWithElementWiseExperimental.nan_to_num"><a class="viewcode-back" href="../../../../data_classes/array/experimental.html#ivy.array.experimental.ArrayWithElementWiseExperimental.nan_to_num">[docs]</a>    <span class="k">def</span> <span class="nf">nan_to_num</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
         <span class="o">/</span><span class="p">,</span>
