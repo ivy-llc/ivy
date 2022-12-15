@@ -1,6 +1,8 @@
 import math
 from typing import Optional, Tuple
 import numpy as np
+from ivy.func_wrapper import with_unsupported_dtypes
+from . import backend_version
 
 import ivy
 
@@ -90,7 +92,7 @@ def kron(
 
 kron.support_native_out = False
 
-
+@with_unsupported_dtypes({"1.23.0 and below": ("bfloat16",)}, backend_version)
 def matrix_exp(
     x: np.ndarray,
     /,
