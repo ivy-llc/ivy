@@ -200,7 +200,7 @@ def set_nest_at_index(
             try:
                 nest[index[0]] = value
             except TypeError:
-                print("shallow cannot be set to True for immutable types")
+                pass
         _result[index[0]] = value
     else:
         _result[index[0]] = set_nest_at_index(
@@ -316,7 +316,7 @@ def map_nest_at_index(
             try:
                 nest[index[0]] = ret
             except TypeError:
-                print("shallow cannot be set to True for immutable types")
+                pass
         _result[index[0]] = ret
     else:
         _result[index[0]] = map_nest_at_index(
