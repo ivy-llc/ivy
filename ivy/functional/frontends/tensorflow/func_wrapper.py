@@ -46,7 +46,7 @@ def handle_tf_dtype(fn: Callable) -> Callable:
 
 
 def _tf_frontend_array_to_ivy(x):
-    if isinstance(x, frontend.EagerTensor):
+    if hasattr(x, "ivy_array"):
         return x.ivy_array
     return x
 
