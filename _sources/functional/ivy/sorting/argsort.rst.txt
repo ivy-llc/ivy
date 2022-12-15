@@ -5,9 +5,9 @@ argsort
 
 .. autofunction:: ivy.array.array_methods.argsort
 
-.. autofunction:: ivy.container.container_methods.static_argsort
-
 .. autofunction:: ivy.container.container_methods.argsort
+
+.. autofunction:: ivy.container.container_methods.static_argsort
 |
 | **Supported Frameworks:**
 

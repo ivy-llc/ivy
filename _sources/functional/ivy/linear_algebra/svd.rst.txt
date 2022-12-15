@@ -5,9 +5,9 @@ svd
 
 .. autofunction:: ivy.array.array_methods.svd
 
-.. autofunction:: ivy.container.container_methods.svd
-
 .. autofunction:: ivy.container.container_methods.static_svd
+
+.. autofunction:: ivy.container.container_methods.svd
 |
 | **Supported Frameworks:**
 

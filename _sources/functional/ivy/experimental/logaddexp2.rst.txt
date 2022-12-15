@@ -5,9 +5,9 @@ logaddexp2
 
 .. autofunction:: ivy.array.array_methods.logaddexp2
 
-.. autofunction:: ivy.container.container_methods.logaddexp2
-
 .. autofunction:: ivy.container.container_methods.static_logaddexp2
+
+.. autofunction:: ivy.container.container_methods.logaddexp2
 |
 | **Supported Frameworks:**
 
