@@ -226,3 +226,28 @@ def exp(
     /,
 ):
     return ivy.exp(x)
+
+
+@to_ivy_arrays_and_back
+def fmax(x1, x2):
+    ret = ivy.where(
+        ivy.bitwise_or(ivy.greater(x1, x2), ivy.isnan(x2)),
+        x1,
+        x2,
+    )
+    return ret
+
+
+@to_ivy_arrays_and_back
+def maximum(x1, x2):
+    return ivy.maximum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def minimum(x1, x2):
+    return ivy.minimum(x1, x2)
+
+
+@to_ivy_arrays_and_back
+def heaviside(x1, x2):
+    return ivy.heaviside(x1, x2)

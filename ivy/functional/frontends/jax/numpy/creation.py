@@ -65,3 +65,16 @@ def asarray(a, dtype=None, order=None):
 @to_ivy_arrays_and_back
 def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def hstack(tup, dtype=None):
+    # TODO: dtype supported in JAX v0.3.20
+    return ivy.hstack(tup)
+
+
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
+def eye(N, M=None, k=0, dtype=None):
+    return ivy.eye(N, M, k=k, dtype=dtype)

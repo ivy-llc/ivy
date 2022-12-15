@@ -306,3 +306,73 @@ def test_jax_numpy_uint16(
             on_device=on_device,
             x=x[0],
         )
+
+
+# hstack
+@handle_frontend_test(
+    fn_tree="jax.numpy.hstack",
+    dtype_and_tup=helpers.dtype_and_values(
+        available_dtypes=helpers.get_dtypes("numeric"),
+        shared_dtype=True,
+        num_arrays=st.integers(min_value=2, max_value=2),
+        shape=helpers.get_shape(
+            min_num_dims=1, max_num_dims=3, min_dim_size=1, max_dim_size=5
+        ),
+    ),
+)
+def test_jax_numpy_hstack(
+    dtype_and_tup,
+    as_variable,
+    num_positional_args,
+    native_array,
+    frontend,
+    fn_tree,
+):
+    input_dtype, x = dtype_and_tup
+    helpers.test_frontend_function(
+        input_dtypes=input_dtype,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        tup=x,
+    )
+
+
+# eye
+@handle_frontend_test(
+    fn_tree="jax.numpy.eye",
+    n=helpers.ints(min_value=3, max_value=10),
+    m=st.none() | helpers.ints(min_value=3, max_value=10),
+    k=helpers.ints(min_value=-2, max_value=2),
+    dtypes=helpers.get_dtypes("valid", full=False),
+)
+def test_jax_numpy_eye(
+    *,
+    n,
+    m,
+    k,
+    dtypes,
+    num_positional_args,
+    as_variable,
+    native_array,
+    on_device,
+    fn_tree,
+    frontend,
+):
+    helpers.test_frontend_function(
+        input_dtypes=dtypes,
+        as_variable_flags=as_variable,
+        with_out=False,
+        num_positional_args=num_positional_args,
+        native_array_flags=native_array,
+        frontend=frontend,
+        fn_tree=fn_tree,
+        on_device=on_device,
+        N=n,
+        M=m,
+        k=k,
+        dtype=dtypes[0],
+    )
