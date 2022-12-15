@@ -1,0 +1,17 @@
+Nested array
+============
+
+.. automodule:: ivy.nested_array.nested_array
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :hidden:
+   :maxdepth: -1
+   :caption: Nested array
+
+   nested_array/NestedArray.rst
+

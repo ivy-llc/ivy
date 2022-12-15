@@ -5,9 +5,9 @@ nan_to_num
 
 .. autofunction:: ivy.array.array_methods.nan_to_num
 
-.. autofunction:: ivy.container.container_methods.static_nan_to_num
-
 .. autofunction:: ivy.container.container_methods.nan_to_num
+
+.. autofunction:: ivy.container.container_methods.static_nan_to_num
 |
 | **Supported Frameworks:**
 

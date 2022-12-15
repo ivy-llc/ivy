@@ -81,14 +81,18 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Framework Classes</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="stateful/optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Nested array</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nested_array/nested_array.html">Nested array</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Docs</span></p>
 <ul>
@@ -224,6 +228,8 @@
         <li><a href="functional/ivy/experimental.html#ivy.functional.ivy.experimental.SparseArray.__init__">(ivy.functional.ivy.experimental.SparseArray method)</a>, <a href="functional/ivy/experimental/SparseArray.html#ivy.functional.ivy.experimental.SparseArray.__init__">[1]</a>
 </li>
         <li><a href="functional/ivy/gradients.html#ivy.functional.ivy.gradients.GradientTracking.__init__">(ivy.functional.ivy.gradients.GradientTracking method)</a>, <a href="functional/ivy/gradients/GradientTracking.html#ivy.functional.ivy.gradients.GradientTracking.__init__">[1]</a>
+</li>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.__init__">(ivy.nested_array.nested_array.NestedArray method)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.__init__">[1]</a>
 </li>
         <li><a href="stateful/activations.html#ivy.stateful.activations.GEGLU.__init__">(ivy.stateful.activations.GEGLU method)</a>, <a href="stateful/activations/GEGLU.html#ivy.stateful.activations.GEGLU.__init__">[1]</a>
 </li>
@@ -1785,6 +1791,8 @@
       <ul>
         <li><a href="functional/ivy/experimental.html#ivy.functional.ivy.experimental.SparseArray.data">(ivy.functional.ivy.experimental.SparseArray property)</a>, <a href="functional/ivy/experimental/SparseArray.html#ivy.functional.ivy.experimental.SparseArray.data">[1]</a>
 </li>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.data">(ivy.nested_array.nested_array.NestedArray property)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.data">[1]</a>
+</li>
       </ul></li>
       <li><a href="functional/ivy/experimental/dct.html#ivy.array.array_methods.dct">dct() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/experimental/dct/dct_array.html#ivy.array.array_methods.dct">[1]</a>
 
@@ -1937,7 +1945,11 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="data_classes/array.html#ivy.array.array.Array.device">device (ivy.array.array.Array property)</a>, <a href="data_classes/array/array.html#ivy.array.array.Array.device">[1]</a>, <a href="data_classes/array/array/Array.html#ivy.array.array.Array.device">[2]</a>
+
+      <ul>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.device">(ivy.nested_array.nested_array.NestedArray property)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.device">[1]</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/linear_algebra/diag.html#ivy.array.array_methods.diag">diag() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/linear_algebra/diag/diag_array.html#ivy.array.array_methods.diag">[1]</a>
 
       <ul>
@@ -2057,7 +2069,11 @@
 </li>
       </ul></li>
       <li><a href="data_classes/array.html#ivy.array.array.Array.dtype">dtype (ivy.array.array.Array property)</a>, <a href="data_classes/array/array.html#ivy.array.array.Array.dtype">[1]</a>, <a href="data_classes/array/array/Array.html#ivy.array.array.Array.dtype">[2]</a>
+
+      <ul>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.dtype">(ivy.nested_array.nested_array.NestedArray property)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.dtype">[1]</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/data_type/dtype.html#ivy.container.container_methods.dtype">dtype() (in module ivy.container.container_methods)</a>, <a href="functional/ivy/data_type/dtype/dtype_container.html#ivy.container.container_methods.dtype">[1]</a>
 
       <ul>
@@ -2479,6 +2495,10 @@
       <li><a href="stateful/module.html#ivy.stateful.module.Module.from_haiku_module">from_haiku_module() (ivy.stateful.module.Module static method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.from_haiku_module">[1]</a>
 </li>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.from_keras_module">from_keras_module() (ivy.stateful.module.Module static method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.from_keras_module">[1]</a>
+</li>
+      <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.from_row_lengths">from_row_lengths() (ivy.nested_array.nested_array.NestedArray class method)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.from_row_lengths">[1]</a>
+</li>
+      <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.from_row_split">from_row_split() (ivy.nested_array.nested_array.NestedArray class method)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.from_row_split">[1]</a>
 </li>
       <li><a href="stateful/module.html#ivy.stateful.module.Module.from_torch_module">from_torch_module() (ivy.stateful.module.Module static method)</a>, <a href="stateful/module/Module.html#ivy.stateful.module.Module.from_torch_module">[1]</a>
 </li>
@@ -3331,8 +3351,6 @@
         <li><a href="_version.html#module-ivy._version">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.array.activations
 
@@ -3340,6 +3358,8 @@
         <li><a href="data_classes/array/activations.html#module-ivy.array.activations">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.array.array
 
@@ -3835,6 +3855,13 @@
 
       <ul>
         <li><a href="inspection.html#module-ivy.inspection">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.nested_array.nested_array
+
+      <ul>
+        <li><a href="nested_array/nested_array.html#module-ivy.nested_array.nested_array">module</a>
 </li>
       </ul></li>
       <li>
@@ -4597,6 +4624,8 @@
 </li>
         <li><a href="inspection.html#module-ivy.inspection">ivy.inspection</a>
 </li>
+        <li><a href="nested_array/nested_array.html#module-ivy.nested_array.nested_array">ivy.nested_array.nested_array</a>
+</li>
         <li><a href="stateful.html#module-ivy.stateful">ivy.stateful</a>
 </li>
         <li><a href="stateful/activations.html#module-ivy.stateful.activations">ivy.stateful.activations</a>
@@ -4767,7 +4796,11 @@
       <li><a href="functional/ivy/experimental.html#ivy.functional.ivy.experimental.ndenumerate">ndenumerate() (in module ivy.functional.ivy.experimental)</a>, <a href="functional/ivy/experimental/ndenumerate.html#ivy.functional.ivy.experimental.ndenumerate">[1]</a>
 </li>
       <li><a href="data_classes/array.html#ivy.array.array.Array.ndim">ndim (ivy.array.array.Array property)</a>, <a href="data_classes/array/array.html#ivy.array.array.Array.ndim">[1]</a>, <a href="data_classes/array/array/Array.html#ivy.array.array.Array.ndim">[2]</a>
+
+      <ul>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.ndim">(ivy.nested_array.nested_array.NestedArray property)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.ndim">[1]</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/experimental.html#ivy.functional.ivy.experimental.ndindex">ndindex() (in module ivy.functional.ivy.experimental)</a>, <a href="functional/ivy/experimental/ndindex.html#ivy.functional.ivy.experimental.ndindex">[1]</a>
 </li>
       <li><a href="functional/ivy/elementwise/negative.html#ivy.array.array_methods.negative">negative() (in module ivy.array.array_methods)</a>, <a href="functional/ivy/elementwise/negative/negative_array.html#ivy.array.array_methods.negative">[1]</a>
@@ -4784,15 +4817,19 @@
       </ul></li>
       <li><a href="glossary.html#term-Nestable-Functions"><strong>Nestable Functions</strong></a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.nested_any">nested_any() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/nested_any.html#ivy.functional.ivy.nest.nested_any">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.nested_argwhere">nested_argwhere() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/nested_argwhere.html#ivy.functional.ivy.nest.nested_argwhere">[1]</a>
+</li>
+      <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.nested_array">nested_array() (ivy.nested_array.nested_array.NestedArray class method)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.nested_array">[1]</a>
 </li>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.nested_map">nested_map() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/nested_map.html#ivy.functional.ivy.nest.nested_map">[1]</a>
 </li>
       <li><a href="functional/ivy/nest.html#ivy.functional.ivy.nest.nested_multi_map">nested_multi_map() (in module ivy.functional.ivy.nest)</a>, <a href="functional/ivy/nest/nested_multi_map.html#ivy.functional.ivy.nest.nested_multi_map">[1]</a>
+</li>
+      <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray">NestedArray (class in ivy.nested_array.nested_array)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray">[1]</a>
 </li>
       <li><a href="functional/ivy/creation.html#ivy.functional.ivy.creation.NestedSequence">NestedSequence (class in ivy.functional.ivy.creation)</a>, <a href="functional/ivy/creation/NestedSequence.html#ivy.functional.ivy.creation.NestedSequence">[1]</a>
 </li>
@@ -5505,7 +5542,11 @@
       <li><a href="stateful/optimizers.html#ivy.stateful.optimizers.SGD">SGD (class in ivy.stateful.optimizers)</a>, <a href="stateful/optimizers/SGD.html#ivy.stateful.optimizers.SGD">[1]</a>
 </li>
       <li><a href="data_classes/array.html#ivy.array.array.Array.shape">shape (ivy.array.array.Array property)</a>, <a href="data_classes/array/array.html#ivy.array.array.Array.shape">[1]</a>, <a href="data_classes/array/array/Array.html#ivy.array.array.Array.shape">[2]</a>
+
+      <ul>
+        <li><a href="nested_array/nested_array.html#ivy.nested_array.nested_array.NestedArray.shape">(ivy.nested_array.nested_array.NestedArray property)</a>, <a href="nested_array/nested_array/NestedArray.html#ivy.nested_array.nested_array.NestedArray.shape">[1]</a>
 </li>
+      </ul></li>
       <li><a href="functional/ivy/general.html#ivy.functional.ivy.general.shape">shape() (in module ivy.functional.ivy.general)</a>, <a href="functional/ivy/general/shape.html#ivy.functional.ivy.general.shape">[1]</a>
 </li>
       <li><a href="functional/ivy/general.html#ivy.functional.ivy.general.shape_array_mode">shape_array_mode() (in module ivy.functional.ivy.general)</a>, <a href="functional/ivy/general/shape_array_mode.html#ivy.functional.ivy.general.shape_array_mode">[1]</a>
