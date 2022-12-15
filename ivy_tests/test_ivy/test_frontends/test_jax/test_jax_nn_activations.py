@@ -831,7 +831,6 @@ def test_jax_nn_hard_sigmoid(
         large_abs_safety_factor=2,
         small_abs_safety_factor=2,
         safety_factor_scale="linear",
- 
     ),
 )
 def test_jax_nn_selu(
