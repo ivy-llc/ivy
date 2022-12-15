@@ -1990,6 +1990,7 @@ def test_numpy_instance_str__(
         frontend_method_data=frontend_method_data,
     )
 
+
 @handle_frontend_method(
     class_tree=CLASS_TREE,
     init_tree="numpy.array",
