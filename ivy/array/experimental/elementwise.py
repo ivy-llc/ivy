@@ -746,19 +746,19 @@ class ArrayWithElementWiseExperimental(abc.ABC):
         >>> x2 = ivy.array([1.00001e10, 1e-8])
         >>> y = x1.allclose(x2)
         >>> print(y)
-        False
+        ivy.array(False)
 
         >>> x1 = ivy.array([1.0, ivy.nan])
         >>> x2 = ivy.array([1.0, ivy.nan])
         >>> y = x1.allclose(x2, equal_nan=True)
         >>> print(y)
-        True
+        ivy.array(True)
 
         >>> x1 = ivy.array([1e-10, 1e-10])
         >>> x2 = ivy.array([1.00001e-10, 1e-10])
         >>> y = x1.allclose(x2, rtol=0.005, atol=0.0)
         >>> print(y)
-
+        ivy.array(True)
         """
         return ivy.allclose(
             self._data, x2, rtol=rtol, atol=atol, equal_nan=equal_nan, out=out

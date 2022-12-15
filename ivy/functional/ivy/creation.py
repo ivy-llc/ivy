@@ -1164,16 +1164,20 @@ def linspace(
 
     With float input:
 
-    >>> ivy.linspace(1, 2, 4)
+    >>> x = ivy.linspace(1, 2, 4)
+    >>> print(x)
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
-    >>> ivy.linspace(1, 2, 4, endpoint=False)
+    >>> x = ivy.linspace(1, 2, 4, endpoint=False)
+    >>> print(x)
     ivy.array([1., 1.25, 1.5 , 1.75])
 
-    >>> ivy.linspace(1, 10, 4, dtype = int)
+    >>> x = ivy.linspace(1, 10, 4, dtype = int)
+    >>> print(x)
     ivy.array([ 1,  4,  7, 10])
 
-    >>> ivy.linspace(1, 2, 4, device = "gpu")
+    >>> x = ivy.linspace(1, 2, 4, device = "gpu")
+    >>> print(x)
     ivy.array([1., 1.33333337, 1.66666663, 2.])
 
     >>> out = ivy.array([0,0,0,0])
@@ -1185,28 +1189,12 @@ def linspace(
 
     >>> x = ivy.array([1,2])
     >>> y = ivy.array([4,5])
-
-    >>> ivy.linspace(x, y, 4)
-    ivy.array([[1, 2, 3, 4], [2, 3, 4, 5]])
-
-    >>> ivy.linspace(x, y, 4, axis = 0)
+    >>> z = ivy.linspace(x, y, 4, axis = 0)
+    >>> print(z)
     ivy.array([[1, 2],
                [2, 3],
                [3, 4],
                [4, 5]])
-
-    Instance Method Examples
-    -------------------
-    With :class:`ivy.Array` input:
-
-    >>> x.linspace(y, 4)
-    ivy.array([[4, 3, 2, 1], [5, 4, 3, 2]])
-
-    >>> x.linspace(y, 4, axis = 0)
-    ivy.array([[4, 5],
-               [3, 4],
-               [2, 3],
-               [1, 2]])
     """
     return current_backend(start).linspace(
         start,

@@ -283,7 +283,7 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[np.ndarray] = None,
 ) -> bool:
-    return np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return np.array(np.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan))
 
 
 isclose.support_native_out = False

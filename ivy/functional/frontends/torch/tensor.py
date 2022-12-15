@@ -399,6 +399,9 @@ class Tensor:
     def flip(self, dims):
         return torch_frontend.flip(self._ivy_array, dims)
 
+    def sort(self, dim=-1, descending=False):
+        return torch_frontend.sort(self._ivy_array, dim=dim, descending=descending)
+
     def tril(self, diagonal=0):
         return torch_frontend.tril(self._ivy_array, diagonal=diagonal)
 
@@ -408,6 +411,9 @@ class Tensor:
     @with_unsupported_dtypes({"1.11.0 and below": ("bfloat16", "float16")}, "torch")
     def clamp(self, min=None, max=None, *, out=None):
         return torch_frontend.clamp(self._ivy_array, min=min, max=max, out=out)
+
+    def sqrt(self):
+        return torch_frontend.sqrt(self._ivy_array)
 
     def where(self, condition, other):
         return ivy.where(condition, self._ivy_array, other)
@@ -482,6 +488,9 @@ class Tensor:
 
     def __or__(self, other):
         return torch_frontend.bitwise_or(self._ivy_array, other)
+
+    def __invert__(self):
+        return torch_frontend.bitwise_not(self._ivy_array)
 
     # Method aliases
     absolute, absolute_ = abs, abs_

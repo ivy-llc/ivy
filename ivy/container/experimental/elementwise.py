@@ -1855,8 +1855,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1866,8 +1866,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = ivy.Container.static_allclose(x1, x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
         return ContainerBase.cont_multi_map_in_static_method(
@@ -1944,8 +1944,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
 
         >>> x1 = ivy.Container(a=ivy.array([1., 2., 3.]),\
@@ -1955,8 +1955,8 @@ class ContainerWithElementWiseExperimental(ContainerBase):
         >>> y = x1.allclose(x2, rtol=1e-3)
         >>> print(y)
         {
-            a: true,
-            b: true
+            a: ivy.array(True),
+            b: ivy.array(True)
         }
         """
         return self.static_allclose(

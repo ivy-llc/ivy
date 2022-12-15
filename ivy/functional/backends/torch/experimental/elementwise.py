@@ -298,7 +298,8 @@ def allclose(
     equal_nan: Optional[bool] = False,
     out: Optional[torch.Tensor] = None,
 ) -> bool:
-    return torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    ret = torch.allclose(x1, x2, rtol=rtol, atol=atol, equal_nan=equal_nan)
+    return torch.tensor(ret)
 
 
 @with_unsupported_dtypes({"1.11.0 and below": ("float16",)}, backend_version)
