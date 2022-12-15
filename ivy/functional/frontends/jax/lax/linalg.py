@@ -33,3 +33,7 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
         x = symmetrize(x)
 
     return ivy.eigh(x, UPLO=UPLO)
+
+  @to_ivy_arrays_and_back
+    def all_gather(x, axis_name, *, axis_index_groups=None, axis=0, tiled=False): 
+        return jax.lax.all_gather(x, 'i', axis_index_groups=[[0, 2], [3, 1]])         
