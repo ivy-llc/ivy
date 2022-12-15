@@ -917,7 +917,7 @@ def as_native_dtype(dtype_in: Union[ivy.Dtype, ivy.NativeDtype], /) -> ivy.Nativ
 
 
 def _check_float64(input) -> bool:
-    if ivy.is_native_array(input):
+    if ivy.is_array(input):
         return ivy.dtype(input) == "float64"
     if math.isfinite(input):
         m, e = math.frexp(input)
@@ -1197,11 +1197,10 @@ def default_int_dtype(
         elif isinstance(input, np.ndarray):
             ret = str(input.dtype)
         elif isinstance(input, (list, tuple, dict)):
-            is_native = lambda x: ivy.is_native_array(x)
             if ivy.nested_argwhere(
                 input,
                 lambda x: ivy.dtype(x) == "uint64"
-                if is_native(x)
+                if ivy.is_array(x)
                 else x > 9223372036854775807 and x != ivy.inf,
                 stop_after_n_found=1,
             ):
@@ -1209,7 +1208,7 @@ def default_int_dtype(
             elif ivy.nested_argwhere(
                 input,
                 lambda x: ivy.dtype(x) == "int64"
-                if is_native(x)
+                if ivy.is_array(x)
                 else x > 2147483647 and x != ivy.inf,
                 stop_after_n_found=1,
             ):
@@ -1622,7 +1621,7 @@ def is_int_dtype(
                 dtype_in,
                 lambda x: (
                     isinstance(x, (int, np.integer))
-                    or (ivy.is_native_array(x) and "int" in ivy.dtype(x))
+                    or (ivy.is_array(x) and "int" in ivy.dtype(x))
                 )
                 and not type(x) == bool,
             )
@@ -1691,7 +1690,7 @@ def is_float_dtype(
             if ivy.nested_argwhere(
                 dtype_in,
                 lambda x: isinstance(x, (float, np.floating))
-                or (ivy.is_native_array(x) and "float" in ivy.dtype(x)),
+                or (ivy.is_array(x) and "float" in ivy.dtype(x)),
             )
             else False
         )
