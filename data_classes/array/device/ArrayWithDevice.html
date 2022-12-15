@@ -175,6 +175,14 @@
 <dd><p>ivy.Array instance method variant of ivy.dev. This method simply wraps
 the function, and so the docstring for ivy.dev also applies to this
 method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – array for which to get the device handle.</p></li>
+<li><p><strong>as_native</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether or not to return the dev in native format. Default is <code class="docutils literal notranslate"><span class="pre">False</span></code>. (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">]])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -195,6 +203,27 @@ method with minimal changes.</p>
 <dd><p>ivy.Array instance method variant of ivy.to_device. This method simply
 wraps the function, and so the docstring for ivy.to_device also applies
 to this method with minimal changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>) – input array to be moved to the desired device</p></li>
+<li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – device to move the input array <cite>x</cite> to</p></li>
+<li><p><strong>stream</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – stream object to use during copy. In addition to the types (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+supported in array.__dlpack__(), implementations may choose to
+support any library-specific stream object with the caveat that
+any code using such an object would not be portable.</p></li>
+<li><p><strong>out</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code>]) – optional output array, for writing the result to. It must have (default: <code class="docutils literal notranslate"><span class="pre">None</span></code>)
+a shape that the inputs broadcast to.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="go">cpu</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Array</span></code></p>

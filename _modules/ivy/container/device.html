@@ -172,6 +172,13 @@
 <span class="sd">        wraps the function, and so the docstring for ivy.dev also applies to this</span>
 <span class="sd">        method with minimal changes.</span>
 
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        self</span>
+<span class="sd">            contaioner of arrays for which to get the device handle.</span>
+<span class="sd">        as_native</span>
+<span class="sd">            Whether or not to return the dev in native format. Default is ``False``.</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),</span>
@@ -235,6 +242,14 @@
 <span class="sd">        ret</span>
 <span class="sd">            input array x placed on the desired device</span>
 
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),</span>
+<span class="sd">        ...                   b=ivy.native_array([[1, 2], [4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = ivy.Container.static_to_device(x, &#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(y.a.device, y.b.device)</span>
+<span class="sd">        cpu cpu</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ContainerBase</span><span class="o">.</span><span class="n">cont_multi_map_in_static_method</span><span class="p">(</span>
             <span class="s2">&quot;to_device&quot;</span><span class="p">,</span>
@@ -294,6 +309,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        ret</span>
 <span class="sd">            input array x placed on the desired device</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; x = ivy.Container(a=ivy.array([[2, 3, 1], [3, 5, 3]]),</span>
+<span class="sd">        ...                   b=ivy.native_array([[1, 2], [4, 5]]))</span>
+<span class="sd">        &gt;&gt;&gt; y = x.to_device(&#39;cpu&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; print(y.a.device, y.b.device)</span>
+<span class="sd">        cpu cpu</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">static_to_device</span><span class="p">(</span>

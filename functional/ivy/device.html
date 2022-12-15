@@ -272,6 +272,12 @@
 <dd class="field-odd"><p><em>ret</em> – Device string e.g. ‘cuda:0’.</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="s1">&#39;cuda:0&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">cuda:0</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -283,6 +289,12 @@
 <dd class="field-odd"><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.
 A native device handle can be passed in instead - in this case
 the unmodified parameter is returned.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><em>ret</em> – Native device handle.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -302,18 +314,12 @@ the unmodified parameter is returned.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">device</span>
 <span class="go">device(type=&#39;cuda&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 <span class="go">device(type=&#39;cuda&#39;)</span>
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code></p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><em>ret</em> – Native device handle.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -366,15 +372,25 @@ otherwise the cpu is returned.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()</span>
 <span class="go">device(type=&#39;cpu&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="s2">&quot;gpu:0&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="s2">&quot;gpu:0&quot;</span><span class="p">)</span>
 <span class="go">&#39;gpu:0&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">[],</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">[],</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="go">&#39;cpu&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">(),</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">(),</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">device(type=&#39;cpu&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">},</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">device(type=&#39;cpu&#39;)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;gpu:0&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(</span><span class="n">item</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">as_native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">device(type=&#39;gpu&#39;, id=0)</span>
@@ -397,10 +413,10 @@ otherwise the cpu is returned.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Device handle for the array, in native framework format.</p>
+<dd class="field-odd"><p><em>ret</em> – Device handle for the array.</p>
 </dd>
 </dl>
-<p class="rubric">Functional Examples</p>
+<p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -462,9 +478,15 @@ otherwise the cpu is returned.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The supported devices of the function</p>
+<dd class="field-odd"><p><em>ret</em> – Tuple containing the supported devices of the function</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">function_supported_devices</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">))</span>
+<span class="go">(&#39;cpu&#39;, &#39;gpu&#39;)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -482,9 +504,15 @@ otherwise the cpu is returned.</p>
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code></p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – The unsupported devices of the function</p>
+<dd class="field-odd"><p><em>ret</em> – Tuple containing the unsupported devices of the function</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">function_unsupported_devices</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones</span><span class="p">))</span>
+<span class="go">()</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -567,8 +595,6 @@ otherwise the cpu is returned.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">())</span>
-<span class="go">0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">())</span>
 <span class="go">1</span>
 </pre></div>
 </div>
@@ -736,10 +762,10 @@ splitting chunk sizes for the device across the codebase.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">())</span>
 <span class="go">&#39;cpu&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span><span class="p">)</span>
 <span class="go">{&#39;cpu&#39;: 0.5}</span>
 </pre></div>
 </div>
@@ -747,12 +773,12 @@ splitting chunk sizes for the device across the codebase.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span><span class="p">)</span>
 <span class="go">{device(type=&#39;cuda&#39;): 0.3}</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span><span class="s2">&quot;tpu&quot;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span><span class="p">)</span>
 <span class="go">{&#39;tpu&#39;: 0.4}</span>
 </pre></div>
 </div>
@@ -760,9 +786,9 @@ splitting chunk sizes for the device across the codebase.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_backend</span><span class="p">(</span><span class="s2">&quot;torch&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span><span class="s1">&#39;gpu&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
-<span class="go">{&#39;cpu&#39;: 0.2, &#39;gpu&#39;: 0.3, device(type=&#39;cuda&#39;): 0.4}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;gpu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factors</span><span class="p">)</span>
+<span class="go">{&#39;cpu&#39;: 0.2, &#39;gpu&#39;: 0.3}</span>
 </pre></div>
 </div>
 <dl class="field-list simple">
@@ -867,6 +893,8 @@ inputs broadcast to.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="go">cpu</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -949,7 +977,7 @@ RAM is returned.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>device</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]) – The device string to convert to native device handle.</p></li>
 <li><p><strong>process_specific</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to check the memory used by this python process alone. Default is (default: <code class="docutils literal notranslate"><span class="pre">False</span></code>)
-False. Currently is only supported for cpu.</p></li>
+False. Currently, it is only supported for cpu.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

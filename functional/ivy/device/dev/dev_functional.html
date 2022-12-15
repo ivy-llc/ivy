@@ -187,10 +187,10 @@
 <dd class="field-even"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Device</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">NativeDevice</span></code>]</p>
 </dd>
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><em>ret</em> – Device handle for the array, in native framework format.</p>
+<dd class="field-odd"><p><em>ret</em> – Device handle for the array.</p>
 </dd>
 </dl>
-<p class="rubric">Functional Examples</p>
+<p class="rubric">Examples</p>
 <p>With <code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.Array</span></code> input:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

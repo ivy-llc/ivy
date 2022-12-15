@@ -377,20 +377,18 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    x</span>
-<span class="sd">        array for which to get the device handle.</span>
-
-<span class="sd">    as_native</span>
-<span class="sd">        Whether or not to return the dev in native format. Default is ``False``.</span>
+<span class="sd">        x</span>
+<span class="sd">            array for which to get the device handle.</span>
+<span class="sd">        as_native</span>
+<span class="sd">            Whether or not to return the dev in native format. Default is ``False``.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Device handle for the array, in native framework format.</span>
+<span class="sd">        ret</span>
+<span class="sd">            Device handle for the array.</span>
 
-<span class="sd">    Functional Examples</span>
-<span class="sd">    --------------------</span>
-
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
 <span class="sd">    With :class:`ivy.Array` input:</span>
 
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([3, 1, 4, 5])</span>
@@ -425,6 +423,11 @@
 <span class="sd">    ret</span>
 <span class="sd">        Device string e.g. &#39;cuda:0&#39;.</span>
 
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.as_ivy_dev(&#39;cuda:0&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(y)</span>
+<span class="sd">    cuda:0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">as_ivy_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
@@ -439,6 +442,11 @@
 <span class="sd">        The device string to convert to native device handle.</span>
 <span class="sd">        A native device handle can be passed in instead - in this case</span>
 <span class="sd">        the unmodified parameter is returned.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ret</span>
+<span class="sd">        Native device handle.</span>
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
@@ -458,14 +466,10 @@
 <span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; device</span>
 <span class="sd">    device(type=&#39;cuda&#39;)</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.as_native_dev(device)</span>
 <span class="sd">    device(type=&#39;cuda&#39;)</span>
 
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    ret</span>
-<span class="sd">        Native device handle.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">as_native_dev</span><span class="p">(</span><span class="n">device</span><span class="p">)</span></div>
 
@@ -548,7 +552,7 @@
 <span class="sd">        The device string to convert to native device handle.</span>
 <span class="sd">    process_specific</span>
 <span class="sd">        Whether to check the memory used by this python process alone. Default is</span>
-<span class="sd">        False. Currently is only supported for cpu.</span>
+<span class="sd">        False. Currently, it is only supported for cpu.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -681,7 +685,6 @@
 <span class="sd">    &gt;&gt;&gt; ivy.dev_util(&#39;cpu&#39;)</span>
 <span class="sd">    84.2</span>
 
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">device</span> <span class="o">==</span> <span class="s2">&quot;cpu&quot;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
@@ -753,8 +756,6 @@
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; print(ivy.num_gpus())</span>
-<span class="sd">    0</span>
-<span class="sd">    &gt;&gt;&gt; print(ivy.num_gpus())</span>
 <span class="sd">    1</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -815,14 +816,19 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_device()</span>
 <span class="sd">    device(type=&#39;cpu&#39;)</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(&quot;gpu:0&quot;)</span>
 <span class="sd">    &#39;gpu:0&#39;</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item=[], as_native=False)</span>
 <span class="sd">    &#39;cpu&#39;</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item=(), as_native=True)</span>
 <span class="sd">    device(type=&#39;cpu&#39;)</span>
+
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item={&quot;a&quot;: 1}, as_native=True)</span>
 <span class="sd">    device(type=&#39;cpu&#39;)</span>
+
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.to_device(x, &#39;gpu:0&#39;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.default_device(item=x, as_native=True)</span>
@@ -944,7 +950,8 @@
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.array([1., 2., 3.])</span>
 <span class="sd">    &gt;&gt;&gt; x = ivy.to_device(x, &#39;cpu&#39;)</span>
-
+<span class="sd">    &gt;&gt;&gt; print(x.device)</span>
+<span class="sd">    cpu</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span></div>
 
@@ -1005,30 +1012,30 @@
 
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; ivy.default_device()</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.default_device())</span>
 <span class="sd">    &#39;cpu&#39;</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.5)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.split_factors)</span>
 <span class="sd">    {&#39;cpu&#39;: 0.5}</span>
 
 <span class="sd">    &gt;&gt;&gt; import torch</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.3,device)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.split_factors)</span>
 <span class="sd">    {device(type=&#39;cuda&#39;): 0.3}</span>
 
 <span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.4,&quot;tpu&quot;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.split_factors</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.split_factors)</span>
 <span class="sd">    {&#39;tpu&#39;: 0.4}</span>
 
 <span class="sd">    &gt;&gt;&gt; import torch</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_backend(&quot;torch&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; device = torch.device(&quot;cuda&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.2)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.3,&#39;gpu&#39;)</span>
-<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.4,device)</span>
-<span class="sd">    {&#39;cpu&#39;: 0.2, &#39;gpu&#39;: 0.3, device(type=&#39;cuda&#39;): 0.4}</span>
+<span class="sd">    &gt;&gt;&gt; ivy.set_split_factor(0.3, device=&#39;gpu&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.split_factors)</span>
+<span class="sd">    {&#39;cpu&#39;: 0.2, &#39;gpu&#39;: 0.3}</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_less</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">factor</span><span class="p">,</span> <span class="n">allow_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">split_factors</span>
@@ -1232,7 +1239,13 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The supported devices of the function</span>
+<span class="sd">        Tuple containing the supported devices of the function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import ivy</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.function_supported_devices(ivy.ones))</span>
+<span class="sd">    (&#39;cpu&#39;, &#39;gpu&#39;)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
@@ -1264,7 +1277,13 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    ret</span>
-<span class="sd">        The unsupported devices of the function</span>
+<span class="sd">        Tuple containing the unsupported devices of the function</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import ivy</span>
+<span class="sd">    &gt;&gt;&gt; print(ivy.function_unsupported_devices(ivy.ones))</span>
+<span class="sd">    ()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ivy</span><span class="o">.</span><span class="n">assertions</span><span class="o">.</span><span class="n">check_true</span><span class="p">(</span>
         <span class="n">_is_valid_devices_attributes</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
