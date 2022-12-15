@@ -4962,7 +4962,9 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="n">axis</span><span class="p">,</span> <span class="n">prepend</span><span class="o">=</span><span class="n">prepend</span><span class="p">,</span> <span class="n">append</span><span class="o">=</span><span class="n">append</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="allclose"><a class="viewcode-back" href="../../../../functional/ivy/experimental/allclose/allclose_functional.html#ivy.functional.ivy.experimental.allclose">[docs]</a><span class="nd">@handle_exceptions</span>
+<div class="viewcode-block" id="allclose"><a class="viewcode-back" href="../../../../functional/ivy/experimental/allclose/allclose_functional.html#ivy.functional.ivy.experimental.allclose">[docs]</a><span class="nd">@handle_nestable</span>
+<span class="nd">@to_native_arrays_and_back</span>
+<span class="nd">@handle_exceptions</span>
 <span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span>
     <span class="n">a</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
     <span class="n">b</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span>
@@ -5012,19 +5014,19 @@
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.00001e10, 1e-8])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    False</span>
+<span class="sd">    ivy.array(False)</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1.0, ivy.nan])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.0, ivy.nan])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2, equal_nan=True)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    True</span>
+<span class="sd">    ivy.array(True)</span>
 
 <span class="sd">    &gt;&gt;&gt; x1 = ivy.array([1e-10, 1e-10])</span>
 <span class="sd">    &gt;&gt;&gt; x2 = ivy.array([1.00001e-10, 1e-10])</span>
 <span class="sd">    &gt;&gt;&gt; y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)</span>
 <span class="sd">    &gt;&gt;&gt; print(y)</span>
-<span class="sd">    True</span>
+<span class="sd">    ivy.array(True)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_backend</span><span class="p">()</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>

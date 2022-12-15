@@ -880,19 +880,19 @@
 <span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.00001e10, 1e-8])</span>
 <span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        False</span>
+<span class="sd">        ivy.array(False)</span>
 
 <span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1.0, ivy.nan])</span>
 <span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.0, ivy.nan])</span>
 <span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2, equal_nan=True)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-<span class="sd">        True</span>
+<span class="sd">        ivy.array(True)</span>
 
 <span class="sd">        &gt;&gt;&gt; x1 = ivy.array([1e-10, 1e-10])</span>
 <span class="sd">        &gt;&gt;&gt; x2 = ivy.array([1.00001e-10, 1e-10])</span>
 <span class="sd">        &gt;&gt;&gt; y = x1.allclose(x2, rtol=0.005, atol=0.0)</span>
 <span class="sd">        &gt;&gt;&gt; print(y)</span>
-
+<span class="sd">        ivy.array(True)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="n">equal_nan</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">out</span>
