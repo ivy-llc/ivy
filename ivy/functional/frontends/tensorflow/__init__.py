@@ -287,9 +287,9 @@ from . import nest
 from . import nn
 from . import quantization
 from . import random
+from . import general_functions
 from . import raw_ops
 from . import sets
 from . import signal
 from . import sparse
-from . import general_functions
 from .general_functions import *
