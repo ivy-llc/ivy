@@ -3895,7 +3895,7 @@
 <span class="kn">from</span> <span class="nn">ivy.functional.ivy.losses</span> <span class="kn">import</span> <span class="n">_reduce_loss</span>
 
 
-<div class="viewcode-block" id="binary_cross_entropy_with_logits"><a class="viewcode-back" href="../../../../functional/ivy/experimental/binary_cross_entropy_with_logits.html#ivy.functional.ivy.experimental.binary_cross_entropy_with_logits">[docs]</a><span class="nd">@handle_nestable</span>
+<div class="viewcode-block" id="binary_cross_entropy_with_logits"><a class="viewcode-back" href="../../../../functional/ivy/experimental/binary_cross_entropy_with_logits/binary_cross_entropy_with_logits_functional.html#ivy.functional.ivy.experimental.binary_cross_entropy_with_logits">[docs]</a><span class="nd">@handle_nestable</span>
 <span class="nd">@handle_exceptions</span>
 <span class="nd">@handle_array_like</span>
 <span class="k">def</span> <span class="nf">binary_cross_entropy_with_logits</span><span class="p">(</span>
@@ -3965,8 +3965,8 @@
 
 <span class="sd">    With :class:`ivy.Container` input:</span>
 
-<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 1, 0]),b=ivy.array([0, 0, 1]))</span>
-<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]),b=ivy.array([1.8, 2.2, 1.2]))</span>
+<span class="sd">    &gt;&gt;&gt; x = ivy.Container(a=ivy.array([1, 1, 0]), b=ivy.array([0, 0, 1]))</span>
+<span class="sd">    &gt;&gt;&gt; y = ivy.Container(a=ivy.array([3.6, 1.2, 5.3]), b=ivy.array([1.8, 2.2, 1.2]))</span>
 <span class="sd">    &gt;&gt;&gt; z = ivy.binary_cross_entropy_with_logits(x, y)</span>
 <span class="sd">    &gt;&gt;&gt; print(z)</span>
 <span class="sd">    {</span>
