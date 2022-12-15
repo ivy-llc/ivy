@@ -879,7 +879,7 @@ def set_split_factor(
     Examples
     --------
     >>> print(ivy.default_device())
-    'cpu'
+    cpu
     >>> ivy.set_split_factor(0.5)
     >>> print(ivy.split_factors)
     {'cpu': 0.5}

@@ -719,7 +719,6 @@ def angle(
     >>> ivy.angle(z,deg=True)
     ivy.array([135., 135., -45.])
     """
-
     return ivy.current_backend(z).angle(z, deg=deg, out=out)
 
 

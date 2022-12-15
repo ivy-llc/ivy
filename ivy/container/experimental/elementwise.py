@@ -1546,7 +1546,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([115.3461759, 60.524111])
         }
         """
-
         return ContainerBase.cont_multi_map_in_static_method(
             "angle",
             z,
@@ -1608,7 +1607,6 @@ class ContainerWithElementWiseExperimental(ContainerBase):
             b: ivy.array([115.3461759, 60.524111])
         }
         """
-
         return self.static_angle(self, deg=deg, out=out)
 
     @staticmethod
