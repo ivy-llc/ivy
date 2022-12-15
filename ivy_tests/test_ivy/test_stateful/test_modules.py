@@ -720,7 +720,9 @@ def test_module_track_submod_rets(
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(list(batch_shape) + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.flatten_key_chain(submod.__repr__(), "_") not in sm_rets
+        assert (
+            ivy.Container.cont_flatten_key_chain(submod.__repr__(), "_") not in sm_rets
+        )
 
     # depth 2 (full)
     ret = module(x, track_submod_rets=True)
@@ -749,7 +751,9 @@ def test_module_track_submod_rets(
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(list(batch_shape) + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.flatten_key_chain(submod.__repr__(), "_") not in sm_rets
+        assert (
+            ivy.Container.cont_flatten_key_chain(submod.__repr__(), "_") not in sm_rets
+        )
 
 
 # check submod returns
@@ -868,23 +872,23 @@ def test_module_track_submod_call_order(
     )
     module = WithNestedModules(input_channels, output_channels, device=on_device)
 
-    root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), "_") + "_0"
+    root_key_0 = ivy.Container.cont_flatten_key_chain(module.__repr__(), "_") + "_0"
 
-    dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), "_") + "_0"
-    dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), "_") + "_0"
-    dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), "_") + "_1"
+    dl0_key_0 = ivy.Container.cont_flatten_key_chain(module._dl0.__repr__(), "_") + "_0"
+    dl1_key_0 = ivy.Container.cont_flatten_key_chain(module._dl1.__repr__(), "_") + "_0"
+    dl1_key_1 = ivy.Container.cont_flatten_key_chain(module._dl1.__repr__(), "_") + "_1"
 
     dl0_l0_key_0 = (
-        ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), "_") + "_0"
+        ivy.Container.cont_flatten_key_chain(module._dl0._l0.__repr__(), "_") + "_0"
     )
     dl0_l1_key_0 = (
-        ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), "_") + "_0"
+        ivy.Container.cont_flatten_key_chain(module._dl0._l1.__repr__(), "_") + "_0"
     )
     dl1_l0_key_0 = (
-        ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), "_") + "_0"
+        ivy.Container.cont_flatten_key_chain(module._dl1._l0.__repr__(), "_") + "_0"
     )
     dl1_l1_key_0 = (
-        ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), "_") + "_0"
+        ivy.Container.cont_flatten_key_chain(module._dl1._l1.__repr__(), "_") + "_0"
     )
 
     # depth 1
@@ -899,19 +903,19 @@ def test_module_track_submod_call_order(
     assert dl1_key_0 in sm_co[root_key_0]
     assert dl1_key_1 in sm_co[root_key_0]
 
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl0_key_0],
             module._dl0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_0],
             module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_1],
             module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
@@ -937,37 +941,37 @@ def test_module_track_submod_call_order(
     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
 
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
             module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl0_key_0][dl0_l1_key_0],
             module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_0][dl1_l0_key_0],
             module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_0][dl1_l1_key_0],
             module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_1][dl1_l0_key_0],
             module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_1][dl1_l1_key_0],
             module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
@@ -990,20 +994,20 @@ def test_module_track_submod_call_order(
 
     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
     assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_0],
             module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl1_key_1],
             module._dl1.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),
         ]
     )
 
-    assert ivy.Container.identical(
+    assert ivy.Container.cont_identical(
         [
             sm_co[root_key_0][dl0_key_0][dl0_l0_key_0],
             module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy(),

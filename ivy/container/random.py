@@ -96,7 +96,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0.0999, -7.38, -1.29])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "random_uniform",
             low=low,
             high=high,
@@ -383,7 +383,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0.464, -8.51, -3.75])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "random_normal",
             mean=mean,
             std=std,
@@ -642,7 +642,7 @@ class ContainerWithRandom(ContainerBase):
         ret
             Drawn samples from the parameterized normal distribution.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "multinomial",
             population_size,
             num_samples,
@@ -817,7 +817,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([0, 10, 17])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "randint",
             low,
             high,
@@ -1069,7 +1069,7 @@ class ContainerWithRandom(ContainerBase):
             b: ivy.array([8, 4, 9])
         }
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "shuffle",
             x,
             seed=seed,
@@ -1197,7 +1197,7 @@ class ContainerWithRandom(ContainerBase):
         ret
             A container object, with values drawn from the beta distribution.
         """
-        return ContainerBase.multi_map_in_static_method(
+        return ContainerBase.cont_multi_map_in_static_method(
             "beta",
             alpha,
             beta,

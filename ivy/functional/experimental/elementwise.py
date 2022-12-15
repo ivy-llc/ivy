@@ -806,22 +806,32 @@ def signbit(
 
 
 @to_native_arrays_and_back
-@handle_out_argument
 @handle_nestable
 def diff(
     x: Union[ivy.Array, ivy.NativeArray, int, list, tuple],
     /,
     *,
-    out: Optional[ivy.Array] = None,
+    n: Optional[int] = 1,
+    axis: Optional[int] = -1,
+    prepend: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
+    append: Optional[Union[ivy.Array, ivy.NativeArray, int, list, tuple]] = None,
 ) -> ivy.Array:
     """Returns the n-th discrete difference along the given axis.
 
     Parameters
     ----------
     x
-        array-like input.
-    out
-        optional output array, for writing the result to.
+        Array-like input.
+    n
+        The number of times values are differenced. If zero, the input is returned
+        as-is.
+    axis
+        The axis along which the difference is taken, default is the last axis.
+    prepend,append
+        Values to prepend/append to x along given axis prior to performing the
+        difference. Scalar values are expanded to arrays with length 1 in the direction
+        of axis and the shape of the input array in along all other axes. Otherwise the
+        dimension and shape must match a except along axis.
 
     Returns
     -------
@@ -834,9 +844,11 @@ def diff(
     >>> ivy.diff(x)
     ivy.array([ 1,  2,  3, -7])
     """
-    return ivy.current_backend().diff(x, out=out)
+    return ivy.current_backend().diff(x, n=n, axis=axis, prepend=prepend, append=append)
 
 
+@handle_nestable
+@to_native_arrays_and_back
 @handle_exceptions
 def allclose(
     a: Union[ivy.Array, ivy.NativeArray],
@@ -887,19 +899,19 @@ def allclose(
     >>> x2 = ivy.array([1.00001e10, 1e-8])
     >>> y = ivy.allclose(x1, x2)
     >>> print(y)
-    False
+    ivy.array(False)
 
     >>> x1 = ivy.array([1.0, ivy.nan])
     >>> x2 = ivy.array([1.0, ivy.nan])
     >>> y = ivy.allclose(x1, x2, equal_nan=True)
     >>> print(y)
-    True
+    ivy.array(True)
 
     >>> x1 = ivy.array([1e-10, 1e-10])
     >>> x2 = ivy.array([1.00001e-10, 1e-10])
     >>> y = ivy.allclose(x1, x2, rtol=0.005, atol=0.0)
     >>> print(y)
-    True
+    ivy.array(True)
 
     """
     return ivy.current_backend().allclose(
