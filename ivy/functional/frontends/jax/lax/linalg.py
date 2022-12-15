@@ -36,4 +36,8 @@ def eigh(x, /, *, lower=True, symmetrize_input=True, sort_eigenvalues=True):
 
   @to_ivy_arrays_and_back
     def all_gather(x, axis_name, *, axis_index_groups=None, axis=0, tiled=False): 
-        return jax.lax.all_gather(x, 'i', axis_index_groups=[[0, 2], [3, 1]])         
+        return jax.lax.all_gather(x, 'i', axis_index_groups=[[0, 2], [3, 1]])      
+    
+      @to_ivy_arrays_and_back
+        def all_to_all(x, axis_name, split_axis, concat_axis, *, axis_index_groups=None, tiled=False): 
+            return np.insert(np.delete(x.shape, split_axis), concat_axis, axis_size)
