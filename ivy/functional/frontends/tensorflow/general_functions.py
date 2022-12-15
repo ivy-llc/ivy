@@ -1,10 +1,10 @@
 # local
 import ivy
 from ivy.func_wrapper import with_unsupported_dtypes
-from ivy.functional.frontends.tensorflow import as_dtype
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
+    to_ivy_dtype,
 )
 from ivy.functional.frontends.tensorflow.tensor import EagerTensor
 
@@ -115,10 +115,7 @@ def concat(values, axis, name=None):
 
 @to_ivy_arrays_and_back
 def shape(input, out_type=ivy.int32, name=None):
-    if ivy.is_native_dtype(out_type):
-        out_type = ivy.as_ivy_dtype(out_type)
-    if not isinstance(out_type, str):
-        out_type = as_dtype(out_type)._ivy_dtype
+    out_type = to_ivy_dtype(out_type)
     if out_type in ["int32", "int64"]:
         return ivy.array(ivy.shape(input), dtype=out_type)
     else:
@@ -148,10 +145,7 @@ def sort(values, axis=-1, direction="ASCENDING", name=None):
 
 @to_ivy_arrays_and_back
 def searchsorted(sorted_sequence, values, side="left", out_type="int32"):
-    if ivy.is_native_dtype(out_type):
-        out_type = ivy.as_ivy_dtype(out_type)
-    if not isinstance(out_type, str):
-        out_type = as_dtype(out_type)._ivy_dtype
+    out_type = to_ivy_dtype(out_type)
     if out_type not in ["int32", "int64"]:
         out_type = "int64"
     return ivy.searchsorted(sorted_sequence, values, side=side, ret_dtype=out_type)

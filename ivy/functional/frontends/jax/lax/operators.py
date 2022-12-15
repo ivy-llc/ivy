@@ -154,10 +154,10 @@ def div(x, y):
 
 @to_ivy_arrays_and_back
 def dot(lhs, rhs, precision=None, preferred_element_type=None):
+    ret = ivy.matmul(lhs, rhs)
     if preferred_element_type:
-        lhs = ivy.astype(lhs, dtype=preferred_element_type)
-        rhs = ivy.astype(rhs, dtype=preferred_element_type)
-    return ivy.tensordot(lhs, rhs)
+        ret = ivy.astype(ret, preferred_element_type, copy=False)
+    return ret
 
 
 @to_ivy_arrays_and_back

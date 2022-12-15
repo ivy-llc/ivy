@@ -3,6 +3,8 @@
 # local
 import ivy
 import ivy.functional.frontends.tensorflow as tf_frontend
+from ivy.functional.frontends.tensorflow.func_wrapper import to_ivy_dtype
+from ivy.functional.frontends.numpy.creation_routines.from_existing_data import array
 
 
 class EagerTensor:
@@ -81,11 +83,8 @@ class EagerTensor:
         return y.__rand__(self._ivy_array)
 
     def __array__(self, dtype=None, name="array"):
-        if ivy.is_native_dtype(dtype):
-            dtype = ivy.as_ivy_dtype(dtype)
-        if not isinstance(dtype, str):
-            dtype = tf_frontend.as_dtype(dtype)._ivy_dtype
-        return ivy.asarray(self._ivy_array, dtype=dtype)
+        dtype = to_ivy_dtype(dtype)
+        return array(ivy.asarray(self._ivy_array, dtype=dtype))
 
     def __bool__(self, name="bool"):
         if isinstance(self._ivy_array, int):

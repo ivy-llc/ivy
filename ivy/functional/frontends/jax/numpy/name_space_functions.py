@@ -1,5 +1,6 @@
 import warnings
 
+
 # local
 import ivy
 from ivy.functional.frontends.jax.func_wrapper import (
@@ -7,6 +8,7 @@ from ivy.functional.frontends.jax.func_wrapper import (
     outputs_to_frontend_arrays,
 )
 from ivy.functional.frontends.jax.numpy import promote_types_of_jax_inputs
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 
 
 @to_ivy_arrays_and_back
@@ -44,6 +46,7 @@ def argmax(a, axis=None, out=None, keepdims=False):
     return ivy.argmax(a, axis=axis, keepdims=keepdims, out=out)
 
 
+@to_ivy_arrays_and_back
 def argwhere(a, /, *, size=None, fill_value=None):
     if size is None and fill_value is None:
         return ivy.argwhere(a)
@@ -72,6 +75,7 @@ def argsort(a, axis=-1, kind="stable", order=None):
     return ivy.argsort(a, axis=axis)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def asarray(
     a,
@@ -86,11 +90,13 @@ def allclose(a, b, rtol=1e-05, atol=1e-08, equal_nan=False):
     return ivy.allclose(a, b, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def ones(shape, dtype=None):
     return ivy.ones(shape, dtype=dtype)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def ones_like(a, dtype=None, shape=None):
     if shape:
@@ -123,6 +129,7 @@ def clip(a, a_min=None, a_max=None, out=None):
     return ivy.clip(a, a_min, a_max, out=out)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def concatenate(arrays, axis=0, dtype=None):
     ret = ivy.concat(arrays, axis=axis)
@@ -164,6 +171,7 @@ def floor(x):
     return ivy.floor(x)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def mean(a, axis=None, dtype=None, out=None, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -211,6 +219,7 @@ def uint16(x):
     return ivy.astype(x, ivy.UintDtype("uint16"), copy=False)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def var(a, axis=None, dtype=None, out=None, ddof=0, keepdims=False, *, where=None):
     axis = tuple(axis) if isinstance(axis, list) else axis
@@ -286,6 +295,7 @@ def array_equiv(a1, a2) -> bool:
     return ivy.all(eq)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def zeros(shape, dtype=None):
     if dtype is None:
@@ -329,8 +339,9 @@ def power(x1, x2):
     return ivy.pow(x1, x2)
 
 
+@handle_numpy_dtype
 @outputs_to_frontend_arrays
-def arange(start, stop=None, step=None, dtype=None):
+def arange(start, stop=None, step=1, dtype=None):
     return ivy.arange(start, stop, step=step, dtype=dtype)
 
 
@@ -346,6 +357,7 @@ def bincount(x, weights=None, minlength=0, *, length=None):
     return ret
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def cumprod(a, axis=None, dtype=None, out=None):
     if dtype is None:
@@ -368,6 +380,7 @@ def float_power(x1, x2):
     return ivy.float_power(x1, x2)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def cumsum(a, axis=0, dtype=None, out=None):
     if dtype is None:
@@ -418,6 +431,7 @@ def kron(a, b):
     return ivy.kron(a, b)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def sum(
     a,
@@ -516,6 +530,7 @@ def fliplr(m):
     return ivy.fliplr(m)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def hstack(tup, dtype=None):
     # TODO: dtype supported in JAX v0.3.20
@@ -631,6 +646,8 @@ def degrees(x):
     return ivy.rad2deg(x)
 
 
+@handle_numpy_dtype
+@to_ivy_arrays_and_back
 def eye(N, M=None, k=0, dtype=None):
     return ivy.eye(N, M, k=k, dtype=dtype)
 
@@ -658,6 +675,7 @@ def take(
     return ivy.take_along_axis(a, indices, axis, out=out)
 
 
+@handle_numpy_dtype
 @to_ivy_arrays_and_back
 def zeros_like(a, dtype=None, shape=None):
     if shape:

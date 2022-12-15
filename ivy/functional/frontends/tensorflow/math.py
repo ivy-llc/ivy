@@ -2,11 +2,11 @@
 import ivy
 from ivy.functional.frontends.tensorflow import (
     promote_types_of_tensorflow_inputs,
-    as_dtype,
 )
 from ivy.functional.frontends.tensorflow.func_wrapper import (
     to_ivy_arrays_and_back,
     handle_tf_dtype,
+    to_ivy_dtype,
 )
 
 
@@ -23,10 +23,7 @@ def add(x, y, name=None):
 
 @to_ivy_arrays_and_back
 def argmax(input, axis, output_type=None, name=None):
-    if ivy.is_native_dtype(output_type):
-        output_type = ivy.as_ivy_dtype(output_type)
-    if not isinstance(output_type, str):
-        output_type = as_dtype(output_type)._ivy_dtype
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["uint16", "int16", "int32", "int64"]:
         return ivy.astype(ivy.argmax(input, axis=axis), output_type)
     else:
@@ -363,10 +360,7 @@ def zero_fraction(value, name="zero_fraction"):
 
 @to_ivy_arrays_and_back
 def argmin(input, axis=None, output_type="int64", name=None):
-    if ivy.is_native_dtype(output_type):
-        output_type = ivy.as_ivy_dtype(output_type)
-    if not isinstance(output_type, str):
-        output_type = as_dtype(output_type)._ivy_dtype
+    output_type = to_ivy_dtype(output_type)
     if output_type in ["int32", "int64"]:
         return ivy.astype(ivy.argmin(input, axis=axis), output_type)
     else:

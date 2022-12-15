@@ -1,7 +1,9 @@
 import ivy
 from ivy.functional.frontends.jax.devicearray import DeviceArray
+from ivy.functional.frontends.numpy.func_wrapper import handle_numpy_dtype
 
 
+@handle_numpy_dtype
 def array(object, dtype=None, copy=True, order="K", ndmin=0):
     # TODO must ensure the array is created on default device.
     if order is not None and order != "K":

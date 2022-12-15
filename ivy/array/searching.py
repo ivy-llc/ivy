@@ -209,6 +209,15 @@ class ArrayWithSearching(abc.ABC):
             An array with elements from self where condition is True, and elements from
             x2 otherwise.
 
+        Examples
+        --------
+        >>> condition = ivy.array([[True, False], [True, True]])
+        >>> x1 = ivy.array([[1, 2], [3, 4]])
+        >>> x2 = ivy.array([[5, 6], [7, 8]])
+        >>> res = x1.where(condition,x2)
+        >>> print(res)
+        ivy.array([[1, 6], [3, 4]])
+
         """
         return ivy.where(self._data, x1._data, x2._data, out=out)
 
